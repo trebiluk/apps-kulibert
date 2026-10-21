@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **bt-test-order (2.5.339):** Test hooks run after armClock so night and bots work. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **combat-test-seeds-live (2.5.338):** Test night sticks and bots appear with their own look. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

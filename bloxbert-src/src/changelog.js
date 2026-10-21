@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.339', date: '2026-10-21', lines: {
+    en: ['2.5.339 — Teacher test tools for night and bots now work.'],
+    simple: ['2.5.339 — Teacher test tools for night and bots now work.'],
+    uk: ['2.5.339 — Тестові інструменти вчителя для ночі та ботів тепер працюють.'],
+    ru: ['2.5.339 — Тестовые инструменты учителя для ночи и ботов теперь работают.'],
+    es: ['2.5.339 — Las herramientas de prueba del profesor para noche y bots ahora funcionan.'],
+    ar: ['2.5.339 — أدوات اختبار المعلم لليل والروبوتات تعمل الآن.'],
+    'fa-AF': ['2.5.339 — ابزارهای آزمایش معلم برای شب و ربات‌ها حالا کار می‌کنند.'],
+    rw: ['2.5.339 — Ibikoresho by isuzuma by umwarimu by ijoro na bots ubu bikora.'],
+    ti: ['2.5.339 — ናይ መምህር ፈተና መሳርሒታት ንምሽትን ቦትስን ሕጂ ይሰርሑ።'],
+  }},
+
   { v: '2.5.338', date: '2026-10-21', lines: {
     en: ['2.5.338 — Rustbot and Keeper now have their own look, and teacher test tools can call night and bots.'],
     simple: ['2.5.338 — Rustbot and Keeper now have their own look, and teacher test tools can call night and bots.'],
