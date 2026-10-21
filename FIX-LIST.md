@@ -8,6 +8,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - Latest Hub proofs: `proof/hub-swipe/RESULT.md` (PASS with P2s; Arabic 1024x768 cold load 8 px too wide on 3 of 14 loads → brief 12c) and `proof/menu-audit/RESULT.md` (same-menu sweep across apps).
 
 ## 2. Open fixes
+- [x] Hub rev 2026-10-20-staff-i18n-bust: one hub-rev.js; every shared script tag uses it.
+
 - [x] Hub rev 2026-10-20-staff-proof-gate: proof list is not in the DOM until staff password and desk key.
 
 - [x] Hub rev 2026-10-20-test-mode-kid-leak: /spancraft/ 307 to HoldIt span mode is intended. No route change.
