@@ -590,3 +590,22 @@ html[data-kp-motion="less"] .stamp { transform: none; }
   .stamp { font-size: 1.05rem; }
   .endcard h2, .pause h2, .ask h2 { font-size: 1.15rem; }
 }
+
+.ref-teams button {
+  flex: 1 1 auto;
+  min-width: max-content;
+  overflow: visible;
+}
+.ref-teams .tn { flex: none; white-space: nowrap; }
+@media (max-width: 480px) {
+  .ref-teams button {
+    flex: 1 1 calc(50% - 4px);
+    max-width: calc(50% - 4px);
+    min-width: calc(50% - 4px);
+    min-height: 56px;
+    height: auto;
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow: visible;
+  }
+}
