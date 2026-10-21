@@ -189,19 +189,23 @@ function classLanguage() {
   }
   return ''
 }
-function bareLangStamp(prefs) {
-  return Object.keys(prefs).every((k) => k === 'lang' || k === 'v')
+function hubLanguage() {
+  const prefs = readBag('kulibert-prefs-v1')
+  if (!prefs || typeof prefs !== 'object') return ''
+  return normLang(prefs.lang)
 }
 function kidLanguage() {
+  const hub = hubLanguage()
+  if (hub) {
+    try {
+      if (localStorage.getItem('bloxbert-lang') !== hub) localStorage.setItem('bloxbert-lang', hub)
+    } catch (e) {}
+    return hub
+  }
   try {
     const saved = normLang(localStorage.getItem('bloxbert-lang') || '')
     if (saved) return saved
   } catch (e) {}
-  const prefs = readBag('kulibert-prefs-v1')
-  if (prefs && typeof prefs === 'object' && !bareLangStamp(prefs)) {
-    const fromPrefs = normLang(prefs.lang)
-    if (fromPrefs) return fromPrefs
-  }
   return normLang(qs.get('lang') || '')
 }
 function browserLanguage() {
@@ -225,13 +229,30 @@ function saveKidLang(code) {
     localStorage.setItem('kulibert-prefs-v1', JSON.stringify(bag))
   } catch (e) {}
 }
-let LANG = classLanguage() || kidLanguage() || browserLanguage() || 'en'
+const kidLang = kidLanguage()
+let LANG = classLanguage() || kidLang || browserLanguage() || 'en'
 document.addEventListener('click', (e) => {
   const btn = e.target && e.target.closest && e.target.closest('.kb-drawer-langs button')
   if (!btn) return
   const raw = btn.getAttribute('lang') || ''
   const hit = normLang(raw === 'fa' ? 'fa-AF' : raw)
   if (!hit) return
+  saveKidLang(hit)
+  LANG = hit
+  applyI18n()
+})
+window.addEventListener('storage', (e) => {
+  if (!e || e.key !== 'kulibert-prefs-v1') return
+  let bag = null
+  try { bag = e.newValue ? JSON.parse(e.newValue) : null } catch (err) { return }
+  const hit = bag && typeof bag === 'object' ? normLang(bag.lang) : ''
+  if (!hit) return
+  if (classLanguage()) {
+    try {
+      if (localStorage.getItem('bloxbert-lang') !== hit) localStorage.setItem('bloxbert-lang', hit)
+    } catch (err) {}
+    return
+  }
   saveKidLang(hit)
   LANG = hit
   applyI18n()
