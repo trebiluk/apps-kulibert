@@ -339,10 +339,10 @@
   "month11": "November",
   "month12": "December",
   "lbAlias": "Alias",
-"rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
+  "rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
   "rfHelpStars": "The level list shows your stars and your fewest ramps.",
   "rfHelpClear": "When you win, stars show one by one. Next is ready.",
-"looksOpen": "🎨 Looks",
+  "looksOpen": "🎨 Looks",
   "groupLooks": "🎨 Looks",
   "groupColors": "🎨 Colors",
   "groupWall": "🧱 Wall",
@@ -355,7 +355,7 @@
   "gearBounce": "Bounce",
   "gearWild": "Wild",
   "helpLooks": "🎨 Looks opens the picture names, colors, wall, and frame. Surprise me mixes them.",
-  "news23619": "MU 2.36.19: A Looks drawer with names, and Surprise me.",
+  "news23619": "MU 2.36.19: A bigger light show: a Looks drawer with names, Surprise me, and a start screen that glows.",
   "look_bars": "Bars",
   "look_kaleido": "Kaleidoscope",
   "look_clouds": "Clouds",
@@ -388,5 +388,7 @@
   "frame_double": "Double",
   "frame_rgb": "RGB",
   "vdLastMatch": "Last match: {winner} won {heat} in {time}.",
-  "vdJuiceHelp": "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match."
+  "vdJuiceHelp": "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match.",
+  "vizStart": "Tap ▶ to start — watch your music become light.",
+  "helpStart": "▶ Press Play. The picture waits, then your music becomes light."
 }

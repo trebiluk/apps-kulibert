@@ -5510,11 +5510,77 @@ body.mu237 #looks-open:focus-visible { outline: 3px solid #0b1f33; outline-offse
   }
 }
 
+/* MU 2.36.19 item 2 — start line. Soft breath, never a white flash. */
+body.mu237 .stage-wrap { position: relative; }
+body.mu237 .viz-start {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 8px;
+  pointer-events: none;
+  text-align: center;
+}
+body.mu237 .viz-start span {
+  display: inline-block;
+  max-width: 92%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #0b1520;
+  color: #f8fafc;
+  font-size: clamp(14px, 2.2vw, 22px);
+  font-weight: 800;
+  line-height: 1.25;
+  animation: viz-breathe 2.8s ease-in-out infinite;
+}
+body.mu237 .viz-start.is-out { opacity: 0; transition: opacity 600ms ease; }
+body.mu237 .viz-start[hidden] { display: none !important; }
+@keyframes viz-breathe {
+  0%, 100% { opacity: 0.82; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.mu237 .viz-start span { animation: none; opacity: 1; }
+  body.mu237 .viz-start.is-out { transition: none; }
+}
 
-
-
-
-
-
-
-
+/* MU 2.36.19 — short landscape keeps a picture. Spin and Glow live in the Looks drawer. */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237.tab-viz .desk { overflow: hidden !important; }
+  body.mu237.tab-viz .work {
+    flex: 0 0 52px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-viz #lights-pane {
+    flex-direction: row !important;
+    align-items: center !important;
+    height: 52px !important;
+    min-height: 48px !important;
+    max-height: 52px !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-viz #steel-faders { display: none !important; }
+  body.mu237.tab-viz .out {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 80px !important;
+    max-height: none !important;
+  }
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz {
+    height: 100% !important;
+    min-height: 80px !important;
+    max-height: none !important;
+  }
+  body.mu237.tab-viz .viz-start { min-height: 0; }
+  body.mu237.tab-viz .viz-start span {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}

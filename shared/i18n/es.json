@@ -339,10 +339,10 @@
   "month11": "noviembre",
   "month12": "diciembre",
   "lbAlias": "Alias",
-"rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
+  "rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
   "rfHelpStars": "La lista de niveles muestra tus estrellas y tus rampas mínimas.",
   "rfHelpClear": "Al ganar, las estrellas salen una por una. Siguiente está listo.",
-"looksOpen": "🎨 Aspectos",
+  "looksOpen": "🎨 Aspectos",
   "groupLooks": "🎨 Aspectos",
   "groupColors": "🎨 Colores",
   "groupWall": "🧱 Pared",
@@ -355,7 +355,7 @@
   "gearBounce": "Rebote",
   "gearWild": "Salvaje",
   "helpLooks": "🎨 Aspectos abre los nombres, los colores, la pared y el marco. Sorpréndeme los mezcla.",
-  "news23619": "MU 2.36.19: Un cajón de aspectos con nombres y Sorpréndeme.",
+  "news23619": "MU 2.36.19: Un show de luces más grande: un cajón de aspectos con nombres, Sorpréndeme y una pantalla de inicio que brilla.",
   "look_bars": "Barras",
   "look_kaleido": "Caleidoscopio",
   "look_clouds": "Nubes",
@@ -388,5 +388,7 @@
   "frame_double": "Doble",
   "frame_rgb": "RGB",
   "vdLastMatch": "Última manga: {winner} ganó {heat} en {time}.",
-  "vdJuiceHelp": "La revancha empieza esa manga con un toque. Un golpe tiembla un momento y suelta chispas. La sala muestra la forma de cada corredor y la última manga."
+  "vdJuiceHelp": "La revancha empieza esa manga con un toque. Un golpe tiembla un momento y suelta chispas. La sala muestra la forma de cada corredor y la última manga.",
+  "vizStart": "Toca ▶ para empezar — mira cómo tu música se vuelve luz.",
+  "helpStart": "▶ Pulsa Play. La imagen espera y tu música se vuelve luz."
 }

@@ -339,10 +339,10 @@
   "month11": "Ugushyingo",
   "month12": "Ukuboza",
   "lbAlias": "Izina",
-"rfHelpSplash": "Gusuka biratemba. Ijanisha ryo kuzuza riratera. Guhagarika ijwi bihagarika umuziki.",
+  "rfHelpSplash": "Gusuka biratemba. Ijanisha ryo kuzuza riratera. Guhagarika ijwi bihagarika umuziki.",
   "rfHelpStars": "Urutonde rw'inzego rwerekana inyenyeri zawe n'imihanda mike.",
   "rfHelpClear": "Iyo utsinze, inyenyeri ziza imwe imwe. Ikurikira iriteguye.",
-"looksOpen": "🎨 Imigaragaro",
+  "looksOpen": "🎨 Imigaragaro",
   "groupLooks": "🎨 Imigaragaro",
   "groupColors": "🎨 Amabara",
   "groupWall": "🧱 Urukuta",
@@ -355,7 +355,7 @@
   "gearBounce": "Gusimbuka",
   "gearWild": "Ibihumbi",
   "helpLooks": "🎨 Imigaragaro ifungura amazina, amabara, urukuta n'urubibi. Ntungururwe ibivanga.",
-  "news23619": "MU 2.36.19: Ububiko bw'imigaragaro ifite amazina na Ntungururwe.",
+  "news23619": "MU 2.36.19: Urumuri runini: ububiko bw'imigaragaro ifite amazina, Ntungururwe, n'itangiriro rirabagirana.",
   "look_bars": "Imirongo",
   "look_kaleido": "Kaleidoskope",
   "look_clouds": "Ibicu",
@@ -388,5 +388,7 @@
   "frame_double": "Kabiri",
   "frame_rgb": "RGB",
   "vdLastMatch": "Uruhande rwa nyuma: {winner} yatsinze {heat} mu {time}.",
-  "vdJuiceHelp": "Gusubukura gutangira uruhande rumwe ukanda rimwe. Guhura biracamagana kandi birabagirana. Icyumba cyerekana ishusho ya buri mukinnyi n'uruhande rwa nyuma."
+  "vdJuiceHelp": "Gusubukura gutangira uruhande rumwe ukanda rimwe. Guhura biracamagana kandi birabagirana. Icyumba cyerekana ishusho ya buri mukinnyi n'uruhande rwa nyuma.",
+  "vizStart": "Kanda ▶ utangire — reba uburyo umuziki wawe uba urumuri.",
+  "helpStart": "▶ Kanda Kina. Ishusho irindira, hanyuma umuziki wawe uba urumuri."
 }

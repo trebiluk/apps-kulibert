@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
-  <link rel="stylesheet" href="./styles.css?v=mu23619a"/>
+  <link rel="stylesheet" href="./styles.css?v=mu23619b"/>
 </head>
 <body class="mu237 tab-tap">
   <p id="mu-chip" class="mu-chip"></p>
@@ -160,6 +160,7 @@
         <li><span data-mu="helpBeat">🥁 Make a beat and New beat open your beat. Rock loads only on a fresh start or when you tap Rock. Clear stays clear until you pick a style or tap a pad.</span></li>
         <li><span data-mu="helpMicState">🎤 The mic line shows if the mic is on, listening, or blocked.</span></li>
         <li><span data-mu="helpLooks">🎨 Looks opens the picture names, colors, wall, and frame. Surprise me mixes them.</span></li>
+        <li><span data-mu="helpStart" data-i18n="helpStart">▶ Press Play. The picture waits, then your music becomes light.</span></li>
         <li><span data-mu="helpFinger">🥁 The finger pads show their names in your language.</span></li>
         <li><span data-mu="helpMic">🎤 Mic lights starts off. Tap it to turn the room mic on or off. If you say no, the song lights still move. Nothing is recorded or sent.</span></li>
       </ul>
@@ -470,6 +471,8 @@
           <button type="button" id="surprise-btn" class="btn surprise-btn" data-mu="surpriseMe" data-i18n="surpriseMe">🎲 Surprise me</button>
           <div class="gizmos">
             <label class="fader-row"><span data-mu="gearSize" data-i18n="gearSize">Size</span><output id="n-zoom" for="g-zoom">110</output><input id="g-zoom" type="range" min="40" max="160" value="110" data-mu-label="gearSize" data-i18n-label="gearSize" aria-label="Size"/></label>
+            <label class="fader-row"><span data-mu="spinWord" data-i18n="spinWord">Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" data-mu-label="spinWord" data-i18n-label="spinWord" aria-label="Spin"/></label>
+            <label class="fader-row"><span data-mu="glowWord" data-i18n="glowWord">Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" data-mu-label="glowWord" data-i18n-label="glowWord" aria-label="Glow"/></label>
             <label class="fader-row"><span data-mu="gearThick" data-i18n="gearThick">Thick</span><output id="n-thick" for="g-thick">4</output><input id="g-thick" type="range" min="1" max="12" value="4" data-mu-label="gearThick" data-i18n-label="gearThick" aria-label="Thick"/></label>
             <label class="fader-row"><span data-mu="gearCount" data-i18n="gearCount">How many</span><output id="n-count" for="g-count">24</output><input id="g-count" type="range" min="4" max="32" value="24" data-mu-label="gearCount" data-i18n-label="gearCount" aria-label="How many"/></label>
             <label class="fader-row"><span data-mu="gearTrails" data-i18n="gearTrails">Trails</span><output id="n-trail" for="g-trail">22</output><input id="g-trail" type="range" min="0" max="70" value="22" data-mu-label="gearTrails" data-i18n-label="gearTrails" aria-label="Trails"/></label>
@@ -479,10 +482,7 @@
         </div>
         <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
         <p id="viz-mic-status" class="hint" aria-live="polite"></p>
-        <div id="steel-faders">
-          <label class="fader-row"><span data-mu="spinWord" data-i18n="spinWord">Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" data-mu-label="spinWord" data-i18n-label="spinWord" aria-label="Spin"/></label>
-          <label class="fader-row"><span data-mu="glowWord" data-i18n="glowWord">Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" data-mu-label="glowWord" data-i18n-label="glowWord" aria-label="Glow"/></label>
-        </div>
+        <div id="steel-faders" hidden></div>
         <details class="more-box">
           <summary data-mu="changePicture">Change the picture</summary>
           <p class="hint">Three layers. Each one can have its own color.</p>
@@ -532,6 +532,7 @@
       <div class="stage-wrap">
         <button type="button" id="perform-exit" class="perform-exit" hidden data-mu="exitShow"><svg class="mu-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span data-mu="exitShow">Exit</span></button>
         <canvas id="viz" width="640" height="280" aria-label="Live music picture"></canvas>
+        <p id="viz-start" class="viz-start"><span data-mu="vizStart" data-i18n="vizStart">Tap ▶ to start — watch your music become light.</span></p>
         <i id="berty-bob" class="berty-bob" aria-hidden="true"></i>
         <canvas id="confetti" class="confetti" hidden></canvas>
         <div id="curtain" class="curtain" hidden>
@@ -641,7 +642,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23619a"></script>
+  <script src="./version.js?v=mu23619b"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -650,7 +651,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23619a"></script>
-  <script src="./app.js?v=mu23619a"></script>
+  <script src="./strings.js?v=mu23619b"></script>
+  <script src="./app.js?v=mu23619b"></script>
 </body>
 </html>

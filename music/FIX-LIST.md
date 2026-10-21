@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.19 item 2: the stage says tap to start, then the line fades when Play begins. Reduced motion stays still.
 - [x] MU 2.36.19 item 1: the Viz Looks drawer names the 14 pictures, colors, wall, and frame, and Surprise me mixes the look and color.
 - [x] MU 2.36.18 item 1: kw-test.js loads only when staff is unlocked and the Test switch is on. A kid page strips any leaked tag.
 - [x] MU 2.36.17 item 3: Canciones and Partitura fit inside the tab at 924x412, and the tap stays at least 44px.

@@ -1527,6 +1527,20 @@
     const who = window.KulibertWho;
     return who && who.prefs ? who.prefs : null;
   }
+  let vizStarted = false;
+  function hideVizStart() {
+    if (vizStarted) return;
+    vizStarted = true;
+    const el = $("viz-start");
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      el.hidden = true;
+      return;
+    }
+    el.classList.add("is-out");
+    window.setTimeout(() => { el.hidden = true; }, 600);
+  }
   function play(opts) {
     const nowMs = Date.now();
     const force = !!(opts && opts.force);
@@ -1542,6 +1556,7 @@
     state.once = !!(opts && opts.once);
     state.playing = true;
     state.playAt = Date.now();
+    hideVizStart();
     state.confettiDone = false;
     document.body.classList.add("playing");
     fitViz();
