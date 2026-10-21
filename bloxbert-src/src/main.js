@@ -338,7 +338,7 @@ function dressTop() {
     name.before(menuPlate())
     name.classList.add('kd-sr')
   }
-  for (const [id, icon] of [['undo-btn', 'undo'], ['redo-btn', 'redo'], ['save-btn', 'floppy']]) {
+  for (const [id, icon] of [['undo-btn', 'undo'], ['redo-btn', 'redo'], ['save-btn', 'floppy'], ['hub-back', 'home']]) {
     const btn = document.getElementById(id)
     const ti = btn && btn.querySelector('.ti')
     if (!ti || ti.dataset.pix) continue
