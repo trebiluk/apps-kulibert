@@ -5,6 +5,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.308 plate, 2.5.307 hint pulse).
 - [x] **2.5.307 hint again:** If you tap the same hint again, it pulses so you know the game heard you. It does not stack a second copy. Reduced motion resets the timer with no nudge. Kinyarwanda, Tigrinya, and Dari help lines still need a native check.
 
 - [x] **2.5.310 spot:** After you walk and reload while signed out, you stay where you walked. The spot is saved to localStorage and preferred over the old doc pos. Fresh world clears it.
+- [x] **2.5.309 string check:** The build checks every word in every language. Words already on the known list stay. A new wrong-script word fails the build. Kinyarwanda and Tigrinya still need a native check.
 - [x] **2.5.313 use-pill:** The Flip/Open/Sit button no longer covers the hint line. Pill lifts above .keys and hides the hint while shown. Stays ≥48px, clear of stick and Jump.
 
 - [x] **2.5.306 PvP labels:** English says PvP: ON and PvP: OFF. Kinyarwanda says BIRAKORA and BIRAZIMYE, not Tigrinya and not English ON/OFF. Kinyarwanda still needs a native check.

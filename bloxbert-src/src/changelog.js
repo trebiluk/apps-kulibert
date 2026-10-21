@@ -36,6 +36,18 @@ export const CHANGELOG = [
     ti: ['2.5.310 — ድሕሪ ምጓዓዝን ምድጋምን፣ ኣብቲ ዝኸድካዮ ቦታ ትቐር።'],
   }},
 
+  { v: '2.5.309', date: '2026-10-21', lines: {
+    en: ['2.5.309 — Behind the scenes: the game now checks every word in every language.'],
+    simple: ['2.5.309 — Behind the scenes: the game now checks every word in every language.'],
+    uk: ['2.5.309 — За лаштунками: гра тепер перевіряє кожне слово кожною мовою.'],
+    ru: ['2.5.309 — За кулисами: игра теперь проверяет каждое слово на каждом языке.'],
+    es: ['2.5.309 — Entre bastidores: el juego ahora revisa cada palabra en cada idioma.'],
+    ar: ['2.5.309 — خلف الكواليس: اللعبة الآن تتحقق من كل كلمة بكل لغة.'],
+    'fa-AF': ['2.5.309 — پشت صحنه: بازی حالا هر واژه را در هر زبان بررسی می‌کند.'],
+    rw: ['2.5.309 — Inyuma y\'urubuga: urukino ubu rugenjura ijambo ryose mu rurimi rwose.'],
+    ti: ['2.5.309 — ኣብ ድሕሪ መድረኽ፡ ጸወታ ሕጂ ነፍሲ ወከፍ ቃል ብኹሉ ቋንቋታት ይመርምር።'],
+  }},
+
   { v: '2.5.306', date: '2026-10-21', lines: {
     en: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],
     simple: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],
