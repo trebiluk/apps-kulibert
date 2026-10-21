@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.300', date: '2026-10-21', lines: {
+    en: ['2.5.300 — Teacher switches for combat, creatures and the boss now work.'],
+    simple: ['2.5.300 — Teacher switches for combat, creatures and the boss now work.'],
+    uk: ['2.5.300 — Перемикачі вчителя для бою, істот і боса тепер працюють.'],
+    ru: ['2.5.300 — Переключатели учителя для боя, существ и босса теперь работают.'],
+    es: ['2.5.300 — Los interruptores del profesor para combate, criaturas y el jefe ahora funcionan.'],
+    ar: ['2.5.300 — مفاتيح المعلم للقتال والمخلوقات والزعيم تعمل الآن.'],
+    'fa-AF': ['2.5.300 — سوئیچ‌های معلم برای نبرد، موجودات و رئیس حالا کار می‌کنند.'],
+    rw: ['2.5.300 — Amashusho y umwarimu y urugamba, ibiremwa na boss ubu akora.'],
+    ti: ['2.5.300 — ናይ መምህር መቐየሪታት ንውግእ፣ ፍጡራትን ቦስን ሕጂ ይሰርሑ።'],
+  }},
+
   { v: '2.5.340', date: '2026-10-21', lines: {
     en: ["2.5.340 — The walk hint no longer hides under the Suit pill."],
     simple: ["2.5.340 — The walk hint no longer hides under the Suit pill."],
