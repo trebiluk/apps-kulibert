@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 10. Version locked: RF 1.0.9.
+
+- [x] **RF 1.0.9 ITEM 1:** The test script loads only when the staff unlock and the Test switch are both on. A kid page has no kw-test tag and no test global.
+
 Stage 9. Version locked: RF 1.0.8.
 
 - [x] **RF 1.0.8 ITEM 1:** Pick the path, Wall, and the level-5 hint are translated in all 8 languages plus Simple. On a 412-wide phone the status line and the hint wrap. Nothing is cut off.
