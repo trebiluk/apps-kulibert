@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.332 bonk-touch-safe-chip:** A Bonk button appears on touch when a bot is close. A steady chip shows while you are in the safe zone. Desktop Break key still relabels to Bonk.
 - [x] **2.5.299 C5 Foundry Overseer:** Team up to reboot the Foundry Overseer (cosmetic reward only). Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.332', date: '2026-10-21', lines: {
+    en: ['2.5.332 — On a touch screen a Bonk button appears when a bot is close, and a chip shows when you are in the safe zone.'],
+    simple: ['2.5.332 — On a touch screen a Bonk button appears when a bot is close, and a chip shows when you are in the safe zone.'],
+    uk: ['2.5.332 — На сенсорному екрані з’являється кнопка Бонк, коли бот близько, і чіп показує, що ти в безпечній зоні.'],
+    ru: ['2.5.332 — На сенсорном экране появляется кнопка Бонк, когда бот близко, и чип показывает, что ты в безопасной зоне.'],
+    es: ['2.5.332 — En una pantalla táctil aparece un botón Bonk cuando un bot está cerca, y un chip muestra cuando estás en la zona segura.'],
+    ar: ['2.5.332 — على الشاشة اللمسية يظهر زر بونك عندما يكون الروبوت قريبًا، وشريحة تظهر عندما تكون في المنطقة الآمنة.'],
+    'fa-AF': ['2.5.332 — روی صفحه لمسی دکمه بونک وقتی ربات نزدیک است ظاهر می‌شود، و تراشه نشان می‌دهد وقتی در منطقه امن هستی.'],
+    rw: ['2.5.332 — Ku ecran ya gukora buto ya Bonk igaragara iyo robot iri hafi, kandi chip yerekana iyo uri mu gace kwiringira.'],
+    ti: ['2.5.332 — ኣብ ምትንኻፍ ስክሪን መቐየሪ ቦንክ ይረአ እንተ ቦት ቀረባ፡ እሞ ቺፕ የርኢ እንተ ኣብ ውሑስ ቦታ ኢኻ።'],
+  }},
+
   { v: '2.5.299', date: '2026-10-21', lines: {
     en: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
     simple: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
