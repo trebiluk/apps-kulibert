@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.18
+
+Referee team buttons show the team number on phones.
+
 ## RF 1.0.17
 
 Screen readers name the ramp tool bar in your language.

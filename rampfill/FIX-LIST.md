@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 19. Version locked: RF 1.0.18.
+
+- [x] **ref-team-buttons-fit:** On a phone the four Referee team buttons sit in a 2×2 grid so the name and the number both show. Wider screens keep one row only when the whole label fits.
+
 Stage 18. Version locked: RF 1.0.17.
 
 - [x] **rf-tool-row-name:** The ramp tool bar and the empty cup score are named in the kid's language, including after a language change. The English words stay in the page as the no-JS fallback.
