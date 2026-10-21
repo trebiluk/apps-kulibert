@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.321', date: '2026-10-21', lines: {
+    en: ['2.5.321 — Bertopia starts again, with the newest fixes and Bonk.'],
+    simple: ['2.5.321 — Bertopia starts again, with the newest fixes and Bonk.'],
+    uk: ['2.5.321 — Bertopia знову запускається, з найновішими виправленнями і Бонком.'],
+    ru: ['2.5.321 — Bertopia снова запускается, с новыми исправлениями и Бонком.'],
+    es: ['2.5.321 — Bertopia vuelve a arrancar, con los arreglos más nuevos y el Bonk.'],
+    ar: ['2.5.321 — تعمل Bertopia من جديد، مع أحدث الإصلاحات وزر البونك.'],
+    'fa-AF': ['2.5.321 — Bertopia دوباره شروع می‌شود، با تازه‌ترین درستی‌ها و بونک.'],
+    rw: ['2.5.321 — Bertopia yongeye gutangira, ifite ibikosorwa bishya na Bonk.'],
+    ti: ['2.5.321 — Bertopia እንደገና ይጅምር፡ ምስ ሓደስቲ መዐረይታትን Bonk ን።'],
+  }},
+
   { v: '2.5.295', date: '2026-10-21', lines: {
     en: ['Bonk bots with your Mine button, see your Suit, and Bertyville is a safe zone.'],
     uk: ['Бонкай ботів кнопкою Копати, дивись свій Костюм, і Bertyville — безпечна зона.'],
