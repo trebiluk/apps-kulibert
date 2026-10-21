@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.340 keys-hint-suit:** The walk hint sits above the Suit pill on touch. It wraps inside the left half and mirrors for stick-right.
 - [x] **bt-test-order (2.5.339):** Test hooks run after armClock so night and bots work. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.340', date: '2026-10-21', lines: {
+    en: ["2.5.340 — The walk hint no longer hides under the Suit pill."],
+    simple: ["2.5.340 — The walk hint no longer hides under the Suit pill."],
+    uk: ["2.5.340 — Підказка ходьби більше не ховається під пігулкою Костюм."],
+    ru: ["2.5.340 — Подсказка ходьбы больше не прячется под пилюлей Костюм."],
+    es: ["2.5.340 — La pista de caminar ya no se esconde bajo la píldora de Traje."],
+    ar: ["2.5.340 — تلميح المشي لم يعد يختبئ تحت حبة البدلة."],
+    'fa-AF': ["2.5.340 — راهنمای راه رفتن دیگر زیر قرص لباس پنهان نمی‌شود."],
+    rw: ["2.5.340 — Inama yo kugenda ntigisubira munsi y'ikimenyetso cya Impuzu."],
+    ti: ["2.5.340 — ምኽሪ ምንቅስቓስ ኣብ ትሕቲ ናይ ልብስ ክኒ ኣይተሓባእን።"],
+  }},
+
   { v: '2.5.339', date: '2026-10-21', lines: {
     en: ['2.5.339 — Teacher test tools for night and bots now work.'],
     simple: ['2.5.339 — Teacher test tools for night and bots now work.'],
