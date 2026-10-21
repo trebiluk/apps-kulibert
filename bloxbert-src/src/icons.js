@@ -156,6 +156,37 @@ const FACE = {
       g.strokeRect(5, y, 38, 8)
     })
   },
+
+  berry(g) {
+    // Cluster of 3 round berries. Distinct from sapling at 32px.
+    const berries = [[18, 26, 8], [30, 26, 8], [24, 16, 7]]
+    berries.forEach(([x, y, r]) => {
+      g.fillStyle = '#c026d3'
+      g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill()
+      g.fillStyle = '#a21caf'
+      g.beginPath(); g.arc(x - 2, y - 2, r * 0.35, 0, Math.PI * 2); g.fill()
+    })
+    // small stem
+    g.strokeStyle = '#166534'
+    g.lineWidth = 2
+    g.beginPath(); g.moveTo(24, 12); g.lineTo(24, 8); g.stroke()
+  },
+  stick(g) {
+    // One thin diagonal. Distinct from planks and log at 32px.
+    g.strokeStyle = '#C4A574'
+    g.lineWidth = 4
+    g.lineCap = 'round'
+    g.beginPath()
+    g.moveTo(12, 36)
+    g.lineTo(36, 12)
+    g.stroke()
+    g.strokeStyle = '#8B5A2B'
+    g.lineWidth = 2
+    g.beginPath()
+    g.moveTo(14, 34)
+    g.lineTo(34, 14)
+    g.stroke()
+  },
   workbench(g) {
     g.fillStyle = '#8A5A32'
     g.fillRect(6, 36, 7, 10)
@@ -286,24 +317,29 @@ const FACE = {
     g.strokeRect(4, 4, 40, 40)
   },
   sapling(g) {
-    g.strokeStyle = '#6B3A1F'
-    g.lineWidth = 3
+    // Stem + 2 leaves. Distinct silhouette at 32px.
+    g.strokeStyle = '#5C3317'
+    g.lineWidth = 4
+    g.lineCap = 'round'
     g.beginPath()
-    g.moveTo(24, 42)
-    g.lineTo(24, 22)
+    g.moveTo(24, 40)
+    g.lineTo(24, 18)
     g.stroke()
+    // left leaf
     g.fillStyle = '#3FAE46'
     g.beginPath()
-    g.ellipse(15, 18, 9, 5, -0.7, 0, Math.PI * 2)
+    g.ellipse(14, 16, 10, 6, -0.8, 0, Math.PI * 2)
     g.fill()
-    g.fillStyle = '#2F8F38'
+    g.strokeStyle = '#2F8F38'
+    g.lineWidth = 1.5
+    g.stroke()
+    // right leaf (slightly higher)
+    g.fillStyle = '#57C45A'
     g.beginPath()
-    g.ellipse(33, 16, 9, 5, 0.6, 0, Math.PI * 2)
+    g.ellipse(34, 14, 9, 5, 0.7, 0, Math.PI * 2)
     g.fill()
-    g.fillStyle = '#14521C'
-    g.beginPath()
-    g.arc(24, 20, 2.2, 0, Math.PI * 2)
-    g.fill()
+    g.strokeStyle = '#3FAE46'
+    g.stroke()
   },
   farmland(g) {
     g.fillStyle = '#8d5a2b'
@@ -548,7 +584,7 @@ function letterTile(letter) {
 // Same picture the hotbar uses. A missing picture is a letter on a neutral tile, never a red square.
 export function slotArt(key, blockNode) {
   // 2.5.303: distinct pictures for wood items — FACE wins over wrap for these keys
-  if (key === 'planks' || key === 'log') {
+  if (key === 'planks' || key === 'log' || key === 'berry' || key === 'sapling' || key === 'stick') {
     if (FACE[key]) {
       const c = asArt(key, FACE[key])
       c.dataset.item = key
