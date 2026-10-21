@@ -1785,3 +1785,41 @@ for (const [lang, row] of Object.entries(FIT306)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT307 = {
+  en: {
+    helpTapAgain: 'If you tap again, the hint shows again so you know the game heard you.',
+    whatsNewBody: '2.5.307 — If you tap again, the hint shows again so you know the game heard you.',
+  },
+  uk: {
+    helpTapAgain: 'Якщо торкнешся ще раз, підказка з’явиться знову, і ти знатимеш, що гра почула тебе.',
+    whatsNewBody: '2.5.307 — Якщо торкнешся ще раз, підказка з’явиться знову, і ти знатимеш, що гра почула тебе.',
+  },
+  ru: {
+    helpTapAgain: 'Если нажмёшь ещё раз, подсказка появится снова, и ты будешь знать, что игра тебя услышала.',
+    whatsNewBody: '2.5.307 — Если нажмёшь ещё раз, подсказка появится снова, и ты будешь знать, что игра тебя услышала.',
+  },
+  es: {
+    helpTapAgain: 'Si tocas otra vez, el aviso vuelve para que sepas que el juego te oyó.',
+    whatsNewBody: '2.5.307 — Si tocas otra vez, el aviso vuelve para que sepas que el juego te oyó.',
+  },
+  ar: {
+    helpTapAgain: 'إذا لمست مرة أخرى، تظهر التلميحة من جديد لتعرف أن اللعبة سمِعتك.',
+    whatsNewBody: '2.5.307 — إذا لمست مرة أخرى، تظهر التلميحة من جديد لتعرف أن اللعبة سمِعتك.',
+  },
+  'fa-AF': {
+    helpTapAgain: 'اگر دوباره لمس کنی، نکته دوباره دیده می‌شود تا بدانی بازی صدایت را شنید.',
+    whatsNewBody: '2.5.307 — اگر دوباره لمس کنی، نکته دوباره دیده می‌شود تا بدانی بازی صدایت را شنید.',
+  },
+  rw: {
+    helpTapAgain: 'Nukanda nanone, inama igaruka kugira ngo umenye ko umukino wakumvise.',
+    whatsNewBody: '2.5.307 — Nukanda nanone, inama igaruka kugira ngo umenye ko umukino wakumvise.',
+  },
+  ti: {
+    helpTapAgain: 'ደጊምካ እንተ ጠዊቕካ፡ ምኽሪ ደጊሙ ይረአ እሞ ጸወታ ከም ዝሰምዓካ ትፈልጥ።',
+    whatsNewBody: '2.5.307 — ደጊምካ እንተ ጠዊቕካ፡ ምኽሪ ደጊሙ ይረአ እሞ ጸወታ ከም ዝሰምዓካ ትፈልጥ።',
+  },
+}
+for (const [lang, row] of Object.entries(FIT307)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.307', date: '2026-10-21', lines: {
+    en: ['2.5.307 — If you tap again, the hint shows again so you know the game heard you.'],
+    simple: ['2.5.307 — Tap again and the hint shows again. The game heard you.'],
+    uk: ['2.5.307 — Якщо торкнешся ще раз, підказка з’явиться знову, і ти знатимеш, що гра почула тебе.'],
+    ru: ['2.5.307 — Если нажмёшь ещё раз, подсказка появится снова, и ты будешь знать, что игра тебя услышала.'],
+    es: ['2.5.307 — Si tocas otra vez, el aviso vuelve para que sepas que el juego te oyó.'],
+    ar: ['2.5.307 — إذا لمست مرة أخرى، تظهر التلميحة من جديد لتعرف أن اللعبة سمِعتك.'],
+    'fa-AF': ['2.5.307 — اگر دوباره لمس کنی، نکته دوباره دیده می‌شود تا بدانی بازی صدایت را شنید.'],
+    rw: ['2.5.307 — Nukanda nanone, inama igaruka kugira ngo umenye ko umukino wakumvise.'],
+    ti: ['2.5.307 — ደጊምካ እንተ ጠዊቕካ፡ ምኽሪ ደጊሙ ይረአ እሞ ጸወታ ከም ዝሰምዓካ ትፈልጥ።'],
+  }},
+
   { v: '2.5.306', date: '2026-10-21', lines: {
     en: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],
     simple: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],

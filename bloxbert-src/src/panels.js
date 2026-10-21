@@ -356,6 +356,7 @@ export function mountPanels(api) {
         const shop = document.createElement('p'); shop.className = 'gnote'; shop.textContent = api.t('helpWoodshop'); g.append(shop)
         const pvp = document.createElement('p'); pvp.className = 'gnote'; pvp.textContent = api.t('pvpHint'); g.append(pvp)
         const hubLang = document.createElement('p'); hubLang.className = 'gnote'; hubLang.textContent = api.t('helpHubLang'); g.append(hubLang)
+        const again = document.createElement('p'); again.className = 'gnote'; again.textContent = api.t('helpTapAgain'); g.append(again)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
         const lines = api.notes ? api.notes() : []

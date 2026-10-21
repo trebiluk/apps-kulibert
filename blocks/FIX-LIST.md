@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.304 bigger counts and phone slots).
+Updated Wed Oct 21 2026 (Build: 2.5.308 plate, 2.5.307 hint pulse).
+
+- [x] **2.5.307 hint again:** If you tap the same hint again, it pulses so you know the game heard you. It does not stack a second copy. Reduced motion resets the timer with no nudge. Kinyarwanda, Tigrinya, and Dari help lines still need a native check.
 
 - [x] **2.5.306 PvP labels:** English says PvP: ON and PvP: OFF. Kinyarwanda says BIRAKORA and BIRAZIMYE, not Tigrinya and not English ON/OFF. Kinyarwanda still needs a native check.
 
