@@ -723,7 +723,7 @@ export function VoltDuel() {
             <div className="hud-row">
               <div className="pill vex">
                 <strong>VEX</strong>
-                <span className="gem" />
+                <span className="gem" aria-hidden="true">V</span>
                 <b className="score" ref={coinRefs[0]}>0</b>
                 <span className="meta score">/{level.coins.length}</span>
                 <span className="meta" ref={cpRefs[0]}>
@@ -737,7 +737,7 @@ export function VoltDuel() {
               <div className="end">
                 <div className="pill rio">
                   <strong>RIO</strong>
-                  <span className="gem" />
+                  <span className="gem" aria-hidden="true">R</span>
                   <b className="score" ref={coinRefs[1]}>0</b>
                   <span className="meta score">/{level.coins.length}</span>
                   <span className="meta" ref={cpRefs[1]}>

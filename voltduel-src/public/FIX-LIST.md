@@ -29,3 +29,8 @@ Physics and scoring were not changed.
 - [x] **Item 2 Menu and Home.** Already clear on live VD 1.0.6. At 412, Menu is 62×44 and Sign in is 104×44 with a gap between them. At 915×412, RESTART is 80×48 just under the bar, Home is 44px tall, and Sign in does not cover them.
 - [x] **Item 3 Held pad.** A held pad changes its icon to a dot and shows the word On. The border gets thicker. Reduced motion stays still. Not color alone.
 
+## VD 1.0.8
+- [x] **Item 1 Score chips.** VEX chip is a circle with V. RIO chip is a square with R. Same shapes as the track. Not color alone.
+- [ ] **Item 2 Start labels.**
+- [ ] **Item 3 Staff test.**
+

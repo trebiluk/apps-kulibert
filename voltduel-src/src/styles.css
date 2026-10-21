@@ -299,15 +299,25 @@ kbd {
 }
 
 .gem {
-  width: 0.65rem;
-  height: 0.65rem;
-  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: #07090c;
   background: var(--color-amber);
-  display: inline-block;
+  border-radius: 2px;
 }
 
 .pill.vex .gem {
   background: var(--color-cyan);
+  border-radius: 999px;
 }
 
 .pad-btn {
