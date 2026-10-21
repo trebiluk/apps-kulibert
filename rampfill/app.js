@@ -1,6 +1,7 @@
-/* Ramp & Fill RF 1.0.6 — one version label. No trackers. */
+/* Ramp & Fill RF 1.0.7 — staff test wins stay on the TEST board. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.6";
+  var VERSION = "RF 1.0.7";
+  if (window.HubStaffAuth && !window.KulibertStaffAuth) window.KulibertStaffAuth = window.HubStaffAuth;
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -37,7 +38,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.6: The version label is right, Help is in every language, and Pause is easy to tap sideways.",
+      whats: "RF 1.0.7: Staff Test mode works in Ramp & Fill, and test wins go to the TEST board only.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -58,6 +59,9 @@
       teachRate: "Flow rate = how much pours each second",
       bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
       helpPause: "Pause is always easy to tap, even sideways.",
+      testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
+      testLose: "Not filled yet",
+      testLoseNote: "The cup is not full. Try again.",
       read: "Read it to me", language: "Language",
       lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel", lv5: "Pick the path",
       done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.", done5: "Path done.",
@@ -95,7 +99,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.6: Номер версії правильний, Довідка є всіма мовами, а Паузу легко натиснути збоку.",
+      whats: "RF 1.0.7: Режим тестування для персоналу працює в Ramp & Fill, а тестові перемоги йдуть лише на дошку TEST.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -152,7 +156,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.6: Номер версии верный, Справка есть на всех языках, а Паузу легко нажать в горизонтальном режиме.",
+      whats: "RF 1.0.7: Режим теста для сотрудников работает в Ramp & Fill, а тестовые победы попадают только на доску TEST.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -209,7 +213,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.6: La versión es correcta, la Ayuda está en todos los idiomas y Pausa es fácil de tocar de lado.",
+      whats: "RF 1.0.7: El modo Prueba del personal funciona en Ramp & Fill y las victorias de prueba van solo al tablero TEST.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -266,7 +270,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.6: رقم الإصدار صحيح، والمساعدة بكل اللغات، وزر الإيقاف المؤقت سهل اللمس بالوضع الأفقي.",
+      whats: "RF 1.0.7: وضع الاختبار للموظفين يعمل في Ramp & Fill، وانتصارات الاختبار تذهب إلى لوحة TEST فقط.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -323,7 +327,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.6: شماره نسخه درست است، راهنما به همه زبان‌هاست و توقف در حالت افقی آسان زده می‌شود.",
+      whats: "RF 1.0.7: حالت آزمایش کارکنان در Ramp & Fill کار می‌کند و بُردهای آزمایشی فقط به تختهٔ TEST می‌روند.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -380,7 +384,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.6: Nimero ya verisiyo ni yo, Ubufasha buri mu ndimi zose, kandi Hagarara byoroshye gukanda uri ku ruhande.",
+      whats: "RF 1.0.7: Uburyo bw'igerageza bw'abakozi bukora muri Ramp & Fill, kandi intsinzi z'igerageza zijya ku kibaho cya TEST gusa.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -437,7 +441,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.6: ቁጽሪ ስሪት ቅኑዕ እዩ፣ ሓገዝ ብኩሉ ቋንቋታት ኣሎ፣ ጠጠው ምባል ብጐድኒ ቀሊል እዩ።",
+      whats: "RF 1.0.7: ናይ ሰራሕተኛታት መፈተኒ ኣገባብ ኣብ Ramp & Fill ይሰርሕ፣ ናይ ፈተና ዓወታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -467,7 +471,7 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.6: The number is right. Help is in your language. Pause is easy to tap.",
+      whats: "RF 1.0.7: Staff can test. Test wins go to the TEST board.",
       helpLesson: "Read the lesson line when you win.",
       helpFewer: "Try to win with fewer ramps.",
       teachSlope: "Steeper slope means faster flow",
@@ -591,7 +595,7 @@
     var note = document.getElementById("end-note");
     var nextBtn = document.getElementById("next-level-btn");
     var hubBtn = document.getElementById("hub-btn");
-    if (title) title.textContent = t("done" + level);
+    if (title) title.textContent = testLoseOn ? t("testLose") : t("done" + level);
     if (level >= 5) {
       if (note) { note.hidden = false; note.textContent = t("noMore"); }
       if (nextBtn) nextBtn.hidden = true;
@@ -605,6 +609,11 @@
     var key = tag === "gel" ? "teachGel" : tag === "rate" ? "teachRate" : "teachSlope";
     var line = document.getElementById("end-lesson-text");
     var ico = document.getElementById("end-ico");
+    if (testLoseOn) {
+      if (line) line.textContent = t("testLoseNote");
+      if (ico) ico.textContent = "⚑";
+      return;
+    }
     if (line) line.textContent = t(key);
     if (ico) ico.innerHTML = tag === "gel"
       ? '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 C24 8 14 22 14 30 A10 10 0 0 0 34 30 C34 22 24 8 24 8 Z" fill="#E7B56A" stroke="#F3E6C8" stroke-width="3"/></svg>'
@@ -1415,6 +1424,113 @@
     }
     return d + "Z";
   }
+  var testLoseOn = false;
+  function staffTest() {
+    try { return !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); }
+    catch (e) { return false; }
+  }
+  function testAlias() {
+    var name = "";
+    try {
+      if (window.KulibertBoards && window.KulibertBoards.words) {
+        var list = window.KulibertBoards.words();
+        var mine = alias();
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].toLowerCase() === String(mine || "").toLowerCase()) name = list[i];
+        }
+        if (!name && list.length) name = list[0];
+      }
+    } catch (e) {}
+    return name || "Swift Otter 12";
+  }
+  function rememberTest(row) {
+    var rows = [];
+    try { rows = JSON.parse(localStorage.getItem("kw-test-board-v1") || "[]"); } catch (e) {}
+    if (!Array.isArray(rows)) rows = [];
+    rows.push(row);
+    try { localStorage.setItem("kw-test-board-v1", JSON.stringify(rows.slice(-100))); } catch (e2) {}
+  }
+  function postTestScore(value) {
+    var token = "";
+    try { token = sessionStorage.getItem("tech-room-desk-gate") || ""; } catch (e) {}
+    var score = String(value);
+    var name = testAlias();
+    return fetch("/api/rampfill-board", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-tw-desk": token },
+      body: JSON.stringify({ test: true, alias: name, score: score, game: "rampfill", board: "TEST" })
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        if (res.ok && data && data.board === "TEST" && data.written) {
+          rememberTest({ alias: name, board: "TEST", score: score, test: true, ts: Date.now(), game: "rampfill" });
+        }
+        return { status: res.status, data: data };
+      });
+    }).catch(function () { return { status: 0, data: { ok: false, written: false, board: "TEST" } }; });
+  }
+  function postWinScore(value) {
+    if (staffTest()) { postTestScore(value); return; }
+    try {
+      if (window.KulibertBoards) window.KulibertBoards.post({
+        game: "rampfill", board: "pieces", value: value,
+        version: VERSION
+      });
+    } catch (eBoard) {}
+  }
+  function showTestJumps() {
+    var bar = document.getElementById("rf-test-jumps");
+    if (!staffTest() || atHome()) {
+      if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+      return;
+    }
+    if (bar) return;
+    bar = document.createElement("div");
+    bar.id = "rf-test-jumps";
+    bar.className = "test-jumps";
+    var win = document.createElement("button");
+    win.type = "button";
+    win.id = "rf-jump-win";
+    win.setAttribute("aria-label", "Jump to win");
+    win.innerHTML = '<span aria-hidden="true">🏆</span> Jump to win';
+    var lose = document.createElement("button");
+    lose.type = "button";
+    lose.id = "rf-jump-lose";
+    lose.setAttribute("aria-label", "Jump to lose");
+    lose.innerHTML = '<span aria-hidden="true">⚑</span> Jump to lose';
+    var note = document.createElement("p");
+    note.id = "rf-test-help";
+    note.className = "test-help";
+    note.textContent = t("testHelp");
+    win.addEventListener("click", jumpWin);
+    lose.addEventListener("click", jumpLose);
+    bar.appendChild(win);
+    bar.appendChild(lose);
+    bar.appendChild(note);
+    var tools = document.querySelector(".tools");
+    if (tools && tools.parentNode) tools.parentNode.insertBefore(bar, tools);
+  }
+  function jumpWin() {
+    if (!staffTest()) return;
+    testLoseOn = false;
+    showPlay();
+    if (mode === "stack") leaveStack();
+    postTestScore(1);
+    finishNext();
+  }
+  function jumpLose() {
+    if (!staffTest()) return;
+    testLoseOn = true;
+    showPlay();
+    if (mode === "stack") leaveStack();
+    ended = true;
+    pouring = false;
+    document.getElementById("donebar").hidden = true;
+    document.getElementById("endcard").hidden = false;
+    paintEndCopy();
+    syncModal();
+    var again = document.getElementById("again-btn");
+    if (again) again.focus();
+  }
   function checkFilled() {
     var all = cupList.length > 0;
     var gained = false;
@@ -1439,12 +1555,7 @@
       filledOnce = true;
       sawFill = true;
       markProgress();
-      try {
-        if (window.KulibertBoards) window.KulibertBoards.post({
-          game: "rampfill", board: "pieces", value: Math.max(1, strokes.length || 1),
-          version: VERSION
-        });
-      } catch (eBoard) {}
+      postWinScore(Math.max(1, strokes.length || 1));
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
@@ -2506,6 +2617,7 @@
     var dt = Math.min(0.033, lastT ? (now - lastT) / 1000 : 0.016);
     lastT = now;
     stepRef(dt);
+    showTestJumps();
     if (document.body.classList.contains("at-ref")) return;
     fpsFrames++;
     fpsAcc += dt;
@@ -2689,6 +2801,7 @@
   layout();
   ghostUntil = performance.now() + 5000;
   requestAnimationFrame(frame);
+  try { if (window.KulibertTest && window.KulibertTest.paint) window.KulibertTest.paint(); } catch (eTest) {}
   window.__rf = {
     version: VERSION,
     stackGhost: function () {

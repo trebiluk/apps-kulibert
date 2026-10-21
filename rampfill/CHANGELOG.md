@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.7
+
+RF 1.0.7 — staff Test mode can jump to a win or a loss, and test wins go to the TEST board only.
+
 ## RF 1.0.6
 
 RF 1.0.6 — the version label matches on the title, chip, and What's new. Help lines load in every language. Pause and Cup Stack stay easy to tap sideways. No tester board row was removed.

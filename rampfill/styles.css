@@ -501,7 +501,14 @@ canvas {
   padding: 8px 10px;
 }
 .top { margin: 0; padding-left: 1.2rem; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.test-jumps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.test-jumps button {
+  min-width: 44px; min-height: 48px; padding: 0 14px;
+  border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--clay); color: var(--paper);
+  font: 700 1rem/1 var(--font, Outfit, system-ui, sans-serif);
+}
+.test-help { margin: 0; flex: 1 1 12rem; font-size: 0.95rem; }
 html[data-kp-motion="less"] .stamp { transform: none; }
 @media (max-width: 720px) {
   .brand { font-size: 1.05rem; }

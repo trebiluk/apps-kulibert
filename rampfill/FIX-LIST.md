@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 8. Version locked: RF 1.0.7.
+
+- [x] **RF 1.0.7 ITEM 1:** Staff Test mode shows Jump to win and Jump to lose only when the hub switch and staff unlock are on. Those wins post to the TEST board. The score route never writes the real board. Kids, and ?test=1 alone, get no test controls.
+
 Stage 7. Version locked: RF 1.0.6.
 
 - [x] **RF 1.0.6 ITEM 1:** Title, chip, menu plate, data-version, cache-bust and What's new all read RF 1.0.6 from the one VERSION constant.
