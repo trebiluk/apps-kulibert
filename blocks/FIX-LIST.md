@@ -1,4 +1,7 @@
-# Bertopia FIX-LIST (live fix list for the Build chat)
+# Bertopia FIX-LIST
+- [x] **2.5.298 C4 Rustbot + Keeper + Bertodex + badges:** Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+ (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.298', date: '2026-10-21', lines: {
+    en: ['2.5.298 — Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges.'],
+    simple: ['2.5.298 — Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges.'],
+    uk: ['2.5.298 — Rustbots і Keepers для перезавантаження командою, плюс сторінки Bertodex і значки.'],
+    ru: ['2.5.298 — Rustbots и Keepers для перезагрузки командой, плюс страницы Bertodex и значки.'],
+    es: ['2.5.298 — Rustbots y Keepers para reiniciar en equipo, más páginas Bertodex y insignias.'],
+    ar: ['2.5.298 — Rustbots و Keepers لإعادة التشغيل كفريق، بالإضافة إلى صفحات Bertodex والشارات.'],
+    'fa-AF': ['2.5.298 — Rustbots و Keepers برای راه‌اندازی مجدد به عنوان تیم، به علاوه صفحات Bertodex و نشان‌ها.'],
+    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe n'impapuro za Bertodex n'ibimenyetso.'],
+    ti: ['2.5.298 — Rustbotsን Keepers ንቡድ ንምዝላል፣ ኣብ ላዕሊ Bertodex ገጻትን ባጃትን።'],
+  }},
+
   { v: '2.5.328', date: '2026-10-21', lines: {
     en: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
     simple: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
