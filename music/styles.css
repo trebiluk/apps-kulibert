@@ -5317,6 +5317,22 @@ body.mu237 .mu-snack[hidden] { display: none !important; }
   }
 }
 
+/* MU 2.36.12 item 1 — steel ink so the hint, Mic lights label, and rail words clear 4.5:1. */
+html[data-theme] body.mu237.tab-viz #viz-help {
+  color: #111827 !important;
+}
+html[data-theme] body.mu237 #mic-lights,
+html[data-theme] body.mu237 #mic-lights span,
+html[data-theme] body.mu237.tab-viz #mic-lights [data-mu] {
+  color: #111827 !important;
+}
+html[data-theme] body.mu237 .rail-group,
+html[data-theme] body.mu237 .rail-group span,
+html[data-theme] body.mu237 .rail-next {
+  color: #111827 !important;
+}
+
+
 
 
 
