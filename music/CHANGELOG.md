@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.19** · 2026-10-21 · channel **live**
+
+MU 2.36.19 — a Looks drawer names the pictures, colors, wall, and frame, and Surprise me mixes them.
+
+## Earlier
+
 **Chip: MU 2.36.18** · 2026-10-21 · channel **live**
 
 MU 2.36.18 — the staff test script loads only when staff Test is on.

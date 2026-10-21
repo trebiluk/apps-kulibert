@@ -2134,6 +2134,15 @@
       if (raw.wall) state.wall = raw.wall;
       if (raw.frame) state.frame = raw.frame;
       if (state.layers[0] && state.layers[0].look && state.layers[0].look !== "off") state.look = state.layers[0].look;
+      for (let i = 0; i < 3; i++) {
+        const look = $("layer-" + i);
+        const ink = $("ink-" + i);
+        if (look && state.layers[i]) look.value = state.layers[i].look;
+        if (ink && state.layers[i]) ink.value = state.layers[i].color;
+      }
+      if ($("wall")) $("wall").value = state.wall;
+      if ($("frame")) $("frame").value = state.frame;
+      paintLights();
     } catch (err) { /* starter layers stay */ }
   }
   function paintLights() {
@@ -2225,6 +2234,122 @@
     $("wall").addEventListener("change", () => { state.wall = $("wall").value; saveSkin(); paintLights(); });
     $("frame").addEventListener("change", () => { state.frame = $("frame").value; saveSkin(); paintLights(); });
     $("rgb-btn").addEventListener("click", () => { state.rgb = !state.rgb; saveSkin(); paintLights(); });
+  }
+  function setLooksOpen(on) {
+    const drawer = $("looks-drawer");
+    const btn = $("looks-open");
+    if (!drawer || !btn) return;
+    drawer.hidden = !on;
+    btn.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on) {
+      const first = drawer.querySelector("#looks-close");
+      if (first) first.focus();
+    } else btn.focus();
+  }
+  function paintLookDrawer() {
+    const looks = (window.KulibertStage && window.KulibertStage.LOOKS) || [];
+    const grids = [
+      ["look-grid", looks.map((item) => [item.id, mu("look_" + item.id) || item.label]), "look"],
+      ["color-grid", INKS.map((pair) => [pair[0], mu("ink_" + pair[0]) || pair[1]]), "color"],
+      ["wall-grid", [["night", "Night"], ["dusk", "Dusk"], ["sunset", "Sunset"], ["sea", "Sea"], ["aurora", "Aurora"], ["candy", "Candy"]].map((pair) => [pair[0], mu("wall_" + pair[0]) || pair[1]]), "wall"],
+      ["frame-grid", [["none", "None"], ["line", "Line"], ["glow", "Glow"], ["double", "Double"], ["rgb", "RGB"]].map((pair) => [pair[0], mu("frame_" + pair[0]) || pair[1]]), "frame"],
+    ];
+    const current = {
+      look: (state.layers[0] && state.layers[0].look) || state.look,
+      color: (state.layers[0] && state.layers[0].color) || "cyan",
+      wall: state.wall || "night",
+      frame: state.frame || "none",
+    };
+    grids.forEach(([id, rows, kind]) => {
+      const box = $(id);
+      if (!box) return;
+      box.innerHTML = "";
+      rows.forEach(([value, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn" + (current[kind] === value ? " on" : "");
+        b.textContent = label;
+        b.setAttribute("aria-pressed", current[kind] === value ? "true" : "false");
+        b.setAttribute("aria-label", label);
+        b.addEventListener("click", () => {
+          if (kind === "look") {
+            state.layers[0].look = value;
+            state.look = value;
+            const sel = $("layer-0");
+            if (sel) sel.value = value;
+          } else if (kind === "color") {
+            state.layers[0].color = value;
+            const sel = $("ink-0");
+            if (sel) sel.value = value;
+          } else if (kind === "wall") {
+            state.wall = value;
+            if ($("wall")) $("wall").value = value;
+          } else {
+            state.frame = value;
+            if ($("frame")) $("frame").value = value;
+          }
+          saveSkin();
+          snapshotViz();
+          paintLights();
+          paintLookDrawer();
+          keep();
+        });
+        box.appendChild(b);
+      });
+    });
+  }
+  function surpriseMix() {
+    const looks = (window.KulibertStage && window.KulibertStage.LOOKS) || [];
+    const roll = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+    if (looks.length && state.layers[0]) {
+      const look = looks[roll(0, looks.length - 1)].id;
+      const color = INKS[roll(0, INKS.length - 1)][0];
+      state.layers[0].look = look;
+      state.layers[0].color = color;
+      state.look = look;
+      if ($("layer-0")) $("layer-0").value = look;
+      if ($("ink-0")) $("ink-0").value = color;
+    }
+    state.gear.zoom = roll(70, 160);
+    state.gear.spin = roll(0, 100);
+    state.gear.glow = roll(60, 100);
+    state.gear.thick = roll(2, 12);
+    state.gear.count = roll(8, 32);
+    state.gear.trail = roll(0, 55);
+    state.gear.bounce = roll(20, 100);
+    state.gear.wild = roll(40, 100);
+    const walls = ["dusk", "sunset", "sea", "aurora", "candy"];
+    state.wall = walls[roll(0, walls.length - 1)];
+    ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
+      const slider = $("g-" + key);
+      const read = $("n-" + key);
+      if (slider) slider.value = String(state.gear[key]);
+      if (read) read.textContent = String(state.gear[key]);
+    });
+    if ($("wall")) $("wall").value = state.wall;
+    saveSkin();
+    snapshotViz();
+    paintLights();
+    paintLookDrawer();
+    keep();
+  }
+  function wireLooksDrawer() {
+    const open = $("looks-open");
+    const close = $("looks-close");
+    const surprise = $("surprise-btn");
+    if (open && !open.dataset.wired) {
+      open.dataset.wired = "1";
+      open.addEventListener("click", () => setLooksOpen($("looks-drawer").hidden));
+    }
+    if (close && !close.dataset.wired) {
+      close.dataset.wired = "1";
+      close.addEventListener("click", () => setLooksOpen(false));
+    }
+    if (surprise && !surprise.dataset.wired) {
+      surprise.dataset.wired = "1";
+      surprise.addEventListener("click", surpriseMix);
+    }
+    paintLookDrawer();
   }
 
   function sayHow(mode) {
@@ -3191,6 +3316,7 @@
   $("menu-close").addEventListener("click", () => { closeMenu(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      if ($("looks-drawer") && !$("looks-drawer").hidden) { setLooksOpen(false); return; }
       closeMenu();
       closeMore();
       if (document.body.classList.contains("show")) closeShow();
@@ -3654,6 +3780,7 @@
   });
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      if ($("looks-drawer") && !$("looks-drawer").hidden) { setLooksOpen(false); return; }
       closeMenu();
       closeMore();
       return;
@@ -3683,6 +3810,7 @@
   fillLights();
   if (state.song.viz) applyViz(state.song.viz);
   else loadSkin();
+  wireLooksDrawer();
   paintAlong();
   paintMeters();
   paintInks();
@@ -5144,33 +5272,7 @@
       });
     });
     const crazy = $("crazy-btn");
-    if (crazy) {
-      crazy.addEventListener("click", () => {
-        const roll = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
-        state.gear.zoom = roll(70, 160);
-        state.gear.spin = roll(0, 100);
-        state.gear.glow = roll(60, 100);
-        state.gear.thick = roll(2, 12);
-        state.gear.count = roll(8, 32);
-        state.gear.trail = roll(0, 55);
-        state.gear.bounce = roll(20, 100);
-        state.gear.wild = roll(40, 100);
-        state.rgb = true;
-        const walls = ["dusk", "sunset", "sea", "aurora", "candy"];
-        state.wall = walls[roll(0, walls.length - 1)];
-        ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
-          const slider = $("g-" + key);
-          const read = $("n-" + key);
-          if (slider) slider.value = String(state.gear[key]);
-          if (read) read.textContent = String(state.gear[key]);
-        });
-        if ($("wall")) $("wall").value = state.wall;
-        saveSkin();
-        paintLights();
-        keep();
-        $("lesson").textContent = "Surprise me mixed the lights. Press it again for another mix.";
-      });
-    }
+    if (crazy) crazy.addEventListener("click", surpriseMix);
   }
 
   const TASKS = {
@@ -5844,6 +5946,7 @@
     if (odeSlot) odeSlot.replaceChildren();
     stripDevNotes();
     if ($("looks")) paintLooks();
+    if (typeof paintLookDrawer === "function") paintLookDrawer();
     if ($("fx")) paintFx();
     if ($("waves")) paintWaves();
     const blend = $("blend-read");
