@@ -1,0 +1,742 @@
+[
+  {
+    "key": "badgeGot",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "bagHint",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "berryEat",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "dexPage",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "drySoil",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "eatTip",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysHint",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysLine",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "menuHint",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "option",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "skillImprove",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillNeed",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillPlan",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillTest",
+    "lang": "ar",
+    "reason": "wrong script"
+  },
+  {
+    "key": "slam",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "ar",
+    "reason": "missing"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "cupcake",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "dexPage",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "makerNormal",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "no",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "option",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "shadeNatural",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "slam",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "stock",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "toneNatural",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "zap",
+    "lang": "es",
+    "reason": "missing"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "bagHint",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "berryEat",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "dexPage",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "drySoil",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "eatTip",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysHint",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysLine",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "menuHint",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "option",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "skillImprove",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillNeed",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillPlan",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillTest",
+    "lang": "fa-AF",
+    "reason": "wrong script"
+  },
+  {
+    "key": "slam",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "fa-AF",
+    "reason": "missing"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "bagHint",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "berryEat",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "dexPage",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "drySoil",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "eatTip",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysHint",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysLine",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "menuHint",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "option",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "skillImprove",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillNeed",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillPlan",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillTest",
+    "lang": "ru",
+    "reason": "wrong script"
+  },
+  {
+    "key": "slam",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "ru",
+    "reason": "missing"
+  },
+  {
+    "key": "backMenu",
+    "lang": "rw",
+    "reason": "copies en"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "dexPage",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "lupine",
+    "lang": "rw",
+    "reason": "copies en"
+  },
+  {
+    "key": "option",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "slam",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "rw",
+    "reason": "missing"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "bagHint",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "berryEat",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "dexPage",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "drySoil",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "eatTip",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysHint",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysLine",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "menuHint",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "option",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "skillImprove",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillNeed",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillPlan",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillTest",
+    "lang": "ti",
+    "reason": "wrong script"
+  },
+  {
+    "key": "slam",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "ti",
+    "reason": "missing"
+  },
+  {
+    "key": "askStaff",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "badgeGot",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "bagHint",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "berryEat",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "dexPage",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "drySoil",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "eatTip",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysHint",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "keysLine",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "menuHint",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "option",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "phase1",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "phase2",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "phase3",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "rebooted",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "rustbotNear",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "scrapperTook",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "select",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "skillImprove",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillNeed",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillPlan",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "skillTest",
+    "lang": "uk",
+    "reason": "wrong script"
+  },
+  {
+    "key": "slam",
+    "lang": "uk",
+    "reason": "missing"
+  },
+  {
+    "key": "zap",
+    "lang": "uk",
+    "reason": "missing"
+  }
+]
