@@ -90,7 +90,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.11: Pouring splashes, the fill percent counts up, and mute turns the tone off.",
+      whats: "RF 1.0.11: Pouring feels splashier, and the level list shows your stars and best ramps.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -113,6 +113,8 @@
       helpPause: "Pause is always easy to tap, even sideways.",
       fillWord: "Fill",
       helpSplash: "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
+      lockedWhy: "Locked. Finish the level before this one.",
+      helpStars: "The level list shows your stars and your fewest ramps.",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -157,7 +159,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.11: Наливання бризкає, відсоток наповнення росте, а без звуку тон вимкнений.",
+      whats: "RF 1.0.11: Наливання стало жвавішим, а список рівнів показує твої зірки й найменше рамп.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -176,6 +178,8 @@
       helpPause: "Паузу завжди легко натиснути, навіть збоку.",
       fillWord: "Наповнення",
       helpSplash: "Наливання бризкає. Відсоток наповнення росте. Без звуку тон вимкнений.",
+      lockedWhy: "Закрито. Спочатку пройди попередній рівень.",
+      helpStars: "Список рівнів показує твої зірки й найменше рамп.",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -222,7 +226,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.11: Налив брызгает, процент наполнения растёт, а без звука тон выключен.",
+      whats: "RF 1.0.11: Налив стал живее, а список уровней показывает твои звёзды и лучшее число рамп.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -241,6 +245,8 @@
       helpPause: "Паузу всегда легко нажать, даже в горизонтальном режиме.",
       fillWord: "Наполнение",
       helpSplash: "Налив брызгает. Процент наполнения растёт. Без звука тон выключен.",
+      lockedWhy: "Закрыто. Сначала пройди предыдущий уровень.",
+      helpStars: "Список уровней показывает твои звёзды и лучшее число рамп.",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -287,7 +293,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.11: Verter salpica, el porcentaje de llenado sube, y silencio apaga el tono.",
+      whats: "RF 1.0.11: Verter se siente con más salpicadura, y la lista de niveles muestra tus estrellas y tus mejores rampas.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -306,6 +312,8 @@
       helpPause: "Pausa siempre es fácil de tocar, incluso de lado.",
       fillWord: "Llenado",
       helpSplash: "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
+      lockedWhy: "Cerrado. Termina el nivel anterior.",
+      helpStars: "La lista de niveles muestra tus estrellas y tus rampas mínimas.",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -352,7 +360,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.11: السكب يرش، ونسبة الامتلاء ترتفع، وكتم الصوت يوقف النغمة.",
+      whats: "RF 1.0.11: السكب أصبح أكثر رذاذًا، وقائمة المستويات تعرض نجومك وأفضل منحدراتك.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -371,6 +379,8 @@
       helpPause: "الإيقاف المؤقت سهل اللمس دائمًا، حتى بالوضع الأفقي.",
       fillWord: "الامتلاء",
       helpSplash: "السكب يرش. نسبة الامتلاء ترتفع. كتم الصوت يوقف النغمة.",
+      lockedWhy: "مقفل. أنهِ المستوى الذي قبله.",
+      helpStars: "قائمة المستويات تعرض نجومك وأفضل منحدراتك.",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -417,7 +427,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.11: ریختن می‌پاشد، درصد پُرشدن بالا می‌رود، و بی‌صدا نغمه را خاموش می‌کند.",
+      whats: "RF 1.0.11: ریختن پاشش بیشتری دارد و فهرست سطح‌ها ستاره‌ها و بهترین سطح‌های شیب‌دارت را نشان می‌دهد.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -436,6 +446,8 @@
       helpPause: "توقف همیشه آسان زده می‌شود، حتی در حالت افقی.",
       fillWord: "پُرشدن",
       helpSplash: "ریختن می‌پاشد. درصد پُرشدن بالا می‌رود. بی‌صدا نغمه را خاموش می‌کند.",
+      lockedWhy: "بسته است. اول سطح قبلی را تمام کن.",
+      helpStars: "فهرست سطح‌ها ستاره‌ها و کمترین سطح شیب‌دار را نشان می‌دهد.",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -482,7 +494,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.11: Gusuka biratemba, ijanisha ryo kuzuza riratera, kandi guhagarika ijwi bihagarika umuziki.",
+      whats: "RF 1.0.11: Gusuka birahinduka byiza, kandi urutonde rw'inzego rwerekana inyenyeri zawe n'imihanda mike.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -501,6 +513,8 @@
       helpPause: "Hagarara byoroshye gukanda buri gihe, ndetse uri ku ruhande.",
       fillWord: "Kuzuza",
       helpSplash: "Gusuka biratemba. Ijanisha ryo kuzuza riratera. Guhagarika ijwi bihagarika umuziki.",
+      lockedWhy: "Bifunze. Banza urangize urwego rwabanze.",
+      helpStars: "Urutonde rw'inzego rwerekana inyenyeri zawe n'imihanda mike.",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -547,7 +561,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.11: ምቕዳሕ ይረጭ፣ ሚእታዊ ምምላእ ይወስኽ፣ ድምጺ ምዕጻው ነቲ ድምጺ የጥፍኦ።",
+      whats: "RF 1.0.11: ምቕዳሕ ዝያዳ ምርጫጽ ኮይኑ፣ ዝርዝር ደረጃታት ኮኾብትኻን ዝበለጸ መንሸራተቲን የርኢ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -566,6 +580,8 @@
       helpPause: "ጠጠው ምባል ኩሉ ግዜ ቀሊል እዩ፣ ብጐድኒ እውን።",
       fillWord: "ምምላእ",
       helpSplash: "ምቕዳሕ ይረጭ። ሚእታዊ ምምላእ ይወስኽ። ድምጺ ምዕጻው ነቲ ድምጺ የጥፍኦ።",
+      lockedWhy: "ተዓጽዩ። ነቲ ቅድሚኡ ደረጃ ወድእ።",
+      helpStars: "ዝርዝር ደረጃታት ኮኾብትኻን ዝበለጸ መንሸራተቲን የርኢ።",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -581,7 +597,9 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.11: Splashier pours. The fill percent counts up.",
+      whats: "RF 1.0.11: Splashier pours. See your stars.",
+      lockedWhy: "Locked. Finish the level before this one.",
+      helpStars: "The level list shows your stars and your fewest ramps.",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -1007,6 +1025,10 @@
     saveProgress();
     paintLevels();
   }
+  function bestFor(n) {
+    var row = rampMap()[rampWho()];
+    return Array.isArray(row) ? (row[n - 1] | 0) : 0;
+  }
   function paintLevels() {
     var list = document.getElementById("level-list");
     if (!list) return;
@@ -1015,10 +1037,13 @@
       var li = document.createElement("li");
       var stars = levelStars[i - 1] || 0;
       var open = i <= unlocked;
+      var starLine = "★ " + stars + " " + t(stars === 1 ? "starWord" : "starsWord");
+      var best = bestFor(i);
+      var bestLine = t("bestWord") + " " + (best > 0 ? String(best) : "—") + " " + t("rampsWord");
       if (open) {
         var btn = document.createElement("button");
         btn.type = "button";
-        btn.textContent = t("lv" + i) + " — " + (stars ? starsWord(stars) : t("openWord"));
+        btn.textContent = t("lv" + i) + " — " + starLine + " — " + bestLine;
         btn.addEventListener("click", (function (n) {
           return function () {
             toggleMenu(false);
@@ -1029,7 +1054,7 @@
           };
         })(i));
         li.appendChild(btn);
-      } else li.textContent = t("lv" + i) + " — " + t("locked");
+      } else li.textContent = t("lv" + i) + " — " + t("lockedWhy");
       list.appendChild(li);
     }
   }

@@ -339,5 +339,6 @@
   "month11": "noviembre",
   "month12": "diciembre",
   "lbAlias": "Alias",
-  "rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono."
+  "rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
+  "rfHelpStars": "La lista de niveles muestra tus estrellas y tus rampas mínimas."
 }

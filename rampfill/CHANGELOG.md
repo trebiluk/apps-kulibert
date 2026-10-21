@@ -2,7 +2,7 @@
 
 ## RF 1.0.11
 
-RF 1.0.11 — pouring splashes and the fill percent counts up.
+RF 1.0.11 — pouring feels splashier, and the level list shows stars and best ramps.
 
 ## RF 1.0.10
 
