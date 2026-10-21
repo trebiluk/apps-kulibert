@@ -2291,7 +2291,7 @@
     arm();
     $("band-finger").textContent = note.name + ". " + note.how;
     if (note.drum === "rest") {
-      $("lesson").textContent = "Rest. Count it. Hands still.";
+      $("lesson").textContent = mu("bandRest");
       return;
     }
     if (!state.muted) {
@@ -2316,7 +2316,7 @@
     }
     state.step = at;
     paintCount();
-    $("lesson").textContent = note.name + " on beat " + (at + 1) + ". Saved.";
+    $("lesson").textContent = mu("bandNoteBeat", { name: note.name, beat: at + 1 });
   }
   let warmTimer = [];
   function paintBand() {
@@ -2495,7 +2495,7 @@
     warmTimer = [];
     const inst = bandNow();
     const beat = Math.round(60000 / Math.max(70, state.song.bpm || 96));
-    $("lesson").textContent = "Warm-up. Five sounds. Count 1 2 3 4 5.";
+    $("lesson").textContent = mu("bandWarm");
     inst.notes.forEach((note, i) => {
       warmTimer.push(window.setTimeout(() => playBand(note, i), i * beat));
     });
@@ -3060,7 +3060,7 @@
       state.armBeats = 0;
       state.turn = "";
       paintRec();
-      $("lesson").textContent = "That count is off. Taps still play. They are saved when Play along is off.";
+      $("lesson").textContent = mu("recOff");
       return;
     }
     state.turn = "";
@@ -3071,7 +3071,7 @@
     state.click = true;
     paintRec();
     if (!state.playing) play();
-    $("lesson").textContent = "Count " + per + ". Then tap a note. The click is the metronome. It saves.";
+    $("lesson").textContent = mu("countThen", { n: per });
   });
   let clearArm = 0;
   let drumUndo = null;
@@ -3158,7 +3158,9 @@
     if (!avatar) return;
     avatar.className = "avatar " + (gesture || "idle");
     const read = $("dyn-read");
-    if (read) read.textContent = (state.dyn || "mf") + " " + (DYN_WORD[state.dyn] || "");
+    const dynId = state.dyn || "mf";
+    const dynWord = mu("dyn_" + dynId) || DYN_WORD[dynId] || "";
+    if (read) read.textContent = dynId + " " + dynWord;
     document.querySelectorAll("#band-cast .member").forEach((fig) => {
       fig.classList.toggle("loop-on", fig.dataset.loop === state.loop);
     });
@@ -3214,23 +3216,22 @@
     paintOrch();
     askConduct();
     $("conduct-btn").textContent = mu("stopConduct") || "Stop conducting";
-    $("lesson").textContent = "Give the gesture. The band plays your song one beat at a time.";
+    $("lesson").textContent = mu("bandGive");
   }
   const orchHost = $("orch");
   if (orchHost) {
-    [["strings", "Strings"], ["brass", "Brass"], ["winds", "Winds"], ["beep", "Beep"]].forEach(([id, label]) => {
+    [["strings", "orch_strings"], ["brass", "orch_brass"], ["winds", "orch_winds"], ["beep", "orch_beep"]].forEach(([id, key]) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn";
       b.dataset.orch = id;
-      b.textContent = label;
+      b.textContent = mu(key) || id;
       b.addEventListener("click", () => {
         state.orch = id;
         paintOrch();
         keep();
-        $("lesson").textContent = label === "Beep"
-          ? "The plain sound is back."
-          : label + " play the notes. Louder moves are brighter.";
+        const label = mu(key) || id;
+        $("lesson").textContent = id === "beep" ? mu("orchPlain") : mu("orchPlay", { label: label });
       });
       orchHost.appendChild(b);
     });
@@ -3242,11 +3243,12 @@
       b.type = "button";
       b.className = "btn";
       b.dataset.dyn = id;
-      b.textContent = id + " " + DYN_WORD[id];
+      const label = mu("dyn_" + id) || DYN_WORD[id] || id;
+      b.textContent = id + " " + label;
       b.addEventListener("click", () => {
         state.dyn = id;
         paintOrch();
-        $("lesson").textContent = id + " means " + DYN_WORD[id] + ".";
+        $("lesson").textContent = mu("dynMeans", { id: id, label: label });
       });
       dynHost.appendChild(b);
     });
