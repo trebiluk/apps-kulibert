@@ -1025,7 +1025,7 @@ html[dir=rtl] #sheet .ks-link{transform:scaleX(-1)}
 #wand-pill{z-index:32;transform:translateX(-50%)}
 #use-pill{position:fixed;left:50%;bottom:140px;transform:translateX(-50%);z-index:33;display:flex;align-items:center;gap:8px;min-width:48px;min-height:48px;padding:4px 16px 4px 6px;border:3px solid #3ec6c6;border-radius:999px;background:#0E1A22;box-shadow:inset 0 0 0 3px #0B2A30;color:#E6EEF2;font-weight:800;font-size:15px;line-height:1;white-space:nowrap;pointer-events:auto;cursor:pointer}
 #use-pill[hidden]{display:none!important}
-#use-pill:not([hidden]) ~ .keys{display:none}
+html body:not(.menu-open) #use-pill:not([hidden]) ~ .keys{display:none}
 #use-pill .gic{width:32px;height:32px;flex:0 0 32px;display:flex}
 #use-pill canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
 #use-pill .glbl{font-size:15px;font-weight:800}
