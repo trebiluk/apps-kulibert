@@ -485,7 +485,9 @@
     tapAnd: " and ",
     tapNow: "Bar {bar}, beat {beat}. Now: {heard}.",
     tapBarOf: "Bar {bar} of {n}.",
-    tapRestTeach: "Rest. Count it. Nothing plays."
+    tapRestTeach: "Rest. Count it. Nothing plays.",
+    helpTap: "🥁 The Tap tab teaches you in your language.",
+    news23625: "MU 2.36.25 — The Tap tab teaches you in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -675,7 +677,9 @@
     tapNow: "Bar {bar}, beat {beat}. Now: {heard}.",
     tapBarOf: "Bar {bar} of {n}.",
     tapRestTeach: "Rest. Count it. Nothing plays.",
-    listenOnce: "Listen once. Pads flash. Then it is your turn."
+    listenOnce: "Listen once. Pads flash. Then it is your turn.",
+    helpTap: "🥁 Tap teaches you in your language.",
+    news23625: "MU 2.36.25 — The Tap tab teaches you in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1155,7 +1159,9 @@
       "tapAnd": " і ",
       "tapNow": "Такт {bar}, біт {beat}. Зараз: {heard}.",
       "tapBarOf": "Такт {bar} з {n}.",
-      "tapRestTeach": "Пауза. Порахуй її. Нічого не грає."
+      "tapRestTeach": "Пауза. Порахуй її. Нічого не грає.",
+      "helpTap": "🥁 Вкладка Тап вчить тебе твоєю мовою.",
+      "news23625": "MU 2.36.25 — Вкладка Тап вчить тебе твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1632,7 +1638,9 @@
       "tapAnd": " и ",
       "tapNow": "Такт {bar}, доля {beat}. Сейчас: {heard}.",
       "tapBarOf": "Такт {bar} из {n}.",
-      "tapRestTeach": "Пауза. Посчитай её. Ничего не звучит."
+      "tapRestTeach": "Пауза. Посчитай её. Ничего не звучит.",
+      "helpTap": "🥁 Вкладка Тап учит тебя на твоём языке.",
+      "news23625": "MU 2.36.25 — Вкладка Тап учит тебя на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2110,7 +2118,9 @@
       "tapAnd": " y ",
       "tapNow": "Compás {bar}, tiempo {beat}. Ahora: {heard}.",
       "tapBarOf": "Compás {bar} de {n}.",
-      "tapRestTeach": "Silencio. Cuéntalo. No suena nada."
+      "tapRestTeach": "Silencio. Cuéntalo. No suena nada.",
+      "helpTap": "🥁 La pestaña Tocar te enseña en tu idioma.",
+      "news23625": "MU 2.36.25 — La pestaña Tocar te enseña en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2588,7 +2598,9 @@
       "tapAnd": " و ",
       "tapNow": "المازورة {bar}، النبضة {beat}. الآن: {heard}.",
       "tapBarOf": "المازورة {bar} من {n}.",
-      "tapRestTeach": "سكتة. عُدّها. لا شيء يعزف."
+      "tapRestTeach": "سكتة. عُدّها. لا شيء يعزف.",
+      "helpTap": "🥁 لسان النقر يعلّمك بلغتك.",
+      "news23625": "MU 2.36.25 — لسان النقر يعلّمك بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3066,7 +3078,9 @@
       "tapAnd": " و ",
       "tapNow": "میزان {bar}، ضرب {beat}. حالا: {heard}.",
       "tapBarOf": "میزان {bar} از {n}.",
-      "tapRestTeach": "سکوت. بشمارش. چیزی نواخته نمی‌شود."
+      "tapRestTeach": "سکوت. بشمارش. چیزی نواخته نمی‌شود.",
+      "helpTap": "🥁 زبانه ضربه به زبان خودت یادت می‌دهد.",
+      "news23625": "MU 2.36.25 — زبانه ضربه به زبان خودت یادت می‌دهد."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3544,7 +3558,9 @@
       "tapAnd": " na ",
       "tapNow": "Inzira {bar}, umurongo {beat}. Ubu: {heard}.",
       "tapBarOf": "Inzira {bar} muri {n}.",
-      "tapRestTeach": "Ikiruhuko. Kibare. Nta kintu kiraririmba."
+      "tapRestTeach": "Ikiruhuko. Kibare. Nta kintu kiraririmba.",
+      "helpTap": "🥁 Igitabo cya Kanda kiguhugura mu rurimi rwawe.",
+      "news23625": "MU 2.36.25 — Igitabo cya Kanda kiguhugura mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4022,7 +4038,9 @@
       "tapAnd": " ከምኡውን ",
       "tapNow": "መስመር {bar}፡ ምት {beat}። ሕጂ፡ {heard}።",
       "tapBarOf": "መስመር {bar} ካብ {n}።",
-      "tapRestTeach": "ዕረፍቲ። ቑጸሮ። ዝዛወር የለን።"
+      "tapRestTeach": "ዕረፍቲ። ቑጸሮ። ዝዛወር የለን።",
+      "helpTap": "🥁 ንኻእ ብቋንቋኻ የስልጠነካ።",
+      "news23625": "MU 2.36.25 — ንኻእ ብቋንቋኻ የስልጠነካ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

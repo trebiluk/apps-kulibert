@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.25** · 2026-10-21 · channel **live**
+
+MU 2.36.25 — The Tap tab teaches you in your language.
+
+## Earlier
+
 **Chip: MU 2.36.24** · 2026-10-21 · channel **live**
 
 MU 2.36.24 — Tidier Perform: no behind-the-scenes notes for players.
