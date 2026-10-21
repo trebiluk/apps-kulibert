@@ -40,7 +40,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-es-firstload: The Fine Print cards and the staff page now speak your language from the first visit, and a staff test tool no longer loads for kids.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: About This Hub cards and the staff tab title now speak your language on the first visit, and the staff page no longer loads a test tool for everyone.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
@@ -87,6 +87,8 @@
   "staffStep2": "Cloud desk key. Same 12-character key. SHA-256 in the browser. First save claims the door.",
   "staffStep3": "This tab only. Close the tab, it locks. Nothing stored on student machines.",
   "staffTabTitle": "Room desk · The Tech Room",
+  "fineKindGrown": "Only share things that are kind and made by you or the class.",
+  "fineQuestionsGrown": "Questions? Talk to Mr. Kulibert or a grown-up you trust.",
   "staffLockHelp": "Staff page. Unlock with the desk key.",
   "testModeHelp": "Test mode is for staff. Kids never see it.",
   "lbTitle": "Leaderboards",
@@ -346,7 +348,10 @@
     for (var i = 0; i < nodes.length; i++) {
       var key = nodes[i].getAttribute("data-i18n");
       var v = t(key);
-      if (v && v !== key) nodes[i].textContent = v;
+      if (v && v !== key) {
+        if (nodes[i].tagName === "TITLE") document.title = v;
+        else nodes[i].textContent = v;
+      }
     }
     var labels = document.querySelectorAll("[data-i18n-label]");
     for (var j = 0; j < labels.length; j++) {
@@ -393,7 +398,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=VD-1.0.11", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-21-fineprint-staff-title-kwtest", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }
@@ -407,7 +412,7 @@
     function one() { done += 1; if (done >= jobs.length && cb) cb(); }
     jobs.forEach(function (n) { load(n, one); });
   }
-  function boot() { ready(current(), paint); }
+  function boot() { ready(current(), function () { paint(); try { if (document.querySelector("[data-i18n=staffTabTitle]") || /staff/.test(location.pathname)) document.title = t("staffTabTitle"); } catch (e) {} }); }
   root.addEventListener("kulibert-lang", function (ev) {
     var lang = ev && ev.detail && ev.detail.lang;
     ready(lang || current(), paint);

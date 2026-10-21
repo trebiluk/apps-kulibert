@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-es-firstload: Amakarita y'Inyandiko nto n'urupapuro rw'abakozi ubu biri mu rurimi rwawe kuva ugisura bwa mbere, kandi igikoresho cy'igerageza ntikigifungukira abana.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: Amakarita ya «Ibyerekeye iyi Hub» n'umutwe w'agasanduku k'abakozi bivuga ururimi rwawe kuva ku nshuro ya mbere, kandi urupapuro rw'abakozi ntirugifungura igikoresho cy'igerageza kuri bose.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -322,5 +322,7 @@
   "staffStep2": "Urufunguzo rwa Cloud. Urufunguzo rumwe rwa 12. SHA-256 muri mushakisha. Kubika bwa mbere bifata urugi.",
   "staffStep3": "Iki kiganiro gusa. Funga ikiganiro, kirafunga. Nta kintu kibikwa ku mashini z'abanyeshuri.",
   "staffTabTitle": "Ibiro by'icyumba · The Tech Room",
-  "backToHub": "Gusubira kuri Hub"
+  "backToHub": "Gusubira kuri Hub",
+  "fineKindGrown": "Sangira gusa ibintu byiza byakozwe nawe cyangwa n'ishuri.",
+  "fineQuestionsGrown": "Ibibazo? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye."
 }

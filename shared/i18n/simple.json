@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-es-firstload: Fine Print and staff page in your language. Test tool hidden.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: About cards in your language. Staff title too. No test tool.",
   "lbAliasHelp": "Pick a name from the list. Typed names are not saved.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -183,5 +183,7 @@
   "staffStep2": "Cloud desk key. Same 12-character key. First save claims the door.",
   "staffStep3": "This tab only. Close the tab, it locks.",
   "staffTabTitle": "Room desk · The Tech Room",
-  "backToHub": "Back to Hub"
+  "backToHub": "Back to Hub",
+  "fineKindGrown": "Only share kind things you or the class made.",
+  "fineQuestionsGrown": "Questions? Talk to Mr. Kulibert or a grown-up you trust."
 }

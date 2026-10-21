@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-es-firstload: The Fine Print cards and the staff page now speak your language from the first visit, and a staff test tool no longer loads for kids.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: About This Hub cards and the staff tab title now speak your language on the first visit, and the staff page no longer loads a test tool for everyone.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
@@ -322,5 +322,7 @@
   "staffStep2": "Cloud desk key. Same 12-character key. SHA-256 in the browser. First save claims the door.",
   "staffStep3": "This tab only. Close the tab, it locks. Nothing stored on student machines.",
   "staffTabTitle": "Room desk · The Tech Room",
-  "backToHub": "Back to the Hub"
+  "backToHub": "Back to the Hub",
+  "fineKindGrown": "Only share things that are kind and made by you or the class.",
+  "fineQuestionsGrown": "Questions? Talk to Mr. Kulibert or a grown-up you trust."
 }
