@@ -125,19 +125,39 @@ function bonk() {
   lastBonk = performance.now()
   return suitTier()
 }
+
+function playerPos() {
+  try { return noa.entities.getPosition(noa.playerEntity) } catch (e) { return null }
+}
 function combatTarget() {
-  const aimed = noa.targetedBlock
-  if (!aimed) return false
-  const id = aimed.blockID
-  return id === 9000 || id === 9001
+  const pos = playerPos()
+  if (!pos) return null
+  if (inSafeZone(pos[0], pos[2])) return null
+  if (!mobs || !mobs.list) return null
+  const list = mobs.list()
+  if (!list || !list.length) return null
+  let best = null, bestD = 9
+  const cam = noa.camera
+  const heading = cam ? cam.heading : 0
+  const fx = -Math.sin(heading), fz = -Math.cos(heading)
+  for (const m of list) {
+    const dx = m.x - pos[0], dz = m.z - pos[2]
+    const d = Math.sqrt(dx * dx + dz * dz)
+    if (d > 3 || d < 0.1) continue
+    const dot = (dx * fx + dz * fz) / d
+    if (dot > 0.5 && d < bestD) { best = m; bestD = d }
+  }
+  return best
 }
 function doBonk() {
-  const pos = noa.playerEntity && noa.playerEntity.position
+  const pos = playerPos()
   if (!pos) return
   if (inSafeZone(pos[0], pos[2])) {
     showSafeChip()
     return
   }
+  const mob = combatTarget()
+  if (!mob) return
   const dmg = bonk()
   if (dmg > 0) showFloat('-' + dmg)
 }
@@ -180,7 +200,7 @@ function ensureSafeChip() {
 }
 function paintSafeChip() {
   const chip = ensureSafeChip()
-  const pos = noa.playerEntity && noa.playerEntity.position
+  const pos = playerPos()
   if (!pos) return
   const now = inSafeZone(pos[0], pos[2])
   if (now && chip.hidden) {
@@ -191,7 +211,7 @@ function paintSafeChip() {
   }
 }
 function checkSafeEntry() {
-  const pos = noa.playerEntity && noa.playerEntity.position
+  const pos = playerPos()
   if (!pos) return
   const now = inSafeZone(pos[0], pos[2])
   if (now && !lastSafe) showSafeChip()
