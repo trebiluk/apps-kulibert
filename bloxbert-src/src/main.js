@@ -143,6 +143,16 @@ function bonked() {
   if (btn) { btn.focus(); btn.addEventListener('click', () => card.remove()) }
   setTimeout(() => { const c = document.getElementById('bonked-card'); if (c) c.remove() }, 5000)
 }
+function guardTest() {
+  const staff = window.kwTest && window.kwTest.on && window.kwTest.on()
+  if (!staff) {
+    document.querySelectorAll('script[src*="kw-test"]').forEach((s) => s.remove())
+    document.querySelectorAll('[id*="kw-test"]').forEach((n) => n.remove())
+    try { delete window.KulibertTest } catch (e) {}
+    try { delete window.KWTest } catch (e) {}
+  }
+}
+guardTest()
 const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
 if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
