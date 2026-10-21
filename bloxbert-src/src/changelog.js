@@ -23,6 +23,18 @@ export const CHANGELOG = [
     ti: ['2.5.325 — ሓድሽ ሕታም Bertopia ሕጂ ብባዕሉ ኣብ ዝቕጽል ምብጻሕ ይጽዓን።'],
   }},
 
+  { v: '2.5.297', date: '2026-10-21', lines: {
+    en: ['2.5.297 — Everyone who helps reboot a bot gets the full drop, and you can help friends up.'],
+    simple: ['2.5.297 — Friends who reboot a bot each get the full pile, and you can help a friend up.'],
+    uk: ['2.5.297 — Кожен, хто допомагає перезапустити робота, отримує повну частку, і ти можеш підняти друзів.'],
+    ru: ['2.5.297 — Каждый, кто помогает перезапустить робота, получает полную долю, и ты можешь поднять друзей.'],
+    es: ['2.5.297 — Quien ayuda a reiniciar un robot recibe el lote completo, y puedes ayudar a tus amigos a levantarse.'],
+    ar: ['2.5.297 — كل من يساعد في إعادة تشغيل الروبوت يحصل على الحصة كاملة، ويمكنك مساعدة الأصدقاء على النهوض.'],
+    'fa-AF': ['2.5.297 — هر کس که در راه‌اندازی دوباره ربات کمک کند سهم کامل می‌گیرد، و می‌توانی به دوستان کمک کنی بلند شوند.'],
+    rw: ['2.5.297 — Uwafasha gutangira nanone robot abona igice cyuzuye, kandi ushobora gufasha inshuti guhagarara.'],
+    ti: ['2.5.297 — ነፍሲ ወከፍ ንዳግመ ምጅማር ዝሓገዘ ምሉእ ዕድል ይረክብ፡ ንኣዕሩኽትካ ድማ ክትሕግዝ ትኽእል።'],
+  }},
+
   { v: '2.5.324', date: '2026-10-21', lines: {
     en: ['2.5.324 — Behind the scenes: cleaner start-up for testers.'],
     simple: ['2.5.324 — Starts up cleaner.'],

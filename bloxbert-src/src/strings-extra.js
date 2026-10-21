@@ -2251,3 +2251,48 @@ for (const [lang, row] of Object.entries(FIT322)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.297 help + what's new. rw, ti, and Dari are machine drafts — a native check is still needed.
+const C3HELP = {
+  en: {
+    c3Help: 'Crew bonus: everyone who helps reboot a bot gets the full drop. Help up: hold the button a moment beside a friend whose Suit is low.',
+    whatsNewBody: '2.5.297 — Everyone who helps reboot a bot gets the full drop, and you can help friends up.',
+  },
+  simple: {
+    c3Help: 'Team extra: each friend who reboots a bot gets the whole pile. Lift up: hold the button a little next to a friend with a low suit.',
+    whatsNewBody: '2.5.297 — Friends who reboot a bot each get the full pile, and you can help a friend up.',
+  },
+  uk: {
+    c3Help: 'Бонус команди: кожен, хто допомагає перезапустити робота, отримує повну частку. Допомога встати: потримай кнопку мить біля друга з низьким костюмом.',
+    whatsNewBody: '2.5.297 — Кожен, хто допомагає перезапустити робота, отримує повну частку, і ти можеш підняти друзів.',
+  },
+  ru: {
+    c3Help: 'Бонус команды: каждый, кто помогает перезапустить робота, получает полную долю. Помощь встать: подержи кнопку мгновение рядом с другом с низким костюмом.',
+    whatsNewBody: '2.5.297 — Каждый, кто помогает перезапустить робота, получает полную долю, и ты можешь поднять друзей.',
+  },
+  es: {
+    c3Help: 'Bono del equipo: quien ayuda a reiniciar un robot recibe el lote completo. Ayuda a levantarse: mantén el botón un momento junto a un amigo con el traje bajo.',
+    whatsNewBody: '2.5.297 — Quien ayuda a reiniciar un robot recibe el lote completo, y puedes ayudar a tus amigos a levantarse.',
+  },
+  ar: {
+    c3Help: 'مكافأة الفريق: كل من يساعد في إعادة تشغيل الروبوت يحصل على الحصة كاملة. المساعدة على النهوض: أبقِ الزر لحظة بجانب صديق ببدلة منخفضة.',
+    whatsNewBody: '2.5.297 — كل من يساعد في إعادة تشغيل الروبوت يحصل على الحصة كاملة، ويمكنك مساعدة الأصدقاء على النهوض.',
+  },
+  'fa-AF': {
+    c3Help: 'پاداش گروه: هر کس که در راه‌اندازی دوباره ربات کمک کند سهم کامل می‌گیرد. کمک به برخاستن: دکمه را یک لحظه کنار دوستی با لباس کم نگه دار.',
+    whatsNewBody: '2.5.297 — هر کس که در راه‌اندازی دوباره ربات کمک کند سهم کامل می‌گیرد، و می‌توانی به دوستان کمک کنی بلند شوند.',
+  },
+  rw: {
+    c3Help: 'Inyongera yitsinda: uwafasha gutangiza nanone robot abona igice cyuzuye. Fasha guhagarara: fatira buto akanya hafi y\'inshuti ifite imyenda nke.',
+    whatsNewBody: '2.5.297 — Uwafasha gutangiza nanone robot abona igice cyuzuye, kandi ushobora gufasha inshuti guhagarara.',
+  },
+  ti: {
+    c3Help: 'ሽልማት ጉጅለ፡ ነፍሲ ወከፍ ንዳግመ ምጅማር ዝሓገዘ ምሉእ ዕድል ይረክብ። ሓገዝ ምትካል፡ መጠወቒ ንእዋት ሓዝ ኣብ ጥቃ ኣዕሩኽ ዝወሓደ ክዳን።',
+    whatsNewBody: '2.5.297 — ነፍሲ ወከፍ ንዳግመ ምጅማር ዝሓገዘ ምሉእ ዕድል ይረክብ፡ ንኣዕሩኽትካ ድማ ክትሕግዝ ትኽእል።',
+  },
+}
+for (const [lang, row] of Object.entries(C3HELP)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+

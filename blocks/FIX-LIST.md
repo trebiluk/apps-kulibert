@@ -1,8 +1,9 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.320 plate, 2.5.296 mobs).
+Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 
 - [x] **2.5.322 picker names:** Settings picker groups are read out in your language. Graphics, Quality and Text size, plus the Menu sheet copies. Plate stays 2.5.325 because live was already higher. Kinyarwanda, Tigrinya, and Dari still need a native check.
+- [x] **2.5.297 C3 Crew bonus + Help-up:** Everyone who helps reboot a bot gets the full drop, and you can help friends up. Two helpers each get their own full drop and a Crew bonus chip. Hold Help up for a moment when Suit is low; again inside 20 seconds is refused. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.325 sw-stuck-old-version:** A new version takes over on the next normal visit. The service worker calls skipWaiting after install, and the page reloads once when a new worker takes control. No kid action needed.
 - [x] **2.5.324 no KulibertI18n missing:** mode-pill, wand-x, stick-pad, hotbar use data-bt-label/title so the shared pack does not warn. Console is clean on load. Aria-labels still translated.
 
