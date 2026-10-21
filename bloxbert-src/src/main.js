@@ -375,6 +375,7 @@ function applyI18n() {
   if (pick && pick.dataset.ready) paintPick()
   dressTop()
   paintBackTab()
+  try { paintModeChip() } catch (e) {}
   painting = false
 }
 let painting = false
