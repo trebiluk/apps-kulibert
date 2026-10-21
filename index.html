@@ -3715,9 +3715,9 @@
       window.addEventListener("resize", fitMarquee);
 
       var hubRevBtn = document.getElementById("hub-rev");
+      var hubMeta = document.querySelector('meta[name="tech-room-rev"]');
+      var hubName = hubMeta && hubMeta.content ? hubMeta.content : "chip";
       if (hubRevBtn) {
-        var hubMeta = document.querySelector('meta[name="tech-room-rev"]');
-        var hubName = hubMeta && hubMeta.content ? hubMeta.content : "chip";
         hubRevBtn.textContent = "Hub · " + hubName;
         hubRevBtn.addEventListener("click", function () {
           var next = new URL(location.href);
@@ -3725,6 +3725,16 @@
           location.replace(next.pathname + next.search);
         });
       }
+      // What's new and rev spans read the single meta source
+      document.querySelectorAll(".rev").forEach(function (el) {
+        el.textContent = "rev " + hubName;
+      });
+      document.querySelectorAll("[data-i18n='whatsNewLine']").forEach(function (el) {
+        var base = el.textContent || "";
+        var idx = base.indexOf(" — ");
+        var msg = idx > 0 ? base.slice(idx + 3) : "Hub version lives in one place.";
+        el.textContent = "Hub rev " + hubName + " — " + msg;
+      });
 
       input.addEventListener("input", filter);
       input.addEventListener("keydown", function (event) {
