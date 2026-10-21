@@ -4,6 +4,8 @@
 
 MU 2.36.35 — On phones the start tip no longer covers Berty.
 
+MU 2.36.34 — Four more screen-reader names now use your language.
+
 ## Earlier
 
 **Chip: MU 2.36.33** · 2026-10-21 · channel **live**

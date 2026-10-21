@@ -605,7 +605,8 @@
     news23635: "MU 2.36.35 — On phones the start tip no longer covers Berty.",
     workspaceName: "Workspace",
     padsName: "Drum pads",
-    vizName: "Live music picture"
+    vizName: "Live music picture",
+    news23634: "MU 2.36.34 — Four more screen-reader names now use your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -915,7 +916,8 @@
     news23635: "MU 2.36.35 — On phones the start tip no longer covers Berty.",
     workspaceName: "Work area",
     padsName: "Drum pads",
-    vizName: "Live music picture"
+    vizName: "Live music picture",
+    news23634: "MU 2.36.34 — Four more screen-reader names now use your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1515,7 +1517,8 @@
       "news23635": "MU 2.36.35 — На телефонах підказка старту більше не закриває Берті.",
       "workspaceName": "Робочий простір",
       "padsName": "Барабанні кнопки",
-      "vizName": "Жива картинка музики"
+      "vizName": "Жива картинка музики",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2112,7 +2115,8 @@
       "news23635": "MU 2.36.35 — На телефонах подсказка старта больше не закрывает Берти.",
       "workspaceName": "Рабочее место",
       "padsName": "Барабанные кнопки",
-      "vizName": "Живая картинка музыки"
+      "vizName": "Живая картинка музыки",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2710,7 +2714,8 @@
       "news23635": "MU 2.36.35 — En el teléfono, el aviso de inicio ya no tapa a Berty.",
       "workspaceName": "Zona de trabajo",
       "padsName": "Botones de batería",
-      "vizName": "Imagen de la música en vivo"
+      "vizName": "Imagen de la música en vivo",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3308,7 +3313,8 @@
       "news23635": "MU 2.36.35 — على الهاتف، تلميح البدء لم يعد يغطي بيرتي.",
       "workspaceName": "مساحة العمل",
       "padsName": "أزرار الطبل",
-      "vizName": "صورة الموسيقى الحية"
+      "vizName": "صورة الموسيقى الحية",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3906,7 +3912,8 @@
       "news23635": "MU 2.36.35 — در تلفن، راهنمای شروع دیگر برتی را نمی‌پوشاند.",
       "workspaceName": "جای کار",
       "padsName": "دکمه‌های طبل",
-      "vizName": "تصویر زندهٔ موسیقی"
+      "vizName": "تصویر زندهٔ موسیقی",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4504,7 +4511,8 @@
       "news23635": "MU 2.36.35 — Ku telefoni, inyigisho yo gutangira ntiyongeye gufunika Berty.",
       "workspaceName": "Umwanya w'akazi",
       "padsName": "Utubuto tw'ingoma",
-      "vizName": "Ishusho y'umuziki uriho"
+      "vizName": "Ishusho y'umuziki uriho",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5102,7 +5110,8 @@
       "news23635": "MU 2.36.35 — ኣብ ተሌፎን ናይ ምጅማር ሓበሬታ ንበርቲ ኣይሽፍን።",
       "workspaceName": "ቦታ ስራሕ",
       "padsName": "መልጎም ከበሮ",
-      "vizName": "ቀጥታ ስእሊ ሙዚቃ"
+      "vizName": "ቀጥታ ስእሊ ሙዚቃ",
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
