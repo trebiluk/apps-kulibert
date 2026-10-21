@@ -1102,6 +1102,68 @@
       ? "Wait for the count. Then each tap stays."
       : "Beat " + (step + 1) + " is saved.";
   }
+  const drop = { bar: 0, kicks: 0, prev: null, grid: -1 };
+  function staffDrop() {
+    var staff = false;
+    try {
+      staff = localStorage.getItem("tech-room-hub-staff") === "1" || sessionStorage.getItem("tech-room-hub-staff") === "1";
+    } catch (e) {}
+    try {
+      if (!staff && window.HubStaffAuth && window.HubStaffAuth.isUnlocked && window.HubStaffAuth.isUnlocked()) staff = true;
+      if (!staff && window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked()) staff = true;
+    } catch (e2) {}
+    var pack = false;
+    var asked = false;
+    try { var raw = JSON.parse(sessionStorage.getItem("kulibert-test-pack") || "null"); pack = !!(raw && raw.testMode === true); } catch (e3) {}
+    try { asked = new URLSearchParams(location.search).get("test") === "1" || sessionStorage.getItem("kulibert-test-tab") === "1"; } catch (e4) {}
+    return !!(staff && pack && asked);
+  }
+  function dropLook() {
+    const layer = state.layers && state.layers[0];
+    return (layer && layer.look) || state.look || "";
+  }
+  function resetDrop() {
+    drop.bar = 0;
+    drop.kicks = 0;
+    drop.prev = null;
+    drop.grid = -1;
+    state.drop = null;
+    state.seenGrid = -1;
+  }
+  function beginDropBar(g) {
+    if (drop.bar > 0) {
+      if (staffDrop() && drop.bar <= 8) console.log({ bar: drop.bar, kicks: drop.kicks, look: dropLook() });
+      drop.prev = drop.kicks;
+    }
+    drop.bar += 1;
+    drop.kicks = 0;
+    const start = Math.floor(g / 8) * 8;
+    let expect = 0;
+    const row = state.drums && state.drums.kick;
+    if (row) for (let i = 0; i < 8; i++) if (row[start + i]) expect += 1;
+    if (drop.bar > 1 && drop.prev != null && drop.prev <= 1 && expect >= 3) {
+      state.drop = { bar: drop.bar, kicks: expect, at: Date.now() };
+      try { window.dispatchEvent(new CustomEvent("mu-drop", { detail: state.drop })); } catch (err) {}
+    }
+  }
+  function hearDrop(grid) {
+    const steps = [];
+    if (drop.grid < 0) steps.push(grid);
+    else {
+      let g = (drop.grid + 1) % 16;
+      for (let n = 0; n < 16; n++) {
+        steps.push(g);
+        if (g === grid) break;
+        g = (g + 1) % 16;
+      }
+    }
+    steps.forEach((g) => {
+      const boundary = drop.grid >= 0 && (Math.floor(g / 8) !== Math.floor(drop.grid / 8) || g < drop.grid);
+      if (drop.grid < 0 || boundary) beginDropBar(g);
+      drop.grid = g;
+      if (state.drums && state.drums.kick && state.drums.kick[g]) drop.kicks += 1;
+    });
+  }
   function bindPad(el, id) {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
@@ -1572,6 +1634,7 @@
     state.once = !!(opts && opts.once);
     state.playing = true;
     state.playAt = Date.now();
+    resetDrop();
     hideVizStart();
     state.confettiDone = false;
     document.body.classList.add("playing");
@@ -1642,6 +1705,7 @@
         }
         if (hit.grid !== state.seenGrid) {
           state.seenGrid = hit.grid;
+          hearDrop(hit.grid);
           advanceTurn();
           paintBeat(hit.grid);
           pulseFrame(!!(state.drums.kick && state.drums.kick[hit.grid]));
@@ -1663,6 +1727,7 @@
   function stop() {
     silenceOwner();
     state.playing = false;
+    resetDrop();
     document.body.classList.remove("playing");
     fitViz();
     if (stageApi && stageApi.kick) stageApi.kick();
