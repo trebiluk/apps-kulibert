@@ -40,7 +40,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-cachebust-i18n: The staff page and the small print now follow your language.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-es-fineprint-door: The staff page and Fine Print now follow your language, and the Tech Room door link is easier to tap.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
