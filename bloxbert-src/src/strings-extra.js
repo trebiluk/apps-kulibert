@@ -1907,3 +1907,56 @@ for (const [lang, row] of Object.entries(HELP318)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.300 C6 teacher combat rows
+const C6 = {
+  en: {
+    c6Combat: 'Combat', c6Creatures: 'Creatures', c6Damage: 'Damage', c6Boss: 'Boss',
+    c6Off: 'Off', c6On: 'On', c6Calm: 'Calm', c6Normal: 'Normal', c6Gentle: 'Gentle', c6Real: 'Real',
+    c6NotePvp: 'PvP: opt-in only', c6NoteKeep: 'Keep my stuff: ON in main world',
+  },
+  simple: {
+    c6Combat: 'Fighting', c6Creatures: 'Animals', c6Damage: 'Hurt', c6Boss: 'Boss',
+    c6Off: 'Off', c6On: 'On', c6Calm: 'Calm', c6Normal: 'Normal', c6Gentle: 'Gentle', c6Real: 'Real',
+    c6NotePvp: 'Fight each other: only if both say yes', c6NoteKeep: 'Keep my things: ON in the main world',
+  },
+  uk: {
+    c6Combat: 'Бій', c6Creatures: 'Істоти', c6Damage: 'Шкода', c6Boss: 'Бос',
+    c6Off: 'Вимк', c6On: 'Увімк', c6Calm: 'Спокійно', c6Normal: 'Нормально', c6Gentle: 'М’яко', c6Real: 'Реально',
+    c6NotePvp: 'PvP: лише за згодою', c6NoteKeep: 'Зберігати речі: УВІМК у головному світі',
+  },
+  ru: {
+    c6Combat: 'Бой', c6Creatures: 'Существа', c6Damage: 'Урон', c6Boss: 'Босс',
+    c6Off: 'Выкл', c6On: 'Вкл', c6Calm: 'Спокойно', c6Normal: 'Нормально', c6Gentle: 'Мягко', c6Real: 'Реально',
+    c6NotePvp: 'PvP: только по согласию', c6NoteKeep: 'Сохранять вещи: ВКЛ в главном мире',
+  },
+  es: {
+    c6Combat: 'Combate', c6Creatures: 'Criaturas', c6Damage: 'Daño', c6Boss: 'Jefe',
+    c6Off: 'Apagado', c6On: 'Encendido', c6Calm: 'Calmo', c6Normal: 'Normal', c6Gentle: 'Suave', c6Real: 'Real',
+    c6NotePvp: 'PvP: solo si ambos aceptan', c6NoteKeep: 'Guardar mis cosas: ENCENDIDO en el mundo principal',
+  },
+  ar: {
+    c6Combat: 'قتال', c6Creatures: 'مخلوقات', c6Damage: 'ضرر', c6Boss: 'زعيم',
+    c6Off: 'إيقاف', c6On: 'تشغيل', c6Calm: 'هادئ', c6Normal: 'عادي', c6Gentle: 'لطيف', c6Real: 'حقيقي',
+    c6NotePvp: 'PvP: فقط إذا وافق الاثنان', c6NoteKeep: 'احتفظ بأغراضي: تشغيل في العالم الرئيسي',
+  },
+  'fa-AF': {
+    c6Combat: 'جنگ', c6Creatures: 'مخلوقات', c6Damage: 'آسیب', c6Boss: 'رئیس',
+    c6Off: 'خاموش', c6On: 'روشن', c6Calm: 'آرام', c6Normal: 'عادی', c6Gentle: 'ملایم', c6Real: 'واقعی',
+    c6NotePvp: 'PvP: فقط اگر هر دو بگویند بله', c6NoteKeep: 'چیزهایم را نگه دار: روشن در دنیای اصلی',
+  },
+  rw: {
+    c6Combat: 'Intambara', c6Creatures: 'Ibiremwa', c6Damage: 'Ibyangiza', c6Boss: 'Boss',
+    c6Off: 'Kuzimya', c6On: 'Gukora', c6Calm: 'Uhoraho', c6Normal: 'Bisanzwe', c6Gentle: 'Buhoro', c6Real: 'Nyabyo',
+    c6NotePvp: 'PvP: gusa iyo bombi bemeye', c6NoteKeep: 'Kubika ibintu byanjye: BIRAKORA mu isi nyamukuru',
+  },
+  ti: {
+    c6Combat: 'ውግእ', c6Creatures: 'ፍጥረታት', c6Damage: 'ጉድኣት', c6Boss: 'ቦስ',
+    c6Off: 'ዕጹው', c6On: 'ክፉት', c6Calm: 'ሰላማዊ', c6Normal: 'ንቡር', c6Gentle: 'ለውሒ', c6Real: 'ርእሰኛ',
+    c6NotePvp: 'PvP: ጥራይ እንተ ክልቲኦም ሰማምዑ', c6NoteKeep: 'ንኣቕሑተይ ሓዝ: ክፉት ኣብ ዋና ዓለም',
+  },
+}
+for (const [lang, row] of Object.entries(C6)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

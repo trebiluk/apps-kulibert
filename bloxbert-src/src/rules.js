@@ -387,3 +387,16 @@ function diffs(lang) {
 }
 
 export const Rules = { register, registerPack, load, dump, set, allow, why, icon, iconFor, useLang, value, rows, unknown, diffs, templateName, langs: LANGS }
+
+
+// 2.5.300 C6: read per-world combat settings
+export function combatRule(key, worldId) {
+  const world = worldId || (typeof window !== 'undefined' && window.__BT_WORLD) || 'game'
+  const store = 'bloxbert-combat-' + world
+  let prefs = {}
+  try { prefs = JSON.parse(localStorage.getItem(store) || '{}') } catch (e) {}
+  const defaults = world === 'game'
+    ? { combat: 'on', creatures: 'calm', damage: 'gentle', boss: 'on' }
+    : { combat: 'off', creatures: 'calm', damage: 'gentle', boss: 'on' }
+  return prefs[key] || defaults[key] || 'off'
+}

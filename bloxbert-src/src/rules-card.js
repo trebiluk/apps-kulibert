@@ -103,6 +103,20 @@ export function showRulesCard(opts) {
   if (items.length) {
     const tiles = document.createElement('div')
     tiles.className = 'rc-tiles'
+    // 2.5.300 C6 combat rows
+    try {
+      const world = opts.world || 'game'
+      const say = (k) => (window.BT && window.BT.str && window.BT.str(k, lang)) || k
+      if (typeof Rules.combatRule === 'function') {
+        const rows = [['combat','c6Combat'],['creatures','c6Creatures'],['damage','c6Damage'],['boss','c6Boss']]
+        for (const [id, lab] of rows) {
+          const tile = document.createElement('div')
+          tile.className = 'rc-tile'
+          tile.textContent = say(lab) + ': ' + Rules.combatRule(id, world)
+          tiles.append(tile)
+        }
+      }
+    } catch (e) {}
     const shown = items.slice(0, 6)
     for (const d of shown) {
       const tile = document.createElement('div')
