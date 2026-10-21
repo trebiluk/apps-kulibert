@@ -10,7 +10,7 @@ const scripts = {
 const names = /Bertopia|Bertyville|Tally|Kulibert/
 let problems = 0
 const en = EXTRA.en
-const watch = ['changelog','youAreHere','tryThis','next','skip','tour','tourMove','a11y','helpBody','sendTeacher','highContrast','place10','addCoal','bake','sell','buy','fuel','input','output','bag']
+const watch = ['changelog','youAreHere','tryThis','next','skip','tour','tourMove','a11y','helpBody','sendTeacher','highContrast','place10','addCoal','bake','sell','buy','fuel','input','output','bag','fillN','wallsN','nothingBake','pvpOn','pvpOff','keepStuffOn','keepStuffOff','kitPvpOn','kitPvpOff','suitText','language','pickLanguage','backToHub']
 for (const lang of Object.keys(EXTRA)) {
   if (lang === 'en') continue
   for (const key of watch) {
