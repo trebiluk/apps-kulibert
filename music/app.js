@@ -3605,7 +3605,7 @@
     a.click();
     const player = new Audio(url);
     player.play().catch(() => {});
-    $("lesson").textContent = "Saved as sound. The file is a WAV of this loop.";
+    $("lesson").textContent = mu("savedWav") || "Saved as sound. The file is a WAV of this loop.";
   }
   function vlq(n) {
     const bytes = [n & 127];
@@ -3840,7 +3840,7 @@
     $("tempo-read").textContent = String(state.song.bpm);
     keep();
     if (state.playing) { stop(); play({ force: true }); }
-    $("lesson").textContent = "Tempo is the speed. The count is still 1, 2, 3, 4.";
+    $("lesson").textContent = mu("tempoTeach") || "Tempo is the speed. The count is still 1, 2, 3, 4.";
   });
   $("blend").addEventListener("input", (e) => {
     state.blend = Number(e.target.value);
@@ -3858,22 +3858,22 @@
   $("s-bright").addEventListener("input", tweak("bright", () => {
     state.bright = Number($("s-bright").value);
     $("n-bright").textContent = $("s-bright").value;
-    $("lesson").textContent = "Brightness is how sharp the sound is.";
+    $("lesson").textContent = mu("brightTeach") || "Brightness is how sharp the sound is.";
   }));
   $("s-len").addEventListener("input", tweak("len", () => {
     state.noteLen = Number($("s-len").value) / 100;
     $("n-len").textContent = $("s-len").value;
-    $("lesson").textContent = "Length is how long a note holds.";
+    $("lesson").textContent = mu("lenTeach") || "Length is how long a note holds.";
   }));
   $("s-echo").addEventListener("input", tweak("echo", () => {
     state.echo = Number($("s-echo").value) / 100;
     $("n-echo").textContent = $("s-echo").value;
-    $("lesson").textContent = "Echo repeats the sound.";
+    $("lesson").textContent = mu("echoTeach") || "Echo repeats the sound.";
   }));
   $("s-wob").addEventListener("input", tweak("wob", () => {
     state.wobble = Number($("s-wob").value);
     $("n-wob").textContent = $("s-wob").value;
-    $("lesson").textContent = "Wobble moves the sound up and down.";
+    $("lesson").textContent = mu("wobTeach") || "Wobble moves the sound up and down.";
   }));
   function downloadSongFile() {
     snapshotViz();
@@ -3885,7 +3885,7 @@
     a.click();
     URL.revokeObjectURL(url);
     finishSong("save");
-    $("lesson").textContent = "The file has the notes, the picture, and the reasons.";
+    $("lesson").textContent = mu("fileHas") || "The file has the notes, the picture, and the reasons.";
   }
   $("save-btn").addEventListener("click", downloadSongFile);
   if ($("save-file-more")) $("save-file-more").addEventListener("click", () => { downloadSongFile(); closeMore(); });
@@ -3998,7 +3998,7 @@
     const raw = data && data.song ? data.song : data;
     const song = Song.parse(JSON.stringify(raw || {}));
     if (!song) {
-      $("lesson").textContent = "That file is not a song.";
+      $("lesson").textContent = mu("notASong") || "That file is not a song.";
       return;
     }
     state.song = song;
@@ -4053,7 +4053,7 @@
         state.song = Song.parse(Song.serialize(state.song));
         keep();
         paintWhy();
-        $("lesson").textContent = sentence + " Saved.";
+        $("lesson").textContent = mu("lineSaved", { line: sentence }) || (sentence + " Saved.");
       });
       reasons.appendChild(b);
     });
@@ -4083,7 +4083,8 @@
         snapshotViz();
         applyViz(state.song.viz);
         keep();
-        $("lesson").textContent = item.label + " is this song's picture. Saved.";
+        const picName = mu("look_" + item.id) || item.label;
+        $("lesson").textContent = mu("picIsSong", { name: picName }) || (picName + " is this song's picture. Saved.");
       });
       picks.appendChild(b);
     });
@@ -4093,7 +4094,7 @@
       snapshotViz();
       applyViz(state.song.viz);
       keep();
-      $("lesson").textContent = "This picture stays with the song. Saved.";
+      $("lesson").textContent = mu("picStays") || "This picture stays with the song. Saved.";
     });
   }
   if ($("remix-btn")) $("remix-btn").addEventListener("click", remixSong);
@@ -4109,7 +4110,7 @@
         try { data = JSON.parse(String(reader.result || "")); } catch (err) { data = null; }
         if (data && data.family === "kulibert.music") loadPack(data);
         else if (data) loadPack({ song: data });
-        else $("lesson").textContent = "That file is not a song.";
+        else $("lesson").textContent = mu("notASong") || "That file is not a song.";
       };
       reader.readAsText(file);
     });
@@ -4211,7 +4212,7 @@
     watchLevel(micStream);
     if (!state.playing) play();
     $("mic-status").textContent = mu("micListen");
-    $("lesson").textContent = "The mic is on for this loop only. Tap the pads or play along.";
+    $("lesson").textContent = mu("micLoopOn") || "The mic is on for this loop only. Tap the pads or play along.";
     micTimer = window.setTimeout(() => {
       if (recorder.state === "recording") recorder.stop();
     }, ms);
