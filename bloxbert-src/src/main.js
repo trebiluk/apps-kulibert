@@ -9746,6 +9746,7 @@ function stepBelts(now) {
   hideMap(beltFull, fullSeen)
 }
 noa.on('beforeRender', (dt) => {
+  if (mobs) mobs.tick(performance.now())
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
