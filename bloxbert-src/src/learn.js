@@ -638,3 +638,9 @@ export function openDex(kind, fact) {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() }, { once: true })
   return card
 }
+
+export function dexSeen() {
+  try { return window._dexSeen || {} } catch (e) { return {} }
+}
+
+try { window.dexSeen = dexSeen; window.openDex = openDex } catch (e) {}

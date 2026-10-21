@@ -45,3 +45,13 @@ export function bumpFoundry() {
   }
 }
 try { window.bumpFoundry = bumpFoundry } catch (e) {}
+
+export function badgeList() {
+  return [
+    { id: 'medic', name: 'Crew Medic', progress: (counts.medic || 0) + '/10', earned: earned.has('medic') },
+    { id: 'flanker', name: 'Flanker', progress: (counts.flanker || 0) + '/10', earned: earned.has('flanker') },
+    { id: 'foundry', name: 'Foundry Crew', progress: earned.has('foundry') ? 'yes' : 'not yet', earned: earned.has('foundry') },
+  ]
+}
+
+try { window.badgeList = badgeList } catch (e) {}

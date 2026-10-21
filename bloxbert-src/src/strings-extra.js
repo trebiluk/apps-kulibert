@@ -2467,3 +2467,20 @@ for (const [lang, row] of Object.entries(C5)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.333 Notebook Crew + Bertodex. rw/ti/fa-AF machine drafts.
+const C4T = {
+  en: { c4tCrew: 'Crew badges', c4tBadgemedic: 'Crew Medic', c4tBadgeflanker: 'Flanker', c4tBadgefoundry: 'Foundry Crew', c4tDex: 'Bertodex: ', c4tReopen: 'Reopen', c4tHelp: 'Your crew badges and Bertodex are in the Notebook.' },
+  simple: { c4tCrew: 'Crew badges', c4tBadgemedic: 'Crew Medic', c4tBadgeflanker: 'Flanker', c4tBadgefoundry: 'Foundry Crew', c4tDex: 'Bertodex: ', c4tReopen: 'Reopen', c4tHelp: 'Your crew badges and Bertodex are in the Notebook.' },
+  uk: { c4tCrew: 'Значки екіпажу', c4tBadgemedic: 'Медик екіпажу', c4tBadgeflanker: 'Фланкер', c4tBadgefoundry: 'Екіпаж ливарні', c4tDex: 'Bertodex: ', c4tReopen: 'Відкрити знову', c4tHelp: 'Ваші значки екіпажу та Bertodex у Блокноті.' },
+  ru: { c4tCrew: 'Значки команды', c4tBadgemedic: 'Медик команды', c4tBadgeflanker: 'Фланкер', c4tBadgefoundry: 'Команда литейной', c4tDex: 'Bertodex: ', c4tReopen: 'Открыть снова', c4tHelp: 'Ваши значки команды и Bertodex в Блокноте.' },
+  es: { c4tCrew: 'Insignias de equipo', c4tBadgemedic: 'Médico de equipo', c4tBadgeflanker: 'Flanqueador', c4tBadgefoundry: 'Equipo de Fundición', c4tDex: 'Bertodex: ', c4tReopen: 'Reabrir', c4tHelp: 'Tus insignias de equipo y Bertodex están en el Cuaderno.' },
+  ar: { c4tCrew: 'شارات الطاقم', c4tBadgemedic: 'طبيب الطاقم', c4tBadgeflanker: 'مهاجم جانبي', c4tBadgefoundry: 'طاقم المسبك', c4tDex: 'Bertodex: ', c4tReopen: 'إعادة فتح', c4tHelp: 'شارات طاقمك و Bertodex في دفتر الملاحظات.' },
+  'fa-AF': { c4tCrew: 'نشان‌های خدمه', c4tBadgemedic: 'طبیب خدمه', c4tBadgeflanker: 'پهلوگیر', c4tBadgefoundry: 'خدمه ریخته‌گری', c4tDex: 'Bertodex: ', c4tReopen: 'بازگشایی', c4tHelp: 'نشان‌های خدمه و Bertodex شما در دفترچه هستند.' },
+  rw: { c4tCrew: 'Ibimenyetso by itsinda', c4tBadgemedic: 'Umuganga w itsinda', c4tBadgeflanker: 'Flanker', c4tBadgefoundry: 'Itsinda rya Foundry', c4tDex: 'Bertodex: ', c4tReopen: 'Fungura', c4tHelp: 'Ibimenyetso byawe na Bertodex biri mu Notebook.' },
+  ti: { c4tCrew: 'ባጃት ጋንታ', c4tBadgemedic: 'ሕክምና ጋንታ', c4tBadgeflanker: 'ፍላንከር', c4tBadgefoundry: 'ጋንታ ፋውንድሪ', c4tDex: 'Bertodex: ', c4tReopen: 'ዳግም ክፈት', c4tHelp: 'ባጃት ጋንታኻን Bertodexን ኣብ ኖትቡክ ኣለዉ።' },
+}
+for (const [lang, row] of Object.entries(C4T)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

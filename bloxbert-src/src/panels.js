@@ -396,15 +396,37 @@ export function mountPanels(api) {
           p.className = 'gnote'
           p.textContent = api.t('notebookEmpty')
           g.append(p)
-          return
+        } else {
+          for (const id of lines) {
+            const p = document.createElement('p')
+            p.className = 'gnote'
+            p.dataset.note = id
+            p.textContent = api.t(id)
+            g.append(p)
+          }
         }
-        for (const id of lines) {
-          const p = document.createElement('p')
-          p.className = 'gnote'
-          p.dataset.note = id
-          p.textContent = api.t(id)
-          g.append(p)
+        const crewHead = document.createElement('p')
+        crewHead.className = 'gnote'
+        crewHead.textContent = api.t('c4tCrew') || 'Crew badges'
+        g.append(crewHead)
+        const list = (typeof window !== 'undefined' && window.badgeList) ? window.badgeList() : []
+        for (const b of list) {
+          const row = document.createElement('p')
+          row.className = 'gnote'
+          row.textContent = (b.earned ? '☑ ' : '☐ ') + (api.t('c4tBadge' + b.id) || b.name) + '  ' + b.progress
+          g.append(row)
         }
+        const dex = document.createElement('p')
+        dex.className = 'gnote'
+        const seen = (typeof window !== 'undefined' && window.dexSeen) ? window.dexSeen() : {}
+        dex.textContent = (api.t('c4tDex') || 'Bertodex: ') + (Object.keys(seen).length ? Object.keys(seen).join(', ') : 'none')
+        g.append(dex)
+        const reopen = document.createElement('button')
+        reopen.textContent = api.t('c4tReopen') || 'Reopen'
+        reopen.style.minWidth = '44px'
+        reopen.style.minHeight = '44px'
+        reopen.onclick = () => { try { if (window.openDex) window.openDex('rustbot', api.t('c4RustFact') || 'fact') } catch (e) {} }
+        g.append(reopen)
       }),
       tour: () => show('tour', api.t('tour'), (g) => api.paintTour(g)),
       goals: () => show('goals', api.t('tryThis'), (g) => api.paintGoals(g)),
