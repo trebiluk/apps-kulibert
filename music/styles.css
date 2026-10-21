@@ -5746,3 +5746,35 @@ body.mu237.show canvas#viz {
   }
 }
 
+/* MU 2.36.32 — phone Tap tab: scroll to Listen, then my turn and Play along. Words wrap to two lines. Sideways stays as it is. */
+@media (max-width: 600px) {
+  body.mu237.tab-tap #drums-pane {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    max-height: 100% !important;
+  }
+  body.mu237.tab-tap .tap-tiles {
+    max-height: none !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    align-items: stretch !important;
+    flex-wrap: wrap !important;
+  }
+  body.mu237.tab-tap .tap-tiles > .btn {
+    white-space: normal !important;
+    height: auto !important;
+    min-height: 44px !important;
+    max-height: calc(1.15em * 2 + 14px) !important;
+    line-height: 1.15 !important;
+    padding: 4px 8px !important;
+    overflow: hidden !important;
+    text-align: center !important;
+    flex: 1 1 6.75rem !important;
+    min-width: 6.75rem !important;
+    max-width: 12rem !important;
+  }
+}
+
+
