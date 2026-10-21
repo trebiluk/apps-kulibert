@@ -61,15 +61,6 @@
       <p><a href="/">← Tech Room door</a></p>
     </form>
     
-    <form class="card" id="alias-proof" hidden>
-      <p class="chip">⚑ Alias proof · TEST board only</p>
-      <p data-i18n="lbAliasHelp">Pick a name from the list. Typed names are not saved.</p>
-      <label>Alias <select id="proof-alias" aria-label="Pick an alias"><option value="">Pick an alias</option></select></label>
-      <label>Score <input id="proof-score" inputmode="numeric" maxlength="4" value="12" aria-label="Score"/></label>
-      <button class="save" type="submit" style="min-width:44px;min-height:44px">Save to TEST board</button>
-      <button class="ghost" type="button" id="proof-reject" style="min-width:44px;min-height:44px">Try a typed name</button>
-      <p class="err" id="proof-status" role="status"></p>
-    </form>
     <div id="hub-admin" hidden>
     <p class="chip"><i></i> Locked · Cloud desk key</p>
     <h1>Room desk</h1>
@@ -758,16 +749,30 @@
     })();
 
       (function () {
-        var box = document.getElementById("alias-proof");
-        if (!box) return;
         function asked() {
           try { if (new URLSearchParams(location.search).get("proof") === "1") return true; } catch (e) {}
           try { return !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch (e2) { return false; }
         }
+        function deskOn() {
+          try { return !!sessionStorage.getItem("tech-room-desk-gate"); } catch (e) { return false; }
+        }
         function show() {
           var staff = window.HubStaffAuth && HubStaffAuth.isUnlocked();
-          box.hidden = !(staff && asked());
+          var box = document.getElementById("alias-proof");
+          if (!(staff && deskOn() && asked())) {
+            if (box && box.parentNode) box.parentNode.removeChild(box);
+            return;
+          }
+          if (box) return;
+          box = document.createElement("form");
+          box.className = "card";
+          box.id = "alias-proof";
+          box.innerHTML = '<p class="chip">⚑ Alias proof · TEST board only</p><p data-i18n="lbAliasHelp">Pick a name from the list. Typed names are not saved.</p><label>Alias <select id="proof-alias" aria-label="Pick an alias"><option value="">Pick an alias</option></select></label><label>Score <input id="proof-score" inputmode="numeric" maxlength="4" value="12" aria-label="Score"/></label><button class="save" type="submit" style="min-width:44px;min-height:44px">Save to TEST board</button><button class="ghost" type="button" id="proof-reject" style="min-width:44px;min-height:44px">Try a typed name</button><p class="err" id="proof-status" role="status"></p>';
+          var admin = document.getElementById("hub-admin");
+          if (admin && admin.parentNode) admin.parentNode.insertBefore(box, admin);
+          bind(box);
         }
+        function bind(box) {
         function words() {
           var api = window.KulibertBoards;
           if (api && api.words) return api.words();
@@ -812,13 +817,13 @@
           var status = document.getElementById("proof-status");
           if (status) status.textContent = "Pick a name from the list. Typed names are not saved.";
         });
-        show();
-        if (window.HubStaffAuth && HubStaffAuth.mount) {
-          var prev = null;
         }
+        show();
         document.addEventListener("kulibert-boards", show);
         var gateBtn = document.getElementById("hub-pass-unlock");
         if (gateBtn) gateBtn.addEventListener("click", function () { setTimeout(show, 50); });
+        var keyForm = document.getElementById("key-form");
+        if (keyForm) keyForm.addEventListener("submit", function () { setTimeout(show, 80); });
       })();
 
       (function () {
