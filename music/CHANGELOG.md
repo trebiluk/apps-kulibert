@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.19** · 2026-10-21 · channel **live**
 
-MU 2.36.19 — a Looks drawer names the pictures, colors, wall, and frame, Surprise me mixes them, and a start screen glows until Play.
+MU 2.36.19 — a Looks drawer names the pictures, colors, wall, and frame, Surprise me mixes them, a start screen glows until Play, and the frame pulses gently with the kick.
 
 ## Earlier
 

@@ -5584,3 +5584,9 @@ body.mu237 .viz-start[hidden] { display: none !important; }
     padding: 6px 10px;
   }
 }
+
+/* MU 2.36.19 kick pulse — frame brightens at most 12 percent, at most twice a second. */
+body.mu237 .stage-wrap.mu-kick { filter: brightness(1.12); }
+@media (prefers-reduced-motion: reduce) {
+  body.mu237 .stage-wrap.mu-kick { filter: none !important; }
+}

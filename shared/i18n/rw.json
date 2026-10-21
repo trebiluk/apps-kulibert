@@ -390,5 +390,6 @@
   "vdLastMatch": "Uruhande rwa nyuma: {winner} yatsinze {heat} mu {time}.",
   "vdJuiceHelp": "Gusubukura gutangira uruhande rumwe ukanda rimwe. Guhura biracamagana kandi birabagirana. Icyumba cyerekana ishusho ya buri mukinnyi n'uruhande rwa nyuma.",
   "vizStart": "Kanda ▶ utangire — reba uburyo umuziki wawe uba urumuri.",
-  "helpStart": "▶ Kanda Kina. Ishusho irindira, hanyuma umuziki wawe uba urumuri."
+  "helpStart": "▶ Kanda Kina. Ishusho irindira, hanyuma umuziki wawe uba urumuri.",
+  "helpPulse": "🖼 Urubibi rurabagirana gato ku gikoma. Imigendere mike iruma."
 }

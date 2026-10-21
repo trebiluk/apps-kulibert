@@ -390,5 +390,6 @@
   "vdLastMatch": "Last match: {winner} won {heat} in {time}.",
   "vdJuiceHelp": "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match.",
   "vizStart": "Tap ▶ to start — watch your music become light.",
-  "helpStart": "▶ Press Play. The picture waits, then your music becomes light."
+  "helpStart": "▶ Press Play. The picture waits, then your music becomes light.",
+  "helpPulse": "🖼 The frame glows a little with the kick. It stays still if motion is reduced."
 }

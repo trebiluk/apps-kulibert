@@ -1527,6 +1527,22 @@
     const who = window.KulibertWho;
     return who && who.prefs ? who.prefs : null;
   }
+  let lastKickPulse = 0;
+  function pulseFrame(on) {
+    const stage = document.querySelector(".stage-wrap");
+    if (!stage) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || document.documentElement.getAttribute("data-kp-motion") === "less";
+    if (!on || reduce) {
+      stage.classList.remove("mu-kick");
+      return;
+    }
+    const nowMs = performance.now();
+    if (nowMs - lastKickPulse < 500) return;
+    lastKickPulse = nowMs;
+    stage.classList.add("mu-kick");
+    window.setTimeout(() => stage.classList.remove("mu-kick"), 160);
+  }
   let vizStarted = false;
   function hideVizStart() {
     if (vizStarted) return;
@@ -1628,6 +1644,7 @@
           state.seenGrid = hit.grid;
           advanceTurn();
           paintBeat(hit.grid);
+          pulseFrame(!!(state.drums.kick && state.drums.kick[hit.grid]));
         }
         if (hit.grid === 0 && now - start > 0.2 && !state.confettiDone) {
           state.confettiDone = true;
@@ -1666,6 +1683,8 @@
     paintRec();
     const bob = $("berty-bob");
     if (bob) bob.classList.remove("on");
+    const stage = document.querySelector(".stage-wrap");
+    if (stage) stage.classList.remove("mu-kick");
     $("now-line").textContent = state.showing ? (mu("ready") || "Ready") : (mu("pressPlay") || "Press Play. You can leave the sound off.");
   }
 

@@ -390,5 +390,6 @@
   "vdLastMatch": "Última manga: {winner} ganó {heat} en {time}.",
   "vdJuiceHelp": "La revancha empieza esa manga con un toque. Un golpe tiembla un momento y suelta chispas. La sala muestra la forma de cada corredor y la última manga.",
   "vizStart": "Toca ▶ para empezar — mira cómo tu música se vuelve luz.",
-  "helpStart": "▶ Pulsa Play. La imagen espera y tu música se vuelve luz."
+  "helpStart": "▶ Pulsa Play. La imagen espera y tu música se vuelve luz.",
+  "helpPulse": "🖼 El marco brilla un poco con el bombo. Con menos movimiento se queda quieto."
 }
