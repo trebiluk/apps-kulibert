@@ -41,6 +41,7 @@
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
   "whatsNewLine": "Hub rev 2026-10-20-i18n-alias-help: Name help is in every language.",
+  "testModeHelp": "Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.",
   "lbTitle": "Leaderboards",
   "lbPickAlias": "Pick an alias",
   "lbMyBest": "My best",
