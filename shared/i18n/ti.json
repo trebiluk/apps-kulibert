@@ -38,7 +38,7 @@
   "more": "ተወሳኺ",
   "gotIt": "ተረዲኡኒ",
   "pwaTip": "ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: ካርድታት «ብዛዕባ እዚ ሃብ» ኣርእስቲ ናይ ሰራሕተኛታት ገጽን ካብ ቀዳማይ ምብጻሕ ብቋንቋኻ እዮም፣ ገጽ ሰራሕተኛታት ድማ ንኹሉ መፈተኒ መሳርሒ ኣይጽዕንን።",
+  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: «ሓድሽ ነገር» ኩሉ ግዜ ሓደስቲ ዜናታት ብቋንቋኻ የርኢ፣ ዕለት ናይ «ብዛዕባ እዚ ሃብ» እውን ብቋንቋኻ እዩ።",
   "appNames": "ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
   "whatsNewStrip": "ላዕለዋይ መስመር ምልክታት መተግበሪታት ጥራይ የርኢ። ኣስማት ኣብ ናተይ ቅጥዕታት መሊስካ ኣብርሆ።",
   "myProgress": "ዕቤተይ",
@@ -324,5 +324,18 @@
   "staffTabTitle": "ጠረጴዛ ክፍሊ · The Tech Room",
   "backToHub": "ናብ ሃብ ተመለስ",
   "fineKindGrown": "ሕያዋት ብኻኻ ወይ ብክፍሊ ዝተሰርሐ ጥራይ ኣካፍል።",
-  "fineQuestionsGrown": "ሕቶ? ምስ ኣቶ ኩሊበርት ወይ ምስ እትእመኖ ዓቢ ሰብ ተዘራረብ።"
+  "fineQuestionsGrown": "ሕቶ? ምስ ኣቶ ኩሊበርት ወይ ምስ እትእመኖ ዓቢ ሰብ ተዘራረብ።",
+  "fineUpdated": "ናይ መወዳእታ ምምሕያሽ፦ {date}",
+  "month1": "ጥሪ",
+  "month2": "ለካቲት",
+  "month3": "መጋቢት",
+  "month4": "ሚያዝያ",
+  "month5": "ግንቦት",
+  "month6": "ሰነ",
+  "month7": "ሓምለ",
+  "month8": "ነሓሰ",
+  "month9": "መስከረም",
+  "month10": "ጥቅምቲ",
+  "month11": "ሕዳር",
+  "month12": "ታሕሳስ"
 }

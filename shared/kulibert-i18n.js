@@ -1,5 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
+  var I18N_REV = "2026-10-21-whatsnew-es-lastupdated";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -40,7 +41,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: About This Hub cards and the staff tab title now speak your language on the first visit, and the staff page no longer loads a test tool for everyone.",
+  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: What's new always shows the latest news in your language, and the About This Hub date is in your language too.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
@@ -343,6 +344,29 @@
     if (!pending[file]) warnMissing(k);
     return fb || k;
   }
+  
+  function paintDate() {
+    var node = document.getElementById("fine-print-updated");
+    if (!node) return;
+    var raw = node.getAttribute("data-date") || "2026-10-03";
+    var lang = current();
+    var locale = lang === "simple" ? "en" : lang;
+    var text = "";
+    var supported = false;
+    try { supported = Intl.DateTimeFormat.supportedLocalesOf(locale).length > 0; } catch (e) {}
+    if (supported) {
+      try {
+        var formatted = new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(raw + "T00:00:00Z"));
+        text = t("fineUpdated").replace("{date}", formatted);
+      } catch (e2) { supported = false; }
+    }
+    if (!supported) {
+      var parts = raw.split("-");
+      var month = t("month" + Number(parts[1])) || parts[1];
+      text = t("fineUpdated").replace("{date}", Number(parts[2]) + " " + month + " " + parts[0]);
+    }
+    if (text && text.indexOf("{date}") === -1) node.textContent = text;
+  }
   function paint() {
     var nodes = document.querySelectorAll("[data-i18n]");
     for (var i = 0; i < nodes.length; i++) {
@@ -359,6 +383,7 @@
       var label = t(labelKey);
       if (label && label !== labelKey) labels[j].setAttribute("aria-label", label);
     }
+    paintDate();
     var places = document.querySelectorAll("[data-i18n-placeholder]");
     for (var p = 0; p < places.length; p++) {
       var placeKey = places[p].getAttribute("data-i18n-placeholder");
@@ -379,13 +404,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v31:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n:" + I18N_REV + ":" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v31:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n:" + I18N_REV + ":" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -398,7 +423,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-21-fineprint-staff-title-kwtest", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=" + I18N_REV, { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }
@@ -412,7 +437,19 @@
     function one() { done += 1; if (done >= jobs.length && cb) cb(); }
     jobs.forEach(function (n) { load(n, one); });
   }
-  function boot() { ready(current(), function () { paint(); try { if (document.querySelector("[data-i18n=staffTabTitle]") || /staff/.test(location.pathname)) document.title = t("staffTabTitle"); } catch (e) {} }); }
+  
+  function sweepOldPacks() {
+    try {
+      var keep = "kulibert-i18n:" + I18N_REV + ":";
+      var drop = [];
+      for (var i = 0; i < sessionStorage.length; i++) {
+        var key = sessionStorage.key(i);
+        if (key && (key.indexOf("kulibert-i18n-v") === 0 || key.indexOf("kulibert-i18n:") === 0) && key.indexOf(keep) !== 0) drop.push(key);
+      }
+      drop.forEach(function (key) { sessionStorage.removeItem(key); });
+    } catch (e) {}
+  }
+  function boot() { sweepOldPacks();  ready(current(), function () { paint(); try { if (document.querySelector("[data-i18n=staffTabTitle]") || /staff/.test(location.pathname)) document.title = t("staffTabTitle"); } catch (e) {} }); }
   root.addEventListener("kulibert-lang", function (ev) {
     var lang = ev && ev.detail && ev.detail.lang;
     ready(lang || current(), paint);

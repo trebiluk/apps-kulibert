@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: Las tarjetas de Sobre este hub y el título de la pestaña del personal ya hablan tu idioma desde la primera visita, y la página del personal ya no carga una herramienta de prueba para todos.",
+  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: Novedades siempre muestra las últimas noticias en tu idioma, y la fecha de Sobre este hub también está en tu idioma.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -324,5 +324,18 @@
   "staffTabTitle": "Mesa de la sala · The Tech Room",
   "backToHub": "Volver al Hub",
   "fineKindGrown": "Comparte solo cosas amables hechas por ti o la clase.",
-  "fineQuestionsGrown": "¿Preguntas? Habla con el Sr. Kulibert o con un adulto de confianza."
+  "fineQuestionsGrown": "¿Preguntas? Habla con el Sr. Kulibert o con un adulto de confianza.",
+  "fineUpdated": "Última actualización: {date}",
+  "month1": "enero",
+  "month2": "febrero",
+  "month3": "marzo",
+  "month4": "abril",
+  "month5": "mayo",
+  "month6": "junio",
+  "month7": "julio",
+  "month8": "agosto",
+  "month9": "septiembre",
+  "month10": "octubre",
+  "month11": "noviembre",
+  "month12": "diciembre"
 }

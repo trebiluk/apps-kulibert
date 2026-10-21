@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: Amakarita ya «Ibyerekeye iyi Hub» n'umutwe w'agasanduku k'abakozi bivuga ururimi rwawe kuva ku nshuro ya mbere, kandi urupapuro rw'abakozi ntirugifungura igikoresho cy'igerageza kuri bose.",
+  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: «Ibishya» buri gihe yerekana amakuru mashya mu rurimi rwawe, kandi itariki yo muri «Ibyerekeye iyi Hub» nayo iri mu rurimi rwawe.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -324,5 +324,18 @@
   "staffTabTitle": "Ibiro by'icyumba · The Tech Room",
   "backToHub": "Gusubira kuri Hub",
   "fineKindGrown": "Sangira gusa ibintu byiza byakozwe nawe cyangwa n'ishuri.",
-  "fineQuestionsGrown": "Ibibazo? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye."
+  "fineQuestionsGrown": "Ibibazo? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye.",
+  "fineUpdated": "Byavuguruwe bwa nyuma: {date}",
+  "month1": "Mutarama",
+  "month2": "Gashyantare",
+  "month3": "Werurwe",
+  "month4": "Mata",
+  "month5": "Gicurasi",
+  "month6": "Kamena",
+  "month7": "Nyakanga",
+  "month8": "Kanama",
+  "month9": "Nzeli",
+  "month10": "Ukwakira",
+  "month11": "Ugushyingo",
+  "month12": "Ukuboza"
 }

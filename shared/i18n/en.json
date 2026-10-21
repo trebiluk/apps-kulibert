@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-title-kwtest: About This Hub cards and the staff tab title now speak your language on the first visit, and the staff page no longer loads a test tool for everyone.",
+  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: What's new always shows the latest news in your language, and the About This Hub date is in your language too.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
@@ -324,5 +324,18 @@
   "staffTabTitle": "Room desk · The Tech Room",
   "backToHub": "Back to the Hub",
   "fineKindGrown": "Only share things that are kind and made by you or the class.",
-  "fineQuestionsGrown": "Questions? Talk to Mr. Kulibert or a grown-up you trust."
+  "fineQuestionsGrown": "Questions? Talk to Mr. Kulibert or a grown-up you trust.",
+  "fineUpdated": "Last updated {date}",
+  "month1": "January",
+  "month2": "February",
+  "month3": "March",
+  "month4": "April",
+  "month5": "May",
+  "month6": "June",
+  "month7": "July",
+  "month8": "August",
+  "month9": "September",
+  "month10": "October",
+  "month11": "November",
+  "month12": "December"
 }
