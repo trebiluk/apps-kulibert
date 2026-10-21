@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.291', date: '2026-10-21', lines: {
+    en: ['Back to the Hub in the top bar speaks your language, Bag and Jump no longer overlap sideways or upright, Settings and Suit are translated in every language, and switches say ON/OFF in your language.'],
+    uk: ['«Назад до Хабу» у верхній панелі твоєю мовою, Сумка і Стрибок більше не накладаються збоку чи вертикально, Налаштування і Костюм перекладені всіма мовами, а перемикачі кажуть УВІМК/ВИМК твоєю мовою.'],
+    ru: ['«Назад в Хаб» в верхней панели на твоём языке, Сумка и Прыжок больше не накладываются сбоку или вертикально, Настройки и Костюм переведены на все языки, а переключатели говорят ВКЛ/ВЫКЛ на твоём языке.'],
+    es: ['Volver al Hub en la barra superior habla tu idioma, Bolsa y Saltar ya no se tapan de lado ni de pie, Ajustes y Traje están traducidos en todos los idiomas, y los interruptores dicen SÍ/NO en tu idioma.'],
+    ar: ['زر العودة إلى المركز في الشريط العلوي بلغتك، والحقيبة والقفز لم يعودا يتداخلان أفقيًا أو عموديًا، والإعدادات والبدلة مترجمة بكل اللغات، والمفاتيح تقول تشغيل/إيقاف بلغتك.'],
+    'fa-AF': ['«بازگشت به هاب» در نوار بالا به زبان تو است، کیف و پرش دیگر در حالت افقی یا عمودی روی هم نمی‌افتند، تنظیمات و لباس به همه زبان‌ها ترجمه شده‌اند، و کلیدها روشن/خاموش به زبان تو می‌گویند.'],
+    rw: ['Gusubira kuri Hub ku mupira wo hejuru bivuga ururimi rwawe, Igikapu na Gusimbuka ntibikigongana ku ruhande cyangwa hejuru, Igenamiterere n\'Umwambaro byahinduwe mu ndimi zose, kandi utubuto bivuga ON/OFF mu rurimi rwawe.'],
+    ti: ['ናብ ሃብ ተመለስ ኣብ ላዕለዋይ ባር ብቋንቋኻ፣ ቦርሳን ዝላን ብጐድኒ ወይ ብቐጥታ ኣይተደራረቡን፣ ቅጥዕታትን ክዳንን ብኹሉ ቋንቋታት ተተርጒሞም፣ መቐያይሮ ድማ ON/OFF ብቋንቋኻ ይብሉ።'],
+  }},
+
   { v: '2.5.290', date: '2026-10-21', lines: {
     en: ['Back to the Hub and Suit speak your language, the Language button is in Settings, Bag and Jump fit sideways, and the staff test tool stays off your page.'],
     uk: ['«Назад до Хабу» і Костюм тепер твоєю мовою, кнопка Мова є в Налаштуваннях, Сумка і Стрибок поміщаються збоку, а тестовий інструмент для персоналу не завантажується на твоїй сторінці.'],
