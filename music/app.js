@@ -5253,7 +5253,28 @@
   paintWaves();
   syncSynth();
   paintCount();
-  if (state.restored) $("lesson").textContent = "Brought back the last song we could open.";
+  if (state.restored) {
+    const holdBrought = () => {
+      const el = $("lesson");
+      if (el) el.textContent = mu("broughtBack");
+    };
+    holdBrought();
+    const dropBrought = () => { state.restored = false; };
+    document.addEventListener("pointerdown", dropBrought, { capture: true, once: true });
+    window.setTimeout(() => {
+      if (!state.restored) return;
+      holdBrought();
+      const prev = window.MuPaintLive;
+      if (typeof prev === "function" && !prev._mu23628) {
+        const wrapped = function () {
+          prev();
+          if (state.restored) holdBrought();
+        };
+        wrapped._mu23628 = true;
+        window.MuPaintLive = wrapped;
+      }
+    }, 0);
+  }
   keep();
 
   function i18nWord(key, fallback) {
@@ -5347,10 +5368,11 @@
     const host = $("patterns");
     if (host) {
       Object.keys(patterns).forEach((name) => {
+        const key = "pat_" + name.toLowerCase().replace(/[^a-z]/g, "");
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
-        b.textContent = name;
+        b.textContent = mu(key) || name;
         b.addEventListener("click", () => {
           const spec = patterns[name];
           Object.keys(spec).forEach((id) => {
@@ -5358,14 +5380,14 @@
           });
           renderDrums();
           keep();
-          $("lesson").textContent = name + " added. Saved.";
+          $("lesson").textContent = mu("partAdded", { name: mu(key) || name });
         });
         host.appendChild(b);
       });
       const surprise = document.createElement("button");
       surprise.type = "button";
       surprise.className = "btn";
-      surprise.textContent = "Surprise";
+      surprise.textContent = mu("surpriseBeat") || "Surprise";
       surprise.addEventListener("click", () => {
         drumUndo = JSON.parse(JSON.stringify(state.drums));
         $("undo-clear").hidden = false;
@@ -5376,7 +5398,7 @@
         state.drums.kick[0] = true;
         renderDrums();
         keep();
-        $("lesson").textContent = "Surprise beat. Bring it back puts the old drums back.";
+        $("lesson").textContent = mu("surpriseLesson");
       });
       host.appendChild(surprise);
     }
@@ -5401,7 +5423,7 @@
           });
           renderStaff();
           keep();
-          $("lesson").textContent = name + " is on beats 1 to 4. Saved.";
+          $("lesson").textContent = mu("chordBeats", { name: name });
         });
         chords.appendChild(b);
       });
@@ -5416,7 +5438,7 @@
         });
         renderStaff();
         keep();
-        $("lesson").textContent = name + " is on the staff. Saved.";
+        $("lesson").textContent = mu("lineOnStaff", { name: name });
       };
       const lines = [
         ["Walk", ["C", "D", "E", "F", "G", "A", "B", "c"]],
@@ -5424,18 +5446,20 @@
         ["Home", ["C", "E", "G", "c", "C", "E", "G", "c"]],
         ["Question", ["C", "D", "E", "G", "E", "D", "C", "C"]],
       ];
+      const lineKeys = { Walk: "lineWalk", Pop: "linePop", Home: "lineHome", Question: "lineQuestion" };
       lines.forEach(([name, notes]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
-        b.textContent = name;
-        b.addEventListener("click", () => writeLine(name, notes));
+        const key = lineKeys[name];
+        b.textContent = mu(key) || name;
+        b.addEventListener("click", () => writeLine(mu(key) || name, notes));
         ideas.appendChild(b);
       });
       const again = document.createElement("button");
       again.type = "button";
       again.className = "btn";
-      again.textContent = "Again";
+      again.textContent = mu("lineAgain") || "Again";
       again.addEventListener("click", () => {
         const evs = Song.events(state.song);
         for (let i = 0; i < 4; i++) {
@@ -5443,7 +5467,7 @@
         }
         renderStaff();
         keep();
-        $("lesson").textContent = "The first four notes play again. Saved.";
+        $("lesson").textContent = mu("notesAgain");
       });
       const shift = (dir, word) => {
         const ids = (Song.PITCHES || []).map((p) => p.id);
@@ -5456,20 +5480,44 @@
         });
         renderStaff();
         keep();
-        $("lesson").textContent = "The tune moved " + word + ". Saved.";
+        $("lesson").textContent = mu("tuneMoved", { word: word });
       };
-      [["Up", 1, "up"], ["Down", -1, "down"]].forEach(([name, dir, word]) => {
+      [["moveUp", 1, "wordUp"], ["moveDown", -1, "wordDown"]].forEach(([key, dir, wordKey]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
-        b.textContent = name;
-        b.addEventListener("click", () => shift(dir, word));
+        b.textContent = mu(key) || key;
+        b.addEventListener("click", () => shift(dir, mu(wordKey) || wordKey));
         ideas.appendChild(b);
       });
       ideas.appendChild(again);
     }
     const classics = $("classics");
     if (classics && !classics.childElementCount) {
+      const placeWord = (place) => {
+        const map = {
+          "Ghana": "placeGhana",
+          "Liberia": "placeLiberia",
+          "Southern Africa": "placeSouthAfrica",
+          "Japan": "placeJapan",
+          "Korea": "placeKorea",
+          "China": "placeChina",
+          "India": "placeIndia",
+          "Germany": "placeGermany",
+          "Russia": "placeRussia",
+          "France": "placeFrance",
+          "England": "placeEngland",
+          "United States": "placeUS",
+          "Mexico": "placeMexico",
+          "Hawaiʻi": "placeHawaii",
+          "Yiddish folk": "placeYiddish",
+          "Israel": "placeIsrael",
+          "a round": "placeRound",
+          "many places": "placeMany",
+        };
+        const key = map[place];
+        return (key && mu(key)) || place;
+      };
       const loadTune = (name, place, notes, bpm) => {
         const wasPlaying = !!state.playing;
         silenceOwner();
@@ -5503,10 +5551,10 @@
         paintMeters();
         paintCount();
         keep();
-        $("lesson").textContent = name + " from " + place + ". White-key version. Change any note. Saved.";
+        $("lesson").textContent = mu("whiteKey", { name: name, place: placeWord(place) });
         if (wasPlaying) play({ force: true });
         const teach = $("teach");
-        if (teach && !state.expert) teach.textContent = name + ". Press Play. The line names each note.";
+        if (teach && !state.expert) teach.textContent = mu("whiteKeyTeach", { name: name });
       };
       const z = [0, 0, 0, 0, 0, 0, 0, 0];
       const styles = {
@@ -5566,14 +5614,14 @@
           $("swing-read").textContent = String(state.swing);
         }
         document.querySelectorAll("#styles .btn").forEach((btn) => {
-          const on = btn.textContent === name;
+          const on = btn.dataset.style === name;
           btn.classList.toggle("on", on);
           btn.setAttribute("aria-pressed", on ? "true" : "false");
         });
         renderDrums();
         keep();
         if (wasPlaying) play({ force: true });
-        $("lesson").textContent = name + " under the same notes. Saved.";
+        $("lesson").textContent = mu("styleUnder", { name: mu("style_" + name.toLowerCase().replace(/[^a-z]/g, "")) || name });
       };
       const trapIt = () => applyStyle("Trap");
       let odeNotes = null;
@@ -5644,7 +5692,9 @@
           const b = document.createElement("button");
           b.type = "button";
           b.className = "btn";
-          b.textContent = name;
+          const styleKey = "style_" + name.toLowerCase().replace(/[^a-z]/g, "");
+          b.dataset.style = name;
+          b.textContent = mu(styleKey) || name;
           b.addEventListener("click", () => applyStyle(name));
           trap.appendChild(b);
         });
@@ -5725,8 +5775,9 @@
           paintLooks();
           keep();
           markScene(b);
-          snack("snackPic", { look: shown });
-          $("lesson").textContent = shown + " is on. Saved.";
+          const lookName = mu("scene_" + (name === "Neon" ? "party" : name.toLowerCase())) || shown;
+          snack("snackPic", { look: lookName });
+          $("lesson").textContent = mu("lookOn", { name: lookName });
         });
         scenes.appendChild(b);
       });
