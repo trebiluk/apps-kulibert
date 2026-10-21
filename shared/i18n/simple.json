@@ -254,5 +254,18 @@
   "vdJuiceHelp": "One tap starts the heat over. A hit sparks. The lobby shows each shape and the last match.",
   "vizStart": "Tap Play. Watch the light.",
   "helpStart": "▶ Press Play. The picture becomes light.",
-  "helpPulse": "🖼 The frame glows a little on the kick. Less motion keeps it still."
+  "helpPulse": "🖼 The frame glows a little on the kick. Less motion keeps it still.",
+  "blendAria": "Drums or notes",
+  "seeAria": "What you see",
+  "helpMix": "🎚 The sliders say how loud each drum is.",
+  "loud_kick": "Kick volume",
+  "loud_snare": "Snare volume",
+  "loud_hat": "Hat volume",
+  "loud_clap": "Clap volume",
+  "loud_tom": "Tom volume",
+  "loud_shaker": "Shaker volume",
+  "loud_rim": "Rim volume",
+  "loud_bell": "Bell volume",
+  "loud_tamb": "Tamb volume",
+  "loud_crash": "Crash volume"
 }

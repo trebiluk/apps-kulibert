@@ -4821,9 +4821,34 @@
   if (state.restored) $("lesson").textContent = "Brought back the last song we could open.";
   keep();
 
+  function i18nWord(key, fallback) {
+    try {
+      const api = window.KulibertI18n;
+      if (api && api.t) {
+        const v = api.t(key, fallback || "");
+        if (v && v !== key) return v;
+      }
+    } catch (err) { /* music words still work */ }
+    return mu(key) || fallback || "";
+  }
+  function paintMixLabels() {
+    const box = $("mix");
+    if (!box) return;
+    box.querySelectorAll("input[data-drum]").forEach((slider) => {
+      const id = slider.getAttribute("data-drum");
+      const word = i18nWord("loud_" + id, slider.getAttribute("aria-label") || "Loudness");
+      slider.setAttribute("aria-label", word);
+      const name = slider.parentElement && slider.parentElement.querySelector("span");
+      const drum = i18nWord("drum_" + id, "");
+      if (name && drum) name.textContent = drum;
+    });
+  }
   function paintMix() {
     const box = $("mix");
-    if (!box || box.childElementCount) return;
+    if (!box || box.childElementCount) {
+      paintMixLabels();
+      return;
+    }
     ROWS.forEach(([id, label]) => {
       const row = document.createElement("label");
       const name = document.createElement("span");
@@ -4833,6 +4858,8 @@
       slider.min = "0";
       slider.max = "100";
       slider.value = String(state.mix[id] || 0);
+      slider.setAttribute("data-drum", id);
+      slider.setAttribute("data-i18n-label", "loud_" + id);
       slider.setAttribute("aria-label", label + " loudness");
       const read = document.createElement("b");
       read.textContent = slider.value;
@@ -4844,6 +4871,7 @@
       row.append(name, slider, read);
       box.appendChild(row);
     });
+    paintMixLabels();
     const swing = $("swing");
     if (swing) {
       swing.value = String(state.swing || 0);
@@ -5981,6 +6009,7 @@
     stripDevNotes();
     if ($("looks")) paintLooks();
     if (typeof paintLookDrawer === "function") paintLookDrawer();
+    if (typeof paintMixLabels === "function") paintMixLabels();
     if ($("fx")) paintFx();
     if ($("waves")) paintWaves();
     const blend = $("blend-read");

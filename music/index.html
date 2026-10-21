@@ -162,6 +162,7 @@
         <li><span data-mu="helpLooks">🎨 Looks opens the picture names, colors, wall, and frame. Surprise me mixes them.</span></li>
         <li><span data-mu="helpStart" data-i18n="helpStart">▶ Press Play. The picture waits, then your music becomes light.</span></li>
         <li><span data-mu="helpPulse" data-i18n="helpPulse">🖼 The frame glows a little with the kick. It stays still if motion is reduced.</span></li>
+        <li><span data-i18n="helpMix">🎚 Each loudness slider says the drum name.</span></li>
         <li><span data-mu="helpFinger">🥁 The finger pads show their names in your language.</span></li>
         <li><span data-mu="helpMic">🎤 Mic lights starts off. Tap it to turn the room mic on or off. If you say no, the song lights still move. Nothing is recorded or sent.</span></li>
       </ul>
@@ -231,7 +232,7 @@
     <section class="group">
       <h2 data-mu="blend">Blend</h2>
       <label class="tempo"><span data-mu="blend">Blend</span> <b id="blend-read" data-mu="both">Both</b>
-        <input id="blend" type="range" min="0" max="100" value="50" aria-label="Drums or score"/>
+        <input id="blend" type="range" min="0" max="100" value="50" data-i18n-label="blendAria" aria-label="Drums or score"/>
       </label>
       <p class="hint" data-mu="blendHint">Left is the drums. Right is the score. The middle plays both.</p>
     </section>
@@ -529,7 +530,7 @@
       </div>
     </section>
 
-    <section class="out" aria-label="What you see">
+    <section class="out" data-i18n-label="seeAria" aria-label="What you see">
       <div class="stage-wrap">
         <button type="button" id="perform-exit" class="perform-exit" hidden data-mu="exitShow"><svg class="mu-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span data-mu="exitShow">Exit</span></button>
         <canvas id="viz" width="640" height="280" aria-label="Live music picture"></canvas>
@@ -653,6 +654,6 @@
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
   <script src="./strings.js?v=mu23619c"></script>
-  <script src="./app.js?v=mu23619c"></script>
+  <script src="./app.js?v=mu23619d"></script>
 </body>
 </html>

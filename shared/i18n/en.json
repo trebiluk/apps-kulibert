@@ -391,5 +391,18 @@
   "vdJuiceHelp": "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match.",
   "vizStart": "Tap ▶ to start — watch your music become light.",
   "helpStart": "▶ Press Play. The picture waits, then your music becomes light.",
-  "helpPulse": "🖼 The frame glows a little with the kick. It stays still if motion is reduced."
+  "helpPulse": "🖼 The frame glows a little with the kick. It stays still if motion is reduced.",
+  "blendAria": "Drums or score",
+  "seeAria": "What you see",
+  "helpMix": "🎚 Each loudness slider says the drum name.",
+  "loud_kick": "Kick loudness",
+  "loud_snare": "Snare loudness",
+  "loud_hat": "Hat loudness",
+  "loud_clap": "Clap loudness",
+  "loud_tom": "Tom loudness",
+  "loud_shaker": "Shaker loudness",
+  "loud_rim": "Rim loudness",
+  "loud_bell": "Bell loudness",
+  "loud_tamb": "Tamb loudness",
+  "loud_crash": "Crash loudness"
 }

@@ -391,5 +391,18 @@
   "vdJuiceHelp": "Gusubukura gutangira uruhande rumwe ukanda rimwe. Guhura biracamagana kandi birabagirana. Icyumba cyerekana ishusho ya buri mukinnyi n'uruhande rwa nyuma.",
   "vizStart": "Kanda ▶ utangire — reba uburyo umuziki wawe uba urumuri.",
   "helpStart": "▶ Kanda Kina. Ishusho irindira, hanyuma umuziki wawe uba urumuri.",
-  "helpPulse": "🖼 Urubibi rurabagirana gato ku gikoma. Imigendere mike iruma."
+  "helpPulse": "🖼 Urubibi rurabagirana gato ku gikoma. Imigendere mike iruma.",
+  "blendAria": "Ingoma cyangwa amanota",
+  "seeAria": "Ibyo ubona",
+  "helpMix": "🎚 Umuzingo w'amajwi uvuga izina ry'ingoma.",
+  "loud_kick": "Nini · amajwi",
+  "loud_snare": "Nto · amajwi",
+  "loud_hat": "Hihati · amajwi",
+  "loud_clap": "Amaraso · amajwi",
+  "loud_tom": "Tomu · amajwi",
+  "loud_shaker": "Ishakeri · amajwi",
+  "loud_rim": "Urutuba · amajwi",
+  "loud_bell": "Inzogera · amajwi",
+  "loud_tamb": "Ingoma nto · amajwi",
+  "loud_crash": "Ikirashe · amajwi"
 }

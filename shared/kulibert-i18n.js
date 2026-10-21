@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "2026-10-21-mu23619-pulse";
+  var I18N_REV = "2026-10-21-mu23619-aria";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
