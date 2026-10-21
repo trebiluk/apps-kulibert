@@ -2218,3 +2218,19 @@ for (const [lang, row] of Object.entries(C3B)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.323 drawer name. rw, ti, and Dari are machine drafts. simple falls back to English.
+const MENU323 = {
+  en: { drawerName: 'Bertopia menu' },
+  uk: { drawerName: 'Меню Bertopia' },
+  ru: { drawerName: 'Меню Bertopia' },
+  es: { drawerName: 'Menú Bertopia' },
+  ar: { drawerName: 'قائمة Bertopia' },
+  'fa-AF': { drawerName: 'فهرست Bertopia' },
+  rw: { drawerName: 'Imenu ya Bertopia' },
+  ti: { drawerName: 'ዝርዝር Bertopia' },
+}
+for (const [lang, row] of Object.entries(MENU323)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

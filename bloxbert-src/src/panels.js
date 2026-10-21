@@ -5,6 +5,17 @@ export function mountPanels(api) {
   const body = document.getElementById('sheet-body')
   const title = document.getElementById('sheet-title')
   const back = document.getElementById('sheet-back')
+  function paintMenuChrome() {
+    const word = api.t('menu')
+    if (title) title.textContent = word
+    if (back) {
+      back.setAttribute('aria-label', word)
+      const lab = back.querySelector('.back-lab')
+      if (lab) lab.textContent = word
+    }
+    const drawer = document.getElementById('drawer')
+    if (drawer) drawer.setAttribute('aria-label', api.t('drawerName'))
+  }
   let stack = []
   function tile(icon, label, fn, extra) {
     const b = document.createElement('button')
@@ -91,6 +102,7 @@ export function mountPanels(api) {
     lastFill = fill
     dress(id)
     if (api.paintBack) api.paintBack()
+    if (id === 'menu') paintMenuChrome()
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
     armSlide(id)
@@ -447,5 +459,6 @@ export function mountPanels(api) {
     if (t === sheet || t.id === 'sheet-body' || (t.classList && t.classList.contains('ggrid'))) close()
   })
   if (globalThis.location && String(globalThis.location.search || '').includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
+  paintMenuChrome()
   return { openRoot, open, close, dismiss, backOne, softRepaint, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }
