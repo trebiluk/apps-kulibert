@@ -251,7 +251,7 @@
   "frame_double": "Double",
   "frame_rgb": "RGB",
   "vdLastMatch": "Last match: {winner} won {heat} in {time}.",
-  "vdJuiceHelp": "One tap starts the heat over. A hit sparks. The lobby shows each shape and the last match.",
+  "vdJuiceHelp": "One tap starts the heat over. The keyboard stays in the game. A hit sparks. The lobby shows each shape and the last match.",
   "vizStart": "Tap Play. Watch the light.",
   "helpStart": "▶ Press Play. The picture becomes light.",
   "helpPulse": "🖼 The frame glows a little on the kick. Less motion keeps it still.",
@@ -268,5 +268,6 @@
   "loud_bell": "Bell volume",
   "loud_tamb": "Tamb volume",
   "loud_crash": "Crash volume",
-  "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off."
+  "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
+  "vdArena": "Volt Duel arena"
 }

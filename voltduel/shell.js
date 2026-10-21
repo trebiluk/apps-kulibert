@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.12: Rematch works in one tap, hits spark, and the lobby is clearer.",
-    uk: "VD 1.0.12: Реванш спрацьовує одним дотиком, удари іскрять, а лобі зрозуміліше.",
-    ru: "VD 1.0.12: Реванш срабатывает одним нажатием, удары искрят, а лобби понятнее.",
-    es: "VD 1.0.12: La revancha funciona con un toque, los golpes chispean y la sala está más clara.",
-    ar: "VD 1.0.12: إعادة المباراة تعمل بلمسة واحدة، والضربات تُشرر، والردهة أوضح.",
-    "fa-AF": "VD 1.0.12: بازی دوباره با یک لمس کار می‌کند، ضربه‌ها جرقه می‌زنند و لابی روشن‌تر است.",
-    rw: "VD 1.0.12: Gusubukura bikorwa ukanda rimwe, guhura birabagirana, kandi icyumba kirumvikana.",
-    ti: "VD 1.0.12: ዳግማይ ጸዋታ ብሓንሳብ ምጥዋቕ ይሰርሕ፣ ምድጋማት የብርቅ፣ መጸበዪውን ግልጺ እዩ።",
-    simple: "VD 1.0.12: One-tap rematch. Hits spark."
+    en: "VD 1.0.13: After Rematch, the keyboard is right in the game.",
+    uk: "VD 1.0.13: Після реваншу клавіатура одразу в грі.",
+    ru: "VD 1.0.13: После реванша клавиатура сразу в игре.",
+    es: "VD 1.0.13: Tras la revancha, el teclado queda en el juego.",
+    ar: "VD 1.0.13: بعد إعادة المباراة، لوحة المفاتيح تكون داخل اللعبة.",
+    "fa-AF": "VD 1.0.13: بعد از بازی دوباره، صفحه‌کلید داخل بازی است.",
+    rw: "VD 1.0.13: Nyuma yo gusubukura, klaviye iba mu mukino.",
+    ti: "VD 1.0.13: ድሕሪ ዳግማይ ጸዋታ፡ ኪቦርድ ኣብ ውሽጢ ጸዋታ እዩ።",
+    simple: "VD 1.0.13: After Rematch, the keyboard is in the game."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.12") plate.textContent = "VD 1.0.12";
+      if (plate && plate.textContent !== "VD 1.0.13") plate.textContent = "VD 1.0.13";
     } finally {
       painting = false;
     }
