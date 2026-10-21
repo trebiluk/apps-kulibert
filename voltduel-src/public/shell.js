@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.8: VEX and RIO score chips now differ by shape and letter, RIO no longer covers VEX at the start, and staff Test mode can reach the win.",
-    uk: "VD 1.0.8: Фішки рахунку VEX і RIO тепер різняться формою та літерою, RIO більше не закриває VEX на старті, а тестовий режим персоналу доходить до перемоги.",
-    ru: "VD 1.0.8: Фишки счёта VEX и RIO теперь различаются формой и буквой, RIO больше не закрывает VEX на старте, а тестовый режим сотрудников доходит до победы.",
-    es: "VD 1.0.8: Las fichas de VEX y RIO ahora se distinguen por forma y letra, RIO ya no tapa a VEX al inicio y el modo Prueba del personal llega a la victoria.",
-    ar: "VD 1.0.8: شارات نقاط VEX وRIO تختلف الآن بالشكل والحرف، ولم يعد RIO يغطي VEX عند البداية، ووضع اختبار الموظفين يصل إلى الفوز.",
-    "fa-AF": "VD 1.0.8: نشان‌های امتیاز VEX و RIO اکنون با شکل و حرف فرق دارند، RIO در آغاز دیگر VEX را نمی‌پوشاند و حالت آزمایش کارکنان به بُرد می‌رسد.",
-    rw: "VD 1.0.8: Udupapuro tw'amanota twa VEX na RIO ubu dutandukanywa n'ishusho n'inyuguti, RIO ntigipfukirana VEX mu ntangiriro, kandi uburyo bw'igerageza bw'abakozi bugera ku ntsinzi.",
-    ti: "VD 1.0.8: ናይ ነጥቢ ምልክታት VEX ን RIO ሕጂ ብቕርጽን ፊደልን ይፈላለዩ፣ RIO ኣብ መጀመርታ ንVEX ኣይሽፍኖን፣ ናይ ሰራሕተኛታት መፈተኒ ኣገባብ ናብ ዓወት ይበጽሕ።",
-    simple: "VD 1.0.8: VEX is a circle V. RIO is a square R. Staff can test the win."
+    en: "VD 1.0.9: The lobby speaks your language and chip help works.",
+    uk: "VD 1.0.9: Лобі тепер вашою мовою, і підказка про фішки працює.",
+    ru: "VD 1.0.9: Лобби теперь на вашем языке, и подсказка о фишках работает.",
+    es: "VD 1.0.9: La sala habla tu idioma y la ayuda de fichas funciona.",
+    ar: "VD 1.0.9: الردهة بلغتك الآن ومساعدة الشارات تعمل.",
+    "fa-AF": "VD 1.0.9: لابی حالا به زبان شماست و راهنمای نشان‌ها کار می‌کند.",
+    rw: "VD 1.0.9: Icyumba cy'itegereza kiri mu rurimi rwawe kandi ubufasha bw'udushushanyo burakora.",
+    ti: "VD 1.0.9: እቲ መጸበዪ ብቋንቋኻ እዩ፣ ሓገዝ ቺፕ ይሰርሕ።",
+    simple: "VD 1.0.9: Lobby in your language. Chip help works."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.8") plate.textContent = "VD 1.0.8";
+      if (plate && plate.textContent !== "VD 1.0.9") plate.textContent = "VD 1.0.9";
     } finally {
       painting = false;
     }

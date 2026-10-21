@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { audio } from "@/game/audio";
 import { renderAttract, renderWorld, tickParticles, type Particle, type SpriteSet } from "@/game/draw";
 import { LEVELS } from "@/game/levels";
-import { createWorld, practiceRun, staffPit, step } from "@/game/sim";
+import { createWorld, practiceRun, staffCheckpoint, staffPit, step } from "@/game/sim";
 import { considerBest, formatTime, loadSave, writeSave, type Save } from "@/game/save";
 import { VIEW_H, VIEW_W, type Input, type World } from "@/game/types";
 import { proofEnabled, registerProof, type ProofState } from "./proof";
@@ -15,7 +15,7 @@ type Screen =
 
 type Pad = { left: boolean; right: boolean; jump: boolean };
 
-type Cmd = { op: "start" | "restart" | "pit"; level: number } | { op: "clear" };
+type Cmd = { op: "start" | "restart" | "pit" | "checkpoint"; level: number } | { op: "clear" };
 
 const MAPS = [
   { left: ["KeyA"], right: ["KeyD"], jump: ["KeyW"], down: ["KeyS"] },
@@ -53,6 +53,8 @@ declare global {
     __simulate?: (level: number) => ReturnType<typeof practiceRun>;
     KulibertTest?: { on?: () => boolean };
     KulibertPrefs?: { lang?: string };
+    jumpToCheckpoint?: () => void;
+    forceEnd?: (kind?: string) => void;
     KulibertI18n?: {
       t?: (key: string, fallback?: string) => string;
       ready?: (lang: string | undefined, cb: () => void) => void;
@@ -164,6 +166,18 @@ export function VoltDuel() {
     show({ name: "play", level });
     setHint(false);
   }
+  function jumpToCheckpoint() {
+    if (!testOn()) return;
+    const current = screenRef.current;
+    const level = current.name === "play" || current.name === "results" || current.name === "pause" ? current.level : 0;
+    cmdRef.current = { op: "checkpoint", level };
+    show({ name: "play", level });
+    setHint(false);
+  }
+  function forceEnd(kind?: string) {
+    if (!testOn()) return;
+    jumpWin(kind === "lose" ? 1 : 0);
+  }
 
   useEffect(() => {
     let last = false;
@@ -173,10 +187,21 @@ export function VoltDuel() {
         last = on;
         setStaffTest(on);
       }
+      if (on) {
+        window.jumpToCheckpoint = jumpToCheckpoint;
+        window.forceEnd = forceEnd;
+      } else {
+        delete window.jumpToCheckpoint;
+        delete window.forceEnd;
+      }
     };
     tick();
     const id = window.setInterval(tick, 400);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearInterval(id);
+      delete window.jumpToCheckpoint;
+      delete window.forceEnd;
+    };
   }, []);
 
   useEffect(() => {
@@ -372,7 +397,7 @@ export function VoltDuel() {
         cmdRef.current = null;
         if (command.op === "clear") worldRef.current = null;
         else {
-          worldRef.current = createWorld(command.level, command.op === "pit" ? false : qaMode.current);
+          worldRef.current = createWorld(command.level, command.op === "pit" || command.op === "checkpoint" ? false : qaMode.current);
           particles.current = [];
           jumpPrev.current = [false, false];
           spokenCount = "";
@@ -395,6 +420,13 @@ export function VoltDuel() {
                   ? liveLine("vdLiveVexBack", "VEX back to checkpoint")
                   : liveLine("vdLiveRioBack", "RIO back to checkpoint"),
               );
+            }
+          }
+          if (command.op === "checkpoint" && worldRef.current) {
+            for (const event of staffCheckpoint(worldRef.current, 0)) {
+              if (event.type !== "check") continue;
+              audio.play("check");
+              pushLive(liveLine("vdLiveVexCheck", "VEX checkpoint"));
             }
           }
         }

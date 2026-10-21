@@ -240,6 +240,38 @@ export function staffPit(world: World, id: 0 | 1): SimEvent[] {
   return events;
 }
 
+/** Staff test only. Shows the checkpoint sign. Does not change race timing. */
+export function staffCheckpoint(world: World, id: 0 | 1): SimEvent[] {
+  const events: SimEvent[] = [];
+  if (world.winner != null) return events;
+  if (world.phase === "countdown") {
+    world.countdown = 0;
+    world.phase = "race";
+    world.goFlash = 0;
+  }
+  if (world.phase !== "race") return events;
+  const runner = world.runners[id];
+  const marks = world.level.checkpoints;
+  if (!marks.length) return events;
+  let next = runner.checkpoint + 1;
+  if (next >= marks.length) next = 0;
+  const mark = marks[next];
+  runner.x = mark.x;
+  runner.y = mark.y;
+  runner.vx = 0;
+  runner.vy = 0;
+  runner.grounded = true;
+  runner.checkpoint = next;
+  world.checks[id][next] = true;
+  world.banners.push({
+    text: id === 0 ? "VEX CHECKPOINT" : "RIO CHECKPOINT",
+    life: 0.85,
+    id,
+  });
+  events.push({ type: "check", id });
+  return events;
+}
+
 function updateRunner(world: World, runner: Runner, input: Input, dt: number, events: SimEvent[]) {
   if (runner.dead) {
     runner.respawn -= dt;

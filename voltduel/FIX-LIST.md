@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.8. Version locked: VD 1.0.8.
+Stage: VD 1.0.9. Version locked: VD 1.0.9.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -37,6 +37,6 @@ Physics and scoring were not changed.
 ## VD 1.0.9
 - [x] **Item 1 Chip help.** Already in every language pack. Live console does not warn about vdChipHelp.
 - [x] **Item 2 Lobby language.** The lobby reads the hub language at load. Heats, blurbs, Help, and the pad words follow that language.
-- [ ] **Item 3 Test script.**
-- [ ] **Item 4 Staff hooks.**
+- [x] **Item 3 Test script.** The hub bar adds kw-test.js only after a staff unlock. A kid page has no script tag and no KulibertTest global.
+- [x] **Item 4 Staff hooks.** In Test mode, jumpToCheckpoint() shows the checkpoint sign. forceEnd("win") and forceEnd("lose") open the end screen. Rematch starts that heat over. Scores stay on the TEST board.
 
