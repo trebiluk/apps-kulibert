@@ -45,3 +45,6 @@ Physics and scoring were not changed.
 - [x] **Item 2 Spanish lobby, help, and buttons.** The lobby was already Spanish. The last help lines, Close, and in-play Mute, Pause, Restart, Left, Right, and Jump follow the hub language, including their aria-labels.
 - [x] **Item 3 Checkpoint and Rematch.** Already reachable in staff Test mode. jumpToCheckpoint shows the checkpoint sign. Rematch after a win starts a new round. Scores stay on the TEST board. Kids do not get the hook.
 
+## VD 1.0.11
+- [x] **Item 1 Test script.** kw-test.js loads only when the staff unlock and the Test switch are both on. If a tag leaked in, it is removed. A kid page has no script tag and no KulibertTest or KWTest global.
+
