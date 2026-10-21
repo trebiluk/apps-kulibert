@@ -1,6 +1,8 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "RF-1.0.14";
+  // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
+  // Apps: do not edit.
+  var I18N_REV = "2026-10-21-hub-owns-i18n-rev";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
