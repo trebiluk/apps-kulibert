@@ -2456,9 +2456,9 @@ export function mountTruss(cfg) {
 }
 
   (function () {
+    if (!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on())) return;
     var bar = document.createElement("div");
     bar.id = "sc-test-jumps";
-    bar.hidden = true;
     bar.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:40;display:flex;gap:.4rem";
     function btn(label, mark) {
       var b = document.createElement("button");
@@ -2474,7 +2474,4 @@ export function mountTruss(cfg) {
     bar.appendChild(btn("Jump to win", "🏆"));
     bar.appendChild(btn("Jump to lose", "⚑"));
     document.body.appendChild(bar);
-    function paint() { bar.hidden = !testOn(); }
-    paint();
-    window.addEventListener("focus", paint);
   })();

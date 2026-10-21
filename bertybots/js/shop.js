@@ -2551,7 +2551,22 @@ export function boot() {
     var on = false;
     try { on = !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch (e) {}
     var bar = document.getElementById("bb-test-jumps");
-    if (bar) bar.hidden = !on;
+    if (!on) {
+      if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+      return;
+    }
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "bb-test-jumps";
+      bar.className = "row";
+      bar.innerHTML = '<button class="btn" id="bb-jump-win" type="button" aria-label="Jump to win" style="min-width:44px;min-height:44px"><span aria-hidden="true">🏆</span> Jump to win</button><button class="btn" id="bb-jump-lose" type="button" aria-label="Jump to lose" style="min-width:44px;min-height:44px"><span aria-hidden="true">⚑</span> Jump to lose</button>';
+      var win = document.getElementById("win");
+      if (win && win.parentNode) win.parentNode.insertBefore(bar, win);
+      var jumpWinBtn = document.getElementById("bb-jump-win");
+      var jumpLoseBtn = document.getElementById("bb-jump-lose");
+      if (jumpWinBtn) jumpWinBtn.addEventListener("click", jumpWin);
+      if (jumpLoseBtn) jumpLoseBtn.addEventListener("click", jumpLose);
+    }
   }
   function jumpWin() {
     var title = document.getElementById("win-title");
@@ -2567,10 +2582,6 @@ export function boot() {
     if (box) box.hidden = false;
   }
 
-  var jumpWinBtn = document.getElementById("bb-jump-win");
-  var jumpLoseBtn = document.getElementById("bb-jump-lose");
-  if (jumpWinBtn) jumpWinBtn.addEventListener("click", jumpWin);
-  if (jumpLoseBtn) jumpLoseBtn.addEventListener("click", jumpLose);
   showTestJumps();
   requestAnimationFrame(loop);
       return;

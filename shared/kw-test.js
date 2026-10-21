@@ -34,19 +34,19 @@
   }
 
   function paint() {
+    if (!on()) {
+      if (chip && chip.parentNode) chip.parentNode.removeChild(chip);
+      return;
+    }
     if (!chip) {
       chip = document.createElement("div");
       chip.id = "kw-test-chip";
       chip.setAttribute("role", "status");
       chip.setAttribute("aria-label", "Test mode on");
       chip.textContent = "⚑ TEST";
-      chip.style.cssText = "position:fixed;top:8px;right:8px;z-index:90;min-width:44px;min-height:44px;display:none;align-items:center;justify-content:center;padding:0 .7rem;border-radius:999px;border:1px solid #ffe14a;background:#1a120c;color:#ffe14a;font:750 .9rem/1 Outfit,system-ui,sans-serif";
-      document.addEventListener("DOMContentLoaded", function () {
-        if (chip && !chip.parentNode) document.body.appendChild(chip);
-      });
-      if (document.body) document.body.appendChild(chip);
+      chip.style.cssText = "position:fixed;top:8px;right:8px;z-index:90;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 .7rem;border-radius:999px;border:1px solid #ffe14a;background:#1a120c;color:#ffe14a;font:750 .9rem/1 Outfit,system-ui,sans-serif";
     }
-    chip.style.display = on() ? "inline-flex" : "none";
+    if (!chip.parentNode && document.body) document.body.appendChild(chip);
   }
 
   function pull() {
