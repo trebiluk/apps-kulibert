@@ -455,6 +455,8 @@
     lessonHigher: "Higher on the staff is a higher note.",
     lessonAlongMatch: "Play along is on. Your taps do not change the song. Match the flash.",
     lessonAlongOff: "Play along is off. Your taps are saved on the beat.",
+    helpScore: "📝 The Score tab teaches you in your language.",
+    news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -613,6 +615,8 @@
     lessonHigher: "Higher on the staff is a higher note.",
     lessonAlongMatch: "Play along is on. Your taps do not change the song.",
     lessonAlongOff: "Play along is off. Your taps are saved.",
+    helpScore: "📝 Score teaches you in your language.",
+    news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1062,6 +1066,8 @@
       "lessonHigher": "Вище на нотоносці — вища нота.",
       "lessonAlongMatch": "Гра разом увімкнена. Твої натиски не змінюють пісню. Повтори спалах.",
       "lessonAlongOff": "Гру разом вимкнено. Твої натиски зберігаються на біті.",
+      "helpScore": "📝 Вкладка Ноти вчить тебе твоєю мовою.",
+      "news23622": "MU 2.36.22 — Вкладка Ноти вчить тебе твоєю мовою.",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1508,6 +1514,8 @@
       "lessonHigher": "Выше на стане — более высокая нота.",
       "lessonAlongMatch": "Игра вместе включена. Твои нажатия не меняют песню. Повтори вспышку.",
       "lessonAlongOff": "Игра вместе выключена. Твои нажатия сохраняются на бите.",
+      "helpScore": "📝 Вкладка Ноты учит тебя на твоём языке.",
+      "news23622": "MU 2.36.22 — Вкладка Ноты учит тебя на твоём языке.",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1955,6 +1963,8 @@
       "lessonHigher": "Más arriba en el pentagrama es una nota más alta.",
       "lessonAlongMatch": "Tocar junto está activo. Tus toques no cambian la canción. Sigue el destello.",
       "lessonAlongOff": "Tocar junto está apagado. Tus toques se guardan en el tiempo.",
+      "helpScore": "📝 Partitura te enseña en tu idioma.",
+      "news23622": "MU 2.36.22 — La pestaña Partitura te enseña en tu idioma.",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2402,6 +2412,8 @@
       "lessonHigher": "الأعلى على المدرج نغمة أعلى.",
       "lessonAlongMatch": "العزف معًا يعمل. لمساتك لا تغيّر الأغنية. طابق الوميض.",
       "lessonAlongOff": "العزف معًا متوقف. لمساتك تُحفظ على النبض.",
+      "helpScore": "📝 لسان النوتة يعلّمك بلغتك.",
+      "news23622": "MU 2.36.22 — لسان النوتة يعلّمك بلغتك.",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2849,6 +2861,8 @@
       "lessonHigher": "بالاتر روی خطوط، نت بلندتر است.",
       "lessonAlongMatch": "همراه نواختن روشن است. ضربه‌های تو آهنگ را عوض نمی‌کند. با درخشش برابر شو.",
       "lessonAlongOff": "همراه نواختن خاموش است. ضربه‌های تو روی ضرب ذخیره می‌شود.",
+      "helpScore": "📝 زبانه نت به زبان خودت یادت می‌دهد.",
+      "news23622": "MU 2.36.22 — زبانه نت به زبان خودت یادت می‌دهد.",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3296,6 +3310,8 @@
       "lessonHigher": "Hejuru ku mirongo ni inota iri hejuru.",
       "lessonAlongMatch": "Gukina hamwe birakora. Gukanda kwawe ntiguhindura indirimbo. Kurikira umurabyo.",
       "lessonAlongOff": "Gukina hamwe birazimye. Gukanda kwawe kubikwa ku murya.",
+      "helpScore": "📝 Igitabo cy'inota kiguhugura mu rurimi rwawe.",
+      "news23622": "MU 2.36.22 — Igitabo cy'inota kiguhugura mu rurimi rwawe.",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3743,6 +3759,8 @@
       "lessonHigher": "ላዕሊ ኣብ መስመር ኖታ ላዕሊ ዘላ ኖታ እያ።",
       "lessonAlongMatch": "ምሳኻ ምጻወት ወሊዑ ኣሎ። ምጥዋቕካ ነቲ ደርፊ ኣይቅይሮን። ነቲ ብርሃን ተኸታተል።",
       "lessonAlongOff": "ምሳኻ ምጻወት ጠፊኡ። ምጥዋቕካ ኣብቲ ምት ይዕቀብ።",
+      "helpScore": "📝 ነጥቢ ብቋንቋኻ የስልጠነካ።",
+      "news23622": "MU 2.36.22 — ነጥቢ ብቋንቋኻ የስልጠነካ።",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

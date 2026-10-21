@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.22** · 2026-10-21 · channel **live**
+
+MU 2.36.22 — The Score tab teaches you in your language.
+
+## Earlier
+
 **Chip: MU 2.36.21** · 2026-10-21 · channel **live**
 
 MU 2.36.21 — When the beat drops, the picture jumps to your next look for one bar.

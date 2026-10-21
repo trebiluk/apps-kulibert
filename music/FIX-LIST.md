@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.22 item 1: the Score tab teaching line follows your language.
 - [x] MU 2.36.21 item 1: on a loud kick drop, the picture swaps to the next saved look for one bar, then comes back.
 - [x] MU 2.36.20: the Code look shows Folds and Size chips. The choice is kept. Old songs still open.
 - [x] MU 2.36.19 item 4: Drums or score, What you see, and each drum loudness name follow the language.
