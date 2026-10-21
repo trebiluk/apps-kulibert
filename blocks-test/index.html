@@ -185,9 +185,9 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   .acts button{width:70px;height:52px}.acts .jump{height:48px}
   .stickpad{width:104px;height:104px}}
 @media (max-height:500px){
-  :root{--hud-lift:76px}
+  :root{--hud-lift:76px;--hotbar-h:76px}
   .stickpad{width:104px;height:104px}
-  .jumpcol{left:auto;right:calc(16px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));gap:16px}
+  .jumpcol{left:auto;right:calc(16px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom));z-index:6;gap:16px}
   body.stick-right .jumpcol{left:calc(16px + env(safe-area-inset-left));right:auto}
 }
 @media (max-width:699px){
@@ -322,7 +322,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #wand-pill .glbl{font-size:12px;font-weight:800}
 #wand-do{background:#14B8A6;color:#04221e}
 #wand-x{color:#E6EEF2}
-@media (max-height:500px){#wand-pill{bottom:70px}#use-pill{bottom:110px}}
+@media (max-height:500px){#wand-pill{bottom:70px}#use-pill{bottom:calc(var(--hotbar-h) + 12px)}}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
 /* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
@@ -1076,7 +1076,7 @@ html[data-kb-bar]:not(.kb-framed) #held-chip.kd-tip{top:calc(48px + var(--top-h,
 #sleep-fade{position:fixed;inset:0;z-index:70;background:#070b10;opacity:0;pointer-events:none;transition:opacity .55s linear}
 #sleep-fade.on{opacity:1}
 #sleep-fade[hidden]{display:none!important}
-@media (max-height:500px){#use-pill{bottom:70px}}
+@media (max-height:500px){#use-pill{bottom:calc(var(--hotbar-h) + 12px)}}
 @media (max-width:600px){body.touch:not(.table) #use-pill{bottom:calc(var(--hud-lift,92px) + 136px)}}
 #wand-mode{flex-direction:column;min-width:64px}
 #wand-do,#wand-x{flex:0 0 44px;width:44px;min-width:44px;padding:0}
@@ -1328,7 +1328,25 @@ body.tip-on #held-chip{display:none!important}
   <span id="suit-text">Suit 100/100</span>
   <span id="suit-fill" style="width:60px;height:8px;background:#14B8A6;border-radius:4px"></span>
 </div>
+
+@media (max-height:500px){
+  #suit-bar{bottom:calc(var(--hotbar-h) + 104px + 24px)}
+}
 <div id="hotbar" class="kd-hotbar" role="toolbar" aria-label="Blocks" data-bt-label="hotbarName"></div>
+
+<script>
+;(function(){
+  var bar = document.getElementById('hotbar')
+  if (!bar) return
+  function setH(){
+    var h = bar.offsetHeight || 76
+    document.documentElement.style.setProperty('--hotbar-h', h + 'px')
+  }
+  setH()
+  if (window.ResizeObserver) new ResizeObserver(setH).observe(bar)
+  window.addEventListener('resize', setH)
+})()
+</script>
 <div id="inspect-card" class="kd-card" hidden role="dialog" aria-labelledby="inspect-title">
   <div class="card">
     <button class="icon-btn kd-key" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close"><span class="ti" data-ico="x"></span></button>
