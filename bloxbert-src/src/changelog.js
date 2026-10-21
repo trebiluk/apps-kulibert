@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.331', date: '2026-10-21', lines: {
+    en: ['2.5.331 — The Suit and Copy buttons no longer sit on the move stick or Jump.'],
+    simple: ['2.5.331 — The Suit and Copy buttons no longer sit on the move stick or Jump.'],
+    uk: ['2.5.331 — Кнопки Костюм і Копія більше не сидять на стику руху чи Стрибку.'],
+    ru: ['2.5.331 — Кнопки Костюм и Копия больше не сидят на стике движения или Прыжке.'],
+    es: ['2.5.331 — Los botones Traje y Copiar ya no se sientan en el stick de movimiento o Salto.'],
+    ar: ['2.5.331 — أزرار البدلة والنسخ لم تعد تجلس على عصا الحركة أو القفز.'],
+    'fa-AF': ['2.5.331 — دکمه‌های لباس و کپی دیگر روی عصای حرکت یا پرش نمی‌نشینند.'],
+    rw: ['2.5.331 — Amabuto ya Impuzu na Kopya ntigisigara ku nkoni y'imyuka cyangwa Gusimbuka.'],
+    ti: ['2.5.331 — መቐየሪ ልብስን ቅዳሕን ኣብ ምንቅስቓስ ዕንጨይቲ ወይ ምዝላል ኣይቅመጥን።'],
+  }},
+
   { v: '2.5.329', date: '2026-10-21', lines: {
     en: ['2.5.329 — Worlds can come back from the school server (test only for now).'],
     simple: ['2.5.329 — Worlds can come back from the school server (test only for now).'],
