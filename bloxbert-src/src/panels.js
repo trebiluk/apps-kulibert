@@ -380,6 +380,7 @@ export function mountPanels(api) {
         const shop = document.createElement('p'); shop.className = 'gnote'; shop.textContent = api.t('helpWoodshop'); g.append(shop)
         const pvp = document.createElement('p'); pvp.className = 'gnote'; pvp.textContent = api.t('pvpHint'); g.append(pvp)
         const use = document.createElement('p'); use.className = 'gnote'; use.textContent = api.t('helpUse'); g.append(use)
+        const bonk = document.createElement('p'); bonk.className = 'gnote'; bonk.textContent = api.t('helpBonk'); g.append(bonk)
         const hubLang = document.createElement('p'); hubLang.className = 'gnote'; hubLang.textContent = api.t('helpHubLang'); g.append(hubLang)
         const menuLang = document.createElement('p'); menuLang.className = 'gnote'; menuLang.textContent = api.t('helpMenuLang'); g.append(menuLang)
         const news = document.createElement('p'); news.className = 'gnote'; news.textContent = api.t('helpNew'); g.append(news)

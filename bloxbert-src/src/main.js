@@ -147,6 +147,27 @@ function showSafeChip() {
   document.body.append(chip)
   setTimeout(() => chip.remove(), 2000)
 }
+
+let lastSafe = false
+function paintBonk() {
+  const btn = document.getElementById('t-break')
+  if (!btn) return
+  const aimed = combatTarget()
+  if (aimed) {
+    btn.textContent = t('c1Bonk') || 'Bonk'
+    btn.setAttribute('aria-label', t('c1Bonk') || 'Bonk')
+  } else {
+    btn.textContent = t('break') || 'Break'
+    btn.setAttribute('aria-label', t('break') || 'Break')
+  }
+}
+function checkSafeEntry() {
+  const pos = noa.playerEntity && noa.playerEntity.position
+  if (!pos) return
+  const now = inSafeZone(pos[0], pos[2])
+  if (now && !lastSafe) showSafeChip()
+  lastSafe = now
+}
 function showFloat(text) {
   const el = document.createElement('div')
   el.textContent = text
@@ -8482,6 +8503,8 @@ function feelTick(dt) {
   hoverCrop()
 }
 noa.on('tick', (dt) => {
+  paintBonk()
+  checkSafeEntry()
   const maxP = 89 * Math.PI / 180
   if (noa.camera.pitch > maxP || noa.camera.pitch < -maxP) setLook(noa.camera.heading, noa.camera.pitch)
   feelTick(dt || 33)
@@ -9074,7 +9097,10 @@ $('t-place').addEventListener('click', () => {
   if (tryEatClick(aimed)) return
   placeBlock()
 })
-$('t-break').addEventListener('click', breakBlock)
+$('t-break').addEventListener('click', () => {
+  if (combatTarget()) { doBonk(); return }
+  breakBlock()
+})
 $('table-place').addEventListener('click', placeBlock)
 function paintPick() {
   const b = $('pick-chip')

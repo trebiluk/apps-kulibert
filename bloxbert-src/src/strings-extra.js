@@ -2355,3 +2355,18 @@ for (const [lang, row] of Object.entries(C4)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const BONKHELP = {
+  en: { helpBonk: 'Bonk: aim at a bot and tap Mine (it says Bonk). Your Suit takes hits. No bonking in Bertyville.' },
+  uk: { helpBonk: 'Бонк: наведи на бота і торкнися Ламати (там написано Бонк). Костюм бере удари. У Bertyville бонкати не можна.' },
+  ru: { helpBonk: 'Бонк: наведи на бота и коснись Ломать (там написано Бонк). Костюм принимает удары. В Bertyville бонкать нельзя.' },
+  es: { helpBonk: 'Bonk: apunta a un bot y toca Romper (dice Bonk). Tu Traje recibe los golpes. No se puede bonkear en Bertyville.' },
+  ar: { helpBonk: 'بونك: صوّب على روبوت واضغط كسر (يظهر بونك). البدلة تأخذ الضربات. لا بونك في Bertyville.' },
+  'fa-AF': { helpBonk: 'بونک: به ربات نشانه بگیر و شکستن را بزن (بونک می‌نویسد). لباس ضربه‌ها را می‌گیرد. در Bertyville بونک نمی‌شود.' },
+  rw: { helpBonk: 'Bonk: tera kuri robot kandi ukande Vunika (ivuga Bonk). Impuzu yawe ifata ingumi. Nta bonk muri Bertyville.' },
+  ti: { helpBonk: 'ቦንክ፡ ናብ ቦት ኣመልክት እሞ ሰብር ንካእ (ቦንክ ይብል)። ልብስካ ምትሕትና ይወስድ። ኣብ Bertyville ቦንክ ኣይግበርን።' },
+}
+for (const [lang, row] of Object.entries(BONKHELP)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
