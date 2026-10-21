@@ -31,6 +31,6 @@ Physics and scoring were not changed.
 
 ## VD 1.0.8
 - [x] **Item 1 Score chips.** VEX chip is a circle with V. RIO chip is a square with R. Same shapes as the track. Not color alone.
-- [ ] **Item 2 Start labels.**
+- [x] **Item 2 Start labels.** Each runner's circle or square and name sit above that runner. At the start, RIO no longer covers the VEX name.
 - [ ] **Item 3 Staff test.**
 

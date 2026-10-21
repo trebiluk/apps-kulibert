@@ -398,23 +398,29 @@ function drawRunner(
   }
   ctx.restore();
 
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  if (runner.id === 0) {
-    ctx.moveTo(cx - 34, runner.y - 12);
-    ctx.lineTo(cx - 26, runner.y - 20);
-    ctx.lineTo(cx - 18, runner.y - 12);
-    ctx.lineTo(cx - 26, runner.y - 4);
-  } else {
-    ctx.moveTo(cx - 34, runner.y - 4);
-    ctx.lineTo(cx - 26, runner.y - 20);
-    ctx.lineTo(cx - 18, runner.y - 4);
-  }
-  ctx.closePath();
-  ctx.fill();
-  ctx.font = "600 12px Barlow, Outfit, sans-serif";
+  const tagY = runner.y - 28;
+  ctx.save();
   ctx.textAlign = "center";
-  ctx.fillText(NAMES[runner.id], cx + 8, runner.y - 8);
+  ctx.textBaseline = "middle";
+  ctx.font = "700 11px Barlow, Outfit, sans-serif";
+  if (runner.id === 0) {
+    ctx.fillStyle = CYAN;
+    ctx.beginPath();
+    ctx.arc(cx, tagY, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#07090c";
+    ctx.fillText("V", cx, tagY);
+  } else {
+    ctx.fillStyle = AMBER;
+    ctx.fillRect(cx - 7, tagY - 7, 14, 14);
+    ctx.fillStyle = "#07090c";
+    ctx.fillText("R", cx, tagY);
+  }
+  ctx.font = "600 12px Barlow, Outfit, sans-serif";
+  ctx.textBaseline = "bottom";
+  ctx.fillStyle = color;
+  ctx.fillText(NAMES[runner.id], cx, tagY - 10);
+  ctx.restore();
 }
 
 function poseOf(runner: Runner): { sheet: "run" | "jump"; frame: number } {
