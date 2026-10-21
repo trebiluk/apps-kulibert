@@ -5834,8 +5834,8 @@
     setMode("band");
     paintBand();
     if (job.task === "five") warmUp();
-    else if (job.task === "save") $("lesson").textContent = "Tap each note. It is saved on a beat.";
-    else $("lesson").textContent = "Tap each note. Read the fingering.";
+    else if (job.task === "save") $("lesson").textContent = mu("pracSave") || "Tap each note. It is saved on a beat.";
+    else $("lesson").textContent = mu("pracRead") || "Tap each note. Read the fingering.";
   }
   function finishPractice() {
     const who = signedKid();
@@ -5846,7 +5846,7 @@
     saveAssign(items);
     paintPractice();
     paintAssign();
-    $("lesson").textContent = "Practice is marked done on this Chromebook.";
+    $("lesson").textContent = mu("pracDone") || "Practice is marked done on this Chromebook.";
   }
   function paintAssign() {
     const list = $("assign-list");
@@ -5887,7 +5887,7 @@
   if (assignAdd) assignAdd.addEventListener("click", () => {
     const who = signedKid();
     if (!who) {
-      $("lesson").textContent = "Sign in first. The name comes from TechWorks. You can still play.";
+      $("lesson").textContent = mu("pracSign") || "Sign in first. The name comes from TechWorks. You can still play.";
       return;
     }
     const items = loadAssign().filter((item) => !(item.code === who.code && item.task === $("assign-task").value && !item.done));
@@ -5901,7 +5901,7 @@
     saveAssign(items.slice(0, 40));
     paintAssign();
     paintPractice();
-    $("lesson").textContent = who.alias + " has practice on this Chromebook.";
+    $("lesson").textContent = mu("pracHas", { alias: who.alias }) || (who.alias + " has practice on this Chromebook.");
   });
   const assignFile = $("assign-file");
   if (assignFile) assignFile.addEventListener("click", () => {
@@ -5942,9 +5942,9 @@
           saveAssign(items.slice(0, 40));
           paintAssign();
           paintPractice();
-          $("lesson").textContent = "Class file opened. Aliases only.";
+          $("lesson").textContent = mu("pracOpened") || "Class file opened. Aliases only.";
         } catch (err) {
-          $("lesson").textContent = "That file is not a class practice list.";
+          $("lesson").textContent = mu("pracBad") || "That file is not a class practice list.";
         }
       };
       reader.readAsText(file);

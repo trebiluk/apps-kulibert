@@ -514,7 +514,14 @@
     picStays: "This picture stays with the song. Saved.",
     micLoopOn: "The mic is on for this loop only. Tap the pads or play along.",
     helpSound: "🎚 Sound sliders, files and pictures explain themselves in your language.",
-    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language."
+    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language.",
+    pracSave: "Tap each note. It is saved on a beat.",
+    pracRead: "Tap each note. Read the fingering.",
+    pracDone: "Practice is marked done on this Chromebook.",
+    pracSign: "Sign in first. The name comes from TechWorks. You can still play.",
+    pracHas: "{alias} has practice on this Chromebook.",
+    pracOpened: "Class file opened. Aliases only.",
+    pracBad: "That file is not a class practice list."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -733,7 +740,14 @@
     picStays: "This picture stays with the song. Saved.",
     micLoopOn: "The mic is on for this loop only. Tap the pads.",
     helpSound: "🎚 Sliders, files and pictures talk in your language.",
-    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language."
+    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language.",
+    pracSave: "Tap each note. It stays on a beat.",
+    pracRead: "Tap each note. Read the fingers.",
+    pracDone: "Practice is marked done here.",
+    pracSign: "Sign in first. You can still play.",
+    pracHas: "{alias} has practice here.",
+    pracOpened: "Class file opened. Nicknames only.",
+    pracBad: "That file is not a class list."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1242,7 +1256,14 @@
       "picStays": "Ця картинка лишається з піснею. Збережено.",
       "micLoopOn": "Мікрофон увімкнено лише для цього лупу. Торкнись падів або грай разом.",
       "helpSound": "🎚 Повзунки звуку, файли і картинки пояснюють себе твоєю мовою.",
-      "news23627": "MU 2.36.27 — Повзунки звуку, файли і картинки пояснюють себе твоєю мовою."
+      "news23627": "MU 2.36.27 — Повзунки звуку, файли і картинки пояснюють себе твоєю мовою.",
+      "pracSave": "Торкнись кожної ноти. Її збережено на біті.",
+      "pracRead": "Торкнись кожної ноти. Прочитай аплікатуру.",
+      "pracDone": "Практику позначено виконаною на цьому Chromebook.",
+      "pracSign": "Спершу увійди. Ім'я береться з TechWorks. Грати все одно можна.",
+      "pracHas": "{alias} має практику на цьому Chromebook.",
+      "pracOpened": "Файл класу відкрито. Лише псевдоніми.",
+      "pracBad": "Цей файл не є списком практики класу."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1748,7 +1769,14 @@
       "picStays": "Эта картинка остаётся с песней. Сохранено.",
       "micLoopOn": "Микрофон включён только для этого лупа. Нажимай пэды или играй вместе.",
       "helpSound": "🎚 Ползунки звука, файлы и картинки объясняют себя на твоём языке.",
-      "news23627": "MU 2.36.27 — Ползунки звука, файлы и картинки объясняют себя на твоём языке."
+      "news23627": "MU 2.36.27 — Ползунки звука, файлы и картинки объясняют себя на твоём языке.",
+      "pracSave": "Нажми каждую ноту. Она сохраняется на доле.",
+      "pracRead": "Нажми каждую ноту. Прочитай аппликатуру.",
+      "pracDone": "Практика отмечена выполненной на этом Chromebook.",
+      "pracSign": "Сначала войди. Имя берётся из TechWorks. Играть всё равно можно.",
+      "pracHas": "У {alias} есть практика на этом Chromebook.",
+      "pracOpened": "Файл класса открыт. Только псевдонимы.",
+      "pracBad": "Этот файл не список практики класса."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2255,7 +2283,14 @@
       "picStays": "Esta imagen se queda con la canción. Guardado.",
       "micLoopOn": "El micrófono está encendido solo para este loop. Toca los pads o toca junto.",
       "helpSound": "🎚 Los deslizadores de sonido, los archivos y las imágenes se explican en tu idioma.",
-      "news23627": "MU 2.36.27 — Los deslizadores de sonido, los archivos y las imágenes se explican en tu idioma."
+      "news23627": "MU 2.36.27 — Los deslizadores de sonido, los archivos y las imágenes se explican en tu idioma.",
+      "pracSave": "Toca cada nota. Se guarda en un tiempo.",
+      "pracRead": "Toca cada nota. Lee la digitación.",
+      "pracDone": "La práctica quedó hecha en este Chromebook.",
+      "pracSign": "Entra primero. El nombre viene de TechWorks. Igual puedes tocar.",
+      "pracHas": "{alias} tiene práctica en este Chromebook.",
+      "pracOpened": "Se abrió el archivo de la clase. Solo alias.",
+      "pracBad": "Ese archivo no es una lista de práctica."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2762,7 +2797,14 @@
       "picStays": "هذه الصورة تبقى مع الأغنية. حُفظت.",
       "micLoopOn": "المايك يعمل لهذه الحلقة فقط. المس الأزرار أو اعزف معًا.",
       "helpSound": "🎚 منزلقات الصوت والملفات والصور تشرح نفسها بلغتك.",
-      "news23627": "MU 2.36.27 — منزلقات الصوت والملفات والصور تشرح نفسها بلغتك."
+      "news23627": "MU 2.36.27 — منزلقات الصوت والملفات والصور تشرح نفسها بلغتك.",
+      "pracSave": "المس كل نغمة. تُحفظ على نبضة.",
+      "pracRead": "المس كل نغمة. اقرأ وضع الأصابع.",
+      "pracDone": "عُلّمت الممارسة منتهية على هذا Chromebook.",
+      "pracSign": "سجّل الدخول أولاً. الاسم يأتي من TechWorks. يمكنك العزف مع ذلك.",
+      "pracHas": "لدى {alias} ممارسة على هذا Chromebook.",
+      "pracOpened": "فُتح ملف الصف. أسماء مستعارة فقط.",
+      "pracBad": "هذا الملف ليس قائمة ممارسة للصف."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3269,7 +3311,14 @@
       "picStays": "این تصویر با آهنگ می‌ماند. ذخیره شد.",
       "micLoopOn": "مایک فقط برای همین حلقه روشن است. دکمه‌ها را بزن یا همراه بزن.",
       "helpSound": "🎚 لغزنده‌های صدا، فایل‌ها و تصویرها به زبان خودت توضیح می‌دهند.",
-      "news23627": "MU 2.36.27 — لغزنده‌های صدا، فایل‌ها و تصویرها به زبان خودت توضیح می‌دهند."
+      "news23627": "MU 2.36.27 — لغزنده‌های صدا، فایل‌ها و تصویرها به زبان خودت توضیح می‌دهند.",
+      "pracSave": "هر نت را بزن. روی یک ضرب ذخیره می‌شود.",
+      "pracRead": "هر نت را بزن. انگشت‌گذاری را بخوان.",
+      "pracDone": "تمرین روی این Chromebook انجام‌شده نشان شد.",
+      "pracSign": "اول وارد شو. نام از TechWorks می‌آید. باز هم می‌توانی بزنی.",
+      "pracHas": "{alias} روی این Chromebook تمرین دارد.",
+      "pracOpened": "فایل صنف باز شد. فقط نام‌های مستعار.",
+      "pracBad": "این فایل فهرست تمرین صنف نیست."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3776,7 +3825,14 @@
       "picStays": "Iyi shusho iguma n'indirimbo. Byabitswe.",
       "micLoopOn": "Mikoro iriho kuri uru ruziga gusa. Kanda utudomo cyangwa ukine hamwe.",
       "helpSound": "🎚 Imikoreshereze y'ijwi, dosiye n'amashusho bisobanura mu rurimi rwawe.",
-      "news23627": "MU 2.36.27 — Imikoreshereze y'ijwi, dosiye n'amashusho bisobanura mu rurimi rwawe."
+      "news23627": "MU 2.36.27 — Imikoreshereze y'ijwi, dosiye n'amashusho bisobanura mu rurimi rwawe.",
+      "pracSave": "Kanda buri nota. Ibikwa ku murongo.",
+      "pracRead": "Kanda buri nota. Soma uko utubuto dushyirwa.",
+      "pracDone": "Imyitozo yanditswe ko yarangiye kuri iyi Chromebook.",
+      "pracSign": "Injira mbere. Izina riva muri TechWorks. Urashobora gukina.",
+      "pracHas": "{alias} afite imyitozo kuri iyi Chromebook.",
+      "pracOpened": "Dosiye y'ishuri yafunguwe. Amazina y'ibihimbano gusa.",
+      "pracBad": "Iyo dosiye si urutonde rw'imyitozo y'ishuri."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4283,7 +4339,14 @@
       "picStays": "እዚ ስእሊ ምስቲ ደርፊ ይቕመጥ። ተዓቂቡ።",
       "micLoopOn": "ማይክ ንዚ ሉፕ ጥራይ ወሊዑ ኣሎ። ቁልፍታት ጠውቕ ወይ ምሳኻ ተጻወት።",
       "helpSound": "🎚 ተንሸራታቲ ድምጺ፡ ፋይላትን ስእልታትን ብቋንቋኻ ይግለጹ።",
-      "news23627": "MU 2.36.27 — ተንሸራታቲ ድምጺ፡ ፋይላትን ስእልታትን ብቋንቋኻ ይግለጹ።"
+      "news23627": "MU 2.36.27 — ተንሸራታቲ ድምጺ፡ ፋይላትን ስእልታትን ብቋንቋኻ ይግለጹ።",
+      "pracSave": "ነፍሲ ወከፍ ነጥቢ ጠውቕ። ኣብ ምት ይዕቀብ።",
+      "pracRead": "ነፍሲ ወከፍ ነጥቢ ጠውቕ። ኣሰራርሓ ኣጻብዕቲ ኣንብብ።",
+      "pracDone": "ልምምድ ኣብዚ Chromebook ተዛዚሙ ተበጺሑ።",
+      "pracSign": "መጀመርታ እቶ። ስም ካብ TechWorks ይመጽእ። ጸወታ ክትቅጽል ትኽእል።",
+      "pracHas": "{alias} ኣብዚ Chromebook ልምምድ ኣለዎ።",
+      "pracOpened": "ናይ ክፍሊ ፋይል ተኸፊቱ። ስም ሓሳውቲ ጥራይ።",
+      "pracBad": "እቲ ፋይል ናይ ክፍሊ ልምምድ ዝርዝር ኣይኮነን።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
