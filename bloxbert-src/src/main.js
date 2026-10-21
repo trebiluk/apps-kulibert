@@ -6766,6 +6766,23 @@ function bindUsePill() {
 bindUsePill()
 function armUse() {
   const q = location.search
+  const isTest = location.pathname.startsWith('/blocks-test/') || (window.kwTest && window.kwTest.on && window.kwTest.on())
+  const nightQ = q.includes('use=night')
+  const mobQ = (q.match(/use=mob=([a-z]+)/) || [])[1] || ''
+  if (isTest && (nightQ || mobQ)) {
+    if (nightQ && window.__use && window.__use.night) window.__use.night()
+    // Seat outside safe zone
+    const testX = 56, testY = 6, testZ = 56
+    noa.entities.setPosition(noa.playerEntity, [testX, testY, testZ])
+    if (mobQ && mobs && mobs.spawn) {
+      mobs.spawn(mobQ, testX + 4, testY, testZ, true)
+    }
+    window.__use = window.__use || {}
+    window.__use.spawn = (k) => mobs && mobs.spawn ? mobs.spawn(k, testX + 4, testY, testZ, true) : null
+    window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
+    window.__use.phase = () => (basics && basics.phase ? basics.phase() : 'day')
+    return
+  }
   const kind = q.includes('use=door') ? 'door' : q.includes('use=oven') ? 'oven' : q.includes('use=bed') ? 'bed' : q.includes('use=sew') ? 'sew' : q.includes('use=chair') || q.includes('use=') ? 'chair' : ''
   if (!kind) return
   if (learn && learn.cancelAuto) learn.cancelAuto()
@@ -11676,8 +11693,8 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
     openWoodshop() { const k = openMachineKey || '0,5,0'; if (panels) panels.open('woodshop', k); const sheet = document.getElementById('sheet'); if (sheet) sheet.dataset.shopKey = k; return true },
     voxelAt(x, y, z) { return getVoxel(x, y, z) },
     spawnMob(kind) {
-      const p = noa.entities.getPosition(noa.playerEntity)
-      const mob = mobs.spawn(kind || 'scrapper', Math.floor(p[0]) + 4, Math.floor(p[1]), Math.floor(p[2]))
+      const testX = 56, testY = 6, testZ = 56
+      const mob = mobs.spawn(kind || 'scrapper', testX + 4, testY, testZ, true)
       return { ok: !!mob, kind: kind || 'scrapper', id: mob ? mob.id : null }
     },
     spawnDummy() {

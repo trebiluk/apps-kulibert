@@ -141,7 +141,8 @@ export function createMobs(opts) {
   }
   function spawn(kind, x, y, z, forced) {
     if (!forced && (kind === 'scrapper' || kind === 'sparkbug') && !canSpawn(kind, x, y, z)) return null
-    if (zone(x, z) || plotInterior(x | 0, z | 0) || blockedWorld()) return null
+    if (!forced && (zone(x, z) || plotInterior(x | 0, z | 0) || blockedWorld())) return null
+    if (forced && zone(x, z)) return null // still refuse inside town even forced
     if (mobs.length >= worldCap()) return null
     const mob = {
       id: kind + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
