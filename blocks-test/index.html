@@ -587,12 +587,18 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
 #hotbar .slot:not(.bag-tile){width:var(--ks-slot);height:var(--ks-slot);min-width:var(--ks-slot);min-height:var(--ks-slot);flex:0 0 var(--ks-slot);padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;position:relative;gap:0}
 #hotbar .slot.empty{opacity:.42}
 #hotbar .slot.empty .sw{background:none;border:0;box-shadow:none}
-#hotbar .sw{width:70%;height:70%;background:none;box-shadow:none;border:0;border-radius:0;display:grid;place-items:center}
-#hotbar .sw canvas,#hotbar .sw svg{width:100%;height:100%;max-width:none;max-height:none;image-rendering:pixelated}
-#hotbar .slot:not(.bag-tile)>canvas,#hotbar .slot:not(.bag-tile)>svg{width:70%;height:70%;max-width:70%;max-height:70%;image-rendering:pixelated}
+#hotbar .sw{width:32px;height:32px;min-width:32px;min-height:32px;max-width:32px;max-height:32px;background:none;box-shadow:none;border:0;border-radius:0;display:grid;place-items:center}
+#hotbar .sw canvas,#hotbar .sw svg{width:32px;height:32px;max-width:32px;max-height:32px;image-rendering:pixelated}
+#hotbar .slot:not(.bag-tile)>canvas,#hotbar .slot:not(.bag-tile)>svg{width:32px;height:32px;max-width:32px;max-height:32px;image-rendering:pixelated}
 #hotbar .tag,#hotbar .slot:not(.bag-tile) .lbl{display:none}
 #hotbar .digit{position:absolute;top:2px;left:3px;font-size:12px;line-height:1;color:#E6EEF2;opacity:.8;pointer-events:none}
-#hotbar .count,#sheet[data-panel=inventory] .count{position:absolute;right:2px;bottom:2px;min-width:14px;padding:0 3px;border-radius:4px;background:#000A;color:#E6EEF2;font-size:12px;font-weight:700;line-height:14px;pointer-events:none}
+html body #hotbar#hotbar .slot:not(.bag-tile){padding:0 0 2px !important;height:auto !important;min-height:44px !important;max-height:none !important;overflow:visible !important;box-sizing:border-box !important;align-items:center !important;justify-content:flex-start !important}
+html body #hotbar#hotbar .slot:not(.bag-tile) .lbl{display:block !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;font-size:14px !important;font-weight:700 !important;line-height:1.05 !important;white-space:normal !important;overflow:visible !important;text-overflow:clip !important;word-break:normal !important;overflow-wrap:normal !important;hyphens:none !important;max-height:none !important}
+html body #hotbar#hotbar .slot .count{position:absolute !important;top:14px !important;left:auto !important;right:calc((100% - 32px) / 2 + 2px) !important;bottom:auto !important;z-index:4 !important;min-width:16px;padding:0 3px;border-radius:4px;background:#000 !important;color:#fff !important;font-size:14px !important;font-weight:700 !important;line-height:16px !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;pointer-events:none}
+html body #sheet#sheet[data-panel=inventory] .well .count{position:absolute !important;top:18px !important;left:auto !important;right:calc((100% - 32px) / 2 + 2px) !important;bottom:auto !important;z-index:4 !important;min-width:16px;padding:0 3px;border-radius:4px;background:#000 !important;color:#fff !important;font-size:14px !important;font-weight:700 !important;line-height:16px !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;pointer-events:none}
+html body #sheet#sheet[data-panel=inventory] .well .gic,html body #sheet#sheet[data-panel=inventory] .well .gic svg,html body #sheet#sheet[data-panel=inventory] .well .gic canvas{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
+html body #sheet#sheet[data-panel=inventory] .well .glbl{font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;font-size:14px !important;font-weight:700 !important;line-height:1.15 !important;white-space:normal !important;overflow:visible !important;text-overflow:clip !important;overflow-wrap:break-word !important;word-break:normal !important;max-height:none !important}
+html body #hotbar#hotbar .slot:not(.bag-tile) .sw,html body #hotbar#hotbar .slot:not(.bag-tile) .sw canvas,html body #hotbar#hotbar .slot:not(.bag-tile) .sw svg{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
 #hotbar .slot[aria-pressed=true]{border:0;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55,0 0 0 3px #22D3EE}
 #hotbar .slot[aria-pressed=true]::after,#sheet[data-panel=inventory] .well.on::after{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #22D3EE;pointer-events:none}
 #hotbar .bag-tile,#sheet[data-panel=inventory] .keycap,#sheet[data-panel=inventory] #sheet-x,#sheet[data-panel=inventory] #sheet-back{background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;box-shadow:none;transition:transform 80ms linear,border-bottom-width 80ms linear}
@@ -629,13 +635,12 @@ html body #sheet.kd-panel[data-panel=inventory]{left:8px;right:auto;bottom:auto;
 html body #sheet.kd-panel[data-panel=inventory] .sheet-bar,html body #sheet.kd-panel[data-panel=inventory] #sheet-body{width:100%;min-width:0;max-width:100%;flex:0 1 auto;box-sizing:border-box}
 #sheet[data-panel=inventory] .wells{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:flex-start;width:auto;max-width:100%;gap:8px;padding:12px}
 #sheet[data-panel=inventory] .well.has{flex:0 1 112px;width:112px;max-width:112px;min-width:0;height:auto;min-height:88px;flex-direction:column;justify-content:flex-start;align-items:center;padding:4px 6px 8px}
-#sheet[data-panel=inventory] .well.has .gic{width:48px;height:48px;flex:0 0 48px}
+#sheet[data-panel=inventory] .well.has .gic,#sheet[data-panel=inventory] .well .gic{width:32px;height:32px;min-width:32px;min-height:32px;flex:0 0 32px;display:grid;place-items:center}
 #sheet[data-panel=inventory] .well .glbl,#sheet[data-panel=inventory] .well.on .glbl{display:block;position:static;left:auto;bottom:auto;transform:none;font-size:12px;font-weight:700;line-height:1.15;white-space:normal;overflow:visible;overflow-wrap:break-word;text-align:center;color:#E6EEF2;background:transparent;padding:4px 0 0;max-width:100%;height:auto}
-#sheet[data-panel=inventory] .well.has .count{top:2px;bottom:auto;right:4px}
 #sheet[data-panel=inventory] .well{width:var(--ks-slot);height:var(--ks-slot);min-width:var(--ks-slot);min-height:var(--ks-slot);padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;color:#E6EEF2;position:relative;display:flex;align-items:center;justify-content:center;overflow:visible;touch-action:none}
 #sheet[data-panel=inventory] .well.empty{opacity:.4}
-#sheet[data-panel=inventory] .well .gic{width:70%;height:70%;display:grid;place-items:center}
-#sheet[data-panel=inventory] .well .gic svg,#sheet[data-panel=inventory] .well .gic canvas,#sheet[data-panel=inventory] .well canvas{width:100%;height:100%;image-rendering:pixelated}
+#sheet[data-panel=inventory] .well .gic{width:32px;height:32px;min-width:32px;min-height:32px;display:grid;place-items:center}
+#sheet[data-panel=inventory] .well .gic svg,#sheet[data-panel=inventory] .well .gic canvas,#sheet[data-panel=inventory] .well canvas{width:32px;height:32px;max-width:32px;max-height:32px;image-rendering:pixelated}
 #sheet[data-panel=inventory] .well.empty .glbl{display:none}
 #sheet[data-panel=inventory] .well.on{box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55,0 0 0 3px #22D3EE}
 #sheet[data-panel=inventory] .lost-row{width:calc(100% - 24px);min-height:44px;margin:10px 12px 0;font-weight:700}
@@ -1119,7 +1124,11 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
   #sheet #sheet-back .back-lab{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 }
 @media (max-width:480px){
-  body.touch #hotbar{--ks-gap:2px;--ks-slot:calc((100vw - 8px - 10px - 18px) / 10)}
+  html body #hotbar#hotbar{--ks-gap:1px;--ks-slot:44px;flex-direction:column !important;align-items:stretch !important;width:100vw !important;max-width:100vw !important;box-sizing:border-box !important;padding:2px !important;gap:2px !important;overflow:visible !important}
+  html body #hotbar#hotbar .bag-tile{order:-1 !important;align-self:flex-end !important}
+  html body #hotbar#hotbar .item-strip{display:flex !important;flex-wrap:nowrap !important;width:100% !important;min-width:0 !important;gap:1px !important;overflow-x:auto !important;overflow-y:hidden !important;justify-content:flex-start !important;scroll-snap-type:x mandatory}
+  html body #hotbar#hotbar .slot:not(.bag-tile){flex:0 0 44px !important;width:44px !important;min-width:44px !important;max-width:none !important;scroll-snap-align:center}
+  html body #hotbar#hotbar .slot:not(.bag-tile) .sw,html body #hotbar#hotbar .slot:not(.bag-tile) .sw canvas,html body #hotbar#hotbar .slot:not(.bag-tile) .sw svg,html body #hotbar#hotbar .slot:not(.bag-tile)>canvas,html body #hotbar#hotbar .slot:not(.bag-tile)>svg{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
   body.touch #hotbar .bag-tile .lbl{font-size:10px;line-height:1}
 }
 #pause-btn{position:fixed;top:calc(var(--top-h) + 8px);right:68px;z-index:30;width:48px;height:48px;border-radius:10px;border:1px solid rgba(248,250,252,.45);background:rgba(11,18,32,.78);color:#f8fafc;font:700 16px/1 inherit;display:inline-flex;align-items:center;justify-content:center;padding:0}
@@ -1150,7 +1159,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.303">
+<link rel="stylesheet" href="read.css?v=2.5.304">
 </head>
 <body>
 <div id="stage"></div>
@@ -1165,7 +1174,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.303</span>
+      <span class="ver" id="ver-plate">2.5.304</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1214,7 +1223,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.301 — After you walk, you stay where you walked.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1328,8 +1337,8 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.271"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.303" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.303" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.304" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.304" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var chip = document.getElementById('wallet-chip')

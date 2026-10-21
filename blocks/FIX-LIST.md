@@ -1,10 +1,12 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.303 item pictures. 2.5.301 walk stays).
+Updated Wed Oct 21 2026 (Build: 2.5.304 bigger counts and phone slots).
 
 - [x] **2.5.301 Walk:** After you walk and let go, you stay where you walked. The game does not pull you back to the saved spot. If the ground is still loading, you do not fall through it.
 
 - [x] **2.5.302 Hub language:** On first load Bertopia uses the language you picked on the Hub. A stale game language does not win. Changing the Hub language in another tab follows. A teacher class language still wins.
+
+- [x] **2.5.304 counts and slots:** Item counts are 14px bold on a solid black chip, bottom-right on the picture, in the hotbar and the Bag. Pictures are 32px. Phone slots stay at least 44px. If nine slots cannot fit, the hotbar scrolls instead of shrinking.
 
 - [x] **2.5.303 item pictures:** Planks, Log, Berry, Sapling and Stick each have a distinct silhouette at 32px. Planks = 3 boards, Log = bark + end ring, Berry = 3 berries, Sapling = stem + 2 leaves, Stick = thin diagonal. Same picture in hotbar and Bag.
 - [x] **2.5.294 strings:** kitPvp and pvpHint in uk/ru. rw/ti use native state words. Decor pack strings imported. Labels do not include ON/OFF.
@@ -235,6 +237,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.303 item pictures. 2.5.301 walk stays).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.304 | 2.5.304 | Bigger item counts you can read from your seat, and bigger slots on phones | shipping |
 | 2.5.303 | 2.5.303 | Planks, Log, Berry, Sapling and Stick each have their own clear picture | shipping |
 | 2.5.302 | 2.5.302 | Bertopia opens in the same language you picked on the Hub | shipping |
 | 2.5.275 | 2.5.275 | Leaves finally fits in the hotbar | shipping |

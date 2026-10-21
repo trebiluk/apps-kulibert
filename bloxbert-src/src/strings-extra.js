@@ -1756,3 +1756,17 @@ for (const [lang, row] of Object.entries(FIT301)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT304 = {
+  en: { whatsNewBody: '2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.' },
+  uk: { whatsNewBody: '2.5.304 — Кількість предметів більша і читається з місця, а клітинки на телефоні більші.' },
+  ru: { whatsNewBody: '2.5.304 — Числа предметов крупнее и читаются с места, а ячейки на телефоне больше.' },
+  es: { whatsNewBody: '2.5.304 — Los números de objetos se leen desde tu asiento, y las casillas son más grandes en el teléfono.' },
+  ar: { whatsNewBody: '2.5.304 — عدد القطع أكبر ويُقرأ من مقعدك، والخانات أكبر على الهاتف.' },
+  'fa-AF': { whatsNewBody: '2.5.304 — شمار قطعات بزرگ‌تر است و از جایت خوانده می‌شود، و خانه‌ها در تلفن بزرگ‌تر اند.' },
+  rw: { whatsNewBody: '2.5.304 — Imibare y\'ibintu irakura kandi isomeka uviye ku ntebe, kandi uduce ni bunini kuri telefoni.' },
+  ti: { whatsNewBody: '2.5.304 — ቁጽሪ ኣቑሑት ዓብዪ እዩ ከምኡውን ካብ መንበርካ ይንበብ፣ ቦታታት ድማ ኣብ ተሌፎን ዓበዩ።' },
+}
+for (const [lang, row] of Object.entries(FIT304)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

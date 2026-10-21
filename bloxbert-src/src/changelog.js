@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.304', date: '2026-10-21', lines: {
+    en: ['2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.'],
+    simple: ['2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.'],
+    uk: ['2.5.304 — Кількість предметів більша і читається з місця, а клітинки на телефоні більші.'],
+    ru: ['2.5.304 — Числа предметов крупнее и читаются с места, а ячейки на телефоне больше.'],
+    es: ['2.5.304 — Los números de objetos se leen desde tu asiento, y las casillas son más grandes en el teléfono.'],
+    ar: ['2.5.304 — عدد القطع أكبر ويُقرأ من مقعدك، والخانات أكبر على الهاتف.'],
+    'fa-AF': ['2.5.304 — شمار قطعات بزرگ‌تر است و از جایت خوانده می‌شود، و خانه‌ها در تلفن بزرگ‌تر اند.'],
+    rw: ['2.5.304 — Imibare y\'ibintu irakura kandi isomeka uviye ku ntebe, kandi uduce ni bunini kuri telefoni.'],
+    ti: ['2.5.304 — ቁጽሪ ኣቑሑት ዓብዪ እዩ ከምኡውን ካብ መንበርካ ይንበብ፣ ቦታታት ድማ ኣብ ተሌፎን ዓበዩ።'],
+  }},
+
   { v: '2.5.301', date: '2026-10-21', lines: {
     en: ['2.5.301 — After you walk, you stay where you walked.'],
     simple: ['2.5.301 — After you walk, you stay where you walked.'],
