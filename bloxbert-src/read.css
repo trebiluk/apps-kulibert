@@ -1718,3 +1718,12 @@ html body #dig-chip:not([hidden]) {
 
 
 
+
+/* 2.5.291: reserve Jump's column so the centered hotbar never reaches it */
+@media (max-height: 520px) and (min-width: 700px) {
+  html body #hotbar { max-width: calc(100vw - 2 * (16px + env(safe-area-inset-right) + 64px + 12px)) !important; }
+  html body #hotbar .item-strip { overflow-x: auto !important; }
+}
+@media (max-width: 520px) {
+  :root { --hud-lift: 150px; }
+}
