@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.18** · 2026-10-21 · channel **live**
+
+MU 2.36.18 — the staff test script loads only when staff Test is on.
+
+## Earlier
+
 **Chip: MU 2.36.17** · 2026-10-20 · channel **live**
 
 MU 2.36.17 — finger pads and their group names follow your language; Canciones and Partitura fit on a sideways phone.

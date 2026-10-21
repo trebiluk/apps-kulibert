@@ -1,3 +1,39 @@
+/* MU 2.36.18 — the staff test script stays off the kid page. */
+(function () {
+  var testScriptAsked = false;
+  function staffUnlocked() {
+    try {
+      if (localStorage.getItem("tech-room-hub-staff") === "1") return true;
+      if (sessionStorage.getItem("tech-room-hub-staff") === "1") return true;
+    } catch (e) {}
+    try {
+      if (window.HubStaffAuth && window.HubStaffAuth.isUnlocked && window.HubStaffAuth.isUnlocked()) return true;
+      if (window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked()) return true;
+    } catch (e2) {}
+    return false;
+  }
+  function testSwitchOn() {
+    var pack = false, asked = false;
+    try { var raw = JSON.parse(sessionStorage.getItem("kulibert-test-pack") || "null"); pack = !!(raw && raw.testMode === true); } catch (e) {}
+    try { asked = new URLSearchParams(location.search).get("test") === "1" || sessionStorage.getItem("kulibert-test-tab") === "1"; } catch (e2) {}
+    return pack && asked;
+  }
+  function stripTestScript() {
+    var nodes = document.querySelectorAll("script[src*='kw-test']");
+    for (var i = 0; i < nodes.length; i++) if (nodes[i].parentNode) nodes[i].parentNode.removeChild(nodes[i]);
+    var chip = document.getElementById("kw-test-chip"); if (chip && chip.parentNode) chip.parentNode.removeChild(chip);
+    try { delete window.KulibertTest; } catch (e) { window.KulibertTest = undefined; }
+    try { delete window.KWTest; } catch (e2) { window.KWTest = undefined; }
+  }
+  function loadStaffTest() {
+    if (!(staffUnlocked() && testSwitchOn())) { if (!testScriptAsked) stripTestScript(); return; }
+    if (testScriptAsked || document.querySelector("script[src*='kw-test']")) { testScriptAsked = true; return; }
+    testScriptAsked = true;
+    var s = document.createElement("script"); s.src = "/shared/kw-test.js?v=MU-2.36.18"; document.head.appendChild(s);
+  }
+  loadStaffTest();
+  document.addEventListener("DOMContentLoaded", loadStaffTest);
+})();
 (() => {
   const Song = window.KulibertSong;
   const KEY = "kulibert.music.now";
