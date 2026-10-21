@@ -16,11 +16,11 @@ Physics and scoring were not changed.
 - Hand-played Qualifier at 915×412: keyboard run and jumps, "VEX takes the flag" at 20.97. Console 0 errors.
 
 ## Still open
-- [ ] One Rematch tap after that flag was not pressed.
+- [x] Rematch. One tap after the flag starts a fresh heat. Mouse at 1366, touch at 915×412 and 412×915, Enter and Space. Timer 0.00, both coins 0, countdown 3, runners back at the start. Console 0.
 
 ## VD 1.0.6
 - [x] **Item 1 Shape and letter.** VEX lamp and off-screen mark are a circle with V. RIO is a square with R. Unlit lamps stay that shape in gray. HUD pips match. Checkpoint banner says VEX CHECKPOINT or RIO CHECKPOINT.
 - [x] **Item 2 Screen reader.** A hidden status line says 3, 2, 1, Go, who reached a checkpoint, who went back, and who took the flag. At most one update a second. Coins are not announced. Esc says Paused, then Resumed.
 - [x] **Item 3 Hazard sign.** A hit sends the runner back and shows "VEX — BACK TO CHECKPOINT" or "RIO — BACK TO CHECKPOINT". That runner's score pill gets a 2px outline for 0.3s (0.6s and still, if motion is reduced). No white flash.
-- [ ] **Item 4 Rematch.**
+- [x] **Item 4 Rematch.** Already worked. No race code changed. After "VEX takes the flag" (13.05, 6 coins) one Rematch tap starts countdown at 0.00 with 0 coins.
 
