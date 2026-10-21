@@ -1171,13 +1171,22 @@ html body .kb-bar .kb-plate {
     font-size: 13px !important;
   }
   html body header.top .tools { gap: 2px !important; margin-left: 0 !important; flex-wrap: nowrap !important; }
-  html body #hub-back .tl { font-size: 0 !important; line-height: 0 !important; }
-  html body #hub-back .tl::after {
-    content: "Hub";
-    font-size: 13px;
-    line-height: 1.1;
-    font-weight: 700;
+  /* 2.5.315: icon-only on narrow phones so long translations fit */
+  html body header.top .tool .tl,
+  html body header.top #mode-pill .tl {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
+  html body #hub-back .tl { font-size: 0 !important; line-height: 0 !important; }
+  html body #hub-back .tl::after { content: none !important; }
+  html body #hub-back .ti { display: flex !important; }
 }
 
 /* 2.5.269 wins over the short-screen clip. Names, counts, and Output stay whole. */
