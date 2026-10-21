@@ -37,5 +37,17 @@
   "rfHelpFewer": "Try to win with fewer ramps.",
   "rfNewBest": "New best!",
   "rfTryFewer": "Try for fewer",
-  "vdHoldHelp": "Hold Run and Jump. The buttons fit."
+  "vdHoldHelp": "Hold Run and Jump. The buttons fit.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "Go",
+  "vdLiveVexCheck": "VEX checkpoint",
+  "vdLiveRioCheck": "RIO checkpoint",
+  "vdLiveVexBack": "VEX goes back",
+  "vdLiveRioBack": "RIO goes back",
+  "vdLiveVexWin": "VEX takes the flag. {time} seconds. {coins} coins.",
+  "vdLiveRioWin": "RIO takes the flag. {time} seconds. {coins} coins.",
+  "vdLivePaused": "Paused",
+  "vdLiveResumed": "Go on"
 }

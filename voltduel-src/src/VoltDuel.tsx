@@ -98,6 +98,8 @@ export function VoltDuel() {
   const timeRef = useRef<HTMLElement>(null);
   const pipRefs = [useRef<HTMLElement>(null), useRef<HTMLElement>(null)];
   const flagRef = useRef<HTMLElement>(null);
+  const liveRef = useRef<HTMLParagraphElement>(null);
+  const liveGate = useRef({ at: 0, pending: "" });
 
   const [screen, setScreen] = useState<Screen>({ name: "menu" });
   const [save, setSave] = useState<Save>({ best: {}, muted: false });
@@ -116,9 +118,38 @@ export function VoltDuel() {
     show({ name: "results", level: screenRef.current.name === "play" || screenRef.current.name === "results" || screenRef.current.name === "pause" ? screenRef.current.level : 0, winner: 1, time: 12, coins: [1, 3] });
   }
 
+  function liveLine(key: string, fallback: string) {
+    try {
+      const value = window.KulibertI18n?.t?.(key, fallback);
+      if (value && value !== key) return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  }
+
+  function pushLive(text: string) {
+    const gate = liveGate.current;
+    const now = performance.now();
+    if (gate.at && now - gate.at < 1000) {
+      gate.pending = text;
+      return;
+    }
+    if (!liveRef.current) {
+      gate.pending = text;
+      return;
+    }
+    gate.at = now;
+    gate.pending = "";
+    liveRef.current.textContent = text;
+  }
+
   function show(next: Screen) {
+    const prev = screenRef.current.name;
     screenRef.current = next;
     setScreen(next);
+    if (next.name === "pause") pushLive(liveLine("vdLivePaused", "Paused"));
+    else if (next.name === "play" && prev === "pause") pushLive(liveLine("vdLiveResumed", "Resumed"));
   }
 
   function launch(level: number, op: "start" | "restart" = "start") {
@@ -148,6 +179,7 @@ export function VoltDuel() {
     let last = performance.now();
     let acc = 0;
     let spriteStamp = 0;
+    let spokenCount = "";
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
@@ -270,6 +302,7 @@ export function VoltDuel() {
         else worldRef.current = createWorld(command.level, qaMode.current);
         particles.current = [];
         jumpPrev.current = [false, false];
+        spokenCount = "";
       }
 
       const world = worldRef.current;
@@ -291,14 +324,59 @@ export function VoltDuel() {
             if (event.type === "die") {
               audio.play("die");
               burst(event.x, event.y, "#ff4b4b", 14, 160);
+              pushLive(
+                event.id === 0
+                  ? liveLine("vdLiveVexBack", "VEX back to checkpoint")
+                  : liveLine("vdLiveRioBack", "RIO back to checkpoint"),
+              );
             }
-            if (event.type === "check") audio.play("check");
-            if (event.type === "win") audio.play("win");
-            if (event.type === "go") audio.play("go");
+            if (event.type === "check") {
+              audio.play("check");
+              pushLive(
+                event.id === 0
+                  ? liveLine("vdLiveVexCheck", "VEX checkpoint")
+                  : liveLine("vdLiveRioCheck", "RIO checkpoint"),
+              );
+            }
+            if (event.type === "win") {
+              audio.play("win");
+              const runner = world.runners[event.id];
+              const time = formatTime(runner.finishTime || world.time);
+              const coins = String(runner.coins);
+              const vex = event.id === 0;
+              pushLive(
+                liveLine(
+                  vex ? "vdLiveVexWin" : "vdLiveRioWin",
+                  vex
+                    ? "VEX takes the flag, {time} seconds, {coins} coins"
+                    : "RIO takes the flag, {time} seconds, {coins} coins",
+                )
+                  .replace("{time}", time)
+                  .replace("{coins}", coins),
+              );
+            }
+            if (event.type === "go") {
+              audio.play("go");
+              pushLive(liveLine("vdLiveGo", "Go"));
+            }
             if (event.type === "land") burst(event.x, event.y, "#8b98a6", 4, 50);
           }
           acc -= 1 / 60;
           steps += 1;
+        }
+        if (world.phase === "countdown" && world.countdown > 0) {
+          const n = String(Math.ceil(world.countdown));
+          if (n !== spokenCount) {
+            spokenCount = n;
+            pushLive(liveLine(`vdLive${n}`, n));
+          }
+        }
+        const gate = liveGate.current;
+        if (gate.pending && liveRef.current && (!gate.at || performance.now() - gate.at >= 1000)) {
+          gate.at = performance.now();
+          const text = gate.pending;
+          gate.pending = "";
+          liveRef.current.textContent = text;
         }
         if (world.phase === "done" && !world.reported && world.winner != null) {
           world.reported = true;
@@ -592,6 +670,9 @@ export function VoltDuel() {
   return (
     <div className={`game-root${padMode === "on" ? " pads-on" : ""}${padMode === "off" ? " pads-off" : ""}`}>
       <div className="stage">
+        {screen.name !== "menu" && (
+          <p className="vd-live" role="status" aria-live="polite" ref={liveRef} />
+        )}
         {playing && (
           <div className="hud">
             <div className="hud-row">

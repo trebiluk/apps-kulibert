@@ -190,5 +190,17 @@
   "rfHelpFewer": "Попробуй победить с меньшим числом рамп.",
   "rfNewBest": "Новый рекорд!",
   "rfTryFewer": "Попробуй меньше",
-  "vdHoldHelp": "Удерживайте Бег и Прыжок, чтобы двигаться дальше. Кнопки помещаются на любом телефоне."
+  "vdHoldHelp": "Удерживайте Бег и Прыжок, чтобы двигаться дальше. Кнопки помещаются на любом телефоне.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "Марш",
+  "vdLiveVexCheck": "VEX на контрольной точке",
+  "vdLiveRioCheck": "RIO на контрольной точке",
+  "vdLiveVexBack": "VEX назад к контрольной точке",
+  "vdLiveRioBack": "RIO назад к контрольной точке",
+  "vdLiveVexWin": "VEX берёт флаг, {time} секунд, {coins} монет",
+  "vdLiveRioWin": "RIO берёт флаг, {time} секунд, {coins} монет",
+  "vdLivePaused": "Пауза",
+  "vdLiveResumed": "Дальше"
 }

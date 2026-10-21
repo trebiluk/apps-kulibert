@@ -190,5 +190,17 @@
   "rfHelpFewer": "ብውሑዳት መንሸራተቲ ክትዓውት ፈትን።",
   "rfNewBest": "ሓድሽ ሪኮርድ!",
   "rfTryFewer": "ብውሑድ ፈትን",
-  "vdHoldHelp": "ጉያን ዝላን ጸቒጥካ ሓዝ ንምቕጻል። መልጎማት ኣብ ኩሉ ተሌፎን ይኣትዉ።"
+  "vdHoldHelp": "ጉያን ዝላን ጸቒጥካ ሓዝ ንምቕጻል። መልጎማት ኣብ ኩሉ ተሌፎን ይኣትዉ።",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "ኪድ",
+  "vdLiveVexCheck": "VEX ኣብ መቆጻጸሪ ነጥቢ",
+  "vdLiveRioCheck": "RIO ኣብ መቆጻጸሪ ነጥቢ",
+  "vdLiveVexBack": "VEX ናብ መቆጻጸሪ ነጥቢ ተመሊሱ",
+  "vdLiveRioBack": "RIO ናብ መቆጻጸሪ ነጥቢ ተመሊሱ",
+  "vdLiveVexWin": "VEX ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}",
+  "vdLiveRioWin": "RIO ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}",
+  "vdLivePaused": "ደው",
+  "vdLiveResumed": "ቀጽል"
 }

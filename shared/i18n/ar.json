@@ -190,5 +190,17 @@
   "rfHelpFewer": "حاول أن تفوز بمنحدرات أقل.",
   "rfNewBest": "رقم جديد!",
   "rfTryFewer": "جرّب بعدد أقل",
-  "vdHoldHelp": "اضغط باستمرار على الجري والقفز لتتابع. الأزرار تناسب كل هاتف."
+  "vdHoldHelp": "اضغط باستمرار على الجري والقفز لتتابع. الأزرار تناسب كل هاتف.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "انطلق",
+  "vdLiveVexCheck": "نقطة تفتيش VEX",
+  "vdLiveRioCheck": "نقطة تفتيش RIO",
+  "vdLiveVexBack": "VEX عاد إلى نقطة التفتيش",
+  "vdLiveRioBack": "RIO عاد إلى نقطة التفتيش",
+  "vdLiveVexWin": "VEX يأخذ العلم، {time} ثانية، {coins} عملات",
+  "vdLiveRioWin": "RIO يأخذ العلم، {time} ثانية، {coins} عملات",
+  "vdLivePaused": "إيقاف",
+  "vdLiveResumed": "متابعة"
 }

@@ -190,5 +190,17 @@
   "rfHelpFewer": "بکوش با سطح شیب‌دار کمتر ببری.",
   "rfNewBest": "رکورد تازه!",
   "rfTryFewer": "با کمتر امتحان کن",
-  "vdHoldHelp": "دویدن و پرش را نگه دار تا ادامه بدهی. دکمه‌ها در هر تلفن جا می‌شوند."
+  "vdHoldHelp": "دویدن و پرش را نگه دار تا ادامه بدهی. دکمه‌ها در هر تلفن جا می‌شوند.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "برو",
+  "vdLiveVexCheck": "ایستگاه بازرسی VEX",
+  "vdLiveRioCheck": "ایستگاه بازرسی RIO",
+  "vdLiveVexBack": "VEX به ایستگاه بازرسی برگشت",
+  "vdLiveRioBack": "RIO به ایستگاه بازرسی برگشت",
+  "vdLiveVexWin": "VEX پرچم را گرفت، {time} ثانیه، {coins} سکه",
+  "vdLiveRioWin": "RIO پرچم را گرفت، {time} ثانیه، {coins} سکه",
+  "vdLivePaused": "توقف",
+  "vdLiveResumed": "ادامه"
 }

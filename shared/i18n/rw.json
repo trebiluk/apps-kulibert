@@ -190,5 +190,17 @@
   "rfHelpFewer": "Gerageza gutsinda n'imihanda mike.",
   "rfNewBest": "Agahigo gashya!",
   "rfTryFewer": "Gerageza nkeya",
-  "vdHoldHelp": "Fata Kwiruka na Gusimbuka kugira ngo ukomeze. Utubuto dukwira kuri buri telefoni."
+  "vdHoldHelp": "Fata Kwiruka na Gusimbuka kugira ngo ukomeze. Utubuto dukwira kuri buri telefoni.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "Genda",
+  "vdLiveVexCheck": "VEX kuri checkpoint",
+  "vdLiveRioCheck": "RIO kuri checkpoint",
+  "vdLiveVexBack": "VEX yagaruwe kuri checkpoint",
+  "vdLiveRioBack": "RIO yagaruwe kuri checkpoint",
+  "vdLiveVexWin": "VEX yafashe ibendera, amasegonda {time}, ibiceri {coins}",
+  "vdLiveRioWin": "RIO yafashe ibendera, amasegonda {time}, ibiceri {coins}",
+  "vdLivePaused": "Hagarara",
+  "vdLiveResumed": "Komeza"
 }

@@ -20,7 +20,7 @@ Physics and scoring were not changed.
 
 ## VD 1.0.6
 - [x] **Item 1 Shape and letter.** VEX lamp and off-screen mark are a circle with V. RIO is a square with R. Unlit lamps stay that shape in gray. HUD pips match. Checkpoint banner says VEX CHECKPOINT or RIO CHECKPOINT.
-- [ ] **Item 2 Screen reader.**
+- [x] **Item 2 Screen reader.** A hidden status line says 3, 2, 1, Go, who reached a checkpoint, who went back, and who took the flag. At most one update a second. Coins are not announced. Esc says Paused, then Resumed.
 - [ ] **Item 3 Hazard sign.**
 - [ ] **Item 4 Rematch.**
 

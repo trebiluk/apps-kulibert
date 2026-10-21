@@ -190,5 +190,17 @@
   "rfHelpFewer": "Intenta ganar con menos rampas.",
   "rfNewBest": "¡Nuevo récord!",
   "rfTryFewer": "Prueba con menos",
-  "vdHoldHelp": "Mantén Correr y Saltar para seguir. Los botones caben en cada teléfono."
+  "vdHoldHelp": "Mantén Correr y Saltar para seguir. Los botones caben en cada teléfono.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "Ya",
+  "vdLiveVexCheck": "Punto de control de VEX",
+  "vdLiveRioCheck": "Punto de control de RIO",
+  "vdLiveVexBack": "VEX vuelve al punto de control",
+  "vdLiveRioBack": "RIO vuelve al punto de control",
+  "vdLiveVexWin": "VEX toma la bandera, {time} segundos, {coins} monedas",
+  "vdLiveRioWin": "RIO toma la bandera, {time} segundos, {coins} monedas",
+  "vdLivePaused": "Pausa",
+  "vdLiveResumed": "Sigue"
 }

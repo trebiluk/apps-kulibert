@@ -190,5 +190,17 @@
   "rfHelpFewer": "Спробуй виграти з меншою кількістю схилів.",
   "rfNewBest": "Новий рекорд!",
   "rfTryFewer": "Спробуй менше",
-  "vdHoldHelp": "Тримайте Біг і Стрибок, щоб рухатися далі. Кнопки вміщаються на кожному телефоні."
+  "vdHoldHelp": "Тримайте Біг і Стрибок, щоб рухатися далі. Кнопки вміщаються на кожному телефоні.",
+  "vdLive3": "3",
+  "vdLive2": "2",
+  "vdLive1": "1",
+  "vdLiveGo": "Старт",
+  "vdLiveVexCheck": "VEX на контрольній точці",
+  "vdLiveRioCheck": "RIO на контрольній точці",
+  "vdLiveVexBack": "VEX назад до контрольної точки",
+  "vdLiveRioBack": "RIO назад до контрольної точки",
+  "vdLiveVexWin": "VEX бере прапор, {time} секунд, {coins} монет",
+  "vdLiveRioWin": "RIO бере прапор, {time} секунд, {coins} монет",
+  "vdLivePaused": "Пауза",
+  "vdLiveResumed": "Далі"
 }
