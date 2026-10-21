@@ -417,7 +417,12 @@
     code_grow_mid: "Mid",
     code_grow_tall: "Tall",
     helpCode: "🧩 Pick the Code look. Then you can change its folds and size.",
-    news23620: "MU 2.36.20 — Pick the Code look and you can change its folds and size."
+    news23620: "MU 2.36.20 — Pick the Code look and you can change its folds and size.",
+    dropSwap: "Drop swap",
+    dropOn: "ON",
+    dropOff: "OFF",
+    dropSwapOn: "Drop swap on",
+    dropSwapOff: "Drop swap off"
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -538,7 +543,12 @@
     code_grow_mid: "Mid",
     code_grow_tall: "Tall",
     helpCode: "🧩 Pick Code. Change folds and size.",
-    news23620: "MU 2.36.20 — Pick Code. Change folds and size."
+    news23620: "MU 2.36.20 — Pick Code. Change folds and size.",
+    dropSwap: "Drop swap",
+    dropOn: "ON",
+    dropOff: "OFF",
+    dropSwapOn: "Drop swap on",
+    dropSwapOff: "Drop swap off"
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -951,6 +961,11 @@
       "code_grow_tall": "Високо",
       "helpCode": "🧩 Обери вигляд Код. Тоді зміни складки та розмір.",
       "news23620": "MU 2.36.20 — Обери вигляд Код і зміни складки та розмір.",
+      "dropSwap": "Зміна на дропі",
+      "dropOn": "УВІМК",
+      "dropOff": "ВИМК",
+      "dropSwapOn": "Зміна на дропі увімкнена",
+      "dropSwapOff": "Зміна на дропі вимкнена",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1360,6 +1375,11 @@
       "code_grow_tall": "Высоко",
       "helpCode": "🧩 Выбери вид Код. Потом меняй складки и размер.",
       "news23620": "MU 2.36.20 — Выбери вид Код и меняй складки и размер.",
+      "dropSwap": "Смена на дропе",
+      "dropOn": "ВКЛ",
+      "dropOff": "ВЫКЛ",
+      "dropSwapOn": "Смена на дропе включена",
+      "dropSwapOff": "Смена на дропе выключена",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1770,6 +1790,11 @@
       "code_grow_tall": "Alto",
       "helpCode": "🧩 Elige Código. Luego cambia los pliegues y el tamaño.",
       "news23620": "MU 2.36.20 — Elige el aspecto Código y cambia sus pliegues y tamaño.",
+      "dropSwap": "Cambio al drop",
+      "dropOn": "SÍ",
+      "dropOff": "NO",
+      "dropSwapOn": "Cambio al drop activado",
+      "dropSwapOff": "Cambio al drop apagado",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2180,6 +2205,11 @@
       "code_grow_tall": "طويل",
       "helpCode": "🧩 اختر الرمز. ثم غيّر الطيّات والحجم.",
       "news23620": "MU 2.36.20 — اختر مظهر الرمز وغيّر الطيّات والحجم.",
+      "dropSwap": "تبديل الدروب",
+      "dropOn": "تشغيل",
+      "dropOff": "إيقاف",
+      "dropSwapOn": "تبديل الدروب يعمل",
+      "dropSwapOff": "تبديل الدروب متوقف",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2590,6 +2620,11 @@
       "code_grow_tall": "بلند",
       "helpCode": "🧩 کد را برگزین. بعد تا و اندازه را عوض کن.",
       "news23620": "MU 2.36.20 — نمای کد را برگزین و تا و اندازه را عوض کن.",
+      "dropSwap": "عوض شدن دراپ",
+      "dropOn": "روشن",
+      "dropOff": "خاموش",
+      "dropSwapOn": "عوض شدن دراپ روشن است",
+      "dropSwapOff": "عوض شدن دراپ خاموش است",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3000,6 +3035,11 @@
       "code_grow_tall": "Nda",
       "helpCode": "🧩 Hitamo Kode. Hanyuma uhindure impindu n'ingano.",
       "news23620": "MU 2.36.20 — Hitamo isura Kode, uhindure impindu n'ingano.",
+      "dropSwap": "Hindura ku drop",
+      "dropOn": "KORA",
+      "dropOff": "HAGARARA",
+      "dropSwapOn": "Hindura ku drop irakora",
+      "dropSwapOff": "Hindura ku drop yahagarara",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3410,6 +3450,11 @@
       "code_grow_tall": "ነዊሕ",
       "helpCode": "🧩 ኮድ ምረጽ። ድሕሪኡ ምዕጻውን ዓቐንን ቀይር።",
       "news23620": "MU 2.36.20 — መልክዕ ኮድ ምረጽ፣ ምዕጻውን ዓቐንን ቀይር።",
+      "dropSwap": "ምልውዋጥ ድሮፕ",
+      "dropOn": "ወልዕ",
+      "dropOff": "ኣጥፍእ",
+      "dropSwapOn": "ምልውዋጥ ድሮፕ ወሊዑ",
+      "dropSwapOff": "ምልውዋጥ ድሮፕ ጠፊኡ",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

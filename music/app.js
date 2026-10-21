@@ -1102,7 +1102,7 @@
       ? "Wait for the count. Then each tap stays."
       : "Beat " + (step + 1) + " is saved.";
   }
-  const drop = { bar: 0, kicks: 0, prev: null, grid: -1 };
+  const drop = { bar: 0, kicks: 0, prev: null, grid: -1, on: true, swapBar: 0, hold: null, swapAt: 0, lastSwap: -99, lastChange: 0, returnAt: 0 };
   function staffDrop() {
     var staff = false;
     try {
@@ -1118,7 +1118,34 @@
     try { asked = new URLSearchParams(location.search).get("test") === "1" || sessionStorage.getItem("kulibert-test-tab") === "1"; } catch (e4) {}
     return !!(staff && pack && asked);
   }
+  function motionLess() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || document.documentElement.getAttribute("data-kp-motion") === "less"
+      || document.body.classList.contains("pref-less-motion");
+  }
+  function nextSavedLook() {
+    const layers = state.layers || [];
+    const saved = [];
+    layers.forEach((layer) => {
+      if (layer && layer.look && layer.look !== "off") saved.push({ look: layer.look, color: layer.color || "cyan" });
+    });
+    if (saved.length < 2) return null;
+    const cur = (layers[0] && layers[0].look) || state.look;
+    let idx = 0;
+    for (let i = 0; i < saved.length; i++) if (saved[i].look === cur) idx = i;
+    const nxt = saved[(idx + 1) % saved.length];
+    if (!nxt || nxt.look === cur) return null;
+    return nxt;
+  }
+  function releaseHold() {
+    if (!drop.hold && !drop.swapBar) return;
+    drop.hold = null;
+    drop.swapBar = 0;
+    drop.returnAt = 0;
+    drop.lastChange = performance.now();
+  }
   function dropLook() {
+    if (drop.hold && drop.on && !motionLess()) return drop.hold.look;
     const layer = state.layers && state.layers[0];
     return (layer && layer.look) || state.look || "";
   }
@@ -1127,13 +1154,23 @@
     drop.kicks = 0;
     drop.prev = null;
     drop.grid = -1;
+    drop.swapBar = 0;
+    drop.hold = null;
+    drop.swapAt = 0;
+    drop.returnAt = 0;
+    drop.lastSwap = -99;
     state.drop = null;
     state.seenGrid = -1;
   }
   function beginDropBar(g) {
     if (drop.bar > 0) {
       if (staffDrop() && drop.bar <= 8) console.log({ bar: drop.bar, kicks: drop.kicks, look: dropLook() });
+      const finished = drop.swapBar === drop.bar;
       drop.prev = drop.kicks;
+      if (finished) {
+        if (performance.now() - drop.swapAt >= 500) releaseHold();
+        else drop.returnAt = drop.swapAt + 500;
+      }
     }
     drop.bar += 1;
     drop.kicks = 0;
@@ -1141,12 +1178,26 @@
     let expect = 0;
     const row = state.drums && state.drums.kick;
     if (row) for (let i = 0; i < 8; i++) if (row[start + i]) expect += 1;
-    if (drop.bar > 1 && drop.prev != null && drop.prev <= 1 && expect >= 3) {
+    const quiet = drop.prev != null && drop.prev <= 1;
+    const cooled = drop.bar >= drop.lastSwap + 2;
+    const rateOk = performance.now() - drop.lastChange >= 500;
+    if (drop.bar > 1 && quiet && expect >= 3) {
       state.drop = { bar: drop.bar, kicks: expect, at: Date.now() };
       try { window.dispatchEvent(new CustomEvent("mu-drop", { detail: state.drop })); } catch (err) {}
+      if (drop.on && !motionLess() && cooled && rateOk && !drop.hold) {
+        const nxt = nextSavedLook();
+        if (nxt) {
+          drop.hold = nxt;
+          drop.swapBar = drop.bar;
+          drop.swapAt = performance.now();
+          drop.lastSwap = drop.bar;
+          drop.lastChange = drop.swapAt;
+        }
+      }
     }
   }
   function hearDrop(grid) {
+    if (drop.hold && (!drop.on || motionLess() || (drop.returnAt && performance.now() >= drop.returnAt))) releaseHold();
     const steps = [];
     if (drop.grid < 0) steps.push(grid);
     else {
@@ -6457,11 +6508,18 @@
         gear.spin = 0;
         gear.trail = 0;
       }
+      if (drop.hold && (!drop.on || motionLess() || (drop.returnAt && performance.now() >= drop.returnAt))) releaseHold();
+      let look = state.look;
+      let layers = state.layers;
+      if (drop.hold && drop.on && !motionLess()) {
+        look = drop.hold.look;
+        layers = [{ look: drop.hold.look, color: drop.hold.color || "cyan" }];
+      }
       return {
         pause: document.hidden || !(live || micDrives),
         playing: (state.playing && live) || micDrives,
-        look: state.look,
-        layers: state.layers,
+        look: look,
+        layers: layers,
         rgb: state.rgb && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         wall: state.wall,
         gear: gear,
@@ -6472,6 +6530,67 @@
         playhead: state.step,
       };
     });
+    function paintDropSwitch() {
+      const btn = $("drop-swap");
+      if (!btn) return;
+      const word = btn.querySelector(".drop-word");
+      const mark = btn.querySelector(".drop-state");
+      const name = mu("dropSwap") || "Drop swap";
+      const stateWord = drop.on ? (mu("dropOn") || "ON") : (mu("dropOff") || "OFF");
+      if (word) word.textContent = name;
+      if (mark) mark.textContent = stateWord;
+      btn.setAttribute("aria-pressed", drop.on ? "true" : "false");
+      const full = drop.on ? (mu("dropSwapOn") || "Drop swap on") : (mu("dropSwapOff") || "Drop swap off");
+      btn.setAttribute("aria-label", full);
+      btn.setAttribute("title", full);
+    }
+    function ensureDropSwitch() {
+      if ($("drop-swap")) { paintDropSwitch(); return; }
+      const host = $("lights-pane");
+      if (!host) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.id = "drop-swap";
+      btn.className = "btn";
+      btn.style.minHeight = "44px";
+      btn.style.minWidth = "44px";
+      btn.style.height = "auto";
+      btn.style.width = "100%";
+      btn.style.maxWidth = "100%";
+      btn.style.boxSizing = "border-box";
+      btn.style.whiteSpace = "normal";
+      btn.style.display = "inline-flex";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "flex-start";
+      btn.style.gap = "0.4rem";
+      btn.style.margin = "8px 0";
+      btn.style.padding = "0.4rem 0.7rem";
+      btn.style.textAlign = "start";
+      const ico = document.createElement("span");
+      ico.setAttribute("aria-hidden", "true");
+      ico.textContent = "⚡";
+      const word = document.createElement("span");
+      word.className = "drop-word";
+      word.setAttribute("data-mu", "dropSwap");
+      const mark = document.createElement("span");
+      mark.className = "drop-state";
+      btn.append(ico, document.createTextNode(" "), word, document.createTextNode(" "), mark);
+      btn.addEventListener("click", () => {
+        drop.on = !drop.on;
+        if (!drop.on) releaseHold();
+        paintDropSwitch();
+      });
+      const anchor = $("mic-lights");
+      if (anchor) host.insertBefore(btn, anchor);
+      else host.appendChild(btn);
+      paintDropSwitch();
+    }
+    ensureDropSwitch();
+    const prevLive = window.MuPaintLive;
+    window.MuPaintLive = function () {
+      if (typeof prevLive === "function") prevLive();
+      paintDropSwitch();
+    };
     const wrap = document.querySelector(".stage-wrap");
     if (wrap && window.ResizeObserver) {
       const fit = () => {
