@@ -791,13 +791,23 @@
           return set[String(name || "").toLowerCase()] || "";
         }
         function saveTest(name, score) {
-          var row = { alias: name, board: "TEST", score: score, test: true, ts: Date.now() };
-          var rows = [];
-          try { rows = JSON.parse(localStorage.getItem("kw-test-board-v1") || "[]"); } catch (e) {}
-          if (!Array.isArray(rows)) rows = [];
-          rows.push(row);
-          try { localStorage.setItem("kw-test-board-v1", JSON.stringify(rows.slice(-100))); } catch (e2) {}
-          return row;
+          var token = "";
+          try { token = sessionStorage.getItem("tech-room-desk-gate") || ""; } catch (e) {}
+          return fetch("/api/test-board", {
+            method: "POST",
+            headers: { "content-type": "application/json", "x-tw-desk": token },
+            body: JSON.stringify({ alias: name, board: "TEST", score: score, test: true })
+          }).then(function (res) {
+            if (res.status === 401 || res.status === 403) throw new Error("locked");
+            if (!res.ok) throw new Error("fail");
+            var row = { alias: name, board: "TEST", score: score, test: true, ts: Date.now() };
+            var rows = [];
+            try { rows = JSON.parse(localStorage.getItem("kw-test-board-v1") || "[]"); } catch (e2) {}
+            if (!Array.isArray(rows)) rows = [];
+            rows.push(row);
+            try { localStorage.setItem("kw-test-board-v1", JSON.stringify(rows.slice(-100))); } catch (e3) {}
+            return row;
+          });
         }
         box.addEventListener("submit", function (event) {
           event.preventDefault();
@@ -809,8 +819,11 @@
             return;
           }
           if (!name) { if (status) status.textContent = "Pick a name from the list. Typed names are not saved."; return; }
-          saveTest(name, (document.getElementById("proof-score").value || "12").slice(0, 4));
-          if (status) status.textContent = "Saved " + name + " on the TEST board. Real boards were not touched.";
+          saveTest(name, (document.getElementById("proof-score").value || "12").slice(0, 4)).then(function () {
+            if (status) status.textContent = "Saved " + name + " on the TEST board. Real boards were not touched.";
+          }, function () {
+            if (status) status.textContent = "Not saved. The desk key did not check out.";
+          });
         });
         var reject = document.getElementById("proof-reject");
         if (reject) reject.addEventListener("click", function () {
