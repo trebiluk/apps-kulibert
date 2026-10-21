@@ -265,8 +265,21 @@ export function createMobs(opts) {
     } catch (e) {}
     m.mesh = null
   }
+
+  function getWrap(kind) {
+    try {
+      const c = document.createElement('canvas')
+      c.width = c.height = 64
+      const g = c.getContext('2d')
+      if (kind === 'rustbot') { g.fillStyle = '#d97706'; g.fillRect(0,0,64,64); g.fillStyle = '#fff'; g.font = '32px sans-serif'; g.fillText('⚙', 16, 42) }
+      else if (kind === 'keeper') { g.fillStyle = '#3b82f6'; g.fillRect(0,0,64,64); g.fillStyle = '#fff'; g.font = '32px sans-serif'; g.fillText('K', 20, 42) }
+      else if (kind === 'scrapper') { g.fillStyle = '#84cc16'; g.fillRect(0,0,64,64) }
+      else { g.fillStyle = '#fbbf24'; g.fillRect(0,0,64,64) }
+      return c
+    } catch (e) { return null }
+  }
   function syncMesh(m) {
-    if (!m || (m.kind !== 'scrapper' && m.kind !== 'sparkbug')) return
+    if (!m || (m.kind !== 'scrapper' && m.kind !== 'sparkbug' && m.kind !== 'rustbot' && m.kind !== 'keeper')) return
     const sc = scene ? scene() : null
     if (!sc) return
     if (!m.mesh) {
