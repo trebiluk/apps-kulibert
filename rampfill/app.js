@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.10 — the grains-cup message speaks your language. No trackers. */
+/* Ramp & Fill RF 1.0.11 — a pour splashes and the fill percent counts up. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.10";
+  var VERSION = "RF 1.0.11";
   var testScriptAsked = false;
   function staffUnlocked() {
     try {
@@ -90,7 +90,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.10: The message after the grains cup fills now speaks your language.",
+      whats: "RF 1.0.11: Pouring splashes, the fill percent counts up, and mute turns the tone off.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -111,6 +111,8 @@
       teachRate: "Flow rate = how much pours each second",
       bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
       helpPause: "Pause is always easy to tap, even sideways.",
+      fillWord: "Fill",
+      helpSplash: "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -155,7 +157,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.10: Повідомлення після наповнення чашки зерном тепер твоєю мовою.",
+      whats: "RF 1.0.11: Наливання бризкає, відсоток наповнення росте, а без звуку тон вимкнений.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -172,6 +174,8 @@
       helpLesson: "Прочитай рядок уроку, коли виграєш.",
       helpFewer: "Спробуй виграти з меншою кількістю схилів.",
       helpPause: "Паузу завжди легко натиснути, навіть збоку.",
+      fillWord: "Наповнення",
+      helpSplash: "Наливання бризкає. Відсоток наповнення росте. Без звуку тон вимкнений.",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -218,7 +222,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.10: Сообщение после наполнения чашки зерном теперь на твоём языке.",
+      whats: "RF 1.0.11: Налив брызгает, процент наполнения растёт, а без звука тон выключен.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -235,6 +239,8 @@
       helpLesson: "Прочитай строку урока, когда победишь.",
       helpFewer: "Попробуй победить с меньшим числом рамп.",
       helpPause: "Паузу всегда легко нажать, даже в горизонтальном режиме.",
+      fillWord: "Наполнение",
+      helpSplash: "Налив брызгает. Процент наполнения растёт. Без звука тон выключен.",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -281,7 +287,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.10: El mensaje que sale al llenar la taza de granos ya habla tu idioma.",
+      whats: "RF 1.0.11: Verter salpica, el porcentaje de llenado sube, y silencio apaga el tono.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -298,6 +304,8 @@
       helpLesson: "Lee la línea de la lección al ganar.",
       helpFewer: "Intenta ganar con menos rampas.",
       helpPause: "Pausa siempre es fácil de tocar, incluso de lado.",
+      fillWord: "Llenado",
+      helpSplash: "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -344,7 +352,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.10: رسالة امتلاء كوب الحبوب أصبحت بلغتك.",
+      whats: "RF 1.0.11: السكب يرش، ونسبة الامتلاء ترتفع، وكتم الصوت يوقف النغمة.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -361,6 +369,8 @@
       helpLesson: "اقرأ سطر الدرس عندما تفوز.",
       helpFewer: "حاول أن تفوز بمنحدرات أقل.",
       helpPause: "الإيقاف المؤقت سهل اللمس دائمًا، حتى بالوضع الأفقي.",
+      fillWord: "الامتلاء",
+      helpSplash: "السكب يرش. نسبة الامتلاء ترتفع. كتم الصوت يوقف النغمة.",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -407,7 +417,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.10: پیام پر شدن پیالهٔ دانه‌ها اکنون به زبان تو است.",
+      whats: "RF 1.0.11: ریختن می‌پاشد، درصد پُرشدن بالا می‌رود، و بی‌صدا نغمه را خاموش می‌کند.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -424,6 +434,8 @@
       helpLesson: "وقتی بردی خط درس را بخوان.",
       helpFewer: "بکوش با سطح شیب‌دار کمتر ببری.",
       helpPause: "توقف همیشه آسان زده می‌شود، حتی در حالت افقی.",
+      fillWord: "پُرشدن",
+      helpSplash: "ریختن می‌پاشد. درصد پُرشدن بالا می‌رود. بی‌صدا نغمه را خاموش می‌کند.",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -470,7 +482,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.10: Ubutumwa nyuma yo kuzuza igikombe cy'impeke ubu buri mu rurimi rwawe.",
+      whats: "RF 1.0.11: Gusuka biratemba, ijanisha ryo kuzuza riratera, kandi guhagarika ijwi bihagarika umuziki.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -487,6 +499,8 @@
       helpLesson: "Soma umurongo w'isomo iyo utsinze.",
       helpFewer: "Gerageza gutsinda n'imihanda mike.",
       helpPause: "Hagarara byoroshye gukanda buri gihe, ndetse uri ku ruhande.",
+      fillWord: "Kuzuza",
+      helpSplash: "Gusuka biratemba. Ijanisha ryo kuzuza riratera. Guhagarika ijwi bihagarika umuziki.",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -533,7 +547,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.10: መልእኽቲ ምምላእ ጽዋዕ ፍረታት ሕጂ ብቋንቋኻ እዩ።",
+      whats: "RF 1.0.11: ምቕዳሕ ይረጭ፣ ሚእታዊ ምምላእ ይወስኽ፣ ድምጺ ምዕጻው ነቲ ድምጺ የጥፍኦ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -550,6 +564,8 @@
       helpLesson: "ምስ ተዓወትካ መስመር ትምህርቲ ኣንብብ።",
       helpFewer: "ብውሑዳት መንሸራተቲ ክትዓውት ፈትን።",
       helpPause: "ጠጠው ምባል ኩሉ ግዜ ቀሊል እዩ፣ ብጐድኒ እውን።",
+      fillWord: "ምምላእ",
+      helpSplash: "ምቕዳሕ ይረጭ። ሚእታዊ ምምላእ ይወስኽ። ድምጺ ምዕጻው ነቲ ድምጺ የጥፍኦ።",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -565,7 +581,9 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.10: Grains message in your language.",
+      whats: "RF 1.0.11: Splashier pours. The fill percent counts up.",
+      fillWord: "Fill",
+      helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
       wrong: "Grains go in the left cup.",
       wrongW: "Water goes in the right cup.",
@@ -873,6 +891,71 @@
     var show = spill > 0 && !pouring && live.length === 0 && anyShort();
     if (el) el.textContent = cupWords() + (shortChrome() && show ? " • " + spillSentence() : "");
     if (spillEl) spillEl.textContent = show && !shortChrome() ? spillSentence() : "";
+    paintFillPct();
+  }
+  function paintFillPct() {
+    var el = document.getElementById("fill-pct");
+    if (!el) return;
+    var n = Math.max(1, cupList.length || 1);
+    var parts = [];
+    for (var i = 0; i < n; i++) {
+      var pct = Math.round(Math.max(0, Math.min(100, ((fills[i] || 0) / LINE) * 100)));
+      var who = n > 1 ? (i === 0 ? t("left") : t("right")) + " " : "";
+      parts.push(who + t("fillWord") + " " + pct + "%");
+    }
+    el.textContent = parts.join(" • ");
+  }
+  var splashes = [];
+  var tone = null;
+  function noteSplash(x, y) {
+    if (typeof x !== "number" || typeof y !== "number") return;
+    splashes.push({ x: x, y: y, t: performance.now() });
+    if (splashes.length > 24) splashes.shift();
+  }
+  function drawSplashes() {
+    var now = performance.now();
+    splashes = splashes.filter(function (s) { return now - s.t < 320; });
+    splashes.forEach(function (s) {
+      var u = (now - s.t) / 320;
+      ctx.save();
+      ctx.globalAlpha = 0.85 * (1 - u);
+      ctx.strokeStyle = "#F6C453";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 6 + u * 14, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+  function soundWanted() {
+    return document.documentElement.getAttribute("data-kp-sound") !== "0";
+  }
+  function stopTone() {
+    if (!tone) return;
+    try { tone.osc.stop(); } catch (e) {}
+    try { tone.ctx.close(); } catch (e2) {}
+    tone = null;
+  }
+  function pourTone() {
+    if (!pouring || !soundWanted()) { stopTone(); return; }
+    var pct = Math.max(0, Math.min(100, ((fills[0] || 0) / LINE) * 100));
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!tone) {
+        var actx = new AC();
+        var osc = actx.createOscillator();
+        var gain = actx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = 220;
+        gain.gain.value = 0.04;
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start();
+        tone = { ctx: actx, osc: osc, gain: gain };
+      }
+      tone.osc.frequency.setTargetAtTime(220 + pct * 2.2, tone.ctx.currentTime, 0.06);
+    } catch (e3) { tone = null; }
   }
   function shortChrome() {
     try { return window.matchMedia("(max-height: 480px)").matches; } catch (e) { return false; }
@@ -1307,6 +1390,7 @@
     }
     fills[i] = Math.min(LINE + 12, (fills[i] || 0) + units);
     fill = fills[0] || 0;
+    noteSplash(x, y);
     return true;
   }
   function dropSpill(units, x, y) {
@@ -2434,6 +2518,15 @@
     ctx.moveTo(c.x + 6, lineY);
     ctx.lineTo(c.x + c.w - 6, lineY);
     ctx.stroke();
+    if (pileH > 2 && !motionLess()) {
+      var surf = innerBot - pileH;
+      var wobble = pouring ? Math.sin(performance.now() / 140) * 2.5 : 0;
+      ctx.strokeStyle = "rgba(243,230,200,0.9)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(c.x + c.w / 2, surf, Math.max(10, (c.w - 28) / 2), 3 + Math.abs(wobble), 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
   function drawCup(c, amount, index) {
     ctx.save();
@@ -2659,6 +2752,7 @@
       else if (matName() === "gel") gelBlob({ x: p.x, y: p.y, s: visual + 2 });
       else seed({ x: p.x, y: p.y, s: visual, rot: p.rot });
     });
+    drawSplashes();
     syncTags();
   }
   var tagSig = "";
@@ -2781,7 +2875,8 @@
       }
       checkFilled();
       paintStatus();
-    }
+      pourTone();
+    } else if (!pouring) stopTone();
     draw();
   }
   function bootLangs() {

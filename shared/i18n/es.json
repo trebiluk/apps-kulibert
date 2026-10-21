@@ -338,5 +338,6 @@
   "month10": "octubre",
   "month11": "noviembre",
   "month12": "diciembre",
-  "lbAlias": "Alias"
+  "lbAlias": "Alias",
+  "rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono."
 }

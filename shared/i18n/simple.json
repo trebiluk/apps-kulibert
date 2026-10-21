@@ -201,5 +201,6 @@
   "month12": "December",
   "lbAlias": "Alias",
   "more": "More",
-  "whatsNewStrip": "The top strip shows an icon and a word for each app."
+  "whatsNewStrip": "The top strip shows an icon and a word for each app.",
+  "rfHelpSplash": "A pour splashes. The fill percent counts up. Mute turns the tone off."
 }

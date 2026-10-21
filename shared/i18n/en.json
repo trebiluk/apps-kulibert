@@ -338,5 +338,6 @@
   "month10": "October",
   "month11": "November",
   "month12": "December",
-  "lbAlias": "Alias"
+  "lbAlias": "Alias",
+  "rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off."
 }
