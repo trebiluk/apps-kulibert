@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.303', date: '2026-10-21', lines: {
+    en: ['Planks, Log, Berry, Sapling and Stick each have their own clear picture.'],
+    simple: ['Planks, Log, Berry, Sapling and Stick each have their own clear picture.'],
+    uk: ['Дошки, Колода, Ягода, Саджанець і Палиця кожен мають свою чітку картинку.'],
+    ru: ['Доски, Бревно, Ягода, Саженец и Палка каждый имеют свою чёткую картинку.'],
+    es: ['Tablones, Tronco, Baya, Retoño y Palo cada uno tiene su propia imagen clara.'],
+    ar: ['الألواح والخشبة والتوت والشتلة والعصا لكل منها صورة واضحة خاصة به.'],
+    'fa-AF': ['تخته‌ها، کندہ، توت، نهال و چوب هر کدام تصویر واضح خود را دارند.'],
+    rw: ['Imbaho, Igiti, Urubuto, Ikibabi n\'Inkoni buri kimwe gifite ishusho yacyo isobanutse.'],
+    ti: ['ሰሌዳታት፣ እንጨት፣ ቤሪ፣ ንእሽቶ ዕንጨይቲን በትሪን ነፍሲ ወከፍ ንጹር ስእሊ ኣለዎም።'],
+  }},
+
   { v: '2.5.294', date: '2026-10-21', lines: {
     en: ['Settings switches, the teaming-up note, and lamp and rug names now show in your language.'],
     uk: ['Перемикачі налаштувань, нотатка про командну гру, і назви ламп і килимів тепер твоєю мовою.'],
