@@ -151,9 +151,12 @@ function showSafeChip() {
 
 let lastSafe = false
 function paintBonk() {
+  const aimed = combatTarget()
+  const touch = document.body.classList.contains('touch')
+  const bonkBtn = document.getElementById('t-bonk')
+  if (bonkBtn) bonkBtn.hidden = !(touch && aimed)
   const btn = document.getElementById('t-break')
   if (!btn) return
-  const aimed = combatTarget()
   if (aimed) {
     btn.textContent = t('c1Bonk') || 'Bonk'
     btn.setAttribute('aria-label', t('c1Bonk') || 'Bonk')
@@ -162,12 +165,38 @@ function paintBonk() {
     btn.setAttribute('aria-label', t('break') || 'Break')
   }
 }
+
+function ensureSafeChip() {
+  let chip = document.getElementById('safe-chip')
+  if (!chip) {
+    chip = document.createElement('div')
+    chip.id = 'safe-chip'
+    chip.setAttribute('role', 'status')
+    chip.style.cssText = 'position:fixed;top:calc(var(--top-h,48px) + 8px);left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:6px 12px;border-radius:8px;z-index:6;font-size:13px;font-weight:700;min-height:32px;display:flex;align-items:center;gap:6px'
+    chip.hidden = true
+    document.body.append(chip)
+  }
+  return chip
+}
+function paintSafeChip() {
+  const chip = ensureSafeChip()
+  const pos = noa.playerEntity && noa.playerEntity.position
+  if (!pos) return
+  const now = inSafeZone(pos[0], pos[2])
+  if (now && chip.hidden) {
+    chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone')
+    chip.hidden = false
+  } else if (!now && !chip.hidden) {
+    chip.hidden = true
+  }
+}
 function checkSafeEntry() {
   const pos = noa.playerEntity && noa.playerEntity.position
   if (!pos) return
   const now = inSafeZone(pos[0], pos[2])
   if (now && !lastSafe) showSafeChip()
   lastSafe = now
+  paintSafeChip()
 }
 function showFloat(text) {
   const el = document.createElement('div')
@@ -9127,6 +9156,8 @@ $('t-break').addEventListener('click', () => {
   if (combatTarget()) { doBonk(); return }
   breakBlock()
 })
+const bonkBtn = document.getElementById('t-bonk')
+if (bonkBtn) bonkBtn.addEventListener('click', () => { if (combatTarget()) doBonk() })
 $('table-place').addEventListener('click', placeBlock)
 function paintPick() {
   const b = $('pick-chip')

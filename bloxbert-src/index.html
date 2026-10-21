@@ -195,6 +195,9 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   body.touch #pick-chip{bottom:calc(var(--hud-lift) + 64px + 16px + 56px + 8px + env(safe-area-inset-bottom))}
 }
 
+
+#t-bonk{display:none}
+body.touch #t-bonk:not([hidden]){display:grid;place-items:center}
 #suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
 @media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
 body.stick-right #suit-bar{left:auto;right:10px}
@@ -1299,6 +1302,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="stick-knob" id="stick-knob"></div>
 </div>
 <div class="jumpcol" id="jump-col">
+  <button id="t-bonk" type="button" hidden style="width:64px;height:56px;min-width:44px;min-height:44px;border-radius:12px;border:1px solid rgba(34,211,238,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;font-size:13px">🔨 Bonk</button>
   <button class="crouch" id="t-crouch" type="button" aria-pressed="false" data-i18n-label="crouch" aria-label="Crouch"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v11M7 10l5 6 5-6M4 21h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="jump" type="button" data-hold="jump" data-i18n="jump" data-i18n-label="jump" aria-label="Jump">Jump</button>
 </div>
