@@ -823,9 +823,44 @@
     while (row.length < 5) row.push(0);
     var prev = row[level - 1] | 0;
     newBest = prev > 0 && n > 0 && n < prev;
-    if (n > 0 && (prev === 0 || n < prev)) row[level - 1] = n;
+    if (n > 0 && (prev === 0 || n < prev)) {
+      row[level - 1] = n;
+      saveGhostStrokes();
+    }
     map[who] = row;
     try { localStorage.setItem("rampfill-ramp-best", JSON.stringify(map)); } catch (e) {}
+  }
+  function readGhostStore() {
+    try {
+      var raw = localStorage.getItem("rampfill-ramp-ghost-v1");
+      if (!raw) return {};
+      var data = JSON.parse(raw);
+      if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+      return data;
+    } catch (e) { return {}; }
+  }
+  function packGhostStrokes(list) {
+    var out = [];
+    (list || []).forEach(function (s) {
+      if (!s || s.length < 2 || out.length >= 20) return;
+      var pts = [];
+      var step = s.length > 64 ? Math.ceil(s.length / 64) : 1;
+      for (var i = 0; i < s.length && pts.length < 64; i += step) {
+        var p = s[i];
+        if (!p || typeof p.x !== "number" || typeof p.y !== "number") continue;
+        if (!isFinite(p.x) || !isFinite(p.y)) continue;
+        pts.push([Math.round(p.x * 1000) / 1000, Math.round(p.y * 1000) / 1000]);
+      }
+      if (pts.length >= 2) out.push(pts);
+    });
+    return out;
+  }
+  function saveGhostStrokes() {
+    try {
+      var data = readGhostStore();
+      data[String(level)] = packGhostStrokes(strokes);
+      localStorage.setItem("rampfill-ramp-ghost-v1", JSON.stringify(data));
+    } catch (e) {}
   }
   function paintVersion() {
     document.title = "Ramp & Fill — " + VERSION;
