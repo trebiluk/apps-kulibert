@@ -1,2 +1,2 @@
 /* One cache-bust for shared scripts. Edit this, then the tags follow. */
-window.HUB_REV = "2026-10-21-alias-livelang-newsclip";
+window.HUB_REV = "2026-10-21-alias-firstload-whatsnew-truth";
