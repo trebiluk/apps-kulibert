@@ -388,6 +388,7 @@ export function mountPanels(api) {
         const bots = document.createElement('p'); bots.className = 'gnote'; bots.textContent = api.t('c2Help'); g.append(bots)
         const crew = document.createElement('p'); crew.className = 'gnote'; crew.textContent = api.t('c3Help'); g.append(crew)
         const c4 = document.createElement('p'); c4.className = 'gnote'; c4.textContent = api.t('c4Help'); g.append(c4)
+        const c5 = document.createElement('p'); c5.className = 'gnote'; c5.textContent = api.t('c5Help'); g.append(c5)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
         const lines = api.notes ? api.notes() : []
