@@ -38,6 +38,7 @@ import { paintRules, rulesWord } from './rules-editor.js'
 import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
+import { createMobs } from './mobs.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -5225,6 +5226,12 @@ window.addEventListener('pointerdown', (e) => {
   e.stopPropagation()
   hideDoorOpt()
 }, true)
+const mobs = createMobs({
+  getVoxel, edit,
+  playerPos: () => noa.entities.getPosition(noa.playerEntity),
+  isNight: () => basics && basics.phase && basics.phase() === 'night',
+  toast, t,
+})
 const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)

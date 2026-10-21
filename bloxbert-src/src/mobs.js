@@ -6,6 +6,29 @@ export function createMobs({ getVoxel, edit, playerPos, isNight, toast, t }) {
   const DESPAWN = 48
   const NO_SPAWN_R = 8
 
+  function spawnBoss(players) {
+    const n = Math.max(1, Math.min(6, players || 1))
+    const boss = {
+      id: 'overseer-' + Date.now(),
+      kind: 'overseer',
+      x: 0, y: 5, z: 0,
+      homeX: 0, homeY: 5, homeZ: 0,
+      hp: 120 * n,
+      maxHp: 120 * n,
+      phase: 1,
+      lastPhase: 0,
+    }
+    mobs.push(boss)
+    return boss
+  }
+  function bossPhase(id) {
+    const b = mobs.find((m) => m.id === id)
+    if (!b) return 0
+    const pct = b.hp / b.maxHp
+    if (pct > 0.6) return 1
+    if (pct > 0.25) return 2
+    return 3
+  }
   function spawn(kind, x, y, z) {
     if (mobs.length >= WORLD_CAP) return null
     const mob = {
@@ -59,6 +82,15 @@ export function createMobs({ getVoxel, edit, playerPos, isNight, toast, t }) {
         m.stolen = 'common'
         if (toast) toast(t ? t('scrapperTook') : 'Scrapper took your item')
       }
+      if (m.kind === 'overseer') {
+        const phase = bossPhase(m.id)
+        if (phase !== m.lastPhase) {
+          m.lastPhase = phase
+          if (toast) toast(t ? t('phase' + phase) : 'Phase ' + phase)
+        }
+        if (phase === 1 && !m.stampAt) m.stampAt = now + 1500
+        if (phase === 3 && !m.ventAt) m.ventAt = now + 6000
+      }
       if (m.kind === 'rustbot' && d < 6) {
         m.facing = Math.atan2(p[0] - m.x, p[2] - m.z)
         if (toast && !m.announced) { toast(t ? t('rustbotNear') : 'Rustbot nearby, hit its back'); m.announced = true }
@@ -94,5 +126,5 @@ export function createMobs({ getVoxel, edit, playerPos, isNight, toast, t }) {
   function count() { return mobs.length }
   function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp })) }
 
-  return { spawn, tick, reboot, count, list, canSpawn }
+  return { spawn, spawnBoss, bossPhase, tick, reboot, count, list, canSpawn }
 }
