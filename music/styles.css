@@ -5716,3 +5716,33 @@ body.mu237.show canvas#viz {
   max-height: none !important;
   flex: 1 1 auto !important;
 }
+
+/* MU 2.36.31 — Score tab, upright phone: two bars of 8, each square at least 44. Wider screens stay put. */
+@media (max-width: 480px) {
+  body.mu237.tab-score #drums.is-stacked {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  body.mu237.tab-score #drums.is-stacked .drum-row,
+  body.mu237.tab-score #drums.is-stacked .drum-row.is-extra {
+    display: grid !important;
+    grid-template-columns: minmax(0, 3.2rem) repeat(8, minmax(44px, 1fr)) !important;
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.mu237.tab-score #drums.is-stacked .cell {
+    min-width: 44px !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: none !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
