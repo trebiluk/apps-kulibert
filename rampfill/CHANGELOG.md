@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.15
+
+RF 1.0.15 — "1 ramp", "2 ramps": the count words are right in every language.
+
 ## RF 1.0.14
 
 RF 1.0.14 — The Daily cup shows your best for today.

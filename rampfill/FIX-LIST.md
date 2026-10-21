@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 16. Version locked: RF 1.0.15.
+
+- [x] **RF 1.0.15 ITEM 1:** Ramp counts use the right word for 1, 2–4 and 5+ in every language. The level tile, the Daily tile, its aria-label, and the end card share one helper.
+
 Stage 15. Version locked: RF 1.0.14.
 
 - [x] **RF 1.0.14 ITEM 1:** The Daily cup tile shows today's best after a clear. The end card shows Best and New best! when you beat it. No streak and no alias.
