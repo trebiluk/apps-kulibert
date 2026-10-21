@@ -549,13 +549,6 @@ export function VoltDuel() {
             pushLive(liveLine(`vdLive${n}`, n));
           }
         }
-        const gate = liveGate.current;
-        if (gate.pending && liveRef.current && (!gate.at || performance.now() - gate.at >= 1000)) {
-          gate.at = performance.now();
-          const text = gate.pending;
-          gate.pending = "";
-          liveRef.current.textContent = text;
-        }
         if (world.phase === "done" && !world.reported && world.winner != null) {
           world.reported = true;
           const winner = world.winner;
@@ -593,6 +586,13 @@ export function VoltDuel() {
         }
       } else {
         acc = 0;
+      }
+      const gate = liveGate.current;
+      if (gate.pending && liveRef.current && (!gate.at || performance.now() - gate.at >= 1000)) {
+        gate.at = performance.now();
+        const text = gate.pending;
+        gate.pending = "";
+        liveRef.current.textContent = text;
       }
 
       tickParticles(particles.current, dt);
