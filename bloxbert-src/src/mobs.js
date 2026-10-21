@@ -13,8 +13,10 @@ export function createMobs({ getVoxel, edit, playerPos, isNight, toast, t }) {
       kind,
       x, y, z,
       homeX: x, homeY: y, homeZ: z,
-      hp: kind === 'scrapper' ? 6 : 4,
-      maxHp: kind === 'scrapper' ? 6 : 4,
+      hp: kind === 'rustbot' ? 16 : kind === 'keeper' ? 24 : kind === 'scrapper' ? 6 : 4,
+      maxHp: kind === 'rustbot' ? 16 : kind === 'keeper' ? 24 : kind === 'scrapper' ? 6 : 4,
+      weak: kind === 'rustbot' ? 'back' : kind === 'keeper' ? 'chest' : null,
+      facing: 0,
       stolen: null,
       lastTick: 0,
     }
@@ -56,6 +58,18 @@ export function createMobs({ getVoxel, edit, playerPos, isNight, toast, t }) {
       if (m.kind === 'scrapper' && d < 4 && !m.stolen) {
         m.stolen = 'common'
         if (toast) toast(t ? t('scrapperTook') : 'Scrapper took your item')
+      }
+      if (m.kind === 'rustbot' && d < 6) {
+        m.facing = Math.atan2(p[0] - m.x, p[2] - m.z)
+        if (toast && !m.announced) { toast(t ? t('rustbotNear') : 'Rustbot nearby, hit its back'); m.announced = true }
+      }
+      if (m.kind === 'keeper' && d < 4) {
+        if (!m.slamAt) m.slamAt = now + 1000
+        else if (now >= m.slamAt && !m.slammed) {
+          if (toast) toast(t ? t('slam') : 'Slam!')
+          m.slammed = true
+          m.weakOpen = now + 2000
+        }
       }
       if (m.kind === 'sparkbug' && d < 2) {
         if (!m.zapAt) m.zapAt = now + 600

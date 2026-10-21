@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.286', date: '2026-10-20', lines: {
+    en: ['New bots to reboot: Rustbot and the Mechanoid Keeper. Team up to reboot the Foundry Overseer and earn badges and Bertodex pages!'],
+    uk: ['Нові роботи для перезавантаження: Іржобот і Механоїд-Охоронець. Об\'єднуйтеся, щоб перезавантажити Наглядача Ливарні, і здобувайте значки та сторінки Бертодексу!'],
+    ru: ['Новые роботы для перезагрузки: Ржавобот и Механоид-Хранитель. Объединяйтесь, чтобы перезагрузить Надзирателя Литейной, и получайте значки и страницы Бертодекса!'],
+    es: ['Nuevos robots para reiniciar: Rustbot y el Guardián Mecanoide. ¡Únete a tu equipo para reiniciar al Capataz de la Fundición y gana insignias y páginas del Bertodex!'],
+    ar: ['روبوتات جديدة لإعادة تشغيلها: روبوت الصدأ والحارس الآلي. تعاونوا لإعادة تشغيل مشرف المسبك واربحوا شارات وصفحات بيرتودكس!'],
+    'fa-AF': ['روبات‌های تازه برای روشن کردن دوباره: زنگ‌بات و نگهبان ماشینی. با هم ناظر ریخته‌گری را دوباره روشن کنید و نشان و صفحه‌های برتودکس بگیرید!'],
+    rw: ['Robo nshya zo kongera gutangiza: Rustbot na Mechanoid Keeper. Mufatanye mwongere mutangize Foundry Overseer, mubone imidari n\'impapuro za Bertodex!'],
+    ti: ['ሓደስቲ ሮቦታት: Rustbot ከምኡውን Mechanoid Keeper። ብሓባር ኮይንኩም ን Foundry Overseer ዳግማይ ኣልዕሉ፣ ሜዳልያን ገጻት Bertodexን ረኸቡ!'],
+  }},
+
   { v: '2.5.285', date: '2026-10-20', lines: {
     en: ['Team up to reboot rogue bots! Bonk with one button, help up friends, and everyone who helps gets the loot.'],
     uk: ['Об\'єднуйтеся, щоб перезавантажити бунтівних роботів! Одна кнопка для удару, допомагай друзям підвестися, і кожен, хто допоміг, отримує здобич.'],
