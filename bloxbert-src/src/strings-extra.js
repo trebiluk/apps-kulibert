@@ -2339,3 +2339,19 @@ for (const [lang, row] of Object.entries(NEWS323)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const C4 = {
+  en: { c4RustFact: 'Rustbot: rust is iron + oxygen + water', c4KeeperFact: 'Keeper: slam opens a weak point', c4DexClose: 'Close', c4BadgeMedic: 'Crew Medic', c4BadgeFlanker: 'Flanker', c4FlankTip: 'Hit the back for ×2', c4SlamTip: 'Keeper slams after 1 s' },
+  uk: { c4RustFact: 'Rustbot: іржа — це залізо + кисень + вода', c4KeeperFact: 'Keeper: удар відкриває слабку точку', c4DexClose: 'Закрити', c4BadgeMedic: 'Медик екіпажу', c4BadgeFlanker: 'Фланкер', c4FlankTip: 'Удар у спину ×2', c4SlamTip: 'Keeper б\'є після 1 с' },
+  ru: { c4RustFact: 'Rustbot: ржавчина — железо + кислород + вода', c4KeeperFact: 'Keeper: удар открывает слабую точку', c4DexClose: 'Закрыть', c4BadgeMedic: 'Медик команды', c4BadgeFlanker: 'Фланкер', c4FlankTip: 'Удар в спину ×2', c4SlamTip: 'Keeper бьёт после 1 с' },
+  es: { c4RustFact: 'Rustbot: el óxido es hierro + oxígeno + agua', c4KeeperFact: 'Keeper: el golpe abre un punto débil', c4DexClose: 'Cerrar', c4BadgeMedic: 'Médico de equipo', c4BadgeFlanker: 'Flanqueador', c4FlankTip: 'Golpe por la espalda ×2', c4SlamTip: 'Keeper golpea tras 1 s' },
+  ar: { c4RustFact: 'Rustbot: الصدأ هو حديد + أكسجين + ماء', c4KeeperFact: 'Keeper: الضربة تفتح نقطة ضعف', c4DexClose: 'إغلاق', c4BadgeMedic: 'طبيب الطاقم', c4BadgeFlanker: 'مهاجم جانبي', c4FlankTip: 'ضربة من الخلف ×2', c4SlamTip: 'Keeper يضرب بعد 1 ث' },
+  'fa-AF': { c4RustFact: 'Rustbot: زنگ آهن + اکسیجن + آب است', c4KeeperFact: 'Keeper: ضربه نقطه ضعیف را باز می‌کند', c4DexClose: 'بستن', c4BadgeMedic: 'طبیب خدمه', c4BadgeFlanker: 'پهلوگیر', c4FlankTip: 'ضربه از پشت ×2', c4SlamTip: 'Keeper بعد از 1 ث ضربه می‌زند' },
+  rw: { c4RustFact: 'Rustbot: rust ni iron + oxygen + water', c4KeeperFact: 'Keeper: slam ifungura weak point', c4DexClose: 'Funga', c4BadgeMedic: 'Crew Medic', c4BadgeFlanker: 'Flanker', c4FlankTip: 'Hit back ×2', c4SlamTip: 'Keeper slam after 1 s' },
+  ti: { c4RustFact: 'Rustbot: rust is iron + oxygen + water', c4KeeperFact: 'Keeper: slam opens weak point', c4DexClose: 'ዕጹው', c4BadgeMedic: 'Crew Medic', c4BadgeFlanker: 'Flanker', c4FlankTip: 'Hit back ×2', c4SlamTip: 'Keeper slam after 1 s' },
+  simple: { c4RustFact: 'Rustbot: rust is iron + air + water', c4KeeperFact: 'Keeper: slam opens weak spot', c4DexClose: 'Close', c4BadgeMedic: 'Crew Medic', c4BadgeFlanker: 'Flanker', c4FlankTip: 'Hit the back for double', c4SlamTip: 'Keeper waits then slams' },
+}
+for (const [lang, row] of Object.entries(C4)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

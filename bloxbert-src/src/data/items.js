@@ -122,3 +122,7 @@ export function berryPickCount(x, y, z) {
 export function tuftSeedCount(x, y, z) {
   return mix(x, y, z, 58) % 8 === 0 ? 1 : 0
 }
+
+// C4 Dex flag + keeperCore
+export const KEEPER_CORE = { keeperCore: { letter: 'Kc', base: 0, sell: false, stack: 1 } }
+export const DEX_FLAG = { dexOpened: { letter: 'Dx', base: 0, sell: false } }

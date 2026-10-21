@@ -1,5 +1,7 @@
 // Bertopia mobs: Scrapper and Sparkbug. School-safe: reboot, never those other words.
 import { inSafeZone as townSafe } from './safe-zone.js'
+import { bumpFlanker } from './crew-badges.js'
+import { openDex } from './learn.js'
 import { plotInterior as townPlot } from './town.js'
 import { mergeOrAdd } from './drops.js'
 import { getWrap } from './gfx/pixel-art.js'
@@ -319,6 +321,13 @@ export function createMobs(opts) {
     return who
   }
   function finishReboot(m, fromBonk) {
+    // First reboot opens Bertodex
+    if (!window._dexSeen) window._dexSeen = {}
+    if (!window._dexSeen[m.kind]) {
+      window._dexSeen[m.kind] = true
+      const fact = m.kind === 'rustbot' ? (t ? t('c4RustFact') : 'Rustbot: rust is iron + oxygen + water') : (t ? t('c4KeeperFact') : 'Keeper: slam opens a weak point')
+      try { openDex(m.kind, fact) } catch (e) {}
+    }
     const item = m.stolen || ''
     if (item && giveItem) giveItem(item, 1)
     const who = payCrew(m, fromBonk)
@@ -399,6 +408,7 @@ export function createMobs(opts) {
         const applied = (m.dmg || 4) * mul
         m.hp -= applied
         if (toast) toast((mul > 1 ? '⚡ ' : '') + '-' + applied)
+        if (mul > 1) bumpFlanker()
         if (m.hp <= 0) finishReboot(m, true)
       }
       if (m.kind === 'sparkbug') {
