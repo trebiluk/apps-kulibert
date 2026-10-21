@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "2026-10-21-whatsnew-es-lastupdated";
+  var I18N_REV = "2026-10-21-fineupdated-key-livelang";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -54,7 +54,7 @@
   "month10": "October",
   "month11": "November",
   "month12": "December",
-  "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: What's new always shows the latest news in your language, and the About This Hub date is in your language too.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
