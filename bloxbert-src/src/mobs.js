@@ -223,6 +223,25 @@ export function createMobs(opts) {
       showSlamMarker._t = setTimeout(() => { const n = document.getElementById('c4-slam'); if (n) n.remove() }, 1000)
     } catch (e) {}
   }
+
+  function showStamp() {
+    try {
+      const el = document.createElement('div')
+      el.textContent = '⚠'
+      el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:48px;z-index:40;pointer-events:none;border:4px solid #f59e0b;padding:8px;border-radius:4px;background:rgba(0,0,0,.4)'
+      document.body.append(el)
+      setTimeout(() => el.remove(), 1500)
+    } catch (e) {}
+  }
+  function showVent() {
+    try {
+      const el = document.createElement('div')
+      el.textContent = '→ Hiss'
+      el.style.cssText = 'position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);font-size:24px;z-index:40;pointer-events:none;color:#fbbf24'
+      document.body.append(el)
+      setTimeout(() => el.remove(), 2000)
+    } catch (e) {}
+  }
   function dropMesh(m) {
     if (!m || !m.mesh) return
     try {
@@ -392,8 +411,35 @@ export function createMobs(opts) {
           m.lastPhase = phase
           if (toast) toast(t ? t('phase' + phase) : 'Phase ' + phase)
         }
+        // P1 Stamp
         if (phase === 1 && !m.stampAt) m.stampAt = now + 1500
+        if (m.stampAt && now >= m.stampAt && !m.stamped) {
+          showStamp()
+          if (toast) toast(t ? t('c5Stamp') : '⚠ Stamp!')
+          m.stamped = true
+          m.weakOpen = now + 2000
+          m.stampAt = 0
+        }
+        // P2 Conveyor (simple push note)
+        if (phase === 2 && !m.conveyorAt) {
+          m.conveyorAt = now
+          if (toast) toast(t ? t('c5Conveyor') : 'Conveyor belts push to walls')
+        }
+        // P3 Overheat + vent
         if (phase === 3 && !m.ventAt) m.ventAt = now + 6000
+        if (m.ventAt && now >= m.ventAt) {
+          showVent()
+          if (toast) toast(t ? t('c5Vent') : 'Hiss! Vent cone →')
+          m.ventAt = now + 6000
+        }
+        // Wipe: if hp <= 0 handled in finish; here detect wipe request
+        if (m.wipe) {
+          m.hp = m.maxHp
+          m.wipe = false
+          if (toast) toast(t ? t('c5Wipe') : 'Calm. Key returned.')
+          // return key logic via giveItem
+          if (giveItem) giveItem('overrideKey', 1)
+        }
       }
       if (m.kind === 'rustbot' && p && d < 6) {
         m.facing = Math.atan2(p[0] - m.x, p[2] - m.z)
