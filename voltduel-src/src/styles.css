@@ -660,8 +660,12 @@ kbd {
 }
 
 .pad-word {
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
+  font-size: 0.56rem;
+  letter-spacing: 0;
+  line-height: 1;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .pad-btn.held {
@@ -842,6 +846,8 @@ kbd {
   inset-inline: 0.55rem;
   top: 0.45rem;
   z-index: 4;
+  max-height: calc(100dvh - 5.5rem);
+  overflow: auto;
   background: #12171e;
   color: var(--color-fg);
   border: 1px solid var(--color-line);

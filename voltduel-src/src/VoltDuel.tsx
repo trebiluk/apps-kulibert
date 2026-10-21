@@ -923,7 +923,8 @@ export function VoltDuel() {
                   <button
                     type="button"
                     className="icon-btn"
-                    aria-label={save.muted ? "Unmute" : "Mute"}
+                    data-i18n-label={save.muted ? "vdUnmute" : "vdMute"}
+                    aria-label={save.muted ? lobbyText("vdUnmute", "Unmute") : lobbyText("vdMute", "Mute")}
                     onClick={() => {
                       const next = { ...saveRef.current, muted: !saveRef.current.muted };
                       audio.muted = next.muted;
@@ -933,34 +934,41 @@ export function VoltDuel() {
                       writeSave(next);
                     }}
                   >
-                    {save.muted ? "Sound on" : "Mute"}
+                    <span aria-hidden="true">{save.muted ? "🔊 " : "🔇 "}</span>
+                    <span data-i18n={save.muted ? "vdSoundOn" : "vdMute"}>{save.muted ? lobbyText("vdSoundOn", "Sound on") : lobbyText("vdMute", "Mute")}</span>
                   </button>
                   {screen.name === "play" ? (
                     <button
                       type="button"
                       className="icon-btn"
-                      aria-label="Pause"
+                      data-i18n-label="vdPause"
+                      aria-label={lobbyText("vdPause", "Pause")}
                       onClick={() => show({ name: "pause", level: screen.level })}
                     >
-                      Pause
+                      <span aria-hidden="true">⏸ </span>
+                      <span data-i18n="vdPause">{lobbyText("vdPause", "Pause")}</span>
                     </button>
                   ) : (
                     <button
                       type="button"
                       className="icon-btn"
-                      aria-label="Resume"
+                      data-i18n-label="vdResume"
+                      aria-label={lobbyText("vdResume", "Resume")}
                       onClick={() => show({ name: "play", level: screen.level })}
                     >
-                      Resume
+                      <span aria-hidden="true">▶ </span>
+                      <span data-i18n="vdResume">{lobbyText("vdResume", "Resume")}</span>
                     </button>
                   )}
                   <button
                     type="button"
                     className="icon-btn"
-                    aria-label="Restart heat"
+                    data-i18n-label="vdRestartHeat"
+                    aria-label={lobbyText("vdRestartHeat", "Restart heat")}
                     onClick={() => launch(levelIndex, "restart")}
                   >
-                    Restart
+                    <span aria-hidden="true">↺ </span>
+                    <span data-i18n="vdRestart">{lobbyText("vdRestart", "Restart")}</span>
                   </button>
                 </div>
               </div>
@@ -1066,7 +1074,7 @@ export function VoltDuel() {
                 )}
               </div>
               {helpOpen && (
-                <div className="help-pop" id="vd-help-tip" role="dialog" aria-label="Help">
+                <div className="help-pop" id="vd-help-tip" role="dialog" aria-label={lobbyText("vdHelpBtn", "Help")}>
                   <p>
                     <span aria-hidden="true">⏵ </span>
                     <span data-i18n="vdHoldHelp">{holdHelp}</span>
@@ -1084,11 +1092,12 @@ export function VoltDuel() {
                     <span data-i18n="vdChipHelp">{chipHelp}</span>
                   </p>
                   <p>
-                    Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
+                    <span aria-hidden="true">⚑ </span>
+                    <span data-i18n="vdHazardHelp">{lobbyText("vdHazardHelp", "Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.")}</span>
                   </p>
                   {staffTest && <p>⚑ Test mode (staff only). Scores go to the TEST board.</p>}
-                  <button type="button" className="text-btn" onClick={() => setHelpOpen(false)}>
-                    Close
+                  <button type="button" className="text-btn" data-i18n-label="vdClose" aria-label={lobbyText("vdClose", "Close")} onClick={() => setHelpOpen(false)}>
+                    <span aria-hidden="true">✕</span> <span data-i18n="vdClose">{lobbyText("vdClose", "Close")}</span>
                   </button>
                 </div>
               )}
@@ -1168,37 +1177,37 @@ export function VoltDuel() {
           <div className="pads" ref={padsRoot}>
             <div className="pad-cluster vex">
               <span className="pad-label">VEX</span>
-              <button type="button" className="pad-btn" data-runner="0" data-act="left" data-ico="◀" data-word="Left" aria-pressed="false" aria-label="VEX left" {...press(0, "left")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="left" data-ico="◀" data-word={lobbyText("vdLeft", "Left")} aria-pressed="false" data-i18n-label="vdAriaVexLeft" aria-label={lobbyText("vdAriaVexLeft", "VEX left")} {...press(0, "left")}>
                 <span className="pad-ico" aria-hidden="true">◀</span>
-                <span className="pad-word">Left</span>
+                <span className="pad-word" data-i18n="vdLeft">{lobbyText("vdLeft", "Left")}</span>
                 <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="0" data-act="right" data-ico="▶" data-word="Right" aria-pressed="false" aria-label="VEX right" {...press(0, "right")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="right" data-ico="▶" data-word={lobbyText("vdRight", "Right")} aria-pressed="false" data-i18n-label="vdAriaVexRight" aria-label={lobbyText("vdAriaVexRight", "VEX right")} {...press(0, "right")}>
                 <span className="pad-ico" aria-hidden="true">▶</span>
-                <span className="pad-word">Right</span>
+                <span className="pad-word" data-i18n="vdRight">{lobbyText("vdRight", "Right")}</span>
                 <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="0" data-act="jump" data-ico="⤒" data-word="Jump" aria-pressed="false" aria-label="VEX jump" {...press(0, "jump")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="jump" data-ico="⤒" data-word={lobbyText("vdJump", "Jump")} aria-pressed="false" data-i18n-label="vdAriaVexJump" aria-label={lobbyText("vdAriaVexJump", "VEX jump")} {...press(0, "jump")}>
                 <span className="pad-ico" aria-hidden="true">⤒</span>
-                <span className="pad-word">Jump</span>
+                <span className="pad-word" data-i18n="vdJump">{lobbyText("vdJump", "Jump")}</span>
                 <span className="pad-on"></span>
               </button>
             </div>
             <div className="pad-cluster rio">
               <span className="pad-label">RIO</span>
-              <button type="button" className="pad-btn" data-runner="1" data-act="left" data-ico="◀" data-word="Left" aria-pressed="false" aria-label="RIO left" {...press(1, "left")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="left" data-ico="◀" data-word={lobbyText("vdLeft", "Left")} aria-pressed="false" data-i18n-label="vdAriaRioLeft" aria-label={lobbyText("vdAriaRioLeft", "RIO left")} {...press(1, "left")}>
                 <span className="pad-ico" aria-hidden="true">◀</span>
-                <span className="pad-word">Left</span>
+                <span className="pad-word" data-i18n="vdLeft">{lobbyText("vdLeft", "Left")}</span>
                 <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="1" data-act="right" data-ico="▶" data-word="Right" aria-pressed="false" aria-label="RIO right" {...press(1, "right")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="right" data-ico="▶" data-word={lobbyText("vdRight", "Right")} aria-pressed="false" data-i18n-label="vdAriaRioRight" aria-label={lobbyText("vdAriaRioRight", "RIO right")} {...press(1, "right")}>
                 <span className="pad-ico" aria-hidden="true">▶</span>
-                <span className="pad-word">Right</span>
+                <span className="pad-word" data-i18n="vdRight">{lobbyText("vdRight", "Right")}</span>
                 <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="1" data-act="jump" data-ico="⤒" data-word="Jump" aria-pressed="false" aria-label="RIO jump" {...press(1, "jump")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="jump" data-ico="⤒" data-word={lobbyText("vdJump", "Jump")} aria-pressed="false" data-i18n-label="vdAriaRioJump" aria-label={lobbyText("vdAriaRioJump", "RIO jump")} {...press(1, "jump")}>
                 <span className="pad-ico" aria-hidden="true">⤒</span>
-                <span className="pad-word">Jump</span>
+                <span className="pad-word" data-i18n="vdJump">{lobbyText("vdJump", "Jump")}</span>
                 <span className="pad-on"></span>
               </button>
             </div>

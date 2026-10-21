@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.9. Version locked: VD 1.0.9.
+Stage: VD 1.0.10. Version locked: VD 1.0.10.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -39,4 +39,9 @@ Physics and scoring were not changed.
 - [x] **Item 2 Lobby language.** The lobby reads the hub language at load. Heats, blurbs, Help, and the pad words follow that language.
 - [x] **Item 3 Test script.** The hub bar adds kw-test.js only after a staff unlock. A kid page has no script tag and no KulibertTest global.
 - [x] **Item 4 Staff hooks.** In Test mode, jumpToCheckpoint() shows the checkpoint sign. forceEnd("win") and forceEnd("lose") open the end screen. Rematch starts that heat over. Scores stay on the TEST board.
+
+## VD 1.0.10
+- [x] **Item 1 Missing keys.** The 18 lobby keys were already in every language pack and in the English fallback. Live es and en consoles show 0 missing-key warnings.
+- [x] **Item 2 Spanish lobby, help, and buttons.** The lobby was already Spanish. The last help lines, Close, and in-play Mute, Pause, Restart, Left, Right, and Jump follow the hub language, including their aria-labels.
+- [x] **Item 3 Checkpoint and Rematch.** Already reachable in staff Test mode. jumpToCheckpoint shows the checkpoint sign. Rematch after a win starts a new round. Scores stay on the TEST board. Kids do not get the hook.
 

@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.9: The lobby speaks your language and chip help works.",
-    uk: "VD 1.0.9: Лобі тепер вашою мовою, і підказка про фішки працює.",
-    ru: "VD 1.0.9: Лобби теперь на вашем языке, и подсказка о фишках работает.",
-    es: "VD 1.0.9: La sala habla tu idioma y la ayuda de fichas funciona.",
-    ar: "VD 1.0.9: الردهة بلغتك الآن ومساعدة الشارات تعمل.",
-    "fa-AF": "VD 1.0.9: لابی حالا به زبان شماست و راهنمای نشان‌ها کار می‌کند.",
-    rw: "VD 1.0.9: Icyumba cy'itegereza kiri mu rurimi rwawe kandi ubufasha bw'udushushanyo burakora.",
-    ti: "VD 1.0.9: እቲ መጸበዪ ብቋንቋኻ እዩ፣ ሓገዝ ቺፕ ይሰርሕ።",
-    simple: "VD 1.0.9: Lobby in your language. Chip help works."
+    en: "VD 1.0.10: Volt Duel now speaks Spanish in the lobby, help and game buttons.",
+    uk: "VD 1.0.10: Volt Duel тепер іспанською в лобі, довідці та кнопках гри.",
+    ru: "VD 1.0.10: Volt Duel теперь на испанском в лобби, справке и кнопках игры.",
+    es: "VD 1.0.10: Volt Duel ya habla español en la sala, la ayuda y los botones del juego.",
+    ar: "VD 1.0.10: Volt Duel يتحدث الإسبانية الآن في الردهة والمساعدة وأزرار اللعب.",
+    "fa-AF": "VD 1.0.10: Volt Duel حالا در لابی، راهنما و دکمه‌های بازی اسپانیایی است.",
+    rw: "VD 1.0.10: Volt Duel ubu ivuga Icyesipanyolo muri lobby, ubufasha n'utubuto tw'umukino.",
+    ti: "VD 1.0.10: Volt Duel ሕጂ ኣብ ሎቢ፣ ሓገዝን መልጎም ጸወታን ብስጳንኛ ይዛረብ።",
+    simple: "VD 1.0.10: Spanish words fixed in the game."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.9") plate.textContent = "VD 1.0.9";
+      if (plate && plate.textContent !== "VD 1.0.10") plate.textContent = "VD 1.0.10";
     } finally {
       painting = false;
     }
