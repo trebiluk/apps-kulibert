@@ -432,28 +432,34 @@ kbd {
   border-radius: 999px;
   background: var(--color-surface-2);
   border: 1px solid var(--color-line);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .track i {
   position: absolute;
-  top: -0.15rem;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 999px;
-  transform: translateX(-50%);
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: #07090c;
 }
 
 .track i.vex {
   background: var(--color-cyan);
-  border-radius: 2px;
-  transform: translateX(-50%) rotate(45deg);
+  border-radius: 999px;
 }
 
 .track i.rio {
   background: var(--color-amber);
   border-radius: 2px;
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
 .track i.flag {
@@ -461,6 +467,7 @@ kbd {
   border-radius: 0.1rem;
   width: 0.35rem;
   height: 0.75rem;
+  color: transparent;
 }
 
 .hint {

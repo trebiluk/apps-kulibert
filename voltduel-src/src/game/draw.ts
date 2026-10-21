@@ -117,13 +117,18 @@ export function renderWorld(
     const x = sx < 0 ? 22 : VIEW_W - 22;
     const y = clampView(runner.y - world.camY, 80, VIEW_H - 40);
     ctx.fillStyle = COLORS[runner.id];
-    ctx.beginPath();
-    ctx.arc(x, y, 7, 0, Math.PI * 2);
-    ctx.fill();
+    if (runner.id === 0) {
+      ctx.beginPath();
+      ctx.arc(x, y, 8, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(x - 7, y - 7, 14, 14);
+    }
     ctx.fillStyle = "#07090c";
-    ctx.font = "600 11px Barlow, Outfit, sans-serif";
+    ctx.font = "700 11px Barlow, Outfit, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(NAMES[runner.id].slice(0, 1), x, y + 4);
+    ctx.textBaseline = "middle";
+    ctx.fillText(NAMES[runner.id].slice(0, 1), x, y);
   }
 }
 
@@ -312,15 +317,20 @@ function drawCoin(ctx: CanvasRenderingContext2D, x: number, y: number, time: num
 function drawCheckpoint(ctx: CanvasRenderingContext2D, x: number, y: number, vex: boolean, rio: boolean) {
   const base = y + 44;
   ctx.fillStyle = "#1c2731";
-  ctx.fillRect(x + 8, y + 8, 8, base - y - 8);
-  ctx.fillStyle = vex ? CYAN : "#24303a";
+  ctx.fillRect(x + 8, y + 10, 8, base - y - 10);
+  ctx.font = "700 11px Barlow, Outfit, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = vex ? CYAN : MUTED;
   ctx.beginPath();
-  ctx.arc(x + 8, y + 6, 5, 0, Math.PI * 2);
+  ctx.arc(x + 6, y + 4, 8, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = rio ? AMBER : "#24303a";
-  ctx.beginPath();
-  ctx.arc(x + 18, y + 6, 5, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillStyle = "#07090c";
+  ctx.fillText("V", x + 6, y + 4);
+  ctx.fillStyle = rio ? AMBER : MUTED;
+  ctx.fillRect(x + 16, y - 1, 10, 10);
+  ctx.fillStyle = "#07090c";
+  ctx.fillText("R", x + 21, y + 4);
 }
 
 function drawFlag(ctx: CanvasRenderingContext2D, goal: { x: number; y: number; w: number; h: number }, time: number) {

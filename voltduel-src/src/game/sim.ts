@@ -451,7 +451,7 @@ function hazardsAndPickups(world: World, events: SimEvent[]) {
       if (!overlap(runner, sensor(cp))) return;
       runner.checkpoint = index;
       world.checks[runner.id][index] = true;
-      world.banners.push({ text: "CHECKPOINT", life: 0.85, id: runner.id });
+      world.banners.push({ text: runner.id === 0 ? "VEX CHECKPOINT" : "RIO CHECKPOINT", life: 0.85, id: runner.id });
       events.push({ type: "check", id: runner.id });
     });
 

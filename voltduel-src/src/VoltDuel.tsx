@@ -665,8 +665,8 @@ export function VoltDuel() {
               </div>
             </div>
             <div className="track" aria-hidden="true">
-              <i ref={pipRefs[0]} className="vex" />
-              <i ref={pipRefs[1]} className="rio" />
+              <i ref={pipRefs[0]} className="vex">V</i>
+              <i ref={pipRefs[1]} className="rio">R</i>
               <i ref={flagRef} className="flag" />
             </div>
             {hint && screen.name === "play" && (
