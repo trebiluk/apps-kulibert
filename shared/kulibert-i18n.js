@@ -41,6 +41,19 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
+  "fineUpdated": "Last updated {date}",
+  "month1": "January",
+  "month2": "February",
+  "month3": "March",
+  "month4": "April",
+  "month5": "May",
+  "month6": "June",
+  "month7": "July",
+  "month8": "August",
+  "month9": "September",
+  "month10": "October",
+  "month11": "November",
+  "month12": "December",
   "whatsNewLine": "Hub rev 2026-10-21-whatsnew-es-lastupdated: What's new always shows the latest news in your language, and the About This Hub date is in your language too.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
@@ -341,11 +354,12 @@
     if (hit) return hit;
     var enHit = lookup(file === "en" ? EN : (packs.en || EN), k) || lookup(EN, k);
     if (enHit) return enHit;
-    if (!pending[file]) warnMissing(k);
+    if (fetched[file] && !pending[file]) warnMissing(k);
     return fb || k;
   }
   
   function paintDate() {
+    if (!fetched[fileFor(current())]) return;
     var node = document.getElementById("fine-print-updated");
     if (!node) return;
     var raw = node.getAttribute("data-date") || "2026-10-03";
