@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.335', date: '2026-10-21', lines: {
+    en: ["2.5.335 — Behind the scenes: the game checks its own text files before every build."],
+    simple: ["2.5.335 — Behind the scenes: the game checks its own text files before every build."],
+    uk: ["2.5.335 — За лаштунками: гра перевіряє свої текстові файли перед кожною збіркою."],
+    ru: ["2.5.335 — За кулисами: игра проверяет свои текстовые файлы перед каждой сборкой."],
+    es: ["2.5.335 — Tras bambalinas: el juego revisa sus propios archivos de texto antes de cada construcción."],
+    ar: ["2.5.335 — خلف الكواليس: اللعبة تتحقق من ملفات النص الخاصة بها قبل كل بناء."],
+    'fa-AF': ["2.5.335 — پشت صحنه: بازی فایل‌های متنی خود را قبل از هر ساخت بررسی می‌کند."],
+    rw: ["2.5.335 — Inyuma: umurimo usuzuma dosiye z'inyandiko mbere y'icyo cyose."],
+    ti: ["2.5.335 — ድሕሪ መድረኽ፡ ጸወታ ናይ ባዕሉ ጽሑፍ ፋይላት ቅድሚ ነፍሲ ወከፍ ህንጸት የረጋግጽ።"],
+  }},
+
   { v: '2.5.334', date: '2026-10-21', lines: {
     en: ['2.5.334 — Settings shows the language you are using.'],
     simple: ['2.5.334 — Settings shows the language you are using.'],

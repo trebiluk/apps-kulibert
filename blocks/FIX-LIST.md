@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.335 build-syntax-guard:** The build checks every JS file for syntax errors before it starts. A broken file fails loudly instead of crashing later.
 - [x] **2.5.334 lang-row-current:** Settings Language row shows the language you are using. The button says Change. Cycle starts from the current language.
 - [x] **2.5.332 bonk-touch-safe-chip:** A Bonk button appears on touch when a bot is close. A steady chip shows while you are in the safe zone. Desktop Break key still relabels to Bonk.
 - [x] **combat-test-seeds-crew-notebook (2.5.333):** Test-only night + mob seeds; Notebook shows crew badges and Bertodex. Kinyarwanda, Tigrinya, and Dari still need a native check.
