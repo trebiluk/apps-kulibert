@@ -3882,56 +3882,75 @@ function keepSaved(err) {
   return err
 }
 async function load() {
+  spotReady = false
+  const bootSpot = readSpot()
   let doc = null
   try {
-    const db = await idb()
-    doc = await new Promise((res, rej) => {
-      const r = db.transaction(STORE).objectStore(STORE).get(WORLD)
-      r.onsuccess = () => res(r.result)
-      r.onerror = () => rej(r.error || new Error('read'))
-    })
-  } catch (e) {
-    keepSaved(e)
-    return false
+    try {
+      const db = await idb()
+      doc = await new Promise((res, rej) => {
+        const r = db.transaction(STORE).objectStore(STORE).get(WORLD)
+        r.onsuccess = () => res(r.result)
+        r.onerror = () => rej(r.error || new Error('read'))
+      })
+    } catch (e) {
+      keepSaved(e)
+      return false
+    }
+    if (!doc) {
+      Rules.load({})
+      Effects.load({})
+      farm.clear()
+      forage.clear()
+      pondAid = true
+      ensureHelp()
+      grantSaplings()
+      grantStartKit()
+      seedOldBushes()
+      allowSave = !savePaused
+      lastSeenAt = ''
+      if (mergePin(null)) noteMachine()
+      faceFirstSpawn()
+      if (bootSpot && bootSpot.world === WORLD) {
+        const sPos = finiteTriple(bootSpot.pos)
+        if (sPos && sPos[1] >= -60) {
+          pinSavedSpot(sPos)
+          if (Array.isArray(bootSpot.look) && bootSpot.look.length >= 2 && Number.isFinite(+bootSpot.look[0]) && Number.isFinite(+bootSpot.look[1])) setLook(+bootSpot.look[0], +bootSpot.look[1])
+        }
+        if (bootSpot.clock && basics && basics.load) {
+          basics.load(bootSpot.clock)
+          paintDayClock()
+        }
+      }
+      spotReady = true
+      writeSpot()
+      return false
+    }
+    if (doc.format !== 'kuliblocks') {
+      keepSaved(doc)
+      return false
+    }
+    try {
+      await applyDoc(doc, bootSpot)
+    } catch (e) {
+      keepSaved(e)
+      return false
+    }
+    const pinned = mergePin(doc)
+    if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
+    allowSave = !readOnlySave && !savePaused
+    if (readOnlySave) {
+      dirty = false
+      toast('Made in a newer Bertopia')
+      markSave('Made in a newer Bertopia')
+    } else {
+      markSave(t('loaded'))
+      if (pinned) noteMachine()
+    }
+    return true
+  } finally {
+    spotReady = true
   }
-  if (!doc) {
-    Rules.load({})
-    Effects.load({})
-    farm.clear()
-    forage.clear()
-    pondAid = true
-    ensureHelp()
-    grantSaplings()
-    grantStartKit()
-    seedOldBushes()
-    allowSave = !savePaused
-    lastSeenAt = ''
-    if (mergePin(null)) noteMachine()
-    faceFirstSpawn()
-    return false
-  }
-  if (doc.format !== 'kuliblocks') {
-    keepSaved(doc)
-    return false
-  }
-  try {
-    await applyDoc(doc)
-  } catch (e) {
-    keepSaved(e)
-    return false
-  }
-  const pinned = mergePin(doc)
-  if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
-  allowSave = !readOnlySave && !savePaused
-  if (readOnlySave) {
-    dirty = false
-    toast('Made in a newer Bertopia')
-    markSave('Made in a newer Bertopia')
-  } else {
-    markSave(t('loaded'))
-    if (pinned) noteMachine()
-  }
-  return true
 }
 async function readDoc(doc) {
   if (!doc || doc.format !== 'kuliblocks' || (doc.v !== 1 && doc.v !== 2)) throw new Error(t('versionSkew'))
@@ -4046,7 +4065,7 @@ function keepSavedSpot() {
   }
   noa.entities.setPosition(noa.playerEntity, landHold)
 }
-async function applyDoc(doc) {
+async function applyDoc(doc, bootSpot) {
   applyDocN += 1
   let from = ''
   try { from = String(new Error().stack || '').split('\n').slice(2, 4).join(' | ') } catch (e) {}
@@ -4062,7 +4081,7 @@ async function applyDoc(doc) {
   edits.clear(); paintUndo()
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   let spot = finiteTriple(src.pos) || finiteTriple(src.spawn) || SPAWN.slice()
-  const savedSpot = readSpot()
+  const savedSpot = bootSpot !== undefined ? bootSpot : readSpot()
   if (savedSpot && savedSpot.world === WORLD) {
     const docAt = src.updatedAt ? Date.parse(src.updatedAt) : 0
     if (savedSpot.at > docAt) {
@@ -4694,8 +4713,10 @@ async function exportJSON() {
 // 2.5.310: keep the player's spot across a reload while signed out
 const SPOT_KEY = 'bertopia-spot-v1'
 let lastSpotWrite = 0
+let spotReady = false
 function writeSpot() {
   try {
+    if (!spotReady) return
     if (!noa || !noa.playerEntity) return
     const p = noa.entities.getPosition(noa.playerEntity)
     if (!p || !Number.isFinite(p[0]) || !Number.isFinite(p[1]) || !Number.isFinite(p[2])) return

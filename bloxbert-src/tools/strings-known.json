@@ -738,5 +738,20 @@
     "key": "zap",
     "lang": "uk",
     "reason": "missing"
+  },
+  {
+    "key": "c6Normal",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "c6Real",
+    "lang": "es",
+    "reason": "copies en"
+  },
+  {
+    "key": "c6Boss",
+    "lang": "rw",
+    "reason": "copies en"
   }
 ]

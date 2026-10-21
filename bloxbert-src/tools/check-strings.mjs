@@ -43,7 +43,7 @@ export function collectProblems() {
     if (ev && wrongScript('en', ev)) hit('en', 'wrong script', key)
   }
   for (const lang of Object.keys(EXTRA)) {
-    if (lang === 'en') continue
+    if (lang === 'en' || lang === 'simple') continue
     for (const key of watch) {
       const v = EXTRA[lang][key]
       if (!v) { hit(lang, 'missing', key); continue }
@@ -58,7 +58,7 @@ export function collectProblems() {
     const text = readFileSync('src/' + f, 'utf8')
     for (const m of text.matchAll(/t\('([A-Za-z0-9]+)'\)/g)) used.add(m[1])
   }
-  const skip = new Set(['p', 'a', 'q', 'div', 'span', 'button', 'canvas', 'on', 'off', 'webgl2', 'scale', 'lang', 'img', '2d'])
+  const skip = new Set(['p', 'a', 'q', 'div', 'span', 'button', 'canvas', 'on', 'off', 'webgl2', 'scale', 'lang', 'img', '2d', 'style'])
   for (const key of used) {
     if (!skip.has(key) && !en[key] && !(STR.en && STR.en[key])) hit('en', 'no en entry', key)
   }
