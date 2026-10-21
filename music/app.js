@@ -633,7 +633,7 @@
   }
   function writePitch(pitch) {
     if (state.along) {
-      $("lesson").textContent = "Play along is on. Turn it off to write the note.";
+      $("lesson").textContent = mu("lessonAlongOn");
       return;
     }
     state.ink = pitch;
@@ -642,18 +642,19 @@
     const ev = evs[step] || evs[0];
     writeAt(ev, pitch);
     const words = {
-      quarter: "A quarter note. It is saved.",
-      eighth: "Two eighth notes share this beat. It is saved.",
-      tie: "Tied notes sound as one longer note. It is saved.",
-      rest: "A rest. Count it. It is saved.",
-      chord: "A chord stacks notes on this beat. It is saved.",
-      staccato: "Staccato is short. It is saved.",
-      accent: "An accent is louder. It is saved.",
-      tenuto: "Tenuto holds the full beat. It is saved.",
+      quarter: mu("lessonQuarter"),
+      eighth: mu("lessonEighth"),
+      tie: mu("lessonTie"),
+      rest: mu("lessonRest"),
+      chord: mu("lessonChord"),
+      staccato: mu("lessonStaccato"),
+      accent: mu("lessonAccent"),
+      tenuto: mu("lessonTenuto"),
     };
     const teach = $("teach");
-    if (teach && !state.expert) teach.textContent = (TEACH[pitch] || "") + " " + (words[state.pen] || "It is saved.");
-    $("lesson").textContent = words[state.pen] || "The note is saved.";
+    const saved = words[state.pen] || mu("lessonSaved");
+    if (teach && !state.expert) teach.textContent = (TEACH[pitch] || "") + " " + saved;
+    $("lesson").textContent = saved;
   }
   function paintKeypad() {
     const pen = $("pen");
@@ -669,27 +670,28 @@
           state.pen = id;
           paintKeypad();
           const help = {
-            quarter: "1 beat. Tap a letter.",
-            eighth: "Fast. Tap a letter twice for two quick notes.",
-            tie: "Longer. Tap the letter that is already on this beat.",
-            rest: "Rest. Tap a letter to leave a silence.",
+            quarter: mu("lessonPenQuarter"),
+            eighth: mu("lessonPenEighth"),
+            tie: mu("lessonPenTie"),
+            rest: mu("lessonPenRest"),
           };
-          $("lesson").textContent = help[id];
+          $("lesson").textContent = help[id] || "";
         });
         pen.appendChild(b);
       });
     }
     if (box && !box.childElementCount) {
-      [["chord", "Chord"], ["staccato", "Short"], ["accent", "Louder hit"], ["tenuto", "Full hold"]].forEach(([id, label]) => {
+      [["chord", "pen_chord"], ["staccato", "pen_staccato"], ["accent", "pen_accent"], ["tenuto", "pen_tenuto"]].forEach(([id, key]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
         b.dataset.pen = id;
-        b.textContent = label;
+        b.textContent = mu(key) || id;
         b.addEventListener("click", () => {
           state.pen = id;
           paintKeypad();
-          $("lesson").textContent = label + ". Then tap a letter.";
+          const label = mu(key) || id;
+          $("lesson").textContent = mu("lessonThen", { label: label });
         });
         box.appendChild(b);
       });
@@ -698,22 +700,22 @@
         b.type = "button";
         b.className = "btn";
         b.dataset.key = key;
-        b.textContent = "Key " + key;
+        b.textContent = mu("keyBtn", { key: key }) || key;
         b.addEventListener("click", () => {
           if (Song.setKey) Song.setKey(state.song, key);
           keep();
           renderStaff();
           paintKeypad();
-          $("lesson").textContent = "Key of " + key + ". The staff shows that signature.";
+          $("lesson").textContent = mu("lessonKeyOf", { key: key });
         });
         box.appendChild(b);
       });
-      [["pp", "Very soft"], ["p", "Soft"], ["mf", "Medium"], ["f", "Loud"], ["ff", "Very loud"]].forEach(([dyn, label]) => {
+      [["pp", "dyn_pp"], ["p", "dyn_p"], ["mf", "dyn_mf"], ["f", "dyn_f"], ["ff", "dyn_ff"]].forEach(([dyn, key]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
         b.dataset.dyn = dyn;
-        b.textContent = label;
+        b.textContent = mu(key) || dyn;
         b.addEventListener("click", () => {
           const evs = Song.events(state.song);
           const ev = evs[state.cursor] || evs[0];
@@ -721,7 +723,8 @@
           state.dyn = dyn;
           keep();
           renderStaff();
-          $("lesson").textContent = label + " is written on this beat.";
+          const label = mu(key) || dyn;
+          $("lesson").textContent = mu("lessonDyn", { label: label });
         });
         box.appendChild(b);
       });
@@ -731,6 +734,22 @@
         if (!btn.dataset.pen) return;
         const word = mu("pen_" + btn.dataset.pen);
         if (word) btn.textContent = word;
+      });
+    }
+    if (box) {
+      [...box.children].forEach((btn) => {
+        if (btn.dataset.pen) {
+          const word = mu("pen_" + btn.dataset.pen);
+          if (word) btn.textContent = word;
+        }
+        if (btn.dataset.key) {
+          const word = mu("keyBtn", { key: btn.dataset.key });
+          if (word) btn.textContent = word;
+        }
+        if (btn.dataset.dyn) {
+          const word = mu("dyn_" + btn.dataset.dyn);
+          if (word) btn.textContent = word;
+        }
       });
     }
     [pen, box].forEach((host) => {
@@ -835,7 +854,7 @@
     state.cursor = evs.indexOf(ev);
     state.ink = pitch;
     writeAt(ev, pitch);
-    $("lesson").textContent = "Higher on the staff is a higher note.";
+    $("lesson").textContent = mu("lessonHigher");
   }
 
   function renderDrums() {
@@ -2759,8 +2778,8 @@
     paintAlong();
     keep();
     $("lesson").textContent = state.along
-      ? "Play along is on. Your taps do not change the song. Match the flash."
-      : "Play along is off. Your taps are saved on the beat.";
+      ? mu("lessonAlongMatch")
+      : mu("lessonAlongOff");
   });
   $("play-btn").addEventListener("click", () => {
     if (state.showing) {
