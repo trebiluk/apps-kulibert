@@ -6,6 +6,12 @@ MU 2.36.29 — Practice and class lists talk to you in your language.
 
 ## Earlier
 
+**Chip: MU 2.36.28** · 2026-10-21 · channel **live**
+
+MU 2.36.28 — Surprise beats and remix ideas talk to you in your language.
+
+## Earlier
+
 **Chip: MU 2.36.27** · 2026-10-21 · channel **live**
 
 MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language.
