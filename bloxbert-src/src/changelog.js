@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.308', date: '2026-10-21', lines: {
+    en: ['Lamps and rugs have clearer pictures.'],
+    simple: ['Lamps and rugs have clearer pictures.'],
+    uk: ['Лампи і килими мають чіткіші картинки.'],
+    ru: ['Лампы и ковры имеют более чёткие картинки.'],
+    es: ['Las lámparas y las alfombras tienen imágenes más claras.'],
+    ar: ['المصابيح والسجاد لها صور أوضح.'],
+    'fa-AF': ['چراغ‌ها و قالین تصویرهای واضح‌تر دارند.'],
+    rw: ['Amatara n\'itapi bifite amashusho asobanutse.'],
+    ti: ['መብራህትን ምንጻፍን ንጹር ስእሊ ኣለዎም።'],
+  }},
+
   { v: '2.5.304', date: '2026-10-21', lines: {
     en: ['2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.'],
     simple: ['2.5.304 — Bigger item counts you can read from your seat, and bigger slots on phones.'],
