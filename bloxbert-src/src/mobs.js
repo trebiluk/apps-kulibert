@@ -142,8 +142,17 @@ export function createMobs(opts) {
   function spawn(kind, x, y, z, forced) {
     if (!forced && (kind === 'scrapper' || kind === 'sparkbug') && !canSpawn(kind, x, y, z)) return null
     if (!forced && (zone(x, z) || plotInterior(x | 0, z | 0) || blockedWorld())) return null
-    if (forced && zone(x, z)) return null // still refuse inside town even forced
-    if (mobs.length >= worldCap()) return null
+    if (forced && zone(x, z)) { console.info('[bt-test] spawn', kind, 'REFUSED: zone'); return null }
+    if (forced && blockedWorld()) { /* test only: allow */ }
+    if (mobs.length >= worldCap()) { if (forced) console.info('[bt-test] spawn', kind, 'REFUSED: cap'); return null }
+    // Ground height for forced: first air above solid
+    if (forced && getVoxel) {
+      let gy = y
+      for (let dy = 0; dy < 8; dy++) {
+        if ((getVoxel(x, y - dy, z) | 0) > 0 && (getVoxel(x, y - dy + 1, z) | 0) === 0) { gy = y - dy + 1; break }
+      }
+      y = gy
+    }
     const mob = {
       id: kind + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
       kind, x, y, z,
