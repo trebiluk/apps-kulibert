@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.316', date: '2026-10-21', lines: {
+    en: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
+    simple: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
+    uk: ['2.5.316 — Слова графіки Авто, Легкий і Повний написані твоєю мовою.'],
+    ru: ['2.5.316 — Слова графики Авто, Лёгкий и Полный написаны на твоём языке.'],
+    es: ['2.5.316 — Las palabras de gráficos Automático, Ligero y Completo están en tu idioma.'],
+    ar: ['2.5.316 — كلمات الرسوم تلقائي وخفيف وكامل بلغتك.'],
+    'fa-AF': ['2.5.316 — واژه‌های گرافیک خودکار، سبک و کامل به زبان تو هستند.'],
+    rw: ['2.5.316 — Amagambo y\'ibisakaza Byikora, Yoroheje na Yuzuye ari mu rurimi rwawe.'],
+    ti: ['2.5.316 — ቃላት ስእሊ ብባዕሉ፡ ቀሊልን ምሉእን ብቋንቋኻ እዮም።'],
+  }},
+
   { v: '2.5.313', date: '2026-10-21', lines: {
     en: ['2.5.313 — The Flip button no longer covers the hint.'],
     simple: ['2.5.313 — The Flip button no longer covers the hint.'],

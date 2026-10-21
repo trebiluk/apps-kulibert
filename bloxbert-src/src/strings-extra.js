@@ -1823,3 +1823,42 @@ for (const [lang, row] of Object.entries(FIT307)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const FIT316 = {
+  en: {
+    helpBody: 'Pick a tile. The graphics words Auto, Lite and Full are in your language.',
+    whatsNewBody: '2.5.316 — The graphics words Auto, Lite and Full are in your language.',
+  },
+  uk: {
+    helpBody: 'Обери плитку. Слова графіки Авто, Легкий і Повний написані твоєю мовою.',
+    whatsNewBody: '2.5.316 — Слова графіки Авто, Легкий і Повний написані твоєю мовою.',
+  },
+  ru: {
+    helpBody: 'Выбери плитку. Слова графики Авто, Лёгкий и Полный написаны на твоём языке.',
+    whatsNewBody: '2.5.316 — Слова графики Авто, Лёгкий и Полный написаны на твоём языке.',
+  },
+  es: {
+    helpBody: 'Elige una ficha. Las palabras de gráficos Automático, Ligero y Completo están en tu idioma.',
+    whatsNewBody: '2.5.316 — Las palabras de gráficos Automático, Ligero y Completo están en tu idioma.',
+  },
+  ar: {
+    helpBody: 'اختر بلاطة. كلمات الرسوم تلقائي وخفيف وكامل بلغتك.',
+    whatsNewBody: '2.5.316 — كلمات الرسوم تلقائي وخفيف وكامل بلغتك.',
+  },
+  'fa-AF': {
+    helpBody: 'یک خانه برگزین. واژه‌های گرافیک خودکار، سبک و کامل به زبان تو هستند.',
+    whatsNewBody: '2.5.316 — واژه‌های گرافیک خودکار، سبک و کامل به زبان تو هستند.',
+  },
+  rw: {
+    helpBody: 'Hitamo agakaro. Amagambo y\'ibisakaza Byikora, Yoroheje na Yuzuye ari mu rurimi rwawe.',
+    whatsNewBody: '2.5.316 — Amagambo y\'ibisakaza Byikora, Yoroheje na Yuzuye ari mu rurimi rwawe.',
+  },
+  ti: {
+    helpBody: 'ንጣፍ ምረጽ። ቃላት ስእሊ ብባዕሉ፡ ቀሊልን ምሉእን ብቋንቋኻ እዮም።',
+    whatsNewBody: '2.5.316 — ቃላት ስእሊ ብባዕሉ፡ ቀሊልን ምሉእን ብቋንቋኻ እዮም።',
+  },
+}
+for (const [lang, row] of Object.entries(FIT316)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
