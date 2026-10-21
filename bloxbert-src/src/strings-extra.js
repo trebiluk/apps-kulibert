@@ -2421,9 +2421,9 @@ Object.assign(EXTRA['en'], {"s2bSaved": "Saved to school", "s2bSaving": "Saving�
 if (!EXTRA['simple']) EXTRA['simple'] = {}
 Object.assign(EXTRA['simple'], {"s2bSaved": "Saved to school", "s2bSaving": "Saving…", "s2bOffline": "Offline — saved here", "s2bNoSign": "Not signed in", "s2bKeepTitle": "Two copies found.", "s2bKeepBody": "We kept both.", "s2bHelp": "Test only: with sync on, your world can come back from school."})
 if (!EXTRA['uk']) EXTRA['uk'] = {}
-Object.assign(EXTRA['uk'], {"s2bSaved": "Збережено в школі", "s2bSaving": "Збереження…", "s2bOffline": "Офлайн — збережено тут", "s2bNoSign": "Не ввійшли", "s2bKeepTitle": "Знайдено дві копії.", "s2bKeepBody": "Ми зберегли обидві.", "s2bHelp": "Лише тест: з увімкненим sync світ може повернутися зі школи."})
+Object.assign(EXTRA['uk'], {"s2bSaved": "Збережено в школі", "s2bSaving": "Збереження…", "s2bOffline": "Офлайн — збережено тут", "s2bNoSign": "Не ввійшли", "s2bKeepTitle": "Знайдено дві копії.", "s2bKeepBody": "Ми зберегли обидві.", "s2bHelp": "Лише тест: з увімкненою синхронізацією світ може повернутися зі школи."})
 if (!EXTRA['ru']) EXTRA['ru'] = {}
-Object.assign(EXTRA['ru'], {"s2bSaved": "Сохранено в школе", "s2bSaving": "Сохранение…", "s2bOffline": "Офлайн — сохранено здесь", "s2bNoSign": "Не вошли", "s2bKeepTitle": "Найдены две копии.", "s2bKeepBody": "Мы сохранили обе.", "s2bHelp": "Только тест: с включённым sync мир может вернуться из школы."})
+Object.assign(EXTRA['ru'], {"s2bSaved": "Сохранено в школе", "s2bSaving": "Сохранение…", "s2bOffline": "Офлайн — сохранено здесь", "s2bNoSign": "Не вошли", "s2bKeepTitle": "Найдены две копии.", "s2bKeepBody": "Мы сохранили обе.", "s2bHelp": "Только тест: с включённой синхронизацией мир может вернуться из школы."})
 if (!EXTRA['es']) EXTRA['es'] = {}
 Object.assign(EXTRA['es'], {"s2bSaved": "Guardado en la escuela", "s2bSaving": "Guardando…", "s2bOffline": "Sin conexión — guardado aquí", "s2bNoSign": "No has iniciado sesión", "s2bKeepTitle": "Se encontraron dos copias.", "s2bKeepBody": "Guardamos ambas.", "s2bHelp": "Solo prueba: con sync activado, tu mundo puede volver de la escuela."})
 if (!EXTRA['ar']) EXTRA['ar'] = {}
@@ -2433,7 +2433,7 @@ Object.assign(EXTRA['fa-AF'], {"s2bSaved": "در مدرسه ذخیره شد", "s
 if (!EXTRA['rw']) EXTRA['rw'] = {}
 Object.assign(EXTRA['rw'], {"s2bSaved": "Byabitswe mu ishuri", "s2bSaving": "Birabitswa…", "s2bOffline": "Nta murandasi — byabitswe hano", "s2bNoSign": "Nta winjiye", "s2bKeepTitle": "Kopi ebyiri byabonetse.", "s2bKeepBody": "Twabishyize hamwe.", "s2bHelp": "Igerageza gusa: niba sync iriho, isi yawe ishobora kugaruka ku ishuri."})
 if (!EXTRA['ti']) EXTRA['ti'] = {}
-Object.assign(EXTRA['ti'], {"s2bSaved": "ኣብ ቤት ትምህርቲ ተዓቂቡ", "s2bSaving": "እናተዓቐበ…", "s2bOffline": "ኦፍላይን — ኣብዚ ተዓቂቡ", "s2bNoSign": "ኣይኣተወን", "s2bKeepTitle": "ክልተ ቅዳሕ ተረኺቡ።", "s2bKeepBody": "ክልቲኦም ኣቐሚጡና።", "s2bHelp": "ፈተና ጥራይ፡ sync እንተ ተኸፊቱ ዓለምካ ካብ ቤት ትምህርቲ ክምለስ ይኽእል።"})
+Object.assign(EXTRA['ti'], {"s2bSaved": "ኣብ ቤት ትምህርቲ ተዓቂቡ", "s2bSaving": "እናተዓቐበ…", "s2bOffline": "ኦፍላይን — ኣብዚ ተዓቂቡ", "s2bNoSign": "ኣይኣተወን", "s2bKeepTitle": "ክልተ ቅዳሕ ተረኺቡ።", "s2bKeepBody": "ክልቲኦም ኣቐሚጡና።", "s2bHelp": "ፈተና ጥራይ፡ ስንክሮ እንተ ተኸፊቱ ዓለምካ ካብ ቤት ትምህርቲ ክምለስ ይኽእል።"})
 
 const C1BONK = {
   en: { c1Bonk: 'Bonk' },
@@ -2453,15 +2453,15 @@ for (const [lang, row] of Object.entries(C1BONK)) {
 
 // 2.5.299 C5 Foundry Overseer. rw/ti/fa-AF machine drafts, need native check.
 const C5 = {
-  en: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Conveyor belts push to walls', c5Vent: 'Hiss! Vent cone →', c5Wipe: 'Calm. Key returned.', c5Win: 'Foundry rebooted!', c5Help: 'Craft an Override Key, place it on the Foundry Console outside town to summon the Overseer. Reboot as a team for the Foundry Crew badge and gear trim.' },
-  simple: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Belts push you to walls', c5Vent: 'Hiss! Hot air →', c5Wipe: 'Calm. Key back.', c5Win: 'Foundry rebooted!', c5Help: 'Make an Override Key. Put it on the Foundry Console outside town. Team up to reboot the Overseer for a badge and trim.' },
-  uk: { c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвеєри штовхають до стін', c5Vent: 'Шипіння! Вентиляція →', c5Wipe: 'Спокій. Ключ повернуто.', c5Win: 'Ливарню перезавантажено!', c5Help: 'Зробіть ключ перевизначення, покладіть на консоль ливарні поза містом. Командою перезавантажте наглядача за значок і обробку.' },
-  ru: { c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвейеры толкают к стенам', c5Vent: 'Шипение! Вентиляция →', c5Wipe: 'Спокойно. Ключ возвращён.', c5Win: 'Литейную перезагрузили!', c5Help: 'Сделайте ключ переопределения, положите на консоль литейной за городом. Командой перезагрузите надзирателя за значок и отделку.' },
-  es: { c5Stamp: '⚠ ¡Sello!', c5Conveyor: 'Cintas empujan a las paredes', c5Vent: '¡Siseo! Cono de ventilación →', c5Wipe: 'Calma. Llave devuelta.', c5Win: '¡Fundición reiniciada!', c5Help: 'Fabrica una Llave de anulación, colócala en la Consola de la Fundición fuera del pueblo. Reinicia en equipo para la insignia y el borde.' },
-  ar: { c5Stamp: '⚠ ختم!', c5Conveyor: 'الأحزمة تدفع إلى الجدران', c5Vent: 'هسهسة! مخروط التهوية →', c5Wipe: 'هدوء. المفتاح عاد.', c5Win: 'أعيد تشغيل المسبك!', c5Help: 'اصنع مفتاح التجاوز، ضعه على وحدة التحكم بالمسبك خارج البلدة. أعد التشغيل كفريق للحصول على الشارة والتشذيب.' },
-  'fa-AF': { c5Stamp: '⚠ مهر!', c5Conveyor: 'نوارها به دیوارها هل می‌دهند', c5Vent: 'هیس! مخروط تهویه →', c5Wipe: 'آرام. کلید برگشت.', c5Win: 'ریخته‌گری راه‌اندازی مجدد شد!', c5Help: 'کلید لغو را بسازید، روی کنسول ریخته‌گری خارج شهر بگذارید. به عنوان تیم راه‌اندازی مجدد کنید برای نشان و تزئین.' },
-  rw: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Imikandara isunika ku nkuta', c5Vent: 'Hiss! Vent →', c5Wipe: 'Umutekano. Urufunguzo rugarutse.', c5Win: 'Foundry yasubijwe!', c5Help: 'Kora Urufunguzo, shyira ku Console yo Foundry hanze y\'umujyi. Subiza hamwe kugira ngo ubone ikimenyetso n\'uburyo.' },
-  ti: { c5Stamp: '⚠ ምልክት!', c5Conveyor: 'መስመራት ናብ መናድቕ ይድፉ', c5Vent: 'ሂስ! ቬንት →', c5Wipe: 'ርግኣት። መፍትሕ ተመሊሱ።', c5Win: 'ፋውንድሪ ዳግማይ ተጀሚሩ!', c5Help: 'ኦቨርራይድ ኪ ሰርሕ፣ ኣብ ፋውንድሪ ኮንሶል ካብ ከተማ ወጻኢ ኣቐምጥ። ብቡድ ንምዝላል ንባጅን ትሪምን።' },
+  en: { overrideKey: 'Override Key', c5Stamp: '⚠ Stamp!', c5Conveyor: 'Conveyor belts push to walls', c5Vent: 'Hiss! Vent cone →', c5Wipe: 'Calm. Key returned.', c5Win: 'Foundry rebooted!', c5Help: 'Craft an Override Key, place it on the Foundry Console outside town to summon the Overseer. Reboot as a team for the Foundry Crew badge and gear trim.' },
+  simple: { overrideKey: 'Override Key', c5Stamp: '⚠ Stamp!', c5Conveyor: 'Belts push you to walls', c5Vent: 'Hiss! Hot air →', c5Wipe: 'Calm. Key back.', c5Win: 'Foundry rebooted!', c5Help: 'Make an Override Key. Put it on the Foundry Console outside town. Team up to reboot the Overseer for a badge and trim.' },
+  uk: { overrideKey: 'Ключ перевизначення', c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвеєри штовхають до стін', c5Vent: 'Шипіння! Вентиляція →', c5Wipe: 'Спокій. Ключ повернуто.', c5Win: 'Ливарню перезавантажено!', c5Help: 'Зробіть ключ перевизначення, покладіть на консоль ливарні поза містом. Командою перезавантажте наглядача за значок і обробку.' },
+  ru: { overrideKey: 'Ключ переопределения', c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвейеры толкают к стенам', c5Vent: 'Шипение! Вентиляция →', c5Wipe: 'Спокойно. Ключ возвращён.', c5Win: 'Литейную перезагрузили!', c5Help: 'Сделайте ключ переопределения, положите на консоль литейной за городом. Командой перезагрузите надзирателя за значок и отделку.' },
+  es: { overrideKey: 'Llave de anulación', c5Stamp: '⚠ ¡Sello!', c5Conveyor: 'Cintas empujan a las paredes', c5Vent: '¡Siseo! Cono de ventilación →', c5Wipe: 'Calma. Llave devuelta.', c5Win: '¡Fundición reiniciada!', c5Help: 'Fabrica una Llave de anulación, colócala en la Consola de la Fundición fuera del pueblo. Reinicia en equipo para la insignia y el borde.' },
+  ar: { overrideKey: 'مفتاح التجاوز', c5Stamp: '⚠ ختم!', c5Conveyor: 'الأحزمة تدفع إلى الجدران', c5Vent: 'هسهسة! مخروط التهوية →', c5Wipe: 'هدوء. المفتاح عاد.', c5Win: 'أعيد تشغيل المسبك!', c5Help: 'اصنع مفتاح التجاوز، ضعه على وحدة التحكم بالمسبك خارج البلدة. أعد التشغيل كفريق للحصول على الشارة والتشذيب.' },
+  'fa-AF': { overrideKey: 'کلید لغو', c5Stamp: '⚠ مهر!', c5Conveyor: 'نوارها به دیوارها هل می‌دهند', c5Vent: 'هیس! مخروط تهویه →', c5Wipe: 'آرام. کلید برگشت.', c5Win: 'ریخته‌گری راه‌اندازی مجدد شد!', c5Help: 'کلید لغو را بسازید، روی کنسول ریخته‌گری خارج شهر بگذارید. به عنوان تیم راه‌اندازی مجدد کنید برای نشان و تزئین.' },
+  rw: { overrideKey: 'Urufunguzo', c5Stamp: '⚠ Ikimenyetso!', c5Conveyor: 'Imikandara isunika ku nkuta', c5Vent: 'Hiss! Vent →', c5Wipe: 'Umutekano. Urufunguzo rugarutse.', c5Win: 'Foundry yasubijwe!', c5Help: 'Kora Urufunguzo, shyira ku Console yo Foundry hanze y\'umujyi. Subiza hamwe kugira ngo ubone ikimenyetso n\'uburyo.' },
+  ti: { overrideKey: 'ኦቨርራይድ ኪ', c5Stamp: '⚠ ምልክት!', c5Conveyor: 'መስመራት ናብ መናድቕ ይድፉ', c5Vent: 'ሂስ! ቬንት →', c5Wipe: 'ርግኣት። መፍትሕ ተመሊሱ።', c5Win: 'ፋውንድሪ ዳግማይ ተጀሚሩ!', c5Help: 'ኦቨርራይድ ኪ ሰርሕ፣ ኣብ ፋውንድሪ ኮንሶል ካብ ከተማ ወጻኢ ኣቐምጥ። ብቡድ ንምዝላል ንባጅን ትሪምን።' },
 }
 for (const [lang, row] of Object.entries(C5)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
