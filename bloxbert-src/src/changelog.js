@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.326', date: '2026-10-21', lines: {
+    en: ['2.5.326 — Jump is always there when your phone is sideways.'],
+    simple: ['2.5.326 — Jump is always there when your phone is sideways.'],
+    uk: ['2.5.326 — Стрибок завжди є, коли телефон лежить боком.'],
+    ru: ['2.5.326 — Прыжок всегда есть, когда телефон лежит боком.'],
+    es: ['2.5.326 — El salto siempre está ahí cuando el teléfono está de lado.'],
+    ar: ['2.5.326 — القفز دائمًا موجود عندما يكون الهاتف جانبيًا.'],
+    'fa-AF': ['2.5.326 — پرش همیشه هست وقتی تلفن پهلو است.'],
+    rw: ['2.5.326 — Gusimbuka hariho buri gihe telefoni iri ku ruhande.'],
+    ti: ['2.5.326 — ምዝላል ኩሉ ግዜ ኣሎ እንተ ስልኪ ብጎኒ ኣሎ።'],
+  }},
+
   { v: '2.5.322', date: '2026-10-21', lines: {
     en: ['2.5.322 — Settings picker groups are read out in your language.'],
     simple: ['2.5.322 — Settings picker groups are read out in your language.'],
