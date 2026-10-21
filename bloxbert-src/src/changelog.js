@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.336', date: '2026-10-21', lines: {
+    en: ["2.5.336 — The Bonk button and safe-zone chip now really show up."],
+    simple: ["2.5.336 — The Bonk button and safe-zone chip now really show up."],
+    uk: ["2.5.336 — Кнопка Бонк і чіп безпечної зони тепер справді з’являються."],
+    ru: ["2.5.336 — Кнопка Бонк и чип безопасной зоны теперь действительно появляются."],
+    es: ["2.5.336 — El botón Bonk y el chip de zona segura ahora sí aparecen."],
+    ar: ["2.5.336 — زر بونك وشريحة المنطقة الآمنة يظهران الآن حقًا."],
+    'fa-AF': ["2.5.336 — دکمه بونک و تراشه منطقه امن حالا واقعاً ظاهر می‌شوند."],
+    rw: ["2.5.336 — Buto ya Bonk na chip y'agace kwiringira ubu bigaragara koko."],
+    ti: ["2.5.336 — መቐየሪ ቦንክን ቺፕ ውሑስ ቦታን ሕጂ ብርግጽ ይረኡ።"],
+  }},
+
   { v: '2.5.335', date: '2026-10-21', lines: {
     en: ["2.5.335 — Behind the scenes: the game checks its own text files before every build."],
     simple: ["2.5.335 — Behind the scenes: the game checks its own text files before every build."],
