@@ -50,5 +50,6 @@
   "vdLiveRioWin": "RIO takes the flag. {time} seconds. {coins} coins.",
   "vdLivePaused": "Paused",
   "vdLiveResumed": "Go on",
-  "vdShapeHelp": "V is a circle. R is a square. A sign shows when you go back."
+  "vdShapeHelp": "V is a circle. R is a square. A sign shows when you go back.",
+  "rfHelpPause": "Pause is easy to tap, even sideways."
 }

@@ -203,5 +203,6 @@
   "vdLiveRioWin": "RIO ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}",
   "vdLivePaused": "ደው",
   "vdLiveResumed": "ቀጽል",
-  "vdShapeHelp": "VEX ዓንከል ምስ V እዩ። RIO ትርብዒት ምስ R እዩ። ምልክት የርኢ ኣብ መዓስ ሰብ ናብ መቆጻጸሪ ነጥቢ ይምለስ።"
+  "vdShapeHelp": "VEX ዓንከል ምስ V እዩ። RIO ትርብዒት ምስ R እዩ። ምልክት የርኢ ኣብ መዓስ ሰብ ናብ መቆጻጸሪ ነጥቢ ይምለስ።",
+  "rfHelpPause": "ጠጠው ምባል ኩሉ ግዜ ቀሊል እዩ፣ ብጐድኒ እውን።"
 }

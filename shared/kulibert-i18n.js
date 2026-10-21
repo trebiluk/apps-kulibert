@@ -208,6 +208,7 @@
   "vdShapeHelp": "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint.",
   "rfHelpLesson": "Read the lesson line when you win.",
   "rfHelpFewer": "Try to win with fewer ramps.",
+  "rfHelpPause": "Pause is always easy to tap, even sideways.",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };
   var packs = { en: EN };

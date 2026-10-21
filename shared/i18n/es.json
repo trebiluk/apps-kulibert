@@ -203,5 +203,6 @@
   "vdLiveRioWin": "RIO toma la bandera, {time} segundos, {coins} monedas",
   "vdLivePaused": "Pausa",
   "vdLiveResumed": "Sigue",
-  "vdShapeHelp": "VEX es un círculo con V. RIO es un cuadrado con R. Un letrero avisa cuando alguien vuelve a un punto de control."
+  "vdShapeHelp": "VEX es un círculo con V. RIO es un cuadrado con R. Un letrero avisa cuando alguien vuelve a un punto de control.",
+  "rfHelpPause": "Pausa siempre es fácil de tocar, incluso de lado."
 }

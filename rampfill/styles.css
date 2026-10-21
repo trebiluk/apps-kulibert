@@ -509,13 +509,14 @@ html[data-kp-motion="less"] .stamp { transform: none; }
 }
 @media (max-height: 460px) {
   .lesson { display: none; }
-  .lesson-row { display: contents; }
+  .lesson-row { display: flex; align-items: center; }
   .stack-tile {
-    position: fixed;
-    top: 56px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 8;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    z-index: auto;
+    min-height: 48px;
   }
   .spill-line { display: none; }
   .status { height: 22px; min-height: 22px; max-height: 22px; line-height: 22px; }

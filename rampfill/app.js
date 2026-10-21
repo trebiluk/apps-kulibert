@@ -57,6 +57,7 @@
       teachGel: "Thick liquid (high viscosity) flows slower",
       teachRate: "Flow rate = how much pours each second",
       bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
+      helpPause: "Pause is always easy to tap, even sideways.",
       read: "Read it to me", language: "Language",
       lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel", lv5: "Pick the path",
       done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.", done5: "Path done.",
@@ -109,6 +110,7 @@
       helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
       helpLesson: "Прочитай рядок уроку, коли виграєш.",
       helpFewer: "Спробуй виграти з меншою кількістю схилів.",
+      helpPause: "Паузу завжди легко натиснути, навіть збоку.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
       teachRate: "Швидкість потоку = скільки ллється щосекунди",
@@ -165,6 +167,7 @@
       helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
       helpLesson: "Прочитай строку урока, когда победишь.",
       helpFewer: "Попробуй победить с меньшим числом рамп.",
+      helpPause: "Паузу всегда легко нажать, даже в горизонтальном режиме.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
       teachRate: "Скорость потока = сколько льётся в секунду",
@@ -221,6 +224,7 @@
       helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
       helpLesson: "Lee la línea de la lección al ganar.",
       helpFewer: "Intenta ganar con menos rampas.",
+      helpPause: "Pausa siempre es fácil de tocar, incluso de lado.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
       teachRate: "Caudal = cuánto se vierte cada segundo",
@@ -277,6 +281,7 @@
       helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
       helpLesson: "اقرأ سطر الدرس عندما تفوز.",
       helpFewer: "حاول أن تفوز بمنحدرات أقل.",
+      helpPause: "الإيقاف المؤقت سهل اللمس دائمًا، حتى بالوضع الأفقي.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
       teachRate: "معدل التدفق = كم يُسكب كل ثانية",
@@ -333,6 +338,7 @@
       helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
       helpLesson: "وقتی بردی خط درس را بخوان.",
       helpFewer: "بکوش با سطح شیب‌دار کمتر ببری.",
+      helpPause: "توقف همیشه آسان زده می‌شود، حتی در حالت افقی.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
       teachRate: "سرعت جریان = در هر ثانیه چقدر می‌ریزد",
@@ -389,6 +395,7 @@
       helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
       helpLesson: "Soma umurongo w'isomo iyo utsinze.",
       helpFewer: "Gerageza gutsinda n'imihanda mike.",
+      helpPause: "Hagarara byoroshye gukanda buri gihe, ndetse uri ku ruhande.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
       teachRate: "Umuvuduko = ingano itemba buri segonda",
@@ -445,6 +452,7 @@
       helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
       helpLesson: "ምስ ተዓወትካ መስመር ትምህርቲ ኣንብብ።",
       helpFewer: "ብውሑዳት መንሸራተቲ ክትዓውት ፈትን።",
+      helpPause: "ጠጠው ምባል ኩሉ ግዜ ቀሊል እዩ፣ ብጐድኒ እውን።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
       teachRate: "ፍጥነት ውሕጅ = ኣብ ሰከንድ ክንደይ ይውሕጅ",
@@ -465,7 +473,8 @@
       teachSlope: "Steeper slope means faster flow",
       teachGel: "Thick liquid (high viscosity) moves slower",
       teachRate: "Flow rate means how much pours each second",
-      bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer"
+      bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
+      helpPause: "Pause is easy to tap, even sideways."
     }
   };
   var LANGS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
