@@ -4373,7 +4373,7 @@
         });
       }
       window.addEventListener("resize", function () { fitDockSoon(); });
-      document.addEventListener("kulibert-lang", function () {
+      window.addEventListener("kulibert-lang", function () {
         fitDockSoon();
         if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(undefined, fitDockSoon);
       });
