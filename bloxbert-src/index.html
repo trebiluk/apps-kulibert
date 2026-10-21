@@ -194,6 +194,12 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   .jumpcol{bottom:calc(var(--hud-lift) + env(safe-area-inset-bottom))}
   body.touch #pick-chip{bottom:calc(var(--hud-lift) + 64px + 16px + 56px + 8px + env(safe-area-inset-bottom))}
 }
+
+#suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
+@media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
+body.stick-right #suit-bar{left:auto;right:10px}
+body.touch #pick-chip{right:calc(16px + 64px + 12px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h, var(--hud-lift)) + 12px + 56px + 16px)}
+body.touch.stick-right #pick-chip{right:auto;left:calc(16px + 64px + 12px + env(safe-area-inset-left))}
 .pad,#hotbar,.top,.stickpad,.jumpcol{direction:ltr}
 html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
 html[dir=rtl] .row{text-align:right}
@@ -1323,15 +1329,12 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <div id="lamp-card" hidden><b id="lamp-level">Light</b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
 <div id="maker-card" hidden></div>
-<div id="suit-bar" style="position:fixed;left:10px;bottom:calc(var(--hud-lift) + 8px);z-index:6;display:flex;align-items:center;gap:6px;background:rgba(11,18,32,.85);border:1px solid #22304d;border-radius:8px;padding:6px 10px;min-height:44px">
+<div id="suit-bar" style="position:fixed;z-index:6;display:flex;align-items:center;gap:6px;background:rgba(11,18,32,.85);border:1px solid #22304d;border-radius:8px;padding:6px 10px;min-height:44px">
   <span id="suit-icon" aria-hidden="true">🛡</span>
   <span id="suit-text">Suit 100/100</span>
   <span id="suit-fill" style="width:60px;height:8px;background:#14B8A6;border-radius:4px"></span>
 </div>
 
-@media (max-height:500px){
-  #suit-bar{bottom:calc(var(--hotbar-h) + 104px + 24px)}
-}
 <div id="hotbar" class="kd-hotbar" role="toolbar" aria-label="Blocks" data-bt-label="hotbarName"></div>
 
 <script>
