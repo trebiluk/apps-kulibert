@@ -415,7 +415,9 @@
     codeSize: "Size",
     code_grow_short: "Short",
     code_grow_mid: "Mid",
-    code_grow_tall: "Tall"
+    code_grow_tall: "Tall",
+    helpCode: "🧩 Pick the Code look. Then you can change its folds and size.",
+    news23620: "MU 2.36.20 — Pick the Code look and you can change its folds and size."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -534,7 +536,9 @@
     codeSize: "Size",
     code_grow_short: "Short",
     code_grow_mid: "Mid",
-    code_grow_tall: "Tall"
+    code_grow_tall: "Tall",
+    helpCode: "🧩 Pick Code. Change folds and size.",
+    news23620: "MU 2.36.20 — Pick Code. Change folds and size."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -945,6 +949,8 @@
       "code_grow_short": "Коротко",
       "code_grow_mid": "Середнє",
       "code_grow_tall": "Високо",
+      "helpCode": "🧩 Обери вигляд Код. Тоді зміни складки та розмір.",
+      "news23620": "MU 2.36.20 — Обери вигляд Код і зміни складки та розмір.",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1352,6 +1358,8 @@
       "code_grow_short": "Коротко",
       "code_grow_mid": "Средне",
       "code_grow_tall": "Высоко",
+      "helpCode": "🧩 Выбери вид Код. Потом меняй складки и размер.",
+      "news23620": "MU 2.36.20 — Выбери вид Код и меняй складки и размер.",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1760,6 +1768,8 @@
       "code_grow_short": "Corto",
       "code_grow_mid": "Medio",
       "code_grow_tall": "Alto",
+      "helpCode": "🧩 Elige Código. Luego cambia los pliegues y el tamaño.",
+      "news23620": "MU 2.36.20 — Elige el aspecto Código y cambia sus pliegues y tamaño.",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2168,6 +2178,8 @@
       "code_grow_short": "قصير",
       "code_grow_mid": "وسط",
       "code_grow_tall": "طويل",
+      "helpCode": "🧩 اختر الرمز. ثم غيّر الطيّات والحجم.",
+      "news23620": "MU 2.36.20 — اختر مظهر الرمز وغيّر الطيّات والحجم.",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2576,6 +2588,8 @@
       "code_grow_short": "کوتاه",
       "code_grow_mid": "میانه",
       "code_grow_tall": "بلند",
+      "helpCode": "🧩 کد را برگزین. بعد تا و اندازه را عوض کن.",
+      "news23620": "MU 2.36.20 — نمای کد را برگزین و تا و اندازه را عوض کن.",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -2984,6 +2998,8 @@
       "code_grow_short": "Ngufi",
       "code_grow_mid": "Hagati",
       "code_grow_tall": "Nda",
+      "helpCode": "🧩 Hitamo Kode. Hanyuma uhindure impindu n'ingano.",
+      "news23620": "MU 2.36.20 — Hitamo isura Kode, uhindure impindu n'ingano.",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3392,6 +3408,8 @@
       "code_grow_short": "ሓጺር",
       "code_grow_mid": "ማእከል",
       "code_grow_tall": "ነዊሕ",
+      "helpCode": "🧩 ኮድ ምረጽ። ድሕሪኡ ምዕጻውን ዓቐንን ቀይር።",
+      "news23620": "MU 2.36.20 — መልክዕ ኮድ ምረጽ፣ ምዕጻውን ዓቐንን ቀይር።",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

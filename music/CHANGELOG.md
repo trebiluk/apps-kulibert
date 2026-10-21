@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.20** · 2026-10-21 · channel **live**
+
+MU 2.36.20 — Pick the Code look and you can change its folds and size.
+
+## Earlier
+
 **Chip: MU 2.36.19** · 2026-10-21 · channel **live**
 
 MU 2.36.19 — a Looks drawer names the pictures, colors, wall, and frame, Surprise me mixes them, a start screen glows until Play, the frame pulses gently with the kick, and loudness names follow the language.

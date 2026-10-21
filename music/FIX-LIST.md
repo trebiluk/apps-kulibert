@@ -10,7 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
-- [x] MU 2.36.19 item 5: investigated, not built. See Feature ideas below.
+- [x] MU 2.36.20: the Code look shows Folds and Size chips. The choice is kept. Old songs still open.
 - [x] MU 2.36.19 item 4: Drums or score, What you see, and each drum loudness name follow the language.
 - [x] MU 2.36.19 item 3: the frame brightens a little with the kick, at most twice a second, and stays still when motion is reduced.
 - [x] MU 2.36.19 item 2: the stage says tap to start, then the line fades when Play begins. Reduced motion stays still.
