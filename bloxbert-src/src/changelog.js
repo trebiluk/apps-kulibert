@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.293', date: '2026-10-21', lines: {
+    en: ['The Language button now reaches every language including Simple, and the whole screen follows the language you pick.'],
+    uk: ['Кнопка Мова тепер досягає кожної мови, включно з Простою, і весь екран слідує за мовою, яку ти обрав.'],
+    ru: ['Кнопка Язык теперь достигает каждого языка, включая Простой, и весь экран следует за языком, который ты выбрал.'],
+    es: ['El botón Idioma ahora llega a todos los idiomas, incluido Simple, y toda la pantalla sigue el idioma que eliges.'],
+    ar: ['زر اللغة يصل الآن إلى كل لغة بما في ذلك البسيطة، والشاشة بأكملها تتبع اللغة التي تختارها.'],
+    'fa-AF': ['دکمه زبان حالا به همه زبان‌ها از جمله ساده می‌رسد، و کل صفحه از زبانی که انتخاب می‌کنی پیروی می‌کند.'],
+    rw: ['Buto y\'Ururimi ubu igeza ku rurimi rwose harimo n\'Iyoroshye, kandi ecran yose ikurikira ururimi wahisemo.'],
+    ti: ['ቁልፊ ቋንቋ ሕጂ ናብ ኩሉ ቋንቋታት ይበጽሕ፣ Simple ሓዊሱ፣ ኩሉ ገጽ ድማ ነቲ ዝመረጽካዮ ቋንቋ ይከታተል።'],
+  }},
+
   { v: '2.5.292', date: '2026-10-21', lines: {
     en: ['The Language button now reaches every language, and the whole screen follows the language you pick.'],
     uk: ['Кнопка Мова тепер досягає кожної мови, і весь екран слідує за мовою, яку ти обрав.'],

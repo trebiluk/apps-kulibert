@@ -159,7 +159,8 @@ if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
 
 function normLang(code) {
   const raw = String(code || '').trim()
-  if (!raw || raw === 'simple') return ''
+  if (!raw) return ''
+  if (raw === 'simple') return 'simple'
   if (raw === 'fa' || /^fa[-_]/i.test(raw)) return STR['fa-AF'] ? 'fa-AF' : ''
   if (STR[raw]) return raw
   const base = raw.toLowerCase().split(/[-_]/)[0]
