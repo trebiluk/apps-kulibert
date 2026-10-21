@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.27** · 2026-10-21 · channel **live**
+
+MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language.
+
+## Earlier
+
 **Chip: MU 2.36.26** · 2026-10-21 · channel **live**
 
 MU 2.36.26 — Rests, warm-ups and the Band tab teach you in your language.

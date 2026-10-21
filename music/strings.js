@@ -512,7 +512,9 @@
     lineSaved: "{line} Saved.",
     picIsSong: "{name} is this song's picture. Saved.",
     picStays: "This picture stays with the song. Saved.",
-    micLoopOn: "The mic is on for this loop only. Tap the pads or play along."
+    micLoopOn: "The mic is on for this loop only. Tap the pads or play along.",
+    helpSound: "🎚 Sound sliders, files and pictures explain themselves in your language.",
+    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -729,7 +731,9 @@
     lineSaved: "{line} Saved.",
     picIsSong: "{name} is this song's picture. Saved.",
     picStays: "This picture stays with the song. Saved.",
-    micLoopOn: "The mic is on for this loop only. Tap the pads."
+    micLoopOn: "The mic is on for this loop only. Tap the pads.",
+    helpSound: "🎚 Sliders, files and pictures talk in your language.",
+    news23627: "MU 2.36.27 — Sound sliders, files and pictures explain themselves in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1236,7 +1240,9 @@
       "lineSaved": "{line} Збережено.",
       "picIsSong": "{name} — картинка цієї пісні. Збережено.",
       "picStays": "Ця картинка лишається з піснею. Збережено.",
-      "micLoopOn": "Мікрофон увімкнено лише для цього лупу. Торкнись падів або грай разом."
+      "micLoopOn": "Мікрофон увімкнено лише для цього лупу. Торкнись падів або грай разом.",
+      "helpSound": "🎚 Повзунки звуку, файли і картинки пояснюють себе твоєю мовою.",
+      "news23627": "MU 2.36.27 — Повзунки звуку, файли і картинки пояснюють себе твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1740,7 +1746,9 @@
       "lineSaved": "{line} Сохранено.",
       "picIsSong": "{name} — картинка этой песни. Сохранено.",
       "picStays": "Эта картинка остаётся с песней. Сохранено.",
-      "micLoopOn": "Микрофон включён только для этого лупа. Нажимай пэды или играй вместе."
+      "micLoopOn": "Микрофон включён только для этого лупа. Нажимай пэды или играй вместе.",
+      "helpSound": "🎚 Ползунки звука, файлы и картинки объясняют себя на твоём языке.",
+      "news23627": "MU 2.36.27 — Ползунки звука, файлы и картинки объясняют себя на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2245,7 +2253,9 @@
       "lineSaved": "{line} Guardado.",
       "picIsSong": "{name} es la imagen de esta canción. Guardado.",
       "picStays": "Esta imagen se queda con la canción. Guardado.",
-      "micLoopOn": "El micrófono está encendido solo para este loop. Toca los pads o toca junto."
+      "micLoopOn": "El micrófono está encendido solo para este loop. Toca los pads o toca junto.",
+      "helpSound": "🎚 Los deslizadores de sonido, los archivos y las imágenes se explican en tu idioma.",
+      "news23627": "MU 2.36.27 — Los deslizadores de sonido, los archivos y las imágenes se explican en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2750,7 +2760,9 @@
       "lineSaved": "{line} حُفظ.",
       "picIsSong": "{name} صورة هذه الأغنية. حُفظت.",
       "picStays": "هذه الصورة تبقى مع الأغنية. حُفظت.",
-      "micLoopOn": "المايك يعمل لهذه الحلقة فقط. المس الأزرار أو اعزف معًا."
+      "micLoopOn": "المايك يعمل لهذه الحلقة فقط. المس الأزرار أو اعزف معًا.",
+      "helpSound": "🎚 منزلقات الصوت والملفات والصور تشرح نفسها بلغتك.",
+      "news23627": "MU 2.36.27 — منزلقات الصوت والملفات والصور تشرح نفسها بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3255,7 +3267,9 @@
       "lineSaved": "{line} ذخیره شد.",
       "picIsSong": "{name} تصویر این آهنگ است. ذخیره شد.",
       "picStays": "این تصویر با آهنگ می‌ماند. ذخیره شد.",
-      "micLoopOn": "مایک فقط برای همین حلقه روشن است. دکمه‌ها را بزن یا همراه بزن."
+      "micLoopOn": "مایک فقط برای همین حلقه روشن است. دکمه‌ها را بزن یا همراه بزن.",
+      "helpSound": "🎚 لغزنده‌های صدا، فایل‌ها و تصویرها به زبان خودت توضیح می‌دهند.",
+      "news23627": "MU 2.36.27 — لغزنده‌های صدا، فایل‌ها و تصویرها به زبان خودت توضیح می‌دهند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3760,7 +3774,9 @@
       "lineSaved": "{line} Byabitswe.",
       "picIsSong": "{name} ni ishusho y'iyi ndirimbo. Byabitswe.",
       "picStays": "Iyi shusho iguma n'indirimbo. Byabitswe.",
-      "micLoopOn": "Mikoro iriho kuri uru ruziga gusa. Kanda utudomo cyangwa ukine hamwe."
+      "micLoopOn": "Mikoro iriho kuri uru ruziga gusa. Kanda utudomo cyangwa ukine hamwe.",
+      "helpSound": "🎚 Imikoreshereze y'ijwi, dosiye n'amashusho bisobanura mu rurimi rwawe.",
+      "news23627": "MU 2.36.27 — Imikoreshereze y'ijwi, dosiye n'amashusho bisobanura mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4265,7 +4281,9 @@
       "lineSaved": "{line} ተዓቂቡ።",
       "picIsSong": "{name} ስእሊ ናይዚ ደርፊ እዩ። ተዓቂቡ።",
       "picStays": "እዚ ስእሊ ምስቲ ደርፊ ይቕመጥ። ተዓቂቡ።",
-      "micLoopOn": "ማይክ ንዚ ሉፕ ጥራይ ወሊዑ ኣሎ። ቁልፍታት ጠውቕ ወይ ምሳኻ ተጻወት።"
+      "micLoopOn": "ማይክ ንዚ ሉፕ ጥራይ ወሊዑ ኣሎ። ቁልፍታት ጠውቕ ወይ ምሳኻ ተጻወት።",
+      "helpSound": "🎚 ተንሸራታቲ ድምጺ፡ ፋይላትን ስእልታትን ብቋንቋኻ ይግለጹ።",
+      "news23627": "MU 2.36.27 — ተንሸራታቲ ድምጺ፡ ፋይላትን ስእልታትን ብቋንቋኻ ይግለጹ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
