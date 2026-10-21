@@ -4,6 +4,7 @@ Stage 7. Version locked: RF 1.0.6.
 - [x] **RF 1.0.6 ITEM 1:** Title, chip, menu plate, data-version, cache-bust and What's new all read RF 1.0.6 from the one VERSION constant.
 - [x] **RF 1.0.6 ITEM 2:** Help lesson and fewer-ramps lines are in all 8 languages plus Simple. The page loads the current language file, so those keys are not missing.
 - [x] **RF 1.0.6 ITEM 3:** On a short sideways screen, Cup Stack sits on its own row. It no longer covers Undo or Clear. Pause stays full size and is not under the Hub home button.
+- [x] **RF 1.0.6 ITEM 4:** The real board at tw.kulibert.net/api/boards returned no rampfill rows. Nothing was removed.
 
 Stage 6. Version locked: RF 1.0.5.
 
