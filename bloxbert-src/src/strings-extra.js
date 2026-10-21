@@ -2559,3 +2559,20 @@ for (const [lang, row] of Object.entries(C4H)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.300 C6b teacher toggle toast. rw/ti/fa-AF machine drafts.
+const C6B = {
+  en: { c6bBossOff: 'The teacher turned the boss off' },
+  simple: { c6bBossOff: 'The teacher turned the boss off' },
+  uk: { c6bBossOff: 'Учитель вимкнув боса' },
+  ru: { c6bBossOff: 'Учитель выключил босса' },
+  es: { c6bBossOff: 'El profesor apagó el jefe' },
+  ar: { c6bBossOff: 'المعلم أوقف الزعيم' },
+  'fa-AF': { c6bBossOff: 'معلم رئیس را خاموش کرد' },
+  rw: { c6bBossOff: 'Umwarimu yazimye boss' },
+  ti: { c6bBossOff: 'መምህር ንቦስ ኣጥፊኡ' },
+}
+for (const [lang, row] of Object.entries(C6B)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

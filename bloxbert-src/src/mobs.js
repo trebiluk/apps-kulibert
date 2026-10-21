@@ -115,6 +115,7 @@ export function createMobs(opts) {
   }
   function canSpawn(kind, x, y, z) {
     if (blockedWorld()) return false
+    try { if (combatRule && combatRule('combat') === false) return false } catch (e) {}
     if (mobs.length >= worldCap()) return false
     if (zone(x, z) || plotInterior(x | 0, z | 0) || bedNear(x, z)) return false
     const p = playerPos && playerPos()
@@ -433,6 +434,12 @@ export function createMobs(opts) {
           }
         } else if (p && d < 12) walk(m, p[0], p[2])
       }
+      try {
+        if (combatRule && combatRule('combat') === false) {
+          m.x = m.homeX; m.z = m.homeZ
+          if (Math.hypot(m.x - m.homeX, m.z - m.homeZ) < 1) m.hp = 0
+        }
+      } catch (e) {}
       if (m.kind === 'overseer') {
         const phase = bossPhase(m.id)
         if (phase !== m.lastPhase) {

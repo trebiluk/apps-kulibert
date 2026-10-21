@@ -150,6 +150,7 @@ function combatTarget() {
   return best
 }
 function doBonk() {
+  try { if (combatRule && combatRule('combat') === false) return } catch (e) {}
   const pos = playerPos()
   if (!pos) return
   if (inSafeZone(pos[0], pos[2])) {
