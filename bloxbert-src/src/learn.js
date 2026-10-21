@@ -629,7 +629,8 @@ export function openDex(kind, fact) {
   card.style.cssText = 'position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(11,18,32,.92);overflow:auto'
   const inner = document.createElement('div')
   inner.style.cssText = 'background:#0f172a;border:2px solid #fff;border-radius:8px;padding:16px;max-width:412px;max-height:80vh;overflow:auto;color:#fff'
-  inner.innerHTML = `<b>Bertodex: ${kind}</b><br>[icon]<br>${fact}<br>(8 languages + Simple)<br><button id="dex-close" style="min-width:44px;min-height:44px;margin-top:12px">[Close]</button>`
+  const icon = kind === 'rustbot' ? '🤖' : kind === 'keeper' ? '⚙️' : '👾'
+  inner.innerHTML = `<b>Bertodex: ${kind}</b><br><span aria-hidden="true" style="font-size:48px">${icon}</span><br>${fact}<br><button id="dex-close" style="min-width:44px;min-height:44px;margin-top:12px">${t ? t('c4DexClose') : 'Close'}</button>`
   card.append(inner)
   document.body.append(card)
   const close = () => card.remove()

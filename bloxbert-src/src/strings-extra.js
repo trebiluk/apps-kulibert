@@ -2370,3 +2370,47 @@ for (const [lang, row] of Object.entries(BONKHELP)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.330 c4Help + c3Help wording fix. rw/ti/fa-AF machine drafts, need native check.
+const C4FIX = {
+  en: {
+    c4Help: 'Rustbot rusts your tools; Keeper slams — wait for the marker, then hit its back for ×2. Your first reboot of each bot opens its Bertodex card. Badges: Crew Medic (help 10 friends up), Flanker (10 back hits).',
+    c3Help: 'Crew extra: every friend who helps reboot a bot gets the whole pile. Help up: hold the button next to a friend with a low Suit.',
+  },
+  simple: {
+    c4Help: 'Rustbot rusts tools. Keeper slams — wait for the square, then hit the back for double. First reboot opens Bertodex. Badges: Crew Medic (help 10 friends up), Flanker (10 back hits).',
+    c3Help: 'Crew extra: every friend who helps reboot a bot gets the whole pile. Help up: hold the button next to a friend with a low Suit.',
+  },
+  uk: {
+    c4Help: 'Rustbot іржавіє ваші інструменти; Keeper б\'є — чекайте маркер, потім ударте в спину для ×2. Перше перезавантаження кожного бота відкриває картку Bertodex. Значки: Медик екіпажу (допоможіть 10 друзям встати), Фланкер (10 ударів у спину).',
+    c3Help: 'Екіпаж додатково: кожен друг, який допомагає перезавантажити бота, отримує всю купу. Допомогти встати: тримайте кнопку біля друга з низьким костюмом.',
+  },
+  ru: {
+    c4Help: 'Rustbot ржавеет ваши инструменты; Keeper бьёт — ждите маркер, затем ударьте в спину для ×2. Первая перезагрузка каждого бота открывает карточку Bertodex. Значки: Медик команды (помогите 10 друзьям встать), Фланкер (10 ударов в спину).',
+    c3Help: 'Команда дополнительно: каждый друг, который помогает перезагрузить бота, получает всю кучу. Помочь встать: удерживайте кнопку рядом с другом с низким костюмом.',
+  },
+  es: {
+    c4Help: 'Rustbot oxida tus herramientas; Keeper golpea — espera el marcador, luego golpea su espalda para ×2. Tu primera reinicio de cada bot abre su tarjeta Bertodex. Insignias: Médico de equipo (ayuda a 10 amigos a levantarse), Flanqueador (10 golpes por la espalda).',
+    c3Help: 'Extra de equipo: cada amigo que ayuda a reiniciar un bot obtiene toda la pila. Ayudar a levantarse: mantén el botón junto a un amigo con traje bajo.',
+  },
+  ar: {
+    c4Help: 'Rustbot يصدأ أدواتك؛ Keeper يضرب — انتظر العلامة، ثم اضرب ظهره لـ ×2. أول إعادة تشغيل لكل بوت تفتح بطاقة Bertodex. الشارات: طبيب الطاقم (ساعد 10 أصدقاء على النهوض)، مهاجم جانبي (10 ضربات من الخلف).',
+    c3Help: 'إضافي للطاقم: كل صديق يساعد في إعادة تشغيل بوت يحصل على الكومة كلها. مساعدة للنهوض: امسك الزر بجانب صديق ببدلة منخفضة.',
+  },
+  'fa-AF': {
+    c4Help: 'Rustbot ابزارهای شما را زنگ می‌زند؛ Keeper ضربه می‌زند — منتظر نشانگر بمانید، سپس پشت آن را برای ×2 بزنید. اولین راه‌اندازی مجدد هر ربات کارت Bertodex آن را باز می‌کند. نشان‌ها: طبیب خدمه (به 10 دوست کمک کنید بلند شوند)، پهلوگیر (10 ضربه از پشت).',
+    c3Help: 'اضافه خدمه: هر دوستی که به راه‌اندازی مجدد ربات کمک کند کل توده را می‌گیرد. کمک برای بلند شدن: دکمه را کنار دوستی با لباس پایین نگه دارید.',
+  },
+  rw: {
+    c4Help: 'Rustbot rusts your tools; Keeper slams — wait for the marker, then hit its back for ×2. Your first reboot of each bot opens its Bertodex card. Badges: Crew Medic (help 10 friends up), Flanker (10 back hits).',
+    c3Help: 'Crew extra: every friend who helps reboot a bot gets the whole pile. Help up: hold the button next to a friend with a low Suit.',
+  },
+  ti: {
+    c4Help: 'Rustbot rusts your tools; Keeper slams — wait for the marker, then hit its back for ×2. Your first reboot of each bot opens its Bertodex card. Badges: Crew Medic (help 10 friends up), Flanker (10 back hits).',
+    c3Help: 'Crew extra: every friend who helps reboot a bot gets the whole pile. Help up: hold the button next to a friend with a low Suit.',
+  },
+}
+for (const [lang, row] of Object.entries(C4FIX)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
