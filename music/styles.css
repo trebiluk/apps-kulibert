@@ -1897,7 +1897,7 @@ body.is-both .drum-row.is-extra {
   min-height: 44px !important;
   height: 44px !important;
   max-height: 44px !important;
-  grid-template-columns: 3.2rem repeat(16, minmax(0, 1fr)) !important;
+  grid-template-columns: 3.2rem repeat(16, minmax(44px, 1fr)) !important; /* MU 2.36.43: beat cells never narrower than 44px */
   overflow: visible !important;
 }
 body.is-beat .cell,
