@@ -606,7 +606,8 @@
     workspaceName: "Workspace",
     padsName: "Drum pads",
     vizName: "Live music picture",
-    news23634: "MU 2.36.34 — Four more screen-reader names now use your language."
+    news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
+    news23636: "MU 2.36.36 — The Viz picture now moves with your music, every beat and note."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -917,7 +918,8 @@
     workspaceName: "Work area",
     padsName: "Drum pads",
     vizName: "Live music picture",
-    news23634: "MU 2.36.34 — Four more screen-reader names now use your language."
+    news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
+    news23636: "MU 2.36.36 — The picture moves with your song."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1518,7 +1520,8 @@
       "workspaceName": "Робочий простір",
       "padsName": "Барабанні кнопки",
       "vizName": "Жива картинка музики",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — Картинка Viz тепер рухається з твоєю музикою, з кожним ударом і нотою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2116,7 +2119,8 @@
       "workspaceName": "Рабочее место",
       "padsName": "Барабанные кнопки",
       "vizName": "Живая картинка музыки",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — Картинка Viz теперь движется с твоей музыкой, с каждым ударом и нотой."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2715,7 +2719,8 @@
       "workspaceName": "Zona de trabajo",
       "padsName": "Botones de batería",
       "vizName": "Imagen de la música en vivo",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — La imagen de Viz ahora se mueve con tu música, cada golpe y cada nota."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3314,7 +3319,8 @@
       "workspaceName": "مساحة العمل",
       "padsName": "أزرار الطبل",
       "vizName": "صورة الموسيقى الحية",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — صورة Viz تتحرك الآن مع موسيقاك، مع كل إيقاع ونغمة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3913,7 +3919,8 @@
       "workspaceName": "جای کار",
       "padsName": "دکمه‌های طبل",
       "vizName": "تصویر زندهٔ موسیقی",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — تصویر Viz حالا با موسیقی‌ات حرکت می‌کند، با هر ضرب و نت."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4512,7 +4519,8 @@
       "workspaceName": "Umwanya w'akazi",
       "padsName": "Utubuto tw'ingoma",
       "vizName": "Ishusho y'umuziki uriho",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — Ishusho ya Viz ubu igenda hamwe n'umuziki wawe, buri njyana n'inota."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5111,7 +5119,8 @@
       "workspaceName": "ቦታ ስራሕ",
       "padsName": "መልጎም ከበሮ",
       "vizName": "ቀጥታ ስእሊ ሙዚቃ",
-      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language."
+      "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
+      "news23636": "MU 2.36.36 — ስእሊ Viz ሕጂ ምስ ሙዚቃኻ ይንቀሳቐስ፡ ምስ ነፍሲ ወከፍ ምት ኖታን።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
