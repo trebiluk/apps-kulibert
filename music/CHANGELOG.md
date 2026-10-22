@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.39** · 2026-10-22 · channel **live**
+
+MU 2.36.39 — The picture on Viz is big again.
+
+## Earlier
+
 **Chip: MU 2.36.38** · 2026-10-22 · channel **live**
 
 MU 2.36.38 — The Glow frame lights up around the picture again.
