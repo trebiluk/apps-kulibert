@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.363 save-chip-wait:** The Saved chip waits until the kid acts. Load-time autosave still happens; only the chip is hidden.
 - [x] **weak-point-clock (2.5.362):** Boss bar shows Weak point open after Stamp/Slam. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

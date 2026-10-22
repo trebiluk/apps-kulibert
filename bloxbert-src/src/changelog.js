@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.363', date: '2026-10-22', lines: {
+    en: ["2.5.363 — No Saved pop-up when you first arrive. It shows after you build."],
+    simple: ["2.5.363 — No save pop-up at the start."],
+    uk: ["2.5.363 — Немає спливного «Збережено», коли ти щойно зайшов. Воно з’являється після будування."],
+    ru: ["2.5.363 — Нет всплывающего «Сохранено», когда ты только зашёл. Оно появляется после стройки."],
+    es: ["2.5.363 — Ya no sale «Guardado» al llegar. Sale después de construir."],
+    ar: ["2.5.363 — لا تظهر رسالة «تم الحفظ» عند وصولك. تظهر بعد أن تبني."],
+    'fa-AF': ["2.5.363 — وقتی تازه می‌رسی پیام «ذخیره شد» نمی‌آید. بعد از ساختن می‌آید."],
+    rw: ["2.5.363 — Nta butumwa Byabitswe bugaragara ukigera. Bugaragara umaze kubaka."],
+    ti: ["2.5.363 — ምስ መጻእካ «ተዓቂቡ» ዝብል መልእኽቲ የለን። ድሕሪ ምህናጽ ይርአ።"],
+  }},
+
   { v: '2.5.362', date: '2026-10-22', lines: {
     en: ['2.5.362 — The boss bar now shows "Weak point open!" right after a Stamp or Slam. Bonk it then.'],
     simple: ['The bar tells you when to hit the boss.'],
