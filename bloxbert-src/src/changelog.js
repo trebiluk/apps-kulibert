@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.341', date: '2026-10-21', lines: {
+    en: ['2.5.341 — Bots now show up where they are.'],
+    simple: ['2.5.341 — Bots now show up where they are.'],
+    uk: ['2.5.341 — Боти тепер з’являються там, де вони є.'],
+    ru: ['2.5.341 — Боты теперь появляются там, где они есть.'],
+    es: ['2.5.341 — Los bots ahora aparecen donde están.'],
+    ar: ['2.5.341 — الروبوتات تظهر الآن حيث هي.'],
+    'fa-AF': ['2.5.341 — ربات‌ها حالا جایی که هستند ظاهر می‌شوند.'],
+    rw: ['2.5.341 — Bots ubu bigaragara aho biri.'],
+    ti: ['2.5.341 — ቦትስ ሕጂ ኣብ ዘለዉ ቦታ ይረአዩ።'],
+  }},
+
   { v: '2.5.342', date: '2026-10-21', lines: {
     en: ["2.5.342 — The walk hint now sits above the Suit pill."],
     simple: ["2.5.342 — The walk hint now sits above the Suit pill."],
