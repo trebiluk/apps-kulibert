@@ -10207,6 +10207,7 @@ function ensureBossBar() {
   bossBar.id = 'boss-bar'
   bossBar.setAttribute('role', 'status')
   bossBar.setAttribute('aria-live', 'polite')
+  bossBar.innerHTML = '<div data-boss-vis aria-hidden="true"></div><span data-boss-sr style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></span>'
   bossBar.style.cssText = 'position:fixed;top:48px;left:50%;transform:translateX(-50%);background:#0f172a;color:#f8fafc;padding:8px 16px;border-radius:8px;z-index:25;min-width:200px;text-align:center;font-size:14px;display:none'
   document.body.append(bossBar)
   return bossBar
@@ -10215,7 +10216,7 @@ let lastBossPhase = 0
 function paintBossBar() {
   const bar = ensureBossBar()
   if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; return }
-  if (blockedWorld && blockedWorld()) { bar.style.display = 'none'; return }
+  if (mobs && mobs.blockedWorld && mobs.blockedWorld()) { bar.style.display = 'none'; return }
   const list = mobs && mobs.list ? mobs.list() : []
   const boss = list.find(m => m.kind === 'overseer')
   if (!boss) { bar.style.display = 'none'; return }
@@ -10223,10 +10224,13 @@ function paintBossBar() {
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && Date.now() < boss.weakOpen
   const nearby = 1
-  const adds = list.filter(m => m.fromBoss === boss.id).length; bar.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
-  if (nearby === 1 && !bar._hinted) { bar.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'; bar._hinted = true }
+  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
+  if (nearby === 1) vis.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'
   bar.style.display = 'block'
-  if (phase !== lastBossPhase) { lastBossPhase = phase; bar.setAttribute('aria-label', phaseWord) }
+  const step = Math.ceil(4 * Math.max(0, boss.hp) / (boss.maxHp || 1)) * 25
+  const say = 'Foundry Overseer ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '')
+  if (say !== bar._said) { bar._said = say; bar.querySelector('[data-boss-sr]').textContent = say }
+  if (phase !== lastBossPhase) lastBossPhase = phase
 }
 
 noa.on('beforeRender', (dt) => {
@@ -11083,7 +11087,7 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('use=')) armUse()
   // C5 Foundry arena once, outside safe zone, Game/solo only
   try {
-    if (!blockedWorld() && !localStorage.getItem('bt-foundry-built')) {
+    if (!(mobs && mobs.blockedWorld && mobs.blockedWorld()) && !localStorage.getItem('bt-foundry-built')) {
       const ox = 60, oz = 60
       if (!inSafeZone(ox, oz)) {
         placeFoundryArena(getVoxel, edit, [ox, 6, oz])

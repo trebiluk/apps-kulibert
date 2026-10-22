@@ -580,6 +580,6 @@ export function createMobs(opts) {
     return finishReboot(m, false)
   }
   function count() { return mobs.length }
-  function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp })) }
-  return { spawn, spawnBoss, bossPhase, tick, trySpawn, reboot, count, list, canSpawn }
+  function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp, maxHp: m.maxHp, phase: m.kind === 'overseer' ? bossPhase(m.id) : undefined, weakOpen: m.weakOpen, fromBoss: m.fromBoss })) }
+  return { spawn, spawnBoss, bossPhase, tick, trySpawn, reboot, count, list, canSpawn, blockedWorld }
 }
