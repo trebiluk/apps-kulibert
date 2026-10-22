@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.369', date: '2026-10-22', lines: {
+    en: ["2.5.369 — Help now tells you how to use the Foundry Console."],
+    simple: ["2.5.369 — Help tells you about the Console."],
+    uk: ["2.5.369 — Довідка тепер пояснює, як користуватися консоллю ливарні."],
+    ru: ["2.5.369 — Справка теперь объясняет, как пользоваться консолью литейной."],
+    es: ["2.5.369 — La Ayuda ahora explica cómo usar la Consola de la Fundición."],
+    ar: ["2.5.369 — المساعدة تشرح الآن كيف تستخدم وحدة التحكم بالمسبك."],
+    'fa-AF': ["2.5.369 — راهنما حالا می‌گوید چطور از کنسول ریخته‌گری استفاده کنی."],
+    rw: ["2.5.369 — Ubufasha bugusobanurira uko ukoresha Console yo Foundry."],
+    ti: ["2.5.369 — ሓገዝ ሕጂ ፋውንድሪ ኮንሶል ከመይ ትጥቀመሉ ይነግረካ።"],
+  }},
+
   { v: '2.5.368', date: '2026-10-22', lines: {
     en: ["2.5.368 — The Press button no longer hides under your goal on short screens."],
     simple: ["2.5.368 — The Press button sits next to your goal."],

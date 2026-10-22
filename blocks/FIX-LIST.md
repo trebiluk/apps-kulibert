@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.369 help-use-console:** Help Use line now mentions the Foundry Console and the Press button in all 9 languages including Simple.
 - [x] **2.5.368 use-pill-dodge:** The Use pill moves right of the goal chip or lifts above it when they overlap. Inline styles reset every paint so it returns to the CSS place.
 - [x] **boss-bar-lang (2.5.366):** Boss bar speaks the kid language. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
