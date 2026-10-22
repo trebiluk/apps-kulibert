@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.373</title>
+<title>Bertopia 2.5.374</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.294">
 <link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.294">
 <style>
@@ -610,6 +610,9 @@ html body #sheet#sheet[data-panel=inventory] .well .count{position:absolute !imp
 /* 2.5.371: hotbar counts get their own top strip (number top-right, slot digit top-left), so they never cover the item picture */
 html body #hotbar#hotbar .slot:not(.bag-tile){padding-top:16px !important}
 html body #hotbar#hotbar .slot .count{top:0 !important;right:2px !important}
+/* 2.5.374: Bag counts get the same top strip as the hotbar, so they never cover the item picture */
+html body #sheet#sheet[data-panel=inventory] .well{padding-top:16px !important}
+html body #sheet#sheet[data-panel=inventory] .well .count{top:0 !important;right:2px !important}
 html body #sheet#sheet[data-panel=inventory] .well .gic,html body #sheet#sheet[data-panel=inventory] .well .gic svg,html body #sheet#sheet[data-panel=inventory] .well .gic canvas{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
 html body #sheet#sheet[data-panel=inventory] .well .glbl{font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;font-size:14px !important;font-weight:700 !important;line-height:1.15 !important;white-space:normal !important;overflow:visible !important;text-overflow:clip !important;overflow-wrap:break-word !important;word-break:normal !important;max-height:none !important}
 html body #hotbar#hotbar .slot:not(.bag-tile) .sw,html body #hotbar#hotbar .slot:not(.bag-tile) .sw canvas,html body #hotbar#hotbar .slot:not(.bag-tile) .sw svg{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
@@ -1177,7 +1180,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.373">
+<link rel="stylesheet" href="read.css?v=2.5.374">
 </head>
 <body>
 <div id="stage"></div>
@@ -1192,7 +1195,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.373</span>
+      <span class="ver" id="ver-plate">2.5.374</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1371,8 +1374,8 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.271"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.373" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.373" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.374" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.374" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var chip = document.getElementById('wallet-chip')

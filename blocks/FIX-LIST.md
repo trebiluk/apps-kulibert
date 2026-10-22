@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.374 bag-counts:** Bag well counts sit in a 16px top strip (top:0 right:2px) so they never cover the 32px item picture. Hotbar rules unchanged.
 - [x] **boss-bar-clear (2.5.373):** Boss bar sits under the top bar. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

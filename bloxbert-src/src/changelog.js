@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.374', date: '2026-10-22', lines: {
+    en: ["2.5.374 — Bag numbers moved above the pictures, so you can see every item."],
+    simple: ["2.5.374 — The numbers in your Bag do not cover the pictures now."],
+    uk: ["2.5.374 — Числа в Сумці тепер над малюнками, тож усі предмети видно."],
+    ru: ["2.5.374 — Числа в Сумке теперь над картинками, так что все предметы видно."],
+    es: ["2.5.374 — Los números de la Bolsa ahora van encima de los dibujos, así ves cada objeto."],
+    ar: ["2.5.374 — أصبحت الأرقام في الحقيبة فوق الصور، فترى كل غرض."],
+    'fa-AF': ["2.5.374 — عددهای کیف حالا بالای تصویرها هستند، پس همه چیز را می‌بینی."],
+    rw: ["2.5.374 — Imibare yo mu Gikapu ubu iri hejuru y'amashusho, ubona buri kintu."],
+    ti: ["2.5.374 — ቁጽርታት ኣብ ቦርሳ ሕጂ ኣብ ልዕሊ ስእልታት እዮም፡ ኩሉ ነገር ትርእዮ።"],
+  }},
+
   { v: '2.5.373', date: '2026-10-22', lines: {
     en: ["2.5.373 — The boss bar sits under the top bar and Tap to play no longer covers it."],
     simple: ["2.5.373 — You can see the boss name and health now."],
