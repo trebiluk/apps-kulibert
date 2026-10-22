@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra un icono y una palabra para cada app.",
   "myProgress": "Mi avance",
@@ -422,5 +422,6 @@
   "modeName": "Modo",
   "cancel": "Cancelar",
   "labelHoldItSpan": "HoldIt Puente",
-  "helpHoldItSpan": "HoldIt Puente es el desafío del puente. HoldIt es la herramienta de diseño."
+  "helpHoldItSpan": "HoldIt Puente es el desafío del puente. HoldIt es la herramienta de diseño.",
+  "helpGateConflict": "Cada push ejecuta la comprobación del Hub: código, marcas de conflicto y /bertopia/ = /blocks-test/."
 }

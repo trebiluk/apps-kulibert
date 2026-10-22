@@ -38,7 +38,7 @@
   "more": "Ещё",
   "gotIt": "Понятно",
   "pwaTip": "Подсказка: меню Chrome, затем Установить страницу. Значок Tech Room остаётся на этом Chromebook. Программам всё ещё нужна школьная сеть.",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
   "appNames": "Названия приложений в верхней полосе",
   "whatsNewStrip": "Верхняя полоса показывает значок и слово для каждого приложения.",
   "myProgress": "Мой прогресс",
@@ -422,5 +422,6 @@
   "modeName": "Режим",
   "cancel": "Отмена",
   "labelHoldItSpan": "HoldIt Пролёт",
-  "helpHoldItSpan": "HoldIt Пролёт — это испытание моста. HoldIt — инструмент дизайна."
+  "helpHoldItSpan": "HoldIt Пролёт — это испытание моста. HoldIt — инструмент дизайна.",
+  "helpGateConflict": "Каждый push запускает проверку Hub: код, метки конфликта и /bertopia/ = /blocks-test/."
 }

@@ -38,7 +38,7 @@
   "more": "بیشتر",
   "gotIt": "فهمیدم",
   "pwaTip": "راهنما: فهرست کروم، بعد صفحه را نصب کن. نشان Tech Room روی این کروم‌بوک می‌ماند. برنامه‌ها هنوز شبکهٔ مکتب را لازم دارند.",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
   "appNames": "نام برنامه‌ها در نوار بالا",
   "whatsNewStrip": "نوار بالا برای هر برنامه یک نماد و یک کلمه نشان می‌دهد.",
   "myProgress": "پیشرفت من",
@@ -422,5 +422,6 @@
   "modeName": "حالت",
   "cancel": "لغو",
   "labelHoldItSpan": "HoldIt پل",
-  "helpHoldItSpan": "HoldIt پل چالش پل است. HoldIt ابزار طراحی است."
+  "helpHoldItSpan": "HoldIt پل چالش پل است. HoldIt ابزار طراحی است.",
+  "helpGateConflict": "هر push بررسی Hub را اجرا می‌کند: کد، نشانه‌های تعارض و /bertopia/ = /blocks-test/."
 }

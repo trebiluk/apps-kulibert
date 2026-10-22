@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umukandara wo hejuru werekana ikirango n'ijambo kuri buri porogaramu.",
   "myProgress": "Intambwe yanjye",
@@ -422,5 +422,6 @@
   "modeName": "Uburyo",
   "cancel": "Hagarika",
   "labelHoldItSpan": "HoldIt Ikiraro",
-  "helpHoldItSpan": "HoldIt Ikiraro ni ikibazo cy'ikiraro. HoldIt ni igikoresho cyo gushushanya."
+  "helpHoldItSpan": "HoldIt Ikiraro ni ikibazo cy'ikiraro. HoldIt ni igikoresho cyo gushushanya.",
+  "helpGateConflict": "Buri push ikora igenzura rya Hub: kode, ibimenyetso by'amakimbirane, na /bertopia/ = /blocks-test/."
 }

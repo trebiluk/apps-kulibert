@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — Each app tile has its own name.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub checks for broken files first.",
   "lbAliasHelp": "Pick a name from the list. Typed names are not saved.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -286,5 +286,6 @@
   "modeName": "Mode",
   "cancel": "Cancel",
   "labelHoldItSpan": "HoldIt Span",
-  "helpHoldItSpan": "Span = challenge. HoldIt = design."
+  "helpHoldItSpan": "Span = challenge. HoldIt = design.",
+  "helpGateConflict": "Every push runs the Hub check."
 }

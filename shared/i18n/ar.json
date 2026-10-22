@@ -38,7 +38,7 @@
   "more": "المزيد",
   "gotIt": "فهمت",
   "pwaTip": "تلميح: قائمة كروم، ثم تثبيت الصفحة. أيقونة Tech Room تبقى على هذا الكرومبوك. التطبيقات ما زالت تحتاج شبكة المدرسة.",
-  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
   "appNames": "أسماء التطبيقات في الشريط العلوي",
   "whatsNewStrip": "الشريط العلوي يعرض أيقونة وكلمة لكل تطبيق.",
   "myProgress": "تقدّمي",
@@ -422,5 +422,6 @@
   "modeName": "وضع",
   "cancel": "إلغاء",
   "labelHoldItSpan": "HoldIt جسر",
-  "helpHoldItSpan": "HoldIt جسر هو تحدي الجسر. HoldIt هو أداة التصميم."
+  "helpHoldItSpan": "HoldIt جسر هو تحدي الجسر. HoldIt هو أداة التصميم.",
+  "helpGateConflict": "كل دفع يشغل فحص Hub: الكود، علامات التعارض، و /bertopia/ = /blocks-test/."
 }
