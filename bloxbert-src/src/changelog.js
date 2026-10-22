@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.348', date: '2026-10-21', lines: {
+    en: ['2.5.348 — The game starts again, and every version label matches.'],
+    simple: ['2.5.348 — The game starts again.'],
+    uk: ['2.5.348 — Гра знову запускається.'],
+    ru: ['2.5.348 — Игра снова запускается.'],
+    es: ['2.5.348 — El juego vuelve a iniciar.'],
+    ar: ['2.5.348 — اللعبة تبدأ من جديد.'],
+    'fa-AF': ['2.5.348 — بازی دوباره شروع می‌شود.'],
+    rw: ['2.5.348 — Umukino wongeye gutangira.'],
+    ti: ['2.5.348 — ጸወታ ደጊሙ ይጅምር።'],
+  }},
   { v: '2.5.343', date: '2026-10-21', lines: {
     en: ['2.5.343 — Foundry fight words are in the right language.'],
     simple: ['2.5.343 — Foundry fight words are in the right language.'],
