@@ -9,6 +9,16 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.349 — دکمه باز کردن دیگر نوار لباس را روی تلفن‌ها نمی‌پوشاند."],
     rw: ["2.5.349 — Buto ya Fungura ntigisubira gufunga urubuga rwa Impuzu ku telefoni."],
     ti: ["2.5.349 — መቐየሪ ክፈት ኣብ ስልክታት ናይ ልብስ ባር ኣይሸፍንን።"],
+  { v: '2.5.350', date: '2026-10-21', lines: {
+    en: ['2.5.350 — On phones and tablets, the Bonk button sits next to Jump, so a tap hits.'],
+    simple: ['2.5.350 — Bonk is next to Jump now.'],
+    uk: ['2.5.350 — Кнопка «Бонк» тепер поруч зі «Стрибком».'],
+    ru: ['2.5.350 — Кнопка «Бонк» теперь рядом с «Прыжком».'],
+    es: ['2.5.350 — El botón Bonk ahora está junto a Saltar.'],
+    ar: ['2.5.350 — زر بونك الآن بجانب القفز.'],
+    'fa-AF': ['2.5.350 — دکمه بونک حالا کنار پرش است.'],
+    rw: ['2.5.350 — Buto ya Bonk ubu iri iruhande rwa Simbuka.'],
+    ti: ['2.5.350 — መጠወቒ ቦንክ ሕጂ ኣብ ጥቓ ንጻ ኣሎ።'],
   }},
 
   { v: '2.5.348', date: '2026-10-21', lines: {
