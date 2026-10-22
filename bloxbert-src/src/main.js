@@ -4982,6 +4982,7 @@ function paintModeChip() {
     lab.textContent = label
     chip.title = label
     chip.setAttribute('aria-label', label)
+    chip.hidden = !tableMode
   }
   paintPath()
   const creative = $('m-creative')
