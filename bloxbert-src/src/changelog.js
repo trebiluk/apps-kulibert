@@ -9,6 +9,16 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.346 — دکمه بزن برای بازی دیگر پشت هدفت روی تلفن‌های افقی پنهان نمی‌شود."],
     rw: ["2.5.346 — Buto ya Kanda kugira ngo ukine ntigisubira inyuma y'intego yawe ku telefoni z'urubavu."],
     ti: ["2.5.346 — መቐየሪ ጠውቕ ንምጽዋት ኣብ ጎኒ ስልክታት ድሕሪ ዕላማኻ ኣይተሓባእን።"],
+  { v: '2.5.347', date: '2026-10-21', lines: {
+    en: ['2.5.347 — Creatures and bots appear again.'],
+    simple: ['2.5.347 — Creatures are back.'],
+    uk: ['2.5.347 — Істоти та боти знову з’являються.'],
+    ru: ['2.5.347 — Существа и боты снова появляются.'],
+    es: ['2.5.347 — Las criaturas y los bots vuelven a aparecer.'],
+    ar: ['2.5.347 — المخلوقات والروبوتات تظهر مرة أخرى.'],
+    'fa-AF': ['2.5.347 — موجودات و ربات‌ها دوباره ظاهر می‌شوند.'],
+    rw: ['2.5.347 — Ibiremwa na bots bigaragara nanone.'],
+    ti: ['2.5.347 — ፍጡራትን ቦትስን ዳግም ይረአዩ።'],
   }},
 
   { v: '2.5.345', date: '2026-10-21', lines: {

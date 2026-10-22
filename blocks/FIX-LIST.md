@@ -1,5 +1,8 @@
 # Bertopia FIX-LIST
 - [x] **2.5.346 play-chip-goal:** The Tap to play chip sits under the top bar on short landscape touch screens, clear of the goal chip.
+- [x] **combatRule-import (2.5.347):** combatRule is imported so mobs spawn again. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **c6-rule-strings (2.5.345):** Teacher switches compare strings and turn things off. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
