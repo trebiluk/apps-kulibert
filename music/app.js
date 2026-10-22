@@ -6790,13 +6790,25 @@
   const canvas = $("viz");
   if (window.KulibertStage) {
     const lowDevice = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.connection && navigator.connection.saveData);
+    let vizCap = lowDevice ? 12 : 32;
+    let vizLast = 0, vizSum = 0, vizN = 0;
+    function vizMeter() {
+      const now = performance.now();
+      if (vizLast && now - vizLast < 200) { vizSum += now - vizLast; vizN += 1; }
+      vizLast = now;
+      if (vizN < 90) return;                 // judge every ~1.5 s of frames
+      const avg = vizSum / vizN; vizSum = 0; vizN = 0;
+      if (avg > 28 && vizCap > 8) vizCap -= 4;        // slow: shed detail
+      else if (avg < 20 && vizCap < 32) vizCap += 4;  // smooth: add detail
+    }
     stageApi = window.KulibertStage.mount(canvas, () => {
       const onViz = document.body.classList.contains("tab-viz") || document.body.classList.contains("show");
       const strip = document.body.classList.contains("viz-strip");
       const live = onViz || (strip && state.playing);
       const micDrives = !!state.micAnalyser && (document.body.classList.contains("tab-viz") || document.body.classList.contains("show"));
       const gear = Object.assign({}, state.gear);
-      if (lowDevice) gear.count = Math.min(gear.count || 12, 12);
+      if (!document.hidden && (state.playing || micDrives)) vizMeter();
+      gear.count = Math.min(gear.count || 12, vizCap);
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         gear.wild = 0;
         gear.spin = 0;
