@@ -1145,7 +1145,7 @@ body.is-home #home {
   background: #050814;
 }
 .make-beat {
-  width: min(90vw, 56rem);
+  width: min(100%, 56rem); /* MU 2.36.44: fit the home pane next to the side dock, not 90% of the whole screen */
   min-height: 22vh;
   font-size: clamp(1.7rem, 4vw, 3rem);
   font-weight: 800;
