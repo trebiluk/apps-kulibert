@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.371', date: '2026-10-22', lines: {
+    en: ["2.5.371 — Hotbar numbers moved above the pictures, so you can see every item."],
+    simple: ["2.5.371 — The numbers in your hotbar do not cover the pictures now."],
+    uk: ["2.5.371 — Числа на панелі тепер над малюнками, тож усі предмети видно."],
+    ru: ["2.5.371 — Числа на панели теперь над картинками, так что все предметы видно."],
+    es: ["2.5.371 — Los números de la barra ahora van encima de los dibujos, así ves cada objeto."],
+    ar: ["2.5.371 — أصبحت الأرقام في الشريط فوق الصور، فترى كل غرض."],
+    'fa-AF': ["2.5.371 — عددهای نوار حالا بالای تصویرها هستند، پس همه چیز را می‌بینی."],
+    rw: ["2.5.371 — Imibare yo ku murongo ubu iri hejuru y'amashusho, ubona buri kintu."],
+    ti: ["2.5.371 — ቁጽርታት ኣብ መስመር ሕጂ ኣብ ልዕሊ ስእልታት እዮም፡ ኩሉ ነገር ትርእዮ።"],
+  }},
+
   { v: '2.5.370', date: '2026-10-22', lines: {
     en: ["2.5.370 — In town, tapping at a creature now tells you: No fighting here."],
     simple: ["2.5.370 — In town, the game says No fighting here."],

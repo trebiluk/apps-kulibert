@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.371 hotbar-counts:** Hotbar counts sit in a 16px top strip (top:0 right:2px) so they never cover the 32px item picture. Bag sheet counts unchanged.
 - [x] **safe-zone-far-tap (2.5.370):** Fight tap in town says No fighting here. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
