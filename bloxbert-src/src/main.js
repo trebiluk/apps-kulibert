@@ -163,9 +163,10 @@ function safeZoneFightTap() {
   for (const m of list) {
     const dx = m.x - pos[0], dz = m.z - pos[2]
     const d = Math.sqrt(dx * dx + dz * dz)
-    if (d > 3.2 || d < 0.1) continue
+    if (d > 16 || d < 0.1) continue
     const dot = (dx * fx + dz * fz) / d
-    if (dot > 0.5) { showSafeChip(); return true }
+    // 2.5.370: mobs stop about 10 blocks from town, so a tap aimed at a far mob explains too (never eats a block tap)
+    if (dot > 0.5 && (d <= 3.2 || !noa.targetedBlock)) { showSafeChip(); return true }
   }
   return false
 }
@@ -9090,6 +9091,8 @@ canvas.addEventListener('pointerup', (e) => {
     hideCrack()
     return
   }
+  // 2.5.370: a touch tap in town aimed at a far mob says No fighting here (only when no block is under the finger)
+  if (touchTap && !up && !down && safeZoneFightTap()) return
   const creativeBlock = !survivalOn() && !!current
   const survivalBlock = survivalOn() && !!handId && !tapUse
   if (touchTap && (creativeBlock || survivalBlock)) {

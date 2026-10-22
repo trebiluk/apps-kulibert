@@ -2574,7 +2574,7 @@ for (const [lang, row] of Object.entries(C6B)) {
 
 const C1NOFIGHT = {
   en: { c1NoFightHere: 'No fighting here', helpSafeZone: 'Bertyville is a safe zone. You can not fight in town — the shield sign tells you.' },
-  simple: { c1NoFightHere: 'No fighting here', helpSafeZone: 'No fighting in town.' },
+  simple: { c1NoFightHere: 'No fighting here', c1SafeZone: 'Town is safe', helpSafeZone: 'No fighting in town.' },
   uk: { c1NoFightHere: 'Тут не можна битися', helpSafeZone: 'Bertyville — безпечна зона. У місті не можна битися — знак щита скаже.' },
   ru: { c1NoFightHere: 'Здесь нельзя драться', c1Bonk: 'Бонк', helpSafeZone: 'Bertyville — безопасная зона. В городе нельзя драться — знак щита скажет.' },
   es: { c1NoFightHere: 'Aquí no se pelea', helpSafeZone: 'Bertyville es una zona segura. No puedes pelear en el pueblo — el signo del escudo te lo dice.' },
