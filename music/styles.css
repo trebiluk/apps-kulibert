@@ -5401,7 +5401,8 @@ body.mu237 .mu-snack[hidden] { display: none !important; }
     height: 48px !important;
     min-height: 48px !important;
     margin: 0 !important;
-    overflow: hidden !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important; /* MU 2.36.41: swipe the picture row to reach Fire and Ocean */
   }
   body.mu237.tab-viz #scenes .btn,
   body.mu237.tab-viz #mic-lights {
