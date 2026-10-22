@@ -2624,6 +2624,13 @@ function useHoldReady(dig, now) {
   return now - (dig.t0 || now) >= 500
 }
 function useAt(hit) {
+  // C5 Foundry Console: Override Key on the arena Console
+  try {
+    if (hit && hit.id === 42 && hit.position && hit.position[0] === 60 && hit.position[2] === 60) {
+      const ok = onConsoleUse(session, (n) => mobs && mobs.spawnBoss ? mobs.spawnBoss(n, [60, 7, 63]) : null)
+      if (ok) return true
+    }
+  } catch (e) {}
   if (bot && bot.swallowPlace && bot.swallowPlace()) {
     if (bot.tryArmed) bot.tryArmed()
     return true
