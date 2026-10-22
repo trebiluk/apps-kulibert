@@ -5416,6 +5416,11 @@ body.mu237 .mu-snack[hidden] { display: none !important; }
   body.mu237.tab-viz #mic-lights {
     flex: 0 0 auto !important;
   }
+  /* MU 2.36.42: picture buttons keep their own width (row scrolls since 2.36.41), so names like Tormenta are not cut */
+  body.mu237.tab-viz #scenes .btn {
+    flex: 0 0 auto !important;
+    min-width: 60px !important;
+  }
   body.mu237.tab-mix.viz-strip .out,
   body.mu237.tab-mix.viz-strip .stage-wrap,
   body.mu237.tab-mix.viz-strip canvas#viz,
