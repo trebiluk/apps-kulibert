@@ -614,7 +614,8 @@
     news23638: "MU 2.36.38 — The Glow frame lights up around the picture again.",
     news23639: "MU 2.36.39 — The picture on Viz is big again.",
     news23640: "MU 2.36.40 — On a sideways phone, swipe up under the Looks to find the Sound buttons.",
-    news23641: "MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean."
+    news23641: "MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean.",
+    news23642: "MU 2.36.42 — On a sideways phone, the picture names on Viz show in full."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -933,7 +934,8 @@
     news23638: "MU 2.36.38 — The glow frame lights up again.",
     news23639: "MU 2.36.39 — The picture is big again.",
     news23640: "MU 2.36.40 — Swipe up to find Sound.",
-    news23641: "MU 2.36.41 — Swipe to see more pictures."
+    news23641: "MU 2.36.41 — Swipe to see more pictures.",
+    news23642: "MU 2.36.42 — Picture names are not cut now."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1542,7 +1544,8 @@
       "news23638": "MU 2.36.38 — Рамка «Сяйво» знову світиться навколо картинки.",
       "news23639": "MU 2.36.39 — Картинка у Viz знову велика.",
       "news23640": "MU 2.36.40 — На боковому телефоні гортай угору під «Вигляд», щоб знайти кнопки звуку.",
-      "news23641": "MU 2.36.41 — На боковому телефоні гортай ряд картинок, щоб знайти Вогонь і Океан."
+      "news23641": "MU 2.36.41 — На боковому телефоні гортай ряд картинок, щоб знайти Вогонь і Океан.",
+      "news23642": "MU 2.36.42 — На боковому телефоні назви картинок у Viz видно повністю."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2148,7 +2151,8 @@
       "news23638": "MU 2.36.38 — Рамка «Сияние» снова светится вокруг картинки.",
       "news23639": "MU 2.36.39 — Картинка в Viz снова большая.",
       "news23640": "MU 2.36.40 — На боковом телефоне листай вверх под «Вид», чтобы найти кнопки звука.",
-      "news23641": "MU 2.36.41 — На боковом телефоне листай ряд картинок, чтобы найти Огонь и Океан."
+      "news23641": "MU 2.36.41 — На боковом телефоне листай ряд картинок, чтобы найти Огонь и Океан.",
+      "news23642": "MU 2.36.42 — На боковом телефоне названия картинок в Viz видно полностью."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2755,7 +2759,8 @@
       "news23638": "MU 2.36.38 — El marco Brillo vuelve a iluminarse alrededor de la imagen.",
       "news23639": "MU 2.36.39 — La imagen de Viz vuelve a ser grande.",
       "news23640": "MU 2.36.40 — Con el teléfono de lado, desliza hacia arriba bajo Estilos para ver los botones de Sonido.",
-      "news23641": "MU 2.36.41 — Con el teléfono de lado, desliza la fila de imágenes para ver Fuego y Océano."
+      "news23641": "MU 2.36.41 — Con el teléfono de lado, desliza la fila de imágenes para ver Fuego y Océano.",
+      "news23642": "MU 2.36.42 — Con el teléfono de lado, los nombres de las imágenes de Viz se ven enteros."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3362,7 +3367,8 @@
       "news23638": "MU 2.36.38 — إطار التوهج يضيء مرة أخرى حول الصورة.",
       "news23639": "MU 2.36.39 — صورة Viz أصبحت كبيرة مرة أخرى.",
       "news23640": "MU 2.36.40 — على الهاتف المائل، اسحب للأعلى تحت المظاهر لتجد أزرار الصوت.",
-      "news23641": "MU 2.36.41 — على الهاتف المائل، اسحب صف الصور لتجد النار والمحيط."
+      "news23641": "MU 2.36.41 — على الهاتف المائل، اسحب صف الصور لتجد النار والمحيط.",
+      "news23642": "MU 2.36.42 — على الهاتف المائل، تظهر أسماء صور Viz كاملة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3969,7 +3975,8 @@
       "news23638": "MU 2.36.38 — قاب درخشش دوباره دور تصویر روشن می‌شود.",
       "news23639": "MU 2.36.39 — تصویر Viz دوباره بزرگ شد.",
       "news23640": "MU 2.36.40 — روی تلفن خوابیده، زیر ظاهرها به بالا بکش تا دکمه‌های صدا را پیدا کنی.",
-      "news23641": "MU 2.36.41 — روی تلفن خوابیده، ردیف تصویرها را بکش تا آتش و بحر را پیدا کنی."
+      "news23641": "MU 2.36.41 — روی تلفن خوابیده، ردیف تصویرها را بکش تا آتش و بحر را پیدا کنی.",
+      "news23642": "MU 2.36.42 — روی تلفن خوابیده، نام تصویرهای Viz کامل دیده می‌شود."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4576,7 +4583,8 @@
       "news23638": "MU 2.36.38 — Uruziga rw'Urumuri rwongera kumurika iruhande y'ishusho.",
       "news23639": "MU 2.36.39 — Ishusho ya Viz yongeye kuba nini.",
       "news23640": "MU 2.36.40 — Kuri telefoni iri ku ruhande, sunika hejuru munsi y'Imiterere ubone utubuto tw'Ijwi.",
-      "news23641": "MU 2.36.41 — Kuri telefoni iri ku ruhande, sunika umurongo w'amashusho ubone Umuriro n'Inyanja."
+      "news23641": "MU 2.36.41 — Kuri telefoni iri ku ruhande, sunika umurongo w'amashusho ubone Umuriro n'Inyanja.",
+      "news23642": "MU 2.36.42 — Kuri telefoni iri ku ruhande, amazina y'amashusho ya Viz agaragara yose."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5183,7 +5191,8 @@
       "news23638": "MU 2.36.38 — ናይ ብርሃን ፍሬም ደጊሙ ኣብ ዙርያ ስእሊ ይበርህ።",
       "news23639": "MU 2.36.39 — ስእሊ Viz ደጊሙ ዓቢ ኮይኑ።",
       "news23640": "MU 2.36.40 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣብ ትሕቲ መልክዕ ናብ ላዕሊ ስሓብ፡ መልጎም ድምጺ ክትረክብ።",
-      "news23641": "MU 2.36.41 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ነቲ መስመር ስእልታት ስሓብ፡ ሓዊን ባሕሪን ክትረክብ።"
+      "news23641": "MU 2.36.41 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ነቲ መስመር ስእልታት ስሓብ፡ ሓዊን ባሕሪን ክትረክብ።",
+      "news23642": "MU 2.36.42 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣስማት ስእልታት Viz ምሉእ ይርኣዩ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

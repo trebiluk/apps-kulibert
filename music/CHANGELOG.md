@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.42** · 2026-10-22 · channel **live**
+
+MU 2.36.42 — On a sideways phone, the picture names on Viz show in full.
+
+## Earlier
+
 **Chip: MU 2.36.41** · 2026-10-22 · channel **live**
 
 MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean.
