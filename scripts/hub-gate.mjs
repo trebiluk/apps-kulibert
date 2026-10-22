@@ -67,6 +67,23 @@ function checkParse(file) {
 checkParse(indexPath);
 ["blocks/app.js", "blocks-test/app.js", "bertopia/app.js"].forEach(p => checkParse(root + "/" + p));
 
+// conflict markers + sw.js parse
+function checkMarkers(file) {
+  if (!existsSync(file)) return;
+  const lines = readFileSync(file, "utf8").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    if (/^(<<<<<<<|=======|>>>>>>>)( |$)/.test(lines[i])) {
+      fail(`conflict marker in ${file}:${i + 1}`);
+    }
+  }
+}
+["blocks", "blocks-test", "bertopia"].forEach(dir => {
+  const sw = root + "/" + dir + "/sw.js";
+  if (existsSync(sw)) checkParse(sw);
+  ["index.html", "sw.js", "app.js"].forEach(f => checkMarkers(root + "/" + dir + "/" + f));
+});
+checkMarkers(indexPath);
+
 // 4. blocks/, blocks-test/, bertopia/ index.html app.js?v values differ
 function appJsV(dir) {
   const p = root + "/" + dir + "/index.html";
