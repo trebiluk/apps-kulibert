@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **real-build (2.5.360):** Doors are real builds from package.json. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **bossbar-blockedworld (2.5.359):** Boss bar shows again; Foundry arena builds. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.360', date: '2026-10-22', lines: {
+    en: ['2.5.360 — The Foundry boss bar and arena are really here now, and the tab shows the right version.'],
+    simple: ['The boss bar works now.'],
+    uk: ['2.5.360 — Смуга боса й арена ливарні тепер справді тут, а вкладка показує правильну версію.'],
+    ru: ['2.5.360 — Полоса босса и арена литейной теперь правда здесь, а вкладка показывает верную версию.'],
+    es: ['2.5.360 — La barra del jefe y la arena de la Fundición ya están, y la pestaña muestra la versión correcta.'],
+    ar: ['2.5.360 — شريط الزعيم وساحة المسبك هنا الآن، والتبويب يعرض الإصدار الصحيح.'],
+    'fa-AF': ['2.5.360 — نوار رئیس و میدان ریخته‌گری حالا واقعاً اینجاست و زبانه نسخهٔ درست را نشان می‌دهد.'],
+    rw: ['2.5.360 — Umurongo w\'umuyobozi n\'ikibuga cya Foundry ubu birahari, kandi tab yerekana verisiyo nyayo.'],
+    ti: ['2.5.360 — መስመር ቦስን ሜዳ ፋውንድሪን ሕጂ ብሓቂ ኣለዉ፣ ታብ ድማ ቅኑዕ ስሪት የርኢ።'],
+  }},
+
   { v: '2.5.359', date: '2026-10-22', lines: {
     en: ['2.5.359 — The Foundry boss bar shows again, and the Foundry arena is back.'],
     simple: ['The boss bar works again.'],
