@@ -10223,13 +10223,13 @@ function paintBossBar() {
   if (!boss) { bar.style.display = 'none'; return }
   const phase = boss.phase || 1
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
-  const weak = boss.weakOpen && Date.now() < boss.weakOpen
+  const weak = boss.weakOpen && performance.now() < boss.weakOpen
   const nearby = 1
-  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
+  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '') + '<br>👥 Crew here: ' + nearby
   if (nearby === 1) vis.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'
   bar.style.display = 'block'
   const step = Math.ceil(4 * Math.max(0, boss.hp) / (boss.maxHp || 1)) * 25
-  const say = 'Foundry Overseer ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '')
+  const say = 'Foundry Overseer ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '') + (weak ? ' · ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
   if (say !== bar._said) { bar._said = say; bar.querySelector('[data-boss-sr]').textContent = say }
   if (phase !== lastBossPhase) lastBossPhase = phase
 }
