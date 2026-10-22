@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.354', date: '2026-10-21', lines: {
+    en: ['2.5.354 — The Foundry Overseer is open: make an Override Key, use it on the Foundry Console, and team up to reboot it. Rewards are looks only.'],
+    simple: ['Make a Key. Use the Foundry Console. Beat the boss together.'],
+    uk: ['2.5.354 — Наглядач ливарні відкритий: зробіть ключ перевизначення, використайте на консолі ливарні і командою перезавантажте. Нагороди лише вигляд.'],
+    ru: ['2.5.354 — Надзиратель литейной открыт: сделайте ключ переопределения, используйте на консоли литейной и командой перезагрузите. Награды только внешний вид.'],
+    es: ['2.5.354 — El Supervisor de la Fundición está abierto: haz una Llave de anulación, úsala en la Consola de la Fundición y reinicia en equipo. Las recompensas son solo apariencia.'],
+    ar: ['2.5.354 — مشرف المسبك مفتوح: اصنع مفتاح التجاوز، استخدمه على وحدة التحكم بالمسبك وأعد التشغيل كفريق. المكافآت مظهر فقط.'],
+    'fa-AF': ['2.5.354 — ناظر ریخته‌گری باز است: کلید لغو بسازید، روی کنسول ریخته‌گری استفاده کنید و به عنوان تیم راه‌اندازی مجدد کنید. جوایز فقط ظاهر.'],
+    rw: ['2.5.354 — Umuyobozi wa Foundry ufunguye: kora Urufunguzo, ukoreshe ku Console ya Foundry kandi usubize hamwe. Ibihembo ni isura gusa.'],
+    ti: ['2.5.354 — ናይ ፋውንድሪ ኣመሓዳሪ ክፉት እዩ፡ ኦቨርራይድ ኪ ሰርሕ፣ ኣብ ፋውንድሪ ኮንሶል ተጠቐም ኣብ ቡድ ዳግማይ ጀምር። ሽልማታት ገጽታ ጥራይ።'],
+  }},
+
   { v: '2.5.353', date: '2026-10-21', lines: {
     en: ["2.5.353 — The browser tab shows the right Bertopia version."],
     simple: ["2.5.353 — The tab shows the right number."],

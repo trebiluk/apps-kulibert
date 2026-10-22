@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **foundry-live (2.5.354):** Foundry Overseer can be summoned and Bonked. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.353 title-stamp:** The browser tab title is stamped from package.json at build time. The guard fails the build if title, app.js?v, or data-version do not match.
 - [x] **2.5.352 safe-zone-tap:** Inside Bertyville, tapping to fight a bot shows the No fighting here chip. Outside town Bonk still works.
 - [x] **tryspawn-throttle (2.5.351):** trySpawn throttles first so one bad rule can't freeze combat. Kinyarwanda, Tigrinya, and Dari still need a native check.
