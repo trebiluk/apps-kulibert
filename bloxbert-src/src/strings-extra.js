@@ -2635,3 +2635,20 @@ for (const [lang, row] of Object.entries(C5HELP)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.366 phase words. rw/ti/fa-AF machine drafts.
+const PHASES = {
+  en: { phase1: 'Stamp coming', phase2: 'Conveyor', phase3: 'Vent left' },
+  simple: { phase1: 'Stamp coming', phase2: 'Conveyor', phase3: 'Vent left' },
+  uk: { phase1: 'Штамп іде', phase2: 'Конвеєр', phase3: 'Вентиляція ліворуч' },
+  ru: { phase1: 'Штамп идёт', phase2: 'Конвейер', phase3: 'Вентиляция слева' },
+  es: { phase1: 'Sello viene', phase2: 'Cinta', phase3: 'Ventilación izquierda' },
+  ar: { phase1: 'الختم قادم', phase2: 'الناقل', phase3: 'تهوية يسار' },
+  'fa-AF': { phase1: 'مهر می‌آید', phase2: 'نوار نقاله', phase3: 'تهویه چپ' },
+  rw: { phase1: 'Sitampu iraza', phase2: 'Konveya', phase3: 'Umuyaga ibumoso' },
+  ti: { phase1: 'ስታምፕ ይመጽእ', phase2: 'ኮንቨየር', phase3: 'ቬንት ጸጋም' },
+}
+for (const [lang, row] of Object.entries(PHASES)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

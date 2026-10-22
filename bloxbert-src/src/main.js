@@ -10215,6 +10215,7 @@ function ensureBossBar() {
   bossBar.setAttribute('aria-live', 'polite')
   bossBar.innerHTML = '<div data-boss-vis aria-hidden="true"></div><span data-boss-sr style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></span>'
   bossBar.style.cssText = 'position:fixed;top:48px;left:50%;transform:translateX(-50%);background:#0f172a;color:#f8fafc;padding:8px 16px;border-radius:8px;z-index:25;min-width:200px;text-align:center;font-size:14px;display:none'
+  bossBar.dir = document.documentElement.dir || 'ltr'
   document.body.append(bossBar)
   return bossBar
 }
@@ -10230,8 +10231,8 @@ function paintBossBar() {
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && performance.now() < boss.weakOpen
   const nearby = 1
-  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '') + '<br>👥 Crew here: ' + nearby
-  if (nearby === 1) vis.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'
+  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ ' + (t ? t('c5barName') : 'Foundry Overseer') + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '') + '<br>👥 ' + (t ? t('c5barCrew') : 'Crew here: {n}').replace('{n}', String(nearby))
+  if (nearby === 1) vis.innerHTML += '<br>' + (t ? t('c5barHint') : 'Bring a crewmate — it\'s a team boss.')
   const hdr = document.querySelector('header.top')
   bar.style.top = ((hdr ? Math.round(hdr.getBoundingClientRect().bottom) : 48) + 8) + 'px'
   const pb = document.getElementById('pause-btn')
@@ -10241,7 +10242,7 @@ function paintBossBar() {
   bar.style.minWidth = room > 0 && room < 200 ? room + 'px' : '200px'
   bar.style.display = 'block' 
   const step = Math.ceil(4 * Math.max(0, boss.hp) / (boss.maxHp || 1)) * 25
-  const say = 'Foundry Overseer ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '') + (weak ? ' · ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
+  const say = (t ? t('c5barName') : 'Foundry Overseer') + ' ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '') + (weak ? ' · ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
   if (say !== bar._said) { bar._said = say; bar.querySelector('[data-boss-sr]').textContent = say }
   if (phase !== lastBossPhase) lastBossPhase = phase
 }
