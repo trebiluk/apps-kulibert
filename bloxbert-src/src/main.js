@@ -149,6 +149,25 @@ function combatTarget() {
   }
   return best
 }
+
+function safeZoneFightTap() {
+  const pos = playerPos()
+  if (!pos || !inSafeZone(pos[0], pos[2])) return false
+  if (!mobs || !mobs.list) return false
+  const list = mobs.list()
+  if (!list || !list.length) return false
+  const cam = noa.camera
+  const heading = cam ? cam.heading : 0
+  const fx = -Math.sin(heading), fz = -Math.cos(heading)
+  for (const m of list) {
+    const dx = m.x - pos[0], dz = m.z - pos[2]
+    const d = Math.sqrt(dx * dx + dz * dz)
+    if (d > 3.2 || d < 0.1) continue
+    const dot = (dx * fx + dz * fz) / d
+    if (dot > 0.5) { showSafeChip(); return true }
+  }
+  return false
+}
 function doBonk() {
   try { if (combatRule && combatRule('combat') === 'off') return } catch (e) {}
   const pos = playerPos()
@@ -162,10 +181,16 @@ function doBonk() {
   const dmg = bonk()
   if (dmg > 0) showFloat('-' + dmg)
 }
+let lastSafeChip = 0
 function showSafeChip() {
+  const now = performance.now()
+  if (now - lastSafeChip < 2000) return
+  lastSafeChip = now
   const chip = document.createElement('div')
-  chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone')
-  chip.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:8px 16px;border-radius:8px;z-index:40'
+  chip.setAttribute('role', 'status')
+  chip.setAttribute('aria-live', 'polite')
+  chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone') + ' — ' + (t('c1NoFightHere') || 'No fighting here')
+  chip.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:8px 16px;border-radius:8px;z-index:40;min-height:44px;display:flex;align-items:center'
   document.body.append(chip)
   setTimeout(() => chip.remove(), 2000)
 }
@@ -3328,6 +3353,7 @@ noa.inputs.down.on('fire', () => {
   if (eatResumeClick()) return
   const aimed = noa.targetedBlock
   if (combatTarget()) { doBonk(); return }
+  if (safeZoneFightTap()) return
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
   else {
@@ -9169,6 +9195,7 @@ $('t-place').addEventListener('click', () => {
 })
 $('t-break').addEventListener('click', () => {
   if (combatTarget()) { doBonk(); return }
+  if (safeZoneFightTap()) return
   breakBlock()
 })
 const bonkBtn = document.getElementById('t-bonk')
