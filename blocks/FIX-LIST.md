@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.365 boss-bar-layout:** Boss bar sits below the top toolbar and caps width when the pause button leaves less than 320px. Follows rotation in the existing paint.
 - [x] **console-summon (2.5.364):** Foundry Console is usable and Bonk hits the Overseer. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

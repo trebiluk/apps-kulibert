@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.365', date: '2026-10-22', lines: {
+    en: ["2.5.365 — The boss bar no longer hides under the top bar."],
+    simple: ["2.5.365 — The boss bar sits under the top bar."],
+    uk: ["2.5.365 — Панель боса більше не ховається під верхньою панеллю."],
+    ru: ["2.5.365 — Панель босса больше не прячется под верхней панелью."],
+    es: ["2.5.365 — La barra del jefe ya no se esconde bajo la barra superior."],
+    ar: ["2.5.365 — شريط الزعيم لم يعد يختبئ تحت الشريط العلوي."],
+    'fa-AF': ["2.5.365 — نوار رئیس دیگر زیر نوار بالا پنهان نمی‌شود."],
+    rw: ["2.5.365 — Urubuga rwa boss ntirusubira gufunga munsi y'urubuga rwo hejuru."],
+    ti: ["2.5.365 — ናይ ቦስ ባር ኣብ ታሕቲ ናይ ላዕሊ ባር ኣይተሓባእን።"],
+  }},
+
   { v: '2.5.364', date: '2026-10-22', lines: {
     en: ['2.5.364 — The Foundry Console works: bring an Override Key, tap the Console, and team up to reboot the Overseer. Keepers now drop a Keeper Core.'],
     simple: ['The Foundry Console works. Bring a Key and tap it. Keepers drop a Core.'],
