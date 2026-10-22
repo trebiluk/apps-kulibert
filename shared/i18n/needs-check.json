@@ -317,7 +317,11 @@
     "blurbDebug": "† ጌጋ ስጉምቲ ርኸብ",
     "moreApps": "† ተወሳኺ መተግበሪታት"
   },
-  "whatsNewLine": "Hub rev 2026-10-22-hide-dev-rev — Less clutter: the version code is now only for staff.",
+  "whatsNewLine": {
+    "rw": "Abana ntibakibona kode za verisiyo. †",
+    "ti": "ቆልዑ ደጊም ኮድ ስሪት ኣይርእዩን። †",
+    "fa-AF": "کودکان دیگر کدهای نسخه را نمی‌بینند. †"
+  },
   "labelHoldItSpan": {
     "rw": "HoldIt Ikiraro †",
     "ti": "HoldIt ድልድል †",

@@ -56,7 +56,7 @@
   "month10": "October",
   "month11": "November",
   "month12": "December",
-  "whatsNewLine": "Hub rev 2026-10-21-alias-firstload-whatsnew-truth: The alias box shows your language on the first load, and What's new matches the bar.",
+  "whatsNewLine": "Kids no longer see version codes.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
