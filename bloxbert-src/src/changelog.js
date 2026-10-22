@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.373', date: '2026-10-22', lines: {
+    en: ["2.5.373 — The boss bar sits under the top bar and Tap to play no longer covers it."],
+    simple: ["2.5.373 — You can see the boss name and health now."],
+    uk: ["2.5.373 — Смуга боса тепер під верхньою панеллю, і «Торкнись, щоб грати» її не закриває."],
+    ru: ["2.5.373 — Полоса босса теперь под верхней панелью, и «Коснись, чтобы играть» её не закрывает."],
+    es: ["2.5.373 — La barra del jefe va debajo de la barra de arriba y Toca para jugar ya no la tapa."],
+    ar: ["2.5.373 — شريط الزعيم صار تحت الشريط العلوي، وزر المس للعب لم يعد يغطيه."],
+    'fa-AF': ["2.5.373 — نوار رئیس حالا زیر نوار بالا است و «برای بازی لمس کن» دیگر آن را نمی‌پوشاند."],
+    rw: ["2.5.373 — Umurongo w'umuyobozi uri munsi y'umurongo wo hejuru, kandi Kanda-ho ukine ntikiwupfuka."],
+    ti: ["2.5.373 — መስመር ሓለቓ ሕጂ ኣብ ትሕቲ ላዕለዋይ መስመር እዩ፡ ጠውቕ ንምጻወት ድማ ኣይሽፍኖን።"],
+  }},
+
   { v: '2.5.372', date: '2026-10-22', lines: {
     en: ["2.5.372 — The safe zone sign shows under the top bar, so you can read it."],
     simple: ["2.5.372 — You can see the safe zone sign now."],
