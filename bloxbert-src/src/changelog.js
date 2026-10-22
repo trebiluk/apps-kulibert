@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.376', date: '2026-10-22', lines: {
+    en: ["2.5.376 — The Stamp warning stays off the boss bar even when the bar gets taller."],
+    simple: ["2.5.376 — The Stamp warning does not cover the boss box now."],
+    uk: ["2.5.376 — Попередження про Штамп не закриває смугу боса, навіть коли вона стає вищою."],
+    ru: ["2.5.376 — Предупреждение о Штампе не закрывает полосу босса, даже когда она становится выше."],
+    es: ["2.5.376 — El aviso de Sello ya no tapa la barra del jefe, aunque la barra crezca."],
+    ar: ["2.5.376 — تحذير الختم لا يغطي شريط الزعيم حتى عندما يصبح أطول."],
+    'fa-AF': ["2.5.376 — هشدار مهر دیگر نوار رئیس را نمی‌پوشاند، حتی وقتی نوار بلندتر می‌شود."],
+    rw: ["2.5.376 — Iburira rya Stamp ntirigipfuka umurongo w'umutware, nubwo umurongo wakura."],
+    ti: ["2.5.376 — መጠንቀቕታ ስታምፕ ነቲ መስመር ሓለቓ ኣይሽፍኖን፡ እቲ መስመር እንተነውሐ እውን።"],
+  }},
+
   { v: '2.5.375', date: '2026-10-22', lines: {
     en: ["2.5.375 — The Stamp warning moves beside the boss bar, so you can still read the boss name."],
     simple: ["2.5.375 — The Stamp warning does not cover the boss name now."],

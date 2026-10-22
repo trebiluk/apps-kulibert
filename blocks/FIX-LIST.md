@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **stamp-recheck (2.5.376):** Stamp warning re-checks after bar grows. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **stamp-beside-bar (2.5.375):** Stamp warning slides left of the boss bar. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
