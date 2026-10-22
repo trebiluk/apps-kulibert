@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.377', date: '2026-10-22', lines: {
+    en: ["2.5.377 — Clearer What's new words about the hotbar and Bag numbers."],
+    simple: ["2.5.377 — Better words in What's new."],
+    uk: ["2.5.377 — Зрозуміліші слова в «Що нового» про числа на панелі та в Сумці."],
+    ru: ["2.5.377 — Понятнее слова в «Что нового» про числа на панели и в Сумке."],
+    es: ["2.5.377 — Palabras más claras en Novedades sobre los números de la barra y la Bolsa."],
+    ar: ["2.5.377 — كلمات أوضح في الجديد عن أرقام الشريط والحقيبة."],
+    'fa-AF': ["2.5.377 — کلمه‌های روشن‌تر در تازه‌ها درباره عددهای نوار و کیف."],
+    rw: ["2.5.377 — Amagambo asobanutse muri Ibishya ku mibare yo ku murongo no mu Gikapu."],
+    ti: ["2.5.377 — ብሩህ ቃላት ኣብ ሓድሽ ብዛዕባ ቁጽርታት መስመርን ቦርሳን።"],
+  }},
+
   { v: '2.5.376', date: '2026-10-22', lines: {
     en: ["2.5.376 — The Stamp warning stays off the boss bar even when the bar gets taller."],
     simple: ["2.5.376 — The Stamp warning does not cover the boss box now."],
