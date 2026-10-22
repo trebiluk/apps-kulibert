@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.355 proof-hotbar-gate:** The ?proof=1 hotbar hook is gated on the staff Test switch and no longer writes to the real save.
 - [x] **foundry-live (2.5.354):** Foundry Overseer can be summoned and Bonked. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

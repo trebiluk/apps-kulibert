@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.355', date: '2026-10-22', lines: {
+    en: ["2.5.355 — Test tools stay locked for staff, so your hotbar is safe."],
+    simple: ["2.5.355 — Your hotbar stays yours."],
+    uk: ["2.5.355 — Тестові інструменти залишаються заблокованими для персоналу, тому ваша панель безпечна."],
+    ru: ["2.5.355 — Тестовые инструменты остаются заблокированными для персонала, так что ваша панель безопасна."],
+    es: ["2.5.355 — Las herramientas de prueba se quedan bloqueadas para el personal, así que tu barra está segura."],
+    ar: ["2.5.355 — أدوات الاختبار تبقى مقفلة للموظفين، لذا شريطك آمن."],
+    'fa-AF': ["2.5.355 — ابزارهای آزمایش برای کارکنان قفل می‌مانند، پس نوار شما امن است."],
+    rw: ["2.5.355 — Ibikoresho by'ikizamini biguma bifunze ku bakozi, noneho urubuga rwawe rurakomeye."],
+    ti: ["2.5.355 — መመርመሪ መሳርሒታት ንሰራሕተኛታት ተቖልዩ ይቕመጡ፡ ስለዚ ናይ ሆትባርካ ውሑስ እዩ።"],
+  }},
+
   { v: '2.5.354', date: '2026-10-21', lines: {
     en: ['2.5.354 — The Foundry Overseer is open: make an Override Key, use it on the Foundry Console, and team up to reboot it. Rewards are looks only.'],
     simple: ['Make a Key. Use the Foundry Console. Beat the boss together.'],
