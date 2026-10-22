@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.375', date: '2026-10-22', lines: {
+    en: ["2.5.375 — The Stamp warning moves beside the boss bar, so you can still read the boss name."],
+    simple: ["2.5.375 — The Stamp warning does not cover the boss name now."],
+    uk: ["2.5.375 — Попередження про Штамп тепер поруч зі смугою боса, тож ім'я боса видно."],
+    ru: ["2.5.375 — Предупреждение о Штампе теперь рядом с полосой босса, так что имя босса видно."],
+    es: ["2.5.375 — El aviso de Sello va al lado de la barra del jefe, así puedes leer su nombre."],
+    ar: ["2.5.375 — تحذير الختم صار بجانب شريط الزعيم، فتستطيع قراءة اسم الزعيم."],
+    'fa-AF': ["2.5.375 — هشدار مهر حالا کنار نوار رئیس است، پس نام رئیس را می‌توانی بخوانی."],
+    rw: ["2.5.375 — Umuburo wa Sitampu ubu uri iruhande rw'umurongo w'umuyobozi, ugasoma izina rye."],
+    ti: ["2.5.375 — መጠንቀቕታ ማሕተም ሕጂ ኣብ ጥቓ መስመር ሓለቓ እዩ፡ ስም ሓለቓ ከተንብብ ትኽእል።"],
+  }},
+
   { v: '2.5.374', date: '2026-10-22', lines: {
     en: ["2.5.374 — Bag numbers moved above the pictures, so you can see every item."],
     simple: ["2.5.374 — The numbers in your Bag do not cover the pictures now."],
