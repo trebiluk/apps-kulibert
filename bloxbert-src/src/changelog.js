@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.367', date: '2026-10-22', lines: {
+    en: ["2.5.367 — Fixed a hiccup that stopped the Foundry from loading. The Console works again."],
+    simple: ["2.5.367 — The Foundry works again."],
+    uk: ["2.5.367 — Виправлено збій, через який Ливарня не завантажувалась."],
+    ru: ["2.5.367 — Исправлен сбой, из-за которого Литейная не загружалась."],
+    es: ["2.5.367 — Arreglamos un fallo que impedía cargar la Fundición."],
+    ar: ["2.5.367 — أصلحنا خللًا كان يمنع تحميل المسبك."],
+    'fa-AF': ["2.5.367 — مشکلی که نمی‌گذاشت ریخته‌گری بار شود رفع شد."],
+    rw: ["2.5.367 — Twakosoye ikibazo cyabuzaga Foundry gufunguka."],
+    ti: ["2.5.367 — ፋውንድሪ ከይጽዓን ዝኽልክል ጸገም ተዓርዩ።"],
+  }},
   { v: '2.5.365', date: '2026-10-22', lines: {
     en: ["2.5.365 — The boss bar no longer hides under the top bar."],
     simple: ["2.5.365 — The boss bar sits under the top bar."],

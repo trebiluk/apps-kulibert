@@ -1930,7 +1930,6 @@ function bareTuftOrFlora(id) {
 }
 function lowPlant(id) {
   if (!id) return false
-  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   return id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)
 }
 function playLocked() {
@@ -3614,7 +3613,6 @@ function dryNear(r) {
 }
 function isMachineId(id) {
   if (!id) return false
-  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   if (isDoor(id)) return true
   return id === ID.box || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || isShopBlock(id)
 }
@@ -6727,7 +6725,7 @@ function findUseTarget() {
   let bestD = 3
   for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) {
     let id = getVoxel(x, y, z)
-    if (!useVerb(id)) continue
+    if (!useVerb(id) && !isFoundryConsole(id, x, z)) continue
     let ux = x
     let uy = y
     let uz = z
@@ -7479,7 +7477,6 @@ function aimed() {
 }
 function fingerSolid(id, forBreak) {
   if (!id) return false
-  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   if (forBreak && (isCropId(id) || isBushId(id))) return true
   return !passThrough(id)
 }
@@ -11881,7 +11878,6 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
       const x = Math.floor(p[0]) + 1, y = Math.floor(p[1]), z = Math.floor(p[2])
       const id = item === 'floorLamp' ? 1100 : item === 'wallLamp' ? 1102 : item === 'woodshop' ? ID.woodshop : item === 'bunk' ? ID.bunk : 0
       if (!id) return false
-  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
       edit(x, y, z, id)
       if (session && session.spend) session.spend(item, 1)
       return true
