@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.381', date: '2026-10-22', lines: {
+    en: ["2.5.381 — The first time you open the game in your language, the top bar is in your language too."],
+    simple: ["2.5.381 — The top bar speaks your language."],
+    uk: ["2.5.381 — Коли вперше відкриваєш гру своєю мовою, верхня панель теж твоєю мовою."],
+    ru: ["2.5.381 — Когда впервые открываешь игру на своём языке, верхняя панель тоже на твоём языке."],
+    es: ["2.5.381 — La primera vez que abres el juego en tu idioma, la barra de arriba también está en tu idioma."],
+    ar: ["2.5.381 — عندما تفتح اللعبة أول مرة بلغتك، يكون الشريط العلوي بلغتك أيضًا."],
+    'fa-AF': ["2.5.381 — وقتی بازی را بار اول به زبان خودت باز می‌کنی، نوار بالا هم به زبان خودت است."],
+    rw: ["2.5.381 — Iyo ufunguye umukino bwa mbere mu rurimi rwawe, umurongo wo hejuru nawo uba mu rurimi rwawe."],
+    ti: ["2.5.381 — ንመጀመርታ ግዜ ጸወታ ብቋንቋኻ ክትከፍቶ እንከለኻ፡ ላዕለዋይ መስመር'ውን ብቋንቋኻ እዩ።"],
+  }},
+
   { v: '2.5.380', date: '2026-10-22', lines: {
     en: ["2.5.380 — On a computer the safe zone sign sits under your goal, so you can see both."],
     simple: ["2.5.380 — You can see the safe zone sign and your goal."],

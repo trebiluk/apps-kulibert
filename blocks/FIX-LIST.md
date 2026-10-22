@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.381 bar-first-load-lang:** On a fresh first load the top bar follows the html lang instead of defaulting to English. Saved choice still wins.
 - [x] **safe-chip-below-path (2.5.380):** Safe-zone chip sits below the goal chip on big screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
