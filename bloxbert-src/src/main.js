@@ -40,6 +40,7 @@ import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { createMobs } from './mobs.js'
+import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -11035,6 +11036,17 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('shot=1')) armShot()
   if (location.search.includes('craft=1')) armCraft()
   if (location.search.includes('use=')) armUse()
+  // C5 Foundry arena once, outside safe zone, Game/solo only
+  try {
+    if (!blockedWorld() && !localStorage.getItem('bt-foundry-built')) {
+      const ox = 60, oz = 60
+      if (!inSafeZone(ox, oz)) {
+        placeFoundryArena(getVoxel, edit, [ox, 6, oz])
+        localStorage.setItem('bt-foundry-built', '1')
+        console.info('[bt-foundry] arena at', ox, 6, oz)
+      } else console.info('[bt-foundry] skipped (safe)')
+    }
+  } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
   armClock()
   runBtTest()
   paintDayClock()
