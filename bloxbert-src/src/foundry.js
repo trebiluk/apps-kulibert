@@ -23,7 +23,7 @@ export function placeFoundryArena(getVoxel, edit, origin) {
 export function onConsoleUse(session, spawnBoss) {
   // Place Override Key on Console → spawn boss
   try {
-    if (combatRule && combatRule('boss') === false) {
+    if (combatRule && combatRule('boss') === 'off') {
       if (session && session.toast) session.toast(session.t ? session.t('c6bBossOff') : 'The teacher turned the boss off')
       return false
     }

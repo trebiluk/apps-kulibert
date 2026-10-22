@@ -42,7 +42,7 @@ export function createMobs(opts) {
     const r = rule() || {}
     return r['survival.energy'] === 'calm' || r.energy === 'calm' || r.calm === true
   }
-  function worldCap() { return calm() ? 10 : 24 }
+  function worldCap() { const c = combatRule ? combatRule('creatures') : 'calm'; return c === 'normal' ? 36 : c === 'calm' ? 10 : 24 }
   function zone(x, z) { return inSafeZone(Math.floor(x), Math.floor(z)) }
   function chunkKey(x, z) { return (Math.floor(x / CHUNK)) + ',' + (Math.floor(z / CHUNK)) }
   function ofKind(kind, x, z) {
@@ -116,7 +116,8 @@ export function createMobs(opts) {
   }
   function canSpawn(kind, x, y, z) {
     if (blockedWorld()) return false
-    try { if (combatRule && combatRule('combat') === false) return false } catch (e) {}
+    try { if (combatRule && combatRule('combat') === 'off') return false
+    try { if (combatRule && combatRule('creatures') === 'off') return false } catch (e) {} } catch (e) {}
     if (mobs.length >= worldCap()) return false
     if (zone(x, z) || plotInterior(x | 0, z | 0) || bedNear(x, z)) return false
     const p = playerPos && playerPos()
@@ -436,7 +437,7 @@ export function createMobs(opts) {
         } else if (p && d < 12) walk(m, p[0], p[2])
       }
       try {
-        if (combatRule && combatRule('combat') === false) {
+        if (combatRule && combatRule('combat') === 'off') {
           m.x = m.homeX; m.z = m.homeZ
           if (Math.hypot(m.x - m.homeX, m.z - m.homeZ) < 1) m.hp = 0
         }
