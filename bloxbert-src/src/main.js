@@ -6768,6 +6768,19 @@ function paintUsePill(hit) {
   useTarget = hit
   el.hidden = false
   el.dataset.verb = hit.verb
+  el.style.bottom = ''
+  el.style.left = ''
+  const chip = $('path-chip')
+  const cr = chip && !chip.hidden ? chip.getBoundingClientRect() : null
+  if (cr && cr.width) {
+    const pr = el.getBoundingClientRect()
+    if (pr.left < cr.right && cr.left < pr.right && pr.top < cr.bottom && cr.top < pr.bottom) {
+      const btn = ['t-bonk', 'jump-col'].map((id) => $(id)).filter((n) => n && n.getBoundingClientRect().width > 0).map((n) => n.getBoundingClientRect().left)
+      const wall = Math.min(innerWidth - 8, ...btn) - 8
+      if (cr.right + 8 + pr.width <= wall) el.style.left = Math.round(cr.right + 8 + pr.width / 2) + 'px'
+      else el.style.bottom = Math.round(innerHeight - cr.top + 8) + 'px'
+    }
+  }
   if (same) return
   const ico = el.querySelector('.gic')
   if (ico) {
