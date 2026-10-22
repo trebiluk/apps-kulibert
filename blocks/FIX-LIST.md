@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.344 goal-chip-suit:** The goal chip docks above the Suit pill when their x-ranges overlap. The walk hint already dodges the goal chip.
 - [x] **mob-sprite-local (2.5.341):** Bot sprites use local space and updated textures so they appear where they are. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

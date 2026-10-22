@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.344', date: '2026-10-21', lines: {
+    en: ["2.5.344 — The goal chip no longer sits on the Suit pill."],
+    simple: ["2.5.344 — The goal chip no longer sits on the Suit pill."],
+    uk: ["2.5.344 — Чіп цілі більше не сидить на пігулці Костюм."],
+    ru: ["2.5.344 — Чип цели больше не сидит на пилюле Костюм."],
+    es: ["2.5.344 — El chip de meta ya no se sienta en la píldora de Traje."],
+    ar: ["2.5.344 — شريحة الهدف لم تعد تجلس على حبة البدلة."],
+    'fa-AF': ["2.5.344 — تراشه هدف دیگر روی قرص لباس نمی‌نشیند."],
+    rw: ["2.5.344 — Chip y'intego ntigisubira ku kimenyetso cya Impuzu."],
+    ti: ["2.5.344 — ቺፕ ናይ ዕላማ ኣብ ናይ ልብስ ክኒ ኣይቅመጥን።"],
+  }},
+
   { v: '2.5.341', date: '2026-10-21', lines: {
     en: ['2.5.341 — Bots now show up where they are.'],
     simple: ['2.5.341 — Bots now show up where they are.'],
