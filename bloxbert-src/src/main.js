@@ -6851,6 +6851,14 @@ function bindUsePill() {
 bindUsePill()
 function armUse() {
   const q = location.search
+  // Staff-only boss shortcut (kwTest.on only)
+  if (q.includes('use=boss=overseer') && window.kwTest && window.kwTest.on && window.kwTest.on()) {
+    try {
+      if (session && session.give) session.give('overrideKey', 1)
+      noa.entities.setPosition(noa.playerEntity, [60, 6, 60])
+      console.info('[bt-test] foundry at 60,6,60')
+    } catch (e) {}
+  }
   window.__btTestPending = {
     isTest: location.pathname.startsWith('/blocks-test/') || (window.kwTest && window.kwTest.on && window.kwTest.on()),
     nightQ: q.includes('use=night'),
