@@ -38,7 +38,7 @@
   "more": "Ще",
   "gotIt": "Зрозуміло",
   "pwaTip": "Порада: меню Chrome, потім Встановити сторінку. Значок Tech Room лишається на цьому Chromebook. Програмам ще потрібна шкільна мережа.",
-  "whatsNewLine": "Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.",
+  "whatsNewLine": "Hub rev 2026-10-22-hide-dev-rev — Less clutter: the version code is now only for staff.",
   "appNames": "Назви програм у верхній смузі",
   "whatsNewStrip": "Верхня смуга показує значок і слово для кожного додатка.",
   "myProgress": "Мій поступ",
@@ -423,5 +423,6 @@
   "cancel": "Скасувати",
   "labelHoldItSpan": "HoldIt Проліт",
   "helpHoldItSpan": "HoldIt Проліт — це виклик моста. HoldIt — інструмент дизайну.",
-  "helpGateConflict": "Кожен push запускає перевірку Hub: код, мітки конфлікту, і /bertopia/ = /blocks-test/."
+  "helpGateConflict": "Кожен push запускає перевірку Hub: код, мітки конфлікту, і /bertopia/ = /blocks-test/.",
+  "helpHideDevRev": "Версія Hub показується внизу після розблокування персоналу."
 }

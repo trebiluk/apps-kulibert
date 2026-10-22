@@ -38,7 +38,7 @@
   "more": "المزيد",
   "gotIt": "فهمت",
   "pwaTip": "تلميح: قائمة كروم، ثم تثبيت الصفحة. أيقونة Tech Room تبقى على هذا الكرومبوك. التطبيقات ما زالت تحتاج شبكة المدرسة.",
-  "whatsNewLine": "Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.",
+  "whatsNewLine": "Hub rev 2026-10-22-hide-dev-rev — Less clutter: the version code is now only for staff.",
   "appNames": "أسماء التطبيقات في الشريط العلوي",
   "whatsNewStrip": "الشريط العلوي يعرض أيقونة وكلمة لكل تطبيق.",
   "myProgress": "تقدّمي",
@@ -423,5 +423,6 @@
   "cancel": "إلغاء",
   "labelHoldItSpan": "HoldIt جسر",
   "helpHoldItSpan": "HoldIt جسر هو تحدي الجسر. HoldIt هو أداة التصميم.",
-  "helpGateConflict": "كل دفع يشغل فحص Hub: الكود، علامات التعارض، و /bertopia/ = /blocks-test/."
+  "helpGateConflict": "كل دفع يشغل فحص Hub: الكود، علامات التعارض، و /bertopia/ = /blocks-test/.",
+  "helpHideDevRev": "تظهر نسخة Hub في الأسفل عند فتح الموظفين."
 }

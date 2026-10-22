@@ -38,7 +38,7 @@
   "more": "ተወሳኺ",
   "gotIt": "ተረዲኡኒ",
   "pwaTip": "ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-  "whatsNewLine": "Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.",
+  "whatsNewLine": "Hub rev 2026-10-22-hide-dev-rev — Less clutter: the version code is now only for staff.",
   "appNames": "ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
   "whatsNewStrip": "ላዕለዋይ ስትሪፕ ንነፍሲ ወከፍ ኣፕ ምልክትን ቃልን የርኢ።",
   "myProgress": "ዕቤተይ",
@@ -423,5 +423,6 @@
   "cancel": "ሰርዝ",
   "labelHoldItSpan": "HoldIt ድልድል",
   "helpHoldItSpan": "HoldIt ድልድል ናይ ድልድል ፈተና እዩ። HoldIt ናይ ዲዛይን መሳርሒ እዩ።",
-  "helpGateConflict": "ኩሉ push ናይ Hub ፍተሻ ይሰርሕ፡ ኮድ፡ ናይ ግጭት ምልክታት፡ ከምኡውን /bertopia/ = /blocks-test/."
+  "helpGateConflict": "ኩሉ push ናይ Hub ፍተሻ ይሰርሕ፡ ኮድ፡ ናይ ግጭት ምልክታት፡ ከምኡውን /bertopia/ = /blocks-test/.",
+  "helpHideDevRev": "ናይ Hub ስሪት ኣብ ታሕቲ ይረአ ኣብ ዝፍቱ ሰራሕተኛታት."
 }

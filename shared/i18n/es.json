@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.",
+  "whatsNewLine": "Hub rev 2026-10-22-hide-dev-rev — Less clutter: the version code is now only for staff.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra un icono y una palabra para cada app.",
   "myProgress": "Mi avance",
@@ -423,5 +423,6 @@
   "cancel": "Cancelar",
   "labelHoldItSpan": "HoldIt Puente",
   "helpHoldItSpan": "HoldIt Puente es el desafío del puente. HoldIt es la herramienta de diseño.",
-  "helpGateConflict": "Cada push ejecuta la comprobación del Hub: código, marcas de conflicto y /bertopia/ = /blocks-test/."
+  "helpGateConflict": "Cada push ejecuta la comprobación del Hub: código, marcas de conflicto y /bertopia/ = /blocks-test/.",
+  "helpHideDevRev": "La rev del Hub se muestra abajo cuando el personal desbloquea."
 }
