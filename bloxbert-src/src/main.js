@@ -5518,6 +5518,7 @@ window.addEventListener('pointerdown', (e) => {
   hideDoorOpt()
 }, true)
 const mobs = createMobs({
+  toLocal: (p) => noa.globalToLocal(p, null, []),
   getVoxel, edit,
   playerPos: () => noa.entities.getPosition(noa.playerEntity),
   isNight: () => basics && basics.phase && basics.phase() === 'night',

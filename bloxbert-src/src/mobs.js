@@ -16,6 +16,7 @@ const BUNK = 26
 const CHUNK = 24
 
 export function createMobs(opts) {
+  const toLocal = (opts && opts.toLocal) || ((p) => p)
   const {
     getVoxel, playerPos, isNight, toast, t,
     inSafeZone = townSafe,
@@ -291,6 +292,7 @@ export function createMobs(opts) {
         const mat = new StandardMaterial('c2m-' + m.id, sc)
         const tex = new DynamicTexture('c2t-' + m.id, canvas, sc, false, Texture.NEAREST_SAMPLINGMODE)
         tex.hasAlpha = true
+        try { tex.update(false) } catch (e) {}
         mat.diffuseTexture = tex
         mat.emissiveTexture = tex
         mat.useAlphaFromDiffuseTexture = true
@@ -304,9 +306,8 @@ export function createMobs(opts) {
       } catch (e) { return }
     }
     try {
-      m.mesh.position.x = m.x
-      m.mesh.position.y = (m.y || 0) + 0.9
-      m.mesh.position.z = m.z
+      const l = toLocal([m.x, (m.y || 0) + 0.9, m.z])
+      m.mesh.position.set(l[0], l[1], l[2])
     } catch (e) {}
   }
   function sayItem(key, item) {
