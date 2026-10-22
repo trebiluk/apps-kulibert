@@ -2584,3 +2584,20 @@ for (const [lang, row] of Object.entries(C1NOFIGHT)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.356 boss bar. rw/ti/fa-AF machine drafts.
+const C5BAR = {
+  en: { c5barName: 'Foundry Overseer', c5barWeak: 'Weak point open!', c5barCrew: 'Crew here: {n}', c5barHint: 'Bring a crewmate — it\'s a team boss.' },
+  simple: { c5barName: 'Foundry Overseer', c5barWeak: 'Weak point open!', c5barCrew: 'Crew here: {n}', c5barHint: 'Bring a friend.' },
+  uk: { c5barName: 'Наглядач ливарні', c5barWeak: 'Слабке місце відкрите!', c5barCrew: 'Екіпаж тут: {n}', c5barHint: 'Приведіть товариша — це командний бос.' },
+  ru: { c5barName: 'Надзиратель литейной', c5barWeak: 'Слабое место открыто!', c5barCrew: 'Экипаж здесь: {n}', c5barHint: 'Приведите товарища — это командный босс.' },
+  es: { c5barName: 'Supervisor de la Fundición', c5barWeak: '¡Punto débil abierto!', c5barCrew: 'Tripulación aquí: {n}', c5barHint: 'Trae un compañero — es un jefe de equipo.' },
+  ar: { c5barName: 'مشرف المسبك', c5barWeak: 'النقطة الضعيفة مفتوحة!', c5barCrew: 'الطاقم هنا: {n}', c5barHint: 'أحضر رفيقًا — إنه زعيم فريق.' },
+  'fa-AF': { c5barName: 'ناظر ریخته‌گری', c5barWeak: 'نقطه ضعیف باز است!', c5barCrew: 'خدمه اینجا: {n}', c5barHint: 'یک همراه بیاورید — این یک رئیس تیمی است.' },
+  rw: { c5barName: 'Umuyobozi wa Foundry', c5barWeak: 'Ahantu hato hafunguye!', c5barCrew: 'Itsinda hano: {n}', c5barHint: 'Zana umunyamuryango — ni boss y itsinda.' },
+  ti: { c5barName: 'ናይ ፋውንድሪ ኣመሓዳሪ', c5barWeak: 'ድኹም ነጥቢ ክፉት!', c5barCrew: 'ጋንታ ኣብዚ: {n}', c5barHint: 'ሓደ ባል ሓዊሱ — እዚ ቡድናዊ ቦስ እዩ።' },
+}
+for (const [lang, row] of Object.entries(C5BAR)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
