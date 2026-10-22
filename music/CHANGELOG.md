@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.45** · 2026-10-22 · channel **live**
+
+MU 2.36.45 — On a sideways phone, the New beat button fits its word.
+
+## Earlier
+
 **Chip: MU 2.36.44** · 2026-10-22 · channel **live**
 
 MU 2.36.44 — On a sideways phone, the Make a beat card fits on the screen.
