@@ -5667,7 +5667,8 @@ body.mu237 .viz-start[hidden] { display: none !important; }
     height: 52px !important;
     min-height: 52px !important;
     max-height: 52px !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important; /* MU 2.36.40: the Sound row under the Looks strip can be scrolled to */
   }
   body.mu237.tab-viz #lights-pane {
     flex-direction: row !important;
