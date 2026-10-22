@@ -2621,15 +2621,15 @@ for (const [lang, row] of Object.entries(C5ADD)) {
 
 // 2.5.359 Help: boss bar meaning. rw/ti/fa-AF machine drafts.
 const C5HELP = {
-  en: { helpBossBar: 'Boss bar: the number shows the Overseer\'s health. Below 60% it calls Sparkbugs (⚡ ×n). Bonk its weak point when it says "Weak point open!"' },
+  en: { helpBossBar: 'Boss bar: the number shows the Overseer\'s health. Below 60% it calls Sparkbugs (⚡). Bonk its weak point when it says "Weak point open!"' },
   simple: { helpBossBar: 'The bar shows boss health. Little bots come when it gets low. Team up!' },
-  uk: { helpBossBar: 'Смуга боса: число показує здоровʼя наглядача. Нижче 60% він кличе іскромлинів (⚡ ×n). Бий слабке місце, коли написано «Слабке місце відкрите!»' },
-  ru: { helpBossBar: 'Полоса босса: число показывает здоровье надзирателя. Ниже 60% он зовёт искрожуков (⚡ ×n). Бей слабое место, когда написано «Слабое место открыто!»' },
-  es: { helpBossBar: 'Barra del jefe: el número muestra la salud del Supervisor. Bajo 60% llama Chispas (⚡ ×n). Golpea su punto débil cuando diga «¡Punto débil abierto!»' },
-  ar: { helpBossBar: 'شريط الزعيم: الرقم يبيّن صحة المشرف. تحت 60% يستدعي الشرارات (⚡ ×n). اضرب نقطة ضعفه عندما يظهر «نقطة الضعف مفتوحة!»' },
-  'fa-AF': { helpBossBar: 'نوار رئیس: عدد، سلامتی ناظر را نشان می‌دهد. زیر ۶۰٪ جرقه‌ها را فرا می‌خواند (⚡ ×n). وقتی «نقطه ضعف باز است!» آمد، به آن بزن.' },
-  rw: { helpBossBar: 'Umurongo w\'umuyobozi: umubare werekana ubuzima bwe. Munsi ya 60% ahamagara Sparkbugs (⚡ ×n). Kubita ahantu hadakomeye iyo handitse "Weak point open!"' },
-  ti: { helpBossBar: 'መስመር ቦስ፡ ቁጽሪ ጥዕና ኣመሓዳሪ የርኢ። ትሕቲ 60% ስፓርክባግስ ይጽውዕ (⚡ ×n)። "ድኹም ነጥቢ ክፉት!" ምስ በለ ውቕዕ።' },
+  uk: { helpBossBar: 'Смуга боса: число показує здоровʼя наглядача. Нижче 60% він кличе іскромлинів (⚡). Бий слабке місце, коли написано «Слабке місце відкрите!»' },
+  ru: { helpBossBar: 'Полоса босса: число показывает здоровье надзирателя. Ниже 60% он зовёт искрожуков (⚡). Бей слабое место, когда написано «Слабое место открыто!»' },
+  es: { helpBossBar: 'Barra del jefe: el número muestra la salud del Supervisor. Bajo 60% llama Chispas (⚡). Golpea su punto débil cuando diga «¡Punto débil abierto!»' },
+  ar: { helpBossBar: 'شريط الزعيم: الرقم يبيّن صحة المشرف. تحت 60% يستدعي الشرارات (⚡). اضرب نقطة ضعفه عندما يظهر «نقطة الضعف مفتوحة!»' },
+  'fa-AF': { helpBossBar: 'نوار رئیس: عدد، سلامتی ناظر را نشان می‌دهد. زیر ۶۰٪ جرقه‌ها را فرا می‌خواند (⚡). وقتی «نقطه ضعف باز است!» آمد، به آن بزن.' },
+  rw: { helpBossBar: 'Umurongo w\'umuyobozi: umubare werekana ubuzima bwe. Munsi ya 60% ahamagara Sparkbugs (⚡). Kubita ahantu hadakomeye iyo handitse "Weak point open!"' },
+  ti: { helpBossBar: 'መስመር ቦስ፡ ቁጽሪ ጥዕና ኣመሓዳሪ የርኢ። ትሕቲ 60% ስፓርክባግስ ይጽውዕ (⚡)። "ድኹም ነጥቢ ክፉት!" ምስ በለ ውቕዕ።' },
 }
 for (const [lang, row] of Object.entries(C5HELP)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}

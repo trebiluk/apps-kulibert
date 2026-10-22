@@ -54,6 +54,7 @@ await build({
   drop: ['debugger'],
   pure: ['console.debug'],
   plugins: [trimUnusedShaders],
+  banner: { js: '/*! Bertopia ' + PKG.version + ' */' },
   define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 // Icon test entry — no main.js, just the contact sheet

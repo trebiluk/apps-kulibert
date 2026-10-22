@@ -123,5 +123,22 @@ for (const rel of all) {
 }
 if (diffs.length) fail(`bertopia/ and blocks-test/ differ: ${diffs.slice(0, 5).join(", ")}`);
 
+
+// 6. every door matches bloxbert-src/package.json (title, plate, chip, app.js?v, bundle banner)
+const want = JSON.parse(readFileSync(root + "/bloxbert-src/package.json", "utf8")).version;
+for (const dir of ["blocks", "blocks-test", "bertopia"]) {
+  const h = readFileSync(root + "/" + dir + "/index.html", "utf8");
+  const js = readFileSync(root + "/" + dir + "/app.js", "utf8").slice(0, 200);
+  const got = {
+    title: (h.match(/<title>Bertopia ([^<]+)<\/title>/) || [])[1],
+    plate: (h.match(/id="ver-plate">([^<]+)</) || [])[1],
+    chip: (h.match(/data-version="([^"]+)"/) || [])[1],
+    appv: (h.match(/app\.js\?v=([^"]+)/) || [])[1],
+    bundle: (js.match(/^\/\*! Bertopia (\S+) \*\//) || [])[1],
+  };
+  const bad = Object.entries(got).filter(([, v]) => v !== want);
+  if (bad.length) fail(`${dir}/ not built from ${want}: ` + bad.map(([k, v]) => k + "=" + v).join(" "));
+}
+
 console.log("PASS");
 process.exit(0);
