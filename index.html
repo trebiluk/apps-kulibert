@@ -1732,6 +1732,8 @@
     body.apps-always:not(.is-framed):not(.hub-classic) #shell-footer{display:flex !important;align-items:center;gap:.45rem .7rem;flex-wrap:wrap;min-height:44px;padding:.35rem .7rem;background:#071018;color:#e8f7ff;border-top:1px solid #16324f;font-size:12px;line-height:1.35}
     body.apps-always #shell-footer #shell-lunch,body.apps-always #shell-footer > a[href="/bistro/"]{display:none !important}
     .hub-foot-rev{font-family:ui-monospace,Menlo,Consolas,monospace;color:#8fb4c9}
+    body:not(.staff-on) [data-staff-only]{display:none}
+
     body.apps-always .shell-header .app-dock,body.apps-always .dock-clip{overflow-x:auto !important;overflow-y:hidden !important;justify-content:flex-start !important}
 
     /* 2026-10-13-swipe: no-scroll only on the Chromebook strip. Phones keep overflow-x auto so a swipe moves the ribbon. */
@@ -1861,7 +1863,7 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-21-live-chips-logolab</span></p>
+      <p class="hub-drawer-rev"><span class="rev" data-staff-only>rev 2026-10-21-live-chips-logolab</span></p>
       <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.</span> <span data-i18n="whatsNewStrip">The top strip shows an icon and a word for each app.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
@@ -1936,7 +1938,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-21-live-chips-logolab</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.</span></span>
+<span class="lead"><span class="rev" data-staff-only>rev 2026-10-21-live-chips-logolab</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.36.19</strong> — A bigger light show: a Looks drawer with names, Surprise me, and a start screen that glows.</p>
@@ -2571,7 +2573,7 @@
       })();
     </script>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-21-live-chips-logolab</span>
+      <span class="hub-foot-rev rev" data-staff-only>rev 2026-10-21-live-chips-logolab</span>
       <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-22-holdit-span-i18n — The HoldIt Span tile shows in every language.</span></span>
       <button type="button" id="foot-news-more" style="min-height:44px;min-width:44px" data-i18n="more">More</button>
       <button type="button" id="foot-fine-print"><span aria-hidden="true">⚖️ </span><span data-i18n="finePrint">Fine Print</span></button>
@@ -3716,6 +3718,11 @@
       window.addEventListener("resize", fitPhoneTiles);
       requestAnimationFrame(function () { fitPhoneTiles(); });
       window.addEventListener("resize", fitMarquee);
+
+      
+      try {
+        if (localStorage.getItem("tech-room-hub-staff") === "1") document.body.classList.add("staff-on");
+      } catch (e) {}
 
       var hubRevBtn = document.getElementById("hub-rev");
       var hubMeta = document.querySelector('meta[name="tech-room-rev"]');
