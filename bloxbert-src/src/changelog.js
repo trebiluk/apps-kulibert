@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.353', date: '2026-10-21', lines: {
+    en: ["2.5.353 — The browser tab shows the right Bertopia version."],
+    simple: ["2.5.353 — The tab shows the right number."],
+    uk: ["2.5.353 — Вкладка браузера показує правильну версію Bertopia."],
+    ru: ["2.5.353 — Вкладка браузера показывает правильную версию Bertopia."],
+    es: ["2.5.353 — La pestaña del navegador muestra la versión correcta de Bertopia."],
+    ar: ["2.5.353 — علامة التبويب في المتصفح تظهر الإصدار الصحيح من Bertopia."],
+    'fa-AF': ["2.5.353 — تب مرورگر نسخه درست Bertopia را نشان می‌دهد."],
+    rw: ["2.5.353 — Icyiciro cya mushakisha kigaragaza verisiyo y'ukuri ya Bertopia."],
+    ti: ["2.5.353 — ናይ ብራውዘር ታብ ቅኑዕ ስርሒት Bertopia የርኢ።"],
+  }},
+
   { v: '2.5.352', date: '2026-10-21', lines: {
     en: ["2.5.352 — In Bertyville, tapping to fight shows No fighting here so you know why."],
     simple: ["2.5.352 — Town says: no fighting here."],
