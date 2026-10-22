@@ -64,6 +64,11 @@ indexSrc = indexSrc.replace(/id="ver-plate">[^<]+</, 'id="ver-plate">' + ver + '
 indexSrc = indexSrc.replace(/data-version="[^"]+"/, 'data-version="' + ver + '"')
 indexSrc = indexSrc.replace(/app\.js\?v=[^"]+/, 'app.js?v=' + ver)
 indexSrc = indexSrc.replace(/read\.css\?v=[^"]+/, 'read.css?v=' + ver)
+indexSrc = indexSrc.replace(/<title>[^<]*<\/title>/, '<title>Bertopia ' + ver + '</title>')
+if (!indexSrc.includes('<title>Bertopia ' + ver + '</title>') || !indexSrc.includes('app.js?v=' + ver) || !indexSrc.includes('data-version="' + ver + '"')) {
+  console.error('version stamp mismatch')
+  process.exit(1)
+}
 writeFileSync(OUT + '/index.html', indexSrc)
 cpSync('read.css', OUT + '/read.css')
 cpSync('icons-test.html', OUT + '/icons-test.html')
