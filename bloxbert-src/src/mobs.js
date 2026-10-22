@@ -5,6 +5,7 @@ import { openDex } from './learn.js'
 import { plotInterior as townPlot } from './town.js'
 import { mergeOrAdd } from './drops.js'
 import { getWrap } from './gfx/pixel-art.js'
+import { combatRule } from './rules.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
@@ -42,7 +43,7 @@ export function createMobs(opts) {
     const r = rule() || {}
     return r['survival.energy'] === 'calm' || r.energy === 'calm' || r.calm === true
   }
-  function worldCap() { const c = combatRule ? combatRule('creatures') : 'calm'; return c === 'normal' ? 36 : c === 'calm' ? 10 : 24 }
+  function worldCap() { const c = (typeof combatRule === 'function') ? combatRule('creatures') : 'calm'; return c === 'normal' ? 36 : c === 'calm' ? 10 : 24 }
   function zone(x, z) { return inSafeZone(Math.floor(x), Math.floor(z)) }
   function chunkKey(x, z) { return (Math.floor(x / CHUNK)) + ',' + (Math.floor(z / CHUNK)) }
   function ofKind(kind, x, z) {
@@ -116,8 +117,8 @@ export function createMobs(opts) {
   }
   function canSpawn(kind, x, y, z) {
     if (blockedWorld()) return false
-    try { if (combatRule && combatRule('combat') === 'off') return false
-    try { if (combatRule && combatRule('creatures') === 'off') return false } catch (e) {} } catch (e) {}
+    try { if (combatRule && combatRule('combat') === 'off') return false } catch (e) {}
+    try { if (combatRule && combatRule('creatures') === 'off') return false } catch (e) {}
     if (mobs.length >= worldCap()) return false
     if (zone(x, z) || plotInterior(x | 0, z | 0) || bedNear(x, z)) return false
     const p = playerPos && playerPos()

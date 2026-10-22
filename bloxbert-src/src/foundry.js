@@ -1,5 +1,6 @@
 // C5 Foundry arena + Console. Outside safe zone. Alias-only.
 import { inSafeZone } from './safe-zone.js'
+import { combatRule } from './rules.js'
 
 export function placeFoundryArena(getVoxel, edit, origin) {
   // Small walled arena + Console + always-open Exit, placed outside town.
