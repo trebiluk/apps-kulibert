@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.351', date: '2026-10-21', lines: {
+    en: ['2.5.351 — Combat bots spawn steadily and a glitch can no longer freeze them.'],
+    simple: ['2.5.351 — Bots come back at night like they should.'],
+    uk: ['2.5.351 — Бойові боти з’являються стабільно, і збій більше не може їх заморозити.'],
+    ru: ['2.5.351 — Боевые боты появляются стабильно, и сбой больше не может их заморозить.'],
+    es: ['2.5.351 — Los bots de combate aparecen de forma constante y un fallo ya no puede congelarlos.'],
+    ar: ['2.5.351 — روبوتات القتال تظهر بثبات ولا يمكن لخلل أن يجمدها بعد الآن.'],
+    'fa-AF': ['2.5.351 — ربات‌های نبرد به‌طور پیوسته ظاهر می‌شوند و یک اشکال دیگر نمی‌تواند آن‌ها را منجمد کند.'],
+    rw: ['2.5.351 — Bots y urugamba bigaragara neza kandi ikosa ntigishobora kubihagarika.'],
+    ti: ['2.5.351 — ናይ ውግእ ቦትስ ብቐዋሚ ይረአዩ ኣብ ሕጂ ስሕተት ኣይክፈልጥን።'],
+  }},
+
   { v: '2.5.349', date: '2026-10-21', lines: {
     en: ["2.5.349 — The Open button no longer covers your Suit bar on phones."],
     simple: ["2.5.349 — Open and Suit don't overlap now."],
