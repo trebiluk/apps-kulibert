@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bloxbert Icon Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #eee; margin: 16px; }
+  h1 { font-size: 1.2rem; }
+  .count { font-weight: bold; margin: 8px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .card { background: #2a2a2a; border: 1px solid #444; padding: 8px; text-align: center; border-radius: 6px; }
+  .card.fallback { border: 2px solid #f44; }
+  .icons { display: flex; gap: 8px; justify-content: center; margin: 6px 0; }
+  canvas, img, span.real-icon { image-rendering: pixelated; }
+  .name { font-size: 0.85rem; font-weight: 600; }
+  .id { font-size: 0.7rem; color: #aaa; }
+</style>
+</head>
+<body>
+<h1>Bloxbert Icon Contact Sheet</h1>
+<div class="count" id="count">Loading...</div>
+<div class="count" id="blank">blank: ?</div>
+<div class="count" id="filled">filled items: ?</div>
+<div class="grid" id="grid"></div>
+<script src="icons-test.js"></script>
+<script>
+;(function () {
+  function pixels(canvas) {
+    if (!canvas) return null
+    try { return canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data }
+    catch (e) { return null }
+  }
+  function inkCount(data) {
+    var n = 0
+    for (var p = 3; p < data.length; p += 4) if (data[p] >= 16) n++
+    return n
+  }
+  var cards = document.querySelectorAll('.card')
+  var bad = []
+  for (var i = 0; i < cards.length; i++) {
+    var id = cards[i].querySelector('.id')
+    var name = (cards[i].querySelector('.name') || {}).textContent || '?'
+    if (!id || id.textContent.indexOf('item') !== 0) continue
+    var canvas = cards[i].querySelector('canvas')
+    var data = pixels(canvas)
+    if (!data) { bad.push(name); continue }
+    var clear = 0
+    for (var p = 3; p < data.length; p += 4) if (data[p] < 16) clear++
+    if (clear / (canvas.width * canvas.height) < 0.15) bad.push(name)
+  }
+  var el = document.getElementById('filled')
+  if (el) {
+    el.textContent = 'filled items: ' + bad.length
+    el.dataset.names = bad.join(',')
+  }
+  var blanks = 0
+  for (var j = 0; j < cards.length; j++) {
+    var name2 = ((cards[j].querySelector('.name') || {}).textContent || '?').slice(0, 2)
+    var canvases = cards[j].querySelectorAll('canvas')
+    var cardBlank = !canvases.length
+    for (var k = 0; k < canvases.length; k++) {
+      var px = pixels(canvases[k])
+      if (px && inkCount(px) > 0) continue
+      var g = canvases[k].getContext('2d')
+      var w = canvases[k].width
+      g.imageSmoothingEnabled = false
+      g.fillStyle = '#3A4450'
+      g.fillRect(Math.floor(w * 0.14), Math.floor(w * 0.14), Math.floor(w * 0.72), Math.floor(w * 0.72))
+      g.fillStyle = '#E8EEF2'
+      g.font = '700 ' + Math.max(10, Math.floor(w * 0.28)) + 'px sans-serif'
+      g.textAlign = 'center'
+      g.textBaseline = 'middle'
+      g.fillText(name2, w / 2, w / 2)
+      var again = pixels(canvases[k])
+      if (!again || inkCount(again) === 0) cardBlank = true
+    }
+    if (cardBlank) blanks++
+  }
+  var blankEl = document.getElementById('blank')
+  if (blankEl) blankEl.textContent = 'blank: ' + blanks
+  var countEl = document.getElementById('count')
+  var found = countEl && (countEl.textContent || '').match(/(\d+)\s+fallbacks/)
+  if (countEl && found) countEl.dataset.fallbacks = found[1]
+})()
+</script>
+</body>
+</html>

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.346', date: '2026-10-21', lines: {
+    en: ["2.5.346 — The Tap to play button no longer hides behind your goal on sideways phones."],
+    simple: ["2.5.346 — Tap to play is easy to see now."],
+    uk: ["2.5.346 — Кнопка Торкніться, щоб грати більше не ховається за вашою ціллю на бокових телефонах."],
+    ru: ["2.5.346 — Кнопка Нажмите, чтобы играть больше не прячется за вашей целью на боковых телефонах."],
+    es: ["2.5.346 — El botón Toca para jugar ya no se esconde detrás de tu meta en teléfonos de lado."],
+    ar: ["2.5.346 — زر اضغط للعب لم يعد يختبئ خلف هدفك على الهواتف الجانبية."],
+    'fa-AF': ["2.5.346 — دکمه بزن برای بازی دیگر پشت هدفت روی تلفن‌های افقی پنهان نمی‌شود."],
+    rw: ["2.5.346 — Buto ya Kanda kugira ngo ukine ntigisubira inyuma y'intego yawe ku telefoni z'urubavu."],
+    ti: ["2.5.346 — መቐየሪ ጠውቕ ንምጽዋት ኣብ ጎኒ ስልክታት ድሕሪ ዕላማኻ ኣይተሓባእን።"],
+  }},
+
   { v: '2.5.345', date: '2026-10-21', lines: {
     en: ['2.5.345 — Teacher switches for combat, creatures and the boss really turn things off.'],
     simple: ['2.5.345 — Teacher switches for combat, creatures and the boss really turn things off.'],

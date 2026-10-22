@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.346 play-chip-goal:** The Tap to play chip sits under the top bar on short landscape touch screens, clear of the goal chip.
 - [x] **c6-rule-strings (2.5.345):** Teacher switches compare strings and turn things off. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
