@@ -10261,6 +10261,8 @@ function paintBossBar() {
   const say = (t ? t('c5barName') : 'Foundry Overseer') + ' ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '') + (weak ? ' · ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
   if (say !== bar._said) { bar._said = say; bar.querySelector('[data-boss-sr]').textContent = say }
   if (phase !== lastBossPhase) lastBossPhase = phase
+  // 2.5.376: bar may have grown (weak-point line), so re-check the Stamp warning against it
+  if (mobs && mobs.fitStamp) mobs.fitStamp()
 }
 
 noa.on('beforeRender', (dt) => {

@@ -244,12 +244,20 @@ export function createMobs(opts) {
       el.textContent = '⚠'
       el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:48px;z-index:40;pointer-events:none;border:4px solid #f59e0b;padding:8px;border-radius:4px;background:rgba(0,0,0,.4)'
       document.body.append(el)
-      // 2.5.375: if the warning lands on the boss bar (short or narrow screens), slide it left of the bar
+      stampEl = el
+      fitStamp()
+      setTimeout(fitStamp, 300)
+      setTimeout(() => { if (stampEl === el) stampEl = null; el.remove() }, 1500)
+    } catch (e) {}
+  }
+  let stampEl = null
+  function fitStamp() {
+    if (!stampEl) return
+    try {
       const bar = document.getElementById('boss-bar')
       const b = bar ? bar.getBoundingClientRect() : null
-      const s = el.getBoundingClientRect()
-      if (b && b.width && s.left < b.right && s.right > b.left && s.top < b.bottom && s.bottom > b.top) el.style.left = Math.max(Math.ceil(s.width / 2) + 4, Math.floor(b.left - 8 - s.width / 2)) + 'px'
-      setTimeout(() => el.remove(), 1500)
+      const s = stampEl.getBoundingClientRect()
+      if (b && b.width && s.left < b.right && s.right > b.left && s.top < b.bottom && s.bottom > b.top) stampEl.style.left = Math.max(Math.ceil(s.width / 2) + 4, Math.floor(b.left - 8 - s.width / 2)) + 'px'
     } catch (e) {}
   }
   function showVent() {
@@ -587,5 +595,5 @@ export function createMobs(opts) {
   }
   function count() { return mobs.length }
   function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp, maxHp: m.maxHp, phase: m.kind === 'overseer' ? bossPhase(m.id) : undefined, weakOpen: m.weakOpen, fromBoss: m.fromBoss })) }
-  return { spawn, spawnBoss, bossPhase, tick, trySpawn, reboot, count, list, canSpawn, blockedWorld }
+  return { spawn, spawnBoss, bossPhase, tick, trySpawn, reboot, count, list, canSpawn, blockedWorld, fitStamp }
 }
