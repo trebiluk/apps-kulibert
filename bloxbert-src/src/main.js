@@ -10910,25 +10910,23 @@ window.__bertopiaHotbarCheck = function (opts) {
   }
   return { w: window.innerWidth, labels: labels, anyClipped: anyClipped, anyMidWordBreak: anyMidWordBreak }
 }
-if (location.search.indexOf('proof=1') >= 0) {
+if (location.search.indexOf('proof=1') >= 0 && window.kwTest && window.kwTest.on && window.kwTest.on()) {
   window.__bertopiaSetHotbar = function (names) {
     if (!session || !session.bag) return false
-    if (session.mode !== 'survival') session.setMode('survival')
     const list = Array.isArray(names) ? names : []
     const byName = new Map()
     for (const key of Object.keys(ITEMS)) {
       const label = String(t(key) || '').replace(/\s+/g, ' ').trim()
       if (label) byName.set(label, key)
     }
-    const slots = session.bag.slots
-    const n = Math.min(list.length, slots.length, 9)
+    const paint = []
+    const n = Math.min(list.length, 9)
     for (let i = 0; i < n; i++) {
       const want = String(list[i] == null ? '' : list[i]).replace(/\s+/g, ' ').trim()
       const key = byName.get(want) || (ITEMS[want] ? want : '')
-      slots[i] = key ? { item: key, n: 1 } : null
+      paint.push(key ? { item: key, n: 1 } : null)
     }
-    session.paintHotbar()
-    if (window.__bertopiaFitSlots) window.__bertopiaFitSlots()
+    if (session.paintHotbar) session.paintHotbar(paint)
     return true
   }
 }
