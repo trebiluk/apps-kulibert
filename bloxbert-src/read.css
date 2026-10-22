@@ -1736,3 +1736,9 @@ html body #dig-chip:not([hidden]) {
 @media (max-width: 520px) {
   :root { --hud-lift: 150px; }
 }
+
+/* 2.5.372: safe-zone chip sits under the top bar, not behind it; on short wide screens it also clears the Tap to play chip */
+html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important; }
+@media (max-height: 520px) and (min-width: 700px) {
+  html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+}
