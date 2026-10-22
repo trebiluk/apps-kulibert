@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.349 use-pill-suit:** The Open pill sits 8px above the Suit pill on phone upright. Landscape and desktop rules unchanged.
 - [x] **c5-dup-lang (2.5.343):** Foundry fight words are in the right language. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

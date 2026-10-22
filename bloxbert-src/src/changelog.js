@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.349', date: '2026-10-21', lines: {
+    en: ["2.5.349 — The Open button no longer covers your Suit bar on phones."],
+    simple: ["2.5.349 — Open and Suit don't overlap now."],
+    uk: ["2.5.349 — Кнопка Відкрити більше не покриває вашу панель Костюм на телефонах."],
+    ru: ["2.5.349 — Кнопка Открыть больше не покрывает вашу панель Костюм на телефонах."],
+    es: ["2.5.349 — El botón Abrir ya no cubre tu barra de Traje en teléfonos."],
+    ar: ["2.5.349 — زر فتح لم يعد يغطي شريط البدلة على الهواتف."],
+    'fa-AF': ["2.5.349 — دکمه باز کردن دیگر نوار لباس را روی تلفن‌ها نمی‌پوشاند."],
+    rw: ["2.5.349 — Buto ya Fungura ntigisubira gufunga urubuga rwa Impuzu ku telefoni."],
+    ti: ["2.5.349 — መቐየሪ ክፈት ኣብ ስልክታት ናይ ልብስ ባር ኣይሸፍንን።"],
+  }},
+
   { v: '2.5.348', date: '2026-10-21', lines: {
     en: ['2.5.348 — The game starts again, and every version label matches.'],
     simple: ['2.5.348 — The game starts again.'],
