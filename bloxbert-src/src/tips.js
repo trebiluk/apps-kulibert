@@ -256,7 +256,7 @@ export function pinAboveBar(el) {
   if (bars.length && top + h > ceil + 0.5) top = Math.max(8, Math.round(ceil - h))
   if (wide) {
     const crowd = []
-    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip']) {
+    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip', '#suit-bar']) {
       const node = document.querySelector(sel)
       if (!node || node.hidden) continue
       const r = node.getBoundingClientRect()
@@ -728,7 +728,7 @@ function armWatch() {
     new MutationObserver(() => onResize()).observe(node, { attributes: true, attributeFilter: ['hidden', 'class', 'style'] })
     if (window.ResizeObserver) new ResizeObserver(() => onResize()).observe(node)
   }
-  for (const sel of ['#held-chip', '#hotbar', '#pick-chip', '#mode-pill', 'header.top', '#rules-card', '#sheet', '#path-chip', '#stick-pad', '#jump-col', '#play-chip']) {
+  for (const sel of ['#held-chip', '#hotbar', '#pick-chip', '#mode-pill', 'header.top', '#rules-card', '#sheet', '#path-chip', '#stick-pad', '#jump-col', '#play-chip', '#suit-bar']) {
     watch(document.querySelector(sel))
   }
 }
