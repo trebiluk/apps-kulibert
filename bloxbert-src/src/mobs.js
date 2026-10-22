@@ -244,6 +244,11 @@ export function createMobs(opts) {
       el.textContent = '⚠'
       el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:48px;z-index:40;pointer-events:none;border:4px solid #f59e0b;padding:8px;border-radius:4px;background:rgba(0,0,0,.4)'
       document.body.append(el)
+      // 2.5.375: if the warning lands on the boss bar (short or narrow screens), slide it left of the bar
+      const bar = document.getElementById('boss-bar')
+      const b = bar ? bar.getBoundingClientRect() : null
+      const s = el.getBoundingClientRect()
+      if (b && b.width && s.left < b.right && s.right > b.left && s.top < b.bottom && s.bottom > b.top) el.style.left = Math.max(Math.ceil(s.width / 2) + 4, Math.floor(b.left - 8 - s.width / 2)) + 'px'
       setTimeout(() => el.remove(), 1500)
     } catch (e) {}
   }
