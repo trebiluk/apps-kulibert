@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.342 keys-hint-suit-2:** The walk hint now sits above the Suit pill. The pinAboveBar crowd list and armWatch both include #suit-bar.
 - [x] **c6-hooks (2.5.300):** Teacher Combat/Creatures/Boss switches change the game. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

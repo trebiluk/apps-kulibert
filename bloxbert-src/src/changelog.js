@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.342', date: '2026-10-21', lines: {
+    en: ["2.5.342 — The walk hint now sits above the Suit pill."],
+    simple: ["2.5.342 — The walk hint now sits above the Suit pill."],
+    uk: ["2.5.342 — Підказка ходьби тепер сидить над пігулкою Костюм."],
+    ru: ["2.5.342 — Подсказка ходьбы теперь сидит над пилюлей Костюм."],
+    es: ["2.5.342 — La pista de caminar ahora se sienta sobre la píldora de Traje."],
+    ar: ["2.5.342 — تلميح المشي يجلس الآن فوق حبة البدلة."],
+    'fa-AF': ["2.5.342 — راهنمای راه رفتن حالا بالای قرص لباس می‌نشیند."],
+    rw: ["2.5.342 — Inama yo kugenda ubu yicaye hejuru y'ikimenyetso cya Impuzu."],
+    ti: ["2.5.342 — ምኽሪ ምንቅስቓስ ሕጂ ኣብ ላዕሊ ናይ ልብስ ክኒ ትቕመጥ።"],
+  }},
+
   { v: '2.5.300', date: '2026-10-21', lines: {
     en: ['2.5.300 — Teacher switches for combat, creatures and the boss now work.'],
     simple: ['2.5.300 — Teacher switches for combat, creatures and the boss now work.'],
