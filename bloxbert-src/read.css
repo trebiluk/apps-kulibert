@@ -1742,3 +1742,9 @@ html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !
 @media (max-height: 520px) and (min-width: 700px) {
   html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
 }
+
+/* 2.5.373: boss bar sits under the top bar; on short wide screens it also clears the Tap to play chip */
+html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important; }
+@media (max-height: 520px) and (min-width: 700px) {
+  html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+}
