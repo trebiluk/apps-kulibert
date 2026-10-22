@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.357', date: '2026-10-22', lines: {
+    en: ['2.5.357 — Cleaned up the page and fixed the tab title.'],
+    simple: ['The page looks clean again.'],
+    uk: ['2.5.357 — Очистили сторінку й виправили назву вкладки.'],
+    ru: ['2.5.357 — Очистили страницу и исправили название вкладки.'],
+    es: ['2.5.357 — Limpiamos la página y arreglamos el título de la pestaña.'],
+    ar: ['2.5.357 — نظفنا الصفحة وأصلحنا عنوان التبويب.'],
+    'fa-AF': ['2.5.357 — صفحه را پاک کردیم و عنوان زبانه را درست کردیم.'],
+    rw: ['2.5.357 — Twasukuye urupapuro kandi dukosora umutwe w agasanduku.'],
+    ti: ['2.5.357 — ገጽ ኣጽሪና ኣርእስቲ ታብ ኣዐሪና።'],
+  }},
   { v: '2.5.355', date: '2026-10-22', lines: {
     en: ["2.5.355 — Test tools stay locked for staff, so your hotbar is safe."],
     simple: ["2.5.355 — Your hotbar stays yours."],
@@ -9,6 +20,7 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.355 — ابزارهای آزمایش برای کارکنان قفل می‌مانند، پس نوار شما امن است."],
     rw: ["2.5.355 — Ibikoresho by'ikizamini biguma bifunze ku bakozi, noneho urubuga rwawe rurakomeye."],
     ti: ["2.5.355 — መመርመሪ መሳርሒታት ንሰራሕተኛታት ተቖልዩ ይቕመጡ፡ ስለዚ ናይ ሆትባርካ ውሑስ እዩ።"],
+  }},
   { v: '2.5.356', date: '2026-10-22', lines: {
     en: ['2.5.356 — The Foundry Overseer shows a health bar, its phase, and how many crewmates are with you.'],
     simple: ['See the boss health. Bring a friend.'],

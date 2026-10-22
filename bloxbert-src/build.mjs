@@ -15,6 +15,10 @@ const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLO
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
 import { spawnSync } from 'child_process'
 const PKG = JSON.parse(readFileSync(path.join(HERE, 'package.json'), 'utf8'))
+// Refuse to build if any source or output carries git conflict markers (P0 2.5.356).
+const MARK = /^(<{7}|>{7})( |$)|^={7}$/m
+const scanMarkers = (files) => { const bad = files.filter((f) => { try { return MARK.test(readFileSync(f, 'utf8')) } catch { return false } }); if (bad.length) { console.error('conflict markers found:', bad.join(', ')); process.exit(1) } }
+scanMarkers(['index.html', 'sw.js', 'read.css', 'package.json', ...readdirSync('src').filter((f) => /\.(js|json|css)$/.test(f)).map((f) => 'src/' + f)])
 const syntax = spawnSync(process.execPath, ['tools/syntax-check.mjs'], { stdio: 'inherit' })
 if (syntax.status) process.exit(syntax.status)
 spawnSync(process.execPath, ['tools/make-tiles.mjs'], { stdio: 'inherit' })
@@ -75,6 +79,7 @@ cpSync('icons-test.html', OUT + '/icons-test.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
 const version = JSON.parse(readFileSync('package.json', 'utf8')).version
 writeFileSync(OUT + '/sw.js', readFileSync('sw.js', 'utf8').replaceAll('__BLOX_VERSION__', version))
+scanMarkers([OUT + '/index.html', OUT + '/sw.js', OUT + '/app.js'])
 for (const f of readdirSync('assets').filter((f) => f.endsWith('.png') || f.endsWith('.txt') || f.endsWith('.json'))) cpSync('assets/' + f, OUT + '/assets/' + f)
 let raw = 0, gz = 0
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(d + '/' + e.name) : [d + '/' + e.name])
