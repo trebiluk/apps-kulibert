@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.43** · 2026-10-22 · channel **live**
+
+MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap.
+
+## Earlier
+
 **Chip: MU 2.36.42** · 2026-10-22 · channel **live**
 
 MU 2.36.42 — On a sideways phone, the picture names on Viz show in full.

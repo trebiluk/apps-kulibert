@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] score-beat-44: On a sideways phone the Score tab beat cells are at least 44px wide. MU 2.36.43.
 - [x] viz-scene-names: On a sideways phone, the Viz picture names show in full. MU 2.36.42.
 - [x] viz-scenes-scroll: On a sideways phone, the Viz picture row scrolls so Fire and Ocean can be picked. MU 2.36.41.
 - [x] viz-short-sound-row: On a sideways phone, the Sound row on Viz can be scrolled to. MU 2.36.40.

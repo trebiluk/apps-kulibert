@@ -458,6 +458,7 @@
     lessonAlongMatch: "Play along is on. Your taps do not change the song. Match the flash.",
     lessonAlongOff: "Play along is off. Your taps are saved on the beat.",
     helpScore: "📝 The Score tab teaches you in your language.",
+    helpBeatSwipe: "Swipe the beat boxes sideways to reach the last beats.",
     news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
     showLine: "One song. The picture follows. Sound can stay off.",
     exitEsc: "Exit  Esc",
@@ -615,7 +616,8 @@
     news23639: "MU 2.36.39 — The picture on Viz is big again.",
     news23640: "MU 2.36.40 — On a sideways phone, swipe up under the Looks to find the Sound buttons.",
     news23641: "MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean.",
-    news23642: "MU 2.36.42 — On a sideways phone, the picture names on Viz show in full."
+    news23642: "MU 2.36.42 — On a sideways phone, the picture names on Viz show in full.",
+    news23643: "MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -777,6 +779,7 @@
     lessonAlongMatch: "Play along is on. Your taps do not change the song.",
     lessonAlongOff: "Play along is off. Your taps are saved.",
     helpScore: "📝 Score teaches you in your language.",
+    helpBeatSwipe: "Swipe to see the last beats.",
     news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
     showLine: "One song. The picture follows. Sound can stay off.",
     exitEsc: "Exit Esc",
@@ -935,7 +938,8 @@
     news23639: "MU 2.36.39 — The picture is big again.",
     news23640: "MU 2.36.40 — Swipe up to find Sound.",
     news23641: "MU 2.36.41 — Swipe to see more pictures.",
-    news23642: "MU 2.36.42 — Picture names are not cut now."
+    news23642: "MU 2.36.42 — Picture names are not cut now.",
+    news23643: "MU 2.36.43 — Beat boxes are easier to tap."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1388,6 +1392,7 @@
       "lessonAlongMatch": "Гра разом увімкнена. Твої натиски не змінюють пісню. Повтори спалах.",
       "lessonAlongOff": "Гру разом вимкнено. Твої натиски зберігаються на біті.",
       "helpScore": "📝 Вкладка Ноти вчить тебе твоєю мовою.",
+      "helpBeatSwipe": "Гортай клітинки ритму вбік, щоб дістатися останніх долей.",
       "news23622": "MU 2.36.22 — Вкладка Ноти вчить тебе твоєю мовою.",
       "showLine": "Одна пісня. Картинка йде за нею. Звук можна лишити вимкненим.",
       "exitEsc": "Вийти  Esc",
@@ -1545,7 +1550,8 @@
       "news23639": "MU 2.36.39 — Картинка у Viz знову велика.",
       "news23640": "MU 2.36.40 — На боковому телефоні гортай угору під «Вигляд», щоб знайти кнопки звуку.",
       "news23641": "MU 2.36.41 — На боковому телефоні гортай ряд картинок, щоб знайти Вогонь і Океан.",
-      "news23642": "MU 2.36.42 — На боковому телефоні назви картинок у Viz видно повністю."
+      "news23642": "MU 2.36.42 — На боковому телефоні назви картинок у Viz видно повністю.",
+      "news23643": "MU 2.36.43 — На боковому телефоні клітинки ритму в Score достатньо великі, щоб торкатися."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1995,6 +2001,7 @@
       "lessonAlongMatch": "Игра вместе включена. Твои нажатия не меняют песню. Повтори вспышку.",
       "lessonAlongOff": "Игра вместе выключена. Твои нажатия сохраняются на бите.",
       "helpScore": "📝 Вкладка Ноты учит тебя на твоём языке.",
+      "helpBeatSwipe": "Листай клетки ритма вбок, чтобы дойти до последних долей.",
       "news23622": "MU 2.36.22 — Вкладка Ноты учит тебя на твоём языке.",
       "showLine": "Одна песня. Картинка идёт за ней. Звук можно оставить выключенным.",
       "exitEsc": "Выйти  Esc",
@@ -2152,7 +2159,8 @@
       "news23639": "MU 2.36.39 — Картинка в Viz снова большая.",
       "news23640": "MU 2.36.40 — На боковом телефоне листай вверх под «Вид», чтобы найти кнопки звука.",
       "news23641": "MU 2.36.41 — На боковом телефоне листай ряд картинок, чтобы найти Огонь и Океан.",
-      "news23642": "MU 2.36.42 — На боковом телефоне названия картинок в Viz видно полностью."
+      "news23642": "MU 2.36.42 — На боковом телефоне названия картинок в Viz видно полностью.",
+      "news23643": "MU 2.36.43 — На боковом телефоне клетки ритма в Score достаточно большие, чтобы нажимать."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2603,6 +2611,7 @@
       "lessonAlongMatch": "Tocar junto está activo. Tus toques no cambian la canción. Sigue el destello.",
       "lessonAlongOff": "Tocar junto está apagado. Tus toques se guardan en el tiempo.",
       "helpScore": "📝 Partitura te enseña en tu idioma.",
+      "helpBeatSwipe": "Desliza las casillas del ritmo hacia el lado para llegar a los últimos tiempos.",
       "news23622": "MU 2.36.22 — La pestaña Partitura te enseña en tu idioma.",
       "showLine": "Una canción. La imagen la sigue. El sonido puede quedar apagado.",
       "exitEsc": "Salir  Esc",
@@ -2760,7 +2769,8 @@
       "news23639": "MU 2.36.39 — La imagen de Viz vuelve a ser grande.",
       "news23640": "MU 2.36.40 — Con el teléfono de lado, desliza hacia arriba bajo Estilos para ver los botones de Sonido.",
       "news23641": "MU 2.36.41 — Con el teléfono de lado, desliza la fila de imágenes para ver Fuego y Océano.",
-      "news23642": "MU 2.36.42 — Con el teléfono de lado, los nombres de las imágenes de Viz se ven enteros."
+      "news23642": "MU 2.36.42 — Con el teléfono de lado, los nombres de las imágenes de Viz se ven enteros.",
+      "news23643": "MU 2.36.43 — Con el teléfono de lado, las casillas del ritmo en Score son fáciles de tocar."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3211,6 +3221,7 @@
       "lessonAlongMatch": "العزف معًا يعمل. لمساتك لا تغيّر الأغنية. طابق الوميض.",
       "lessonAlongOff": "العزف معًا متوقف. لمساتك تُحفظ على النبض.",
       "helpScore": "📝 لسان النوتة يعلّمك بلغتك.",
+      "helpBeatSwipe": "اسحب خانات الإيقاع جانبًا لتصل إلى آخر النبضات.",
       "news23622": "MU 2.36.22 — لسان النوتة يعلّمك بلغتك.",
       "showLine": "أغنية واحدة. الصورة تتبعها. يمكن أن يبقى الصوت مطفأ.",
       "exitEsc": "خروج  Esc",
@@ -3368,7 +3379,8 @@
       "news23639": "MU 2.36.39 — صورة Viz أصبحت كبيرة مرة أخرى.",
       "news23640": "MU 2.36.40 — على الهاتف المائل، اسحب للأعلى تحت المظاهر لتجد أزرار الصوت.",
       "news23641": "MU 2.36.41 — على الهاتف المائل، اسحب صف الصور لتجد النار والمحيط.",
-      "news23642": "MU 2.36.42 — على الهاتف المائل، تظهر أسماء صور Viz كاملة."
+      "news23642": "MU 2.36.42 — على الهاتف المائل، تظهر أسماء صور Viz كاملة.",
+      "news23643": "MU 2.36.43 — على الهاتف المائل، صارت خانات الإيقاع في Score كبيرة بما يكفي للمس."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3819,6 +3831,7 @@
       "lessonAlongMatch": "همراه نواختن روشن است. ضربه‌های تو آهنگ را عوض نمی‌کند. با درخشش برابر شو.",
       "lessonAlongOff": "همراه نواختن خاموش است. ضربه‌های تو روی ضرب ذخیره می‌شود.",
       "helpScore": "📝 زبانه نت به زبان خودت یادت می‌دهد.",
+      "helpBeatSwipe": "خانه‌های ریتم را به پهلو بکش تا به ضرب‌های آخر برسی.",
       "news23622": "MU 2.36.22 — زبانه نت به زبان خودت یادت می‌دهد.",
       "showLine": "یک آهنگ. تصویر دنبال آن می‌آید. صدا می‌تواند خاموش بماند.",
       "exitEsc": "بیرون  Esc",
@@ -3976,7 +3989,8 @@
       "news23639": "MU 2.36.39 — تصویر Viz دوباره بزرگ شد.",
       "news23640": "MU 2.36.40 — روی تلفن خوابیده، زیر ظاهرها به بالا بکش تا دکمه‌های صدا را پیدا کنی.",
       "news23641": "MU 2.36.41 — روی تلفن خوابیده، ردیف تصویرها را بکش تا آتش و بحر را پیدا کنی.",
-      "news23642": "MU 2.36.42 — روی تلفن خوابیده، نام تصویرهای Viz کامل دیده می‌شود."
+      "news23642": "MU 2.36.42 — روی تلفن خوابیده، نام تصویرهای Viz کامل دیده می‌شود.",
+      "news23643": "MU 2.36.43 — روی تلفن خوابیده، خانه‌های ریتم در Score برای لمس به اندازه کافی بزرگ هستند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4427,6 +4441,7 @@
       "lessonAlongMatch": "Gukina hamwe birakora. Gukanda kwawe ntiguhindura indirimbo. Kurikira umurabyo.",
       "lessonAlongOff": "Gukina hamwe birazimye. Gukanda kwawe kubikwa ku murya.",
       "helpScore": "📝 Igitabo cy'inota kiguhugura mu rurimi rwawe.",
+      "helpBeatSwipe": "Sunika udusanduku tw'injyana ku ruhande ugere ku njyana za nyuma.",
       "news23622": "MU 2.36.22 — Igitabo cy'inota kiguhugura mu rurimi rwawe.",
       "showLine": "Indirimbo imwe. Ishusho ikurikira. Ijwi rishobora kuguma rivanye.",
       "exitEsc": "Sohoka  Esc",
@@ -4584,7 +4599,8 @@
       "news23639": "MU 2.36.39 — Ishusho ya Viz yongeye kuba nini.",
       "news23640": "MU 2.36.40 — Kuri telefoni iri ku ruhande, sunika hejuru munsi y'Imiterere ubone utubuto tw'Ijwi.",
       "news23641": "MU 2.36.41 — Kuri telefoni iri ku ruhande, sunika umurongo w'amashusho ubone Umuriro n'Inyanja.",
-      "news23642": "MU 2.36.42 — Kuri telefoni iri ku ruhande, amazina y'amashusho ya Viz agaragara yose."
+      "news23642": "MU 2.36.42 — Kuri telefoni iri ku ruhande, amazina y'amashusho ya Viz agaragara yose.",
+      "news23643": "MU 2.36.43 — Kuri telefoni iri ku ruhande, udusanduku tw'injyana muri Score ni tunini bihagije ngo ukande."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5035,6 +5051,7 @@
       "lessonAlongMatch": "ምሳኻ ምጻወት ወሊዑ ኣሎ። ምጥዋቕካ ነቲ ደርፊ ኣይቅይሮን። ነቲ ብርሃን ተኸታተል።",
       "lessonAlongOff": "ምሳኻ ምጻወት ጠፊኡ። ምጥዋቕካ ኣብቲ ምት ይዕቀብ።",
       "helpScore": "📝 ነጥቢ ብቋንቋኻ የስልጠነካ።",
+      "helpBeatSwipe": "ነቶም ሳጹናት ምት ናብ ጎኒ ስሓቦም፡ ናብ መወዳእታ ምታት ክትበጽሕ።",
       "news23622": "MU 2.36.22 — ነጥቢ ብቋንቋኻ የስልጠነካ።",
       "showLine": "ሓንቲ ደርፊ። ስእሊ ይስዕባ። ድምጺ ክጥፍእ ይኽእል።",
       "exitEsc": "ውጻእ  Esc",
@@ -5192,7 +5209,8 @@
       "news23639": "MU 2.36.39 — ስእሊ Viz ደጊሙ ዓቢ ኮይኑ።",
       "news23640": "MU 2.36.40 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣብ ትሕቲ መልክዕ ናብ ላዕሊ ስሓብ፡ መልጎም ድምጺ ክትረክብ።",
       "news23641": "MU 2.36.41 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ነቲ መስመር ስእልታት ስሓብ፡ ሓዊን ባሕሪን ክትረክብ።",
-      "news23642": "MU 2.36.42 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣስማት ስእልታት Viz ምሉእ ይርኣዩ።"
+      "news23642": "MU 2.36.42 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣስማት ስእልታት Viz ምሉእ ይርኣዩ።",
+      "news23643": "MU 2.36.43 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ሳጹናት ምት ኣብ Score ንምጥዋቕ ዝኣክል ዓበይቲ እዮም።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
