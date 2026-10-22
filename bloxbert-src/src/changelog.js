@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.361', date: '2026-10-22', lines: {
+    en: ["2.5.361 — Less on screen at the start: one Survival button, and Undo shows once you build."],
+    simple: ["2.5.361 — Less stuff on screen when you start."],
+    uk: ["2.5.361 — Менше на екрані на старті: одна кнопка «Виживання», а «Скасувати» з’являється, коли ти будуєш."],
+    ru: ["2.5.361 — Меньше на экране в начале: одна кнопка «Выживание», а «Отменить» появится, когда ты строишь."],
+    es: ["2.5.361 — Menos cosas al empezar: un solo botón de Supervivencia, y Deshacer aparece cuando construyes."],
+    ar: ["2.5.361 — أشياء أقل على الشاشة في البداية: زر بقاء واحد، وزر التراجع يظهر عندما تبني."],
+    'fa-AF': ["2.5.361 — در شروع چیزهای کمتری روی صفحه است: یک دکمهٔ بقا، و «واگرد» وقتی می‌سازی پیدا می‌شود."],
+    rw: ["2.5.361 — Ibintu bike kuri ecran ku ntangiriro: buto imwe ya Kubaho, na Subiza igaragara iyo wubaka."],
+    ti: ["2.5.361 — ኣብ መጀመርታ ውሑድ ነገር ኣብ ስክሪን፡ ሓደ መልጎም ምንባር፣ ምምላስ ድማ ምስ ትሃንጽ ይርአ።"],
+  }},
+
   { v: '2.5.360', date: '2026-10-22', lines: {
     en: ['2.5.360 — The Foundry boss bar and arena are really here now, and the tab shows the right version.'],
     simple: ['The boss bar works now.'],

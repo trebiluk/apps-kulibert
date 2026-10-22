@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.361 calm-topbar:** Duplicate mode chip hidden unless Build-table. Disabled Undo/Redo use visibility:hidden so the bar does not jump.
 - [x] **real-build (2.5.360):** Doors are real builds from package.json. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
