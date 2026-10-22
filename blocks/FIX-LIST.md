@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **safe-chip-clear-pause (2.5.378):** Safe-zone chip drops below Pause on narrow phones. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.377 whatsnew-counts:** What's new lines for 2.5.371 and 2.5.374 now say the numbers no longer cover the pictures. en and simple unchanged.
 - [x] **stamp-recheck (2.5.376):** Stamp warning re-checks after bar grows. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

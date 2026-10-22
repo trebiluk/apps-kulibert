@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.378', date: '2026-10-22', lines: {
+    en: ["2.5.378 — On phones the safe zone sign sits below the Pause button, so you can read it all."],
+    simple: ["2.5.378 — The safe zone sign does not hide under Pause now."],
+    uk: ["2.5.378 — На телефонах знак безпечної зони тепер під кнопкою Пауза, тож його видно повністю."],
+    ru: ["2.5.378 — На телефонах знак безопасной зоны теперь под кнопкой Пауза, так что его видно целиком."],
+    es: ["2.5.378 — En el teléfono, el aviso de zona segura va debajo del botón de Pausa, así lo lees entero."],
+    ar: ["2.5.378 — على الهاتف تظهر لافتة المنطقة الآمنة تحت زر الإيقاف، فتقرؤها كاملة."],
+    'fa-AF': ["2.5.378 — روی تلفن، نشان منطقه امن زیر دکمه توقف است، پس همه‌اش را می‌خوانی."],
+    rw: ["2.5.378 — Kuri telefoni, ikimenyetso cy'ahantu hatekanye kiri munsi ya buto ya Hagarara, ukagisoma cyose."],
+    ti: ["2.5.378 — ኣብ ተሌፎን ምልክት ውሑስ ቦታ ኣብ ትሕቲ መልጎም ኣቋርጽ እዩ፡ ምሉኡ ተንብቦ።"],
+  }},
+
   { v: '2.5.377', date: '2026-10-22', lines: {
     en: ["2.5.377 — Clearer What's new words about the hotbar and Bag numbers."],
     simple: ["2.5.377 — Better words in What's new."],

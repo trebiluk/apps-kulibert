@@ -1748,3 +1748,8 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 @media (max-height: 520px) and (min-width: 700px) {
   html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
 }
+
+/* 2.5.378: on narrow phones the safe-zone chip drops below the Pause / full-screen row so it never runs under Pause */
+@media (max-width: 520px) {
+  html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+}
