@@ -5204,9 +5204,12 @@ function placeSaveChip(el) {
   el.style.left = midX + 'px'
   el.style.top = midY + 'px'
 }
+let kidActed = false
+for (const ev of ['pointerdown', 'keydown', 'touchstart']) window.addEventListener(ev, (e) => { if (e.isTrusted) kidActed = true }, { capture: true, passive: true })
 function paintSaveChip(state) {
   const el = $('save-chip')
   if (!el) return
+  if (!kidActed) return
   const saved = state === 'saved' || state === 'synced' || state === 'offline'
   const word = saved ? '✓ Saved' : (SAVE_WORD[state] || SAVE_WORD.saved)
   el.hidden = false
