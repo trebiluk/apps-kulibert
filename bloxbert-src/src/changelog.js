@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.379', date: '2026-10-22', lines: {
+    en: ["2.5.379 — The Saved sign speaks your language."],
+    simple: ["2.5.379 — Saved is in your language now."],
+    uk: ["2.5.379 — Знак «Збережено» тепер твоєю мовою."],
+    ru: ["2.5.379 — Знак «Сохранено» теперь на твоём языке."],
+    es: ["2.5.379 — El aviso de Guardado sale en tu idioma."],
+    ar: ["2.5.379 — لافتة تم الحفظ صارت بلغتك."],
+    'fa-AF': ["2.5.379 — نشان ذخیره شد حالا به زبان تو است."],
+    rw: ["2.5.379 — Ikimenyetso cya Byabitswe kiri mu rurimi rwawe."],
+    ti: ["2.5.379 — ምልክት ተዓቂቡ ሕጂ ብቋንቋኻ እዩ።"],
+  }},
+
   { v: '2.5.378', date: '2026-10-22', lines: {
     en: ["2.5.378 — On phones the safe zone sign sits below the Pause button, so you can read it all."],
     simple: ["2.5.378 — The safe zone sign does not hide under Pause now."],
