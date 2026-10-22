@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **weak-point-clock (2.5.362):** Boss bar shows Weak point open after Stamp/Slam. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.361 calm-topbar:** Duplicate mode chip hidden unless Build-table. Disabled Undo/Redo use visibility:hidden so the bar does not jump.
 - [x] **real-build (2.5.360):** Doors are real builds from package.json. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

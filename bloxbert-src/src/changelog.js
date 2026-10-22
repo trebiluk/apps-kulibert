@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.362', date: '2026-10-22', lines: {
+    en: ['2.5.362 — The boss bar now shows "Weak point open!" right after a Stamp or Slam. Bonk it then.'],
+    simple: ['The bar tells you when to hit the boss.'],
+    uk: ['2.5.362 — Смуга боса тепер показує «Слабке місце відкрите!» одразу після удару. Тоді й бий.'],
+    ru: ['2.5.362 — Полоса босса теперь показывает «Слабое место открыто!» сразу после удара. Тогда и бей.'],
+    es: ['2.5.362 — La barra del jefe ahora muestra «¡Punto débil abierto!» justo después de un golpe. Dale entonces.'],
+    ar: ['2.5.362 — شريط الزعيم يعرض الآن «نقطة الضعف مفتوحة!» بعد الضربة مباشرة. اضربه حينها.'],
+    'fa-AF': ['2.5.362 — نوار رئیس حالا بعد از ضربه «نقطهٔ ضعف باز است!» را نشان می‌دهد. همان وقت بزن.'],
+    rw: ['2.5.362 — Umurongo w\'umuyobozi ubu werekana "Ahantu hadakomeye harafunguye!" nyuma yo gukubita. Kubita icyo gihe.'],
+    ti: ['2.5.362 — መስመር ቦስ ሕጂ ድሕሪ ህርማ «ድኹም ቦታ ክፉት እዩ!» የርኢ። ሽዑ ውቕዖ።'],
+  }},
+
   { v: '2.5.361', date: '2026-10-22', lines: {
     en: ["2.5.361 — Less on screen at the start: one Survival button, and Undo shows once you build."],
     simple: ["2.5.361 — Less stuff on screen when you start."],
