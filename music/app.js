@@ -390,6 +390,11 @@
       wet.connect(comp);
       comp.connect(limiter);
       limiter.connect(master);
+      const playAn = ctx.createAnalyser();
+      playAn.fftSize = 128;               // 64 bins = stage.js bins length
+      playAn.smoothingTimeConstant = 0.8; // soft motion, no jumps
+      limiter.connect(playAn);            // before master, so Mute doesn't blank the picture
+      state.playAnalyser = playAn;
       applyFx();
     }
     if (ctx.state === "suspended") ctx.resume();
@@ -6812,8 +6817,8 @@
         rgb: state.rgb && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         wall: state.wall,
         gear: gear,
-        bins: micDrives ? null : state.bins,
-        analyser: micDrives ? state.micAnalyser : null,
+        bins: micDrives ? null : (state.playAnalyser && state.playing ? null : state.bins),
+        analyser: micDrives ? state.micAnalyser : (state.playing ? state.playAnalyser || null : null),
         kick: state.kick,
         snare: state.snare,
         playhead: state.step,
