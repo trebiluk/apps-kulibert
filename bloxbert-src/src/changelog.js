@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.372', date: '2026-10-22', lines: {
+    en: ["2.5.372 — The safe zone sign shows under the top bar, so you can read it."],
+    simple: ["2.5.372 — You can see the safe zone sign now."],
+    uk: ["2.5.372 — Знак безпечної зони тепер під верхньою панеллю, тож його видно."],
+    ru: ["2.5.372 — Знак безопасной зоны теперь под верхней панелью, так что его видно."],
+    es: ["2.5.372 — El aviso de zona segura sale debajo de la barra de arriba, así puedes leerlo."],
+    ar: ["2.5.372 — تظهر لافتة المنطقة الآمنة تحت الشريط العلوي، فتستطيع قراءتها."],
+    'fa-AF': ["2.5.372 — نشان منطقه امن حالا زیر نوار بالا است، پس می‌توانی آن را بخوانی."],
+    rw: ["2.5.372 — Ikimenyetso cy'ahantu hatekanye kigaragara munsi y'umurongo wo hejuru, ukagisoma."],
+    ti: ["2.5.372 — ምልክት ውሑስ ቦታ ሕጂ ኣብ ትሕቲ ላዕለዋይ መስመር ይርአ፡ ከተንብቦ ትኽእል።"],
+  }},
+
   { v: '2.5.371', date: '2026-10-22', lines: {
     en: ["2.5.371 — Hotbar numbers moved above the pictures, so you can see every item."],
     simple: ["2.5.371 — The numbers in your hotbar do not cover the pictures now."],
