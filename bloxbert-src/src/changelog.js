@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.358', date: '2026-10-22', lines: {
+    en: ['2.5.358 — In the Foundry fight, the Overseer calls in Sparkbugs. Team up: one of you takes them.'],
+    simple: ['The boss calls little bots. Work as a team.'],
+    uk: ['2.5.358 — У бою ливарні наглядач викликає іскромлини. Командою: хтось з вас візьміть їх.'],
+    ru: ['2.5.358 — В бою литейной надзиратель вызывает искрожуков. Командой: кто-то из вас займитесь ими.'],
+    es: ['2.5.358 — En la pelea de la Fundición, el Supervisor llama Chispas. En equipo: uno de ustedes tómelos.'],
+    ar: ['2.5.358 — في قتال المسبك، المشرف يستدعي الشرارات. كفريق: أحدكم يأخذها.'],
+    'fa-AF': ['2.5.358 — در نبرد ریخته‌گری، ناظر جرقه‌ها را فرا می‌خواند. به عنوان تیم: یکی از شما آن‌ها را بگیرد.'],
+    rw: ['2.5.358 — Mu rugamba rwa Foundry, umuyobozi ahamagara Sparkbugs. Hamwe: umwe muri mwe abifate.'],
+    ti: ['2.5.358 — ኣብ ውግእ ፋውንድሪ፣ ኣመሓዳሪ ስፓርክባግስ ይጽውዕ። ብቡድ፡ ሓደ ካባኻትኩም ይወስዶም።'],
+  }},
+
   { v: '2.5.357', date: '2026-10-22', lines: {
     en: ['2.5.357 — Cleaned up the page and fixed the tab title.'],
     simple: ['The page looks clean again.'],

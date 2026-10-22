@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **phase2-adds (2.5.358):** Overseer Phase 2 summons Sparkbugs. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.355 proof-hotbar-gate:** The ?proof=1 hotbar hook is gated on the staff Test switch and no longer writes to the real save.
 - [x] **boss-bar (2.5.356):** Overseer health bar and team hint. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
