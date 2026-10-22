@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.368', date: '2026-10-22', lines: {
+    en: ["2.5.368 — The Press button no longer hides under your goal on short screens."],
+    simple: ["2.5.368 — The Press button sits next to your goal."],
+    uk: ["2.5.368 — Кнопка Натисни більше не ховається під твоєю ціллю на коротких екранах."],
+    ru: ["2.5.368 — Кнопка Нажми больше не прячется под твоей целью на коротких экранах."],
+    es: ["2.5.368 — El botón Presiona ya no se esconde bajo tu meta en pantallas cortas."],
+    ar: ["2.5.368 — زر اضغط لم يعد يختبئ تحت هدفك على الشاشات القصيرة."],
+    'fa-AF': ["2.5.368 — دکمه فشار بده دیگر زیر هدفت روی صفحه‌های کوتاه پنهان نمی‌شود."],
+    rw: ["2.5.368 — Buto ya Kanda ntigisubira gufunga munsi y'intego yawe kuri ecran ngufi."],
+    ti: ["2.5.368 — መቐየሪ ጠውቕ ኣብ ሓጺር ስክሪን ኣብ ታሕቲ ዕላማኻ ኣይተሓባእን።"],
+  }},
+
   { v: '2.5.367', date: '2026-10-22', lines: {
     en: ["2.5.367 — Fixed a hiccup that stopped the Foundry from loading. The Console works again."],
     simple: ["2.5.367 — The Foundry works again."],
