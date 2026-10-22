@@ -444,6 +444,11 @@ export function createMobs(opts) {
         }
       } catch (e) {}
       if (m.kind === 'overseer') {
+        if (!m._lastScale || now - m._lastScale > 1000) {
+          const nearby = 1 // re-scale later
+          try { rescaleBoss(m.id, nearby) } catch (e) {}
+          m._lastScale = now
+        }
         const phase = bossPhase(m.id)
         if (phase !== m.lastPhase) {
           m.lastPhase = phase
@@ -493,10 +498,10 @@ export function createMobs(opts) {
         }
       }
       // Apply Bonk damage to rustbot/keeper (×2 on weak)
-      if ((m.kind === 'rustbot' || m.kind === 'keeper') && bonkAt && now - bonkAt < 400 && bonkAt !== m.seenBonk && p && d < 3.2 && !zone(m.x, m.z)) {
+      if ((m.kind === 'rustbot' || m.kind === 'keeper' || m.kind === 'overseer') && bonkAt && now - bonkAt < 400 && bonkAt !== m.seenBonk && p && d < 3.2 && !zone(m.x, m.z)) {
         m.seenBonk = bonkAt
         let mul = 1
-        if (m.kind === 'rustbot') {
+        if (m.kind === 'rustbot' || (m.kind === 'overseer' && m.weakOpen && now < m.weakOpen)) {
           const ang = Math.atan2(p[0] - m.x, p[2] - m.z)
           const diff = Math.abs(((ang - m.facing + Math.PI) % (2*Math.PI)) - Math.PI)
           if (diff > Math.PI / 2) mul = 2 // back/flank
