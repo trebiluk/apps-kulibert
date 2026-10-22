@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **stick-clear-hotbar (2.5.383):** Move stick sits above the hotbar on short screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.382 save-chip-placeholder:** The sc-word span is empty so no English "Saved" is in the page text before paintSaveChip fills it.
 - [x] **2.5.381 bar-first-load-lang:** On a fresh first load the top bar follows the html lang instead of defaulting to English. Saved choice still wins.
 - [x] **safe-chip-below-path (2.5.380):** Safe-zone chip sits below the goal chip on big screens. Kinyarwanda, Tigrinya, and Dari still need a native check.

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.383', date: '2026-10-22', lines: {
+    en: ["2.5.383 — On a sideways phone the move stick sits above your hotbar."],
+    simple: ["2.5.383 — The move stick does not cover your items."],
+    uk: ["2.5.383 — На боковому телефоні джойстик руху тепер над панеллю предметів."],
+    ru: ["2.5.383 — На боковом телефоне джойстик движения теперь над панелью предметов."],
+    es: ["2.5.383 — Con el teléfono de lado, el control para moverte queda encima de tu barra de objetos."],
+    ar: ["2.5.383 — على الهاتف المائل، صار مقبض الحركة فوق شريط أغراضك."],
+    'fa-AF': ["2.5.383 — روی تلفن خوابیده، دسته حرکت بالای نوار وسایلت است."],
+    rw: ["2.5.383 — Kuri telefoni iri ku ruhande, agakoresho ko kugenda kari hejuru y'umurongo w'ibikoresho byawe."],
+    ti: ["2.5.383 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ መንቀሳቐሲ ኣብ ልዕሊ መስመር ኣቑሑትካ እዩ።"],
+  }},
+
   { v: '2.5.382', date: '2026-10-22', lines: {
     en: ["2.5.382 — The save sign no longer hides an English word in the page."],
     simple: ["2.5.382 — The save sign is in your language."],
