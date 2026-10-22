@@ -6821,6 +6821,7 @@ function armUse() {
     isTest: location.pathname.startsWith('/blocks-test/') || (window.kwTest && window.kwTest.on && window.kwTest.on()),
     nightQ: q.includes('use=night'),
     mobQ: (q.match(/use=mob=([a-z]+)/) || [])[1] || '',
+    ruleQ: (q.match(/use=rule=([a-z]+(?::[a-z]+)*)/) || [])[1] || '',
   }
   if (window.__btTestPending.isTest && (window.__btTestPending.nightQ || window.__btTestPending.mobQ)) {
     // Defer to after armClock so night sticks
@@ -10969,6 +10970,25 @@ load().catch(() => {}).finally(() => {
     }
     window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
     window.__use.phase = () => (basics && basics.phase ? basics.phase() : 'day')
+    if (p.ruleQ) {
+      const world = (typeof WORLD !== 'undefined' && WORLD) || 'game'
+      const store = 'bloxbert-combat-' + world
+      if (p.ruleQ === 'reset') {
+        try { localStorage.removeItem(store) } catch (e) {}
+        console.info('[bt-test] rule reset (world ' + world + ')')
+        if (toast) toast('Test: rules reset')
+      } else {
+        const [k, v] = p.ruleQ.split(':')
+        if (k && v) {
+          let prefs = {}
+          try { prefs = JSON.parse(localStorage.getItem(store) || '{}') } catch (e) {}
+          prefs[k] = v
+          try { localStorage.setItem(store, JSON.stringify(prefs)) } catch (e) {}
+          console.info('[bt-test] rule ' + k + '=' + v + ' (world ' + world + ')')
+          if (toast) toast('Test: ' + k + '=' + v)
+        }
+      }
+    }
     if (p.mobQ) {
       const r = window.__use.spawn(p.mobQ)
       if (r && toast) toast(t ? t('c4hSpawn') : 'Test: ' + p.mobQ)
