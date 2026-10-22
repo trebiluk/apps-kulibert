@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] viz-short-sound-row: On a sideways phone, the Sound row on Viz can be scrolled to. MU 2.36.40.
 - [x] viz-stage-60: The picture on Viz is at least 60% of the desk again. MU 2.36.39.
 - [x] viz-glow-frame: The Glow frame lights up around the picture again. MU 2.36.38.
 - [x] viz-chromebook-detail: On Chromebooks the Viz picture shows its full sparkle when it can run smooth. MU 2.36.37.

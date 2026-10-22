@@ -45,6 +45,7 @@
     gearBounce: "Bounce",
     gearWild: "Wild",
     helpLooks: "🎨 Looks opens the picture names, colors, wall, and frame. Surprise me mixes them.",
+    helpSide: "Swipe up on the row under the picture to find the Sound buttons.",
     vizStart: "Tap ▶ to start — watch your music become light.",
     helpStart: "▶ Press Play. The picture waits, then your music becomes light.",
     helpPulse: "🖼 The frame glows a little with the kick. It stays still if motion is reduced.",
@@ -610,7 +611,8 @@
     news23636: "MU 2.36.36 — The Viz picture now moves with your music, every beat and note.",
     news23637: "MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth.",
     news23638: "MU 2.36.38 — The Glow frame lights up around the picture again.",
-    news23639: "MU 2.36.39 — The picture on Viz is big again."
+    news23639: "MU 2.36.39 — The picture on Viz is big again.",
+    news23640: "MU 2.36.40 — On a sideways phone, swipe up under the Looks to find the Sound buttons."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -678,6 +680,7 @@
     gearBounce: "Bounce",
     gearWild: "Wild",
     helpLooks: "🎨 Looks shows picture names. Surprise me mixes them.",
+    helpSide: "Swipe up under the picture for Sound.",
     vizStart: "Tap Play. Watch the light.",
     helpStart: "▶ Press Play. The picture becomes light.",
     helpPulse: "🖼 The frame glows a little on the kick. Less motion keeps it still.",
@@ -925,7 +928,8 @@
     news23636: "MU 2.36.36 — The picture moves with your song.",
     news23637: "MU 2.36.37 — More stars and sparks on Chromebooks.",
     news23638: "MU 2.36.38 — The glow frame lights up again.",
-    news23639: "MU 2.36.39 — The picture is big again."
+    news23639: "MU 2.36.39 — The picture is big again.",
+    news23640: "MU 2.36.40 — Swipe up to find Sound."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1027,6 +1031,7 @@
       "gearBounce": "Стрибок",
       "gearWild": "Дико",
       "helpLooks": "🎨 Вигляди відкриває назви, кольори, стіну і рамку. Здивуй їх змішує.",
+      "helpSide": "Гортай угору ряд під картинкою, щоб знайти кнопки звуку.",
       "vizStart": "Торкнись ▶, щоб почати — дивись, як музика стає світлом.",
       "helpStart": "▶ Натисни Пуск. Картинка чекає, тоді музика стає світлом.",
       "helpPulse": "🖼 Рамка трохи сяє на бочці. Менше руху — вона стоїть.",
@@ -1530,7 +1535,8 @@
       "news23636": "MU 2.36.36 — Картинка Viz тепер рухається з твоєю музикою, з кожним ударом і нотою.",
       "news23637": "MU 2.36.37 — На Chromebook картинка Viz тепер показує все своє сяйво, коли працює плавно.",
       "news23638": "MU 2.36.38 — Рамка «Сяйво» знову світиться навколо картинки.",
-      "news23639": "MU 2.36.39 — Картинка у Viz знову велика."
+      "news23639": "MU 2.36.39 — Картинка у Viz знову велика.",
+      "news23640": "MU 2.36.40 — На боковому телефоні гортай угору під «Вигляд», щоб знайти кнопки звуку."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1629,6 +1635,7 @@
       "gearBounce": "Прыжок",
       "gearWild": "Дико",
       "helpLooks": "🎨 Виды открывает названия, цвета, стену и рамку. Удиви их смешивает.",
+      "helpSide": "Листай вверх ряд под картинкой, чтобы найти кнопки звука.",
       "vizStart": "Нажми ▶, чтобы начать — смотри, как музыка становится светом.",
       "helpStart": "▶ Нажми Пуск. Картинка ждёт, потом музыка становится светом.",
       "helpPulse": "🖼 Рамка чуть светится на бочке. Меньше движения — она стоит.",
@@ -2132,7 +2139,8 @@
       "news23636": "MU 2.36.36 — Картинка Viz теперь движется с твоей музыкой, с каждым ударом и нотой.",
       "news23637": "MU 2.36.37 — На Chromebook картинка Viz теперь показывает весь блеск, когда идёт плавно.",
       "news23638": "MU 2.36.38 — Рамка «Сияние» снова светится вокруг картинки.",
-      "news23639": "MU 2.36.39 — Картинка в Viz снова большая."
+      "news23639": "MU 2.36.39 — Картинка в Viz снова большая.",
+      "news23640": "MU 2.36.40 — На боковом телефоне листай вверх под «Вид», чтобы найти кнопки звука."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2231,6 +2239,7 @@
       "gearBounce": "Rebote",
       "gearWild": "Salvaje",
       "helpLooks": "🎨 Aspectos abre los nombres, los colores, la pared y el marco. Sorpréndeme los mezcla.",
+      "helpSide": "Desliza hacia arriba en la fila bajo la imagen para ver los botones de Sonido.",
       "vizStart": "Toca ▶ para empezar — mira cómo tu música se vuelve luz.",
       "helpStart": "▶ Pulsa Play. La imagen espera y tu música se vuelve luz.",
       "helpPulse": "🖼 El marco brilla un poco con el bombo. Con menos movimiento se queda quieto.",
@@ -2735,7 +2744,8 @@
       "news23636": "MU 2.36.36 — La imagen de Viz ahora se mueve con tu música, cada golpe y cada nota.",
       "news23637": "MU 2.36.37 — En Chromebook la imagen de Viz ahora muestra todo su brillo cuando va fluida.",
       "news23638": "MU 2.36.38 — El marco Brillo vuelve a iluminarse alrededor de la imagen.",
-      "news23639": "MU 2.36.39 — La imagen de Viz vuelve a ser grande."
+      "news23639": "MU 2.36.39 — La imagen de Viz vuelve a ser grande.",
+      "news23640": "MU 2.36.40 — Con el teléfono de lado, desliza hacia arriba bajo Estilos para ver los botones de Sonido."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2834,6 +2844,7 @@
       "gearBounce": "ارتداد",
       "gearWild": "جامح",
       "helpLooks": "🎨 المظاهر تفتح الأسماء والألوان والجدار والإطار. فاجئني يخلطها.",
+      "helpSide": "اسحب للأعلى على الصف تحت الصورة لتجد أزرار الصوت.",
       "vizStart": "اضغط ▶ للبدء — شاهد موسيقاك تصير ضوءًا.",
       "helpStart": "▶ اضغط تشغيل. الصورة تنتظر، ثم تصير موسيقاك ضوءًا.",
       "helpPulse": "🖼 الإطار يضيء قليلًا مع الطبلة. مع حركة أقل يبقى ثابتًا.",
@@ -3338,7 +3349,8 @@
       "news23636": "MU 2.36.36 — صورة Viz تتحرك الآن مع موسيقاك، مع كل إيقاع ونغمة.",
       "news23637": "MU 2.36.37 — على أجهزة Chromebook تعرض صورة Viz الآن كل بريقها عندما تعمل بسلاسة.",
       "news23638": "MU 2.36.38 — إطار التوهج يضيء مرة أخرى حول الصورة.",
-      "news23639": "MU 2.36.39 — صورة Viz أصبحت كبيرة مرة أخرى."
+      "news23639": "MU 2.36.39 — صورة Viz أصبحت كبيرة مرة أخرى.",
+      "news23640": "MU 2.36.40 — على الهاتف المائل، اسحب للأعلى تحت المظاهر لتجد أزرار الصوت."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3437,6 +3449,7 @@
       "gearBounce": "پرش",
       "gearWild": "وحشی",
       "helpLooks": "🎨 نماها نام‌ها، رنگ‌ها، دیوار و قاب را باز می‌کند. غافلگیرم کن آن‌ها را قاطی می‌کند.",
+      "helpSide": "ردیف زیر تصویر را به بالا بکش تا دکمه‌های صدا را پیدا کنی.",
       "vizStart": "▶ را بزن تا شروع شود — ببین موسیقی‌ات نور می‌شود.",
       "helpStart": "▶ پخش را بزن. تصویر صبر می‌کند، بعد موسیقی‌ات نور می‌شود.",
       "helpPulse": "🖼 قاب با ضربه کمی می‌درخشد. حرکت کمتر یعنی ثابت می‌ماند.",
@@ -3941,7 +3954,8 @@
       "news23636": "MU 2.36.36 — تصویر Viz حالا با موسیقی‌ات حرکت می‌کند، با هر ضرب و نت.",
       "news23637": "MU 2.36.37 — در Chromebook تصویر Viz حالا وقتی روان کار کند همهٔ درخشش خود را نشان می‌دهد.",
       "news23638": "MU 2.36.38 — قاب درخشش دوباره دور تصویر روشن می‌شود.",
-      "news23639": "MU 2.36.39 — تصویر Viz دوباره بزرگ شد."
+      "news23639": "MU 2.36.39 — تصویر Viz دوباره بزرگ شد.",
+      "news23640": "MU 2.36.40 — روی تلفن خوابیده، زیر ظاهرها به بالا بکش تا دکمه‌های صدا را پیدا کنی."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4040,6 +4054,7 @@
       "gearBounce": "Gusimbuka",
       "gearWild": "Ibihumbi",
       "helpLooks": "🎨 Imigaragaro ifungura amazina, amabara, urukuta n'urubibi. Ntungururwe ibivanga.",
+      "helpSide": "Sunika hejuru umurongo uri munsi y'ishusho ubone utubuto tw'Ijwi.",
       "vizStart": "Kanda ▶ utangire — reba uburyo umuziki wawe uba urumuri.",
       "helpStart": "▶ Kanda Kina. Ishusho irindira, hanyuma umuziki wawe uba urumuri.",
       "helpPulse": "🖼 Urubibi rurabagirana gato ku gikoma. Imigendere mike iruma.",
@@ -4544,7 +4559,8 @@
       "news23636": "MU 2.36.36 — Ishusho ya Viz ubu igenda hamwe n'umuziki wawe, buri njyana n'inota.",
       "news23637": "MU 2.36.37 — Kuri Chromebook ishusho ya Viz ubu igaragaza ubwiza bwayo bwose iyo igenda neza.",
       "news23638": "MU 2.36.38 — Uruziga rw'Urumuri rwongera kumurika iruhande y'ishusho.",
-      "news23639": "MU 2.36.39 — Ishusho ya Viz yongeye kuba nini."
+      "news23639": "MU 2.36.39 — Ishusho ya Viz yongeye kuba nini.",
+      "news23640": "MU 2.36.40 — Kuri telefoni iri ku ruhande, sunika hejuru munsi y'Imiterere ubone utubuto tw'Ijwi."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4643,6 +4659,7 @@
       "gearBounce": "ምዝላል",
       "gearWild": "ዱር",
       "helpLooks": "🎨 ቅርጽታት ስማት፣ ሕብርታት፣ መንደቕን ፍሬምን ይኸፍት። ኣገርም የዋሕሶም።",
+      "helpSide": "ነቲ ኣብ ትሕቲ ስእሊ ዘሎ መስመር ናብ ላዕሊ ስሓብ፡ መልጎም ድምጺ ክትረክብ።",
       "vizStart": "▶ ጠውቕ ንምጅማር — ሙዚቃኻ ብርሃን ከመይ ከምዝኸውን ርአ።",
       "helpStart": "▶ Play ጠውቕ። ስእሊ ይጽበ፡ ድሕሪኡ ሙዚቃኻ ብርሃን ይኸውን።",
       "helpPulse": "🖼 ፍሬም ምስ መርዶ ቁሩብ ይበርህ። ምንቅስቓስ ምስትንከስ ቀዋሚ ይኸውን።",
@@ -5147,7 +5164,8 @@
       "news23636": "MU 2.36.36 — ስእሊ Viz ሕጂ ምስ ሙዚቃኻ ይንቀሳቐስ፡ ምስ ነፍሲ ወከፍ ምት ኖታን።",
       "news23637": "MU 2.36.37 — ኣብ Chromebook ስእሊ Viz ብልሙጽ ክሰርሕ ከሎ ኩሉ ብርሃኑ የርኢ።",
       "news23638": "MU 2.36.38 — ናይ ብርሃን ፍሬም ደጊሙ ኣብ ዙርያ ስእሊ ይበርህ።",
-      "news23639": "MU 2.36.39 — ስእሊ Viz ደጊሙ ዓቢ ኮይኑ።"
+      "news23639": "MU 2.36.39 — ስእሊ Viz ደጊሙ ዓቢ ኮይኑ።",
+      "news23640": "MU 2.36.40 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣብ ትሕቲ መልክዕ ናብ ላዕሊ ስሓብ፡ መልጎም ድምጺ ክትረክብ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
