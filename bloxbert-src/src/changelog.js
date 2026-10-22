@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.364', date: '2026-10-22', lines: {
+    en: ['2.5.364 — The Foundry Console works: bring an Override Key, tap the Console, and team up to reboot the Overseer. Keepers now drop a Keeper Core.'],
+    simple: ['The Foundry Console works. Bring a Key and tap it. Keepers drop a Core.'],
+    uk: ['2.5.364 — Консоль ливарні працює: принесіть ключ, торкніться консолі і командою перезавантажте. Хранителі тепер дають ядро.'],
+    ru: ['2.5.364 — Консоль литейной работает: принесите ключ, коснитесь консоли и командой перезагрузите. Хранители теперь дают ядро.'],
+    es: ['2.5.364 — La Consola de la Fundición funciona: trae una Llave, toca la Consola y reinicia en equipo. Los Guardianes ahora sueltan un Núcleo.'],
+    ar: ['2.5.364 — وحدة التحكم بالمسبك تعمل: أحضر مفتاحًا، المس الوحدة وأعد التشغيل كفريق. الحراس يسقطون نواة الآن.'],
+    'fa-AF': ['2.5.364 — کنسول ریخته‌گری کار می‌کند: کلید بیاورید، کنسول را لمس کنید و به عنوان تیم راه‌اندازی مجدد کنید. نگهبانان حالا هسته می‌دهند.'],
+    rw: ['2.5.364 — Console ya Foundry ikora: zana Urufunguzo, kanda Console kandi usubize hamwe. Abayobozi ubu batanga umutwe.'],
+    ti: ['2.5.364 — ኮንሶል ፋውንድሪ ይሰርሕ፡ ኪ ኣምጽእ፣ ኮንሶል ንኻእ ኣብ ቡድ ዳግማይ ጀምር። ኪፐርስ ሕጂ ኮር የውርዱ።'],
+  }},
+
   { v: '2.5.363', date: '2026-10-22', lines: {
     en: ["2.5.363 — No Saved pop-up when you first arrive. It shows after you build."],
     simple: ["2.5.363 — No save pop-up at the start."],
