@@ -1879,28 +1879,31 @@ for (const [lang, row] of Object.entries(FIT311)) {
 
 const HELP318 = {
   en: {
-    helpUse: 'Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it.',
+    helpUse: 'Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it. At the Foundry Console outside town, the button says Press: tap it while holding an Override Key to summon the Overseer.',
+  },
+  simple: {
+    helpUse: 'Near a door, bed or oven, a Use button shows. Tap it (or press E). At the Foundry Console, the button says Press: tap it with an Override Key to call the Overseer.',
   },
   uk: {
-    helpUse: 'Біля дверей, стільця, ліжка, печі або швейного столу з’являється кнопка Використати. Торкнися її (або натисни клавішу), щоб використати.',
+    helpUse: 'Біля дверей, стільця, ліжка, печі або швейного столу з’являється кнопка Використати. Торкнися її (або натисни клавішу), щоб використати. Біля консолі ливарні за містом кнопка каже Тисни: торкнися її з ключем перевизначення, щоб викликати наглядача.',
   },
   ru: {
-    helpUse: 'Возле двери, стула, кровати, печи или швейного стола появляется кнопка Использовать. Коснись её (или нажми клавишу), чтобы использовать.',
+    helpUse: 'Возле двери, стула, кровати, печи или швейного стола появляется кнопка Использовать. Коснись её (или нажми клавишу), чтобы использовать. У консоли литейной за городом кнопка говорит Жми: коснись её с ключом переопределения, чтобы вызвать надзирателя.',
   },
   es: {
-    helpUse: 'Cerca de una puerta, silla, cama, horno o mesa de coser, aparece un botón Usar. Tócalo (o pulsa E) para usarlo.',
+    helpUse: 'Cerca de una puerta, silla, cama, horno o mesa de coser, aparece un botón Usar. Tócalo (o pulsa E) para usarlo. En la Consola de la Fundición, fuera del pueblo, el botón dice Pulsar: tócalo con una Llave de anulación para invocar al Supervisor.',
   },
   ar: {
-    helpUse: 'قرب باب أو كرسي أو سرير أو فرن أو طاولة خياطة، يظهر زر استخدام. اضغطه لاستخدامه.',
+    helpUse: 'قرب باب أو كرسي أو سرير أو فرن أو طاولة خياطة، يظهر زر استخدام. اضغطه لاستخدامه. عند وحدة التحكم بالمسبك خارج البلدة يظهر زر اضغط: اضغطه وأنت تحمل مفتاح التجاوز لاستدعاء المشرف.',
   },
   'fa-AF': {
-    helpUse: 'نزدیک در، چوکی، بستر، تنور یا میز خیاطی، دکمه استفاده دیده می‌شود. آن را لمس کن تا استفاده کنی.',
+    helpUse: 'نزدیک در، چوکی، بستر، تنور یا میز خیاطی، دکمه استفاده دیده می‌شود. آن را لمس کن تا استفاده کنی. کنار کنسول ریخته‌گری بیرون شهر، دکمه بفشار دیده می‌شود: با کلید لغو آن را لمس کن تا ناظر را فرا بخوانی.',
   },
   rw: {
-    helpUse: 'Hafi y\'urugi, intebe, uburiri, ibumba cyangwa ameza yo kudoda, haboneka buto ya Koresha. Kanda (cyangwa kanda E) kugira ngo uyikoreshe.',
+    helpUse: 'Hafi y\'urugi, intebe, uburiri, ibumba cyangwa ameza yo kudoda, haboneka buto ya Koresha. Kanda (cyangwa kanda E) kugira ngo uyikoreshe. Kuri Console yo Foundry hanze y\'umujyi, buto ivuga Kanda: yikande ufite Urufunguzo kugira ngo uhamagare Umugenzuzi.',
   },
   ti: {
-    helpUse: 'ኣብ ጥቓ ማዕጾ፡ ኩርሲ፡ ዓራት፡ ታንዱር ወይ ጠረጴዛ ስፌት፡ መቐየሪ ተጠቐም ይረአ። ጠውቕ ንምጥቃም።',
+    helpUse: 'ኣብ ጥቓ ማዕጾ፡ ኩርሲ፡ ዓራት፡ ታንዱር ወይ ጠረጴዛ ስፌት፡ መቐየሪ ተጠቐም ይረአ። ጠውቕ ንምጥቃም። ኣብ ፋውንድሪ ኮንሶል ካብ ከተማ ወጻኢ፡ መቐየሪ ጠውቕ ይብል፤ ኦቨርራይድ ኪ ሒዝካ ጠውቕ ነቲ ተቖጻጻሪ ንምጽዋዕ።',
   },
 }
 for (const [lang, row] of Object.entries(HELP318)) {
