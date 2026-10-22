@@ -10198,7 +10198,39 @@ function _btLog(fn, e) {
   const msg = fn + ' failed: ' + (e && e.message || e)
   if (!_btSeen.has(msg)) { _btSeen.add(msg); console.warn('[bt-combat]', msg) }
 }
+
+// C5 boss bar
+let bossBar = null
+function ensureBossBar() {
+  if (bossBar) return bossBar
+  bossBar = document.createElement('div')
+  bossBar.id = 'boss-bar'
+  bossBar.setAttribute('role', 'status')
+  bossBar.setAttribute('aria-live', 'polite')
+  bossBar.style.cssText = 'position:fixed;top:48px;left:50%;transform:translateX(-50%);background:#0f172a;color:#f8fafc;padding:8px 16px;border-radius:8px;z-index:25;min-width:200px;text-align:center;font-size:14px;display:none'
+  document.body.append(bossBar)
+  return bossBar
+}
+let lastBossPhase = 0
+function paintBossBar() {
+  const bar = ensureBossBar()
+  if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; return }
+  if (blockedWorld && blockedWorld()) { bar.style.display = 'none'; return }
+  const list = mobs && mobs.list ? mobs.list() : []
+  const boss = list.find(m => m.kind === 'overseer')
+  if (!boss) { bar.style.display = 'none'; return }
+  const phase = boss.phase || 1
+  const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
+  const weak = boss.weakOpen && Date.now() < boss.weakOpen
+  const nearby = 1
+  bar.innerHTML = '⚙️ Foundry Overseer<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
+  if (nearby === 1 && !bar._hinted) { bar.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'; bar._hinted = true }
+  bar.style.display = 'block'
+  if (phase !== lastBossPhase) { lastBossPhase = phase; bar.setAttribute('aria-label', phaseWord) }
+}
+
 noa.on('beforeRender', (dt) => {
+  if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }
   try { if (mobs) mobs.tick(performance.now()) } catch (e) { _btLog('tick', e) }
   try { if (mobs && mobs.trySpawn) mobs.trySpawn(performance.now()) } catch (e) { _btLog('trySpawn', e) }
   if (window.__shotLook) {
