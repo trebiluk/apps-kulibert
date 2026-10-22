@@ -38,7 +38,7 @@
   "more": "المزيد",
   "gotIt": "فهمت",
   "pwaTip": "تلميح: قائمة كروم، ثم تثبيت الصفحة. أيقونة Tech Room تبقى على هذا الكرومبوك. التطبيقات ما زالت تحتاج شبكة المدرسة.",
-  "whatsNewLine": "Hub rev 2026-10-21-chips-same-origin — Version chips stop showing '?' and the Hub console is clean.",
+  "whatsNewLine": "Hub rev 2026-10-21-build-gate — The Hub checks itself before each update.",
   "appNames": "أسماء التطبيقات في الشريط العلوي",
   "whatsNewStrip": "الشريط العلوي يعرض أيقونة وكلمة لكل تطبيق.",
   "myProgress": "تقدّمي",

@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-21-chips-same-origin — Version chips stop showing '?' and the Hub console is clean.",
+  "whatsNewLine": "Hub rev 2026-10-21-build-gate — The Hub checks itself before each update.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra un icono y una palabra para cada app.",
   "myProgress": "Mi avance",

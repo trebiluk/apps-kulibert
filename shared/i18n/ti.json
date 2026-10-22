@@ -38,7 +38,7 @@
   "more": "ተወሳኺ",
   "gotIt": "ተረዲኡኒ",
   "pwaTip": "ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-  "whatsNewLine": "Hub rev 2026-10-21-chips-same-origin — Version chips stop showing '?' and the Hub console is clean.",
+  "whatsNewLine": "Hub rev 2026-10-21-build-gate — The Hub checks itself before each update.",
   "appNames": "ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
   "whatsNewStrip": "ላዕለዋይ ስትሪፕ ንነፍሲ ወከፍ ኣፕ ምልክትን ቃልን የርኢ።",
   "myProgress": "ዕቤተይ",
