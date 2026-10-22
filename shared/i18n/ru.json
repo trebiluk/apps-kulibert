@@ -38,7 +38,7 @@
   "more": "Ещё",
   "gotIt": "Понятно",
   "pwaTip": "Подсказка: меню Chrome, затем Установить страницу. Значок Tech Room остаётся на этом Chromebook. Программам всё ещё нужна школьная сеть.",
-  "whatsNewLine": "Hub rev 2026-10-21-one-rev-source — Behind the scenes: the Hub version lives in one place.",
+  "whatsNewLine": "Hub rev 2026-10-21-chips-same-origin — Version chips stop showing '?' and the Hub console is clean.",
   "appNames": "Названия приложений в верхней полосе",
   "whatsNewStrip": "Верхняя полоса показывает значок и слово для каждого приложения.",
   "myProgress": "Мой прогресс",
