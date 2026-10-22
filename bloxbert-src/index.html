@@ -183,10 +183,10 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   .lbl{font-size:12px}
   .move{bottom:76px}.acts{bottom:76px}.pad button{width:48px;height:48px}.move{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}
   .acts button{width:70px;height:52px}.acts .jump{height:48px}
-  .stickpad{width:104px;height:104px}}
+  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.383: stick sits above the hotbar like the jump column */}
 @media (max-height:500px){
   :root{--hud-lift:76px;--hotbar-h:76px}
-  .stickpad{width:104px;height:104px}
+  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.383: stick sits above the hotbar like the jump column */
   .jumpcol{left:auto;right:calc(16px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom));z-index:6;gap:16px}
   body.stick-right .jumpcol{left:calc(16px + env(safe-area-inset-left));right:auto}
 }
