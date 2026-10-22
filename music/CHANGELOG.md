@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.38** · 2026-10-22 · channel **live**
+
+MU 2.36.38 — The Glow frame lights up around the picture again.
+
+## Earlier
+
 **Chip: MU 2.36.37** · 2026-10-22 · channel **live**
 
 MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth.

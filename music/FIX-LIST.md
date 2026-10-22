@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] viz-glow-frame: The Glow frame lights up around the picture again. MU 2.36.38.
 - [x] viz-chromebook-detail: On Chromebooks the Viz picture shows its full sparkle when it can run smooth. MU 2.36.37.
 - [x] viz-hears-music: The Viz picture now moves with your music, every beat and note. MU 2.36.36.
 - [x] screen-reader-names: Four more screen-reader names now use your language. MU 2.36.34.

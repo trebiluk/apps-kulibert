@@ -608,7 +608,8 @@
     vizName: "Live music picture",
     news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
     news23636: "MU 2.36.36 — The Viz picture now moves with your music, every beat and note.",
-    news23637: "MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth."
+    news23637: "MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth.",
+    news23638: "MU 2.36.38 — The Glow frame lights up around the picture again."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -921,7 +922,8 @@
     vizName: "Live music picture",
     news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
     news23636: "MU 2.36.36 — The picture moves with your song.",
-    news23637: "MU 2.36.37 — More stars and sparks on Chromebooks."
+    news23637: "MU 2.36.37 — More stars and sparks on Chromebooks.",
+    news23638: "MU 2.36.38 — The glow frame lights up again."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1524,7 +1526,8 @@
       "vizName": "Жива картинка музики",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — Картинка Viz тепер рухається з твоєю музикою, з кожним ударом і нотою.",
-      "news23637": "MU 2.36.37 — На Chromebook картинка Viz тепер показує все своє сяйво, коли працює плавно."
+      "news23637": "MU 2.36.37 — На Chromebook картинка Viz тепер показує все своє сяйво, коли працює плавно.",
+      "news23638": "MU 2.36.38 — Рамка «Сяйво» знову світиться навколо картинки."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2124,7 +2127,8 @@
       "vizName": "Живая картинка музыки",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — Картинка Viz теперь движется с твоей музыкой, с каждым ударом и нотой.",
-      "news23637": "MU 2.36.37 — На Chromebook картинка Viz теперь показывает весь блеск, когда идёт плавно."
+      "news23637": "MU 2.36.37 — На Chromebook картинка Viz теперь показывает весь блеск, когда идёт плавно.",
+      "news23638": "MU 2.36.38 — Рамка «Сияние» снова светится вокруг картинки."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2725,7 +2729,8 @@
       "vizName": "Imagen de la música en vivo",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — La imagen de Viz ahora se mueve con tu música, cada golpe y cada nota.",
-      "news23637": "MU 2.36.37 — En Chromebook la imagen de Viz ahora muestra todo su brillo cuando va fluida."
+      "news23637": "MU 2.36.37 — En Chromebook la imagen de Viz ahora muestra todo su brillo cuando va fluida.",
+      "news23638": "MU 2.36.38 — El marco Brillo vuelve a iluminarse alrededor de la imagen."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3326,7 +3331,8 @@
       "vizName": "صورة الموسيقى الحية",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — صورة Viz تتحرك الآن مع موسيقاك، مع كل إيقاع ونغمة.",
-      "news23637": "MU 2.36.37 — على أجهزة Chromebook تعرض صورة Viz الآن كل بريقها عندما تعمل بسلاسة."
+      "news23637": "MU 2.36.37 — على أجهزة Chromebook تعرض صورة Viz الآن كل بريقها عندما تعمل بسلاسة.",
+      "news23638": "MU 2.36.38 — إطار التوهج يضيء مرة أخرى حول الصورة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3927,7 +3933,8 @@
       "vizName": "تصویر زندهٔ موسیقی",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — تصویر Viz حالا با موسیقی‌ات حرکت می‌کند، با هر ضرب و نت.",
-      "news23637": "MU 2.36.37 — در Chromebook تصویر Viz حالا وقتی روان کار کند همهٔ درخشش خود را نشان می‌دهد."
+      "news23637": "MU 2.36.37 — در Chromebook تصویر Viz حالا وقتی روان کار کند همهٔ درخشش خود را نشان می‌دهد.",
+      "news23638": "MU 2.36.38 — قاب درخشش دوباره دور تصویر روشن می‌شود."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4528,7 +4535,8 @@
       "vizName": "Ishusho y'umuziki uriho",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — Ishusho ya Viz ubu igenda hamwe n'umuziki wawe, buri njyana n'inota.",
-      "news23637": "MU 2.36.37 — Kuri Chromebook ishusho ya Viz ubu igaragaza ubwiza bwayo bwose iyo igenda neza."
+      "news23637": "MU 2.36.37 — Kuri Chromebook ishusho ya Viz ubu igaragaza ubwiza bwayo bwose iyo igenda neza.",
+      "news23638": "MU 2.36.38 — Uruziga rw'Urumuri rwongera kumurika iruhande y'ishusho."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5129,7 +5137,8 @@
       "vizName": "ቀጥታ ስእሊ ሙዚቃ",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
       "news23636": "MU 2.36.36 — ስእሊ Viz ሕጂ ምስ ሙዚቃኻ ይንቀሳቐስ፡ ምስ ነፍሲ ወከፍ ምት ኖታን።",
-      "news23637": "MU 2.36.37 — ኣብ Chromebook ስእሊ Viz ብልሙጽ ክሰርሕ ከሎ ኩሉ ብርሃኑ የርኢ።"
+      "news23637": "MU 2.36.37 — ኣብ Chromebook ስእሊ Viz ብልሙጽ ክሰርሕ ከሎ ኩሉ ብርሃኑ የርኢ።",
+      "news23638": "MU 2.36.38 — ናይ ብርሃን ፍሬም ደጊሙ ኣብ ዙርያ ስእሊ ይበርህ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
