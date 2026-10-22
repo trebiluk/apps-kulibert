@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.352', date: '2026-10-21', lines: {
+    en: ["2.5.352 — In Bertyville, tapping to fight shows No fighting here so you know why."],
+    simple: ["2.5.352 — Town says: no fighting here."],
+    uk: ["2.5.352 — У Bertyville спроба битися показує Тут не можна битися."],
+    ru: ["2.5.352 — В Bertyville попытка драться показывает Здесь нельзя драться."],
+    es: ["2.5.352 — En Bertyville, si intentas pelear verás Aquí no se pelea."],
+    ar: ["2.5.352 — في Bertyville، محاولة القتال تظهر لا قتال هنا."],
+    'fa-AF': ["2.5.352 — در Bertyville، کوشش برای جنگ اینجا جنگ نیست را نشان می‌دهد."],
+    rw: ["2.5.352 — Muri Bertyville, kugerageza kurwana byerekana Nta kurwana hano."],
+    ti: ["2.5.352 — ኣብ Bertyville ክትዋጋእ ምፍታን ኣብዚ ውግእ የለን የርኢ።"],
+  }},
+
   { v: '2.5.351', date: '2026-10-21', lines: {
     en: ['2.5.351 — Combat bots spawn steadily and a glitch can no longer freeze them.'],
     simple: ['2.5.351 — Bots come back at night like they should.'],

@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.352 safe-zone-tap:** Inside Bertyville, tapping to fight a bot shows the No fighting here chip. Outside town Bonk still works.
 - [x] **tryspawn-throttle (2.5.351):** trySpawn throttles first so one bad rule can't freeze combat. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
