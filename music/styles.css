@@ -5257,9 +5257,15 @@ html[data-theme] body.mu237 #mic-lights:focus-visible {
   outline-offset: 3px !important;
   box-shadow: 0 0 0 6px #F3F4F6 !important;
 }
-html[data-theme] body.mu237.tab-viz .stage-wrap,
-html[data-theme] body.mu237.show .stage-wrap {
+html[data-theme] body.mu237.tab-viz .stage-wrap:not(.frame-glow),
+html[data-theme] body.mu237.show .stage-wrap:not(.frame-glow) {
   box-shadow: inset 0 0 0 3px #5F666F !important;
+}
+/* MU 2.36.38 — Glow frame shows its soft lit edge again on Viz + Perform (static, no flash) */
+html[data-theme] body.mu237.tab-viz .stage-wrap.frame-glow,
+html[data-theme] body.mu237.show .stage-wrap.frame-glow {
+  box-shadow: inset 0 0 0 3px rgba(103, 232, 249, 0.45), 0 0 28px rgba(34, 211, 238, 0.2) !important;
+  border-radius: 16px;
 }
 
 /* MU 2.36.9 item 4 — snackbar above the play bar, on the stage corner so it misses chips and faders */
