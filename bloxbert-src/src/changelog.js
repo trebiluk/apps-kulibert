@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.370', date: '2026-10-22', lines: {
+    en: ["2.5.370 — In town, tapping at a creature now tells you: No fighting here."],
+    simple: ["2.5.370 — In town, the game says No fighting here."],
+    uk: ["2.5.370 — У місті, якщо торкнутися істоти, гра скаже: Тут не можна битися."],
+    ru: ["2.5.370 — В городе, если нажать на существо, игра скажет: Здесь нельзя драться."],
+    es: ["2.5.370 — En el pueblo, si tocas una criatura, el juego dice: Aquí no se pelea."],
+    ar: ["2.5.370 — في المدينة، إذا لمست مخلوقاً تقول اللعبة: لا قتال هنا."],
+    'fa-AF': ["2.5.370 — در شهر، اگر به یک موجود بزنی، بازی می‌گوید: اینجا جنگ نیست."],
+    rw: ["2.5.370 — Mu mujyi, nukanda ku kiremwa, umukino uvuga: Nta kurwana hano."],
+    ti: ["2.5.370 — ኣብ ከተማ፡ ፍጡር እንተ ጠወቕካ፡ ጸወታ ኣብዚ ውግእ የለን ይብል።"],
+  }},
+
   { v: '2.5.369', date: '2026-10-22', lines: {
     en: ["2.5.369 — Help now tells you how to use the Foundry Console."],
     simple: ["2.5.369 — Help tells you about the Console."],
