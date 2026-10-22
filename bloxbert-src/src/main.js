@@ -10948,17 +10948,23 @@ load().catch(() => {}).finally(() => {
       console.info('[bt-test] night on', window.__clock && window.__clock.text ? window.__clock.text() : '')
       if (toast) toast(t ? t('c4hNight') : 'Test: night')
     }
-    const testX = 56, testY = 6, testZ = 56
+    let testX = 56, testY = 6, testZ = 56
+    for (let x = 56; x < 80; x += 2) if (!inSafeZone(x, 56)) { testX = x; break }
     try { noa.entities.setPosition(noa.playerEntity, [testX, testY, testZ]) } catch (e) {}
+    console.info('[bt-test] player at', testX, testY, testZ, 'zone=' + inSafeZone(testX, testZ))
     window.__use = window.__use || {}
     window.__use.spawn = (k) => {
       if (!mobs || !mobs.spawn) return null
+      const cam = noa.camera
+      const h = cam ? cam.heading : 0
+      const sx = testX + Math.sin(h) * 4
+      const sz = testZ + Math.cos(h) * 4
       let sy = testY
-      if (getVoxel && (getVoxel(testX + 4, testY, testZ) | 0) > 0) {
-        for (let dy = 1; dy < 6; dy++) if ((getVoxel(testX + 4, testY + dy, testZ) | 0) === 0) { sy = testY + dy; break }
+      if (getVoxel) {
+        for (let dy = 0; dy < 8; dy++) if ((getVoxel(sx | 0, testY - dy, sz | 0) | 0) > 0 && (getVoxel(sx | 0, testY - dy + 1, sz | 0) | 0) === 0) { sy = testY - dy + 1; break }
       }
-      const r = mobs.spawn(k, testX + 4, sy, testZ, true)
-      console.info('[bt-test] spawn', k, r ? 'ok id=' + r.id + ' at ' + (testX+4) + ',' + sy + ',' + testZ : 'REFUSED')
+      const r = mobs.spawn(k, sx | 0, sy, sz | 0, true)
+      console.info('[bt-test] spawn', k, r ? 'ok id=' + r.id + ' at ' + (sx|0) + ',' + sy + ',' + (sz|0) : 'REFUSED')
       return r
     }
     window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
