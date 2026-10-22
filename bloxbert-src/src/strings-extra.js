@@ -2601,3 +2601,20 @@ for (const [lang, row] of Object.entries(C5BAR)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.358 Phase 2 adds. rw/ti/fa-AF machine drafts.
+const C5ADD = {
+  en: { c5Spark: '⚡ Sparkbugs! One of you take them.' },
+  simple: { c5Spark: '⚡ Little bots! Team up.' },
+  uk: { c5Spark: '⚡ Іскромлини! Хтось з вас візьміть їх.' },
+  ru: { c5Spark: '⚡ Искрожуки! Кто-то из вас займитесь ими.' },
+  es: { c5Spark: '⚡ ¡Chispas! Uno de ustedes tómelos.' },
+  ar: { c5Spark: '⚡ شرارات! أحدكم يأخذها.' },
+  'fa-AF': { c5Spark: '⚡ جرقه‌ها! یکی از شما آن‌ها را بگیرد.' },
+  rw: { c5Spark: '⚡ Sparkbugs! Umwe muri mwe abifate.' },
+  ti: { c5Spark: '⚡ ስፓርክባግስ! ሓደ ካባኻትኩም ይወስዶም።' },
+}
+for (const [lang, row] of Object.entries(C5ADD)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -10223,7 +10223,7 @@ function paintBossBar() {
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && Date.now() < boss.weakOpen
   const nearby = 1
-  bar.innerHTML = '⚙️ Foundry Overseer<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
+  const adds = list.filter(m => m.fromBoss === boss.id).length; bar.innerHTML = '⚙️ Foundry Overseer' + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ Weak point open!' : '') + '<br>👥 Crew here: ' + nearby
   if (nearby === 1 && !bar._hinted) { bar.innerHTML += '<br>Bring a crewmate — it\'s a team boss.'; bar._hinted = true }
   bar.style.display = 'block'
   if (phase !== lastBossPhase) { lastBossPhase = phase; bar.setAttribute('aria-label', phaseWord) }
