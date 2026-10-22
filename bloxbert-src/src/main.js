@@ -5164,7 +5164,6 @@ function markSave(text) {
   }
   if (typeof text === 'string' && text.indexOf(t('saved')) === 0) paintSaveChip(navigator.onLine ? 'saved' : 'offline')
 }
-const SAVE_WORD = { saved: 'Saved', saving: 'Saving…', offline: 'Offline-saved here', synced: 'Synced' }
 function placeSaveChip(el) {
   el.style.right = 'auto'
   el.style.bottom = 'auto'
@@ -5214,7 +5213,7 @@ function paintSaveChip(state) {
   if (!el) return
   if (!kidActed) return
   const saved = state === 'saved' || state === 'synced' || state === 'offline'
-  const word = saved ? '✓ Saved' : (SAVE_WORD[state] || SAVE_WORD.saved)
+  const word = saved ? '✓ ' + t('saved') : t('s2bSaving') // 2.5.379: chip words in the kid's language
   el.hidden = false
   el.dataset.state = state || 'saved'
   const lab = el.querySelector('.sc-word')
