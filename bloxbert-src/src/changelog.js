@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.382', date: '2026-10-22', lines: {
+    en: ["2.5.382 — The save sign no longer hides an English word in the page."],
+    simple: ["2.5.382 — The save sign is in your language."],
+    uk: ["2.5.382 — Знак збереження більше не ховає англійське слово на сторінці."],
+    ru: ["2.5.382 — Знак сохранения больше не прячет английское слово на странице."],
+    es: ["2.5.382 — El aviso de guardado ya no esconde una palabra en inglés en la página."],
+    ar: ["2.5.382 — لم تعد علامة الحفظ تخفي كلمة إنجليزية في الصفحة."],
+    'fa-AF': ["2.5.382 — نشان ذخیره دیگر یک کلمه انگلیسی را در صفحه پنهان نمی‌کند."],
+    rw: ["2.5.382 — Ikimenyetso cyo kubika ntikigihisha ijambo ry'Icyongereza ku rupapuro."],
+    ti: ["2.5.382 — ምልክት ምዕቃብ ድሕሪ ሕጂ ኣብ ገጽ ቃል እንግሊዝኛ ኣይሓብእን።"],
+  }},
+
   { v: '2.5.381', date: '2026-10-22', lines: {
     en: ["2.5.381 — The first time you open the game in your language, the top bar is in your language too."],
     simple: ["2.5.381 — The top bar speaks your language."],
