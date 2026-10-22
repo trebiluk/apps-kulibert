@@ -96,5 +96,32 @@ const vs = ["blocks", "blocks-test", "bertopia"].map(appJsV);
 const unique = [...new Set(vs.filter(Boolean))];
 if (unique.length > 1) fail(`app.js?v differ: ${vs.join(" / ")}`);
 
+// 5. bertopia/ and blocks-test/ byte-for-byte
+import { createHash } from "node:crypto";
+import { readdirSync, statSync } from "node:fs";
+function walk(dir, base = "") {
+  const out = [];
+  for (const name of readdirSync(dir)) {
+    const rel = base ? base + "/" + name : name;
+    const full = dir + "/" + name;
+    if (statSync(full).isDirectory()) out.push(...walk(full, rel));
+    else out.push(rel);
+  }
+  return out.sort();
+}
+function sha(file) {
+  return createHash("sha256").update(readFileSync(file)).digest("hex");
+}
+const aFiles = walk(root + "/bertopia");
+const bFiles = walk(root + "/blocks-test");
+const diffs = [];
+const all = [...new Set([...aFiles, ...bFiles])];
+for (const rel of all) {
+  const pa = root + "/bertopia/" + rel;
+  const pb = root + "/blocks-test/" + rel;
+  if (!existsSync(pa) || !existsSync(pb) || sha(pa) !== sha(pb)) diffs.push(rel);
+}
+if (diffs.length) fail(`bertopia/ and blocks-test/ differ: ${diffs.slice(0, 5).join(", ")}`);
+
 console.log("PASS");
 process.exit(0);
