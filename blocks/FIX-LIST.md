@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **c5-dup-lang (2.5.343):** Foundry fight words are in the right language. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.346 play-chip-goal:** The Tap to play chip sits under the top bar on short landscape touch screens, clear of the goal chip.
 - [x] **combatRule-import (2.5.347):** combatRule is imported so mobs spawn again. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

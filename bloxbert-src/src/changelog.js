@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.343', date: '2026-10-21', lines: {
+    en: ['2.5.343 — Foundry fight words are in the right language.'],
+    simple: ['2.5.343 — Foundry fight words are in the right language.'],
+    uk: ['2.5.343 — Слова бою ливарні правильною мовою.'],
+    ru: ['2.5.343 — Слова боя литейной на правильном языке.'],
+    es: ['2.5.343 — Las palabras de la pelea de la Fundición están en el idioma correcto.'],
+    ar: ['2.5.343 — كلمات قتال المسبك باللغة الصحيحة.'],
+    'fa-AF': ['2.5.343 — کلمات نبرد ریخته‌گری به زبان درست هستند.'],
+    rw: ['2.5.343 — Amagambo y urugamba rwa Foundry ari mu rurimi rwiza.'],
+    ti: ['2.5.343 — ቃላት ውግእ ፋውንድሪ ብቅኑዕ ቋንቋ ኣለዉ።'],
+  }},
+
   { v: '2.5.346', date: '2026-10-21', lines: {
     en: ["2.5.346 — The Tap to play button no longer hides behind your goal on sideways phones."],
     simple: ["2.5.346 — Tap to play is easy to see now."],
@@ -9,6 +21,8 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.346 — دکمه بزن برای بازی دیگر پشت هدفت روی تلفن‌های افقی پنهان نمی‌شود."],
     rw: ["2.5.346 — Buto ya Kanda kugira ngo ukine ntigisubira inyuma y'intego yawe ku telefoni z'urubavu."],
     ti: ["2.5.346 — መቐየሪ ጠውቕ ንምጽዋት ኣብ ጎኒ ስልክታት ድሕሪ ዕላማኻ ኣይተሓባእን።"],
+  }},
+
   { v: '2.5.347', date: '2026-10-21', lines: {
     en: ['2.5.347 — Creatures and bots appear again.'],
     simple: ['2.5.347 — Creatures are back.'],
