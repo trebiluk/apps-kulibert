@@ -2,7 +2,7 @@
 (function (root) {
   // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
   // Apps: do not edit.
-  var I18N_REV = "2026-10-21-strings-check-green";
+  var I18N_REV = "2026-10-22-holdit-span-i18n";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -188,6 +188,7 @@
   "blurbSpire": "Build a tall tower",
   "blurbDrift": "Fly a calm glider",
   "blurbHoldit": "Test a bridge design",
+  "labelHoldItSpan": "HoldIt Span",
   "blurbBloxbert": "Build a world",
   "blurbAlice": "Help Alice guard the pups",
   "blurbGinger": "Plan a room",

@@ -317,5 +317,10 @@
     "blurbDebug": "† ጌጋ ስጉምቲ ርኸብ",
     "moreApps": "† ተወሳኺ መተግበሪታት"
   },
-  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live."
+  "whatsNewLine": "Hub rev 2026-10-21-gate-conflict-markers — The Hub blocks a broken update before it goes live.",
+  "labelHoldItSpan": {
+    "rw": "HoldIt Ikiraro †",
+    "ti": "HoldIt ድልድል †",
+    "fa-AF": "HoldIt پل †"
+  }
 }
