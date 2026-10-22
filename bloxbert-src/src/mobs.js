@@ -396,6 +396,7 @@ export function createMobs(opts) {
     }
     const item = m.stolen || ''
     if (item && giveItem) giveItem(item, 1)
+    if (m.kind === 'keeper' && giveItem) giveItem('keeperCore', 1)
     const who = payCrew(m, fromBonk)
     dropMesh(m)
     const i = mobs.indexOf(m)
@@ -417,7 +418,7 @@ export function createMobs(opts) {
         finishReboot(m, true)
         continue
       }
-      if (bonkAt) m.seenBonk = bonkAt
+      if (bonkAt && m.kind !== 'rustbot' && m.kind !== 'keeper' && m.kind !== 'overseer') m.seenBonk = bonkAt
       if (zone(m.x, m.z)) { walkHome(m); syncMesh(m); continue }
       const homeD = dist(m, { x: m.homeX, z: m.homeZ })
       if (homeD > LEASH) {

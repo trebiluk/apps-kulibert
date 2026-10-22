@@ -1930,6 +1930,7 @@ function bareTuftOrFlora(id) {
 }
 function lowPlant(id) {
   if (!id) return false
+  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   return id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)
 }
 function playLocked() {
@@ -2535,6 +2536,7 @@ function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
+  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   if (!Rules.allow(null, 'core.break', { x, y, z, id }).ok) {
     blockedToast('core.break')
     return false
@@ -2608,6 +2610,7 @@ function breakBlock() {
   const [x, y, z] = tget.position
   return breakAt(x, y, z)
 }
+function isFoundryConsole(id, x, z) { return id === 42 && x === 60 && z === 60 }
 function isUseBlock(id) {
   if (id === ID.conveyor) return true
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
@@ -2626,8 +2629,8 @@ function useHoldReady(dig, now) {
 function useAt(hit) {
   // C5 Foundry Console: Override Key on the arena Console
   try {
-    if (hit && hit.id === 42 && hit.position && hit.position[0] === 60 && hit.position[2] === 60) {
-      const ok = onConsoleUse(session, (n) => mobs && mobs.spawnBoss ? mobs.spawnBoss(n, [60, 7, 63]) : null)
+    if (hit && hit.position && isFoundryConsole(hit.id != null ? hit.id : hit.blockID, hit.position[0], hit.position[2])) {
+      const ok = onConsoleUse(session, (n) => mobs && mobs.spawnBoss ? mobs.spawnBoss(n, [60, hit.position[1] + 1, 63]) : null)
       if (ok) return true
     }
   } catch (e) {}
@@ -2724,7 +2727,7 @@ function placeBlock(face, opts) {
   if (!repeat && aimedBlock && panels) {
     const aimId = aimedBlock.blockID != null ? aimedBlock.blockID : aimedBlock.id
     const beside = machineKind(aimId) && againstMachine(aimedBlock)
-    if ((isUseBlock(aimId) || machineKind(aimId)) && !beside) {
+    if ((isUseBlock(aimId) || machineKind(aimId) || isFoundryConsole(aimId, aimedBlock.position[0], aimedBlock.position[2])) && !beside) {
       useAt(aimedBlock)
       return false
     }
@@ -3611,6 +3614,7 @@ function dryNear(r) {
 }
 function isMachineId(id) {
   if (!id) return false
+  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   if (isDoor(id)) return true
   return id === ID.box || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || isShopBlock(id)
 }
@@ -6732,7 +6736,7 @@ function findUseTarget() {
       const below = getVoxel(x, y - 1, z)
       if (isDoor(below) && !isDoorTop(below)) { uy = y - 1; uid = below }
     }
-    const verb = useVerb(uid)
+    const verb = useVerb(uid) || (isFoundryConsole(uid, ux, uz) ? 'usePress' : '')
     if (!verb) continue
     const dx = x + 0.5 - p[0]
     const dy = y + 0.5 - (p[1] + 1.2)
@@ -7475,6 +7479,7 @@ function aimed() {
 }
 function fingerSolid(id, forBreak) {
   if (!id) return false
+  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
   if (forBreak && (isCropId(id) || isBushId(id))) return true
   return !passThrough(id)
 }
@@ -9045,7 +9050,7 @@ canvas.addEventListener('pointerup', (e) => {
   const handId = session && session.blockForHot ? session.blockForHot() : 0
   const heldKey = session && session.selectedItem ? session.selectedItem() : ''
   const tapUse = heldKey === 'berry' || heldKey === 'bread' || heldKey === 'cupcake'
-  const breakTap = lookWasTouch && survivalOn() && held < 500 && !broke && down && !isUseBlock(down.id) && !handId && !tapUse
+  const breakTap = lookWasTouch && survivalOn() && held < 500 && !broke && down && !isUseBlock(down.id) && !(face && face.position && isFoundryConsole(face.id != null ? face.id : face.blockID, face.position[0], face.position[2])) && !handId && !tapUse
   if (pickArmed && tap && held < 500 && face) {
     tryPickBlock(face.id || face.blockID)
     pickArmed = false
@@ -9059,7 +9064,7 @@ canvas.addEventListener('pointerup', (e) => {
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
   const downUse = down && (isUseBlock(down.id) || machineKind(down.id))
-  const upUse = up && (isUseBlock(up.id) || machineKind(up.id))
+  const upUse = up && (isUseBlock(up.id) || machineKind(up.id) || isFoundryConsole(up.id, up.x, up.z))
   if ((touchTap || mouseTap) && (downUse || upUse)) {
     dig = null
     hideCrack()
@@ -11091,12 +11096,14 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('use=')) armUse()
   // C5 Foundry arena once, outside safe zone, Game/solo only
   try {
-    if (!(mobs && mobs.blockedWorld && mobs.blockedWorld()) && !localStorage.getItem('bt-foundry-built')) {
+    if (!(mobs && mobs.blockedWorld && mobs.blockedWorld()) && !localStorage.getItem('bt-foundry-built-2')) {
       const ox = 60, oz = 60
+      let oy = 3
+      for (let y = 5; y > 0; y--) { if ((getVoxel(ox, y, oz) | 0) > 0) { oy = y + 1; break } }
       if (!inSafeZone(ox, oz)) {
-        placeFoundryArena(getVoxel, edit, [ox, 6, oz])
-        localStorage.setItem('bt-foundry-built', '1')
-        console.info('[bt-foundry] arena at', ox, 6, oz)
+        placeFoundryArena(getVoxel, edit, [ox, oy, oz])
+        localStorage.setItem('bt-foundry-built-2', '1')
+        console.info('[bt-foundry] arena at', ox, oy, oz)
       } else console.info('[bt-foundry] skipped (safe)')
     }
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
@@ -11867,6 +11874,7 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
       const x = Math.floor(p[0]) + 1, y = Math.floor(p[1]), z = Math.floor(p[2])
       const id = item === 'floorLamp' ? 1100 : item === 'wallLamp' ? 1102 : item === 'woodshop' ? ID.woodshop : item === 'bunk' ? ID.bunk : 0
       if (!id) return false
+  if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
       edit(x, y, z, id)
       if (session && session.spend) session.spend(item, 1)
       return true
