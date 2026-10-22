@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.359', date: '2026-10-22', lines: {
+    en: ['2.5.359 — The Foundry boss bar shows again, and the Foundry arena is back.'],
+    simple: ['The boss bar works again.'],
+    uk: ['2.5.359 — Смуга боса ливарні знову видна, і арена ливарні повернулася.'],
+    ru: ['2.5.359 — Полоса босса литейной снова видна, и арена литейной вернулась.'],
+    es: ['2.5.359 — La barra del jefe de la Fundición se ve otra vez y la arena volvió.'],
+    ar: ['2.5.359 — شريط زعيم المسبك يظهر مرة أخرى، وعادت ساحة المسبك.'],
+    'fa-AF': ['2.5.359 — نوار رئیس ریخته‌گری دوباره دیده می‌شود و میدان ریخته‌گری برگشت.'],
+    rw: ['2.5.359 — Umurongo w\'umuyobozi wa Foundry uragaragara nanone, kandi ikibuga cya Foundry cyagarutse.'],
+    ti: ['2.5.359 — ናይ ፋውንድሪ ቦስ መስመር ደጊሙ ይርአ፣ ሜዳ ፋውንድሪ ተመሊሱ።'],
+  }},
+
   { v: '2.5.358', date: '2026-10-22', lines: {
     en: ['2.5.358 — In the Foundry fight, the Overseer calls in Sparkbugs. Team up: one of you takes them.'],
     simple: ['The boss calls little bots. Work as a team.'],

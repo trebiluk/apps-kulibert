@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **bossbar-blockedworld (2.5.359):** Boss bar shows again; Foundry arena builds. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **phase2-adds (2.5.358):** Overseer Phase 2 summons Sparkbugs. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
