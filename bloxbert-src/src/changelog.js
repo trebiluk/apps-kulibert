@@ -26,13 +26,13 @@ export const CHANGELOG = [
   { v: '2.5.374', date: '2026-10-22', lines: {
     en: ["2.5.374 — Bag numbers moved above the pictures, so you can see every item."],
     simple: ["2.5.374 — The numbers in your Bag do not cover the pictures now."],
-    uk: ["2.5.374 — Числа в Сумці тепер над малюнками, тож усі предмети видно."],
-    ru: ["2.5.374 — Числа в Сумке теперь над картинками, так что все предметы видно."],
-    es: ["2.5.374 — Los números de la Bolsa ahora van encima de los dibujos, así ves cada objeto."],
-    ar: ["2.5.374 — أصبحت الأرقام في الحقيبة فوق الصور، فترى كل غرض."],
-    'fa-AF': ["2.5.374 — عددهای کیف حالا بالای تصویرها هستند، پس همه چیز را می‌بینی."],
-    rw: ["2.5.374 — Imibare yo mu Gikapu ubu iri hejuru y'amashusho, ubona buri kintu."],
-    ti: ["2.5.374 — ቁጽርታት ኣብ ቦርሳ ሕጂ ኣብ ልዕሊ ስእልታት እዮም፡ ኩሉ ነገር ትርእዮ።"],
+    uk: ["2.5.374 — Числа в Сумці більше не закривають малюнки, тож усі предмети видно."],
+    ru: ["2.5.374 — Числа в Сумке больше не закрывают картинки, так что все предметы видно."],
+    es: ["2.5.374 — Los números de la Bolsa ya no tapan los dibujos, así ves cada objeto."],
+    ar: ["2.5.374 — لم تعد الأرقام في الحقيبة تغطي الصور، فترى كل غرض."],
+    'fa-AF': ["2.5.374 — عددهای کیف دیگر روی تصویرها را نمی‌پوشانند، پس همه چیز را می‌بینی."],
+    rw: ["2.5.374 — Imibare yo mu Gikapu ntikigipfuka amashusho, ubona buri kintu."],
+    ti: ["2.5.374 — ቁጽርታት ኣብ ቦርሳ ደጊም ንስእልታት ኣይሽፍንዎምን፡ ኩሉ ነገር ትርእዮ።"],
   }},
 
   { v: '2.5.373', date: '2026-10-22', lines: {
@@ -62,13 +62,13 @@ export const CHANGELOG = [
   { v: '2.5.371', date: '2026-10-22', lines: {
     en: ["2.5.371 — Hotbar numbers moved above the pictures, so you can see every item."],
     simple: ["2.5.371 — The numbers in your hotbar do not cover the pictures now."],
-    uk: ["2.5.371 — Числа на панелі тепер над малюнками, тож усі предмети видно."],
-    ru: ["2.5.371 — Числа на панели теперь над картинками, так что все предметы видно."],
-    es: ["2.5.371 — Los números de la barra ahora van encima de los dibujos, así ves cada objeto."],
-    ar: ["2.5.371 — أصبحت الأرقام في الشريط فوق الصور، فترى كل غرض."],
-    'fa-AF': ["2.5.371 — عددهای نوار حالا بالای تصویرها هستند، پس همه چیز را می‌بینی."],
-    rw: ["2.5.371 — Imibare yo ku murongo ubu iri hejuru y'amashusho, ubona buri kintu."],
-    ti: ["2.5.371 — ቁጽርታት ኣብ መስመር ሕጂ ኣብ ልዕሊ ስእልታት እዮም፡ ኩሉ ነገር ትርእዮ።"],
+    uk: ["2.5.371 — Числа на панелі більше не закривають малюнки, тож усі предмети видно."],
+    ru: ["2.5.371 — Числа на панели больше не закрывают картинки, так что все предметы видно."],
+    es: ["2.5.371 — Los números de la barra ya no tapan los dibujos, así ves cada objeto."],
+    ar: ["2.5.371 — لم تعد الأرقام في الشريط تغطي الصور، فترى كل غرض."],
+    'fa-AF': ["2.5.371 — عددهای نوار دیگر روی تصویرها را نمی‌پوشانند، پس همه چیز را می‌بینی."],
+    rw: ["2.5.371 — Imibare yo ku murongo ntikigipfuka amashusho, ubona buri kintu."],
+    ti: ["2.5.371 — ቁጽርታት ኣብ መስመር ደጊም ንስእልታት ኣይሽፍንዎምን፡ ኩሉ ነገር ትርእዮ።"],
   }},
 
   { v: '2.5.370', date: '2026-10-22', lines: {
