@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.345', date: '2026-10-21', lines: {
+    en: ['2.5.345 — Teacher switches for combat, creatures and the boss really turn things off.'],
+    simple: ['2.5.345 — Teacher switches for combat, creatures and the boss really turn things off.'],
+    uk: ['2.5.345 — Перемикачі вчителя для бою, істот і боса справді вимикають речі.'],
+    ru: ['2.5.345 — Переключатели учителя для боя, существ и босса действительно выключают вещи.'],
+    es: ['2.5.345 — Los interruptores del profesor para combate, criaturas y el jefe realmente apagan las cosas.'],
+    ar: ['2.5.345 — مفاتيح المعلم للقتال والمخلوقات والزعيم تطفئ الأشياء حقًا.'],
+    'fa-AF': ['2.5.345 — سوئیچ‌های معلم برای نبرد، موجودات و رئیس واقعاً چیزها را خاموش می‌کنند.'],
+    rw: ['2.5.345 — Amashusho y umwarimu y urugamba, ibiremwa na boss ubu azimya ibintu koko.'],
+    ti: ['2.5.345 — ናይ መምህር መቐየሪታት ንውግእ፣ ፍጡራትን ቦስን ሕጂ ነገራት ኣጥፍኡ።'],
+  }},
+
   { v: '2.5.344', date: '2026-10-21', lines: {
     en: ["2.5.344 — The goal chip no longer sits on the Suit pill."],
     simple: ["2.5.344 — The goal chip no longer sits on the Suit pill."],
