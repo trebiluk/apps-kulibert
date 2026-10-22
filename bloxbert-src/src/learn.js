@@ -271,6 +271,14 @@ export function createLearn(api) {
         const hd = held.getBoundingClientRect()
         if (hd.width > 2 && hd.height > 2) limit = Math.min(limit, hd.top)
       }
+      const suit = document.getElementById('suit-bar')
+      if (suit && !suit.hidden) {
+        const sd = suit.getBoundingClientRect()
+        if (sd.width > 2 && sd.height > 2) {
+          const chipLeft = left, chipRight = left + Math.min(220, rightEdge - left)
+          if (chipLeft < sd.right && chipRight > sd.left) limit = Math.min(limit, sd.top)
+        }
+      }
       el.style.top = 'auto'
       el.style.left = left + 'px'
       el.style.maxWidth = Math.max(120, rightEdge - left) + 'px'
