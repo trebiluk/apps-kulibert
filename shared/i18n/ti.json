@@ -38,7 +38,7 @@
   "more": "ተወሳኺ",
   "gotIt": "ተረዲኡኒ",
   "pwaTip": "ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-  "whatsNewLine": "Hub rev 2026-10-21-build-gate — The Hub checks itself before each update.",
+  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — The two HoldIt tiles have different names now.",
   "appNames": "ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
   "whatsNewStrip": "ላዕለዋይ ስትሪፕ ንነፍሲ ወከፍ ኣፕ ምልክትን ቃልን የርኢ።",
   "myProgress": "ዕቤተይ",
@@ -421,5 +421,6 @@
   "hotbarName": "ኣቑሑት",
   "modeName": "ኩነታት",
   "cancel": "ሰርዝ",
-  "labelHoldItSpan": "HoldIt ድልድል"
+  "labelHoldItSpan": "HoldIt ድልድል",
+  "helpHoldItSpan": "HoldIt ድልድል ናይ ድልድል ፈተና እዩ። HoldIt ናይ ዲዛይን መሳርሒ እዩ።"
 }

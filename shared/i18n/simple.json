@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub rev 2026-10-21-build-gate — The Hub checks itself.",
+  "whatsNewLine": "Hub rev 2026-10-21-dup-tiles — Each app tile has its own name.",
   "lbAliasHelp": "Pick a name from the list. Typed names are not saved.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -285,5 +285,6 @@
   "hotbarName": "Blocks",
   "modeName": "Mode",
   "cancel": "Cancel",
-  "labelHoldItSpan": "HoldIt Span"
+  "labelHoldItSpan": "HoldIt Span",
+  "helpHoldItSpan": "Span = challenge. HoldIt = design."
 }
