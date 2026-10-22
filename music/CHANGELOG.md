@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.41** · 2026-10-22 · channel **live**
+
+MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean.
+
+## Earlier
+
 **Chip: MU 2.36.40** · 2026-10-22 · channel **live**
 
 MU 2.36.40 — On a sideways phone, swipe up under the Looks to find the Sound buttons.
