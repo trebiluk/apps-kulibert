@@ -532,9 +532,9 @@ export function createMobs(opts) {
     }
   }
   function trySpawn(now) {
-    if (blockedWorld() || mobs.length >= worldCap()) return null
     if (now - (trySpawn._last || 0) < 2000) return null
     trySpawn._last = now
+    if (blockedWorld() || mobs.length >= worldCap()) return null
     const p = playerPos && playerPos()
     if (!p) return null
     const ang = Math.random() * Math.PI * 2

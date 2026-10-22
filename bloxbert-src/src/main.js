@@ -10150,9 +10150,14 @@ function stepBelts(now) {
   }
   hideMap(beltFull, fullSeen)
 }
+const _btSeen = new Set()
+function _btLog(fn, e) {
+  const msg = fn + ' failed: ' + (e && e.message || e)
+  if (!_btSeen.has(msg)) { _btSeen.add(msg); console.warn('[bt-combat]', msg) }
+}
 noa.on('beforeRender', (dt) => {
-  if (mobs) mobs.tick(performance.now())
-  if (mobs && mobs.trySpawn) mobs.trySpawn(performance.now())
+  try { if (mobs) mobs.tick(performance.now()) } catch (e) { _btLog('tick', e) }
+  try { if (mobs && mobs.trySpawn) mobs.trySpawn(performance.now()) } catch (e) { _btLog('trySpawn', e) }
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
