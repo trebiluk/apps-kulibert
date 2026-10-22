@@ -197,7 +197,8 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
 
 
 #t-bonk{display:none}
-body.touch #t-bonk:not([hidden]){display:grid;place-items:center}
+body.touch #t-bonk:not([hidden]){display:grid;place-items:center;position:absolute;right:calc(100% + 12px);bottom:0}
+body.stick-right #t-bonk:not([hidden]){right:auto;left:calc(100% + 12px)}
 
 #suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
 @media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
