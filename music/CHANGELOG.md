@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.37** · 2026-10-22 · channel **live**
+
+MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth.
+
+## Earlier
+
 **Chip: MU 2.36.36** · 2026-10-22 · channel **live**
 
 MU 2.36.36 — The Viz picture now moves with your music, every beat and note.

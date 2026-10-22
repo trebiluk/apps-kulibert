@@ -607,7 +607,8 @@
     padsName: "Drum pads",
     vizName: "Live music picture",
     news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
-    news23636: "MU 2.36.36 — The Viz picture now moves with your music, every beat and note."
+    news23636: "MU 2.36.36 — The Viz picture now moves with your music, every beat and note.",
+    news23637: "MU 2.36.37 — On Chromebooks the Viz picture now shows its full sparkle when it can run smooth."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -919,7 +920,8 @@
     padsName: "Drum pads",
     vizName: "Live music picture",
     news23634: "MU 2.36.34 — Four more screen-reader names now use your language.",
-    news23636: "MU 2.36.36 — The picture moves with your song."
+    news23636: "MU 2.36.36 — The picture moves with your song.",
+    news23637: "MU 2.36.37 — More stars and sparks on Chromebooks."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1521,7 +1523,8 @@
       "padsName": "Барабанні кнопки",
       "vizName": "Жива картинка музики",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — Картинка Viz тепер рухається з твоєю музикою, з кожним ударом і нотою."
+      "news23636": "MU 2.36.36 — Картинка Viz тепер рухається з твоєю музикою, з кожним ударом і нотою.",
+      "news23637": "MU 2.36.37 — На Chromebook картинка Viz тепер показує все своє сяйво, коли працює плавно."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2120,7 +2123,8 @@
       "padsName": "Барабанные кнопки",
       "vizName": "Живая картинка музыки",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — Картинка Viz теперь движется с твоей музыкой, с каждым ударом и нотой."
+      "news23636": "MU 2.36.36 — Картинка Viz теперь движется с твоей музыкой, с каждым ударом и нотой.",
+      "news23637": "MU 2.36.37 — На Chromebook картинка Viz теперь показывает весь блеск, когда идёт плавно."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2720,7 +2724,8 @@
       "padsName": "Botones de batería",
       "vizName": "Imagen de la música en vivo",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — La imagen de Viz ahora se mueve con tu música, cada golpe y cada nota."
+      "news23636": "MU 2.36.36 — La imagen de Viz ahora se mueve con tu música, cada golpe y cada nota.",
+      "news23637": "MU 2.36.37 — En Chromebook la imagen de Viz ahora muestra todo su brillo cuando va fluida."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3320,7 +3325,8 @@
       "padsName": "أزرار الطبل",
       "vizName": "صورة الموسيقى الحية",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — صورة Viz تتحرك الآن مع موسيقاك، مع كل إيقاع ونغمة."
+      "news23636": "MU 2.36.36 — صورة Viz تتحرك الآن مع موسيقاك، مع كل إيقاع ونغمة.",
+      "news23637": "MU 2.36.37 — على أجهزة Chromebook تعرض صورة Viz الآن كل بريقها عندما تعمل بسلاسة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3920,7 +3926,8 @@
       "padsName": "دکمه‌های طبل",
       "vizName": "تصویر زندهٔ موسیقی",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — تصویر Viz حالا با موسیقی‌ات حرکت می‌کند، با هر ضرب و نت."
+      "news23636": "MU 2.36.36 — تصویر Viz حالا با موسیقی‌ات حرکت می‌کند، با هر ضرب و نت.",
+      "news23637": "MU 2.36.37 — در Chromebook تصویر Viz حالا وقتی روان کار کند همهٔ درخشش خود را نشان می‌دهد."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4520,7 +4527,8 @@
       "padsName": "Utubuto tw'ingoma",
       "vizName": "Ishusho y'umuziki uriho",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — Ishusho ya Viz ubu igenda hamwe n'umuziki wawe, buri njyana n'inota."
+      "news23636": "MU 2.36.36 — Ishusho ya Viz ubu igenda hamwe n'umuziki wawe, buri njyana n'inota.",
+      "news23637": "MU 2.36.37 — Kuri Chromebook ishusho ya Viz ubu igaragaza ubwiza bwayo bwose iyo igenda neza."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5120,7 +5128,8 @@
       "padsName": "መልጎም ከበሮ",
       "vizName": "ቀጥታ ስእሊ ሙዚቃ",
       "news23634": "MU 2.36.34 — Four more screen-reader names now use your language.",
-      "news23636": "MU 2.36.36 — ስእሊ Viz ሕጂ ምስ ሙዚቃኻ ይንቀሳቐስ፡ ምስ ነፍሲ ወከፍ ምት ኖታን።"
+      "news23636": "MU 2.36.36 — ስእሊ Viz ሕጂ ምስ ሙዚቃኻ ይንቀሳቐስ፡ ምስ ነፍሲ ወከፍ ምት ኖታን።",
+      "news23637": "MU 2.36.37 — ኣብ Chromebook ስእሊ Viz ብልሙጽ ክሰርሕ ከሎ ኩሉ ብርሃኑ የርኢ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
