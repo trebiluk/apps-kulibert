@@ -420,5 +420,6 @@
   "moveName": "ንቅስቓስ",
   "hotbarName": "ኣቑሑት",
   "modeName": "ኩነታት",
-  "cancel": "ሰርዝ"
+  "cancel": "ሰርዝ",
+  "labelHoldItSpan": "HoldIt ድልድል"
 }

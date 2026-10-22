@@ -420,5 +420,6 @@
   "moveName": "تحرك",
   "hotbarName": "كتل",
   "modeName": "وضع",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+  "labelHoldItSpan": "HoldIt جسر"
 }

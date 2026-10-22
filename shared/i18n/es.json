@@ -420,5 +420,6 @@
   "moveName": "Mover",
   "hotbarName": "Bloques",
   "modeName": "Modo",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "labelHoldItSpan": "HoldIt Puente"
 }

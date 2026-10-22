@@ -420,5 +420,6 @@
   "moveName": "Движение",
   "hotbarName": "Блоки",
   "modeName": "Режим",
-  "cancel": "Отмена"
+  "cancel": "Отмена",
+  "labelHoldItSpan": "HoldIt Пролёт"
 }

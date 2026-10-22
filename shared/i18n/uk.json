@@ -420,5 +420,6 @@
   "moveName": "Рух",
   "hotbarName": "Блоки",
   "modeName": "Режим",
-  "cancel": "Скасувати"
+  "cancel": "Скасувати",
+  "labelHoldItSpan": "HoldIt Проліт"
 }

@@ -420,5 +420,6 @@
   "moveName": "حرکت",
   "hotbarName": "بلوک‌ها",
   "modeName": "حالت",
-  "cancel": "لغو"
+  "cancel": "لغو",
+  "labelHoldItSpan": "HoldIt پل"
 }

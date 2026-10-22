@@ -420,5 +420,6 @@
   "moveName": "Kwimura",
   "hotbarName": "Ibikoresho",
   "modeName": "Uburyo",
-  "cancel": "Hagarika"
+  "cancel": "Hagarika",
+  "labelHoldItSpan": "HoldIt Ikiraro"
 }

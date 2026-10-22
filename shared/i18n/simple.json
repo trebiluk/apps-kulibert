@@ -284,5 +284,6 @@
   "moveName": "Move",
   "hotbarName": "Blocks",
   "modeName": "Mode",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "labelHoldItSpan": "HoldIt Span"
 }
