@@ -9,6 +9,16 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.355 — ابزارهای آزمایش برای کارکنان قفل می‌مانند، پس نوار شما امن است."],
     rw: ["2.5.355 — Ibikoresho by'ikizamini biguma bifunze ku bakozi, noneho urubuga rwawe rurakomeye."],
     ti: ["2.5.355 — መመርመሪ መሳርሒታት ንሰራሕተኛታት ተቖልዩ ይቕመጡ፡ ስለዚ ናይ ሆትባርካ ውሑስ እዩ።"],
+  { v: '2.5.356', date: '2026-10-22', lines: {
+    en: ['2.5.356 — The Foundry Overseer shows a health bar, its phase, and how many crewmates are with you.'],
+    simple: ['See the boss health. Bring a friend.'],
+    uk: ['2.5.356 — Наглядач ливарні показує смугу здоров’я, фазу і скільки товаришів з вами.'],
+    ru: ['2.5.356 — Надзиратель литейной показывает полоску здоровья, фазу и сколько товарищей с вами.'],
+    es: ['2.5.356 — El Supervisor de la Fundición muestra una barra de salud, su fase y cuántos compañeros están contigo.'],
+    ar: ['2.5.356 — مشرف المسبك يظهر شريط صحة ومرحلته وكم من الرفاق معك.'],
+    'fa-AF': ['2.5.356 — ناظر ریخته‌گری نوار سلامت، مرحله و تعداد همراهان را نشان می‌دهد.'],
+    rw: ['2.5.356 — Umuyobozi wa Foundry yerekana umurongo w ubuzima, icyiciro n umubare w abanyamuryango bari kumwe nawe.'],
+    ti: ['2.5.356 — ናይ ፋውንድሪ ኣመሓዳሪ ናይ ጥዕና መስመር፣ ደረጃን ምስ ኣቲ ንጋንታ ብዝሒን የርኢ።'],
   }},
 
   { v: '2.5.354', date: '2026-10-21', lines: {
