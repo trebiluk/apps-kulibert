@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.380', date: '2026-10-22', lines: {
+    en: ["2.5.380 — On a computer the safe zone sign sits under your goal, so you can see both."],
+    simple: ["2.5.380 — You can see the safe zone sign and your goal."],
+    uk: ["2.5.380 — На комп'ютері знак безпечної зони тепер під твоєю метою, тож видно обидва."],
+    ru: ["2.5.380 — На компьютере знак безопасной зоны теперь под твоей целью, так что видно оба."],
+    es: ["2.5.380 — En la computadora, el aviso de zona segura va debajo de tu meta, así ves los dos."],
+    ar: ["2.5.380 — على الكمبيوتر صارت لافتة المنطقة الآمنة تحت هدفك، فترى الاثنين."],
+    'fa-AF': ["2.5.380 — روی کمپیوتر، نشان منطقه امن زیر هدفت است، پس هر دو را می‌بینی."],
+    rw: ["2.5.380 — Kuri mudasobwa, ikimenyetso cy'ahantu hatekanye kiri munsi y'intego yawe, ubona byombi."],
+    ti: ["2.5.380 — ኣብ ኮምፒተር ምልክት ውሑስ ቦታ ኣብ ትሕቲ ዕላማኻ እዩ፡ ክልቲኦም ትርእዮም።"],
+  }},
+
   { v: '2.5.379', date: '2026-10-22', lines: {
     en: ["2.5.379 — The Saved sign speaks your language."],
     simple: ["2.5.379 — Saved is in your language now."],

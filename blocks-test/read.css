@@ -1753,3 +1753,8 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 @media (max-width: 520px) {
   html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
 }
+
+/* 2.5.380: on big screens, while the goal (path) chip shows, the safe-zone chip sits below it instead of under it */
+@media (min-width: 521px) and (min-height: 521px) {
+  html body:has(#path-chip:not([hidden]):not(.path-out)) #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 74px) !important; }
+}

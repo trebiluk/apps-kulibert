@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **safe-chip-below-path (2.5.380):** Safe-zone chip sits below the goal chip on big screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.379 save-chip-lang:** Save chip uses t('saved') and t('s2bSaving') so it speaks the kid's language. SAVE_WORD map removed.
 - [x] **safe-chip-clear-pause (2.5.378):** Safe-zone chip drops below Pause on narrow phones. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
