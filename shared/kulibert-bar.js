@@ -537,7 +537,9 @@
     try {
       if (root.KulibertPrefs && root.KulibertPrefs.lang) return langCode(root.KulibertPrefs.lang) || "en";
     } catch (e2) {}
-    return storedLang() || "en";
+    var own = ""; // 2.5.381: no saved choice yet -> follow the language the app already put on <html>, not English
+    try { own = String(document.documentElement.getAttribute("lang") || ""); if (own === "fa") own = "fa-AF"; own = langCode(own); } catch (e3) {}
+    return storedLang() || own || "en";
   }
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
