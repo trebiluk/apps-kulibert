@@ -617,7 +617,8 @@
     news23640: "MU 2.36.40 — On a sideways phone, swipe up under the Looks to find the Sound buttons.",
     news23641: "MU 2.36.41 — On a sideways phone, swipe the picture row to find Fire and Ocean.",
     news23642: "MU 2.36.42 — On a sideways phone, the picture names on Viz show in full.",
-    news23643: "MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap."
+    news23643: "MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap.",
+    news23644: "MU 2.36.44 — On a sideways phone, the Make a beat card fits on the screen."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -939,7 +940,8 @@
     news23640: "MU 2.36.40 — Swipe up to find Sound.",
     news23641: "MU 2.36.41 — Swipe to see more pictures.",
     news23642: "MU 2.36.42 — Picture names are not cut now.",
-    news23643: "MU 2.36.43 — Beat boxes are easier to tap."
+    news23643: "MU 2.36.43 — Beat boxes are easier to tap.",
+    news23644: "MU 2.36.44 — The Make a beat card fits."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1551,7 +1553,8 @@
       "news23640": "MU 2.36.40 — На боковому телефоні гортай угору під «Вигляд», щоб знайти кнопки звуку.",
       "news23641": "MU 2.36.41 — На боковому телефоні гортай ряд картинок, щоб знайти Вогонь і Океан.",
       "news23642": "MU 2.36.42 — На боковому телефоні назви картинок у Viz видно повністю.",
-      "news23643": "MU 2.36.43 — На боковому телефоні клітинки ритму в Score достатньо великі, щоб торкатися."
+      "news23643": "MU 2.36.43 — На боковому телефоні клітинки ритму в Score достатньо великі, щоб торкатися.",
+      "news23644": "MU 2.36.44 — На боковому телефоні картка «Зробити біт» вміщається на екрані."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2160,7 +2163,8 @@
       "news23640": "MU 2.36.40 — На боковом телефоне листай вверх под «Вид», чтобы найти кнопки звука.",
       "news23641": "MU 2.36.41 — На боковом телефоне листай ряд картинок, чтобы найти Огонь и Океан.",
       "news23642": "MU 2.36.42 — На боковом телефоне названия картинок в Viz видно полностью.",
-      "news23643": "MU 2.36.43 — На боковом телефоне клетки ритма в Score достаточно большие, чтобы нажимать."
+      "news23643": "MU 2.36.43 — На боковом телефоне клетки ритма в Score достаточно большие, чтобы нажимать.",
+      "news23644": "MU 2.36.44 — На боковом телефоне карточка «Сделать бит» помещается на экране."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2770,7 +2774,8 @@
       "news23640": "MU 2.36.40 — Con el teléfono de lado, desliza hacia arriba bajo Estilos para ver los botones de Sonido.",
       "news23641": "MU 2.36.41 — Con el teléfono de lado, desliza la fila de imágenes para ver Fuego y Océano.",
       "news23642": "MU 2.36.42 — Con el teléfono de lado, los nombres de las imágenes de Viz se ven enteros.",
-      "news23643": "MU 2.36.43 — Con el teléfono de lado, las casillas del ritmo en Score son fáciles de tocar."
+      "news23643": "MU 2.36.43 — Con el teléfono de lado, las casillas del ritmo en Score son fáciles de tocar.",
+      "news23644": "MU 2.36.44 — Con el teléfono de lado, la tarjeta Hacer un ritmo cabe en la pantalla."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3380,7 +3385,8 @@
       "news23640": "MU 2.36.40 — على الهاتف المائل، اسحب للأعلى تحت المظاهر لتجد أزرار الصوت.",
       "news23641": "MU 2.36.41 — على الهاتف المائل، اسحب صف الصور لتجد النار والمحيط.",
       "news23642": "MU 2.36.42 — على الهاتف المائل، تظهر أسماء صور Viz كاملة.",
-      "news23643": "MU 2.36.43 — على الهاتف المائل، صارت خانات الإيقاع في Score كبيرة بما يكفي للمس."
+      "news23643": "MU 2.36.43 — على الهاتف المائل، صارت خانات الإيقاع في Score كبيرة بما يكفي للمس.",
+      "news23644": "MU 2.36.44 — على الهاتف المائل، صارت بطاقة «اصنع إيقاعًا» تتسع في الشاشة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3990,7 +3996,8 @@
       "news23640": "MU 2.36.40 — روی تلفن خوابیده، زیر ظاهرها به بالا بکش تا دکمه‌های صدا را پیدا کنی.",
       "news23641": "MU 2.36.41 — روی تلفن خوابیده، ردیف تصویرها را بکش تا آتش و بحر را پیدا کنی.",
       "news23642": "MU 2.36.42 — روی تلفن خوابیده، نام تصویرهای Viz کامل دیده می‌شود.",
-      "news23643": "MU 2.36.43 — روی تلفن خوابیده، خانه‌های ریتم در Score برای لمس به اندازه کافی بزرگ هستند."
+      "news23643": "MU 2.36.43 — روی تلفن خوابیده، خانه‌های ریتم در Score برای لمس به اندازه کافی بزرگ هستند.",
+      "news23644": "MU 2.36.44 — روی تلفن خوابیده، کارت «ساختن ریتم» در صفحه جا می‌شود."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4600,7 +4607,8 @@
       "news23640": "MU 2.36.40 — Kuri telefoni iri ku ruhande, sunika hejuru munsi y'Imiterere ubone utubuto tw'Ijwi.",
       "news23641": "MU 2.36.41 — Kuri telefoni iri ku ruhande, sunika umurongo w'amashusho ubone Umuriro n'Inyanja.",
       "news23642": "MU 2.36.42 — Kuri telefoni iri ku ruhande, amazina y'amashusho ya Viz agaragara yose.",
-      "news23643": "MU 2.36.43 — Kuri telefoni iri ku ruhande, udusanduku tw'injyana muri Score ni tunini bihagije ngo ukande."
+      "news23643": "MU 2.36.43 — Kuri telefoni iri ku ruhande, udusanduku tw'injyana muri Score ni tunini bihagije ngo ukande.",
+      "news23644": "MU 2.36.44 — Kuri telefoni iri ku ruhande, ikarita yo Gukora injyana ikwira kuri ecran."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5210,7 +5218,8 @@
       "news23640": "MU 2.36.40 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣብ ትሕቲ መልክዕ ናብ ላዕሊ ስሓብ፡ መልጎም ድምጺ ክትረክብ።",
       "news23641": "MU 2.36.41 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ነቲ መስመር ስእልታት ስሓብ፡ ሓዊን ባሕሪን ክትረክብ።",
       "news23642": "MU 2.36.42 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣስማት ስእልታት Viz ምሉእ ይርኣዩ።",
-      "news23643": "MU 2.36.43 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ሳጹናት ምት ኣብ Score ንምጥዋቕ ዝኣክል ዓበይቲ እዮም።"
+      "news23643": "MU 2.36.43 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ሳጹናት ምት ኣብ Score ንምጥዋቕ ዝኣክል ዓበይቲ እዮም።",
+      "news23644": "MU 2.36.44 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ካርድ ምት ስራሕ ኣብ ስክሪን ይኣቱ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

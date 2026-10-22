@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.44** · 2026-10-22 · channel **live**
+
+MU 2.36.44 — On a sideways phone, the Make a beat card fits on the screen.
+
+## Earlier
+
 **Chip: MU 2.36.43** · 2026-10-22 · channel **live**
 
 MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap.
