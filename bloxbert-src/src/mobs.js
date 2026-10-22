@@ -386,6 +386,7 @@ export function createMobs(opts) {
     return who
   }
   function finishReboot(m, fromBonk) {
+    if (m.kind === 'overseer') mobs.forEach(a => { if (a.fromBoss === m.id) a.hp = 0 })
     // First reboot opens Bertodex
     if (!window._dexSeen) window._dexSeen = {}
     if (!window._dexSeen[m.kind]) {
@@ -463,10 +464,26 @@ export function createMobs(opts) {
           m.weakOpen = now + 2000
           m.stampAt = 0
         }
-        // P2 Conveyor (simple push note)
-        if (phase === 2 && !m.conveyorAt) {
-          m.conveyorAt = now
-          if (toast) toast(t ? t('c5Conveyor') : 'Conveyor belts push to walls')
+        // P2 Conveyor + Sparkbug adds
+        if (phase === 2) {
+          if (!m.conveyorAt) {
+            m.conveyorAt = now
+            if (toast) toast(t ? t('c5Conveyor') : 'Conveyor belts push to walls')
+          }
+          if (!m._lastAdd || now - m._lastAdd > 8000) {
+            const alive = ofKind ? ofKind('sparkbug', m.x, m.z) : 0
+            if (alive < 4 && mobs.length < worldCap()) {
+              for (let i = 0; i < 2; i++) {
+                const ang = Math.random() * Math.PI * 2
+                const sx = m.x + Math.cos(ang) * 6
+                const sz = m.z + Math.sin(ang) * 6
+                const add = spawn('sparkbug', sx | 0, m.y, sz | 0, true)
+                if (add) add.fromBoss = m.id
+              }
+              if (toast) toast(t ? t('c5Spark') : '⚡ Sparkbugs! One of you take them.')
+            }
+            m._lastAdd = now
+          }
         }
         // P3 Overheat + vent
         if (phase === 3 && !m.ventAt) m.ventAt = now + 6000
