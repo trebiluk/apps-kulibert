@@ -5455,7 +5455,7 @@ body.mu237.tab-viz .out {
   order: -1 !important;
   display: flex !important;
   flex: 1 1 auto !important;
-  min-height: 0 !important;
+  min-height: 60% !important; /* MU 2.36.39: the picture gets at least 60% of the desk again */
   height: auto !important;
   max-height: none !important;
   overflow: hidden !important;
@@ -5468,11 +5468,12 @@ body.mu237.tab-viz canvas#viz {
   flex: 1 1 auto !important;
 }
 body.mu237.tab-viz .work {
-  flex: 0 0 auto !important;
+  flex: 0 1 auto !important; /* MU 2.36.39: tools shrink and scroll under the picture */
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
-  overflow: visible !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 body.mu237.tab-viz #lights-pane {
   display: flex !important;
