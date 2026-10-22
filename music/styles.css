@@ -3659,6 +3659,7 @@ body.mu237 .transport .tempo {
     min-width: 44px !important;
     width: 44px !important;
   }
+  #new-beat { flex: 0 0 auto !important; width: auto !important; } /* MU 2.36.45: the word "New beat" stays inside its button, not 44px squeezed */
   .tempo {
     flex: 1 1 44px !important;
     min-width: 44px !important;
