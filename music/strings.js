@@ -625,7 +625,8 @@
     news23645: "MU 2.36.45 — On a sideways phone, the New beat button fits its word.",
     news23646: "MU 2.36.46 — The bar and beat counter speaks your language from the start.",
     news23647: "MU 2.36.47 — The hint under each tab is in your language.",
-    news23648: "MU 2.36.48 — On Band, the note hint and Play with the band are in your language."
+    news23648: "MU 2.36.48 — On Band, the note hint and Play with the band are in your language.",
+    news23649: "MU 2.36.49 — On Band, the sign-in line is in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -952,7 +953,8 @@
     news23645: "MU 2.36.45 — New beat fits.",
     news23646: "MU 2.36.46 — Bar and beat are in your language.",
     news23647: "MU 2.36.47 — Tab hints in your language.",
-    news23648: "MU 2.36.48 — Band words in your language."
+    news23648: "MU 2.36.48 — Band words in your language.",
+    news23649: "MU 2.36.49 — Sign-in words in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1578,7 +1580,8 @@
       "news23645": "MU 2.36.45 — На боковому телефоні кнопка «Новий біт» вміщає свій напис.",
       "news23646": "MU 2.36.46 — Лічильник тактів і долей одразу твоєю мовою.",
       "news23647": "MU 2.36.47 — Підказка під кожною вкладкою твоєю мовою.",
-      "news23648": "MU 2.36.48 — У Бенді підказка про ноту і «Грай з гуртом» твоєю мовою."
+      "news23648": "MU 2.36.48 — У Бенді підказка про ноту і «Грай з гуртом» твоєю мовою.",
+      "news23649": "MU 2.36.49 — У Бенді рядок про вхід твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2201,7 +2204,8 @@
       "news23645": "MU 2.36.45 — На боковом телефоне кнопка «Новый бит» вмещает свою надпись.",
       "news23646": "MU 2.36.46 — Счётчик тактов и долей сразу на твоём языке.",
       "news23647": "MU 2.36.47 — Подсказка под каждой вкладкой на твоём языке.",
-      "news23648": "MU 2.36.48 — В Бэнде подсказка про ноту и «Играй с группой» на твоём языке."
+      "news23648": "MU 2.36.48 — В Бэнде подсказка про ноту и «Играй с группой» на твоём языке.",
+      "news23649": "MU 2.36.49 — В Бэнде строка о входе на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2825,7 +2829,8 @@
       "news23645": "MU 2.36.45 — Con el teléfono de lado, el botón Nuevo ritmo cabe entero.",
       "news23646": "MU 2.36.46 — El contador de compás y tiempo está en tu idioma desde el principio.",
       "news23647": "MU 2.36.47 — La pista bajo cada pestaña está en tu idioma.",
-      "news23648": "MU 2.36.48 — En Banda, la pista de la nota y Toca con la banda están en tu idioma."
+      "news23648": "MU 2.36.48 — En Banda, la pista de la nota y Toca con la banda están en tu idioma.",
+      "news23649": "MU 2.36.49 — En Banda, la línea para entrar está en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3449,7 +3454,8 @@
       "news23645": "MU 2.36.45 — على الهاتف المائل، صار زر «إيقاع جديد» يتسع لكلمته.",
       "news23646": "MU 2.36.46 — عدّاد المازورة والنبضة بلغتك من البداية.",
       "news23647": "MU 2.36.47 — التلميح تحت كل تبويب بلغتك.",
-      "news23648": "MU 2.36.48 — في الفرقة، تلميح النغمة و«اعزف مع الفرقة» بلغتك."
+      "news23648": "MU 2.36.48 — في الفرقة، تلميح النغمة و«اعزف مع الفرقة» بلغتك.",
+      "news23649": "MU 2.36.49 — في الفرقة، سطر تسجيل الدخول بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4073,7 +4079,8 @@
       "news23645": "MU 2.36.45 — روی تلفن خوابیده، دکمه «ریتم تازه» نوشته‌اش را جا می‌دهد.",
       "news23646": "MU 2.36.46 — شمارنده میزان و ضرب از اول به زبان خودت است.",
       "news23647": "MU 2.36.47 — راهنمای زیر هر زبانه به زبان خودت است.",
-      "news23648": "MU 2.36.48 — در گروپ، راهنمای نت و «با گروپ بنواز» به زبان خودت است."
+      "news23648": "MU 2.36.48 — در گروپ، راهنمای نت و «با گروپ بنواز» به زبان خودت است.",
+      "news23649": "MU 2.36.49 — در گروپ، خط ورود به زبان خودت است."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4697,7 +4704,8 @@
       "news23645": "MU 2.36.45 — Kuri telefoni iri ku ruhande, buto ya Injyana nshya ikwira ijambo ryayo.",
       "news23646": "MU 2.36.46 — Ibara ry'umurongo na beat riri mu rurimi rwawe kuva mu ntangiriro.",
       "news23647": "MU 2.36.47 — Inama iri munsi ya buri tab iri mu rurimi rwawe.",
-      "news23648": "MU 2.36.48 — Mu Itsinda, inama y'inota na Curanga n'itsinda biri mu rurimi rwawe."
+      "news23648": "MU 2.36.48 — Mu Itsinda, inama y'inota na Curanga n'itsinda biri mu rurimi rwawe.",
+      "news23649": "MU 2.36.49 — Mu Itsinda, umurongo wo kwinjira uri mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5321,7 +5329,8 @@
       "news23645": "MU 2.36.45 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ መጠወቒ ሓድሽ ምት ቃሉ ይኣቱ።",
       "news23646": "MU 2.36.46 — ቆጻሪ መስመርን ምትን ካብ መጀመርታ ብቋንቋኻ እዩ።",
       "news23647": "MU 2.36.47 — ምኽሪ ኣብ ትሕቲ ነፍሲ ወከፍ ታብ ብቋንቋኻ እዩ።",
-      "news23648": "MU 2.36.48 — ኣብ ጉጅለ፡ ምኽሪ ነጥብን ምስ ጉጅለ ተጻወትን ብቋንቋኻ እዮም።"
+      "news23648": "MU 2.36.48 — ኣብ ጉጅለ፡ ምኽሪ ነጥብን ምስ ጉጅለ ተጻወትን ብቋንቋኻ እዮም።",
+      "news23649": "MU 2.36.49 — ኣብ ጉጅለ፡ መስመር ምእታው ብቋንቋኻ እዩ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

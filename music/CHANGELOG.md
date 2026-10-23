@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.49** · 2026-10-23 · channel **live**
+
+MU 2.36.49 — On Band, the sign-in line is in your language.
+
+## Earlier
+
 **Chip: MU 2.36.48** · 2026-10-22 · channel **live**
 
 MU 2.36.48 — On Band, the note hint and Play with the band are in your language.
