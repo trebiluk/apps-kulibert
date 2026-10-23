@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] press-play-line-lang: The Songs Press Play line speaks the kid's language on load and after a language change. MU 2.36.51.
 - [x] sign-in-line-follows-lang: On Band, the sign-in line changes as soon as the kid picks a language. MU 2.36.50.
 - [x] sign-in-mark-lang: On Band, the sign-in line speaks the kid's language. MU 2.36.49.
 - [x] band-lines-lang: On Band, the note hint and Play with the band speak the kid's language. MU 2.36.48.

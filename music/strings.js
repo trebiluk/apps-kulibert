@@ -627,7 +627,8 @@
     news23647: "MU 2.36.47 — The hint under each tab is in your language.",
     news23648: "MU 2.36.48 — On Band, the note hint and Play with the band are in your language.",
     news23649: "MU 2.36.49 — On Band, the sign-in line is in your language.",
-    news23650: "MU 2.36.50 — On Band, the sign-in line changes as soon as you pick a language."
+    news23650: "MU 2.36.50 — On Band, the sign-in line changes as soon as you pick a language.",
+    news23651: "MU 2.36.51 — Under the song player, the Press Play line is in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -956,7 +957,8 @@
     news23647: "MU 2.36.47 — Tab hints in your language.",
     news23648: "MU 2.36.48 — Band words in your language.",
     news23649: "MU 2.36.49 — Sign-in words in your language.",
-    news23650: "MU 2.36.50 — Sign-in words change with your language."
+    news23650: "MU 2.36.50 — Sign-in words change with your language.",
+    news23651: "MU 2.36.51 — Press Play words in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1584,7 +1586,8 @@
       "news23647": "MU 2.36.47 — Підказка під кожною вкладкою твоєю мовою.",
       "news23648": "MU 2.36.48 — У Бенді підказка про ноту і «Грай з гуртом» твоєю мовою.",
       "news23649": "MU 2.36.49 — У Бенді рядок про вхід твоєю мовою.",
-      "news23650": "MU 2.36.50 — У Бенді рядок про вхід змінюється одразу, щойно ти обереш мову."
+      "news23650": "MU 2.36.50 — У Бенді рядок про вхід змінюється одразу, щойно ти обереш мову.",
+      "news23651": "MU 2.36.51 — Під програвачем пісень рядок «Натисни Play» твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2209,7 +2212,8 @@
       "news23647": "MU 2.36.47 — Подсказка под каждой вкладкой на твоём языке.",
       "news23648": "MU 2.36.48 — В Бэнде подсказка про ноту и «Играй с группой» на твоём языке.",
       "news23649": "MU 2.36.49 — В Бэнде строка о входе на твоём языке.",
-      "news23650": "MU 2.36.50 — В Бэнде строка о входе меняется сразу, как только ты выберешь язык."
+      "news23650": "MU 2.36.50 — В Бэнде строка о входе меняется сразу, как только ты выберешь язык.",
+      "news23651": "MU 2.36.51 — Под проигрывателем песен строка «Нажми Play» на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2835,7 +2839,8 @@
       "news23647": "MU 2.36.47 — La pista bajo cada pestaña está en tu idioma.",
       "news23648": "MU 2.36.48 — En Banda, la pista de la nota y Toca con la banda están en tu idioma.",
       "news23649": "MU 2.36.49 — En Banda, la línea para entrar está en tu idioma.",
-      "news23650": "MU 2.36.50 — En Banda, la línea para entrar cambia en cuanto eliges un idioma."
+      "news23650": "MU 2.36.50 — En Banda, la línea para entrar cambia en cuanto eliges un idioma.",
+      "news23651": "MU 2.36.51 — Bajo el reproductor de canciones, la línea Pulsa Play está en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3461,7 +3466,8 @@
       "news23647": "MU 2.36.47 — التلميح تحت كل تبويب بلغتك.",
       "news23648": "MU 2.36.48 — في الفرقة، تلميح النغمة و«اعزف مع الفرقة» بلغتك.",
       "news23649": "MU 2.36.49 — في الفرقة، سطر تسجيل الدخول بلغتك.",
-      "news23650": "MU 2.36.50 — في الفرقة، يتغيّر سطر تسجيل الدخول فور اختيارك لغة."
+      "news23650": "MU 2.36.50 — في الفرقة، يتغيّر سطر تسجيل الدخول فور اختيارك لغة.",
+      "news23651": "MU 2.36.51 — تحت مشغّل الأغاني، سطر «اضغط Play» بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4087,7 +4093,8 @@
       "news23647": "MU 2.36.47 — راهنمای زیر هر زبانه به زبان خودت است.",
       "news23648": "MU 2.36.48 — در گروپ، راهنمای نت و «با گروپ بنواز» به زبان خودت است.",
       "news23649": "MU 2.36.49 — در گروپ، خط ورود به زبان خودت است.",
-      "news23650": "MU 2.36.50 — در گروپ، خط ورود همین که زبان را انتخاب کنی عوض می‌شود."
+      "news23650": "MU 2.36.50 — در گروپ، خط ورود همین که زبان را انتخاب کنی عوض می‌شود.",
+      "news23651": "MU 2.36.51 — زیر پخش‌کننده آهنگ، خط «Play را بزن» به زبان خودت است."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4713,7 +4720,8 @@
       "news23647": "MU 2.36.47 — Inama iri munsi ya buri tab iri mu rurimi rwawe.",
       "news23648": "MU 2.36.48 — Mu Itsinda, inama y'inota na Curanga n'itsinda biri mu rurimi rwawe.",
       "news23649": "MU 2.36.49 — Mu Itsinda, umurongo wo kwinjira uri mu rurimi rwawe.",
-      "news23650": "MU 2.36.50 — Mu Itsinda, umurongo wo kwinjira uhinduka ako kanya uhisemo ururimi."
+      "news23650": "MU 2.36.50 — Mu Itsinda, umurongo wo kwinjira uhinduka ako kanya uhisemo ururimi.",
+      "news23651": "MU 2.36.51 — Munsi y'icuranga indirimbo, umurongo wa Kanda Play uri mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5339,7 +5347,8 @@
       "news23647": "MU 2.36.47 — ምኽሪ ኣብ ትሕቲ ነፍሲ ወከፍ ታብ ብቋንቋኻ እዩ።",
       "news23648": "MU 2.36.48 — ኣብ ጉጅለ፡ ምኽሪ ነጥብን ምስ ጉጅለ ተጻወትን ብቋንቋኻ እዮም።",
       "news23649": "MU 2.36.49 — ኣብ ጉጅለ፡ መስመር ምእታው ብቋንቋኻ እዩ።",
-      "news23650": "MU 2.36.50 — ኣብ ጉጅለ፡ መስመር ምእታው ቋንቋ ምስ መረጽካ ብኡንብኡ ይቕየር።"
+      "news23650": "MU 2.36.50 — ኣብ ጉጅለ፡ መስመር ምእታው ቋንቋ ምስ መረጽካ ብኡንብኡ ይቕየር።",
+      "news23651": "MU 2.36.51 — ኣብ ትሕቲ ተጻዋቲ ደርፊ፡ መስመር «Play ጠውቕ» ብቋንቋኻ እዩ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
