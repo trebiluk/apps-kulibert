@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.401', date: '2026-10-23', lines: {
+    en: ["2.5.401 — The wand tile shows its key, 0, and a short name: Wand."],
+    simple: ["2.5.401 — Wand tile: key 0."],
+    uk: ["2.5.401 — Плитка жезла показує свою клавішу 0 і коротку назву: Жезл."],
+    ru: ["2.5.401 — Плитка жезла показывает свою клавишу 0 и короткое имя: Жезл."],
+    es: ["2.5.401 — La casilla de la varita muestra su tecla, 0, y un nombre corto: Varita."],
+    ar: ["2.5.401 — خانة العصا تُظهر مفتاحها 0 واسمًا قصيرًا: العصا."],
+    'fa-AF': ["2.5.401 — خانه عصا کلید خود، 0، و یک نام کوتاه نشان می‌دهد: عصا."],
+    rw: ["2.5.401 — Akazu k’inkoni kerekana urufunguzo rwako, 0, n’izina rigufi: Inkoni."],
+    ti: ["2.5.401 — ሳንዱቕ በትሪ መፍትሕ 0ን ሓጺር ስም፡ በትሪ ተርኢ።"],
+  }},
+
   { v: '2.5.400', date: '2026-10-23', lines: {
     en: ['2.5.400 — Messages no longer cover the wand buttons (Pick/✓/X). They show just above them.'],
     simple: ['2.5.400 — Messages stay off the wand buttons.'],

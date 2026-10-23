@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.401 wand-tile-zero-short:** Wand tile shows digit 0 and a short one-line label. aria-label keeps the full name.
 - [x] **toasts-clear-wand (2.5.400):** Toasts and keys line sit above the wand bar. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
