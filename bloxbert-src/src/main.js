@@ -5331,7 +5331,7 @@ session = createSession({
   setCreativeHot: (i) => {
     const n = Math.max(0, i | 0)
     if (!paletteIds.length) return
-    selectedSlot = n % paletteIds.length
+    selectedSlot = n % CREATIVE_HOT // 2.5.397
     current = paletteIds[selectedSlot]
   },
   path: (id) => markPath(id),
@@ -7176,6 +7176,7 @@ if (packOn('tech')) {
   }
 }
 let selectedSlot = 0
+const CREATIVE_HOT = 9 // 2.5.397: Creative hotbar is 9 numbered slots like Survival
 function bertSlotContentBox(slot) {
   const r = slot.getBoundingClientRect()
   const cs = getComputedStyle(slot)
@@ -7310,15 +7311,8 @@ function paintBar() {
   bar.innerHTML = ''
   bar.classList.add('palette')
   bar.classList.remove('bagbar')
-  const narrow = window.innerWidth <= 520
-  let from = 0
-  let ids = paletteIds
-  if (narrow && paletteIds.length > 9) {
-    from = selectedSlot - 4
-    if (from < 0) from = 0
-    if (from > paletteIds.length - 9) from = Math.max(0, paletteIds.length - 9)
-    ids = paletteIds.slice(from, from + 9)
-  }
+  const from = 0
+  const ids = paletteIds.slice(0, CREATIVE_HOT) // 2.5.397: always 9 numbered slots
   bar.dataset.n = String(ids.length)
   const strip = document.createElement('div')
   strip.className = 'item-strip'
@@ -7333,6 +7327,10 @@ function paintBar() {
     const name = blockName(id)
     b.setAttribute('aria-label', name)
     b.setAttribute('aria-pressed', String(!wandSlot && real === selectedSlot))
+    const d = document.createElement('span') // 2.5.397: slot number like Survival
+    d.className = 'digit'
+    d.textContent = String(real + 1)
+    b.append(d)
     const l = document.createElement('span')
     l.className = 'lbl'
     l.textContent = name
@@ -7395,11 +7393,11 @@ function useSelected() {
 }
 function scrollPalette(dir) {
   if (wandSlot) {
-    selectSlot(dir > 0 ? 0 : paletteIds.length - 1)
+    selectSlot(dir > 0 ? 0 : CREATIVE_HOT - 1) // 2.5.397
     return
   }
   if (dir < 0 && selectedSlot === 0) { selectWandSlot(); return }
-  if (dir > 0 && selectedSlot === paletteIds.length - 1) { selectWandSlot(); return }
+  if (dir > 0 && selectedSlot === CREATIVE_HOT - 1) { selectWandSlot(); return } // 2.5.397
   selectSlot(selectedSlot + dir)
 }
 function onWandWheel(e) {
@@ -7435,12 +7433,14 @@ function selectSlot(i) {
 }
 function putPalette(i, id) {
   if (!paletteIds.length) return
-  const n = ((Number(i) % paletteIds.length) + paletteIds.length) % paletteIds.length
+  const n = ((Number(i) % CREATIVE_HOT) + CREATIVE_HOT) % CREATIVE_HOT // 2.5.397
   const j = paletteIds.indexOf(Number(id))
   if (j >= 0 && j !== n) {
     const prev = paletteIds[n]
     paletteIds[n] = paletteIds[j]
     paletteIds[j] = prev
+  } else if (j < 0) {
+    paletteIds[n] = Number(id) // 2.5.397: a Bag block not in the starting list can take a slot
   }
   selectedSlot = n
   current = paletteIds[n]
@@ -7453,7 +7453,8 @@ function putPalette(i, id) {
 }
 function pick(id) {
   const i = paletteIds.indexOf(id)
-  if (i >= 0) selectSlot(i)
+  if (i >= 0 && i < CREATIVE_HOT) selectSlot(i) // 2.5.397
+  else putPalette(selectedSlot, id) // 2.5.397: not in 1-9 -> into the held slot
 }
 function flashHeld(name) {
   const chip = $('held-chip')
