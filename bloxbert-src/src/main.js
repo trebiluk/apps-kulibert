@@ -7350,8 +7350,9 @@ function paintBar() {
   wandBtn.prepend(wandCanvas(wandMode))
   const wl = document.createElement('span') // 2.5.395: wand tile has its name, same as block slots
   wl.className = 'lbl'
-  wl.textContent = t('buildWand')
-  wandBtn.append(wl)
+  wl.textContent = t('wandShort') || t('buildWand') // 2.5.401: short one-line label
+  const w0 = document.createElement('span') // 2.5.401: the 0 key number, like slots 1-9
+  w0.className = 'digit'; w0.textContent = '0'; wandBtn.append(w0, wl)
   wandBtn.addEventListener('click', () => selectWandSlot())
   bar.append(wandBtn)
   const bagBtn = document.createElement('button')
