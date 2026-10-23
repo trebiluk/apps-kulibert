@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.386', date: '2026-10-22', lines: {
+    en: ["2.5.386 — The save sign shows its tick only when the save is done."],
+    simple: ["2.5.386 — The tick means saved."],
+    uk: ["2.5.386 — Знак збереження показує галочку лише тоді, коли збереження завершено."],
+    ru: ["2.5.386 — Знак сохранения показывает галочку только когда сохранение готово."],
+    es: ["2.5.386 — El aviso de guardado muestra la marca solo cuando ya se guardó."],
+    ar: ["2.5.386 — تظهر علامة الصح على لافتة الحفظ فقط عندما ينتهي الحفظ."],
+    'fa-AF': ["2.5.386 — نشان ذخیره تیک را فقط وقتی نشان می‌دهد که ذخیره تمام شد."],
+    rw: ["2.5.386 — Ikimenyetso cyo kubika kigaragaza akamenyetso iyo kubika birangiye gusa."],
+    ti: ["2.5.386 — ምልክት ምዕቃብ ምልክቱ ዘርኢ ምዕቃብ ምስ ተወድአ ጥራይ እዩ።"],
+  }},
+
   { v: '2.5.385', date: '2026-10-22', lines: {
     en: ["2.5.385 — On a sideways phone you can see all 9 hotbar slots."],
     simple: ["2.5.385 — All 9 slots fit."],
