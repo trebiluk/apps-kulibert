@@ -23,7 +23,7 @@ const STATION = new Set([
   FROZEN.smelter, FROZEN.fabricator, FROZEN.lantern, FROZEN.charger,
 ])
 const ARROW_CSS = '#bot-arrow{position:fixed;z-index:70;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:rgba(11,18,32,.92);color:#F8FAFC;border:2px solid #E6EEF2;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}#bot-arrow[hidden]{display:none}#bot-arrow svg{display:block}'
-const BOT_ICO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="7" y="10" width="10" height="8" rx="1.5" fill="none" stroke="#F8FAFC" stroke-width="1.8"/><rect x="8.5" y="5" width="7" height="5" rx="1" fill="none" stroke="#F8FAFC" stroke-width="1.8"/><path d="M10 13.2h4" stroke="#F8FAFC" stroke-width="1.6" stroke-linecap="round"/></svg>'
+const BOT_ICO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3v2" stroke="#F8FAFC" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="3" r="1.2" fill="#f59e0b"/><rect x="6" y="6" width="12" height="10" rx="3" fill="none" stroke="#F8FAFC" stroke-width="1.8"/><circle cx="9.5" cy="10.5" r="1.4" fill="#14b8a6"/><circle cx="14.5" cy="10.5" r="1.4" fill="#14b8a6"/><path d="M9.5 13.5h5" stroke="#F8FAFC" stroke-width="1.4" stroke-linecap="round"/><rect x="3" y="9" width="2.5" height="4" rx="1" fill="none" stroke="#F8FAFC" stroke-width="1.4"/><rect x="18.5" y="9" width="2.5" height="4" rx="1" fill="none" stroke="#F8FAFC" stroke-width="1.4"/></svg>' 
 
 function dye(scene, name, hex, glow) {
   const mat = new StandardMaterial(name, scene)
