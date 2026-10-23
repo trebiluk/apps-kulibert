@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.396', date: '2026-10-23', lines: {
+    en: ["2.5.396 — Build Wand clicks work while you play: click one corner, then the other, and the box shows."],
+    simple: ["2.5.396 — The Build Wand hears your clicks now."],
+    uk: ["2.5.396 — Клацання Чарівною паличкою працюють під час гри: клацни один кут, потім інший — і з'явиться рамка."],
+    ru: ["2.5.396 — Щелчки Волшебной палочкой работают во время игры: щёлкни один угол, потом другой — и появится рамка."],
+    es: ["2.5.396 — Los clics de la Varita funcionan mientras juegas: clic en una esquina, luego en la otra, y aparece la caja."],
+    ar: ["2.5.396 — نقرات عصا البناء تعمل أثناء اللعب: انقر زاوية ثم الأخرى فيظهر الصندوق."],
+    'fa-AF': ["2.5.396 — کلیک‌های چوبدستی ساخت هنگام بازی کار می‌کند: یک گوشه، بعد گوشه دیگر را بزن تا جعبه دیده شود."],
+    rw: ["2.5.396 — Gukanda n'Inkoni yo kubaka bikora mu gihe ukina: kanda inguni imwe, hanyuma indi, agasanduku kakagaragara."],
+    ti: ["2.5.396 — ጠውቓት በትሪ ምህናጽ እናተጻወትካ ይሰርሑ፡ ሓደ ኩርናዕ ድሕሪኡ እቲ ካልእ ጠውቕ፡ ሳጹን ይርአ።"],
+  }},
+
   { v: '2.5.395', date: '2026-10-23', lines: {
     en: ["2.5.395 — The Build Wand has its name on its hotbar slot. Press 0 to take it out or put it away."],
     simple: ["2.5.395 — Press 0 for the Build Wand."],
