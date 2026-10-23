@@ -3821,6 +3821,16 @@
   // MU 2.36.46: the "Bar 1 · Beat 1" spot in the play bar speaks the kid's language before Play and after a language change
   try { paintPlayPos(); } catch (ePos) {}
   window.addEventListener("kulibert-lang", () => { try { paintPlayPos(); } catch (ePos) {} });
+  // MU 2.36.51: the Songs "Press Play" line speaks the kid's language on load and after a language change (only while it still shows the idle line)
+  let nowIdleText = "Press Play. You can leave the sound off.";
+  function paintNowIdle() {
+    const el = $("now-line");
+    if (!el || el.textContent.trim() !== nowIdleText) return;
+    nowIdleText = mu("pressPlay") || nowIdleText;
+    el.textContent = nowIdleText;
+  }
+  try { paintNowIdle(); } catch (eNow) {}
+  window.addEventListener("kulibert-lang", () => { try { paintNowIdle(); } catch (eNow) {} });
   function paintTheme(theme, save) {
     const next = theme === "dark" ? "dark" : "calm";
     document.documentElement.setAttribute("data-theme", next);
