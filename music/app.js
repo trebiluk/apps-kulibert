@@ -4727,7 +4727,7 @@
     if (!cards || cards.childElementCount) return;
     const jobs = [
       ["Make a song", "Pick a feel and a speed. Then the staff.", showMake],
-      ["Tap a score", "Tap a letter. It lands on the next beat.", () => { setMode("notes"); $("how").textContent = "Tap a letter. It goes on the next beat."; }],
+      ["Tap a score", "Tap a letter. It lands on the next beat.", () => { setMode("notes"); $("how").textContent = mu("howTap") || "Tap a letter. It goes on the next beat."; }],
       ["Write a score", "Change any note on the staff.", () => setMode("notes")],
       ["Tap along", "Hit the pads when they flash.", () => { state.along = true; if (typeof paintAlong === "function") paintAlong(); setMode("drums"); }],
       ["See the picture", "The song fills the screen.", () => { document.body.classList.add("viz-full"); setMode("lights"); }],
