@@ -75,8 +75,7 @@
     var who = root.KulibertWho && root.KulibertWho.read && root.KulibertWho.read();
     var on = root.KulibertWho && root.KulibertWho.active && root.KulibertWho.active();
     if (on && who && who.alias) { node.textContent = who.alias; return; }
-    var word = root.KulibertI18n && root.KulibertI18n.t ? root.KulibertI18n.t("signIn") : "";
-    node.textContent = word || "Sign in";
+    node.textContent = trBar("signIn", "Sign in");
   }
   function toast(text) {
     ensureCss();
@@ -498,9 +497,13 @@
   function dirOfLang(lang) {
     return lang === "ar" || lang === "fa-AF" ? "rtl" : "ltr";
   }
+  var BAR_FIRST = { uk: ["Меню", "Головна", "Увійти"], ru: ["Меню", "Главная", "Войти"], es: ["Menú", "Inicio", "Entrar"], ar: ["القائمة", "الرئيسية", "تسجيل الدخول"], "fa-AF": ["فهرست", "خانه", "ورود"], rw: ["Menyu", "Ahabanza", "Injira"], ti: ["ዝርዝር", "መበገሲ", "እቶ"] };
+  var BAR_EN = { menu: "Menu", home: "Home", signIn: "Sign in" };
+  function firstWord(key) { try { var w = BAR_FIRST[langCode(pageLang())]; var i = ["menu", "home", "signIn"].indexOf(key); return (w && i >= 0 && w[i]) || ""; } catch (e) { return ""; } }
   function trBar(key, fallback) {
     var v = root.KulibertI18n && root.KulibertI18n.t ? root.KulibertI18n.t(key) : "";
-    return v || fallback;
+    if (v && v !== BAR_EN[key]) return v;
+    return firstWord(key) || v || fallback;
   }
   function paintBar() {
     var home = document.querySelector(".kb-bar .kb-home");
@@ -637,11 +640,11 @@
     var bar = document.createElement("div");
     bar.className = "kb-bar";
     bar.innerHTML = [
-      '<button type="button" class="kb-menu" aria-expanded="false">\u2630 Menu</button>',
-      '<a class="kb-home" href="https://apps.kulibert.net/" target="_top">\u2302 Home</a>',
+      '<button type="button" class="kb-menu" aria-expanded="false">\u2630 ' + trBar("menu", "Menu") + '</button>',
+      '<a class="kb-home" href="https://apps.kulibert.net/" target="_top">\u2302 ' + trBar("home", "Home") + '</a>',
       '<span class="kb-plate"></span>',
       '<button type="button" class="kb-settings" hidden aria-label="My settings">\u2699</button>',
-      '<span class="kb-alias">Sign in</span>',
+      '<span class="kb-alias">' + trBar("signIn", "Sign in") + '</span>',
       helpSel ? '<button type="button" class="kb-help" aria-label="Help">?</button>' : ''
     ].join("");
     document.body.insertBefore(bar, document.body.firstChild);
