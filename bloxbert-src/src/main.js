@@ -7350,6 +7350,10 @@ function paintBar() {
   wandBtn.setAttribute('aria-pressed', String(!!wandSlot))
   wandBtn.title = t('buildWand')
   wandBtn.prepend(wandCanvas(wandMode))
+  const wl = document.createElement('span') // 2.5.395: wand tile has its name, same as block slots
+  wl.className = 'lbl'
+  wl.textContent = t('buildWand')
+  wandBtn.append(wl)
   wandBtn.addEventListener('click', () => selectWandSlot())
   bar.append(wandBtn)
   const bagBtn = document.createElement('button')
@@ -8123,6 +8127,10 @@ document.addEventListener('keydown', (e) => {
     const sheet = $('sheet')
     if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { closePlay('gesture'); return }
     openMenu(true); panels.open('crafting'); return
+  }
+  if (e.key === '0' && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden && session && session.mode !== 'survival') { // 2.5.395: 0 toggles the Build Wand in Creative
+    if (wandSlot) selectSlot(selectedSlot); else selectWandSlot()
+    return
   }
   const n = '123456789'.indexOf(e.key)
   if (n >= 0 && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden) {
