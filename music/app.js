@@ -4460,6 +4460,13 @@
       : item.name + " is the song. Press Play.";
     rememberPack();
   }
+  function libKey(word) {
+    return String(word || "").toLowerCase().replace(/[^a-z]/g, "");
+  }
+  function placeWord(from) {
+    return mu("place_" + libKey(from)) || from;
+  }
+  window.addEventListener("kulibert-lang", () => { try { paintSongShelf(); } catch (eShelf) {} }); // MU 2.36.53: shelves and places follow a language change
   function paintSongShelf() {
     const openBox = $("open-songs");
     const saveBox = $("my-saves");
@@ -4473,7 +4480,7 @@
         const strong = document.createElement("strong");
         setBdi(strong, item.name);
         const span = document.createElement("span");
-        span.textContent = (item.from || mu("classWord") || "class") + " · " + (item.meter || "4/4");
+        span.textContent = (placeWord(item.from) || mu("classWord") || "class") + " · " + (item.meter || "4/4");
         text.append(strong, span);
         const open = document.createElement("button");
         open.type = "button";
@@ -5690,7 +5697,8 @@
       shelves.forEach(([place, songs]) => {
         const h = document.createElement("p");
         h.className = "shelf";
-        h.textContent = place;
+        h.textContent = mu("shelf_" + libKey(place)) || place;
+        h.setAttribute("data-mu", "shelf_" + libKey(place));
         classics.appendChild(h);
         const grid = document.createElement("div");
         grid.className = "shelf-songs";
