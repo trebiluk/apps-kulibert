@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.392', date: '2026-10-23', lines: {
+    en: ["2.5.392 — With your Bag open, the update message sits above your hotbar, not on it."],
+    simple: ["2.5.392 — The update message no longer covers your blocks."],
+    uk: ["2.5.392 — Коли сумка відкрита, повідомлення про оновлення стоїть над панеллю предметів, а не на ній."],
+    ru: ["2.5.392 — Когда сумка открыта, сообщение об обновлении стоит над панелью предметов, а не на ней."],
+    es: ["2.5.392 — Con la Bolsa abierta, el aviso de actualización queda encima de la barra, no sobre ella."],
+    ar: ["2.5.392 — عندما تكون الحقيبة مفتوحة تظهر رسالة التحديث فوق شريط الأدوات لا عليه."],
+    'fa-AF': ["2.5.392 — وقتی کیسه باز است، پیام به‌روزرسانی بالای نوار ابزار می‌آید، نه روی آن."],
+    rw: ["2.5.392 — Iyo umufuka ufunguye, ubutumwa bw'ivugurura buri hejuru y'umurongo w'ibikoresho, ntibuwupfuka."],
+    ti: ["2.5.392 — ቦርሳ ክፉት ክኸውን ከሎ፡ መልእኽቲ ምምሕያሽ ኣብ ልዕሊ መስመር ኣቑሑ እዩ ዝቕመጥ፡ ኣብኡ ኣይኮነን።"],
+  }},
+
   { v: '2.5.391', date: '2026-10-23', lines: {
     en: ["2.5.391 — Opening your Bag with the mouse or a tap no longer puts a big white frame on the Menu button."],
     simple: ["2.5.391 — No big white box on Menu when you open the Bag."],

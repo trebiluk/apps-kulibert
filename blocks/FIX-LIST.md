@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **update-chip-above-hotbar (2.5.392):** Update toast sits above the hotbar when Bag is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.391 menu-ring-quiet:** Opening the Bag by mouse or touch focuses Menu quietly (focusVisible false). Keyboard opens still get the ring. CSS kills the ring on focus:not(:focus-visible).
 - [x] **play-chip-hides-bag (2.5.390):** Click to play hides while Bag or menu is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
