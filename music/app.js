@@ -4728,14 +4728,18 @@
       ["Change the picture", "Pick a look for this song.", () => setMode("lights")],
       ["Band", "Fingerings for your instrument.", () => setMode("band")],
     ];
-    jobs.forEach(([title, line, go]) => {
+    const DO_KEYS = ["doMake", "doTap", "doWrite", "doAlong", "doSee", "doRemix", "doPic", "doBand"];
+    jobs.forEach(([title, line, go], i) => {
+      const key = DO_KEYS[i];
       const b = document.createElement("button");
       b.type = "button";
       b.className = "do-card";
       const strong = document.createElement("strong");
-      strong.textContent = title;
+      strong.textContent = mu(key) || title;
+      strong.setAttribute("data-mu", key);
       const span = document.createElement("span");
-      span.textContent = line;
+      span.textContent = mu(key + "L") || line;
+      span.setAttribute("data-mu", key + "L");
       b.appendChild(strong);
       b.appendChild(span);
       b.addEventListener("click", () => {
