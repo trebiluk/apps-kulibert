@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.385', date: '2026-10-22', lines: {
+    en: ["2.5.385 — On a sideways phone you can see all 9 hotbar slots."],
+    simple: ["2.5.385 — All 9 slots fit."],
+    uk: ["2.5.385 — На боковому телефоні видно всі 9 комірок панелі."],
+    ru: ["2.5.385 — На боковом телефоне видны все 9 ячеек панели."],
+    es: ["2.5.385 — Con el teléfono de lado ves las 9 casillas de la barra."],
+    ar: ["2.5.385 — على الهاتف المائل ترى خانات الشريط التسع كلها."],
+    'fa-AF': ["2.5.385 — روی تلفن خوابیده هر ۹ خانه نوار را می‌بینی."],
+    rw: ["2.5.385 — Kuri telefoni iri ku ruhande ubona udusanduku 9 twose tw'umurongo."],
+    ti: ["2.5.385 — ኣብ ብጎኑ ዘሎ ተሌፎን ኩለን 9 ሳጹናት መስመር ትርእየን።"],
+  }},
+
   { v: '2.5.384', date: '2026-10-22', lines: {
     en: ["2.5.384 — The save sign shows one tick, not two."],
     simple: ["2.5.384 — One tick on the save sign."],

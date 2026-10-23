@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **nine-slots-fit (2.5.385):** All 9 hotbar slots fit beside Bag on short wide screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.384 save-chip-one-tick:** Save chip word is t('saved') only. The SVG tick is the only tick. Text tick removed.
 - [x] **stick-clear-hotbar (2.5.383):** Move stick sits above the hotbar on short screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
