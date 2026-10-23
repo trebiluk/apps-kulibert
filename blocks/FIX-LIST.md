@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **safe-chip-hides-bag (2.5.387):** Safe-zone chip hides while Bag or menu is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.386 no-tick-saving:** The save chip hides its tick while data-state is saving. The tick appears only after the save finishes.
 - [x] **nine-slots-fit (2.5.385):** All 9 hotbar slots fit beside Bag on short wide screens. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

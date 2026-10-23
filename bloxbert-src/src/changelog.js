@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.387', date: '2026-10-22', lines: {
+    en: ["2.5.387 — The safe zone sign waits while your Bag or the menu is open."],
+    simple: ["2.5.387 — The safe sign hides while Bag is open."],
+    uk: ["2.5.387 — Знак безпечної зони чекає, поки відкрита сумка або меню."],
+    ru: ["2.5.387 — Знак безопасной зоны ждёт, пока открыта сумка или меню."],
+    es: ["2.5.387 — El aviso de zona segura espera mientras la Bolsa o el menú están abiertos."],
+    ar: ["2.5.387 — تنتظر لافتة المنطقة الآمنة ما دامت الحقيبة أو القائمة مفتوحة."],
+    'fa-AF': ["2.5.387 — نشان منطقه امن تا وقتی کیسه یا فهرست باز است صبر می‌کند."],
+    rw: ["2.5.387 — Ikimenyetso cy'ahantu hatekanye gitegereza igihe umufuka cyangwa menyu bifunguye."],
+    ti: ["2.5.387 — ምልክት ውሑስ ቦታ ቦርሳ ወይ ዝርዝር ክፉት ክሳብ ዝኾነ ይጽበ።"],
+  }},
+
   { v: '2.5.386', date: '2026-10-22', lines: {
     en: ["2.5.386 — The save sign shows its tick only when the save is done."],
     simple: ["2.5.386 — The tick means saved."],
