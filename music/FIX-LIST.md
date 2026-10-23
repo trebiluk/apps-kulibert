@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] tap-score-how-lang: After Tap a score, the help line speaks the kid's language. MU 2.36.54.
 - [x] library-places-lang: The song library's shelves and places speak the kid's language. MU 2.36.53.
 - [x] start-cards-lang: The Songs start cards speak the kid's language on load and after a language change. MU 2.36.52.
 - [x] press-play-line-lang: The Songs Press Play line speaks the kid's language on load and after a language change. MU 2.36.51.

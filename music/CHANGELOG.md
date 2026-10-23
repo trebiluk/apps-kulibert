@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.54** · 2026-10-23 · channel **live**
+
+MU 2.36.54 — After Tap a score, the help line is in your language.
+
+## Earlier
+
 **Chip: MU 2.36.53** · 2026-10-23 · channel **live**
 
 MU 2.36.53 — The song library's shelves and places (Africa, Ghana...) are in your language.
