@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **wand-short-name (2.5.404):** Top-bar chip uses the short wand name. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.403 bot-arrow-off-hotbar:** The Bot arrow stays between the top bar and the hotbar. Direction and rotation unchanged.
 - [x] **bot-toast-robot (2.5.402):** Bot toasts show a robot face. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

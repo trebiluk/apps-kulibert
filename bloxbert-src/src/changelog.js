@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.404', date: '2026-10-23', lines: {
+    en: ['2.5.404 — With the wand in hand, the top bar says Wand in full.'],
+    simple: ['2.5.404 — Top bar: Wand.'],
+    uk: ['2.5.404 — Коли тримаєш жезл, верхня панель повністю пише «Жезл».'],
+    ru: ['2.5.404 — Когда держишь жезл, верхняя панель полностью пишет «Жезл».'],
+    es: ['2.5.404 — Con la varita en la mano, la barra de arriba dice Varita completa.'],
+    ar: ['2.5.404 — عندما تمسك العصا، يكتب الشريط العلوي «العصا» كاملة.'],
+    'fa-AF': ['2.5.404 — وقتی عصا در دستت است، نوار بالا «عصا» را کامل می‌نویسد.'],
+    rw: ['2.5.404 — Iyo ufashe inkoni, umurongo wo hejuru wandika Inkoni yose.'],
+    ti: ['2.5.404 — በትሪ ኣብ ኢድካ ክትሕዝ ከለኻ፡ ላዕለዋይ መስመር «በትሪ» ምሉእ ይጽሕፍ።'],
+  }},
+
   { v: '2.5.403', date: '2026-10-23', lines: {
     en: ["2.5.403 — The round arrow that points to your Bot no longer covers the hotbar."],
     simple: ["2.5.403 — Bot arrow off the hotbar."],
