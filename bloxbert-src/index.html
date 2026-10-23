@@ -633,6 +633,7 @@ html body #hotbar#hotbar .slot:not(.bag-tile) .sw,html body #hotbar#hotbar .slot
 #save-chip{position:fixed;z-index:35;left:50%;top:50%;transform:translate(-50%,-50%);right:auto;pointer-events:none;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;border-radius:999px;border:2px solid #22D3EE;background:#0B1220;color:#F8FAFC;font-weight:800;font-size:14px;line-height:1.2}
 #save-chip[hidden]{display:none !important}
 #save-chip .sc-ico{width:18px;height:18px;flex:0 0 18px;display:block}
+#save-chip[data-state="saving"] .sc-ico{display:none} /* 2.5.386: no tick until the save is done */
 @keyframes stripname{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
 #hotbar .slot.bump{animation:wellbump 180ms ease}
 @keyframes wellbump{from{transform:scale(1.15)}to{transform:scale(1)}}
