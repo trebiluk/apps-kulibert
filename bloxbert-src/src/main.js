@@ -9117,6 +9117,15 @@ canvas.addEventListener('pointerup', (e) => {
     toast(t('holdToBreak'))
   }
 })
+// 2.5.396: while the mouse is locked, clicks land on #stage; hear them for the wand
+if (stageEl) {
+  stageEl.addEventListener('pointerdown', (e) => {
+    if (e.target === stageEl && playLocked() && wandHeld() && !anyCard() && e.button === 0) wandPress = { x: e.clientX, y: e.clientY, t: performance.now() }
+  })
+  stageEl.addEventListener('pointerup', (e) => {
+    if (e.target === stageEl && playLocked() && wandHeld() && !anyCard()) finishWandPress(e)
+  })
+}
 canvas.addEventListener('pointercancel', () => {
   actThisClick = false
   if (buttonHold) {
@@ -9127,7 +9136,7 @@ canvas.addEventListener('pointercancel', () => {
 })
 window.addEventListener('pointerdown', (e) => {
   rightDown = !!(e.buttons & 2) || e.button === 2
-  if (e.button === 2 && wandHeld() && canvasHit(e)) {
+  if (e.button === 2 && wandHeld() && (canvasHit(e) || (playLocked() && e.target === stageEl))) {
     wandPress = { button: 2, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
     e.preventDefault()
     e.stopPropagation()
