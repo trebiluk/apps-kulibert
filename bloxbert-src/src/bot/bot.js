@@ -285,22 +285,34 @@ export function initBot(ctx) {
     document.body.append(el)
     return el
   }
-  function showArrow(scr) {
+  function showArrow(scr) { // 2.5.403: keep the arrow between the top bar and the hotbar
     const el = ensureArrow()
     if (!scr) { el.hidden = true; return }
     const rect = scr.rect
     const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
+    let top = rect.top + 36
+    let bot = rect.bottom - 36
+    const hdr = document.querySelector('header.top')
+    if (hdr && hdr.getClientRects().length) top = Math.max(top, hdr.getBoundingClientRect().bottom + 30)
+    const hb = document.getElementById('hotbar')
+    if (hb && hb.getClientRects().length) bot = Math.min(bot, hb.getBoundingClientRect().top - 30)
+    const wp = document.getElementById('wand-pill')
+    if (wp && wp.getClientRects().length) bot = Math.min(bot, wp.getBoundingClientRect().top - 30)
+    if (bot - top < 40) { top = rect.top + 36; bot = rect.bottom - 36 }
+    const cy = (top + bot) / 2
+    const hh = Math.max(20, (bot - top) / 2)
     let dx = scr.x - cx
     let dy = scr.y - cy
     if (scr.behind) { dx = -dx; dy = -dy }
     if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) { dx = 0; dy = -1 }
     const hw = Math.max(20, rect.width / 2 - 36)
-    const hh = Math.max(20, rect.height / 2 - 36)
     const scale = Math.min(hw / Math.abs(dx), hh / Math.abs(dy))
+    let ty = cy + dy * scale
+    if (ty < top) ty = top
+    if (ty > bot) ty = bot
     el.hidden = false
     el.style.left = (cx + dx * scale) + 'px'
-    el.style.top = (cy + dy * scale) + 'px'
+    el.style.top = ty + 'px'
     el.style.transform = 'rotate(' + (Math.atan2(dy, dx) * 180 / Math.PI) + 'deg)'
   }
   function pointAt(bot) {
