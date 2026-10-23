@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.403', date: '2026-10-23', lines: {
+    en: ["2.5.403 — The round arrow that points to your Bot no longer covers the hotbar."],
+    simple: ["2.5.403 — Bot arrow off the hotbar."],
+    uk: ["2.5.403 — Кругла стрілка, що вказує на твого Бота, більше не закриває панель предметів."],
+    ru: ["2.5.403 — Круглая стрелка, которая показывает на твоего Бота, больше не закрывает панель предметов."],
+    es: ["2.5.403 — La flecha redonda que señala a tu Bot ya no tapa la barra de objetos."],
+    ar: ["2.5.403 — السهم الدائري الذي يشير إلى بوتك لم يعد يغطي شريط الأدوات."],
+    'fa-AF': ["2.5.403 — پیکان گردی که به بوتت اشاره می‌کند دیگر نوار ابزار را نمی‌پوشاند."],
+    rw: ["2.5.403 — Akambi k’uruziga kerekana Bot yawe ntikagipfuka umurongo w’ibikoresho."],
+    ti: ["2.5.403 — እቲ ናብ ቦትካ ዘመልክት ክቢ ምልክት ነቲ መስመር ኣቑሑ ኣይሽፍኖን እዩ።"],
+  }},
+
   { v: '2.5.402', date: '2026-10-23', lines: {
     en: ['2.5.402 — Bot messages show a little robot face, not a lock.'],
     simple: ['2.5.402 — Bot messages: robot face.'],
