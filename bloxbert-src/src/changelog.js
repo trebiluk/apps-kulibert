@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.406', date: '2026-10-23', lines: {
+    en: ['2.5.406 — The name of what you hold no longer covers the safe-zone sign.'],
+    simple: ['2.5.406 — Held name off the safe sign.'],
+    uk: ['2.5.406 — Назва того, що ти тримаєш, більше не закриває табличку безпечної зони.'],
+    ru: ['2.5.406 — Название того, что ты держишь, больше не закрывает табличку безопасной зоны.'],
+    es: ['2.5.406 — El nombre de lo que llevas ya no tapa el aviso de zona segura.'],
+    ar: ['2.5.406 — اسم ما تمسكه لم يعد يغطي لافتة المنطقة الآمنة.'],
+    'fa-AF': ['2.5.406 — نام چیزی که در دست داری دیگر تابلوی منطقه امن را نمی‌پوشاند.'],
+    rw: ['2.5.406 — Izina ry’icyo ufashe ntirigipfuka icyapa cy’ahantu hatekanye.'],
+    ti: ['2.5.406 — ስም እቲ ዝሓዝካዮ ነቲ ምልክት ውሑስ ቦታ ኣይሽፍኖን እዩ።'],
+  }},
+
   { v: '2.5.405', date: '2026-10-23', lines: {
     en: ["2.5.405 — In Survival too, the top bar says Wand in full when you hold it."],
     simple: ["2.5.405 — Survival top bar: Wand."],
