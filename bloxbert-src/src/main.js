@@ -11729,11 +11729,13 @@ function paintLangRow(g) {
   lab.textContent = (t('language') || 'Language') + ': ' + curName
   btn.textContent = t('change') || 'Change'
   btn.setAttribute('aria-label', curName + ' — ' + (t('change') || 'Change'))
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
+    btn.disabled = true
     const idx = langs.indexOf(cur)
     const next = langs[(idx + 1 + langs.length) % langs.length]
     if (typeof saveKidLang === 'function') saveKidLang(next)
     else try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
+    try { await save() } catch (e) {}
     location.reload()
   })
   row.append(ico, lab, btn)
