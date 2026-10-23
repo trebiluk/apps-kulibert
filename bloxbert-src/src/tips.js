@@ -217,6 +217,7 @@ function barBand() {
     consider(hot, bars)
     hot.querySelectorAll('.slot, .bag-tile').forEach((node) => consider(node, bars))
   }
+  consider(document.getElementById('wand-pill'), bars) // 2.5.400: the wand's Elegir/✓/X bar sits above the hotbar; toasts and the keys line go above it, not on it
   consider(document.getElementById('pause-btn'), controls)
   consider(document.getElementById('fs-btn'), controls)
   return { bars, controls }
