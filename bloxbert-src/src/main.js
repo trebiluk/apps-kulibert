@@ -7865,7 +7865,7 @@ function jumpUp() {
   const tap = performance.now() - lastJumpDown < 250
   if (!tap || tableMode) return
   const now = performance.now()
-  if (now - lastJump < 300) {
+  if (now - lastJump < 450) { // 2.5.394: was 300 ms release-to-release; a normal kid double-tap (about 110 ms press + 200 ms gap) missed it
     const flyTry = Effects.spaceFly(survivalOn(), flying)
     if (!flyTry.ok) { toast(t('noFly')); lastJump = 0; return }
     flying = flyTry.flying
