@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.398', date: '2026-10-23', lines: {
+    en: ['2.5.398 — In Creative, pick a block in your Bag and press 1-9 to put it on that slot. Dragging still works.'],
+    simple: ['2.5.398 — Bag: press 1-9 to put a block on the bar.'],
+    uk: ['2.5.398 — У Творчості вибери блок у сумці й натисни 1-9, щоб поставити його в ту клітинку. Перетягування теж працює.'],
+    ru: ['2.5.398 — В Творчестве выбери блок в сумке и нажми 1-9, чтобы положить его в ту ячейку. Перетаскивание тоже работает.'],
+    es: ['2.5.398 — En Creativo, elige un bloque en tu Bolsa y pulsa 1-9 para ponerlo en esa casilla. Arrastrar sigue funcionando.'],
+    ar: ['2.5.398 — في الوضع الإبداعي اختر كتلة في حقيبتك واضغط 1-9 لتضعها في تلك الخانة. السحب ما زال يعمل.'],
+    'fa-AF': ['2.5.398 — در خلاقانه یک بلوک را در کیسه انتخاب کن و ۱ تا ۹ را بزن تا در آن خانه برود. کشیدن هم کار می‌کند.'],
+    rw: ['2.5.398 — Muri Creative, hitamo ibuye mu mufuka ukande 1-9 kugira ngo urishyire kuri uwo mwanya. Gukurura biracyakora.'],
+    ti: ["2.5.398 — ኣብ ፈጠራ፡ ኣብ ቦርሳኻ ብሎክ ምረጽ እሞ 1-9 ጠውቕ ኣብቲ ቦታ ንምቕማጥ። ምስሓብ ሕጂ'ውን ይሰርሕ።"],
+  }},
+
   { v: '2.5.397', date: '2026-10-23', lines: {
     en: ["2.5.397 — In Creative your hotbar has 9 numbered slots, like Survival. Every block is in your Bag (E)."],
     simple: ["2.5.397 — 9 slots in Creative. All blocks in the Bag."],
