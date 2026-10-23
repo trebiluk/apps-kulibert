@@ -5867,6 +5867,7 @@
     box.hidden = false;
     line.textContent = who.alias + " · " + instName(job.instrument) + ". " + taskName(job.task) + ".";
   }
+  window.addEventListener("kulibert-lang", () => { try { paintPractice(); } catch (ePr) {} }); // MU 2.36.50: the Band sign-in line follows a language change
   function loadAssign() {
     try {
       const raw = JSON.parse(localStorage.getItem(ASSIGN_KEY) || "null");
