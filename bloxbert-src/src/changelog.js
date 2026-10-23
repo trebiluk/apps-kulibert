@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.394', date: '2026-10-23', lines: {
+    en: ["2.5.394 — In Creative, double-tap Space to fly works at a normal tapping speed."],
+    simple: ["2.5.394 — Tap Space twice to fly. It is easier now."],
+    uk: ["2.5.394 — У Творчому режимі подвійне натискання пробілу для польоту працює зі звичайною швидкістю."],
+    ru: ["2.5.394 — В Творческом режиме двойное нажатие пробела для полёта работает при обычной скорости."],
+    es: ["2.5.394 — En Creativo, tocar dos veces Espacio para volar funciona a velocidad normal."],
+    ar: ["2.5.394 — في الوضع الإبداعي، النقر مرتين على المسافة للطيران يعمل بسرعة عادية."],
+    'fa-AF': ["2.5.394 — در حالت خلاق، دو بار زدن فاصله برای پرواز با سرعت عادی کار می‌کند."],
+    rw: ["2.5.394 — Muri Creative, gukanda Space kabiri ngo uguruke bikora ku muvuduko usanzwe."],
+    ti: ["2.5.394 — ኣብ ፈጠራዊ፡ ንምብራር ክልተ ግዜ Space ምጥዋቕ ብንቡር ቅልጣፈ ይሰርሕ።"],
+  }},
+
   { v: '2.5.393', date: '2026-10-23', lines: {
     en: ["2.5.393 — Opening the menu with the mouse or a tap no longer puts a big white frame on Continue."],
     simple: ["2.5.393 — No big white box on Continue when you open the menu."],
