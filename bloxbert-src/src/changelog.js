@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.390', date: '2026-10-23', lines: {
+    en: ["2.5.390 — \"Click to play\" waits while your Bag or the menu is open."],
+    simple: ["2.5.390 — The play hint hides while Bag is open."],
+    uk: ["2.5.390 — «Натисни, щоб грати» чекає, поки відкрита сумка або меню."],
+    ru: ["2.5.390 — «Нажми, чтобы играть» ждёт, пока открыта сумка или меню."],
+    es: ["2.5.390 — «Haz clic para jugar» espera mientras la Bolsa o el menú están abiertos."],
+    ar: ["2.5.390 — تنتظر عبارة «انقر للعب» ما دامت الحقيبة أو القائمة مفتوحة."],
+    'fa-AF': ["2.5.390 — «برای بازی کلیک کن» تا وقتی کیسه یا فهرست باز است صبر می‌کند."],
+    rw: ["2.5.390 — \"Kanda ukine\" itegereza igihe umufuka cyangwa menyu bifunguye."],
+    ti: ["2.5.390 — «ንምጽዋት ጠውቕ» ቦርሳ ወይ ዝርዝር ክፉት ክሳብ ዝኾነ ይጽበ።"],
+  }},
+
   { v: '2.5.389', date: '2026-10-23', lines: {
     en: ["2.5.389 — The update message no longer covers the safe zone sign."],
     simple: ["2.5.389 — You can read the safe sign when an update is ready."],

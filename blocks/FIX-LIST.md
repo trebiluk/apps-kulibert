@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **play-chip-hides-bag (2.5.390):** Click to play hides while Bag or menu is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.389 safe-chip-below-update:** On big screens the safe-zone chip sits below the update-ready chip. Path-chip rule still wins.
 - [x] **2.5.388 bar-no-english-flash:** The top bar uses a BAR_FIRST table so it starts in the kid's language before KulibertI18n arrives. English users unchanged.
 - [x] **safe-chip-hides-bag (2.5.387):** Safe-zone chip hides while Bag or menu is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
