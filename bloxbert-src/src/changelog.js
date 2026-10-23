@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.400', date: '2026-10-23', lines: {
+    en: ['2.5.400 — Messages no longer cover the wand buttons (Pick/✓/X). They show just above them.'],
+    simple: ['2.5.400 — Messages stay off the wand buttons.'],
+    uk: ['2.5.400 — Повідомлення більше не закривають кнопки жезла (Вибрати/✓/X). Вони з’являються над ними.'],
+    ru: ['2.5.400 — Сообщения больше не закрывают кнопки жезла (Выбрать/✓/X). Они появляются над ними.'],
+    es: ['2.5.400 — Los avisos ya no tapan los botones de la varita (Elegir/✓/X). Salen justo encima.'],
+    ar: ['2.5.400 — الرسائل لم تعد تغطي أزرار العصا (اختر/✓/X). تظهر فوقها مباشرة.'],
+    'fa-AF': ['2.5.400 — پیام‌ها دیگر دکمه‌های عصا (انتخاب/✓/X) را نمی‌پوشانند. درست بالای آن‌ها می‌آیند.'],
+    rw: ['2.5.400 — Ubutumwa ntibugipfuka utubuto tw’inkoni (Hitamo/✓/X). Bugaragara hejuru yatwo.'],
+    ti: ['2.5.400 — መልእኽትታት ንመጠወቕቲ በትሪ (ምረጽ/✓/X) ኣይሽፍኑን እዮም። ኣብ ልዕሊኦም ይርኣዩ።'],
+  }},
+
   { v: '2.5.399', date: '2026-10-23', lines: {
     en: ["2.5.399 — Lost your Bot? Open the Bag, Bot tab, and press Call my Bot. It comes to you."],
     simple: ["2.5.399 — Bag → Bot → Call my Bot."],
