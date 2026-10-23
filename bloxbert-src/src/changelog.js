@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.395', date: '2026-10-23', lines: {
+    en: ["2.5.395 — The Build Wand has its name on its hotbar slot. Press 0 to take it out or put it away."],
+    simple: ["2.5.395 — Press 0 for the Build Wand."],
+    uk: ["2.5.395 — На клітинці Чарівної палички тепер є назва. Натисни 0, щоб узяти або сховати її."],
+    ru: ["2.5.395 — На ячейке Волшебной палочки теперь есть название. Нажми 0, чтобы взять или убрать её."],
+    es: ["2.5.395 — La Varita de construir tiene su nombre en la barra. Pulsa 0 para sacarla o guardarla."],
+    ar: ["2.5.395 — صار اسم عصا البناء على خانتها في الشريط. اضغط 0 لإخراجها أو إعادتها."],
+    'fa-AF': ["2.5.395 — نام چوبدستی ساخت روی خانه‌اش است. برای برداشتن یا گذاشتنش 0 را بزن."],
+    rw: ["2.5.395 — Inkoni yo kubaka ifite izina ryayo ku mwanya wayo. Kanda 0 kuyifata cyangwa kuyibika."],
+    ti: ["2.5.395 — በትሪ ምህናጽ ኣብ ቦታኣ ስማ ኣለዋ። ንምውጻእ ወይ ንምቕማጥ 0 ጠውቕ።"],
+  }},
+
   { v: '2.5.394', date: '2026-10-23', lines: {
     en: ["2.5.394 — In Creative, double-tap Space to fly works at a normal tapping speed."],
     simple: ["2.5.394 — Tap Space twice to fly. It is easier now."],

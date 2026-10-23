@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.395 wand-label-key0:** Creative wand tile has its name. The 0 key toggles the wand in Creative.
 - [x] **fly-double-tap (2.5.394):** Creative fly double-tap window widened to 450 ms. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
