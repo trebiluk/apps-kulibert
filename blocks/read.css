@@ -539,6 +539,7 @@ html body #sheet #sheet-back:focus-visible {
   box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
 }
 html body #sheet #sheet-back:focus:not(:focus-visible) { outline: none !important; box-shadow: none !important; } /* 2.5.391: no white ring on Menu when the Bag opens by mouse/touch */
+html body #sheet button.kd-go:focus:not(:focus-visible) { outline: none !important; box-shadow: none !important; } /* 2.5.393: no white ring on Seguir when the menu opens by mouse/touch */
 
 /* 2.5.266: phone top bar keeps every word, the goal sits above the hotbar, and one menu header. */
 @media (max-width: 980px), (max-height: 520px) {

@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.393 seguir-ring-quiet:** Opening the menu by mouse or touch focuses Seguir quietly. Keyboard opens still get the ring. CSS kills the ring on kd-go:focus:not(:focus-visible).
 - [x] **update-chip-above-hotbar (2.5.392):** Update toast sits above the hotbar when Bag is open. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

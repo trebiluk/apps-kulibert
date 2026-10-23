@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.393', date: '2026-10-23', lines: {
+    en: ["2.5.393 — Opening the menu with the mouse or a tap no longer puts a big white frame on Continue."],
+    simple: ["2.5.393 — No big white box on Continue when you open the menu."],
+    uk: ["2.5.393 — Якщо відкрити меню мишею чи дотиком, на «Далі» більше немає великої білої рамки."],
+    ru: ["2.5.393 — Если открыть меню мышью или касанием, на «Продолжить» больше нет большой белой рамки."],
+    es: ["2.5.393 — Al abrir el menú con el ratón o un toque, Seguir ya no lleva un gran marco blanco."],
+    ar: ["2.5.393 — عند فتح القائمة بالفأرة أو باللمس لم يعد زر «متابعة» يحمل إطارًا أبيض كبيرًا."],
+    'fa-AF': ["2.5.393 — وقتی فهرست را با موس یا لمس باز می‌کنی، «ادامه» دیگر قاب سفید بزرگ ندارد."],
+    rw: ["2.5.393 — Iyo ufunguye menyu ukoresheje imbeba cyangwa ukoze, \"Komeza\" ntikigira ikadiri nini y'umweru."],
+    ti: ["2.5.393 — ዝርዝር ብማውስ ወይ ብምንካእ ክትከፍት ከለኻ፡ «ቀጽል» ደጊም ዓቢ ጻዕዳ ፍሬም የብሉን።"],
+  }},
+
   { v: '2.5.392', date: '2026-10-23', lines: {
     en: ["2.5.392 — With your Bag open, the update message sits above your hotbar, not on it."],
     simple: ["2.5.392 — The update message no longer covers your blocks."],
