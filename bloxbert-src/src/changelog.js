@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.389', date: '2026-10-23', lines: {
+    en: ["2.5.389 — The update message no longer covers the safe zone sign."],
+    simple: ["2.5.389 — You can read the safe sign when an update is ready."],
+    uk: ["2.5.389 — Повідомлення про оновлення більше не закриває знак безпечної зони."],
+    ru: ["2.5.389 — Сообщение об обновлении больше не закрывает знак безопасной зоны."],
+    es: ["2.5.389 — El aviso de actualización ya no tapa el aviso de zona segura."],
+    ar: ["2.5.389 — لم تعد رسالة التحديث تغطي لافتة المنطقة الآمنة."],
+    'fa-AF': ["2.5.389 — پیام به‌روزرسانی دیگر نشان منطقه امن را نمی‌پوشاند."],
+    rw: ["2.5.389 — Ubutumwa bw'ivugurura ntibugipfuka ikimenyetso cy'ahantu hatekanye."],
+    ti: ["2.5.389 — መልእኽቲ ምምሕያሽ ደጊም ንምልክት ውሑስ ቦታ ኣይሽፍኖን።"],
+  }},
+
   { v: '2.5.388', date: '2026-10-22', lines: {
     en: ["2.5.388 — The top bar starts in your language, with no English flash."],
     simple: ["2.5.388 — The top bar starts in your language."],
