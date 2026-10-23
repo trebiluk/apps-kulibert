@@ -21,6 +21,30 @@ import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
 
 export function createSession(api) {
+  const bagHover = { tile: null, at: 0 } // 2.5.407: track the tile under the mouse
+  window.addEventListener('keydown', (e) => { // 2.5.407: hover a block, press 1-9
+    if (!bagHover.tile || !api.putPalette) return
+    const sheet = document.getElementById('sheet')
+    if (!sheet || sheet.hidden || sheet.dataset.panel !== 'inventory') return
+    const n = '123456789'.indexOf(e.key)
+    if (n < 0 || e.ctrlKey || e.metaKey || e.altKey) return
+    const focused = document.activeElement
+    const focusLater = focused && focused !== bagHover.tile && focused.classList && focused.classList.contains('well') && focused.dataset && focused.dataset.block && bagHover.focusAt > bagHover.at
+    if (focusLater) return
+    e.preventDefault()
+    e.stopPropagation()
+    const block = Number(bagHover.tile.dataset.block)
+    if (!block) return
+    api.putPalette(n, block)
+    api.toast((bagHover.tile.getAttribute('aria-label') || '') + ' → ' + (n + 1))
+    const bar = document.querySelector('#hotbar')
+    const landed = bar ? bar.querySelectorAll('.slot:not(.bag-tile)')[n] : null
+    if (landed) {
+      landed.style.outline = '3px solid #f59e0b'
+      landed.style.outlineOffset = '-3px'
+      setTimeout(() => { if (landed.isConnected) { landed.style.outline = ''; landed.style.outlineOffset = '' } }, 600)
+    }
+  }, true)
   const bags = { survival: createBag(), creative: createBag() }
   let bag = bags.survival
   bindStationBag(() => bag.slots)
@@ -933,6 +957,12 @@ export function createSession(api) {
           window.addEventListener('pointerup', end, true)
           window.addEventListener('pointercancel', end, true)
         })
+        if (api.putPalette) { // 2.5.407: hover or focus, then 1-9
+          b.dataset.block = String(item.block)
+          b.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; bagHover.tile = b; bagHover.at = performance.now() })
+          b.addEventListener('pointerleave', () => { if (bagHover.tile === b) bagHover.tile = null })
+          b.addEventListener('focus', () => { bagHover.focusAt = performance.now() })
+        }
         b.addEventListener('keydown', (e) => { // 2.5.398: keyboard way in: focus a block, press 1-9 to put it in that hotbar slot
           const n = '123456789'.indexOf(e.key)
           if (n < 0 || e.ctrlKey || e.metaKey || e.altKey || !api.putPalette) return
