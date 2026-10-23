@@ -933,6 +933,21 @@ export function createSession(api) {
           window.addEventListener('pointerup', end, true)
           window.addEventListener('pointercancel', end, true)
         })
+        b.addEventListener('keydown', (e) => { // 2.5.398: keyboard way in: focus a block, press 1-9 to put it in that hotbar slot
+          const n = '123456789'.indexOf(e.key)
+          if (n < 0 || e.ctrlKey || e.metaKey || e.altKey || !api.putPalette) return
+          e.preventDefault()
+          e.stopPropagation()
+          api.putPalette(n, item.block)
+          api.toast(itemName(k) + ' → ' + (n + 1))
+          const bar = document.querySelector('#hotbar')
+          const landed = bar ? bar.querySelectorAll('.slot:not(.bag-tile)')[n] : null
+          if (landed) {
+            landed.style.outline = '3px solid #f59e0b'
+            landed.style.outlineOffset = '-3px'
+            setTimeout(() => { if (landed.isConnected) { landed.style.outline = ''; landed.style.outlineOffset = '' } }, 600)
+          }
+        })
         b.addEventListener('click', () => {
           if (blockSlot()) return
           if (bagSkip && performance.now() - bagSkip < 700) return
