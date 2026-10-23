@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.47** · 2026-10-22 · channel **live**
+
+MU 2.36.47 — The hint under each tab is in your language.
+
+## Earlier
+
 **Chip: MU 2.36.46** · 2026-10-22 · channel **live**
 
 MU 2.36.46 — The bar and beat counter speaks your language from the start.
