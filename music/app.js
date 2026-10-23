@@ -3818,6 +3818,9 @@
   });
   markLang();
   window.addEventListener("kulibert-lang", markLang);
+  // MU 2.36.46: the "Bar 1 · Beat 1" spot in the play bar speaks the kid's language before Play and after a language change
+  try { paintPlayPos(); } catch (ePos) {}
+  window.addEventListener("kulibert-lang", () => { try { paintPlayPos(); } catch (ePos) {} });
   function paintTheme(theme, save) {
     const next = theme === "dark" ? "dark" : "calm";
     document.documentElement.setAttribute("data-theme", next);
