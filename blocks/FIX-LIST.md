@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.399 summon-bot:** Bag Bot tab has a Call my Bot button that brings the Bot to a safe floor spot next to the player.
 - [x] **creative-bag-keys (2.5.398):** Creative Bag keyboard path to hotbar slots. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

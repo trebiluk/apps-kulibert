@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.399', date: '2026-10-23', lines: {
+    en: ["2.5.399 — Lost your Bot? Open the Bag, Bot tab, and press Call my Bot. It comes to you."],
+    simple: ["2.5.399 — Bag → Bot → Call my Bot."],
+    uk: ["2.5.399 — Загубив Бота? Відкрий сумку, вкладку Бот, і натисни «Поклич мого Бота». Він прийде до тебе."],
+    ru: ["2.5.399 — Потерял Бота? Открой сумку, вкладку Бот, и нажми «Позвать моего Бота». Он придёт к тебе."],
+    es: ["2.5.399 — ¿Perdiste tu Bot? Abre la Bolsa, pestaña Bot, y pulsa Llamar a mi Bot. Viene a ti."],
+    ar: ["2.5.399 — أضعت بوتك؟ افتح الحقيبة، تبويب البوت، واضغط «نادِ بوتي». سيأتي إليك."],
+    'fa-AF': ["2.5.399 — بوتت را گم کردی؟ کیسه را باز کن، زبانه بوت، و «بوتم را صدا کن» را بزن. پیش تو می‌آید."],
+    rw: ["2.5.399 — Wabuze Bot yawe? Fungura umufuka, ahanditse Bot, ukande Hamagara Bot yanjye. Iraza aho uri."],
+    ti: ["2.5.399 — ቦትካ ጠፊኡካ ድዩ? ቦርሳ ክፈት፡ ቦት፡ «ቦተይ ጸውዕ» ጠውቕ። ናባኻ ይመጽእ።"],
+  }},
+
   { v: '2.5.398', date: '2026-10-23', lines: {
     en: ['2.5.398 — In Creative, pick a block in your Bag and press 1-9 to put it on that slot. Dragging still works.'],
     simple: ['2.5.398 — Bag: press 1-9 to put a block on the bar.'],
