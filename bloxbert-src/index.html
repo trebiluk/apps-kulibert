@@ -91,7 +91,8 @@ html[data-kp-contrast="1"] #door-opt .keycap,html[data-kp-contrast="1"] #door-pi
 html[data-kp-motion="less"] #door-opt .keycap{transition:none}
 html[data-kb-bar]:not(.kb-framed) #toast{top:calc(48px + var(--top-h) + 10px)}
 html[data-kb-bar]:not(.kb-framed) #update-chip{top:calc(48px + var(--top-h) + 8px)}
-body:has(#sheet:not([hidden])) #update-chip{z-index:45;top:auto;bottom:calc(16px + env(safe-area-inset-bottom, 0px));left:50%;right:auto;transform:translateX(-50%)}
+body:has(#sheet:not([hidden])) #update-chip{z-index:45;top:auto;bottom:calc(var(--hotbar-h, 76px) + 12px + env(safe-area-inset-bottom, 0px));left:50%;right:auto;transform:translateX(-50%)} /* 2.5.392: sits above the hotbar, not on it */
+@media (max-height:520px){body:has(#sheet:not([hidden])) #update-chip{left:auto;right:calc(12px + env(safe-area-inset-right, 0px));transform:none}} /* 2.5.392: short screens: beside the Bag panel, not on it */
 [hidden]{display:none!important}
 .brand b{font-size:16px;letter-spacing:.2px}
 .brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
