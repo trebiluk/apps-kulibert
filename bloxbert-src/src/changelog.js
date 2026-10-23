@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.397', date: '2026-10-23', lines: {
+    en: ["2.5.397 — In Creative your hotbar has 9 numbered slots, like Survival. Every block is in your Bag (E)."],
+    simple: ["2.5.397 — 9 slots in Creative. All blocks in the Bag."],
+    uk: ["2.5.397 — У Творчості панель має 9 пронумерованих клітинок, як у Виживанні. Усі блоки — у сумці (E)."],
+    ru: ["2.5.397 — В Творчестве панель из 9 пронумерованных ячеек, как в Выживании. Все блоки — в сумке (E)."],
+    es: ["2.5.397 — En Creativo tu barra tiene 9 casillas numeradas, como en Supervivencia. Todos los bloques están en tu Bolsa (E)."],
+    ar: ["2.5.397 — في الوضع الإبداعي صار في شريطك 9 خانات مرقّمة مثل وضع البقاء. كل الكتل في حقيبتك (E)."],
+    'fa-AF': ["2.5.397 — در خلاقانه نوار تو ۹ خانه شماره‌دار دارد، مثل بقا. همه بلوک‌ها در کیسه‌ات هستند (E)."],
+    rw: ["2.5.397 — Muri Creative umurongo wawe ufite imyanya 9 ifite nimero, nko muri Survival. Amabuye yose ari mu mufuka wawe (E)."],
+    ti: ["2.5.397 — ኣብ ፈጠራ መስመርካ 9 ቁጽሪ ዘለዎም ቦታታት ኣለዎ፡ ከም ህላወ። ኩሉ ብሎካት ኣብ ቦርሳኻ (E) ኣሎ።"],
+  }},
+
   { v: '2.5.396', date: '2026-10-23', lines: {
     en: ["2.5.396 — Build Wand clicks work while you play: click one corner, then the other, and the box shows."],
     simple: ["2.5.396 — The Build Wand hears your clicks now."],

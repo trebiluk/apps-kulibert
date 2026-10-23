@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.397 creative-nine-slots:** Creative hotbar is 9 numbered slots. Bag click puts a block outside 1-9 into the held slot.
 - [x] **wand-locked-clicks (2.5.396):** Build Wand clicks work while the mouse is locked. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
