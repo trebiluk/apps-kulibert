@@ -5927,6 +5927,9 @@ function armLift(root) {
   window.addEventListener('pointerup', onUp, true)
   window.addEventListener('pointercancel', onUp, true)
 }
+let lastInputPointer = false // 2.5.391
+window.addEventListener('pointerdown', () => { lastInputPointer = true }, true)
+window.addEventListener('keydown', () => { lastInputPointer = false }, true)
 function anyCard() {
   const door = $('door-opt')
   const inspect = $('inspect-card')
@@ -6292,7 +6295,7 @@ panels = mountPanels({
   onOpen: () => {
     openMachineKey = ''
     releaseLook({ keepWorld: tourAutoOpen })
-    requestAnimationFrame(() => focusBtn(document.querySelector('#sheet button')))
+    requestAnimationFrame(() => { const b = document.querySelector('#sheet button'); if (lastInputPointer) { try { if (b) b.focus({ preventScroll: true, focusVisible: false }) } catch (e) {} } else focusBtn(b) }) // 2.5.391: opened by mouse/touch -> focus Menu quietly, no big ring over the header; keyboard keeps the ring
   },
   paintBag: (g) => session.paintBag(g),
   clearBag: () => { if (session && session.clearBagPick) session.clearBagPick() },
