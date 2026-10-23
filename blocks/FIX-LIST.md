@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **lang-keeps-mode (2.5.408):** Language change saves first so mode is kept. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.407 bag-hover-number:** In Creative Bag, hover a block and press 1-9 to put it in that slot. Keyboard focus still wins when it came last.
 - [x] **held-below-safe (2.5.406):** Held-name flash drops below the safe-zone chip. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

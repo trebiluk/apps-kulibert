@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.408', date: '2026-10-23', lines: {
+    en: ['2.5.408 — Changing the language keeps you in Creative or Survival, as you were.'],
+    simple: ['2.5.408 — New language, same mode.'],
+    uk: ['2.5.408 — Зміна мови залишає тебе у Творчості чи Виживанні, як було.'],
+    ru: ['2.5.408 — Смена языка оставляет тебя в Творчестве или Выживании, как было.'],
+    es: ['2.5.408 — Cambiar el idioma te deja en Creativo o Supervivencia, como estabas.'],
+    ar: ['2.5.408 — تغيير اللغة يبقيك في الوضع الإبداعي أو البقاء كما كنت.'],
+    'fa-AF': ['2.5.408 — عوض کردن زبان تو را در خلاقانه یا بقا، همان‌طور که بودی، نگه می‌دارد.'],
+    rw: ['2.5.408 — Guhindura ururimi bigusiga muri Creative cyangwa Survival nk’uko wari uri.'],
+    ti: ['2.5.408 — ቋንቋ ምቕያር ከም ዝነበርካዮ ኣብ ፈጠራ ወይ ምድሓን የጽንሓካ።'],
+  }},
+
   { v: '2.5.407', date: '2026-10-23', lines: {
     en: ["2.5.407 — In the Creative Bag, point at a block and press 1-9 to put it on that slot."],
     simple: ["2.5.407 — Bag: point + 1-9."],
