@@ -4812,7 +4812,7 @@
       document.body.classList.remove("is-make");
       $("make").hidden = true;
       setMode(readWorkspace().preset);
-      $("how").textContent = "The feel is set. Tap a letter or a pad. Then press Play.";
+      $("how").textContent = mu("howFeelSet") || "The feel is set. Tap a letter or a pad. Then press Play.";
       keep();
       renderDrums();
     });
@@ -4904,7 +4904,7 @@
       document.body.classList.remove("is-home");
       $("home").hidden = true;
       setMode(readWorkspace().preset);
-      $("how").textContent = "Empty staff. Tap a letter to place a note.";
+      $("how").textContent = mu("howBlank") || "Empty staff. Tap a letter to place a note.";
       rememberPack();
     });
     let pickKey = "C";
@@ -4951,7 +4951,7 @@
       document.body.classList.remove("is-home");
       $("home").hidden = true;
       setMode(readWorkspace().preset);
-      $("how").textContent = pickMeter + " in " + pickKey + ". Tap a letter.";
+      $("how").textContent = (mu("howMeterKey", { meter: pickMeter, key: pickKey }) || "{meter} in {key}. Tap a letter.").replace("{meter}", pickMeter).replace("{key}", pickKey);
       rememberPack();
     });
     let importKind = "lab";
