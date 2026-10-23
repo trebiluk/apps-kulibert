@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.384', date: '2026-10-22', lines: {
+    en: ["2.5.384 — The save sign shows one tick, not two."],
+    simple: ["2.5.384 — One tick on the save sign."],
+    uk: ["2.5.384 — Знак збереження показує одну галочку, а не дві."],
+    ru: ["2.5.384 — Знак сохранения показывает одну галочку, а не две."],
+    es: ["2.5.384 — El aviso de guardado muestra una sola marca, no dos."],
+    ar: ["2.5.384 — تُظهر علامة الحفظ علامة صح واحدة بدل اثنتين."],
+    'fa-AF': ["2.5.384 — نشان ذخیره یک تیک نشان می‌دهد، نه دو تا."],
+    rw: ["2.5.384 — Ikimenyetso cyo kubika kigaragaza akamenyetso kamwe, si tubiri."],
+    ti: ["2.5.384 — ምልክት ምዕቃብ ሓደ ምልክት የርኢ፡ ክልተ ኣይኮነን።"],
+  }},
+
   { v: '2.5.383', date: '2026-10-22', lines: {
     en: ["2.5.383 — On a sideways phone the move stick sits above your hotbar."],
     simple: ["2.5.383 — The move stick does not cover your items."],
