@@ -463,7 +463,7 @@ export function createSession(api) {
     bar.append(bagBtn)
     const held = bag.slots[hot]
     const label = document.getElementById('current')
-    if (label) label.textContent = held ? itemName(held.item) : t('emptySlot')
+    if (label) label.textContent = held ? ((held.item === 'buildWand' && t('wandShort')) || itemName(held.item)) : t('emptySlot') // 2.5.405: short wand name in Survival too
     const useBtn = document.getElementById('t-place')
     if (useBtn) useBtn.textContent = held && isFoodItem(held.item) ? t('useFood') : t('place')
     const nameKey = held ? held.item : ''
