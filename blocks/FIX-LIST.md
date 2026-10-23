@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.405 survival-wand-short:** Survival top-bar chip uses the short wand name. Slot label and aria keep the full name.
 - [x] **wand-short-name (2.5.404):** Top-bar chip uses the short wand name. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

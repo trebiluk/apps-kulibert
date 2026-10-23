@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.405', date: '2026-10-23', lines: {
+    en: ["2.5.405 — In Survival too, the top bar says Wand in full when you hold it."],
+    simple: ["2.5.405 — Survival top bar: Wand."],
+    uk: ["2.5.405 — І у Виживанні верхня панель повністю пише «Жезл», коли ти його тримаєш."],
+    ru: ["2.5.405 — И в Выживании верхняя панель полностью пишет «Жезл», когда ты его держишь."],
+    es: ["2.5.405 — También en Supervivencia, la barra de arriba dice Varita completa cuando la llevas."],
+    ar: ["2.5.405 — في وضع البقاء أيضًا، يكتب الشريط العلوي «العصا» كاملة عندما تمسكها."],
+    'fa-AF': ["2.5.405 — در بقا هم وقتی عصا را می‌گیری، نوار بالا «عصا» را کامل می‌نویسد."],
+    rw: ["2.5.405 — No muri Survival, umurongo wo hejuru wandika Inkoni yose iyo uyifashe."],
+    ti: ["2.5.405 — ኣብ ምድሓንውን፡ በትሪ ክትሕዝ ከለኻ ላዕለዋይ መስመር «በትሪ» ምሉእ ይጽሕፍ።"],
+  }},
+
   { v: '2.5.404', date: '2026-10-23', lines: {
     en: ['2.5.404 — With the wand in hand, the top bar says Wand in full.'],
     simple: ['2.5.404 — Top bar: Wand.'],
