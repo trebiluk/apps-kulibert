@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.46** · 2026-10-22 · channel **live**
+
+MU 2.36.46 — The bar and beat counter speaks your language from the start.
+
+## Earlier
+
 **Chip: MU 2.36.45** · 2026-10-22 · channel **live**
 
 MU 2.36.45 — On a sideways phone, the New beat button fits its word.

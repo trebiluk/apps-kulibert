@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] play-pos-lang: The bar and beat counter speaks the kid's language before Play and after a language change. MU 2.36.46.
 - [x] new-beat-fits: On a sideways phone the New beat word stays inside its button. MU 2.36.45.
 - [x] make-beat-fits: On a sideways phone the big Make a beat card fits on screen. MU 2.36.44.
 - [x] score-beat-44: On a sideways phone the Score tab beat cells are at least 44px wide. MU 2.36.43.

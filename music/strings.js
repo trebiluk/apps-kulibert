@@ -619,7 +619,8 @@
     news23642: "MU 2.36.42 — On a sideways phone, the picture names on Viz show in full.",
     news23643: "MU 2.36.43 — On a sideways phone, the beat boxes on Score are big enough to tap.",
     news23644: "MU 2.36.44 — On a sideways phone, the Make a beat card fits on the screen.",
-    news23645: "MU 2.36.45 — On a sideways phone, the New beat button fits its word."
+    news23645: "MU 2.36.45 — On a sideways phone, the New beat button fits its word.",
+    news23646: "MU 2.36.46 — The bar and beat counter speaks your language from the start."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -943,7 +944,8 @@
     news23642: "MU 2.36.42 — Picture names are not cut now.",
     news23643: "MU 2.36.43 — Beat boxes are easier to tap.",
     news23644: "MU 2.36.44 — The Make a beat card fits.",
-    news23645: "MU 2.36.45 — New beat fits."
+    news23645: "MU 2.36.45 — New beat fits.",
+    news23646: "MU 2.36.46 — Bar and beat are in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1557,7 +1559,8 @@
       "news23642": "MU 2.36.42 — На боковому телефоні назви картинок у Viz видно повністю.",
       "news23643": "MU 2.36.43 — На боковому телефоні клітинки ритму в Score достатньо великі, щоб торкатися.",
       "news23644": "MU 2.36.44 — На боковому телефоні картка «Зробити біт» вміщається на екрані.",
-      "news23645": "MU 2.36.45 — На боковому телефоні кнопка «Новий біт» вміщає свій напис."
+      "news23645": "MU 2.36.45 — На боковому телефоні кнопка «Новий біт» вміщає свій напис.",
+      "news23646": "MU 2.36.46 — Лічильник тактів і долей одразу твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2168,7 +2171,8 @@
       "news23642": "MU 2.36.42 — На боковом телефоне названия картинок в Viz видно полностью.",
       "news23643": "MU 2.36.43 — На боковом телефоне клетки ритма в Score достаточно большие, чтобы нажимать.",
       "news23644": "MU 2.36.44 — На боковом телефоне карточка «Сделать бит» помещается на экране.",
-      "news23645": "MU 2.36.45 — На боковом телефоне кнопка «Новый бит» вмещает свою надпись."
+      "news23645": "MU 2.36.45 — На боковом телефоне кнопка «Новый бит» вмещает свою надпись.",
+      "news23646": "MU 2.36.46 — Счётчик тактов и долей сразу на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2780,7 +2784,8 @@
       "news23642": "MU 2.36.42 — Con el teléfono de lado, los nombres de las imágenes de Viz se ven enteros.",
       "news23643": "MU 2.36.43 — Con el teléfono de lado, las casillas del ritmo en Score son fáciles de tocar.",
       "news23644": "MU 2.36.44 — Con el teléfono de lado, la tarjeta Hacer un ritmo cabe en la pantalla.",
-      "news23645": "MU 2.36.45 — Con el teléfono de lado, el botón Nuevo ritmo cabe entero."
+      "news23645": "MU 2.36.45 — Con el teléfono de lado, el botón Nuevo ritmo cabe entero.",
+      "news23646": "MU 2.36.46 — El contador de compás y tiempo está en tu idioma desde el principio."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3392,7 +3397,8 @@
       "news23642": "MU 2.36.42 — على الهاتف المائل، تظهر أسماء صور Viz كاملة.",
       "news23643": "MU 2.36.43 — على الهاتف المائل، صارت خانات الإيقاع في Score كبيرة بما يكفي للمس.",
       "news23644": "MU 2.36.44 — على الهاتف المائل، صارت بطاقة «اصنع إيقاعًا» تتسع في الشاشة.",
-      "news23645": "MU 2.36.45 — على الهاتف المائل، صار زر «إيقاع جديد» يتسع لكلمته."
+      "news23645": "MU 2.36.45 — على الهاتف المائل، صار زر «إيقاع جديد» يتسع لكلمته.",
+      "news23646": "MU 2.36.46 — عدّاد المازورة والنبضة بلغتك من البداية."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4004,7 +4010,8 @@
       "news23642": "MU 2.36.42 — روی تلفن خوابیده، نام تصویرهای Viz کامل دیده می‌شود.",
       "news23643": "MU 2.36.43 — روی تلفن خوابیده، خانه‌های ریتم در Score برای لمس به اندازه کافی بزرگ هستند.",
       "news23644": "MU 2.36.44 — روی تلفن خوابیده، کارت «ساختن ریتم» در صفحه جا می‌شود.",
-      "news23645": "MU 2.36.45 — روی تلفن خوابیده، دکمه «ریتم تازه» نوشته‌اش را جا می‌دهد."
+      "news23645": "MU 2.36.45 — روی تلفن خوابیده، دکمه «ریتم تازه» نوشته‌اش را جا می‌دهد.",
+      "news23646": "MU 2.36.46 — شمارنده میزان و ضرب از اول به زبان خودت است."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4616,7 +4623,8 @@
       "news23642": "MU 2.36.42 — Kuri telefoni iri ku ruhande, amazina y'amashusho ya Viz agaragara yose.",
       "news23643": "MU 2.36.43 — Kuri telefoni iri ku ruhande, udusanduku tw'injyana muri Score ni tunini bihagije ngo ukande.",
       "news23644": "MU 2.36.44 — Kuri telefoni iri ku ruhande, ikarita yo Gukora injyana ikwira kuri ecran.",
-      "news23645": "MU 2.36.45 — Kuri telefoni iri ku ruhande, buto ya Injyana nshya ikwira ijambo ryayo."
+      "news23645": "MU 2.36.45 — Kuri telefoni iri ku ruhande, buto ya Injyana nshya ikwira ijambo ryayo.",
+      "news23646": "MU 2.36.46 — Ibara ry'umurongo na beat riri mu rurimi rwawe kuva mu ntangiriro."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5228,7 +5236,8 @@
       "news23642": "MU 2.36.42 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ኣስማት ስእልታት Viz ምሉእ ይርኣዩ።",
       "news23643": "MU 2.36.43 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ሳጹናት ምት ኣብ Score ንምጥዋቕ ዝኣክል ዓበይቲ እዮም።",
       "news23644": "MU 2.36.44 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ ካርድ ምት ስራሕ ኣብ ስክሪን ይኣቱ።",
-      "news23645": "MU 2.36.45 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ መጠወቒ ሓድሽ ምት ቃሉ ይኣቱ።"
+      "news23645": "MU 2.36.45 — ኣብ ብጎኑ ዘሎ ተሌፎን፡ መጠወቒ ሓድሽ ምት ቃሉ ይኣቱ።",
+      "news23646": "MU 2.36.46 — ቆጻሪ መስመርን ምትን ካብ መጀመርታ ብቋንቋኻ እዩ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
