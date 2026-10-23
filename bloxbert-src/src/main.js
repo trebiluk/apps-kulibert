@@ -6269,6 +6269,7 @@ async function paintBackups(g) {
   }
 }
 panels = mountPanels({
+  lastPointer: () => lastInputPointer, // 2.5.393
   t, toast,
   touch: () => TOUCH_UI,
   workbenchOn: () => calm.workbenchOn(),

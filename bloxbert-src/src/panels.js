@@ -348,7 +348,8 @@ export function mountPanels(api) {
           if (!go || !go.isConnected) return
           go.style.outline = ''
           go.style.outlineOffset = ''
-          try { go.focus({ focusVisible: true }) } catch (e) { try { go.focus() } catch (err) {} }
+          const quiet = !!(api.lastPointer && api.lastPointer()) // 2.5.393: opened by mouse/touch -> no forced ring on Seguir; keyboard keeps it
+          try { go.focus({ focusVisible: !quiet }) } catch (e) { try { go.focus() } catch (err) {} }
         }
         requestAnimationFrame(focusGo)
       },
