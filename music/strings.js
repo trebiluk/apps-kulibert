@@ -671,7 +671,8 @@
     news23649: "MU 2.36.49 — On Band, the sign-in line is in your language.",
     news23650: "MU 2.36.50 — On Band, the sign-in line changes as soon as you pick a language.",
     news23651: "MU 2.36.51 — Under the song player, the Press Play line is in your language.",
-    news23652: "MU 2.36.52 — The start cards (Make a song, Tap a score...) are in your language."
+    news23652: "MU 2.36.52 — The start cards (Make a song, Tap a score...) are in your language.",
+    news23653: "MU 2.36.53 — The song library's shelves and places (Africa, Ghana...) are in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1002,7 +1003,8 @@
     news23649: "MU 2.36.49 — Sign-in words in your language.",
     news23650: "MU 2.36.50 — Sign-in words change with your language.",
     news23651: "MU 2.36.51 — Press Play words in your language.",
-    news23652: "MU 2.36.52 — Start cards in your language."
+    news23652: "MU 2.36.52 — Start cards in your language.",
+    news23653: "MU 2.36.53 — Song shelves in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1674,7 +1676,8 @@
       "news23649": "MU 2.36.49 — У Бенді рядок про вхід твоєю мовою.",
       "news23650": "MU 2.36.50 — У Бенді рядок про вхід змінюється одразу, щойно ти обереш мову.",
       "news23651": "MU 2.36.51 — Під програвачем пісень рядок «Натисни Play» твоєю мовою.",
-      "news23652": "MU 2.36.52 — Стартові картки («Створи пісню», «Натискай ноти»...) твоєю мовою."
+      "news23652": "MU 2.36.52 — Стартові картки («Створи пісню», «Натискай ноти»...) твоєю мовою.",
+      "news23653": "MU 2.36.53 — Полиці й місця в бібліотеці пісень (Африка, Гана...) твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2343,7 +2346,8 @@
       "news23649": "MU 2.36.49 — В Бэнде строка о входе на твоём языке.",
       "news23650": "MU 2.36.50 — В Бэнде строка о входе меняется сразу, как только ты выберешь язык.",
       "news23651": "MU 2.36.51 — Под проигрывателем песен строка «Нажми Play» на твоём языке.",
-      "news23652": "MU 2.36.52 — Стартовые карточки («Создай песню», «Нажимай ноты»...) на твоём языке."
+      "news23652": "MU 2.36.52 — Стартовые карточки («Создай песню», «Нажимай ноты»...) на твоём языке.",
+      "news23653": "MU 2.36.53 — Полки и места в библиотеке песен (Африка, Гана...) на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3013,7 +3017,8 @@
       "news23649": "MU 2.36.49 — En Banda, la línea para entrar está en tu idioma.",
       "news23650": "MU 2.36.50 — En Banda, la línea para entrar cambia en cuanto eliges un idioma.",
       "news23651": "MU 2.36.51 — Bajo el reproductor de canciones, la línea Pulsa Play está en tu idioma.",
-      "news23652": "MU 2.36.52 — Las tarjetas de inicio (Haz una canción, Toca una partitura...) están en tu idioma."
+      "news23652": "MU 2.36.52 — Las tarjetas de inicio (Haz una canción, Toca una partitura...) están en tu idioma.",
+      "news23653": "MU 2.36.53 — Los estantes y lugares de la biblioteca de canciones (África, Ghana...) están en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3683,7 +3688,8 @@
       "news23649": "MU 2.36.49 — في الفرقة، سطر تسجيل الدخول بلغتك.",
       "news23650": "MU 2.36.50 — في الفرقة، يتغيّر سطر تسجيل الدخول فور اختيارك لغة.",
       "news23651": "MU 2.36.51 — تحت مشغّل الأغاني، سطر «اضغط Play» بلغتك.",
-      "news23652": "MU 2.36.52 — بطاقات البداية («اصنع أغنية»، «انقر نوتة»...) بلغتك."
+      "news23652": "MU 2.36.52 — بطاقات البداية («اصنع أغنية»، «انقر نوتة»...) بلغتك.",
+      "news23653": "MU 2.36.53 — رفوف وأماكن مكتبة الأغاني (أفريقيا، غانا...) بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4353,7 +4359,8 @@
       "news23649": "MU 2.36.49 — در گروپ، خط ورود به زبان خودت است.",
       "news23650": "MU 2.36.50 — در گروپ، خط ورود همین که زبان را انتخاب کنی عوض می‌شود.",
       "news23651": "MU 2.36.51 — زیر پخش‌کننده آهنگ، خط «Play را بزن» به زبان خودت است.",
-      "news23652": "MU 2.36.52 — کارت‌های شروع («یک آهنگ بساز»، «نت بزن»...) به زبان خودت است."
+      "news23652": "MU 2.36.52 — کارت‌های شروع («یک آهنگ بساز»، «نت بزن»...) به زبان خودت است.",
+      "news23653": "MU 2.36.53 — قفسه‌ها و جاهای کتابخانه آهنگ (افریقا، غنا...) به زبان خودت است."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5023,7 +5030,8 @@
       "news23649": "MU 2.36.49 — Mu Itsinda, umurongo wo kwinjira uri mu rurimi rwawe.",
       "news23650": "MU 2.36.50 — Mu Itsinda, umurongo wo kwinjira uhinduka ako kanya uhisemo ururimi.",
       "news23651": "MU 2.36.51 — Munsi y'icuranga indirimbo, umurongo wa Kanda Play uri mu rurimi rwawe.",
-      "news23652": "MU 2.36.52 — Amakarita yo gutangira (Kora indirimbo, Kanda inota...) ari mu rurimi rwawe."
+      "news23652": "MU 2.36.52 — Amakarita yo gutangira (Kora indirimbo, Kanda inota...) ari mu rurimi rwawe.",
+      "news23653": "MU 2.36.53 — Amasahani n'ahantu mu isomero ry'indirimbo (Afurika, Ghana...) biri mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5693,7 +5701,8 @@
       "news23649": "MU 2.36.49 — ኣብ ጉጅለ፡ መስመር ምእታው ብቋንቋኻ እዩ።",
       "news23650": "MU 2.36.50 — ኣብ ጉጅለ፡ መስመር ምእታው ቋንቋ ምስ መረጽካ ብኡንብኡ ይቕየር።",
       "news23651": "MU 2.36.51 — ኣብ ትሕቲ ተጻዋቲ ደርፊ፡ መስመር «Play ጠውቕ» ብቋንቋኻ እዩ።",
-      "news23652": "MU 2.36.52 — ካርድታት መጀመርታ («ደርፊ ስራሕ»፡ «ነጥቢ ጠውቕ»...) ብቋንቋኻ እዮም።"
+      "news23652": "MU 2.36.52 — ካርድታት መጀመርታ («ደርፊ ስራሕ»፡ «ነጥቢ ጠውቕ»...) ብቋንቋኻ እዮም።",
+      "news23653": "MU 2.36.53 — መደርደሪታትን ቦታታትን ቤተ-መጻሕፍቲ ደርፍታት (ኣፍሪቃ፡ ጋና...) ብቋንቋኻ እዮም።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
