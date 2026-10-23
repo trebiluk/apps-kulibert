@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.391', date: '2026-10-23', lines: {
+    en: ["2.5.391 — Opening your Bag with the mouse or a tap no longer puts a big white frame on the Menu button."],
+    simple: ["2.5.391 — No big white box on Menu when you open the Bag."],
+    uk: ["2.5.391 — Якщо відкрити сумку мишею чи дотиком, на кнопці «Меню» більше немає великої білої рамки."],
+    ru: ["2.5.391 — Если открыть сумку мышью или касанием, на кнопке «Меню» больше нет большой белой рамки."],
+    es: ["2.5.391 — Al abrir la Bolsa con el ratón o un toque, el botón Menú ya no lleva un gran marco blanco."],
+    ar: ["2.5.391 — عند فتح الحقيبة بالفأرة أو باللمس لم يعد زر القائمة يحمل إطارًا أبيض كبيرًا."],
+    'fa-AF': ["2.5.391 — وقتی کیسه را با موس یا لمس باز می‌کنی، دکمه فهرست دیگر قاب سفید بزرگ ندارد."],
+    rw: ["2.5.391 — Iyo ufunguye umufuka ukoresheje imbeba cyangwa ukoze, buto ya Menyu ntikigira ikadiri nini y'umweru."],
+    ti: ["2.5.391 — ቦርሳ ብማውስ ወይ ብምንካእ ክትከፍት ከለኻ፡ መልጎም ዝርዝር ደጊም ዓቢ ጻዕዳ ፍሬም የብሉን።"],
+  }},
+
   { v: '2.5.390', date: '2026-10-23', lines: {
     en: ["2.5.390 — \"Click to play\" waits while your Bag or the menu is open."],
     simple: ["2.5.390 — The play hint hides while Bag is open."],
