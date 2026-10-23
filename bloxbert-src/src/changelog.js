@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.402', date: '2026-10-23', lines: {
+    en: ['2.5.402 — Bot messages show a little robot face, not a lock.'],
+    simple: ['2.5.402 — Bot messages: robot face.'],
+    uk: ['2.5.402 — Повідомлення Бота показують маленьке обличчя робота, а не замок.'],
+    ru: ['2.5.402 — Сообщения Бота показывают маленькое лицо робота, а не замок.'],
+    es: ['2.5.402 — Los avisos del Bot muestran una carita de robot, no un candado.'],
+    ar: ['2.5.402 — رسائل البوت تُظهر وجه روبوت صغيرًا، لا قفلًا.'],
+    'fa-AF': ['2.5.402 — پیام‌های بوت یک چهره کوچک ربات نشان می‌دهند، نه قفل.'],
+    rw: ['2.5.402 — Ubutumwa bwa Bot bwerekana isura ntoya ya robo, si ingufuri.'],
+    ti: ['2.5.402 — መልእኽትታት ቦት ንእሽቶ ገጽ ሮቦት የርእዩ፡ ማዕጸ ኣይኮነን።'],
+  }},
+
   { v: '2.5.401', date: '2026-10-23', lines: {
     en: ["2.5.401 — The wand tile shows its key, 0, and a short name: Wand."],
     simple: ["2.5.401 — Wand tile: key 0."],
