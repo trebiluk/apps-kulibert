@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] band-lines-lang: On Band, the note hint and Play with the band speak the kid's language. MU 2.36.48.
 - [x] tool-lines-lang: The one-line hint under each tab speaks the kid's language. MU 2.36.47.
 - [x] play-pos-lang: The bar and beat counter speaks the kid's language before Play and after a language change. MU 2.36.46.
 - [x] new-beat-fits: On a sideways phone the New beat word stays inside its button. MU 2.36.45.
