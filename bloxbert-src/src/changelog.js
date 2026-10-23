@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.388', date: '2026-10-22', lines: {
+    en: ["2.5.388 — The top bar starts in your language, with no English flash."],
+    simple: ["2.5.388 — The top bar starts in your language."],
+    uk: ["2.5.388 — Верхня панель одразу твоєю мовою, без англійського спалаху."],
+    ru: ["2.5.388 — Верхняя панель сразу на твоём языке, без английской вспышки."],
+    es: ["2.5.388 — La barra de arriba empieza en tu idioma, sin destello en inglés."],
+    ar: ["2.5.388 — يبدأ الشريط العلوي بلغتك، دون ومضة بالإنجليزية."],
+    'fa-AF': ["2.5.388 — نوار بالا از اول به زبان خودت است، بدون چشمک انگلیسی."],
+    rw: ["2.5.388 — Umurongo wo hejuru utangira mu rurimi rwawe, nta Cyongereza kibanza."],
+    ti: ["2.5.388 — ላዕለዋይ መስመር ብቋንቋኻ ይጅምር፡ እንግሊዝኛ ኣይቀድምን።"],
+  }},
+
   { v: '2.5.387', date: '2026-10-22', lines: {
     en: ["2.5.387 — The safe zone sign waits while your Bag or the menu is open."],
     simple: ["2.5.387 — The safe sign hides while Bag is open."],
