@@ -5213,7 +5213,7 @@ function paintSaveChip(state) {
   if (!el) return
   if (!kidActed) return
   const saved = state === 'saved' || state === 'synced' || state === 'offline'
-  const word = saved ? '✓ ' + t('saved') : t('s2bSaving') // 2.5.379: chip words in the kid's language
+  const word = saved ? t('saved') : t('s2bSaving') // 2.5.384: the chip's own tick icon is the only tick (was a second '✓ ' in the word)
   el.hidden = false
   el.dataset.state = state || 'saved'
   const lab = el.querySelector('.sc-word')
