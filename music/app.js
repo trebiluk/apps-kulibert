@@ -5860,7 +5860,7 @@
     const line = $("practice-line");
     const who = signedKid();
     const code = $("who-code");
-    if (code) code.textContent = who ? who.alias : "Sign in to keep a mark. You can still play.";
+    if (code) code.textContent = who ? who.alias : (mu("whoSignKeep") || "Sign in to keep a mark. You can still play."); // MU 2.36.49: in the kid's language
     const job = mine();
     if (!box || !line) return;
     if (!who || !job) { box.hidden = true; return; }
