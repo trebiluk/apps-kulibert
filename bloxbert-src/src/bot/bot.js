@@ -328,6 +328,23 @@ export function initBot(ctx) {
     return placeAt(spot.x, spot.y, spot.z)
   }
 
+  function summon() { // 2.5.399: bring the Bot to a safe floor spot next to the player
+    const bot = bots[0]
+    if (!bot) return
+    const spot = findFloor()
+    if (!spot) { tell('botGround'); return }
+    if (bot.running) { bot.running = false; bot.token++ }
+    const pos = ctx.noa.entities.getPosition(ctx.noa.playerEntity)
+    bot.x = spot.x
+    bot.y = spot.y
+    bot.z = spot.z
+    bot.yaw = Math.atan2(pos[0] - (spot.x + 0.5), pos[2] - (spot.z + 0.5))
+    sync()
+    if (ctx.markDirty) ctx.markDirty()
+    if (ctx.close) ctx.close()
+    tell('botCame')
+    pointAt(bot)
+  }
   function findBot(id) {
     return bots.find((b) => b.id === id) || null
   }
@@ -694,6 +711,24 @@ export function initBot(ctx) {
       })
       wells.className = 'wells bot-pin'
       wells.append(b)
+      if (bots.length) { // 2.5.399: Call my Bot button
+        const call = document.createElement('button')
+        call.type = 'button'
+        call.className = 'well gtile bot-call'
+        call.style.minHeight = '44px'
+        const pin = document.createElement('span')
+        pin.textContent = '📍'
+        pin.setAttribute('aria-hidden', 'true')
+        pin.style.cssText = 'font-size:18px;line-height:1;'
+        const clab = document.createElement('span')
+        clab.textContent = ctx.t('botSummon')
+        clab.style.cssText = 'display:block;font-size:12px;font-weight:800;line-height:1.2;color:#E6EEF2;pointer-events:none;'
+        call.append(pin, clab)
+        call.setAttribute('aria-label', ctx.t('botSummon'))
+        call.title = ctx.t('botSummon')
+        call.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); summon() })
+        wells.append(call)
+      }
       host.prepend(tab, wells)
     }
   }
@@ -715,6 +750,7 @@ export function initBot(ctx) {
   }, true)
 
   const api = {
+    summon() { summon() }, // 2.5.399
     dump() {
       return bots.map((b) => ({
         id: b.id, x: b.x, y: b.y, z: b.z, yaw: b.yaw, planks: b.planks,
