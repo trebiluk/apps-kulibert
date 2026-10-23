@@ -1732,6 +1732,7 @@ html body #dig-chip:not([hidden]) {
 @media (max-height: 520px) and (min-width: 700px) {
   html body #hotbar { max-width: calc(100vw - 2 * (16px + env(safe-area-inset-right) + 64px + 12px)) !important; }
   html body #hotbar .item-strip { overflow-x: auto !important; }
+  html body:not(.mode-creative) #hotbar .slot:not(.bag-tile) { flex: 0 1 76px !important; min-width: 56px !important; } /* 2.5.385: all 9 slots shrink to fit beside Bag instead of slot 9 hiding under it */
 }
 @media (max-width: 520px) {
   :root { --hud-lift: 150px; }
