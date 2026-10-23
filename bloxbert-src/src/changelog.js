@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.407', date: '2026-10-23', lines: {
+    en: ["2.5.407 — In the Creative Bag, point at a block and press 1-9 to put it on that slot."],
+    simple: ["2.5.407 — Bag: point + 1-9."],
+    uk: ["2.5.407 — У сумці Творчості наведи на блок і натисни 1-9, щоб поставити його в ту клітинку."],
+    ru: ["2.5.407 — В сумке Творчества наведи на блок и нажми 1-9, чтобы положить его в ту ячейку."],
+    es: ["2.5.407 — En la Bolsa de Creativo, apunta a un bloque y pulsa 1-9 para ponerlo en esa casilla."],
+    ar: ["2.5.407 — في حقيبة الوضع الإبداعي، أشر إلى كتلة واضغط 1-9 لتضعها في تلك الخانة."],
+    'fa-AF': ["2.5.407 — در کیسه خلاقانه، روی یک بلوک برو و ۱ تا ۹ را بزن تا در آن خانه برود."],
+    rw: ["2.5.407 — Mu mufuka wa Creative, erekeza ku ibuye ukande 1-9 kugira ngo urishyire kuri uwo mwanya."],
+    ti: ["2.5.407 — ኣብ ቦርሳ ፈጠራ፡ ናብ ሓደ ብሎክ ኣመልክት እሞ 1-9 ጠውቕ።"],
+  }},
+
   { v: '2.5.406', date: '2026-10-23', lines: {
     en: ['2.5.406 — The name of what you hold no longer covers the safe-zone sign.'],
     simple: ['2.5.406 — Held name off the safe sign.'],
