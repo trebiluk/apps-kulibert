@@ -7465,8 +7465,14 @@ function flashHeld(name) {
   chip.classList.remove('on')
   void chip.offsetWidth
   chip.classList.add('on')
+  chip.style.top = ''
+  const safe = document.getElementById('safe-chip')
+  if (safe && !safe.hidden) {
+    const c = chip.getBoundingClientRect(), s = safe.getBoundingClientRect()
+    if (c.left < s.right && c.right > s.left && c.top < s.bottom && c.bottom > s.top) chip.style.top = (s.bottom + 6) + 'px'
+  }
   clearTimeout(flashHeld.t)
-  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on') }, 1500)
+  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on'); chip.style.top = '' }, 1500)
 }
 function bagPick(item, slot) {
   selectedSlot = slot
