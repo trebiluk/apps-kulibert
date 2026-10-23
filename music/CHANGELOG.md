@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.52** · 2026-10-23 · channel **live**
+
+MU 2.36.52 — The start cards (Make a song, Tap a score...) are in your language.
+
+## Earlier
+
 **Chip: MU 2.36.51** · 2026-10-23 · channel **live**
 
 MU 2.36.51 — Under the song player, the Press Play line is in your language.
