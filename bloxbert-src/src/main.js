@@ -6610,7 +6610,7 @@ function selectWandSlot() {
   paintBar()
   paintWandPill()
   const el = $('current')
-  if (el) el.textContent = t('buildWand')
+  if (el) el.textContent = t('wandShort') || t('buildWand')
   flashHeld(t('buildWand'))
   return true
 }
