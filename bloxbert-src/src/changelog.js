@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.415', date: '2026-10-24', lines: {
+    en: ["2.5.415 — The held block name shows in the Survival top bar on 1024-wide screens."],
+    simple: ["2.5.415 — You can see what you hold on mid-size screens."],
+    uk: ["2.5.415 — Назва блока в руці видно у верхній панелі Виживання на екранах 1024."],
+    ru: ["2.5.415 — Название блока в руке видно в верхней панели Выживания на экранах 1024."],
+    es: ["2.5.415 — El nombre del bloque en la mano se ve en la barra de arriba de Supervivencia en pantallas de 1024."],
+    ar: ["2.5.415 — اسم المكعب في يدك يظهر في الشريط العلوي لوضع البقاء على شاشات 1024."],
+    'fa-AF': ["2.5.415 — نام بلاکِ در دست، در نوار بالای بقا روی صفحه‌های ۱۰۲۴ دیده می‌شود."],
+    rw: ["2.5.415 — Izina ry’ikibanza ufashe rigaragara hejuru muri Survival kuri ecran za 1024."],
+    ti: ["2.5.415 — ኣብ ኢድካ ዘሎ ብሎክ ስም ኣብ ላዕለዋይ መስመር ምድሓን ኣብ 1024 ስክሪን ይርአ።"],
+  }},
+
   { v: '2.5.414', date: '2026-10-24', lines: {
     en: ['2.5.414 — The wand marks your first corner right away.'],
     simple: ['2.5.414 — The wand shows your first corner.'],

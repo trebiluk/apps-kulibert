@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.415 survival-lcd-1024:** Survival top bar shows the held name on 1024-wide screens. The plate word is hidden between 981px and 1199px.
 - [x] **creative-hotbar-persist (2.5.410):** Creative hotbar order is saved and restored. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
