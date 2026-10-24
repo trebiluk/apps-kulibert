@@ -263,7 +263,7 @@ export function createMobs(opts) {
   function showVent() {
     try {
       const el = document.createElement('div')
-      el.textContent = '→ Hiss'
+      el.textContent = '💨 →'; el.setAttribute('aria-hidden', 'true')
       el.style.cssText = 'position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);font-size:24px;z-index:40;pointer-events:none;color:#fbbf24'
       document.body.append(el)
       setTimeout(() => el.remove(), 2000)
