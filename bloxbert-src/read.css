@@ -1783,3 +1783,40 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 @media (min-width: 521px) and (min-height: 521px) {
   html body #sheet[data-panel="menu"] .kd-exit { height: 56px !important; min-height: 56px !important; max-height: 56px !important; }
 }
+/* 2.5.439: BERTY OS solid theme — gray + orange, no glow */
+:root {
+  --kd-navy: #141414;
+  --kd-navy-2: #222222;
+  --kd-key-top: #2b2b2b;
+  --kd-edge: #E85820;
+  --kd-bevel: #000;
+  --kd-teal: #E85820;
+  --kd-teal-2: #f08a4b;
+  --kd-trace: #E85820;
+  --kd-orange: #E85820;
+  --kd-orange-2: #f08a4b;
+  --kd-text: #e8e6e3;
+  --kd-ink: #141414;
+  --read-ink: #e8e6e3;
+  --read-grey: #a8a39c;
+  --read-line: #E85820;
+}
+html body {
+  font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+html body #sheet,
+html body .kd-panel {
+  background-color: #222222 !important;
+  background-image: none !important;
+  border: 1px solid #E85820 !important;
+  box-shadow: 6px 6px 0 #000 !important;
+  color: #e8e6e3 !important;
+}
+html body #sheet-title::before { content: "BERTY OS · "; color: #f08a4b; }
+html body .count,
+html body .digit,
+html body .glbl { color: #f08a4b !important; }
+@media (prefers-reduced-motion: reduce) {
+  html body #sheet::after,
+  html body .kd-panel::after { display: none !important; }
+}

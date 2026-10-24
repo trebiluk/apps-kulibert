@@ -813,12 +813,13 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   font-size:12px;font-weight:800;line-height:1;white-space:nowrap;cursor:pointer;
 }
 .top small.tb-lcd{
-  display:block;flex:1 1 auto;min-width:0;max-width:100%;height:20px;margin:0;padding:0 6px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:20px;
-  border:1px solid #145e56;border-radius:4px;
-  background-color:#062018;color:#7ff5e3;
-  font-family:ui-monospace,Consolas,monospace;font-size:14px;font-weight:700;
+  display:block;flex:1 1 auto;min-width:240px;max-width:100%;height:32px;margin:0;padding:0 8px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:32px;
+  border:1px solid #E85820;border-radius:4px;
+  background-color:#222222;color:#e8e6e3;
+  font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:14px;font-weight:700;
 }
+@media(max-width:500px){.top small.tb-lcd{min-width:160px}} /* 2.5.439: 160px at 412 upright */
 @media(max-width:500px){.top small.tb-lcd{display:none}}
 @media (min-width:981px) and (max-width:1199px){html body header.top .tb-plate canvas.kd-word,html body header.top .tb-plate .tb-name{display:none !important}} /* 2.5.415: free room for the held name on mid-size Survival */
 #mode-chip{
