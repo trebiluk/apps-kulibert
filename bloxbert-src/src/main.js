@@ -242,7 +242,6 @@ function checkSafeEntry() {
   const pos = playerPos()
   if (!pos) return
   const now = inSafeZone(pos[0], pos[2])
-  if (now && !lastSafe) showSafeChip()
   lastSafe = now
   paintSafeChip()
 }
