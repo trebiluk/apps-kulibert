@@ -11727,29 +11727,39 @@ function paintLangRow(g) {
   ico.textContent = '🌐'
   const lab = document.createElement('span')
   lab.className = 'set-lab'
-  lab.textContent = t('language') || 'Language'
-  const btn = document.createElement('button')
-  btn.type = 'button'
-  btn.className = 'pill'
-  btn.style.minWidth = '44px'
-  btn.style.minHeight = '44px'
   const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple']
   const names = { en: 'English', uk: 'Українська', ru: 'Русский', es: 'Español', ar: 'العربية', 'fa-AF': 'دری', rw: 'Kinyarwanda', ti: 'ትግርኛ', simple: 'Simple' }
   const cur = LANG || 'en'
   const curName = names[cur] || cur
   lab.textContent = (t('language') || 'Language') + ': ' + curName
-  btn.textContent = t('change') || 'Change'
-  btn.setAttribute('aria-label', curName + ' — ' + (t('change') || 'Change'))
-  btn.addEventListener('click', async () => {
-    btn.disabled = true
-    const idx = langs.indexOf(cur)
-    const next = langs[(idx + 1 + langs.length) % langs.length]
+  const sel = document.createElement('select')
+  sel.className = 'pill'
+  sel.style.minWidth = '44px'
+  sel.style.minHeight = '44px'
+  sel.style.maxWidth = '100%'
+  sel.style.fontSize = '16px'
+  sel.style.colorScheme = 'dark'
+  sel.setAttribute('aria-label', t('language') || 'Language')
+  const rtlCodes = { ar: 1, 'fa-AF': 1 }
+  sel.dir = document.documentElement.dir || (rtlCodes[cur] ? 'rtl' : 'ltr')
+  for (const code of langs) {
+    const opt = document.createElement('option')
+    opt.value = code
+    opt.textContent = names[code] || code
+    opt.lang = code === 'simple' ? 'en' : code
+    opt.dir = rtlCodes[code] ? 'rtl' : 'ltr'
+    if (code === cur) opt.selected = true
+    sel.append(opt)
+  }
+  sel.addEventListener('change', async () => {
+    sel.disabled = true
+    const next = sel.value
     if (typeof saveKidLang === 'function') saveKidLang(next)
     else try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
     try { await save() } catch (e) {}
     location.reload()
   })
-  row.append(ico, lab, btn)
+  row.append(ico, lab, sel)
   g.append(row)
 }
 function paintPvpSettings(g) {

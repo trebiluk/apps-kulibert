@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.412', date: '2026-10-24', lines: {
+    en: ['2.5.412 — Pick your language from a list in Settings.'],
+    simple: ['2.5.412 — Choose your language from a list.'],
+    uk: ['2.5.412 — Обери мову зі списку в Налаштуваннях.'],
+    ru: ['2.5.412 — Выбери язык из списка в Настройках.'],
+    es: ['2.5.412 — Elige tu idioma de una lista en Ajustes.'],
+    ar: ['2.5.412 — اختر لغتك من قائمة في الإعدادات.'],
+    'fa-AF': ['2.5.412 — زبانت را از فهرست در تنظیمات انتخاب کن.'],
+    rw: ['2.5.412 — Hitamo ururimi rwawe ku rutonde muri Igenamiterere.'],
+    ti: ['2.5.412 — ቋንቋኻ ካብ ዝርዝር ኣብ ቅጥዕታት ምረጽ።'],
+  }},
+
   { v: '2.5.410', date: '2026-10-24', lines: {
     en: ['2.5.410 — Your Creative hotbar keeps its blocks in place after a reload.'],
     simple: ['2.5.410 — Your Creative hotbar stays the same after reload.'],
