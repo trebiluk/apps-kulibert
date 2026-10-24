@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.422', date: '2026-10-24', lines: {
+    en: ['2.5.422 — Walking into Bertyville shows the safe-zone sign once, not twice.'],
+    simple: ['2.5.422 — The safe town sign shows one time.'],
+    uk: ['2.5.422 — Коли заходиш у Бертівіль, знак безпечної зони з’являється один раз, а не двічі.'],
+    ru: ['2.5.422 — Когда входишь в Бертивиль, знак безопасной зоны появляется один раз, а не два.'],
+    es: ['2.5.422 — Al entrar en Bertyville, el aviso de zona segura sale una vez, no dos.'],
+    ar: ['2.5.422 — عند دخول بيرتيفيل تظهر لافتة المنطقة الآمنة مرة واحدة، لا مرتين.'],
+    'fa-AF': ['2.5.422 — وقتی وارد برتی‌ویل می‌شوی، نشان منطقهٔ امن یک بار نشان داده می‌شود، نه دو بار.'],
+    rw: ['2.5.422 — Iyo winjiye muri Bertyville, icyapa cy’ahantu hatekanye kigaragara rimwe, si kabiri.'],
+    ti: ['2.5.422 — ናብ በርቲቪል ክትኣቱ ከለኻ፡ ምልክት ውሑስ ቦታ ሓንሳብ ጥራይ ይርአ፡ ክልተ ግዜ ኣይኮነን።'],
+  }},
+
   { v: '2.5.421', date: '2026-10-24', lines: {
     en: ["2.5.421 — Undo and Redo stay in the top bar greyed out when there is nothing to undo, so there is no empty gap."],
     simple: ["2.5.421 — Undo and Redo are grey when you can’t use them."],

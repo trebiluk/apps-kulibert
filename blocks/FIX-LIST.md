@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **safe-once (2.5.422):** Safe-zone entry shows the chip once. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.421 undo-redo-grey:** Disabled Undo and Redo stay visible at opacity .4 so the top bar has no empty gap.
 - [x] **e-opens-bag-wand (2.5.416):** E opens the Bag even while the wand is held. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
