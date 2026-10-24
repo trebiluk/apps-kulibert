@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.427', date: '2026-10-24', lines: {
+    en: ['2.5.427 — The Foundry boss bar no longer shows a crew count that was always 1.'],
+    simple: ['2.5.427 — The boss bar lost a wrong number.'],
+    uk: ['2.5.427 — Смуга боса Ливарні більше не показує лічильник команди, який завжди був 1.'],
+    ru: ['2.5.427 — Полоса босса Литейной больше не показывает счётчик команды, который всегда был 1.'],
+    es: ['2.5.427 — La barra del jefe de la Fundición ya no muestra un contador de equipo que siempre era 1.'],
+    ar: ['2.5.427 — شريط زعيم المسبك لم يعد يعرض عدد الفريق الذي كان دائمًا 1.'],
+    'fa-AF': ['2.5.427 — نوار رئیس ریخته‌گری دیگر شمار گروهی را که همیشه ۱ بود نشان نمی‌دهد.'],
+    rw: ['2.5.427 — Umurongo w’umuyobozi wa Foundry ntukigaragaza umubare w’itsinda wahoraga ari 1.'],
+    ti: ['2.5.427 — መስመር ሓለቓ ፋውንድሪ ኩሉ ግዜ 1 ዝነበረ ቍጽሪ ጉጅለ ድሕሪ ሕጂ ኣየርእን።'],
+  }},
+
   { v: '2.5.426', date: '2026-10-24', lines: {
     en: ["2.5.426 — The pause menu groups now fill the whole width, with no empty column on the right."],
     simple: ["2.5.426 — The menu has no empty gap now."],

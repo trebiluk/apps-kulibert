@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **boss-crew-count (2.5.427):** Boss bar drops the fake crew count. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.426 menu-four-columns:** Pause menu uses 4 columns when there is no teacher group, so students have no empty column on the right.
 - [x] **safe-once (2.5.422):** Safe-zone entry shows the chip once. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
