@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.429', date: '2026-10-24', lines: {
+    en: ['2.5.429 — The Woodshop Bench "made it" note now uses your language, like the Workbench.'],
+    simple: ['2.5.429 — The Woodshop note speaks your language.'],
+    uk: ['2.5.429 — Повідомлення Верстата про виготовлення тепер твоєю мовою, як у Верстака.'],
+    ru: ['2.5.429 — Сообщение столярного Верстака об изготовлении теперь на твоём языке, как у обычного Верстака.'],
+    es: ['2.5.429 — El aviso del Banco de madera al fabricar ahora sale en tu idioma, como el del Banco.'],
+    ar: ['2.5.429 — ملاحظة الصنع في منضدة الخشب أصبحت بلغتك الآن، مثل المنضدة.'],
+    'fa-AF': ['2.5.429 — پیام ساختن در میز نجاری حالا به زبان خودت است، مثل میز کار.'],
+    rw: ['2.5.429 — Ubutumwa bwo gukora ku Intebe y’ububaji ubu buri mu rurimi rwawe, nka ku Ameza.'],
+    ti: ['2.5.429 — መልእኽቲ ምስራሕ ኣብ መደብ ዕንጨይቲ ሕጂ ብቋንቋኻ እዩ፡ ከም ኣብ ሰደቓ።'],
+  }},
+
   { v: '2.5.427', date: '2026-10-24', lines: {
     en: ['2.5.427 — The Foundry boss bar no longer shows a crew count that was always 1.'],
     simple: ['2.5.427 — The boss bar lost a wrong number.'],

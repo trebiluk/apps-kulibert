@@ -5615,7 +5615,7 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   for (const [k, n] of ins) if (session.spend && !session.spend(k, n)) return false
   if (session.give) session.give(id, 1)
   stampDecor(id, chosen)
-  toast('Made ' + t(id))
+  toast(t('make') + ' ' + t(id))
   return true
 }, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn(), belt: (key) => belts ? belts.flow(key) : null })
 function beltKey(x, y, z) { return x + ',' + y + ',' + z }
