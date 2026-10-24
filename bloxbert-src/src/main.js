@@ -3991,7 +3991,7 @@ async function saveClicked() {
       return
     }
     showNotSavedChip()
-    if (e && e.code === 'newer') toast('Made in a newer Bertopia')
+    if (e && e.code === 'newer') toast(t('saveNewer'))
     else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
   }
 }
@@ -4068,8 +4068,8 @@ async function load() {
     allowSave = !readOnlySave && !savePaused
     if (readOnlySave) {
       dirty = false
-      toast('Made in a newer Bertopia')
-      markSave('Made in a newer Bertopia')
+      toast(t('saveNewer'))
+      markSave(t('saveNewer'))
     } else {
       markSave(t('loaded'))
       if (pinned) noteMachine()
@@ -4902,7 +4902,7 @@ claimSaveLock()
 setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
 function saveFailToast(e) {
-  if (e && e.code === 'newer') toast('Made in a newer Bertopia')
+  if (e && e.code === 'newer') toast(t('saveNewer'))
   else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
 }
 function showUpdateChip() {
