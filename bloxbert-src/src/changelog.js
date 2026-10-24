@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.421', date: '2026-10-24', lines: {
+    en: ["2.5.421 — Undo and Redo stay in the top bar greyed out when there is nothing to undo, so there is no empty gap."],
+    simple: ["2.5.421 — Undo and Redo are grey when you can’t use them."],
+    uk: ["2.5.421 — Скасувати й Повторити лишаються на верхній панелі сірими, коли нема що скасовувати, тож порожньої дірки нема."],
+    ru: ["2.5.421 — Отменить и Повторить остаются на верхней панели серыми, когда нечего отменять, поэтому пустой дыры нет."],
+    es: ["2.5.421 — Deshacer y Rehacer se quedan en la barra de arriba en gris cuando no hay nada que deshacer, así no queda un hueco vacío."],
+    ar: ["2.5.421 — زرّا التراجع والإعادة يبقيان في الشريط العلوي باللون الرمادي عندما لا يوجد ما يُتراجع عنه، فلا تبقى فجوة فارغة."],
+    'fa-AF': ["2.5.421 — دکمه‌های برگشت و دوباره وقتی چیزی برای برگشت نیست، خاکستری در نوار بالا می‌مانند، پس جای خالی نمی‌ماند."],
+    rw: ["2.5.421 — Gusubiza inyuma no Gusubiramo biguma hejuru ari ibara ry’ivu iyo nta cyo gusubiza, ntihasigare umwanya wambaye ubusa."],
+    ti: ["2.5.421 — ምምላስን ምድጋምን ዝምለስ ነገር ምስ ዘይህሉ ሓሙኽሽቲ ኮይኖም ኣብ ላዕለዋይ መስመር ይጸንሑ፡ ባዶ ቦታ የለን።"],
+  }},
+
   { v: '2.5.420', date: '2026-10-24', lines: {
     en: ['2.5.420 — The wand’s first corner shows as a bigger box, so you can tell it is set.'],
     simple: ['2.5.420 — The first wand corner is a big box now.'],
