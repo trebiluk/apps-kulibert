@@ -7173,6 +7173,16 @@ const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCr
 if (packOn('tech')) {
   for (const id of [TECH.cell, TECH.line, TECH.switch, TECH.button]) {
     if (BLOCKS.some((b) => b[0] === id) && paletteIds.indexOf(id) < 0) paletteIds.push(id)
+  try {
+    const saved = JSON.parse(localStorage.getItem('bloxbert-creative-hot') || '[]')
+    if (Array.isArray(saved)) {
+      saved.forEach((id, i) => {
+        if (i >= CREATIVE_HOT) return
+        const j = paletteIds.indexOf(Number(id))
+        if (j >= 0 && j !== i) { const prev = paletteIds[i]; paletteIds[i] = paletteIds[j]; paletteIds[j] = prev }
+      })
+    }
+  } catch (e) {}
   }
 }
 let selectedSlot = 0
@@ -7446,6 +7456,7 @@ function putPalette(i, id) {
   selectedSlot = n
   current = paletteIds[n]
   wandSlot = false
+  try { localStorage.setItem('bloxbert-creative-hot', JSON.stringify(paletteIds.slice(0, CREATIVE_HOT))) } catch (e) {}
   paintBar()
   const name = blockName(current)
   const label = $('current')
