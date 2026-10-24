@@ -1,0 +1,24 @@
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#2B2824;color:#2B2824;font-family:Georgia,"Times New Roman",serif;overflow:hidden;touch-action:none}
+#app{display:flex;flex-direction:column;height:100%}
+#bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#D4C29A;border-bottom:3px solid #6B3A22;flex:0 0 auto}
+#title{font-weight:bold;font-size:18px}
+.grow{flex:1}
+#bar button,#bar select{font:inherit;font-size:15px;background:#E8DCC0;color:#2B2824;border:2px solid #2B2824;border-radius:6px;min-height:36px;padding:2px 10px}
+#chip{font:12px monospace;background:#1F5A5E;color:#E8DCC0;padding:3px 8px;border-radius:10px}
+#stage{position:relative;flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
+canvas{max-width:100%;max-height:100%;aspect-ratio:16/9;background:#D4C29A;box-shadow:0 6px 18px #000a}
+#banner{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);background:#E8DCC0;border:3px solid #A4482A;padding:16px 26px;font-size:24px;border-radius:8px;text-align:center;box-shadow:6px 6px 0 #2B282488}
+#touch{display:none;flex:0 0 auto;justify-content:space-between;padding:8px;gap:8px;background:#3a352e}
+.touch #touch{display:flex}
+.zone{display:grid;grid-template-columns:repeat(4,52px);gap:6px}
+.zone button{width:52px;height:52px;font-size:22px;border-radius:50%;border:2px solid #2B2824;color:#2B2824}
+.zone[data-p="0"] button{background:#D8B46A}
+.zone[data-p="1"] button{background:#9A6A48;color:#E8DCC0}
+.zone button.on{filter:brightness(.8)}
+#help{position:fixed;inset:0;background:#2B2824cc;display:flex;align-items:center;justify-content:center;z-index:5}
+#help[hidden],#banner[hidden]{display:none}
+#help .card{background:#E8DCC0;max-width:520px;width:92%;max-height:86%;overflow:auto;padding:18px;border-radius:8px;border:3px solid #6B3A22}
+#help button{font:inherit;padding:6px 18px;background:#C8932E;border:2px solid #2B2824;border-radius:6px;min-height:44px}
+@media (max-width:600px){#title{display:none}}
+@media (max-width:440px){.zone{grid-template-columns:repeat(4,44px);gap:4px}.zone button{width:44px;height:44px;font-size:18px}#touch{padding:8px 6px}}

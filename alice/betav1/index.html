@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alice &amp; Wonderland — Room 1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="bar">
+    <span id="title"></span>
+    <span class="grow"></span>
+    <select id="lang" aria-label="Language"></select>
+    <button id="btnHelp" type="button" aria-label="Help">?</button>
+    <button id="btnReset" type="button"></button>
+    <span id="chip" title="version">betav1</span>
+  </header>
+  <div id="stage"><canvas id="game" width="960" height="540" aria-label="Room 1"></canvas>
+    <div id="banner" hidden></div>
+  </div>
+  <div id="touch" aria-hidden="true">
+    <div class="zone" data-p="0">
+      <button data-k="left">◀</button><button data-k="right">▶</button>
+      <button data-k="jump">▲</button><button data-k="use">✋</button>
+    </div>
+    <div class="zone" data-p="1">
+      <button data-k="left">◀</button><button data-k="right">▶</button>
+      <button data-k="jump">▲</button><button data-k="use">✋</button>
+    </div>
+  </div>
+  <div id="help" hidden role="dialog" aria-modal="true"><div class="card"><div id="helpBody"></div><button id="helpClose" type="button">OK</button></div></div>
+</div>
+<script src="js/i18n.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
