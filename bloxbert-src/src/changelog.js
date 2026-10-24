@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.425 — መልእኽቲ «ኣብ ካልእ ታብ ክፉት» ከምኡውን «ኣይተዓቐበን» ሕጂ ብቋንቋኻ እዮም።'],
   }},
 
+  { v: '2.5.424', date: '2026-10-24', lines: {
+    en: ['2.5.424 — In Settings, the Camera choice (Close / Behind) no longer looks switched off.'],
+    simple: ['2.5.424 — The Camera button does not look off now.'],
+    uk: ['2.5.424 — У Налаштуваннях вибір Камери (Близько / Ззаду) більше не виглядає вимкненим.'],
+    ru: ['2.5.424 — В Настройках выбор Камеры (Близко / Сзади) больше не выглядит выключенным.'],
+    es: ['2.5.424 — En Ajustes, la opción de Cámara (Cerca / Detrás) ya no parece apagada.'],
+    ar: ['2.5.424 — في الإعدادات، لم يعد خيار الكاميرا (قريب / خلف) يبدو مطفأً.'],
+    'fa-AF': ['2.5.424 — در تنظیمات، انتخاب کمره (نزدیک / پشت) دیگر خاموش به نظر نمی‌رسد.'],
+    rw: ['2.5.424 — Mu Igenamiterere, guhitamo Kamera (Hafi / Inyuma) ntibikigaragara nk’ibizimije.'],
+    ti: ['2.5.424 — ኣብ ቅጥዒታት፡ ምርጫ ካሜራ (ቀረባ / ድሕሪት) ደጊም ዝጠፍአ ኣይመስልን።'],
+  }},
+
   { v: '2.5.422', date: '2026-10-24', lines: {
     en: ['2.5.422 — Walking into Bertyville shows the safe-zone sign once, not twice.'],
     simple: ['2.5.422 — The safe town sign shows one time.'],

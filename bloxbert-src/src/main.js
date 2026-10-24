@@ -8877,11 +8877,10 @@ function paintLook(g) {
   const cam = lookLine(t('cameraView'), null, 'camera')
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
-  camBtn.className = 'pill'
+  camBtn.className = 'pill on'
   const paintCam = () => {
-    camBtn.classList.toggle('on', camBehind)
-    camBtn.setAttribute('aria-pressed', camBehind ? 'true' : 'false')
     camBtn.textContent = camBehind ? t('camBehind') : t('camClose')
+    camBtn.setAttribute('aria-label', t('cameraView') + ': ' + camBtn.textContent)
   }
   paintCam()
   camBtn.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
