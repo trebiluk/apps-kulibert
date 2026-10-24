@@ -1771,3 +1771,7 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 @media (min-width: 521px) and (min-height: 521px) {
   html body:has(#path-chip:not([hidden]):not(.path-out)) #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 74px) !important; }
 }
+/* 2.5.426: students see 4 menu groups; only a teacher device has a 5th */
+@media (min-width: 700px) {
+  html body #sheet[data-panel="menu"] .kd-groups:not(:has(.kd-teacher)) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
