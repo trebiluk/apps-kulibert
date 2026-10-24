@@ -7227,7 +7227,6 @@ function rescueToGround(fromVoid) {
 function poof() {
   rescueToGround(true)
 }
-window.__btRescue = { rescueToGround, groundTop, solidVoxel, pos: () => Array.from(noa.entities.getPosition(noa.playerEntity)), tp: (x, y, z) => noa.entities.setPosition(noa.playerEntity, [x, y, z]), pause: (v) => noa.setPaused(v), paused: () => !!noa._paused, vel: () => Array.from(playerBody.velocity) }
 if (!localStorage.getItem('bloxbert-menu-hint')) showMenuHint()
 
 const bar = $('hotbar')
