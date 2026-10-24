@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.420', date: '2026-10-24', lines: {
+    en: ['2.5.420 — The wand’s first corner shows as a bigger box, so you can tell it is set.'],
+    simple: ['2.5.420 — The first wand corner is a big box now.'],
+    uk: ['2.5.420 — Перший кут Жезла тепер більша рамка, тож видно, що його поставлено.'],
+    ru: ['2.5.420 — Первый угол Жезла теперь большая рамка, видно, что он поставлен.'],
+    es: ['2.5.420 — La primera esquina de la varita se ve como una caja más grande, así sabes que está puesta.'],
+    ar: ['2.5.420 — الزاوية الأولى للعصا تظهر كصندوق أكبر، فتعرف أنها وُضعت.'],
+    'fa-AF': ['2.5.420 — گوشهٔ اول عصا حالا جعبهٔ بزرگ‌تری است، پس می‌فهمی که گذاشته شده.'],
+    rw: ['2.5.420 — Inguni ya mbere y’Inkoni igaragara nk’agasanduku kanini, ukamenya ko yashyizweho.'],
+    ti: ['2.5.420 — ቀዳመይቲ ኩርናዕ በትሪ ዓቢ ሳጹን ኮይና ትርአ፡ ከም ዝተቐመጠት ትፈልጥ።'],
+  }},
+
   { v: '2.5.419', date: '2026-10-24', lines: {
     en: ['2.5.419 — The Suit chip shows one shield, not two.'],
     simple: ['2.5.419 — The Suit chip has one shield.'],
