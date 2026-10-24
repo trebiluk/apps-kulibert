@@ -23,6 +23,18 @@ export const CHANGELOG = [
     ti: ['2.5.435 — ዝርዝር ቁጽሪ ነፍሲ ወከፍ ስሪት ብሰማያዊ የርኢ፡ ናትካ ድማ ብ«ኣብዚ ኢኻ» ይምልክት።'],
   }},
 
+  { v: '2.5.434', date: '2026-10-24', lines: {
+    en: ['2.5.434 — In the menu, Exit is the same size as Close.'],
+    simple: ['2.5.434 — Exit and Close match in the menu.'],
+    uk: ['2.5.434 — У меню кнопка Вихід тепер такого ж розміру, як Закрити.'],
+    ru: ['2.5.434 — В меню кнопка Выход теперь такого же размера, как Закрыть.'],
+    es: ['2.5.434 — En el menú, Salir tiene el mismo tamaño que Cerrar.'],
+    ar: ['2.5.434 — في القائمة، زر الخروج بنفس حجم زر الإغلاق.'],
+    'fa-AF': ['2.5.434 — در فهرست، دکمهٔ خروج هم‌اندازهٔ دکمهٔ بستن است.'],
+    rw: ['2.5.434 — Muri menu, Sohoka ingana na Funga.'],
+    ti: ['2.5.434 — ኣብ ዝርዝር፡ ውጻእ ምስ ዕጸው ሓደ መጠን እዩ።'],
+  } },
+
   { v: '2.5.433', date: '2026-10-24', lines: {
     en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
     simple: ['2.5.433 — The boss vent sign has no English word now.'],

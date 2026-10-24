@@ -1775,3 +1775,11 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 @media (min-width: 700px) {
   html body #sheet[data-panel="menu"] .kd-groups:not(:has(.kd-teacher)) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 }
+
+/* 2.5.434: Salir/Exit matches Cerrar/Close in the menu header */
+@media (min-width: 521px) {
+  html body #sheet[data-panel="menu"] .kd-exit { box-sizing: border-box !important; min-width: 90px !important; padding: 0 10px !important; gap: 6px !important; align-self: center !important; justify-content: center !important; }
+}
+@media (min-width: 521px) and (min-height: 521px) {
+  html body #sheet[data-panel="menu"] .kd-exit { height: 56px !important; min-height: 56px !important; max-height: 56px !important; }
+}
