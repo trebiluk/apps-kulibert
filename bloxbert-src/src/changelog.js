@@ -23,6 +23,18 @@ export const CHANGELOG = [
     ti: ['2.5.424 — ኣብ ቅጥዒታት፡ ምርጫ ካሜራ (ቀረባ / ድሕሪት) ደጊም ዝጠፍአ ኣይመስልን።'],
   }},
 
+  { v: '2.5.423', date: '2026-10-24', lines: {
+    en: ['2.5.423 — In Creative, the Bag marks the block you are holding when it opens.'],
+    simple: ['2.5.423 — The Bag shows which block you hold.'],
+    uk: ['2.5.423 — У Творчому режимі Сумка одразу позначає блок, який ти тримаєш.'],
+    ru: ['2.5.423 — В Творческом режиме Сумка сразу отмечает блок, который ты держишь.'],
+    es: ['2.5.423 — En Creativo, la Bolsa marca el bloque que tienes en la mano al abrirse.'],
+    ar: ['2.5.423 — في الوضع الإبداعي، تُعلِّم الحقيبة المكعّب الذي تمسكه عند فتحها.'],
+    'fa-AF': ['2.5.423 — در حالت خلاق، کیف وقتی باز می‌شود بلوکی را که در دست داری نشان می‌دهد.'],
+    rw: ['2.5.423 — Muri Creative, Agafuka kerekana ibuye ufashe iyo gafunguka.'],
+    ti: ['2.5.423 — ኣብ ፈጠራ፡ ሳንጣ ክትክፈት ከላ እቲ ዝሓዝካዮ ብሎክ ተመልክት።'],
+  } },
+
   { v: '2.5.422', date: '2026-10-24', lines: {
     en: ['2.5.422 — Walking into Bertyville shows the safe-zone sign once, not twice.'],
     simple: ['2.5.422 — The safe town sign shows one time.'],

@@ -5326,6 +5326,7 @@ session = createSession({
   flash: (name) => flashHeld(name),
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
   creativeHot: () => selectedSlot,
+  creativeBlock: () => (wandSlot ? 0 : current || 0),
   setCreativeHot: (i) => {
     const n = Math.max(0, i | 0)
     if (!paletteIds.length) return

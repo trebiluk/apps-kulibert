@@ -868,6 +868,9 @@ export function createSession(api) {
         const b = document.createElement('button')
         b.type = 'button'
         b.className = 'well gtile'
+        const held = api.creativeBlock && api.creativeBlock() === item.block
+        b.classList.toggle('on', held)
+        b.setAttribute('aria-pressed', held ? 'true' : 'false')
         const pic = document.createElement('span')
         pic.className = 'gic'
         pic.append(api.blockIcon ? fitIcon(api.blockIcon(item.block)) : document.createElement('span'))
