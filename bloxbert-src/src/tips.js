@@ -257,20 +257,26 @@ export function pinAboveBar(el) {
   if (bars.length && top + h > ceil + 0.5) top = Math.max(8, Math.round(ceil - h))
   if (wide) {
     const crowd = []
-    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip', '#suit-bar']) {
+    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip', '#suit-bar', '#safe-chip']) { // 2.5.432: also clear the safe-zone chip
       const node = document.querySelector(sel)
       if (!node || node.hidden) continue
       const r = node.getBoundingClientRect()
       if (r.width < 8 || r.height < 8) continue
       crowd.push(r)
     }
+    const hdr = document.querySelector('header.top') // 2.5.432: never sit behind the top bar
+    const hb = hdr ? hdr.getBoundingClientRect() : null
+    const floor = hb && hb.height ? Math.round(hb.bottom) + 8 : 8
     for (let n = 0; n < 8; n++) {
       const over = crowd.find((b) => left < b.right - 2 && left + w > b.left + 2 && top < b.bottom - 2 && top + h > b.top + 2)
       if (!over) break
       const up = Math.round(over.top - 8 - h)
-      if (up >= 8 && up < top) top = up
+      if (up >= floor && up < top) top = up
       else break
     }
+    const still = crowd.find((b) => left < b.right - 2 && left + w > b.left + 2 && top < b.bottom - 2 && top + h > b.top + 2) // 2.5.432: hide if still overlapping
+    if (still || top < floor) el.style.setProperty('visibility', 'hidden', 'important')
+    else el.style.removeProperty('visibility')
   }
   el.style.setProperty('left', Math.round(left) + 'px', 'important')
   el.style.setProperty('top', Math.round(top) + 'px', 'important')
