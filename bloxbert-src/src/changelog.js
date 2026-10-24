@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.416', date: '2026-10-24', lines: {
+    en: ['2.5.416 — E opens the Bag even while you hold the Build Wand.'],
+    simple: ['2.5.416 — E opens the Bag, even with the wand.'],
+    uk: ['2.5.416 — E відкриває Сумку, навіть коли в руці Жезл будови.'],
+    ru: ['2.5.416 — E открывает Сумку, даже когда в руке Жезл стройки.'],
+    es: ['2.5.416 — E abre la Bolsa aunque tengas la Varita de construir en la mano.'],
+    ar: ['2.5.416 — زر E يفتح الحقيبة حتى وأنت تمسك عصا البناء.'],
+    'fa-AF': ['2.5.416 — دکمهٔ E کیف را باز می‌کند، حتی وقتی عصای ساخت در دست است.'],
+    rw: ['2.5.416 — E ifungura Igikapu n’igihe ufashe Inkoni y’ubwubatsi.'],
+    ti: ['2.5.416 — E ቦርሳ ይኸፍት፡ በትሪ ህንጻ ኣብ ኢድካ ክትሕዝ ከለኻ እውን።'],
+  }},
+
   { v: '2.5.415', date: '2026-10-24', lines: {
     en: ["2.5.415 — The held block name shows in the Survival top bar on 1024-wide screens."],
     simple: ["2.5.415 — You can see what you hold on mid-size screens."],
