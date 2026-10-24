@@ -923,6 +923,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   #energy-bar,#fx-strip{flex:1 0 100%}
 }
 #sheet[data-panel=settings]{align-items:center;justify-content:flex-start;background:rgba(6,12,16,.82);padding:16px 8px 12px}
+#sheet.kd-panel:is([data-panel=notebook],[data-panel=help],[data-panel=builds],[data-panel=world],[data-panel=mode],[data-panel=goals],[data-panel=shop],[data-panel=wallet],[data-panel=a11y],[data-panel=log]){align-items:center}
+#sheet.kd-panel:is([data-panel=notebook],[data-panel=help],[data-panel=builds],[data-panel=mode],[data-panel=goals],[data-panel=wallet],[data-panel=log]) #sheet-body>.ggrid{padding-inline:12px;box-sizing:border-box}
 #sheet[data-panel=settings] .sheet-bar,#sheet[data-panel=settings] #sheet-body{background-color:#0E1A22;color:#E6EEF2}
 #sheet[data-panel=settings] #sheet-body{display:flex;flex-direction:column}
 #sheet[data-panel=settings] .ggrid{display:flex;flex-direction:column;align-items:stretch;width:100%;grid-template-columns:none;gap:8px;overflow:visible;padding-top:4px}
