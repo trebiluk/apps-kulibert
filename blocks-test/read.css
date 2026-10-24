@@ -561,7 +561,8 @@ html body #sheet button.kd-go:focus:not(:focus-visible) { outline: none !importa
   html body header.top > * { flex: 0 0 auto !important; min-width: 0; }
   html body header.top .brand { flex: 0 0 auto !important; max-width: none !important; min-width: 0 !important; }
   html body header.top .tb-plate { width: auto !important; max-width: none !important; overflow: visible !important; }
-  html body header.top .tb-lcd { display: none !important; }
+  html body header.top .tb-lcd { flex: 1 1 auto !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* 2.5.409: show the held name on sideways phones */
+@media (max-width: 600px) { html body header.top .tb-lcd { display: none !important; } } /* 2.5.409: hide only on narrow upright phones */
   html body header.top #mode-chip,
   html body header.top #energy-bar,
   html body header.top #fx-strip { display: none !important; }

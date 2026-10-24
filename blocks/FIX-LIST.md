@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.409 lcd-sideways:** Held-item name shows in the top bar on sideways phones. Hidden only below 600px wide.
 - [x] **lang-keeps-mode (2.5.408):** Language change saves first so mode is kept. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

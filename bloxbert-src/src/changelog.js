@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.409', date: '2026-10-24', lines: {
+    en: ["2.5.409 — The held block name shows in the top bar on phones held sideways."],
+    simple: ["2.5.409 — You can see what you hold on a sideways phone."],
+    uk: ["2.5.409 — Назва блока в руці видно у верхній панелі на телефоні боком."],
+    ru: ["2.5.409 — Название блока в руке видно в верхней панели на телефоне боком."],
+    es: ["2.5.409 — El nombre del bloque en la mano se ve en la barra de arriba con el teléfono de lado."],
+    ar: ["2.5.409 — اسم المكعب في يدك يظهر في الشريط العلوي على الهاتف الأفقي."],
+    'fa-AF': ["2.5.409 — نام بلاکِ در دست، در نوار بالا روی تلفن افقی دیده می‌شود."],
+    rw: ["2.5.409 — Izina ry’ikibanza ufashe rigaragara hejuru kuri telefoni iri ku ruhande."],
+    ti: ["2.5.409 — ኣብ እጂኻ ዘሎ ብሎክ ስም ኣብ ላዕለዋይ መስመር ብጎኒ ተሌፎን ይርአ።"],
+  }},
+
   { v: '2.5.408', date: '2026-10-23', lines: {
     en: ['2.5.408 — Changing the language keeps you in Creative or Survival, as you were.'],
     simple: ['2.5.408 — New language, same mode.'],
