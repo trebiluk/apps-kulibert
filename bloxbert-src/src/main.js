@@ -6660,7 +6660,8 @@ function paintWandBox() {
   if (!bx) { wandLine.setEnabled(false); return }
   const rgb = WAND_RGB[wandMode] || WAND_RGB.fill
   wandLine.color.set(rgb[0], rgb[1], rgb[2])
-  wandLine.scaling.set(bx.w, bx.h, bx.l)
+  if (!full && mark) wandLine.scaling.set(1.3, 1.3, 1.3)
+  else wandLine.scaling.set(bx.w, bx.h, bx.l)
   const cx = (bx.x0 + bx.x1) / 2 + 0.5
   const cy = (bx.y0 + bx.y1) / 2 + 0.5
   const cz = (bx.z0 + bx.z1) / 2 + 0.5
