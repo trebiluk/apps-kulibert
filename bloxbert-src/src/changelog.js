@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.431', date: '2026-10-24', lines: {
+    en: ['2.5.431 — The "made in a newer Bertopia" save note now uses your language.'],
+    simple: ['2.5.431 — One more save note speaks your language.'],
+    uk: ['2.5.431 — Повідомлення «створено в новішій Бертопії» тепер твоєю мовою.'],
+    ru: ['2.5.431 — Сообщение «сделано в более новой Бертопии» теперь на твоём языке.'],
+    es: ['2.5.431 — El aviso de «hecho en una Bertopia más nueva» ahora sale en tu idioma.'],
+    ar: ['2.5.431 — ملاحظة «صُنع في نسخة أحدث من بيرتوبيا» أصبحت بلغتك.'],
+    'fa-AF': ['2.5.431 — پیام «در نسخهٔ تازه‌تر برتوپیا ساخته شده» حالا به زبان خودت است.'],
+    rw: ['2.5.431 — Ubutumwa bwa «byakozwe muri Bertopia nshya» ubu buri mu rurimi rwawe.'],
+    ti: ['2.5.431 — መልእኽቲ «ብሓዳስ በርቶፕያ እተሰርሐ» ሕጂ ብቋንቋኻ እዩ።'],
+  }},
+
   { v: '2.5.430', date: '2026-10-24', lines: {
     en: ['2.5.430 — The keys line now says E opens your Bag and Esc opens the menu.'],
     simple: ['2.5.430 — The keys line shows E and Esc now.'],
