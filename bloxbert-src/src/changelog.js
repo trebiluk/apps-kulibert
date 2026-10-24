@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.410', date: '2026-10-24', lines: {
+    en: ['2.5.410 — Your Creative hotbar keeps its blocks in place after a reload.'],
+    simple: ['2.5.410 — Your Creative hotbar stays the same after reload.'],
+    uk: ['2.5.410 — Твоя панель у Творчості зберігає блоки після перезавантаження.'],
+    ru: ['2.5.410 — Твоя панель в Творчестве сохраняет блоки после перезагрузки.'],
+    es: ['2.5.410 — Tu barra de Creativo guarda sus bloques al recargar.'],
+    ar: ['2.5.410 — شريطك في الوضع الإبداعي يحتفظ بمكعباته بعد إعادة التحميل.'],
+    'fa-AF': ['2.5.410 — نوار حالت خلاقانه‌ات بعد از بارگذاری دوباره، بلاک‌هایش را نگه می‌دارد.'],
+    rw: ['2.5.410 — Umurongo wawe wa Creative ugumana ibibanza nyuma yo kongera gufungura.'],
+    ti: ['2.5.410 — ናይ ፈጠራ መስመርካ ድሕሪ ዳግመ-ምጽዓን ብሎካቱ ይሕሉ።'],
+  }},
+
   { v: '2.5.409', date: '2026-10-24', lines: {
     en: ["2.5.409 — The held block name shows in the top bar on phones held sideways."],
     simple: ["2.5.409 — You can see what you hold on a sideways phone."],
