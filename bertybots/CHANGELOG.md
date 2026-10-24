@@ -28,6 +28,13 @@ Rules:
 
 ---
 
+## 0.19.39 — Share link — 2026-10-24
+
+- Menu > File has Share link. It copies a link with the bot in it. No names.
+- A friend opens the link and sees the same machine, ready to press Play.
+- A bad link shows one toast and starts the normal shop.
+- What's new: Share link copies your bot. A friend opens it and presses Play.
+
 ## 0.19.38 — Phone GOAL and hint — 2026-10-16
 
 - On an upright phone the GOAL button sits above the Shop Floor, not on the PARK stripes.

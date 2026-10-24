@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.38 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.39 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.38";
+const APP_VERSION = "0.19.39";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.38";
-const APP_BUILT = "2026-10-16";
+const APP_CHIP = "BB 0.19.39";
+const APP_BUILT = "2026-10-24";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -109,6 +109,44 @@ function downloadLevel(doc) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 
+
+function base64url(text) {
+  const bytes = new TextEncoder().encode(String(text));
+  let bin = "";
+  bytes.forEach((byte) => { bin += String.fromCharCode(byte); });
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function base64urlDecode(text) {
+  const src = String(text || "").replace(/-/g, "+").replace(/_/g, "/");
+  const pad = src.length % 4 === 0 ? "" : "=".repeat(4 - (src.length % 4));
+  const bin = atob(src + pad);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+function shareLink(doc, course) {
+  const packed = packDoc(doc);
+  packed.title = sanitizeTitle(packed.title);
+  const id = course || "open";
+  const payload = base64url(JSON.stringify(packed));
+  return location.origin + location.pathname + "?course=" + encodeURIComponent(id) + "#m=" + payload;
+}
+
+function readShareHash() {
+  const hash = location.hash || "";
+  if (!hash.startsWith("#m=")) return null;
+  const full = location.href || "";
+  const raw = hash.slice(3);
+  if (!raw || raw.length > 8000 || full.length > 8000) return { bad: true };
+  try {
+    return { doc: unpackDoc(JSON.parse(base64urlDecode(raw))) };
+  } catch (e) {
+    return { bad: true };
+  }
+}
+
 function readFile(file) {
   return file.text().then((text) => unpackDoc(JSON.parse(text)));
 }
@@ -197,7 +235,13 @@ function textRtl() { return uiLang === "ar" || uiLang === "fa-AF"; }
 
 function tr(key, vars) {
   const all = window.BB_I18N || {};
-  const row = all[uiLang] || {};
+  let simpleOn = false;
+  try {
+    const pref = window.KulibertPrefs && KulibertPrefs.get && KulibertPrefs.get();
+    const stored = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "null");
+    simpleOn = (pref && pref.lang === "simple") || (stored && stored.lang === "simple");
+  } catch (e) { simpleOn = false; }
+  const row = (simpleOn && all.simple) ? all.simple : (all[uiLang] || {});
   const en = all.en || {};
   const extra = I18N_EXTRA[uiLang] || {};
   let s = row[key];
@@ -4149,6 +4193,8 @@ function boot() {
       dirty = false;
       toast("Saved a local file. No names in it.");
     });
+    const shareBtn = document.getElementById("btn-share");
+    if (shareBtn) shareBtn.addEventListener("click", () => { copyShareLink(); });
     document.getElementById("btn-open").addEventListener("click", () => fileOpen.click());
     fileOpen.addEventListener("change", async () => {
       const f = fileOpen.files && fileOpen.files[0];
@@ -4682,6 +4728,63 @@ function boot() {
   setTool("driveR");
   setLayer("machine");
   refreshMeta();
+
+  async function copyShareLink() {
+    doc.title = sanitizeTitle(titleEl.value);
+    const url = shareLink(doc, courseId);
+    if (url.length > 8000) {
+      toast(tr("linkBad"));
+      return;
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+        toast(tr("linkCopied"));
+        return;
+      }
+    } catch (e) { /* fall through */ }
+    const el = document.getElementById("toast");
+    if (!el) return;
+    el.replaceChildren();
+    const note = document.createElement("span");
+    note.textContent = tr("linkCopied");
+    const input = document.createElement("input");
+    input.readOnly = true;
+    input.value = url;
+    input.setAttribute("aria-label", tr("share"));
+    input.style.width = "100%";
+    input.style.minHeight = "44px";
+    el.append(note, input);
+    el.classList.add("show");
+    input.focus();
+    input.select();
+    try { document.execCommand("copy"); } catch (err) { /* private */ }
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("show"), 6000);
+  }
+
+  async function openShared(packed, assigned) {
+    const item = BUILTIN.find((x) => x.id === assigned);
+    const course = item ? item.id : "open";
+    if (playing) stopPlay();
+    doc = packed;
+    courseId = course;
+    dirty = false;
+    playing = false;
+    sim = null;
+    won = false;
+    winT = 0;
+    if (titleEl) titleEl.value = doc.title;
+    const pick = document.getElementById("level-pick");
+    if (pick && item) pick.value = course;
+    resetLoop(course);
+    setLayer("machine");
+    setTool(course === "measure" ? "tape" : "driveR");
+    applyCam(true);
+    refreshMeta();
+    toast(tr("linkOpened"));
+  }
+
   const assigned = new URLSearchParams(location.search).get("course");
   const currQ = new URLSearchParams(location.search).get("curriculum");
   debugOn = (function () {
@@ -4698,7 +4801,11 @@ function boot() {
   try { if (window.self !== window.top) embed = true; } catch (e) { embed = true; }
   document.body.dataset.embed = embed ? "1" : "0";
   document.body.dataset.tw = embed ? "1" : "0";
-  if (assigned && BUILTIN.some((x) => x.id === assigned)) {
+  const shared = readShareHash();
+  if (shared && shared.bad) toast(tr("linkBad"));
+  if (shared && shared.doc) {
+    openShared(shared.doc, assigned);
+  } else if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
   } else {
     seedFix();

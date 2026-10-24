@@ -9,7 +9,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 ## 2. Open fixes (FAIL rows from the latest proof)
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
-## 3. Next up: open briefs in version order (tick when shipped AND proven)
+## 3. Next up:
+- [x] Share link (BB 0.19.39): Menu > File copies a #m= link. Friend opens the same machine and presses Play.
 - [ ] `briefs/fixq/botz-01937.md`: Berty's Botz BB 0.19.37: the GOAL chip stays off Job 1's wheel on upright phones, Play keeps the bot in view on a Chromebook, and the leftover words g…
 - [ ] `briefs/fixq/menu-bertybots.md`: Berty’s Botz — same Hub menu
 
