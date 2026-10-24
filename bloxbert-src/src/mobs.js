@@ -417,9 +417,7 @@ export function createMobs(opts) {
     if (toast) toast(item ? sayItem('c2Back', item) : (t ? t('rebooted') : 'Rebooted!'))
     return who
   }
-  function tick(now) {
-    if (now - (tick._last || 0) < 100) return
-    tick._last = now
+  function tick(now) { // 2.5.440: caller runs at 10 Hz, no wall-time gate
     const p = playerPos && playerPos()
     const bonkAt = lastBonk ? lastBonk() : 0
     for (let i = mobs.length - 1; i >= 0; i--) {

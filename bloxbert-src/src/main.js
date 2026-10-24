@@ -3652,10 +3652,11 @@ function pinMachines() {
     localStorage.setItem(pinKey(), JSON.stringify(pin))
   } catch (e) {}
 }
+let pinTimer = 0 // 2.5.440: coalesce machine save-pin
 function noteMachine() {
   dirty = true
   pinGen += 1
-  pinMachines()
+  if (!pinTimer) pinTimer = setTimeout(() => { pinTimer = 0; pinMachines() }, 1000)
   clearTimeout(machineTimer)
   machineTimer = setTimeout(() => { if (dirty && allowSave) save().catch(() => {}) }, 500)
 }
@@ -4872,6 +4873,7 @@ setInterval(() => {
 
 setInterval(() => { if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() }) }, 20000)
 function flushSave() {
+  clearTimeout(pinTimer); pinTimer = 0 // 2.5.440: flush the coalesced pin
   if (dirty) pinMachines()
   if (!(dirty && allowSave && !savePaused)) return
   save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() })
@@ -7148,7 +7150,26 @@ document.addEventListener('pointerlockchange', () => {
   else if (wasLocked && !selfUnlock && !tableMode && !anyCard()) showPlayChip()
   selfUnlock = false
 })
+let simTick = 0, beltAcc = 0, beltsDirty = false // 2.5.440: sim tick for belts/mobs/circuits
+function beltStep() {
+  if (!belts) return
+  belts.prune()
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const anchors = [{ x: p[0], y: p[1], z: p[2] }]
+  try { for (const b of (bot.positions ? bot.positions() : [])) anchors.push(b) } catch (e) {}
+  belts.tick(anchors)
+  beltsDirty = true
+}
+function mobsStep() {
+  const now = simTick * (1000/30)
+  try { if (mobs) mobs.tick(now) } catch (e) { _btLog('tick', e) }
+  try { if (mobs && mobs.trySpawn) mobs.trySpawn(now) } catch (e) { _btLog('trySpawn', e) }
+}
 noa.on('tick', () => {
+  simTick++; beltAcc += 1000/30
+  while (beltAcc >= 250) { beltAcc -= 250; beltStep() }
+  if (simTick % 3 === 0) mobsStep()
+  try { if (circuits && circuits.tick) circuits.tick(simTick * (1000/30)) } catch (e) {}
   keepSavedSpot()
   const p = noa.entities.getPosition(noa.playerEntity)
   if (softPreset(makerLive.preset) && p[1] < -10) {
@@ -10361,8 +10382,7 @@ function paintBossBar() {
 
 noa.on('beforeRender', (dt) => {
   if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }
-  try { if (mobs) mobs.tick(performance.now()) } catch (e) { _btLog('tick', e) }
-  try { if (mobs && mobs.trySpawn) mobs.trySpawn(performance.now()) } catch (e) { _btLog('trySpawn', e) }
+  // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
     const body = noa.ents.getPhysicsBody(noa.playerEntity)

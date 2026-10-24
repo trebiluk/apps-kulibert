@@ -177,7 +177,9 @@ export function createBelts(api) {
         if (!nxt || nxt.face !== cur.face) break
         cur = nxt
       }
-      next.push({ tiles: line, owner: line[0].owner || 'you', born, fromOven: false })
+      const lineObj = { tiles: line, owner: line[0].owner || 'you', born, fromOven: false } // 2.5.440: cache line on tile
+      for (const t of line) t.line = lineObj
+      next.push(lineObj)
     }
     lines = next
     dirty = false
@@ -446,15 +448,17 @@ export function createBelts(api) {
     if (outBelt) bits.push(t('beltOut') + (live && !heldFull ? ' 4/sec' : ''))
     return { text: bits.join(' · '), full: !!heldFull, paused: !live && paused, inBelt, outBelt }
   }
-  function visuals(anchors) {
+  function visuals(anchors) { // 2.5.440: use tile.line, memo lineNear
     ensure()
+    const near = new Map()
     const out = []
     for (const tile of tiles.values()) {
       if (!nearAnchor(tile.x, tile.y, tile.z, anchors)) continue
-      let pause = false
-      for (const line of lines) {
-        if (!line.tiles.includes(tile)) continue
-        if (!lineNear(line, anchors) || pausedLine.has(line)) pause = true
+      const line = tile.line
+      let pause = !line || pausedLine.has(line)
+      if (line && !pause) {
+        if (!near.has(line)) near.set(line, lineNear(line, anchors))
+        pause = !near.get(line)
       }
       out.push({ x: tile.x, y: tile.y, z: tile.z, face: tile.face, item: tile.n ? tile.item : '', n: tile.n | 0, pause })
     }

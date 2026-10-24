@@ -823,6 +823,7 @@ export function initBot(ctx) {
       if (!b) return null
       return { x: b.x, y: b.y, z: b.z, yaw: b.yaw, planks: b.planks, running: b.running, ring: !!(b.ring && b.ring.isEnabled()), placed: b.runLog ? b.runLog.placed : 0, steps: b.program.steps.map((s) => s.id + (s.n ? ':' + s.n : '') + (s.dir ? ':' + s.dir : '')) }
     },
+    positions() { return bots.map(b => ({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 })) }, // 2.5.440: belt anchors without dump()
   }
   if (location.search.includes('smoke=1')) {
     api.floor = () => findFloor()
