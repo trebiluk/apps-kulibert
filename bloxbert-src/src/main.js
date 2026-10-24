@@ -10282,9 +10282,8 @@ function paintBossBar() {
   const phase = boss.phase || 1
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && performance.now() < boss.weakOpen
-  const nearby = 1
-  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ ' + (t ? t('c5barName') : 'Foundry Overseer') + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '') + '<br>👥 ' + (t ? t('c5barCrew') : 'Crew here: {n}').replace('{n}', String(nearby))
-  if (nearby === 1) vis.innerHTML += '<br>' + (t ? t('c5barHint') : 'Bring a crewmate — it\'s a team boss.')
+  const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ ' + (t ? t('c5barName') : 'Foundry Overseer') + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
+  vis.innerHTML += '<br>' + (t ? t('c5barHint') : 'Bring a crewmate — it\'s a team boss.')
   const hdr = document.querySelector('header.top')
   bar.style.top = ((hdr ? Math.round(hdr.getBoundingClientRect().bottom) : 48) + 8) + 'px'
   const pb = document.getElementById('pause-btn')
