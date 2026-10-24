@@ -4136,16 +4136,8 @@ function pinSavedSpot(spot) {
 }
 function landSteered() {
   const st = noa.inputs && noa.inputs.state
-  if (st && (st.forward || st.backward || st.left || st.right || st.jump)) return true
-  const cam = noa.camera
-  if (!cam || !Number.isFinite(cam.heading)) return false
-  if (!landLook) {
-    landLook = [cam.heading, cam.pitch]
-    return false
-  }
-  let dh = Math.abs(cam.heading - landLook[0])
-  if (dh > Math.PI) dh = 2 * Math.PI - dh
-  return dh > 0.04 || Math.abs(cam.pitch - landLook[1]) > 0.04
+  // 2.5.438: only WASD or jump releases the hold; camera turns never drop the player.
+  return !!(st && (st.forward || st.backward || st.left || st.right || st.jump))
 }
 function landLetGo() {
   landHold = null
@@ -4157,7 +4149,8 @@ function keepSavedSpot() {
   if (landFree) {
     const p = noa.entities.getPosition(noa.playerEntity)
     const expired = performance.now() > landHoldUntil
-    if (expired || (p && spotSupported(p))) landLetGo()
+    if (p && spotSupported(p)) landLetGo()
+    else if (expired) rescueToGround(false)
     else if (playerBody) playerBody.gravityMultiplier = 0
     return
   }
@@ -4182,10 +4175,8 @@ function keepSavedSpot() {
   }
   const ready = spotSupported(landHold)
   const expired = performance.now() > landHoldUntil
-  if (ready || expired) {
-    landLetGo()
-    return
-  }
+  if (ready) { landLetGo(); return }
+  if (expired) { rescueToGround(false); return }
   if (playerBody) {
     playerBody.gravityMultiplier = 0
     playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
@@ -7130,6 +7121,7 @@ document.addEventListener('pointerlockchange', () => {
     lockTries = 0
     dropLockLook = true
     lockGainedAt = performance.now()
+    freezeAfterUnpause()
     lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
     clearLookAccum()
     hidePlayChip()
@@ -7166,20 +7158,76 @@ noa.on('tick', () => {
     toast(t('makerTryAgain'))
     return
   }
-  if (!landHold && p[1] < -72) poof()
+  if (unpauseFreeze > 0) {
+    unpauseFreeze -= 1
+    if (playerBody) playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
+    if (unpauseSpot) noa.entities.setPosition(noa.playerEntity, unpauseSpot)
+    if (!unpauseFreeze) unpauseSpot = null
+    return
+  }
+  if (p[1] < -66) { poof(); return }
+  const now = performance.now()
+  if (!flying && now - buriedCheckAt > 500) {
+    buriedCheckAt = now
+    const x = Math.floor(p[0]), y = Math.floor(p[1]), z = Math.floor(p[2])
+    if (solidVoxel(x, y, z) && solidVoxel(x, y + 1, z)) rescueToGround(true)
+  }
 })
-function poof() {
-  const home = session && session.home
-  const spot = home && home.length ? home : worldSpawn
-  noa.entities.setPosition(noa.playerEntity, spot.slice ? spot.slice() : [spot[0], spot[1], spot[2]])
+let buriedCheckAt = 0
+let unpauseFreeze = 0
+let unpauseSpot = null
+function freezeAfterUnpause() {
+  unpauseFreeze = 2
+  try { const q = noa.entities.getPosition(noa.playerEntity); unpauseSpot = [q[0], q[1], q[2]] } catch (e) { unpauseSpot = null }
+  if (playerBody) playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
+}
+{
+  const rawSetPaused = noa.setPaused.bind(noa)
+  noa.setPaused = (v) => { const was = !!noa._paused; rawSetPaused(v); if (!v && was) freezeAfterUnpause() }
+}
+function solidVoxel(x, y, z) {
+  try { const id = getVoxel(x, y, z); return !!id && !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
+}
+function groundTop(x, z) {
+  for (let y = 24; y > -64; y--) {
+    if (solidVoxel(x, y, z) && !solidVoxel(x, y + 1, z) && !solidVoxel(x, y + 2, z)) return y
+  }
+  return null
+}
+// 2.5.438: put the player on the first solid voxel with 2 air blocks above it (here, then home, then town).
+function rescueToGround(fromVoid) {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const home = session && session.home && session.home.length ? session.home : null
+  const tries = [p, home, worldSpawn].filter(Boolean)
+  let spot = null, usedHome = false
+  for (const c of tries) {
+    const x = Math.floor(c[0]), z = Math.floor(c[2])
+    const y = groundTop(x, z)
+    if (y !== null) { spot = [x + 0.5, y + 1.05, z + 0.5]; usedHome = c === home; break }
+  }
+  if (!spot) { const w = worldSpawn; spot = [w[0], w[1], w[2]] }
+  landHold = null
+  landLook = null
+  landFree = false
+  noa.entities.setPosition(noa.playerEntity, spot)
   flying = false
   document.body.classList.remove('fly')
-  const body = noa.entities.getPhysicsBody && noa.entities.getPhysicsBody(noa.playerEntity)
-  if (body) body.gravityMultiplier = GRAV_MULT
-  const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
-  toast(home ? t('poofBunk') : t('poofTown'))
+  if (playerBody) {
+    playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
+    if (!tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
+  }
+  console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
+  if (fromVoid !== false) {
+    const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
+    toast(usedHome ? t('poofBunk') : t('poofTown'))
+  }
   if (dirty) save()
+  return spot
 }
+function poof() {
+  rescueToGround(true)
+}
+window.__btRescue = { rescueToGround, groundTop, solidVoxel, pos: () => Array.from(noa.entities.getPosition(noa.playerEntity)), tp: (x, y, z) => noa.entities.setPosition(noa.playerEntity, [x, y, z]), pause: (v) => noa.setPaused(v), paused: () => !!noa._paused, vel: () => Array.from(playerBody.velocity) }
 if (!localStorage.getItem('bloxbert-menu-hint')) showMenuHint()
 
 const bar = $('hotbar')

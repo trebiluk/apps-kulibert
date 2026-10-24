@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.438', date: '2026-10-24', lines: {
+    en: ['2.5.438 — You can no longer fall under the world. If the ground has not loaded, you wait in place, and if you ever end up under the ground you pop back on top.'],
+    simple: ['2.5.438 — No more falling under the world.'],
+    uk: ['2.5.438 — Тепер не можна провалитися під світ. Якщо земля ще не завантажилась, ти чекаєш на місці, а якщо опинишся під землею — з’явишся зверху.'],
+    ru: ['2.5.438 — Теперь нельзя провалиться под мир. Если земля ещё не загрузилась, ты ждёшь на месте, а если окажешься под землёй — появишься сверху.'],
+    es: ['2.5.438 — Ya no puedes caer debajo del mundo. Si el suelo no ha cargado, esperas en tu sitio, y si quedas bajo tierra vuelves arriba.'],
+    ar: ['2.5.438 — لم يعد بإمكانك السقوط تحت العالم. إذا لم تُحمَّل الأرض بعد تنتظر في مكانك، وإذا صرت تحت الأرض تعود إلى الأعلى.'],
+    'fa-AF': ['2.5.438 — دیگر زیر دنیا نمی‌افتی. اگر زمین هنوز بار نشده، سر جایت می‌مانی، و اگر زیر زمین بروی دوباره بالا می‌آیی.'],
+    rw: ['2.5.438 — Ntushobora kugwa munsi y’isi. Niba ubutaka butaraza, uguma aho uri, kandi niwisanga munsi y’ubutaka usubira hejuru.'],
+    ti: ['2.5.438 — ሕጂ ትሕቲ ዓለም ክትወድቕ ኣይትኽእልን ኢኻ። መሬት እንተዘይተጻዒኑ ኣብ ቦታኻ ትጸንሕ፡ ትሕቲ መሬት እንተኣቲኻ ናብ ላዕሊ ትምለስ።'],
+  }},
   { v: '2.5.437', date: '2026-10-24', lines: {
     en: ['2.5.437 — Help, Changelog, Notebook and other menu pages now sit in the middle of the screen, with room around the words.'],
     simple: ['2.5.437 — Menu pages sit in the middle now.'],
