@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.413', date: '2026-10-24', lines: {
+    en: ["2.5.413 — The 'Update ready' message sits in the middle of the screen."],
+    simple: ['2.5.413 — The update message is centered.'],
+    uk: ['2.5.413 — Повідомлення «Оновлення готове» тепер посередині.'],
+    ru: ['2.5.413 — Сообщение «Обновление готово» теперь по центру.'],
+    es: ['2.5.413 — El aviso «Actualización lista» queda en el centro.'],
+    ar: ['2.5.413 — رسالة «التحديث جاهز» في منتصف الشاشة الآن.'],
+    'fa-AF': ['2.5.413 — پیام «به‌روزرسانی آماده است» حالا وسط صفحه است.'],
+    rw: ['2.5.413 — Ubutumwa «Ivugurura riteguye» buri hagati.'],
+    ti: ['2.5.413 — «ምሕዳስ ድሉው» መልእኽቲ ኣብ ማእከል ይርአ።'],
+  }},
+
   { v: '2.5.412', date: '2026-10-24', lines: {
     en: ['2.5.412 — Pick your language from a list in Settings.'],
     simple: ['2.5.412 — Choose your language from a list.'],
