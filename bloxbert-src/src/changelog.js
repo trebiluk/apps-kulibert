@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.433', date: '2026-10-24', lines: {
+    en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
+    simple: ['2.5.433 — The boss vent sign has no English word now.'],
+    uk: ['2.5.433 — Знак вентиляції Наглядача показує хмарку і стрілку, без англійського слова.'],
+    ru: ['2.5.433 — Знак вентиляции Надзирателя показывает облачко и стрелку, без английского слова.'],
+    es: ['2.5.433 — El aviso de ventilación del Supervisor muestra una nube y una flecha, sin la palabra en inglés.'],
+    ar: ['2.5.433 — إشارة تهوية المشرف تُظهر نفخة وسهمًا، بلا كلمة إنجليزية.'],
+    'fa-AF': ['2.5.433 — نشان تهویهٔ ناظر حالا یک پف و یک پیکان است، بدون واژهٔ انگلیسی.'],
+    rw: ['2.5.433 — Ikimenyetso cy’umwuka cy’Umugenzuzi kerekana igicu n’akambi, nta jambo ry’Icyongereza.'],
+    ti: ['2.5.433 — ምልክት ቬንት ናይ ተቖጻጻሪ ደበናን ምልክት ኣንፈትን የርኢ፡ ብዘይ እንግሊዝኛ ቃል።'],
+  }},
+
   { v: '2.5.431', date: '2026-10-24', lines: {
     en: ['2.5.431 — The "made in a newer Bertopia" save note now uses your language.'],
     simple: ['2.5.431 — One more save note speaks your language.'],

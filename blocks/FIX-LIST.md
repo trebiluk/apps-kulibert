@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **vent-no-english (2.5.433):** Overseer vent sign shows a puff and arrow. Kinyarwanda, Tigrinya, Dari, and Arabic still need a native check.
+
+
 - [x] **boss-crew-count (2.5.427):** Boss bar drops the fake crew count. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
