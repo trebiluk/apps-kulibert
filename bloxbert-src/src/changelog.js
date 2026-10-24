@@ -23,6 +23,18 @@ export const CHANGELOG = [
     ti: ['2.5.412 — ቋንቋኻ ካብ ዝርዝር ኣብ ቅጥዕታት ምረጽ።'],
   }},
 
+  { v: '2.5.411', date: '2026-10-24', lines: {
+    en: ['2.5.411 — The Bag no longer slides under the hotbar on sideways phones.'],
+    simple: ['2.5.411 — The Bag stays above the hotbar.'],
+    uk: ['2.5.411 — Сумка більше не заходить під панель на телефоні боком.'],
+    ru: ['2.5.411 — Сумка больше не заходит под панель на телефоне боком.'],
+    es: ['2.5.411 — La Bolsa ya no se mete debajo de la barra con el teléfono de lado.'],
+    ar: ['2.5.411 — الحقيبة لم تعد تنزلق تحت الشريط على الهاتف الأفقي.'],
+    'fa-AF': ['2.5.411 — کیف دیگر روی تلفن افقی زیر نوار نمی‌رود.'],
+    rw: ['2.5.411 — Igikapu ntikijya munsi y’umurongo kuri telefoni iri ku ruhande.'],
+    ti: ['2.5.411 — ቦርሳ ብጎኒ ተሌፎን ኣብ ትሕቲ መስመር ኣይኣቱን።'],
+  } },
+
   { v: '2.5.410', date: '2026-10-24', lines: {
     en: ['2.5.410 — Your Creative hotbar keeps its blocks in place after a reload.'],
     simple: ['2.5.410 — Your Creative hotbar stays the same after reload.'],
