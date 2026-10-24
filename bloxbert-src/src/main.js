@@ -3693,7 +3693,6 @@ let savePaused = false
 let lockPending = false
 let lockRelease = null
 let lockGen = 0
-const TAB_PAUSE = 'Bertopia is open in another tab - this tab is paused'
 function mountStayChip(id, tone) {
   let el = document.getElementById(id)
   if (el) return el
@@ -3707,7 +3706,7 @@ function mountStayChip(id, tone) {
 }
 function showPauseChip() {
   const el = mountStayChip('save-pause-chip', 'rgba(255,138,31,.8)')
-  el.textContent = TAB_PAUSE
+  el.textContent = t('tabPaused')
   el.hidden = false
 }
 function hidePauseChip() {
@@ -3716,7 +3715,7 @@ function hidePauseChip() {
 }
 function showNotSavedChip() {
   const el = mountStayChip('save-fail-chip', 'rgba(248,113,113,.85)')
-  el.textContent = 'Not saved'
+  el.textContent = t('notSaved')
   el.style.bottom = 'calc(132px + env(safe-area-inset-bottom, 0px))'
   el.hidden = false
 }
@@ -3988,7 +3987,7 @@ async function saveClicked() {
   } catch (e) {
     if (e && e.code === 'paused') {
       pauseOtherTab()
-      toast(TAB_PAUSE)
+      toast(t('tabPaused'))
       return
     }
     showNotSavedChip()

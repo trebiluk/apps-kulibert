@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.425', date: '2026-10-24', lines: {
+    en: ['2.5.425 — The “open in another tab” and “Not saved” notes now use your language.'],
+    simple: ['2.5.425 — Two save notes speak your language now.'],
+    uk: ['2.5.425 — Повідомлення «відкрито в іншій вкладці» та «не збережено» тепер твоєю мовою.'],
+    ru: ['2.5.425 — Сообщения «открыто в другой вкладке» и «не сохранено» теперь на твоём языке.'],
+    es: ['2.5.425 — Los avisos de «abierta en otra pestaña» y «no guardado» ahora salen en tu idioma.'],
+    ar: ['2.5.425 — ملاحظتا «مفتوحة في تبويب آخر» و«لم يُحفظ» أصبحتا بلغتك.'],
+    'fa-AF': ['2.5.425 — پیام‌های «در زبانهٔ دیگر باز است» و «ذخیره نشده» حالا به زبان خودت هستند.'],
+    rw: ['2.5.425 — Ubutumwa bwa «ifunguye mu yindi tab» na «ntibyabitswe» ubu buri mu rurimi rwawe.'],
+    ti: ['2.5.425 — መልእኽቲ «ኣብ ካልእ ታብ ክፉት» ከምኡውን «ኣይተዓቐበን» ሕጂ ብቋንቋኻ እዮም።'],
+  }},
+
   { v: '2.5.422', date: '2026-10-24', lines: {
     en: ['2.5.422 — Walking into Bertyville shows the safe-zone sign once, not twice.'],
     simple: ['2.5.422 — The safe town sign shows one time.'],
