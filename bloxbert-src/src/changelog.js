@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.437', date: '2026-10-24', lines: {
+    en: ['2.5.437 — Help, Changelog, Notebook and other menu pages now sit in the middle of the screen, with room around the words.'],
+    simple: ['2.5.437 — Menu pages sit in the middle now.'],
+    uk: ['2.5.437 — Довідка, Журнал, Зошит та інші сторінки меню тепер посередині екрана, з місцем навколо тексту.'],
+    ru: ['2.5.437 — Справка, Журнал, Тетрадь и другие страницы меню теперь по центру экрана, с местом вокруг текста.'],
+    es: ['2.5.437 — Ayuda, Registro, Cuaderno y otras páginas del menú ahora salen en el centro de la pantalla, con espacio alrededor del texto.'],
+    ar: ['2.5.437 — المساعدة والسجل والدفتر وصفحات القائمة الأخرى أصبحت في وسط الشاشة مع مسافة حول الكلمات.'],
+    'fa-AF': ['2.5.437 — راهنما، فهرست تغییر، کتابچه و دیگر صفحه‌های فهرست حالا در وسط صفحه هستند و دور نوشته‌ها جا دارد.'],
+    rw: ['2.5.437 — Ubufasha, Inkururagamba, Ikayi n’izindi paji za menu ubu biri hagati, amagambo afite umwanya ku mpande.'],
+    ti: ['2.5.437 — ሓገዝ፡ ዝርዝር፡ መዝገብን ካልኦት ገጻት ዝርዝርን ሕጂ ኣብ ማእከል ስክሪን ኣለዉ፡ ኣብ ጎድኒ ቃላት ቦታ ኣሎ።'],
+  }},
+
   { v: '2.5.436', date: '2026-10-24', lines: {
     en: ['2.5.436 — Help now says E opens the Bag and Esc opens the menu.'],
     simple: ['2.5.436 — Help tells you E is the Bag and Esc is the menu.'],
