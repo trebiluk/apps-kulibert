@@ -6653,7 +6653,10 @@ function wandCancel() {
 }
 function paintWandBox() {
   if (!wandLine) return
-  const bx = wandHeld() && tools.box()
+  if (!wandHeld()) { wandLine.setEnabled(false); return }
+  const full = tools.box()
+  const mark = full ? null : tools.cornerA()
+  const bx = full || (mark && { x0: mark[0], y0: mark[1], z0: mark[2], x1: mark[0], y1: mark[1], z1: mark[2], w: 1, h: 1, l: 1 })
   if (!bx) { wandLine.setEnabled(false); return }
   const rgb = WAND_RGB[wandMode] || WAND_RGB.fill
   wandLine.color.set(rgb[0], rgb[1], rgb[2])
