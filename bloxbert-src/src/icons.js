@@ -652,7 +652,7 @@ const MENU_GLYPH = {
   apple: ['...t.o..', '..tt....', '.rrrrrr.', 'rrrrrrrr', 'rrrrrrrr', 'rrwwrrrr', '.rrrrrr.', '........'],
   lens: ['.tttt...', 'twwwt...', 'twtwt...', 'twwwt...', '.ttttt..', '....t...', '.....t..', '......o.'],
   door: ['.wwwwww.', '.wkkkkkw.', '.wkkkkkw.', '.wkkokkw.', '.wkkkkkw.', '.wkkkkkw.', '.wkkkkkw.', '.wwwwww.'],
-  play: ['k.......', 'kk......', 'kkk.....', 'kkkk....', 'kkkk....', 'kkk.....', 'kk......', 'k.......'],
+  play: ['t.......', 'tt......', 'ttt.....', 'tttt....', 'tttt....', 'ttt.....', 'tt......', 't.......'],
   x: ['r.....r.', '.r...r..', '..r.r...', '...r....', '..r.r...', '.r...r..', 'r.....r.', '........'],
   menu: ['........', 'tttttttt', '........', 'tttttttt', '........', 'tttttttt', '........', '........'],
   survive: ['.rr..rr.', 'rrrrrrrr', 'rrrrrrrr', '.rrrrrr.', '..rrrr..', '...rr...', '........', '........'],

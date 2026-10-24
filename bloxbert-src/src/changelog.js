@@ -23,6 +23,18 @@ export const CHANGELOG = [
     ti: ['2.5.429 — መልእኽቲ ምስራሕ ኣብ መደብ ዕንጨይቲ ሕጂ ብቋንቋኻ እዩ፡ ከም ኣብ ሰደቓ።'],
   }},
 
+  { v: '2.5.428', date: '2026-10-24', lines: {
+    en: ['2.5.428 — The play arrow on the big Continue button in the menu is easy to see now.'],
+    simple: ['2.5.428 — The Continue button shows its arrow.'],
+    uk: ['2.5.428 — Стрілку «грати» на великій кнопці «Далі» в меню тепер добре видно.'],
+    ru: ['2.5.428 — Стрелку «играть» на большой кнопке «Дальше» в меню теперь хорошо видно.'],
+    es: ['2.5.428 — La flecha de jugar en el botón grande de Seguir del menú ahora se ve bien.'],
+    ar: ['2.5.428 — سهم التشغيل على زر المتابعة الكبير في القائمة أصبح واضحًا الآن.'],
+    'fa-AF': ['2.5.428 — پیکان بازی روی دکمهٔ بزرگ ادامه در فهرست حالا خوب دیده می‌شود.'],
+    rw: ['2.5.428 — Akambi ko gukina kuri buto nini ya Komeza mu bikubiyemo ubu karagaragara neza.'],
+    ti: ['2.5.428 — ምልክት ጸወታ ኣብቲ ዓቢ «ቀጽል» መጠወቒ ኣብ ዝርዝር ሕጂ ብንጹር ይርአ።'],
+  } },
+
   { v: '2.5.427', date: '2026-10-24', lines: {
     en: ['2.5.427 — The Foundry boss bar no longer shows a crew count that was always 1.'],
     simple: ['2.5.427 — The boss bar lost a wrong number.'],
