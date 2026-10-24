@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.419 — ምልክት ክዳን ሓደ ዋልታ የርኢ፡ ክልተ ኣይኮነን።'],
   }},
 
+  { v: '2.5.418', date: '2026-10-24', lines: {
+    en: ['2.5.418 — Settings now marks the Graphics and Quality choice you picked with a ✓.'],
+    simple: ['2.5.418 — Settings shows your pick with a ✓.'],
+    uk: ['2.5.418 — Налаштування тепер позначають вибрану Графіку і Якість знаком ✓.'],
+    ru: ['2.5.418 — Настройки теперь отмечают выбранную Графику и Качество знаком ✓.'],
+    es: ['2.5.418 — Ajustes ahora marca con ✓ la opción de Gráficos y Calidad que elegiste.'],
+    ar: ['2.5.418 — الإعدادات تُعلّم الآن اختيارك في الرسوميات والجودة بعلامة ✓.'],
+    'fa-AF': ['2.5.418 — تنظیمات حالا گزینهٔ گرافیک و کیفیتِ انتخاب‌شده را با ✓ نشان می‌دهد.'],
+    rw: ['2.5.418 — Igenamiterere ubu ryerekana ibyo wahisemo muri Graphics na Quality na ✓.'],
+    ti: ['2.5.418 — ቅጥዒታት ሕጂ ዝመረጽካዮ ግራፊክስን ጽሬትን ብ ✓ የመልክት።'],
+  }},
+
   { v: '2.5.416', date: '2026-10-24', lines: {
     en: ['2.5.416 — E opens the Bag even while you hold the Build Wand.'],
     simple: ['2.5.416 — E opens the Bag, even with the wand.'],

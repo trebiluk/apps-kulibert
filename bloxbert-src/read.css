@@ -158,6 +158,9 @@ html body #mode-pill button {
   color: var(--read-ink) !important;
   border-color: var(--read-line) !important;
 }
+html body #sheet .qbtn.on{border-color:#22D3EE !important;box-shadow:inset 5px 0 0 #22D3EE !important;background-color:#0f3a46 !important}
+html[dir=rtl] body #sheet .qbtn.on{box-shadow:inset -5px 0 0 #22D3EE !important}
+html body #sheet .qbtn.on::after{content:"✓";margin-inline-start:auto;font-size:20px;font-weight:800;color:#F8FAFC}
 html body button:not(.well):not(.ks-slot):not(.slot):not(.wall-slot):hover,
 html body .row:hover,
 html body .top .tool:hover,
