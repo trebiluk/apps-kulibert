@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.419', date: '2026-10-24', lines: {
+    en: ['2.5.419 — The Suit chip shows one shield, not two.'],
+    simple: ['2.5.419 — The Suit chip has one shield.'],
+    uk: ['2.5.419 — На табличці Костюма тепер один щит, а не два.'],
+    ru: ['2.5.419 — На плашке Костюма теперь один щит, а не два.'],
+    es: ['2.5.419 — La etiqueta del Traje muestra un escudo, no dos.'],
+    ar: ['2.5.419 — شارة البدلة تُظهر درعًا واحدًا، لا اثنين.'],
+    'fa-AF': ['2.5.419 — نشان لباس حالا یک سپر دارد، نه دو تا.'],
+    rw: ['2.5.419 — Akamenyetso k’Imyenda kerekana ingabo imwe, si ebyiri.'],
+    ti: ['2.5.419 — ምልክት ክዳን ሓደ ዋልታ የርኢ፡ ክልተ ኣይኮነን።'],
+  }},
+
   { v: '2.5.416', date: '2026-10-24', lines: {
     en: ['2.5.416 — E opens the Bag even while you hold the Build Wand.'],
     simple: ['2.5.416 — E opens the Bag, even with the wand.'],

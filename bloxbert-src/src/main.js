@@ -259,7 +259,7 @@ function paintSuit() {
   const low = suit < COMBAT_TUNING.lowSuit
   if (text) {
     const base = (t('suitText') || 'Suit {n}/{max}').replace('{n}', suit).replace('{max}', suitMax)
-    text.textContent = low ? '🛡 ' + base + ' ' + (t('c1Low') || 'Low') : '🛡 ' + base
+    text.textContent = low ? base + ' ' + (t('c1Low') || 'Low') : base
   }
   if (fill) {
     fill.style.width = Math.max(4, (suit / suitMax) * 60) + 'px'
