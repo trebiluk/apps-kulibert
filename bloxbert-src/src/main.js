@@ -8113,11 +8113,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' || e.key === 'Tab') return
   if (e.key === 'e' || e.key === 'E') {
     if (e.ctrlKey || e.metaKey) return
-    if (wandHeld() && $('sheet') && $('sheet').hidden) {
-      e.preventDefault()
-      if (!e.repeat) cycleWand(1)
-      return
-    }
     e.preventDefault()
     if (shutByKey()) return
     openMenu(true); panels.open('inventory'); return
