@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.430', date: '2026-10-24', lines: {
+    en: ['2.5.430 — The keys line now says E opens your Bag and Esc opens the menu.'],
+    simple: ['2.5.430 — The keys line shows E and Esc now.'],
+    uk: ['2.5.430 — Рядок клавіш тепер каже: E відкриває сумку, Esc відкриває меню.'],
+    ru: ['2.5.430 — Строка клавиш теперь говорит: E открывает сумку, Esc открывает меню.'],
+    es: ['2.5.430 — La línea de teclas ahora dice que E abre tu Bolsa y Esc abre el menú.'],
+    ar: ['2.5.430 — سطر المفاتيح يقول الآن إن E تفتح حقيبتك وEsc تفتح القائمة.'],
+    'fa-AF': ['2.5.430 — خط کلیدها حالا می‌گوید E بکس را باز می‌کند و Esc فهرست را.'],
+    rw: ['2.5.430 — Umurongo w’utubuto ubu uvuga ko E ifungura agasaho na Esc ifungura ibikubiyemo.'],
+    ti: ['2.5.430 — መስመር መፍትሕ ሕጂ E ቦርሳኻ ከምዝኸፍት Esc ድማ ዝርዝር ከምዝኸፍት ይብል።'],
+  }},
+
   { v: '2.5.429', date: '2026-10-24', lines: {
     en: ['2.5.429 — The Woodshop Bench "made it" note now uses your language, like the Workbench.'],
     simple: ['2.5.429 — The Woodshop note speaks your language.'],
