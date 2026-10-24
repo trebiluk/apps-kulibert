@@ -1,5 +1,4 @@
 export const CHANGELOG = [
-<<<<<<< Updated upstream
   { v: '2.5.433', date: '2026-10-24', lines: {
     en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
     simple: ['2.5.433 — The boss vent sign has no English word now.'],
@@ -10,8 +9,9 @@ export const CHANGELOG = [
     'fa-AF': ['2.5.433 — نشان تهویهٔ ناظر حالا یک پف و یک پیکان است، بدون واژهٔ انگلیسی.'],
     rw: ['2.5.433 — Ikimenyetso cy’umwuka cy’Umugenzuzi kerekana igicu n’akambi, nta jambo ry’Icyongereza.'],
     ti: ['2.5.433 — ምልክት ቬንት ናይ ተቖጻጻሪ ደበናን ምልክት ኣንፈትን የርኢ፡ ብዘይ እንግሊዝኛ ቃል።'],
-=======
-  { v: '2.5.432', date: '2026-10-24', lines: {
+  }},
+
+    { v: '2.5.432', date: '2026-10-24', lines: {
     en: ["2.5.432 — On short wide screens the keys line no longer hides behind the top bar."],
     simple: ["2.5.432 — The keys line stays out from under the top bar."],
     uk: ["2.5.432 — На низьких широких екранах рядок клавіш більше не ховається під верхньою панеллю."],
@@ -21,10 +21,9 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.432 — در صفحه‌های پهن و کوتاه، خط کلیدها دیگر زیر نوار بالا پنهان نمی‌شود."],
     rw: ["2.5.432 — Ku masura magari magufi, umurongo w’utubuto ntukihisha munsi y’umurongo wo hejuru."],
     ti: ["2.5.432 — ኣብ ሰፋሕቲ ሓጸርቲ ስክሪናት፡ መስመር መፋትሕ ድሕሪ ላዕለዋይ ባር ኣይሕባእን።"],
->>>>>>> Stashed changes
   }},
 
-  { v: '2.5.431', date: '2026-10-24', lines: {
+{ v: '2.5.431', date: '2026-10-24', lines: {
     en: ['2.5.431 — The "made in a newer Bertopia" save note now uses your language.'],
     simple: ['2.5.431 — One more save note speaks your language.'],
     uk: ['2.5.431 — Повідомлення «створено в новішій Бертопії» тепер твоєю мовою.'],
