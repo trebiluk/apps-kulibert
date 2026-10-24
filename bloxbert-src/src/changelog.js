@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.439', date: '2026-10-24', lines: {
+    en: ["2.5.439 — Bertopia has a new solid gray and orange look. Menus say BERTY OS, and the held item name has more room."],
+    simple: ["2.5.439 — New gray and orange look. More room for the item name."],
+    uk: ["2.5.439 — Бертопія має новий суцільний сіро-помаранчевий вигляд. Меню каже BERTY OS, а назва предмета в руці має більше місця."],
+    ru: ["2.5.439 — У Бертопии новый сплошной серо-оранжевый вид. Меню говорит BERTY OS, а название предмета в руке имеет больше места."],
+    es: ["2.5.439 — Bertopia tiene un nuevo aspecto sólido gris y naranja. Los menús dicen BERTY OS, y el nombre del objeto en la mano tiene más espacio."],
+    ar: ["2.5.439 — بيرتوبيا لها مظهر جديد رمادي وبرتقالي صلب. القوائم تقول BERTY OS، واسم العنصر في اليد له مساحة أكبر."],
+    'fa-AF': ["2.5.439 — برتوپیا ظاهر جدید خاکستری و نارنجی دارد. فهرست‌ها BERTY OS می‌گویند و نام آیتم در دست فضای بیشتری دارد."],
+    rw: ["2.5.439 — Bertopia ifite isura nshya y'ikijuju n'icungurube. Menyu ivuga BERTY OS, n'izina ry'ikintu ufite rifite umwanya munini."],
+    ti: ["2.5.439 — በርቶፕያ ሓዲሽ ግራጫን ብርቱካናዊን ቅርጺ ኣለዋ። ዝርዝራት BERTY OS ይብሉ፡ ስም ንብረት ኣብ ኢድ ድማ ዝያዳ ቦታ ኣለዎ።"],
+  }},
+
   { v: '2.5.438', date: '2026-10-24', lines: {
     en: ['2.5.438 — You can no longer fall under the world. If the ground has not loaded, you wait in place, and if you ever end up under the ground you pop back on top.'],
     simple: ['2.5.438 — No more falling under the world.'],
