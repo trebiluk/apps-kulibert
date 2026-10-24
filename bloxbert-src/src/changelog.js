@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.436', date: '2026-10-24', lines: {
+    en: ['2.5.436 — Help now says E opens the Bag and Esc opens the menu.'],
+    simple: ['2.5.436 — Help tells you E is the Bag and Esc is the menu.'],
+    uk: ['2.5.436 — Довідка тепер каже, що E відкриває сумку, а Esc — меню.'],
+    ru: ['2.5.436 — Справка теперь говорит, что E открывает сумку, а Esc — меню.'],
+    es: ['2.5.436 — La Ayuda ahora dice que E abre la Bolsa y Esc abre el menú.'],
+    ar: ['2.5.436 — المساعدة تقول الآن إن E يفتح الحقيبة وEsc يفتح القائمة.'],
+    'fa-AF': ['2.5.436 — راهنما حالا می‌گوید E بکس را و Esc فهرست را باز می‌کند.'],
+    rw: ['2.5.436 — Ubufasha ubu buvuga ko E ifungura agasaho, Esc ifungura ibikubiyemo.'],
+    ti: ['2.5.436 — ሓገዝ ሕጂ E ቦርሳ፡ Esc ድማ ዝርዝር ከም ዝኸፍት ይብል።'],
+  }},
+
   { v: '2.5.433', date: '2026-10-24', lines: {
     en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
     simple: ['2.5.433 — The boss vent sign has no English word now.'],
@@ -11,7 +23,7 @@ export const CHANGELOG = [
     ti: ['2.5.433 — ምልክት ቬንት ናይ ተቖጻጻሪ ደበናን ምልክት ኣንፈትን የርኢ፡ ብዘይ እንግሊዝኛ ቃል።'],
   }},
 
-    { v: '2.5.432', date: '2026-10-24', lines: {
+  { v: '2.5.432', date: '2026-10-24', lines: {
     en: ["2.5.432 — On short wide screens the keys line no longer hides behind the top bar."],
     simple: ["2.5.432 — The keys line stays out from under the top bar."],
     uk: ["2.5.432 — На низьких широких екранах рядок клавіш більше не ховається під верхньою панеллю."],
@@ -23,7 +35,7 @@ export const CHANGELOG = [
     ti: ["2.5.432 — ኣብ ሰፋሕቲ ሓጸርቲ ስክሪናት፡ መስመር መፋትሕ ድሕሪ ላዕለዋይ ባር ኣይሕባእን።"],
   }},
 
-{ v: '2.5.431', date: '2026-10-24', lines: {
+  { v: '2.5.431', date: '2026-10-24', lines: {
     en: ['2.5.431 — The "made in a newer Bertopia" save note now uses your language.'],
     simple: ['2.5.431 — One more save note speaks your language.'],
     uk: ['2.5.431 — Повідомлення «створено в новішій Бертопії» тепер твоєю мовою.'],
