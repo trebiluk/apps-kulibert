@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.440', date: '2026-10-24', lines: {
+    en: ["2.5.440 — Smoother play with big belt factories, and machines and creatures keep a steady speed even when the screen is busy."],
+    simple: ["2.5.440 — Smoother play. Machines keep a steady speed."],
+    uk: ["2.5.440 — Плавніша гра з великими фабриками ременів, а машини й істоти тримають стабільну швидкість навіть коли екран зайнятий."],
+    ru: ["2.5.440 — Более плавная игра с большими фабриками ремней, а машины и существа держат стабильную скорость даже когда экран занят."],
+    es: ["2.5.440 — Juego más fluido con grandes fábricas de cintas, y las máquinas y criaturas mantienen una velocidad constante aunque la pantalla esté ocupada."],
+    ar: ["2.5.440 — لعب أكثر سلاسة مع مصانع الأحزمة الكبيرة، والآلات والمخلوقات تحافظ على سرعة ثابتة حتى عندما تكون الشاشة مشغولة."],
+    'fa-AF': ["2.5.440 — بازی روان‌تر با کارخانه‌های بزرگ تسمه، و ماشین‌ها و موجودات حتی وقتی صفحه شلوغ است سرعت ثابت دارند."],
+    rw: ["2.5.440 — Gukina birambuye n'inganda nini z'imikandara, n'imashini n'ibiremwa bigumana umuvuduko uhagaze n'igihe ecran ikora cyane."],
+    ti: ["2.5.440 — ምስ ዓበይቲ ፋብሪካታት ቀበቶ ዝለዓለ ጸወታ፡ ማሽናትን ፍጡራትን ኣብ ዝተጨናነቀ ስክሪን ውን ቀጻሊ ፍጥነት ይሕዙ።"],
+  }},
+
   { v: '2.5.439', date: '2026-10-24', lines: {
     en: ["2.5.439 — Bertopia has a new solid gray and orange look. Menus say BERTY OS, and the held item name has more room."],
     simple: ["2.5.439 — New gray and orange look. More room for the item name."],

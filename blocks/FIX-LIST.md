@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.440 sim-tick:** Belts, mobs and circuits run on the game tick. Belt visuals use tile.line. Machine save-pin coalesced to 1 s.
 - [x] **2.5.439 berty-os-theme:** Gray + orange solid theme. BERTY OS header. Held-item slot widened to min 240px (160px at 412).
 - [x] **2.5.432 keys-clear-topbar:** Keys line floor is the top bar bottom + 8. Hides if it still overlaps a chip. #safe-chip is in the crowd list.
 - [x] **vent-no-english (2.5.433):** Overseer vent sign shows a puff and arrow. Kinyarwanda, Tigrinya, Dari, and Arabic still need a native check.
