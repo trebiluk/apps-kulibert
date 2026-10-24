@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.436 — ሓገዝ ሕጂ E ቦርሳ፡ Esc ድማ ዝርዝር ከም ዝኸፍት ይብል።'],
   }},
 
+  { v: '2.5.435', date: '2026-10-24', lines: {
+    en: ['2.5.435 — The Changelog shows each version number in teal and marks yours with a "You are here" tag.'],
+    simple: ['2.5.435 — The Changelog marks your version with a tag.'],
+    uk: ['2.5.435 — Журнал показує номер кожної версії бірюзовим і позначає твою міткою «Ти тут».'],
+    ru: ['2.5.435 — Журнал показывает номер каждой версии бирюзовым и отмечает твою меткой «Ты здесь».'],
+    es: ['2.5.435 — El Registro muestra cada número de versión en turquesa y marca la tuya con una etiqueta «Estás aquí».'],
+    ar: ['2.5.435 — السجل يعرض رقم كل نسخة باللون الفيروزي ويعلّم نسختك بشارة «أنت هنا».'],
+    'fa-AF': ['2.5.435 — فهرست تغییر شمارهٔ هر نسخه را فیروزه‌ای نشان می‌دهد و نسخهٔ تو را با برچسب «اینجا هستی» نشانه می‌زند.'],
+    rw: ['2.5.435 — Inkururagamba yerekana nimero ya buri verisiyo mu ibara ry’ubururu, kandi iyawe ifite akamenyetso «Uri hano».'],
+    ti: ['2.5.435 — ዝርዝር ቁጽሪ ነፍሲ ወከፍ ስሪት ብሰማያዊ የርኢ፡ ናትካ ድማ ብ«ኣብዚ ኢኻ» ይምልክት።'],
+  }},
+
   { v: '2.5.433', date: '2026-10-24', lines: {
     en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
     simple: ['2.5.433 — The boss vent sign has no English word now.'],

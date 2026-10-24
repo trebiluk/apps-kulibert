@@ -6350,7 +6350,19 @@ panels = mountPanels({
         const s = String(line)
         return s.startsWith(lead) ? s.slice(lead.length) : s
       }).join(' ')
-      p.textContent = row.v + (row.v === VERSION ? ' · ' + t('youAreHere') : '') + ' · ' + lines
+      const ver = document.createElement('span')
+      ver.className = 'log-v'
+      ver.textContent = row.v
+      ver.style.cssText = 'color:#22D3EE;font-weight:800;margin-inline-end:8px'
+      p.append(ver)
+      if (row.v === VERSION) {
+        const here = document.createElement('span')
+        here.className = 'log-here'
+        here.textContent = t('youAreHere')
+        here.style.cssText = 'display:inline-block;margin-inline-end:8px;padding:0 8px;border:1px solid #22D3EE;border-radius:999px;font-size:13px;line-height:1.6;color:#22D3EE'
+        p.append(here)
+      }
+      p.append(document.createTextNode(lines))
       g.append(p)
     }
   },
