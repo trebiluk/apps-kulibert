@@ -686,6 +686,7 @@ html body #sheet.kd-panel[data-panel=inventory] .sheet-bar,html body #sheet.kd-p
   #sheet[data-panel=inventory] .bag-layout:has(.bag-card){flex-direction:row;align-items:flex-start;gap:8px}
   #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .bag-main{flex:1 1 auto}
   #sheet[data-panel=inventory] .bag-card{flex:0 0 210px;position:sticky;top:0;bottom:auto;margin-top:0;z-index:auto;width:auto;border-radius:12px}
+  html body #sheet.kd-panel[data-panel=inventory]:has(.bag-card){width:min(720px,calc(100vw - 16px))}
 }
 @media (max-height:500px){
   .sheet-bar{flex-wrap:nowrap}

@@ -22,6 +22,17 @@ export const CHANGELOG = [
     rw: ['2.5.418 — Igenamiterere ubu ryerekana ibyo wahisemo muri Graphics na Quality na ✓.'],
     ti: ['2.5.418 — ቅጥዒታት ሕጂ ዝመረጽካዮ ግራፊክስን ጽሬትን ብ ✓ የመልክት።'],
   }},
+  { v: '2.5.417', date: '2026-10-24', lines: {
+    en: ['2.5.417 — Picking an item in the Bag no longer squeezes the slots; they stay in place.'],
+    simple: ['2.5.417 — Bag slots stay put when you pick one.'],
+    uk: ['2.5.417 — Коли вибираєш річ у Сумці, клітинки більше не стискаються і не стрибають.'],
+    ru: ['2.5.417 — Когда выбираешь вещь в Сумке, ячейки больше не сжимаются и не прыгают.'],
+    es: ['2.5.417 — Al elegir algo en la Bolsa, las casillas ya no se aprietan; se quedan en su sitio.'],
+    ar: ['2.5.417 — عند اختيار شيء في الحقيبة لم تعد الخانات تنضغط؛ تبقى في مكانها.'],
+    'fa-AF': ['2.5.417 — وقتی چیزی را در کیف انتخاب می‌کنی، خانه‌ها دیگر جمع نمی‌شوند و سر جایشان می‌مانند.'],
+    rw: ['2.5.417 — Iyo uhisemo ikintu mu Gikapu, udusanduku ntitukigabanuka; tuguma aho turi.'],
+    ti: ['2.5.417 — ኣብ ቦርሳ ሓደ ነገር ክትመርጽ ከለኻ ሳጹናት ኣይጸቡን፡ ኣብ ቦታኦም ይጸንሑ።'],
+  } },
 
   { v: '2.5.416', date: '2026-10-24', lines: {
     en: ['2.5.416 — E opens the Bag even while you hold the Build Wand.'],
