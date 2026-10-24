@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.426', date: '2026-10-24', lines: {
+    en: ["2.5.426 — The pause menu groups now fill the whole width, with no empty column on the right."],
+    simple: ["2.5.426 — The menu has no empty gap now."],
+    uk: ["2.5.426 — Групи в меню паузи тепер займають усю ширину, без порожньої колонки праворуч."],
+    ru: ["2.5.426 — Группы в меню паузы теперь занимают всю ширину, без пустой колонки справа."],
+    es: ["2.5.426 — Los grupos del menú de pausa ahora llenan todo el ancho, sin una columna vacía a la derecha."],
+    ar: ["2.5.426 — مجموعات قائمة الإيقاف تملأ العرض كله الآن، بلا عمود فارغ على الجانب."],
+    'fa-AF': ["2.5.426 — گروه‌های فهرست توقف حالا تمام عرض را پر می‌کنند و ستون خالی در کنار نمی‌ماند."],
+    rw: ["2.5.426 — Amatsinda yo mu bikubiyemo byo guhagarara ubu yuzuza ubugari bwose, nta nkingi irimo ubusa."],
+    ti: ["2.5.426 — ጉጅለታት ናይ ደው ምባል ዝርዝር ሕጂ ንምሉእ ስፍሓት ይመልኡ፡ ባዶ ዓንዲ የለን።"],
+  }},
+
   { v: '2.5.425', date: '2026-10-24', lines: {
     en: ['2.5.425 — The “open in another tab” and “Not saved” notes now use your language.'],
     simple: ['2.5.425 — Two save notes speak your language now.'],
