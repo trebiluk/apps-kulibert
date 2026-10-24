@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.414', date: '2026-10-24', lines: {
+    en: ['2.5.414 — The wand marks your first corner right away.'],
+    simple: ['2.5.414 — The wand shows your first corner.'],
+    uk: ['2.5.414 — Чарівна паличка одразу позначає перший кут.'],
+    ru: ['2.5.414 — Волшебная палочка сразу отмечает первый угол.'],
+    es: ['2.5.414 — La varita marca tu primera esquina al momento.'],
+    ar: ['2.5.414 — العصا تُعلّم الزاوية الأولى فورًا.'],
+    'fa-AF': ['2.5.414 — چوب جادو گوشهٔ اول را فوراً نشان می‌دهد.'],
+    rw: ['2.5.414 — Inkoni yerekana inguni ya mbere ako kanya.'],
+    ti: ['2.5.414 — እታ በትሪ ቀዳመይቲ ኩርናዕ ብቕጽበት ተመልክት።'],
+  }},
+
   { v: '2.5.413', date: '2026-10-24', lines: {
     en: ["2.5.413 — The 'Update ready' message sits in the middle of the screen."],
     simple: ['2.5.413 — The update message is centered.'],
