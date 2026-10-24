@@ -1,4 +1,5 @@
 export const CHANGELOG = [
+<<<<<<< Updated upstream
   { v: '2.5.433', date: '2026-10-24', lines: {
     en: ['2.5.433 — The Overseer vent sign shows a puff and an arrow, not the English word "Hiss".'],
     simple: ['2.5.433 — The boss vent sign has no English word now.'],
@@ -9,6 +10,18 @@ export const CHANGELOG = [
     'fa-AF': ['2.5.433 — نشان تهویهٔ ناظر حالا یک پف و یک پیکان است، بدون واژهٔ انگلیسی.'],
     rw: ['2.5.433 — Ikimenyetso cy’umwuka cy’Umugenzuzi kerekana igicu n’akambi, nta jambo ry’Icyongereza.'],
     ti: ['2.5.433 — ምልክት ቬንት ናይ ተቖጻጻሪ ደበናን ምልክት ኣንፈትን የርኢ፡ ብዘይ እንግሊዝኛ ቃል።'],
+=======
+  { v: '2.5.432', date: '2026-10-24', lines: {
+    en: ["2.5.432 — On short wide screens the keys line no longer hides behind the top bar."],
+    simple: ["2.5.432 — The keys line stays out from under the top bar."],
+    uk: ["2.5.432 — На низьких широких екранах рядок клавіш більше не ховається під верхньою панеллю."],
+    ru: ["2.5.432 — На низких широких экранах строка клавиш больше не прячется под верхней панелью."],
+    es: ["2.5.432 — En pantallas anchas y bajas, la línea de teclas ya no se esconde detrás de la barra de arriba."],
+    ar: ["2.5.432 — في الشاشات العريضة القصيرة لم يعد سطر المفاتيح يختفي خلف الشريط العلوي."],
+    'fa-AF': ["2.5.432 — در صفحه‌های پهن و کوتاه، خط کلیدها دیگر زیر نوار بالا پنهان نمی‌شود."],
+    rw: ["2.5.432 — Ku masura magari magufi, umurongo w’utubuto ntukihisha munsi y’umurongo wo hejuru."],
+    ti: ["2.5.432 — ኣብ ሰፋሕቲ ሓጸርቲ ስክሪናት፡ መስመር መፋትሕ ድሕሪ ላዕለዋይ ባር ኣይሕባእን።"],
+>>>>>>> Stashed changes
   }},
 
   { v: '2.5.431', date: '2026-10-24', lines: {
