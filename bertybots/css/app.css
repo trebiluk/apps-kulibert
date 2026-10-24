@@ -865,6 +865,16 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   padding: 12px 16px 10px;
   box-shadow: 0 18px 40px -20px #000c;
 }
+.win.show .win-card {
+  animation: bb-win-in 180ms ease-out both;
+}
+@keyframes bb-win-in {
+  from { transform: scale(0.92); }
+  to { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .win.show .win-card { animation: none; }
+}
 .win-card h2 {
   margin: 0 0 4px;
   font-size: 1.15rem;

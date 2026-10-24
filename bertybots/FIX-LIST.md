@@ -3,13 +3,14 @@ Read this first on every Berty's Botz ship. In the same commit, tick `[x]` on ea
 Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; it may lag anything shipped after them.
 
 ## 1. Live now
-- Live title: **Berty's Botz BB 0.19.38 — Solvay Tech Ed** (`/bertybots/` on apps.kulibert.net).
+- Live title: **Berty's Botz BB 0.19.40 — Solvay Tech Ed** (`/bertybots/` on apps.kulibert.net).
 - Latest proof on file: `proof/botz-01935a/RESULT.md`: Verdict: PASS (one pre-existing P1 found in the sweep, now in botz-01936) — Berty's Botz BB 0.19.35 (4cef5cf): Next job is winnable again, Stop stays on a phone screen, and the yellow buttons are readable.
 
 ## 2. Open fixes (FAIL rows from the latest proof)
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up:
+- [x] BB 0.19.40 — Win sound and burst. Roll Out win plays one short sound and at most 24 sparks at the Drop Zone. Reduced motion keeps the sound only. Stop and Next job clear the sparks. (2026-10-24)
 - [x] Share link (BB 0.19.39): Menu > File copies a #m= link. Friend opens the same machine and presses Play.
 - [ ] `briefs/fixq/botz-01937.md`: Berty's Botz BB 0.19.37: the GOAL chip stays off Job 1's wheel on upright phones, Play keeps the bot in view on a Chromebook, and the leftover words g…
 - [ ] `briefs/fixq/menu-bertybots.md`: Berty’s Botz — same Hub menu

@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.39 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.40 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.39";
+const APP_VERSION = "0.19.40";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.39";
+const APP_CHIP = "BB 0.19.40";
 const APP_BUILT = "2026-10-24";
 
 const FORMAT = 1;
@@ -1072,6 +1072,7 @@ function boot() {
   }
 
   function resetLoop(id) {
+    clearSparks();
     if (id) courseId = id;
     slowMo = false;
     acc = 0;
@@ -1536,6 +1537,7 @@ function boot() {
   }
 
   async function goNextJob() {
+    clearSparks();
     try { localStorage.setItem("bb-parts-v1", "1"); } catch (e) { /* private */ }
     clearTour = false;
     if (winEl) winEl.classList.remove("show");
@@ -2096,6 +2098,7 @@ function boot() {
   }
 
   function startPlay() {
+    armAudio();
     if (playing) return;
     if (!doc.machine.parts.length) {
       const line = "Add a part first.";
@@ -2117,6 +2120,7 @@ function boot() {
     view.panx = 0;
     view.pany = 0;
     trail = [];
+    clearSparks();
     lastTrail = [];
     lastMiss = null;
     lastReadout = "";
@@ -2153,6 +2157,7 @@ function boot() {
   }
 
   function stopPlay() {
+    clearSparks();
     if (playing && won) {
       playing = false;
       sim = null;
@@ -2369,10 +2374,105 @@ function boot() {
         winEl.classList.add("show");
         slowMo = true;
         pinnedStep = "improve";
+        sfx("win");
+        burstSparks();
         awardWin();
         refreshMeta();
       }
     } else winT = 0;
+  }
+
+  let audioCtx = null;
+  let sparks = [];
+
+  function armAudio() {
+    if (audioCtx) {
+      if (audioCtx.state === "suspended") audioCtx.resume().catch(function () {});
+      return audioCtx;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { audioCtx = new AC(); } catch (e) { audioCtx = null; }
+    return audioCtx;
+  }
+
+  function sfx(kind) {
+    if (kind !== "win" || !audioCtx) return;
+    try {
+      if (audioCtx.state === "suspended") audioCtx.resume().catch(function () {});
+      const t0 = audioCtx.currentTime + 0.02;
+      const notes = [
+        { f: 523.25, wave: "square", at: 0 },
+        { f: 659.25, wave: "square", at: 0.12 },
+        { f: 783.99, wave: "triangle", at: 0.24 },
+      ];
+      for (let i = 0; i < notes.length; i++) {
+        const n = notes[i];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = n.wave;
+        osc.frequency.setValueAtTime(n.f, t0 + n.at);
+        const start = t0 + n.at;
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.12, start + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + 0.12);
+      }
+    } catch (e) { /* a blocked sound must not break the win */ }
+  }
+
+  function clearSparks() {
+    sparks = [];
+  }
+
+  function burstSparks() {
+    sparks = [];
+    if (reducedMotion()) return;
+    const drop = doc.level && doc.level.drop;
+    if (!drop) return;
+    const cx = drop.x + drop.w / 2;
+    const cy = drop.y + drop.h / 2;
+    const born = performance.now();
+    const n = 24;
+    for (let i = 0; i < n; i++) {
+      const ang = (i / n) * Math.PI * 2;
+      const speed = 1.4 + (i % 4) * 0.28;
+      sparks.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed * 0.8 + 0.55,
+        born: born,
+        life: 800,
+        s: 0.07 + (i % 3) * 0.02,
+        color: (i % 2) ? "#f5c400" : ORANGE,
+      });
+    }
+  }
+
+  function drawSparks(now) {
+    if (!sparks.length) return;
+    const keep = [];
+    ctx.save();
+    const cap = Math.min(24, sparks.length);
+    for (let i = 0; i < cap; i++) {
+      const s = sparks[i];
+      const age = now - s.born;
+      if (age < 0 || age >= s.life) continue;
+      keep.push(s);
+      const k = age / 1000;
+      const px = Math.max(2, wr(s.s));
+      ctx.globalAlpha = 1 - age / s.life;
+      ctx.fillStyle = s.color;
+      const x = wx(s.x + s.vx * k);
+      const y = wy(s.y + s.vy * k);
+      ctx.fillRect(x - px / 2, y - px / 2, px, px);
+    }
+    ctx.restore();
+    sparks = keep;
   }
 
   function hatchRect(r, color, gapWorld) {
@@ -3010,6 +3110,7 @@ function boot() {
       ctx.stroke();
       ctx.setLineDash([]);
     }
+    drawSparks(now);
     if (!playing && lastMiss && !(winEl && winEl.classList.contains("show"))) {
       ctx.save();
       ctx.strokeStyle = "#c2410c";
@@ -4134,6 +4235,7 @@ function boot() {
     if (winNext) {
       winNext.addEventListener("click", async () => {
         if (isRace()) {
+          clearSparks();
           playing = false;
           sim = null;
           won = false;
@@ -4150,7 +4252,11 @@ function boot() {
       });
     }
     if (winSkip) winSkip.addEventListener("click", () => { goNextJob(); });
-    document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
+    document.getElementById("btn-play").addEventListener("click", () => {
+      armAudio();
+      if (playing) stopPlay();
+      else startPlay();
+    });
     const fillBtn = document.getElementById("btn-fill");
     if (fillBtn) fillBtn.addEventListener("click", () => { fillOpenShop(); });
     document.getElementById("btn-stop").addEventListener("click", stopPlay);

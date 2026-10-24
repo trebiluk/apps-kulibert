@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.40 — Win sound and burst — 2026-10-24
+
+- Parking the crate plays one short win sound (three quiet blips) and a burst of orange and yellow sparks at the Drop Zone.
+- Reduced motion skips the sparks and keeps the sound. Stop and Next job clear the sparks.
+- What's new: Park the crate and hear a win sound with a burst of sparks.
+
 ## 0.19.39 — Share link — 2026-10-24
 
 - Menu > File has Share link. It copies a link with the bot in it. No names.
