@@ -1,7 +1,7 @@
 // Bertopia student door only. build.mjs writes the real version over __BLOX_VERSION__.
 const VERSION = '__BLOX_VERSION__'
 const CACHE = 'bloxbert-' + VERSION
-const SCOPE = new URL(self.registration.scope).pathname // 2.5.475
+const SCOPE = new URL(self.registration.scope).pathname // 2.5.476
 const SHELL = [
   SCOPE + 'app.js?v=' + VERSION,
   SCOPE + 'index.html',

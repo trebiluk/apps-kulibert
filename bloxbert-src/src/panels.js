@@ -258,6 +258,7 @@ export function mountPanels(api) {
       keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
       keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
       keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
+      keyTile('star', 'badges', api.t('bdgTitle'), () => open('badges')), // 2.5.476: badges tile
       keyTile('help', 'help', api.t('help'), () => open('help')),
     ]
     const groups = document.createElement('div')
@@ -368,6 +369,19 @@ export function mountPanels(api) {
         b.classList.add('wide')
         b.dataset.rulesTile = '1'
         g.append(b)
+      }),
+      badges: () => show('badges', api.t('bdgTitle'), (g) => { // 2.5.476: badges panel
+        const list = ['berryRound', 'lanternWalk', 'gardenCorner']
+        for (const id of list) {
+          const row = document.createElement('div')
+          row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px;min-height:44px;border-bottom:1px solid #333'
+          const prog = (window.Badges && window.Badges.progress) ? window.Badges.progress(id) : { n: 0, m: 5, done: false }
+          const kind = id === 'berryRound' ? 'Alias badge' : id === 'lanternWalk' ? 'Stamp' : 'Trophy'
+          const name = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Name') || id
+          const goal = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Goal') || ''
+          row.innerHTML = '<span style="width:24px;height:24px;border-radius:50%;background:#0d9488;display:inline-block"></span><div><b>' + name + '</b><br><small>' + kind + ' · ' + goal + '</small><br><small>' + (prog.done ? api.t('bdgDone') : prog.n + ' / ' + prog.m) + '</small></div>'
+          g.append(row)
+        }
       }),
       help: () => show('help', api.t('help'), (g) => {
         g.append(tile('film', api.t('tour'), () => open('tour')))

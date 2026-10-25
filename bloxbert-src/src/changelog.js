@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.476', date: '2026-10-25', lines: {
+    en: ["2.5.476 — A Badges tile in the menu shows your progress."],
+    simple: ["2.5.476 — Badges tile in the menu."],
+    uk: ["2.5.476 — Плитка Значки в меню показує твій прогрес."],
+    ru: ["2.5.476 — Плитка Значки в меню показывает твой прогресс."],
+    es: ["2.5.476 — Una ficha de Insignias en el menú muestra tu progreso."],
+    ar: ["2.5.476 — بلاطة الشارات في القائمة تظهر تقدمك."],
+    'fa-AF': ["2.5.476 — کاشی نشان‌ها در منو پیشرفت تو را نشان می‌دهد."],
+    rw: ["2.5.476 — Akadiri k'ibimenyetso mu menu kagaragaza aho ugeze."],
+    ti: ["2.5.476 — ንጣፍ ምልክታት ኣብ ዝርዝር ምዕባልካ የርኢ።"],
+  }},
+
   { v: '2.5.475', date: '2026-10-25', lines: {
     en: ["2.5.475 — Badge names show correctly. The old world card closes with Escape and focuses the first button. Lantern and garden badges count."],
     simple: ["2.5.475 — Badge names fixed. Escape closes the old world card. Lantern and garden badges count."],

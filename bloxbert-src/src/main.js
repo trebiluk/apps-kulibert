@@ -75,6 +75,7 @@ import { ITEMS } from './data/items.js'
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import * as Badges from './badges.js'
+window.Badges = Badges // 2.5.476: panel reads progress
 Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   if (!session || session.mode !== 'survival') return
   const name = t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Name') || id // 2.5.475: fix name key

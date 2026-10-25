@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.476 badges-panel:** Badges tile in the menu shows progress for berryRound, lanternWalk, and gardenCorner.
 - [x] **2.5.475 badge-fixes:** Badge name key fixed. Old world card closes with Escape, focuses first button, and doesn't retry if no old world. Lantern and garden badges wired.
 - [x] **2.5.474 door-hotfix:** /blocks redirects to /blocks/. Old world card strings in all 8 languages. SW scope follows the door.
 - [x] **2.5.473 bertopia-student:** /bertopia/ is the student door (kuliblocks, bloxlog, no __blocks). SW scoped to /bertopia/. One-time old-world card.
