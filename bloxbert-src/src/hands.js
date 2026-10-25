@@ -49,10 +49,37 @@ export function createHands(opts) {
 
   const flatMat = new StandardMaterial('hand-flat', scene)
   flatMat.disableLighting = true
-  flatMat.emissiveColor = new Color3(1, 1, 1)
+  flatMat.emissiveColor = new Color3(0.82, 0.82, 0.82)
   flatMat.specularColor = new Color3(0, 0, 0)
   flatMat.fogEnabled = false
   flatMat.backFaceCulling = false
+  const litMats = []
+  // syncGlow writes ambient as DAY_AMB * sky light, and DAY_AMB green is 0.82.
+  function heldScale() {
+    let k = 1
+    const amb = scene.ambientColor
+    if (amb && amb.g > 0.02) k = amb.g / 0.82
+    if (!Number.isFinite(k) || k <= 0) k = 1
+    k = Math.max(0.45, Math.min(1, k))
+    return 0.82 * k
+  }
+  function heldLight() {
+    const s = heldScale()
+    flatMat.emissiveColor.set(s, s, s)
+    for (let i = 0; i < litMats.length; i++) {
+      const mat = litMats[i]
+      const base = mat.metadata && mat.metadata.base
+      if (base) mat.emissiveColor.set(base[0] * s, base[1] * s, base[2] * s)
+      else mat.emissiveColor.set(s, s, s)
+    }
+  }
+  function trackHeld(mat, rgb) {
+    mat.metadata = { base: rgb ? [rgb[0], rgb[1], rgb[2]] : [1, 1, 1] }
+    litMats.push(mat)
+    const s = heldScale()
+    const b = mat.metadata.base
+    mat.emissiveColor.set(b[0] * s, b[1] * s, b[2] * s)
+  }
 
   const HAND = 0.48 * 1.15 // 2.5.441: bigger hand
   const mainRoot = new TransformNode('hand-main', scene)
@@ -159,6 +186,7 @@ export function createHands(opts) {
     if (mainRoot.isEnabled() === hide) mainRoot.setEnabled(!hide)
     if (!offRoot.isEnabled()) { /* off-hand stays empty until a later item */ }
     else offRoot.setEnabled(false)
+    heldLight()
     if (hide) return
     syncItem()
     const now = performance.now()
@@ -169,7 +197,7 @@ export function createHands(opts) {
     let bob = 0
     if (!lite && !less) {
       const t = now * 0.001
-      swayX = Math.sin(t * 1.3) * 0.03
+      swayX = Math.max(-0.02, Math.min(0.02, Math.sin(t * 1.3) * 0.03))
       swayZ = Math.sin(t * 0.8) * 0.02
       const sp = opts.speed()
       if (sp > 0.25) {
@@ -223,15 +251,14 @@ export function createHands(opts) {
     tex.hasAlpha = true
     const mat = new StandardMaterial('hand-plant-mat-' + name, scene)
     mat.disableLighting = true
-    mat.emissiveColor = new Color3(1, 1, 1)
     mat.diffuseTexture = tex
-    mat.emissiveTexture = tex
     mat.useAlphaFromDiffuseTexture = true
     mat.transparencyMode = Material.MATERIAL_ALPHATEST
     mat.alphaCutOff = 0.4
     mat.specularColor = new Color3(0, 0, 0)
     mat.fogEnabled = false
     mat.backFaceCulling = false
+    trackHeld(mat)
     const mesh = new Mesh('hand-plant-' + name, scene)
     const vd = new VertexData()
     vd.positions = [-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0]
@@ -346,10 +373,11 @@ export function createHands(opts) {
     if (hit) return hit
     const mat = new StandardMaterial('hand-atlas-' + blockMat.size, scene)
     mat.disableLighting = true
-    mat.emissiveTexture = tex
+    mat.diffuseTexture = tex
     mat.specularColor = new Color3(0, 0, 0)
     mat.fogEnabled = false
     mat.backFaceCulling = false
+    trackHeld(mat)
     blockMat.set('mat:' + url, mat)
     return mat
   }
@@ -360,9 +388,9 @@ export function createHands(opts) {
     if (hit) return hit
     const mat = new StandardMaterial('hand-col-' + blockMat.size, scene)
     mat.disableLighting = true
-    mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
     mat.fogEnabled = false
     mat.backFaceCulling = false
+    trackHeld(mat, rgb)
     blockMat.set(key, mat)
     return mat
   }

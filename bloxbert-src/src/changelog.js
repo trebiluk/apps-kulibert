@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.470', date: '2026-10-25', lines: {
+    en: ['2.5.470 — The item in your hand matches the world light, and the crosshair is easier to see.'],
+    simple: ['2.5.470 — Softer hand, clearer aim.'],
+    uk: ['2.5.470 — Предмет у руці світиться як світ, і приціл легше бачити.'],
+    ru: ['2.5.470 — Предмет в руке светится как мир, и прицел легче увидеть.'],
+    es: ['2.5.470 — El objeto en tu mano sigue la luz del mundo, y la mira se ve mejor.'],
+    ar: ['2.5.470 — ما في يدك يطابق ضوء العالم، وعلامة التصويب أوضح.'],
+    'fa-AF': ['2.5.470 — چیزی در دستت با نور جهان می‌خواند، و نشانهٔ هدف روشن‌تر است.'],
+    rw: ['2.5.470 — Ikintu mu ntoki gihura n\'urumuri rw\'isi, kandi icyerekezo kigaragara neza.'],
+    ti: ['2.5.470 — እቲ ኣብ ኢድካ ዘሎ ነገር ምስ ብርሃን ዓለም ይሰማማዕ፡ ምልክት ኢላማ ድማ ብቐሊሉ ይረአ።'],
+  }},
+
   { v: '2.5.469', date: '2026-10-25', lines: {
     en: ['2.5.469 — The top bar is calmer and easier to read, with an icon on every chip.'],
     simple: ['2.5.469 — Calmer top bar.'],

@@ -3006,3 +3006,20 @@ for (const [lang, row] of Object.entries(TIP462)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.470 held light. rw, ti, and Dari (fa-AF) are machine drafts — native check needed.
+const HAND470 = {
+  en: { whatsNewBody: '2.5.470 — The item in your hand matches the world light, and the crosshair is easier to see.' },
+  simple: { whatsNewBody: '2.5.470 — Softer hand, clearer aim.' },
+  uk: { whatsNewBody: '2.5.470 — Предмет у руці світиться як світ, і приціл легше бачити.' },
+  ru: { whatsNewBody: '2.5.470 — Предмет в руке светится как мир, и прицел легче увидеть.' },
+  es: { whatsNewBody: '2.5.470 — El objeto en tu mano sigue la luz del mundo, y la mira se ve mejor.' },
+  ar: { whatsNewBody: '2.5.470 — ما في يدك يطابق ضوء العالم، وعلامة التصويب أوضح.' },
+  'fa-AF': { whatsNewBody: '2.5.470 — چیزی در دستت با نور جهان می‌خواند، و نشانهٔ هدف روشن‌تر است.' },
+  rw: { whatsNewBody: '2.5.470 — Ikintu mu ntoki gihura n\'urumuri rw\'isi, kandi icyerekezo kigaragara neza.' },
+  ti: { whatsNewBody: '2.5.470 — እቲ ኣብ ኢድካ ዘሎ ነገር ምስ ብርሃን ዓለም ይሰማማዕ፡ ምልክት ኢላማ ድማ ብቐሊሉ ይረአ።' },
+}
+for (const [lang, row] of Object.entries(HAND470)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

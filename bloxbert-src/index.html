@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.469</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.468">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.468">
+<title>Bertopia 2.5.470</title>
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.470">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.470">
 <style>
 :root{--top-h:60px;--accent:#5fb3c4;--accent-soft:rgba(95,179,196,.18);--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:var(--accent);--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -91,8 +91,8 @@ html[data-kp-contrast="1"] #door-opt .keycap,html[data-kp-contrast="1"] #door-pi
 html[data-kp-motion="less"] #door-opt .keycap{transition:none}
 html[data-kb-bar]:not(.kb-framed) #toast{top:calc(48px + var(--top-h) + 10px)}
 html[data-kb-bar]:not(.kb-framed) #update-chip{top:calc(48px + var(--top-h) + 8px)}
-body:has(#sheet:not([hidden])) #update-chip{z-index:45;top:auto;bottom:calc(var(--hotbar-h, 76px) + 12px + env(safe-area-inset-bottom, 0px));left:50%;right:auto;transform:translateX(-50%)} /* 2.5.468: sits above the hotbar, not on it */
-@media (max-height:520px){body:has(#sheet:not([hidden])) #update-chip{left:auto;right:calc(12px + env(safe-area-inset-right, 0px));transform:none}} /* 2.5.468: short screens: beside the Bag panel, not on it */
+body:has(#sheet:not([hidden])) #update-chip{z-index:45;top:auto;bottom:calc(var(--hotbar-h, 76px) + 12px + env(safe-area-inset-bottom, 0px));left:50%;right:auto;transform:translateX(-50%)} /* 2.5.470: sits above the hotbar, not on it */
+@media (max-height:520px){body:has(#sheet:not([hidden])) #update-chip{left:auto;right:calc(12px + env(safe-area-inset-right, 0px));transform:none}} /* 2.5.470: short screens: beside the Bag panel, not on it */
 [hidden]{display:none!important}
 .brand b{font-size:16px;letter-spacing:.2px}
 .brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -100,10 +100,10 @@ body:has(#sheet:not([hidden])) #update-chip{z-index:45;top:auto;bottom:calc(var(
 #wallet-chip{display:inline-flex;align-items:center;box-sizing:border-box;min-width:44px;min-height:var(--ks-touch);padding:0 12px}
 #perf{position:fixed;top:calc(var(--top-h) + 8px);right:68px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
 .cross{position:fixed;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;z-index:3;pointer-events:none}
-.cross:before,.cross:after{content:"";position:absolute;background:transparent;box-shadow:none}
-.cross:before{left:9px;top:0;width:2px;height:20px;background:linear-gradient(var(--accent) 0 6px, transparent 6px 14px, var(--accent) 14px 20px)}
-.cross:after{top:9px;left:0;height:2px;width:20px;background:linear-gradient(90deg,var(--accent) 0 6px, transparent 6px 14px, var(--accent) 14px 20px)}
-body.touch .cross{opacity:.4}
+.cross:before,.cross:after{content:"";position:absolute;background:transparent;box-shadow:none;filter:drop-shadow(1px 0 0 rgba(11,18,32,.55)) drop-shadow(-1px 0 0 rgba(11,18,32,.55)) drop-shadow(0 1px 0 rgba(11,18,32,.55)) drop-shadow(0 -1px 0 rgba(11,18,32,.55))}
+.cross:before{left:9px;top:0;width:2px;height:20px;background:linear-gradient(#e8eef4 0 6px, transparent 6px 14px, #e8eef4 14px 20px)}
+.cross:after{top:9px;left:0;height:2px;width:20px;background:linear-gradient(90deg,#e8eef4 0 6px, transparent 6px 14px, #e8eef4 14px 20px)}
+body.touch .cross{opacity:.7}
 body.table .cross{opacity:.45}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center, transparent 62%, rgba(6,14,28,.16) 100%)}
 #scrim{position:fixed;inset:0;background:rgba(5,8,20,.25);z-index:8;opacity:0;pointer-events:none;backdrop-filter:none}
@@ -184,10 +184,10 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   .lbl{font-size:12px}
   .move{bottom:76px}.acts{bottom:76px}.pad button{width:48px;height:48px}.move{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}
   .acts button{width:70px;height:52px}.acts .jump{height:48px}
-  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.468: stick sits above the hotbar like the jump column */}
+  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.470: stick sits above the hotbar like the jump column */}
 @media (max-height:500px){
   :root{--hud-lift:76px;--hotbar-h:76px}
-  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.468: stick sits above the hotbar like the jump column */
+  .stickpad{width:104px;height:104px;bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom))} /* 2.5.470: stick sits above the hotbar like the jump column */
   .jumpcol{left:auto;right:calc(16px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom));z-index:6;gap:16px}
   body.stick-right .jumpcol{left:calc(16px + env(safe-area-inset-left));right:auto}
 }
@@ -608,10 +608,10 @@ html body #hotbar#hotbar .slot:not(.bag-tile){padding:0 0 2px !important;height:
 html body #hotbar#hotbar .slot:not(.bag-tile) .lbl{display:block !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;font-size:14px !important;font-weight:700 !important;line-height:1.05 !important;white-space:normal !important;overflow:visible !important;text-overflow:clip !important;word-break:normal !important;overflow-wrap:normal !important;hyphens:none !important;max-height:none !important}
 html body #hotbar#hotbar .slot .count{position:absolute !important;top:14px !important;left:auto !important;right:calc((100% - 32px) / 2 + 2px) !important;bottom:auto !important;z-index:4 !important;min-width:16px;padding:0 3px;border-radius:4px;background:#000 !important;color:#fff !important;font-size:14px !important;font-weight:700 !important;line-height:16px !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;pointer-events:none}
 html body #sheet#sheet[data-panel=inventory] .well .count{position:absolute !important;top:18px !important;left:auto !important;right:calc((100% - 32px) / 2 + 2px) !important;bottom:auto !important;z-index:4 !important;min-width:16px;padding:0 3px;border-radius:4px;background:#000 !important;color:#fff !important;font-size:14px !important;font-weight:700 !important;line-height:16px !important;font-family:"Atkinson Hyperlegible",system-ui,sans-serif !important;pointer-events:none}
-/* 2.5.468: hotbar counts get their own top strip (number top-right, slot digit top-left), so they never cover the item picture */
+/* 2.5.470: hotbar counts get their own top strip (number top-right, slot digit top-left), so they never cover the item picture */
 html body #hotbar#hotbar .slot:not(.bag-tile){padding-top:16px !important}
 html body #hotbar#hotbar .slot .count{top:0 !important;right:2px !important}
-/* 2.5.468: Bag counts get the same top strip as the hotbar, so they never cover the item picture */
+/* 2.5.470: Bag counts get the same top strip as the hotbar, so they never cover the item picture */
 html body #sheet#sheet[data-panel=inventory] .well{padding-top:16px !important}
 html body #sheet#sheet[data-panel=inventory] .well .count{top:0 !important;right:2px !important}
 html body #sheet#sheet[data-panel=inventory] .well .gic,html body #sheet#sheet[data-panel=inventory] .well .gic svg,html body #sheet#sheet[data-panel=inventory] .well .gic canvas{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;max-width:32px !important;max-height:32px !important}
@@ -634,7 +634,7 @@ html body #hotbar#hotbar .slot:not(.bag-tile) .sw,html body #hotbar#hotbar .slot
 #save-chip{position:fixed;z-index:35;left:50%;top:50%;transform:translate(-50%,-50%);right:auto;pointer-events:none;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;border-radius:999px;border:2px solid var(--accent);background:#0B1220;color:#F8FAFC;font-weight:800;font-size:14px;line-height:1.2}
 #save-chip[hidden]{display:none !important}
 #save-chip .sc-ico{width:18px;height:18px;flex:0 0 18px;display:block}
-#save-chip[data-state="saving"] .sc-ico{display:none} /* 2.5.468: no tick until the save is done */
+#save-chip[data-state="saving"] .sc-ico{display:none} /* 2.5.470: no tick until the save is done */
 @keyframes stripname{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
 #hotbar .slot.bump{animation:wellbump 180ms ease}
 @keyframes wellbump{from{transform:scale(1.15)}to{transform:scale(1)}}
@@ -737,7 +737,9 @@ html[data-kp-motion="less"] #sheet[data-panel=woodshop] .wobble,#sheet[data-pane
 #shop-safe .card{max-width:440px;margin:16px;padding:16px;background:#0E1A22;color:#E6EEF2;border:3px solid #E6B15A;border-radius:12px;display:flex;flex-direction:column;gap:10px}
 #shop-safe button{padding:10px 18px;font-weight:800;border:0;border-radius:8px;background:var(--accent);color:#08131A}
 .fx-pop{outline:3px solid #E6B15A}
-body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
+body[data-glasses="1"] .cross:before{left:8px;width:3px}
+body[data-glasses="1"] .cross:after{top:8px;height:3px}
+body[data-glasses="1"] .cross{box-shadow:none}
 @media (prefers-reduced-motion:reduce){
   #hotbar .slot.bump,#held-chip.on,#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap{animation:none;transition:none}
   #held-chip.on{opacity:1}
@@ -762,7 +764,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 .qol-shake{animation:qol-shake 160ms linear 1}
 @media (prefers-reduced-motion:reduce){.qol-shake{animation:none}}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.467">
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.470">
 <style>
 .top{
   flex-wrap:nowrap;align-items:center;gap:6px;padding:1px 8px;min-height:60px;
@@ -819,9 +821,9 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   background-color:#222222;color:#e8e6e3;
   font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:14px;font-weight:700;
 }
-@media(max-width:500px){.top small.tb-lcd{min-width:160px}} /* 2.5.468: 160px at 412 upright */
+@media(max-width:500px){.top small.tb-lcd{min-width:160px}} /* 2.5.470: 160px at 412 upright */
 @media(max-width:500px){.top small.tb-lcd{display:none}}
-@media (min-width:981px) and (max-width:1199px){html body header.top .tb-plate canvas.kd-word,html body header.top .tb-plate .tb-name{display:none !important}} /* 2.5.467: free room for the held name on mid-size Survival */
+@media (min-width:981px) and (max-width:1199px){html body header.top .tb-plate canvas.kd-word,html body header.top .tb-plate .tb-name{display:none !important}} /* 2.5.470: free room for the held name on mid-size Survival */
 #mode-chip .gic,#wallet-chip .gic,#day-clock .gic{width:16px;height:16px;display:flex;flex:0 0 16px}
 #mode-chip .gic,#wallet-chip .gic,#day-clock .gic{width:16px;height:16px;display:flex;flex:0 0 16px}
 #mode-chip canvas{width:14px;height:14px;image-rendering:pixelated;display:block}
@@ -1148,7 +1150,7 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
 html[data-kb-bar]:not(.kb-framed) #pause-btn{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #pause-btn{right:68px;left:auto}
 #pause-btn.on{border-color:var(--accent);color:var(--accent)}
-/* 2.5.468: Pause sits on the open Bag. Close is the way out, and Pause returns when the Bag shuts. */
+/* 2.5.470: Pause sits on the open Bag. Close is the way out, and Pause returns when the Bag shuts. */
 body:has(#sheet:not([hidden])) #pause-btn{display:none !important}
 body.hud-calm{--top-h:60px}
 body.hud-calm #menu-hint,
@@ -1169,13 +1171,13 @@ body.tip-on #maker-card,
 body.tip-on #qol-tip,
 body.tip-on #held-chip{display:none!important}
 #mode-chip[hidden]{display:none!important}
-#undo-btn:disabled,#redo-btn:disabled{opacity:.4;cursor:default} /* 2.5.468: greyed out, no empty gap */
+#undo-btn:disabled,#redo-btn:disabled{opacity:.4;cursor:default} /* 2.5.470: greyed out, no empty gap */
 
 #toast.new-chip:not([hidden]){display:flex;align-items:center;gap:8px}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="read.css?v=2.5.467">
+<link rel="stylesheet" href="read.css?v=2.5.470">
 </head>
 <body>
 <div id="stage"></div>
@@ -1190,7 +1192,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.468</span>
+      <span class="ver" id="ver-plate">2.5.470</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1243,7 +1245,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.468 — Item tips close with the Bag and never get stuck on screen.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.470 — The item in your hand matches the world light, and the crosshair is easier to see.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1292,7 +1294,7 @@ body.tip-on #held-chip{display:none!important}
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
     <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">2.5.468</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.5.470</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card kd-card" role="dialog" aria-labelledby="about-title">
@@ -1372,9 +1374,9 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.468"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.469" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.469" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.470"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.470" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.470" defer></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
