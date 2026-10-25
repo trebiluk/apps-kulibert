@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.463 calm-atlas-proof:** 2.5.459 changelog has all 9 languages. check-atlas.py asserts no neon green. leafTint test asserts channels ≤ 1.0.
 - [x] **2.5.462 bag tip:** Item tips close with the Bag, when the pointer leaves the slot, on blur, when the tab hides, and on Escape. An empty tip never stays as a dark panel.
 
 - [x] **chop-any-item (2.5.461):** Chop trees with anything in your hand.

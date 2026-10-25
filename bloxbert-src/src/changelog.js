@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.463', date: '2026-10-25', lines: {
+    en: ["2.5.463 — The softer world colors now have notes in every language."],
+    simple: ["2.5.463 — Notes in every language."],
+    uk: ["2.5.463 — М'якші кольори світу тепер мають нотатки кожною мовою."],
+    ru: ["2.5.463 — Более мягкие цвета мира теперь имеют заметки на каждом языке."],
+    es: ["2.5.463 — Los colores más suaves del mundo ahora tienen notas en cada idioma."],
+    ar: ["2.5.463 — ألوان العالم الأهدأ الآن لها ملاحظات بكل لغة."],
+    'fa-AF': ["2.5.463 — رنگ‌های نرم‌تر جهان حالا یادداشت به هر زبان دارند."],
+    rw: ["2.5.463 — Amabara yoroshye y'isi ubu afite inyandiko mu rurimi rwose."],
+    ti: ["2.5.463 — ልዕሊ ርጉዕ ሕብሪ ዓለም ሕጂ ኣብ ነፍሲ ወከፍ ቋንቋ መዘኻኸሪ ኣለዎ።"],
+  }},
+
   { v: '2.5.462', date: '2026-10-25', lines: {
     en: ['2.5.462 — Item tips close with the Bag and never get stuck on screen.'],
     simple: ['2.5.462 — No stuck tip box.'],
@@ -24,6 +36,13 @@ export const CHANGELOG = [
   { v: '2.5.459', date: '2026-10-25', lines: {
     en: ['2.5.459 — Grass, dirt, stone, wood and leaves have calmer, softer colors.'],
     simple: ['2.5.459 — The world colors are softer.'],
+    uk: ['2.5.459 — Трава, земля, камінь, дерево і листя мають м'якші кольори.'],
+    ru: ['2.5.459 — Трава, земля, камень, дерево и листья имеют более мягкие цвета.'],
+    es: ['2.5.459 — El césped, la tierra, la piedra, la madera y las hojas tienen colores más suaves.'],
+    ar: ['2.5.459 — العشب والتراب والحجر والخشب والأوراق لها ألوان أهدأ.'],
+    'fa-AF': ['2.5.459 — علف، خاک، سنگ، چوب و برگ‌ها رنگ‌های نرم‌تری دارند.'],
+    rw: ['2.5.459 — Ibyatsi, ubutaka, ibuye, ibiti n'amababi bifite ibara ryoroshye.'],
+    ti: ['2.5.459 — ሳዕሪ፡ ሓመድ፡ እምኒ፡ ዕንጨይቲን ቆጽልን ልዕሊ ርጉዕ ሕብሪ ኣለዎም።'],
   }},
 
   { v: '2.5.458', date: '2026-10-25', lines: {
