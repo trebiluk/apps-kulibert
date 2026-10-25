@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.486 right-click:** Right-click places while you are looking, and the browser menu stays closed. A text box can still use its own menu.
 - [x] **2.5.485 hotbar zoom:** The hotbar really shrinks when the page is zoomed past 125%. The 2.5.480 scale was wiped by a later transform.
 - [x] **2.5.484 door-click:** A short right-click opens a door even if the pointer wobbles a little, including the click that also starts looking. A long drag still does not use the door. The update script parses again.
 - [x] **2.5.483 suits:** Settings has Clothes: Berty, Clay, Bearcat, Grove, Snow. The body and the hand use that suit. Choice stays on this device. Worlds are unchanged.

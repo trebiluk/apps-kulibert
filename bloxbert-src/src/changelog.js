@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.486', date: '2026-10-25', lines: {
+    en: ["2.5.486 — Right-click places a block and does not open the browser menu."],
+    simple: ["2.5.486 — Right-click places. No browser menu."],
+    uk: ["2.5.486 — Правий клік ставить блок і не відкриває меню браузера."],
+    ru: ["2.5.486 — Правый клик ставит блок и не открывает меню браузера."],
+    es: ["2.5.486 — El clic derecho pone un bloque y no abre el menú del navegador."],
+    ar: ["2.5.486 — النقر الأيمن يضع مكعباً ولا يفتح قائمة المتصفح."],
+    'fa-AF': ["2.5.486 — کلیک راست بلاک می‌گذارد و فهرست مرورگر را باز نمی‌کند."],
+    rw: ["2.5.486 — Kanda iburyo ushyire block, menu y'urubuga ntifunguka."],
+    ti: ["2.5.486 — የማናይ ጠውቕ ብሎክ የቐምጥ፡ ናይ መርበብ ዝርዝር ኣይኸፍትን።"],
+  }},
+
   { v: '2.5.485', date: '2026-10-25', lines: {
     en: ["2.5.485 — The hotbar really shrinks when the page is zoomed past 125%, so the buttons do not pile up."],
     simple: ["2.5.485 — The hotbar shrinks when zoom is high."],

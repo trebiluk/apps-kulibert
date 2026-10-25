@@ -75,6 +75,12 @@ import { ITEMS } from './data/items.js'
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import * as Badges from './badges.js'
+window.addEventListener('contextmenu', (e) => {
+  const t = e.target
+  const tag = t && t.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return
+  e.preventDefault()
+}, true)
 function fixZoom() { // 2.5.480: Chrome zoom makes fixed UI overlap
   const z = window.devicePixelRatio || 1
   if (z > 1.25) document.documentElement.style.setProperty('--ui-scale', String(Math.min(1, 1.25 / z)))
@@ -9694,7 +9700,8 @@ window.addEventListener('pointerdown', (e) => {
       return
     }
   }
-  if (!canvasHit(e)) return
+  const lockedPlay = !!(document.pointerLockElement && !TOUCH_UI && e.button === 2)
+  if (!canvasHit(e) && !lockedPlay) return
   const lockFirst = awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch'
   const peek = lockFirst ? targetHit() : null
   const doorFirst = !!(peek && isDoor(peek.blockID))

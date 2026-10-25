@@ -3195,3 +3195,20 @@ for (const [lang, row] of Object.entries(ZOOM485)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.486: pointer lock sits on the play wrapper, so a right-click missed the canvas and opened the browser menu.
+const PLACE486 = {
+  en: { whatsNewBody: '2.5.486 — Right-click places a block and does not open the browser menu.' },
+  simple: { whatsNewBody: '2.5.486 — Right-click places. No browser menu.' },
+  uk: { whatsNewBody: '2.5.486 — Правий клік ставить блок і не відкриває меню браузера.' },
+  ru: { whatsNewBody: '2.5.486 — Правый клик ставит блок и не открывает меню браузера.' },
+  es: { whatsNewBody: '2.5.486 — El clic derecho pone un bloque y no abre el menú del navegador.' },
+  ar: { whatsNewBody: '2.5.486 — النقر الأيمن يضع مكعباً ولا يفتح قائمة المتصفح.' },
+  'fa-AF': { whatsNewBody: '2.5.486 — کلیک راست بلاک می‌گذارد و فهرست مرورگر را باز نمی‌کند.' },
+  rw: { whatsNewBody: '2.5.486 — Kanda iburyo ushyire block, menu y\'urubuga ntifunguka.' },
+  ti: { whatsNewBody: '2.5.486 — የማናይ ጠውቕ ብሎክ የቐምጥ፡ ናይ መርበብ ዝርዝር ኣይኸፍትን።' },
+}
+for (const [lang, row] of Object.entries(PLACE486)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
