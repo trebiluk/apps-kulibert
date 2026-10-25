@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.450', date: '2026-10-25', lines: {
+    en: ['2.5.450 — Beds are low and two blocks long. The bed card has three big buttons: Sleep, Set home, and Pick up. The workbench uses one picture everywhere.'],
+    simple: ['2.5.450 — New bed. Big buttons: Sleep, Home, Pick up.'],
+    uk: ['2.5.450 — Ліжка низькі і завдовжки два блоки. Картка ліжка має три великі кнопки: сон, дім і забрати. Верстат має одну картинку скрізь.'],
+    ru: ['2.5.450 — Кровати низкие и длиной в два блока. Карточка кровати имеет три большие кнопки: сон, дом и забрать. Верстак использует одну картинку везде.'],
+    es: ['2.5.450 — Las camas son bajas y miden dos bloques. La tarjeta tiene tres botones grandes: Dormir, Poner casa y Recoger. El banco usa una sola imagen en todos lados.'],
+    ar: ['2.5.450 — الأسرّة منخفضة وطولها مكعبان. بطاقة السرير فيها ثلاثة أزرار كبيرة: نوم، بيت، والتقط. منضدة العمل تستخدم صورة واحدة في كل مكان.'],
+    'fa-AF': ['2.5.450 — تخت‌ها کوتاه و دو بلاک دراز اند. کارت تخت سه دکمه بزرگ دارد: خواب، خانه و بردار. میز کار همه جا یک تصویر دارد.'],
+    rw: ['2.5.450 — Ibiriri biri hasi kandi bifite ibice bibiri. Ikarita ifite buto nini eshatu: Sinzira, Urugo, na Fata. Intebe ikoresha ishusho imwe hose.'],
+    ti: ['2.5.450 — ዓራታት ትሑታትን ክልተ ብሎክ ነዊሕን እዮም። ካርድ ዓራት ሰለስተ ዓበይቲ መጠወቒ ኣለዋ፡ ድቃስ፡ ገዛን ውሰድን። መደብ ስራሕ ኣብ ኩሉ ቦታ ሓንቲ ስእሊ ይጥቀም።'],
+  }},
+
   { v: '2.5.452', date: '2026-10-25', lines: {
     en: ['2.5.452 — The menu and pause dim the world a little instead of covering it in gray, with no flash.'],
     simple: ['2.5.452 — Menu keeps the world showing. No flash.'],

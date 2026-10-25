@@ -1384,6 +1384,18 @@ function techButtonMesh(on) {
   const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
   return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
 }
+function bedMesh() {
+  const wool = dye('bed-wool', 0.2, 0.46, 0.78)
+  const pillow = dye('bed-pillow', 0.94, 0.95, 0.97)
+  const legs = [
+    [-0.36, -0.34], [0.36, -0.34], [-0.36, 1.22], [0.36, 1.22],
+  ].map(([lx, lz], i) => part('bed-leg-' + i, 0.08, 0.16, 0.08, lx, 0.08, lz, 0, woodD))
+  const frame = part('bed-frame', 0.88, 0.08, 1.78, 0, 0.2, 0.44, 0, woodD)
+  const mattress = part('bed-mat', 0.78, 0.14, 1.62, 0, 0.31, 0.4, 0, wool)
+  const board = part('bed-board', 0.86, 0.22, 0.08, 0, 0.42, 1.22, 0, woodD)
+  const pill = part('bed-pill', 0.46, 0.12, 0.26, 0, 0.49, 1.05, 0, pillow)
+  return mergeMats('bunk', legs.concat([frame, mattress, board, pill]))
+}
 function chairMesh() {
   const pad = dye('chair-pad', 0.16, 0.55, 0.72)
   const legs = [
@@ -1460,6 +1472,7 @@ const SHAPES = {
   1405: techButtonMesh(true),
   72: chairMesh(),
   73: sewingMesh(),
+  26: bedMesh(),
 }
 const clayMat = dye('clay-soil', 0.64, 0.5, 0.38)
 noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
@@ -1476,7 +1489,13 @@ for (const [id, name, material] of BLOCKS) {
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
   const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug && !line) }
-  if (name === 'chair') { opts.solid = false; opts.opaque = false }
+  if (name === 'chair' || name === 'bunk') { opts.solid = false; opts.opaque = false }
+  if (name === 'bunk') {
+    opts.onCustomMeshCreate = orientBed
+    const fix = (x, y, z) => queueMicrotask(() => ensureBedPair(x, y, z))
+    opts.onSet = fix
+    opts.onLoad = fix
+  }
   if (fluid) { opts.material = 'bertWater'; opts.fluid = true; opts.opaque = false; opts.solid = false }
   if (mesh && !fluid) opts.blockMesh = mesh
   if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
@@ -1583,6 +1602,7 @@ function townVoxel(x, y, z) {
     if (x === 6 && z === 8 && y === h + 1) return ID.workbench
     if (x === 11 && z === 8 && y === h + 1) return ID.oven
     if (x === 10 && z === 6 && y === h + 1) return ID.bunk
+    if (x === 10 && z === 7 && y === h + 1) return ID.bunk
     return 0
   }
   if (y === h + 1) {
@@ -2484,6 +2504,178 @@ function placeShop(x, y, z) {
   roomQuietUntil = performance.now() + 400
   return true
 }
+const BED_H = 0.55
+let bedBusy = false
+function bedKey(x, y, z) { return x + ',' + y + ',' + z }
+function bedDelta(face) { return face === 'N' || face === 'S' ? [1, 0] : [0, 1] }
+function bedYaw(face) { return face === 'N' || face === 'S' ? Math.PI / 2 : 0 }
+function orientBed(mesh, x, y, z) {
+  const rec = session && session.meta && session.meta.get(bedKey(x, y, z))
+  if (rec && rec.role === 'head') {
+    mesh.scaling.setAll(0.001)
+    return
+  }
+  let face = rec && (rec.face === 'N' || rec.face === 'E' || rec.face === 'W' || rec.face === 'S') ? rec.face : ''
+  if (!face) {
+    if (getVoxel(x + 1, y, z) === ID.bunk) face = 'S'
+    else face = 'E'
+  }
+  mesh.rotation.y = bedYaw(face)
+  const alongX = face === 'N' || face === 'S'
+  const hx = x + (alongX ? 1 : 0)
+  const hz = z + (alongX ? 0 : 1)
+  const paired = (rec && rec.role === 'foot') || getVoxel(hx, y, hz) === ID.bunk
+  if (!paired) {
+    mesh.scaling.set(1, 1, 0.5)
+    mesh.position.z = 0.3
+  }
+}
+function bedPairOf(x, y, z) {
+  const self = bedKey(x, y, z)
+  const rec = session && session.meta && session.meta.get(self)
+  const read = (row) => {
+    if (!row || !row.anchor || !row.pair) return null
+    const a = row.anchor.split(',').map(Number)
+    const b = row.pair.split(',').map(Number)
+    return { ax: a[0], ay: a[1], az: a[2], hx: b[0], hy: b[1], hz: b[2], face: row.face || 'E', solo: false }
+  }
+  const own = read(rec)
+  if (own) return own
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  for (let i = 0; i < dirs.length; i++) {
+    const nx = x + dirs[i][0]
+    const nz = z + dirs[i][1]
+    const other = session && session.meta && session.meta.get(bedKey(nx, y, nz))
+    const hit = read(other)
+    if (hit && (other.anchor === self || other.pair === self)) return hit
+  }
+  return { ax: x, ay: y, az: z, hx: x, hy: y, hz: z, face: (rec && rec.face) || 'E', solo: true }
+}
+function stampBed(ax, ay, az, hx, hy, hz, face, design) {
+  if (!session || !session.meta) return
+  const anchor = bedKey(ax, ay, az)
+  const pair = bedKey(hx, hy, hz)
+  const base = design && design.kind === 'bunk' ? design : { kind: 'bunk', stars: 1, tone: 'natural', fabric: 'woolBlue', pattern: 'plain', restAt: 0 }
+  const row = (role) => ({ ...base, kind: 'bunk', stars: base.stars || 1, tone: base.tone || 'natural', fabric: base.fabric || 'woolBlue', pattern: base.pattern || 'plain', restAt: base.restAt || 0, face, role, anchor, pair })
+  session.meta.set(anchor, row('foot'))
+  if (hx !== ax || hz !== az) session.meta.set(pair, row('head'))
+}
+function ensureBedPair(x, y, z) {
+  if (bedBusy || !session || !session.meta) return
+  if (getVoxel(x, y, z) !== ID.bunk) return
+  const key = bedKey(x, y, z)
+  const rec = session.meta.get(key)
+  if (rec && rec.pair && rec.role) return
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  let anchor = true
+  for (let i = 0; i < dirs.length; i++) {
+    const nx = x + dirs[i][0]
+    const nz = z + dirs[i][1]
+    if (getVoxel(nx, y, nz) !== ID.bunk) continue
+    if (nz < z || (nz === z && nx < x)) anchor = false
+  }
+  if (!anchor) return
+  const face = rec && (rec.face === 'N' || rec.face === 'E' || rec.face === 'W' || rec.face === 'S') ? rec.face : ''
+  const order = []
+  if (face) order.push(bedDelta(face))
+  order.push([0, 1])
+  let hx = x
+  let hz = z
+  let grew = false
+  const seen = new Set()
+  for (let i = 0; i < order.length; i++) {
+    const sig = order[i][0] + ',' + order[i][1]
+    if (seen.has(sig)) continue
+    seen.add(sig)
+    const nx = x + order[i][0]
+    const nz = z + order[i][1]
+    const id = getVoxel(nx, y, nz)
+    if (id === ID.bunk) { hx = nx; hz = nz; grew = true; break }
+    if (!id) { hx = nx; hz = nz; grew = true; break }
+  }
+  const useFace = face || (hz !== z ? 'E' : hx !== x ? 'S' : 'E')
+  bedBusy = true
+  try {
+    if (grew && (hx !== x || hz !== z) && !getVoxel(hx, y, hz)) setVoxel(hx, y, hz, ID.bunk)
+    else if (!(grew && (hx !== x || hz !== z))) { hx = x; hz = z }
+    stampBed(x, y, z, hx, y, hz, useFace, rec)
+    setVoxel(x, y, z, 0)
+    setVoxel(x, y, z, ID.bunk)
+    if (hx !== x || hz !== z) {
+      setVoxel(hx, y, hz, 0)
+      setVoxel(hx, y, hz, ID.bunk)
+    }
+  } finally { bedBusy = false }
+}
+function placeBed(x, y, z) {
+  if (!tableMode && !canReach([x, y, z])) { toastFarKey(); return false }
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!tableMode && overlapsPlayer(x, y, z, p[0], p[1], p[2])) { toast(t('standing')); return false }
+  const span = shopSpan(x, y, z)
+  const sideFar = !tableMode && !canReach([span.sx, span.sy, span.sz])
+  if (getVoxel(x, y, z) || shopBlocked(span) || sideFar) {
+    ghostBedScale(true)
+    syncPlaceGhost()
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    return false
+  }
+  if (session && !session.onPlace(x, y, z, ID.bunk)) return false
+  const prev = session && session.meta && session.meta.get(bedKey(x, y, z))
+  stampBed(x, y, z, span.sx, span.sy, span.sz, span.face, prev)
+  if (!edit(x, y, z, ID.bunk)) {
+    if (session && session.mode === 'survival' && session.give) session.give('bunk', 1)
+    if (session && session.meta) { session.meta.delete(bedKey(x, y, z)); session.meta.delete(bedKey(span.sx, span.sy, span.sz)) }
+    return false
+  }
+  if (!edit(span.sx, span.sy, span.sz, ID.bunk)) {
+    edit(x, y, z, 0)
+    if (session && session.mode === 'survival' && session.give) session.give('bunk', 1)
+    if (session && session.meta) { session.meta.delete(bedKey(x, y, z)); session.meta.delete(bedKey(span.sx, span.sy, span.sz)) }
+    ghostBedScale(true)
+    syncPlaceGhost()
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    return false
+  }
+  return true
+}
+function liftBed(x, y, z) {
+  if (!tableMode && !canReach([x, y, z])) return false
+  const pair = bedPairOf(x, y, z)
+  if (zoneLocked(pair.ax, pair.ay, pair.az)) return false
+  if (!pair.solo && zoneLocked(pair.hx, pair.hy, pair.hz)) return false
+  if (session && session.pickup) session.pickup(pair.ax, pair.ay, pair.az, ID.bunk)
+  else if (session && session.give) session.give('bunk', 1)
+  if (session && session.meta) {
+    session.meta.delete(bedKey(pair.ax, pair.ay, pair.az))
+    if (!pair.solo) session.meta.delete(bedKey(pair.hx, pair.hy, pair.hz))
+  }
+  const wipe = (cx, cy, cz) => { if (getVoxel(cx, cy, cz) === ID.bunk) edit(cx, cy, cz, 0) }
+  wipe(pair.ax, pair.ay, pair.az)
+  if (!pair.solo) wipe(pair.hx, pair.hy, pair.hz)
+  return getVoxel(pair.ax, pair.ay, pair.az) !== ID.bunk && (pair.solo || getVoxel(pair.hx, pair.hy, pair.hz) !== ID.bunk)
+}
+function supportBeds() {
+  if (flying || tableMode || seated || !playerBody) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p || playerBody.velocity[1] > 1.2) return
+  const x0 = Math.floor(p[0] - 0.1)
+  const x1 = Math.floor(p[0] + 0.1)
+  const z0 = Math.floor(p[2] - 0.1)
+  const z1 = Math.floor(p[2] + 0.1)
+  let top = null
+  for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) {
+    for (const by of [Math.floor(p[1] + 0.05), Math.floor(p[1] - 0.2)]) {
+      if (getVoxel(x, by, z) !== ID.bunk) continue
+      const surface = by + BED_H
+      if (p[1] <= surface + 0.05 && p[1] >= surface - 0.7) {
+        if (top == null || surface > top) top = surface
+      }
+    }
+  }
+  if (top == null || p[1] >= top - 0.001) return
+  playerBody.velocity[1] = 0
+  noa.entities.setPosition(noa.playerEntity, [p[0], top, p[2]])
+}
 function liftShop(x, y, z) {
   if (!tableMode && !canReach([x, y, z])) return false
   const pair = shopPair(x, y, z)
@@ -2568,7 +2760,8 @@ function breakAt(x, y, z, hold) {
     }
   }
   if (basics && basics.blocksBreak(id)) return false
-  if (id === ID.vend || id === ID.bunk) return false
+  if (id === ID.vend) return false
+  if (id === ID.bunk) return liftBed(x, y, z)
   if (!tableMode && !canReach([x, y, z])) return false
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105) {
     const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
@@ -2813,6 +3006,7 @@ function placeBlock(face, opts) {
   if (id === 1102) { const ok = placeWallLamp(face); if (ok) pokeHand('place'); return ok }
   if (id === 1104) { const ok = placeRug(x, y, z); if (ok) pokeHand('place'); return ok }
   if (id === ID.woodshop) { const ok = placeShop(x, y, z); if (ok) pokeHand('place'); return ok }
+  if (id === ID.bunk) { const ok = placeBed(x, y, z); if (ok) pokeHand('place'); return ok }
   if (!placeableCell(getVoxel(x, y, z))) return false
   if (session && !session.onPlace(x, y, z, id)) return false
   const placed = edit(x, y, z, id)
@@ -5126,6 +5320,58 @@ function armBrief() {
         overStick: getComputedStyle(stick).display !== 'none' ? hit(r, sr) : false,
       }
     },
+    place(x, y, z) { return placeBed(x | 0, y | 0, z | 0) },
+    lift(x, y, z) { return liftBed(x | 0, y | 0, z | 0) },
+    voxel(x, y, z) { return getVoxel(x | 0, y | 0, z | 0) },
+    meta(x, y, z) { return (session && session.meta && session.meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0))) || null },
+    count(item) { return session && session.bag ? session.bag.count(item) : 0 },
+    mesh() {
+      const m = scene.getMeshByName && scene.getMeshByName('bunk')
+      if (!m) return null
+      m.computeWorldMatrix(true)
+      const b = m.getHierarchyBoundingVectors(true)
+      return { h: Math.round((b.max.y - b.min.y) * 100) / 100, dx: Math.round((b.max.x - b.min.x) * 100) / 100, dz: Math.round((b.max.z - b.min.z) * 100) / 100 }
+    },
+    ghost() {
+      const spot = { x: 40, y: 6, z: 40 }
+      const side = shopSpan(spot.x, spot.y, spot.z)
+      const amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz]) || !!getVoxel(spot.x, spot.y, spot.z)
+      ghostBedScale(true)
+      placeGhost.material = amber ? blockedMat : tealMat
+      placeGhostSide.material = placeGhost.material
+      const gy = 0.275
+      const lp = noa.globalToLocal([spot.x + 0.5, spot.y + gy, spot.z + 0.5], null, ghostLocal)
+      placeGhost.position.set(lp[0], lp[1], lp[2])
+      placeGhost.setEnabled(true)
+      const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + gy, side.sz + 0.5], null, ghostLocal2)
+      placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
+      placeGhostSide.setEnabled(true)
+      return {
+        on: placeGhost.isEnabled(),
+        side: placeGhostSide.isEnabled(),
+        sy: Math.round(placeGhost.scaling.y * 100) / 100,
+        fill: placeGhost.material.alpha,
+        amber,
+      }
+    },
+    pos() { const p = noa.entities.getPosition(noa.playerEntity); return [Math.round(p[0] * 100) / 100, Math.round(p[1] * 100) / 100, Math.round(p[2] * 100) / 100] },
+    move(x, y, z) { noa.entities.setPosition(noa.playerEntity, [x, y, z]); if (playerBody) playerBody.velocity[1] = 0 },
+    fly(on) { flying = !!on; if (playerBody) playerBody.gravityMultiplier = on ? 0 : 3.2 },
+    night() { if (basics) { basics.setAlways(false); basics.seek(basics.nightAt()) } return basics && basics.phase ? basics.phase() : '' },
+    sleep() { return sleepNow() },
+    panel() {
+      const title = document.getElementById('sheet-title')
+      const tiles = [...document.querySelectorAll('#sheet .bed-tile')].map((el) => {
+        const r = el.getBoundingClientRect()
+        return { text: (el.textContent || '').replace(/\s+/g, ' ').trim(), h: Math.round(r.height), w: Math.round(r.width) }
+      })
+      return { title: title ? title.textContent : '', tiles }
+    },
+    icons() {
+      const src = (el) => (el && (el.src || el.getAttribute('src'))) || ''
+      const hot = document.querySelector('#hotbar [data-item="workbench"] img, #hotbar [data-item="woodshop"] img, #hotbar img.bench-png')
+      return { hot: src(hot) }
+    },
   }
   window.__briefReady = true
 }
@@ -5328,6 +5574,8 @@ session = createSession({
   armOven: (key, id) => stations.arm(key, id),
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
+  liftBed: (x, y, z) => liftBed(x | 0, y | 0, z | 0),
+  sleepNow: () => sleepNow(),
   shopWall: (key) => (stations && stations.wallItems ? stations.wallItems(key) : []),
   shopClear: (key) => { if (stations && stations.clearShop) stations.clearShop(key) },
   shopsReady: () => shopsLive,
@@ -6943,7 +7191,14 @@ function armUse() {
       setVoxel(bx, by, bz, ID.door)
       setVoxel(bx, by + 1, bz, ID.doorTop)
     } else if (kind === 'oven') setVoxel(bx, by, bz, ID.oven)
-    else if (kind === 'bed') setVoxel(bx, by, bz, ID.bunk)
+    else if (kind === 'bed') {
+      if (session && session.meta) {
+        session.meta.set(bx + ',' + by + ',' + bz, { kind: 'bunk', stars: 1, face: 'E', role: 'foot', anchor: bx + ',' + by + ',' + bz, pair: bx + ',' + by + ',' + (bz + 1) })
+        session.meta.set(bx + ',' + by + ',' + (bz + 1), { kind: 'bunk', stars: 1, face: 'E', role: 'head', anchor: bx + ',' + by + ',' + bz, pair: bx + ',' + by + ',' + (bz + 1) })
+      }
+      setVoxel(bx, by, bz, ID.bunk)
+      setVoxel(bx, by, bz + 1, ID.bunk)
+    }
     else if (kind === 'sew') setVoxel(bx, by, bz, ID.sewing)
     else setVoxel(bx, by, bz, ID.chair)
     if (tall) setVoxel(bx, by - 1, bz, ID.planks)
@@ -7188,6 +7443,7 @@ function mobsStep() {
 }
 noa.on('tick', () => {
   simTick++; beltAcc += 1000/30
+  supportBeds()
   // 2.5.447: shared machine animation tick (UV scroll / lever tween driver). Pauses off-screen via noa.
   if (typeof window !== 'undefined') window.__btMachineAnim = (simTick % 16) / 16
   while (beltAcc >= 250) { beltAcc -= 250; beltStep() }
@@ -10153,6 +10409,11 @@ function ghostCell() {
   if (getVoxel(spot.x, spot.y, spot.z)) return null
   return spot
 }
+function ghostBedScale(on) {
+  const s = on ? (0.55 / 0.98) : 1
+  if (placeGhost) placeGhost.scaling.set(1, s, 1)
+  if (placeGhostSide) placeGhostSide.scaling.set(1, s, 1)
+}
 function syncPlaceGhost() {
   noteMissingAim()
   const spot = ghostCell()
@@ -10165,10 +10426,11 @@ function syncPlaceGhost() {
   const id = heldBlockId()
   let side = null
   let amber = false
-  if (id === ID.woodshop) {
+  if (id === ID.woodshop || id === ID.bunk) {
     side = shopSpan(spot.x, spot.y, spot.z)
     amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
   }
+  ghostBedScale(id === ID.bunk)
   if (amber) { // 2.5.449: blocked = red outline, no fill
     placeGhost.material = blockedMat
     placeGhostSide.material = blockedMat
@@ -10178,11 +10440,12 @@ function syncPlaceGhost() {
     placeGhostSide.material = tealMat
     outline.color.set(0.13, 0.83, 0.93)
   }
-  const lp = noa.globalToLocal([spot.x + 0.5, spot.y + 0.5, spot.z + 0.5], null, ghostLocal)
+  const gy = id === ID.bunk ? 0.275 : 0.5
+  const lp = noa.globalToLocal([spot.x + 0.5, spot.y + gy, spot.z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
   if (side) {
-    const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + 0.5, side.sz + 0.5], null, ghostLocal2)
+    const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + gy, side.sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)
   } else placeGhostSide.setEnabled(false)
@@ -11782,8 +12045,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     placeBunk: (x, y, z) => {
       if (!session) return null
       session.holdItem && session.holdItem('bunk')
-      const ok = session.onPlace(x | 0, y | 0, z | 0, ID.bunk)
-      if (ok) setVoxel(x | 0, y | 0, z | 0, ID.bunk, true)
+      const ok = placeBed(x | 0, y | 0, z | 0)
       return { ok, meta: session.meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0)) || null, id: getVoxel(x | 0, y | 0, z | 0) }
     },
     apply: (doc) => applyDoc(doc),

@@ -2623,62 +2623,38 @@ export function createSession(api) {
       bar.addEventListener('click', paintBox.hotHook, true)
     }
   }
+  function bedTile(label, fn, extra) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'gtile bed-tile' + (extra ? ' ' + extra : '')
+    b.textContent = label
+    b.addEventListener('pointerdown', (e) => e.stopPropagation())
+    b.addEventListener('click', (e) => { e.stopPropagation(); fn(e) })
+    return b
+  }
   function paintBunk(g, key) {
     const rec = ensureBed(key)
-    const card = document.createElement('div')
-    card.className = 'bed-panel' + ((rec.stars || 1) >= 3 ? ' bed-gold' : '')
-    const stars = document.createElement('p')
-    stars.className = 'gnote bed-stars'
-    stars.dataset.stars = String(rec.stars || 1)
-    stars.textContent = (rec.stars || 1) >= 3 ? t('starBest') : (rec.stars || 1) === 2 ? t('starSteady') : t('starWorks')
-    const look = document.createElement('p')
-    look.className = 'gnote bed-look'
-    look.dataset.tone = rec.tone
-    look.dataset.fabric = rec.fabric
-    look.dataset.pattern = rec.pattern
-    look.textContent = t('tone' + rec.tone.charAt(0).toUpperCase() + rec.tone.slice(1)) + ' · ' + t(rec.fabric) + ' · ' + t('pattern' + rec.pattern.charAt(0).toUpperCase() + rec.pattern.slice(1))
-    card.append(stars, look)
-    if ((rec.stars || 1) >= 3) {
-      const gold = document.createElement('p')
-      gold.className = 'gnote bed-gold-line'
-      gold.textContent = t('goldTrim')
-      card.append(gold)
-    }
-    g.append(card)
-    const rest = btn(t('restWord'), () => {
-      const now = Date.now()
-      if (rec.restAt && now < rec.restAt) { api.toast(t('restWait')); return }
-      const gain = (rec.stars || 1) >= 2 ? 3 : 2
-      const next = Math.min(10, energy.bolts + gain)
-      energy.bolts = next
-      if (energy.bolts > 0) energy.toasted = false
-      rec.restAt = now + 5 * 60 * 1000
-      paintEnergy()
-      if (api.markDirty) api.markDirty()
-      api.toast(t('rested'))
-      g.innerHTML = ''
-      paintBunk(g, key)
-    })
-    rest.classList.add('bed-rest')
-    rest.dataset.wait = rec.restAt && Date.now() < rec.restAt ? '1' : '0'
-    g.append(rest)
-    const homeBtn = btn(t('setHome'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() })
-    homeBtn.classList.add('bed-home')
-    g.append(homeBtn)
-    g.append(btn('🧹 ' + t('pickup'), () => {
-      const [x, y, z] = String(key).split(',').map(Number)
-      pickup(x, y, z, 26)
-      if (api.removeBlock) api.removeBlock(x, y, z)
+    const stars = rec.stars || 1
+    const title = document.getElementById('sheet-title')
+    if (title) title.textContent = t(stars >= 3 ? 'bedHead3' : stars === 2 ? 'bedHead2' : 'bedHead1')
+    const row = document.createElement('div')
+    row.className = 'bed-actions'
+    row.append(bedTile(t('bedSleep'), () => {
+      const r = api.sleepNow && api.sleepNow()
+      if (r === 'night') api.close()
+    }, 'bed-rest'))
+    row.append(bedTile(t('bedHome'), () => {
+      home = String(key || '0,0,0').split(',').map(Number)
+      markPath('pathHome')
+      api.toast(t('homeSet'))
       api.close()
-    }))
-    g.append(btn(t('no'), () => api.close()))
-    for (const id of ['skillNeed', 'skillPlan', 'skillTest', 'skillImprove']) {
-      const line = document.createElement('p')
-      line.className = 'gnote bed-skill'
-      line.dataset.skill = id
-      line.textContent = t(id)
-      g.append(line)
-    }
+    }, 'bed-home'))
+    row.append(bedTile(t('bedPick'), () => {
+      const [x, y, z] = String(key).split(',').map(Number)
+      if (api.liftBed) api.liftBed(x, y, z)
+      api.close()
+    }, 'bed-pick'))
+    g.append(row)
   }
   let pocketDot = false
   function clearPocketDot() {

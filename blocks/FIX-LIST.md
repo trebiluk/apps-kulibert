@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.450 bed model and panel:** Beds are a low 1×2 (foot + pillow head). Breaking either half returns one bed. The bed card shows three 48px tiles: Sleep, Set home, Pick up. Workbench and woodshop share assets/tile-workbench.png. Chip is the locked 2.5.450 (menu dim from 2.5.452 and keys-hide from 2.5.451 stay).
+
 - [x] **2.5.452 menu-dim:** Menu and pause dim the world at about 25% instead of a solid gray sheet. The menu card stays solid. Dim fades in 180ms; reduced motion is instant. No blur.
 - [x] **2.5.451 HUD overlap:** Keys tip bar hides (body.hud-busy) while held label or any tool bar (wand/use/held/dig/door) shows. Clean stack above hotbar.
 

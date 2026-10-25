@@ -2284,6 +2284,11 @@ html body.mode-creative #hotbar#hotbar .item-strip .slot:not(.bag-tile)[aria-pre
 }
 
 
+/* 2.5.450 beds: three big tiles, one bench picture */
+html body #sheet[data-panel="bunk"] .bed-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+html body #sheet .bed-tile { min-height: 48px !important; min-width: 48px; flex: 1 1 30%; font-size: 16px; }
+img.bench-png { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; }
+
 /* 2.5.451: hide keys tip bar when any tool bar or held label is showing */
 body.hud-busy .keys { display: none !important; }
 /* shared stack: hotbar → label → tool bar */

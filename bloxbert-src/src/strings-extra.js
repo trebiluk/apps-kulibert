@@ -2831,3 +2831,92 @@ for (const [lang, row] of Object.entries(DIM452)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.450 bed card + one bench picture.
+const BED450 = {
+  en: {
+    bedHead1: 'Bed · ★ works',
+    bedHead2: 'Bed · ★★ steady',
+    bedHead3: 'Bed · ★★★ best',
+    bedSleep: '🛏️ Sleep · F · 🖱',
+    bedHome: '🏠 Set home',
+    bedPick: '✋ Pick up',
+    whatsNewBody: '2.5.450 — Beds are low and two blocks long. The bed card has three big buttons: Sleep, Set home, and Pick up. The workbench uses one picture everywhere.',
+  },
+  simple: {
+    bedHead1: 'Bed · ★ works',
+    bedHead2: 'Bed · ★★ steady',
+    bedHead3: 'Bed · ★★★ best',
+    bedSleep: '🛏️ Sleep',
+    bedHome: '🏠 Home',
+    bedPick: '✋ Pick up',
+    whatsNewBody: '2.5.450 — New bed. Big buttons: Sleep, Home, Pick up.',
+  },
+  uk: {
+    bedHead1: 'Ліжко · ★ працює',
+    bedHead2: 'Ліжко · ★★ рівне',
+    bedHead3: 'Ліжко · ★★★ найкраще',
+    bedSleep: '🛏️ Сон',
+    bedHome: '🏠 Дім',
+    bedPick: '✋ Забрати',
+    whatsNewBody: '2.5.450 — Ліжка низькі і завдовжки два блоки. Картка ліжка має три великі кнопки: сон, дім і забрати. Верстат має одну картинку скрізь.',
+  },
+  ru: {
+    bedHead1: 'Кровать · ★ работает',
+    bedHead2: 'Кровать · ★★ ровная',
+    bedHead3: 'Кровать · ★★★ лучшая',
+    bedSleep: '🛏️ Сон',
+    bedHome: '🏠 Дом',
+    bedPick: '✋ Забрать',
+    whatsNewBody: '2.5.450 — Кровати низкие и длиной в два блока. Карточка кровати имеет три большие кнопки: сон, дом и забрать. Верстак использует одну картинку везде.',
+  },
+  es: {
+    bedHead1: 'Cama · ★ sirve',
+    bedHead2: 'Cama · ★★ firme',
+    bedHead3: 'Cama · ★★★ mejor',
+    bedSleep: '🛏️ Dormir · F · 🖱',
+    bedHome: '🏠 Poner casa',
+    bedPick: '✋ Recoger',
+    whatsNewBody: '2.5.450 — Las camas son bajas y miden dos bloques. La tarjeta tiene tres botones grandes: Dormir, Poner casa y Recoger. El banco usa una sola imagen en todos lados.',
+  },
+  ar: {
+    bedHead1: 'سرير · ★ يعمل',
+    bedHead2: 'سرير · ★★ ثابت',
+    bedHead3: 'سرير · ★★★ الأفضل',
+    bedSleep: '🛏️ نوم',
+    bedHome: '🏠 بيت',
+    bedPick: '✋ التقط',
+    whatsNewBody: '2.5.450 — الأسرّة منخفضة وطولها مكعبان. بطاقة السرير فيها ثلاثة أزرار كبيرة: نوم، بيت، والتقط. منضدة العمل تستخدم صورة واحدة في كل مكان.',
+  },
+  'fa-AF': {
+    bedHead1: 'تخت · ★ کار می‌کند',
+    bedHead2: 'تخت · ★★ استوار',
+    bedHead3: 'تخت · ★★★ بهترین',
+    bedSleep: '🛏️ خواب',
+    bedHome: '🏠 خانه',
+    bedPick: '✋ بردار',
+    whatsNewBody: '2.5.450 — تخت‌ها کوتاه و دو بلاک دراز اند. کارت تخت سه دکمه بزرگ دارد: خواب، خانه و بردار. میز کار همه جا یک تصویر دارد.',
+  },
+  rw: {
+    bedHead1: 'Ikiriri · ★ kirakora',
+    bedHead2: 'Ikiriri · ★★ cyihagaze',
+    bedHead3: 'Ikiriri · ★★★ cyiza',
+    bedSleep: '🛏️ Sinzira · F · 🖱',
+    bedHome: '🏠 Shyira urugo',
+    bedPick: '✋ Fata',
+    whatsNewBody: '2.5.450 — Ibiriri biri hasi kandi bifite ibice bibiri. Ikarita ifite buto nini eshatu: Sinzira, Urugo, na Fata. Intebe ikoresha ishusho imwe hose.',
+  },
+  ti: {
+    bedHead1: 'ዓራት · ★ ይሰርሕ',
+    bedHead2: 'ዓራት · ★★ ጽኑዕ',
+    bedHead3: 'ዓራት · ★★★ ዝበለጸ',
+    bedSleep: '🛏️ ድቃስ',
+    bedHome: '🏠 ገዛ',
+    bedPick: '✋ ውሰድ',
+    whatsNewBody: '2.5.450 — ዓራታት ትሑታትን ክልተ ብሎክ ነዊሕን እዮም። ካርድ ዓራት ሰለስተ ዓበይቲ መጠወቒ ኣለዋ፡ ድቃስ፡ ገዛን ውሰድን። መደብ ስራሕ ኣብ ኩሉ ቦታ ሓንቲ ስእሊ ይጥቀም።',
+  },
+}
+for (const [lang, row] of Object.entries(BED450)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

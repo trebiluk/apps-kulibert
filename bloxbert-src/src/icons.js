@@ -486,6 +486,15 @@ const BLOCK_ALIAS = { leverOn: 'lever', pushButtonOn: 'pushButton', reed: 'leave
 export function blockIcon(block, atlas) {
   const name = block && block[1];
   const alias = BLOCK_ALIAS[name] || name
+  if (alias === 'workbench' || alias === 'woodshop') {
+    const img = document.createElement('img')
+    img.src = 'assets/tile-workbench.png'
+    img.alt = ''
+    img.className = 'kd-ico bench-png'
+    img.dataset.kind = 'png'
+    img.dataset.block = String(block[0])
+    return img
+  }
   const wrap = alias && getBlockWrap(alias);
   if (wrap) {
     wrap.dataset.block = String(block[0]);
@@ -583,6 +592,15 @@ function letterTile(letter) {
 }
 // Same picture the hotbar uses. A missing picture is a letter on a neutral tile, never a red square.
 export function slotArt(key, blockNode) {
+  if (key === 'workbench' || key === 'woodshop' || key === 'woodshopSide') {
+    const img = document.createElement('img')
+    img.src = 'assets/tile-workbench.png'
+    img.alt = ''
+    img.className = 'kd-ico bench-png'
+    img.dataset.kind = 'png'
+    img.dataset.item = key
+    return img
+  }
   // 2.5.303: distinct pictures for wood items — FACE wins over wrap for these keys
   if (key === 'planks' || key === 'log' || key === 'berry' || key === 'sapling' || key === 'stick') {
     if (FACE[key]) {
@@ -729,7 +747,18 @@ function blitRows(rows, pal) {
   return c
 }
 const missingIcons = new Set()
+function benchPng(asItem) {
+  const img = document.createElement('img')
+  img.src = 'assets/tile-workbench.png'
+  img.alt = ''
+  img.className = 'kd-ico bench-png'
+  img.dataset.kind = 'png'
+  if (asItem) img.dataset.item = asItem
+  else img.dataset.icon = 'bench'
+  return img
+}
 export function menuIcon(name) {
+  if (name === 'bench') return benchPng(null)
   const rows = MENU_GLYPH[name]
   if (!rows) {
     if (name && !missingIcons.has(name)) {
