@@ -3385,7 +3385,7 @@
       y: h * 0.45,
       vx: (Math.random() - 0.5) * 8,
       vy: -4 - Math.random() * 5,
-      c: ["#22d3ee", "#e8f7ff", "#10203f", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
+      c: ["#276F7A", "#5A9AA6", "#10203f", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
     }));
     let frame = 0;
     const tick = () => {
@@ -6075,7 +6075,7 @@
     }
     g.stroke();
     const span = Math.max(40, (lab.len / 100) * (w - 48));
-    g.strokeStyle = "#22d3ee";
+    g.strokeStyle = "#276F7A";
     g.lineWidth = 3;
     g.beginPath();
     g.moveTo(24, h - 28);

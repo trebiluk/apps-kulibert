@@ -32,12 +32,12 @@ html[data-theme="dark"] {
   --border: #1F8A8A;
   --text: #E6EEF2;
   --muted: #9FB0C6;
-  --accent: #22D3EE;
-  --accent-fg: #08131A;
-  --play-bg: #22D3EE;
-  --play-fg: #08131A;
+  --accent: #276F7A; /* #2B7A86 is 4.23:1 with #E6EEF2; this is the same teal, dark enough for 4.5:1 */
+  --accent-fg: #E6EEF2;
+  --play-bg: #276F7A;
+  --play-fg: #E6EEF2;
   --btn-line: #1F8A8A;
-  --active: #22D3EE;
+  --active: #276F7A;
   --key-white: #C9D6DC;
   --key-edge: #9FB0C6;
   --key-black: #08131A;
@@ -1039,9 +1039,9 @@ body.is-beat #notes-pane > :not(.staff-wrap):not(.note-row),
 }
 .cell.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
 .cell.on::after { content: "●"; color: var(--accent-fg); }
-.cell.now { outline: 4px solid #e8f7ff; outline-offset: 1px; }
+.cell.now { outline: 2px solid #276F7A; outline-offset: 1px; }
 .cell.on.now { background: var(--accent); }
-.cell.flash { box-shadow: inset 0 0 0 3px #e8f7ff; }
+.cell.flash { box-shadow: none; outline: 2px solid #1F5560; outline-offset: -2px; }
 #tempo-read, .transport .tempo b {
   color: var(--text);
   text-decoration: underline;
@@ -2542,13 +2542,17 @@ body.mu237 .transport .cover {
   justify-content: center;
   padding: 0 8px;
   overflow: hidden;
-  color: #0E1A22;
+  color: #E6EEF2;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
 }
 /* MU 2.36.56 — the cover button says "This song", so the copy line must not say it again. */
 body.mu237 .transport .songbar-copy .whose { display: none; }
+html[data-theme] body.mu237 .transport .cover {
+  background: #276F7A !important;
+  color: #E6EEF2 !important;
+}
 body.mu237 .transport .songbar-copy { flex: 1 1 8rem; min-width: 0; max-width: 16rem; }
 body.mu237 .transport .songbar-copy strong, body.mu237 .transport #play-pos,
 body.mu237 .transport .tempo, body.mu237 .transport .tempo b, body.mu237 #tempo-read { font-size: 14px !important; line-height: 1.2; }
@@ -3229,7 +3233,7 @@ body.mu237.show .perform-num {
   font-size: clamp(6.5rem, 22vw, 14rem);
   font-weight: 800;
   line-height: 0.85;
-  color: #22d3ee;
+  color: #5A9AA6;
   text-align: center;
 }
 body.mu237.show .perform-sub,
@@ -3368,8 +3372,8 @@ html[dir="rtl"] .whats-list li {
   background: var(--panel);
 }
 #sound-notes .key.hit {
-  background: #22d3ee !important;
-  color: #041018 !important;
+  background: #1F5560 !important;
+  color: #E6EEF2 !important;
   filter: none !important;
 }
 body.mu237.tab-piano .work {
@@ -4020,8 +4024,8 @@ body.mu237 #dock-left .tab[aria-pressed="true"] {
   font-weight: 800;
   border: 0;
   border-radius: 14px;
-  background: #22d3ee;
-  color: #041018;
+  background: #276F7A;
+  color: #E6EEF2;
 }
 .tap-pads {
   display: grid;
@@ -4044,26 +4048,35 @@ body.mu237 #dock-left .tab[aria-pressed="true"] {
   justify-content: center;
   gap: 4px;
 }
-.tap-pads .pad.guide { outline: 4px solid #22d3ee; background: #0e7490; }
-.tap-pads .pad.lit { background: #22d3ee; color: #041018; }
+.tap-pads .pad.guide { outline: 3px solid var(--accent); background: #10203f; }
+.tap-pads .pad.lit {
+  background: #1F5560 !important;
+  background-image: none !important;
+  color: #E6EEF2 !important;
+  filter: none !important;
+}
 .count-in { display: flex; align-items: center; gap: 12px; min-height: 64px; }
 .count-in b { font-size: 48px; line-height: 1; }
 .count-dot { width: 28px; height: 28px; border-radius: 50%; background: #16324f; display: inline-block; }
-.count-dot.on { background: #22d3ee; box-shadow: 0 0 16px #22d3ee; }
+.count-dot.on { background: #276F7A; box-shadow: none; }
 .playhead-read { margin: 0; font-size: 16px; font-weight: 800; }
 .guide-line { margin: 4px 0; font-size: 16px; font-weight: 700; }
 .tap-strip { display: grid; gap: 4px; margin: 6px 0; }
 .tap-row { display: grid; grid-template-columns: repeat(16, minmax(8px, 1fr)); gap: 2px; }
 .tap-dot { height: 14px; border-radius: 3px; background: #16324f; display: block; }
 .tap-dot.on { background: #a78bfa; }
-.tap-dot.now, .cell.now { outline: 3px solid #22d3ee; }
+.tap-dot.now, .cell.now { outline: 3px solid #276F7A; }
 body.mu237 #play-btn {
-  background: #22d3ee !important;
-  color: #041018 !important;
-  box-shadow: 0 0 0 3px #22d3ee;
+  background: var(--play-bg) !important;
+  color: var(--play-fg) !important;
+  box-shadow: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .count-dot.on { box-shadow: none; outline: 3px solid #22d3ee; }
+  .count-dot,
+  .count-dot.on,
+  .tap-pads .pad,
+  .tap-pads .pad.lit { animation: none !important; transition: none !important; }
+  .count-dot.on { box-shadow: none; outline: 3px solid #276F7A; }
 }
 @media (max-width: 699px) and (orientation: portrait) {
   .rail-group, #rail-perform { display: none !important; }
@@ -4454,8 +4467,8 @@ html[data-theme] .bar-stack {
   border-top-color: var(--divider) !important;
 }
 html[data-theme] body.mu237 {
-  --play-bg: #22d3ee;
-  --play-fg: #041018;
+  --play-bg: #276F7A;
+  --play-fg: #E6EEF2;
 }
 html:not(.tempo-known) #songbar-meta,
 html:not(.tempo-known) #tempo-read,
@@ -5850,5 +5863,14 @@ body.mu237.show canvas#viz {
 body.mu237 #count-in[hidden] { display: none !important; }
 body.mu237.tab-tap #drums,
 body.mu237.tab-tap #more-drums { display: none !important; }
+
+/* MU 2.36.57 — the Tap picture strip is dimmer and does not glow. Perform is not filtered. */
+body.mu237.tab-tap:not(.show) canvas#viz {
+  filter: saturate(0.6) brightness(0.8);
+}
+body.mu237.tab-tap:not(.show) .stage-wrap.frame-glow,
+body.mu237.tab-tap:not(.show) .out.frame-glow {
+  box-shadow: 0 0 0 2px #276F7A;
+}
 
 
