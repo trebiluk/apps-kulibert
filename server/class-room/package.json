@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "wrangler dev --local --port 8787",
     "test": "node --import ./test/shim/register.mjs --test \"test/*.test.mjs\"",
-    "test:unit": "node --test test/protocol.test.mjs test/rules.test.mjs",
+    "test:unit": "node --test test/protocol.test.mjs test/rules.test.mjs test/modules.test.mjs",
     "test:sim": "node --import ./test/shim/register.mjs --test test/room.sim.test.mjs test/security.sim.test.mjs",
     "test:load": "node tools/load30.mjs",
     "test:abuse": "node tools/abuse.mjs"

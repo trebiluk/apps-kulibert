@@ -34,6 +34,10 @@ src/protocol.js   constants, alias rules, strict frame parser, config ids, rate 
 src/token.js      join ticket sign/verify (Web Crypto HMAC-SHA256)
 src/rules.js      server authority checks: move (wired), reach/edit/inventory (ready for Phase 1)
 src/guard.js      strike/kick/temp-ban ladder, failure log
+src/essentials.js everyday commands: spawn, home, quick-chat, staff warps/mute/announce/kit (NOT WIRED)
+src/claims.js     plots + protected zones, per-config edit policy (NOT WIRED)
+src/editlog.js    edit log for rollback (NOT WIRED)
+docs/ESSENTIALS-AND-CLAIMS.md  design, decisions needed, wiring plan
 src/room.js       the Durable Object (one room)
 src/worker.js     the door: TLS, origin, ticket, config, then the room
 test/             unit + in-process simulation (fake sockets, fake clock)
