@@ -16,9 +16,17 @@ REQUIRE_TLS = "1"
 name = "ROOMS"
 class_name = "Room"
 
+[[durable_objects.bindings]]
+name = "WORLDS"
+class_name = "World"
+
 [[migrations]]
 tag = "v1"
-new_sqlite_classes = ["Room"]   # SQLite-backed class (the free-plan kind). Phase 0 stores nothing in it.
+new_sqlite_classes = ["Room"]   # SQLite-backed class (the free-plan kind). Rooms store nothing.
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["World"]  # shared worlds: the ONLY class that stores block data (chunks + op log)
 
 # OFF on purpose. Failure records (alias + code + time, no IP, no ref, no token) are written
 # with console.log, which is only visible in `wrangler tail` while this is off. Turning on

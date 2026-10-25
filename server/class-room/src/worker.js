@@ -18,6 +18,7 @@ import { verifyToken } from './token.js'
 import { logFailure } from './guard.js'
 
 export { Room } from './room.js'
+export { World } from './world-do.js'
 
 function originAllowed(request, env) {
   const origin = request.headers.get('Origin')
@@ -83,7 +84,18 @@ export default {
     fwd.headers.set('x-bt-ip', await ipTag(request, env.ROOM_JOIN_SECRET))
     fwd.headers.set('x-bt-cfg', c.cfg)   // already checked against the 7 config ids in verifyToken
 
-    const stub = env.ROOMS.get(env.ROOMS.idFromName(c.room))
+    // Shared world: the world hub seats the kid in one of its 30-kid rooms (see world/hub.js).
+    let roomName = c.room
+    if (c.world) {
+      if (!env.WORLDS) return text('not configured', 503)
+      const w = env.WORLDS.get(env.WORLDS.idFromName(c.world))
+      const a = await w.assign({ world: c.world, ref: c.ref, grp: c.grp, role: c.role, bld: c.bld, cfg: c.cfg })
+      if (a.err) { logFailure(c.alias, 'assign-' + a.err); return text(a.err, a.err === 'full' ? 503 : 403) }
+      roomName = a.room
+      fwd.headers.set('x-bt-world', c.world)
+      fwd.headers.set('x-bt-rid', a.room)
+    }
+    const stub = env.ROOMS.get(env.ROOMS.idFromName(roomName))
     return stub.fetch(fwd)
   },
 }
