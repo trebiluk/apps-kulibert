@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.483', date: '2026-10-25', lines: {
+    en: ["2.5.483 — Pick a suit in Settings. Berty, Clay, Bearcat, Grove, or Snow. Your hand matches."],
+    simple: ["2.5.483 — Pick a suit in Settings. Your hand matches."],
+    uk: ["2.5.483 — Обери одяг у Налаштуваннях: Berty, Clay, Bearcat, Grove або Snow. Рука підлаштовується."],
+    ru: ["2.5.483 — Выбери одежду в Настройках: Berty, Clay, Bearcat, Grove или Snow. Рука подстраивается."],
+    es: ["2.5.483 — Elige un traje en Ajustes: Berty, Clay, Bearcat, Grove o Snow. La mano coincide."],
+    ar: ["2.5.483 — اختر ملابس في الإعدادات: Berty أو Clay أو Bearcat أو Grove أو Snow. اليد تطابقها."],
+    'fa-AF': ["2.5.483 — در تنظیمات لباس برگزین: Berty، Clay، Bearcat، Grove یا Snow. دست هم همان است."],
+    rw: ["2.5.483 — Hitamo imyenda mu Igenamiterere: Berty, Clay, Bearcat, Grove, cyangwa Snow. Ukuboko gukurikiza."],
+    ti: ["2.5.483 — ኣብ ቅጥዕታት ክዳን ምረጽ: Berty፡ Clay፡ Bearcat፡ Grove፡ ወይ Snow። ኢድካ ይሰማማዕ።"],
+  }},
+
   { v: '2.5.482', date: '2026-10-25', lines: {
     en: ["2.5.482 — After the first log, the path chip is the only line that says make a workbench."],
     simple: ["2.5.482 — One line says make a workbench."],

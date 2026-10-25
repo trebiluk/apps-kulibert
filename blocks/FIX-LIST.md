@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.483 suits:** Settings has Clothes: Berty, Clay, Bearcat, Grove, Snow. The body and the hand use that suit. Choice stays on this device. Worlds are unchanged.
 - [x] **2.5.481 stick-card:** Held item card (Stick) is only as tall as its words. The bottom pin no longer stretches it down to the hotbar.
 - [x] **2.5.480 chrome-zoom:** Hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap.
 - [x] **2.5.479 badge-shapes:** Badge shapes match the kind: circle for alias, square for stamp, diamond for trophy. Kind words translated.

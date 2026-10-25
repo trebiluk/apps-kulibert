@@ -63,9 +63,16 @@ export function createHands(opts) {
     k = Math.max(0.45, Math.min(1, k))
     return 0.82 * k
   }
+  const handMat = new StandardMaterial('hand-skin', scene)
+  handMat.disableLighting = true
+  handMat.specularColor = new Color3(0, 0, 0)
+  handMat.fogEnabled = false
+  handMat.backFaceCulling = false
+  let handRgb = [0.82, 0.82, 0.82]
   function heldLight() {
     const s = heldScale()
     flatMat.emissiveColor.set(s, s, s)
+    handMat.emissiveColor.set(handRgb[0] * s, handRgb[1] * s, handRgb[2] * s)
     for (let i = 0; i < litMats.length; i++) {
       const mat = litMats[i]
       const base = mat.metadata && mat.metadata.base
@@ -100,6 +107,7 @@ export function createHands(opts) {
   itemAnchor.position.set(0.22, -0.14, 0.12) // 2.5.441: closer item
 
   const handMesh = buildHand(scene, flatMat)
+  handMesh.material = handMat
   handMesh.parent = pivot
   const handTris = (handMesh.getTotalIndices() / 3) | 0
 
@@ -456,6 +464,11 @@ export function createHands(opts) {
     tris: () => handTris,
     swinging: () => performance.now() < swingUntil,
     swingCount: () => swings,
+    tint: (rgb) => {
+      if (!rgb || rgb.length < 3) return
+      handRgb = [rgb[0], rgb[1], rgb[2]]
+      heldLight()
+    },
   }
 }
 

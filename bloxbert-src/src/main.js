@@ -839,6 +839,7 @@ let mainHand = 'right'
 let camBehind = false
 let allCaps = false
 let dyslexiaFont = false
+let suitId = 'berty'
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.cv >= 3 && savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
@@ -850,6 +851,7 @@ try {
   if (savedLook.cam === 'behind') camBehind = true
   if (savedLook.allCaps === true) allCaps = true
   if (savedLook.dyslexia === true) dyslexiaFont = true
+  if (savedLook.suit === 'clay' || savedLook.suit === 'bearcat' || savedLook.suit === 'grove' || savedLook.suit === 'snow') suitId = savedLook.suit
 } catch (e) {}
 playerBody.autoStep = !!autoClimb
 moveState.airJumps = 0
@@ -9218,7 +9220,7 @@ function applyLook() {
   noa.camera.inverseY = lookInvert
   document.documentElement.dataset.allcaps = allCaps ? '1' : '0'
   document.documentElement.dataset.dyslexia = dyslexiaFont ? '1' : '0'
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close', allCaps: !!allCaps, dyslexia: !!dyslexiaFont })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close', allCaps: !!allCaps, dyslexia: !!dyslexiaFont, suit: suitId })) } catch (e) {}
 }
 const PICKER_KEYS = ['graphics', 'quality', 'textSize']
 const pickerWatched = new WeakSet()
@@ -9361,6 +9363,53 @@ function paintLook(g) {
   paintCam()
   camBtn.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
   cam.append(camBtn)
+  const clothes = document.createElement('div')
+  clothes.className = 'set-line'
+  clothes.style.flexWrap = 'wrap'
+  clothes.style.gap = '8px'
+  const clothesLab = document.createElement('span')
+  clothesLab.className = 'set-lab'
+  clothesLab.id = 'suit-look-lab'
+  clothesLab.textContent = t('suitLook')
+  const clothesGroup = document.createElement('div')
+  clothesGroup.setAttribute('role', 'radiogroup')
+  clothesGroup.setAttribute('aria-labelledby', 'suit-look-lab')
+  clothesGroup.style.display = 'flex'
+  clothesGroup.style.flexWrap = 'wrap'
+  clothesGroup.style.gap = '8px'
+  for (const id of Object.keys(SUIT_WORD)) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'pill'
+    b.dataset.suit = id
+    b.style.minHeight = '44px'
+    b.style.minWidth = '44px'
+    b.textContent = SUIT_WORD[id]
+    b.setAttribute('role', 'radio')
+    b.addEventListener('click', () => {
+      suitId = id
+      paintBertySuit()
+      applyLook()
+      for (const kid of clothesGroup.querySelectorAll('button')) {
+        const on = kid.dataset.suit === suitId
+        kid.setAttribute('aria-checked', on ? 'true' : 'false')
+        kid.classList.toggle('on', on)
+      }
+    })
+    clothesGroup.append(b)
+  }
+  const paintClothes = () => {
+    clothesLab.textContent = t('suitLook')
+    clothesGroup.setAttribute('aria-label', t('suitLook'))
+    for (const kid of clothesGroup.querySelectorAll('button')) {
+      const on = kid.dataset.suit === suitId
+      kid.setAttribute('aria-checked', on ? 'true' : 'false')
+      kid.classList.toggle('on', on)
+      kid.setAttribute('aria-label', t('suitLook') + ': ' + kid.textContent)
+    }
+  }
+  paintClothes()
+  clothes.append(clothesLab, clothesGroup)
   g.append(
     sens,
     range,
@@ -9370,6 +9419,7 @@ function paintLook(g) {
     lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
     side,
     cam,
+    clothes,
     lookPill(t('hideTips'), () => learn.hideTips(), () => { learn.setHideTips(!learn.hideTips()) }, 'tips', 'tips'),
   )
 }
@@ -10283,12 +10333,23 @@ function bertyPart(w, h, d, x, y, z, rgb) {
   m.position.set(x, y, z)
   m.computeWorldMatrix(true)
   const n = m.getTotalVertices()
+  suitCounts.push(n)
   const cols = new Float32Array(n * 4)
   for (let i = 0; i < n; i++) { cols[i * 4] = rgb[0]; cols[i * 4 + 1] = rgb[1]; cols[i * 4 + 2] = rgb[2]; cols[i * 4 + 3] = 1 }
   m.setVerticesData(VertexBuffer.ColorKind, cols)
   m.isPickable = false
   return m
 }
+const suitCounts = []
+const SUIT_KEYS = ['shoe', 'pant', 'pant', 'shirt', 'head', 'visor']
+const SUITS = {
+  berty: { shoe: [0.08, 0.12, 0.16], pant: [0.06, 0.42, 0.5], shirt: [0.12, 0.82, 0.76], head: [0.45, 0.95, 0.9], visor: [0.72, 0.4, 1], hand: [0.82, 0.82, 0.82] },
+  clay: { shoe: [0.37, 0.7, 0.77], pant: [0.14, 0.23, 0.29], shirt: [0.16, 0.2, 0.28], head: [0.84, 0.71, 0.54], visor: [0.29, 0.2, 0.16], hand: [0.84, 0.71, 0.54] },
+  bearcat: { shoe: [0.1, 0.11, 0.14], pant: [0.11, 0.14, 0.2], shirt: [0.94, 0.54, 0.14], head: [0.9, 0.76, 0.64], visor: [0.11, 0.14, 0.2], hand: [0.94, 0.54, 0.14] },
+  grove: { shoe: [0.23, 0.16, 0.11], pant: [0.42, 0.26, 0.14], shirt: [0.24, 0.56, 0.38], head: [0.88, 0.71, 0.54], visor: [0.18, 0.42, 0.28], hand: [0.88, 0.71, 0.54] },
+  snow: { shoe: [0.23, 0.27, 0.33], pant: [0.56, 0.78, 0.85], shirt: [0.93, 0.95, 0.97], head: [0.94, 0.82, 0.72], visor: [0.35, 0.45, 0.55], hand: [0.94, 0.82, 0.72] },
+}
+const SUIT_WORD = { berty: 'Berty', clay: 'Clay', bearcat: 'Bearcat', grove: 'Grove', snow: 'Snow' }
 const berty = Mesh.MergeMeshes([
   bertyPart(0.5, 0.03, 0.5, 0, -0.88, 0, [0.08, 0.12, 0.16]),
   bertyPart(0.2, 0.18, 0.26, -0.11, -0.74, 0, [0.06, 0.42, 0.5]),
@@ -10330,6 +10391,31 @@ function makeArm(name, x) {
 }
 const armL = makeArm('berty-arm-l', -0.28)
 const armR = makeArm('berty-arm-r', 0.28)
+function paintBertySuit() {
+  const suit = SUITS[suitId] || SUITS.berty
+  const colors = berty.getVerticesData(VertexBuffer.ColorKind)
+  let need = 0
+  for (let i = 0; i < suitCounts.length; i++) need += suitCounts[i]
+  if (colors && colors.length === need * 4 && suitCounts.length === SUIT_KEYS.length) {
+    let o = 0
+    for (let i = 0; i < suitCounts.length; i++) {
+      const rgb = suit[SUIT_KEYS[i]]
+      const n = suitCounts[i]
+      for (let v = 0; v < n; v++) {
+        const p = (o + v) * 4
+        colors[p] = rgb[0]
+        colors[p + 1] = rgb[1]
+        colors[p + 2] = rgb[2]
+      }
+      o += n
+    }
+    berty.setVerticesData(VertexBuffer.ColorKind, colors)
+  }
+  armMat.diffuseColor.set(suit.shirt[0], suit.shirt[1], suit.shirt[2])
+  armMat.emissiveColor.set(suit.shirt[0] * 0.34, suit.shirt[1] * 0.34, suit.shirt[2] * 0.34)
+  if (hands && hands.tint) hands.tint(suit.hand)
+}
+paintBertySuit()
 const heldMat = new StandardMaterial('berty-held-mat', scene)
 heldMat.specularColor = new Color3(0, 0, 0)
 heldMat.diffuseColor = new Color3(0.45, 0.62, 0.32)
@@ -10658,6 +10744,7 @@ hands = createHands({
     return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
   },
 })
+paintBertySuit()
 let beltAt = 0
 const beltArrows = new Map()
 const beltBadges = new Map()
