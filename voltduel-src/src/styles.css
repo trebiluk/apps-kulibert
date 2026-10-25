@@ -1063,10 +1063,49 @@ html.kb-framed .vd-fs {
   .overlay:has(.menu-card) {
     align-items: flex-start;
     padding-top: 64px;
+    padding-bottom: 0.35rem;
   }
 
   .overlay:has(.menu-card) .menu-card {
     margin-top: 0;
+    padding: 0.5rem 0.7rem 0.4rem;
+  }
+
+  .overlay:has(.menu-card) .kicker {
+    margin-bottom: 0.15rem;
+  }
+
+  .overlay:has(.menu-card) .tag {
+    margin-top: 0.2rem;
+    line-height: 1.3;
+  }
+
+  .overlay:has(.menu-card) .levels {
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+  }
+
+  .overlay:has(.menu-card) .level-card {
+    padding: 0.4rem 0.55rem;
+    gap: 0.1rem;
+  }
+
+  .overlay:has(.menu-card) .level-card p {
+    line-height: 1.3;
+  }
+
+  .overlay:has(.menu-card) .controls-row {
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .overlay:has(.menu-card) .control-box {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .overlay:has(.menu-card) .control-box h3 {
+    min-height: 44px;
+    margin-bottom: 0.05rem;
   }
 }
 

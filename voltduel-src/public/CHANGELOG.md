@@ -16,4 +16,5 @@ VD 1.0.17 — The Pause menu speaks your language.
 VD 1.0.18 — The full-screen button speaks your language.
 VD 1.0.19 — The news panel buttons speak your language.
 VD 1.0.20 — The Full screen button no longer sits on the race menu.
+VD 1.0.21 — The race menu fits under the Full screen button.
 

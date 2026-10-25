@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.20 — The Full screen button no longer sits on the race menu.",
-    uk: "VD 1.0.20 — Кнопка на весь екран більше не на меню заїзду.",
-    ru: "VD 1.0.20 — Кнопка на весь экран больше не на меню заезда.",
-    es: "VD 1.0.20 — El botón de pantalla completa ya no tapa el menú.",
-    ar: "VD 1.0.20 — زر ملء الشاشة لم يعد فوق قائمة السباق.",
-    "fa-AF": "VD 1.0.20 — دکمهٔ تمام‌صفحه دیگر روی منوی مسابقه نیست.",
-    rw: "VD 1.0.20 — Buto yo kwuzuza ikirahure ntikigira ku menu y'isiganwa.",
-    ti: "VD 1.0.20 — ናይ ምሉእ ስክሪን መልጎም ኣብ ዝርዝር ውድድር ኣይርከብን።",
-    simple: "VD 1.0.20 — The Full screen button no longer sits on the race menu."
+    en: "VD 1.0.21 — The race menu fits under the Full screen button.",
+    uk: "VD 1.0.21 — Меню заїзду вміщується під кнопкою на весь екран.",
+    ru: "VD 1.0.21 — Меню заезда помещается под кнопкой на весь экран.",
+    es: "VD 1.0.21 — El menú de carrera cabe bajo el botón de pantalla completa.",
+    ar: "VD 1.0.21 — قائمة السباق تتسع تحت زر ملء الشاشة.",
+    "fa-AF": "VD 1.0.21 — منوی مسابقه زیر دکمهٔ تمام‌صفحه جا می‌شود.",
+    rw: "VD 1.0.21 — Menyu y'isiganwa yuzura munsi ya buto yo kwuzuza ikirahure.",
+    ti: "VD 1.0.21 — ዝርዝር ውድድር ኣብ ትሕቲ ናይ ምሉእ ስክሪን መልጎም ይኣትው።",
+    simple: "VD 1.0.21 — The race menu fits under the Full screen button."
   };
   var TITLES = {
     en: "What's new",
@@ -70,7 +70,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.20") plate.textContent = "VD 1.0.20";
+      if (plate && plate.textContent !== "VD 1.0.21") plate.textContent = "VD 1.0.21";
       if (fs) {
         var pack = FS[code] || FS.en;
         var on = !!document.fullscreenElement;

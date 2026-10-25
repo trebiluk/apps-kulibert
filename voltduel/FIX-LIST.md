@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.20. Version locked: VD 1.0.20.
+Stage: VD 1.0.21. Version locked: VD 1.0.21.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -86,4 +86,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.20
 - [x] **Full screen off the menu.** The button stays where it is. On a tall phone the race menu starts 8px under it. On a short phone the menu keeps its height and clears the button by at least 8px on the inline end, so the three race cards stay on screen with no new scroll.
+
+## VD 1.0.21
+- [x] **Tall-phone menu fits.** The race menu still starts at 112px, under the Full screen button. Tighter spacing on a tall phone removes the leftover scroll. Help and Touch stay at least 44px. Sideways 915×412 and 1366×768 are unchanged. No physics change.
 
