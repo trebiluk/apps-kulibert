@@ -2533,6 +2533,7 @@ function syncGlasses() {
 let hands = null
 function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
+  if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
   const id = getVoxel(x, y, z)
   if (!id) return false
   if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
@@ -3348,9 +3349,11 @@ function overHud() {
   try { el = document.elementFromPoint(lastClient.x, lastClient.y) } catch (e) { return false }
   return hudEl(el)
 }
-window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY }, true)
-window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY }, true)
+window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
+window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
 noa.inputs.down.on('fire', () => {
+  if (!leftPress || leftPress.acted) return
+  leftPress.acted = true
   if (wandHeld()) return
   if (inspectOn) { showInspect(); return }
   if (tableMode) return
@@ -4883,6 +4886,7 @@ document.addEventListener('visibilitychange', () => {
     writeSpot()
     flushSave()
     dropRightHold()
+    dropLeft()
   } else {
     syncCrops(Date.now())
     syncForage(Date.now())
@@ -7133,6 +7137,7 @@ document.addEventListener('pointerlockchange', () => {
     try { noa.inputs.state.fire = false } catch (e) {}
     return
   }
+  dropLeft()
   const wasLocked = hadLock
   hadLock = false
   resumeSwallow = false
@@ -7928,6 +7933,15 @@ let crouchKey = false
 let crouchOn = false
 let mouseLeft = false
 let leftDown = false
+let leftPress = null // { id, t, x, y, z, acted }
+let leftPressId = 0
+function dropLeft() {
+  leftPress = null
+  mouseLeft = leftDown = false
+  try { noa.inputs.state.fire = false } catch (e) {}
+  if (dig && !dig.broke) { dig = null; hideCrack() }
+}
+window.__ghostBreaks = 0
 let mouseRight = false
 let rightDown = false
 let rightPress = null
@@ -8617,11 +8631,11 @@ function feelTick(dt) {
     mouseRight = false
     try { noa.inputs.state.fire = false } catch (e) {}
   }
-  const breaking = !!(noa.inputs.state.fire || mouseLeft || leftDown)
+  const breaking = !!leftPress && !!(mouseLeft || leftDown || noa.inputs.state.fire)
   if (!breaking && !spaceChop) sweep = null
   holdTreeChop()
   const touchLook = !!(look && look.pt === 'touch')
-  if (!treeHold && !sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
+  if (!treeHold && !sheetOpen && !anyCard() && !tableMode && breaking && leftPress && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
   if (anyCard()) dropRightHold()
   else if (!rightDown) mouseRight = false
   else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
@@ -8695,7 +8709,7 @@ function feelTick(dt) {
     const aimedNow = noa.targetedBlock
     const doorAimed = aimedNow && isDoor(aimedNow.blockID)
     const shopAimed = aimedNow && isShopBlock(aimedNow.blockID)
-    if (breaking && !doorAimed && !shopAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    if (breaking && leftPress && !doorAimed && !shopAimed && now - leftPress.t >= 400 && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
     const seen = breaking ? cropOnLook() : null
@@ -9045,7 +9059,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
   if (wandClick) {
     wandPress = { button: 0, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
-  } else if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
+  } else if ((e.button === 0 || e.button < 0) && e.isTrusted && (e.buttons & 1)) { mouseLeft = true; leftDown = true; leftPress = { id: ++leftPressId, t: performance.now(), x: e.clientX, y: e.clientY, acted: false } }
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
   if (look.pt === 'touch' || look.pt === 'pen' || ((TOUCH_UI || playArmed) && !playLocked())) look.pt = 'touch'
@@ -9205,7 +9219,8 @@ canvas.addEventListener('pointerup', (e) => {
     else useAt(target)
     return
   }
-  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && (isShopBlock(down.id) || down.id === ID.bunk))) {
+  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && (isShopBlock(down.id) || down.id === ID.bunk)) && leftPress && !leftPress.acted) {
+    leftPress.acted = true
     breakAt(down.x, down.y, down.z)
     dig = null
     hideCrack()
@@ -9229,7 +9244,7 @@ canvas.addEventListener('pointerup', (e) => {
 // 2.5.396: while the mouse is locked, clicks land on #stage; hear them for the wand
 if (stageEl) {
   stageEl.addEventListener('pointerdown', (e) => {
-    if (e.target === stageEl && playLocked() && wandHeld() && !anyCard() && e.button === 0) wandPress = { x: e.clientX, y: e.clientY, t: performance.now() }
+    if (e.target === stageEl && playLocked() && !anyCard() && e.button === 0 && e.isTrusted && (e.buttons & 1)) { if (wandHeld()) wandPress = { x: e.clientX, y: e.clientY, t: performance.now() }; else { mouseLeft = true; leftDown = true; leftPress = { id: ++leftPressId, t: performance.now(), x: e.clientX, y: e.clientY, acted: false } } }
   })
   stageEl.addEventListener('pointerup', (e) => {
     if (e.target === stageEl && playLocked() && wandHeld() && !anyCard()) finishWandPress(e)
@@ -9338,7 +9353,10 @@ function finishRight(e) {
   }
   if (canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
+window.addEventListener('blur', () => dropLeft())
+window.addEventListener('pointercancel', () => dropLeft())
 window.addEventListener('pointerup', (e) => {
+  if (leftPress && !(e.buttons & 1)) dropLeft()
   if (e.button === 2 || !(e.buttons & 2)) rightDown = false
   if (wandPress && e.button === 2) { finishWandPress(e); return }
   releaseFar()
