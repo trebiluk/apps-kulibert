@@ -521,12 +521,7 @@ pinKeysLine()
 
 let walkPresses = 0
 function fadeKeys() {
-  const el = document.querySelector('.keys')
-  if (!el || el.dataset.gone === '1') return
-  el.dataset.gone = '1'
-  if (REDUCE) { el.style.display = 'none'; return }
-  el.style.transition = 'opacity .5s linear'
-  el.style.opacity = '0'
+  return
 }
 document.addEventListener('keydown', (e) => {
   if (TOUCH_UI || e.repeat) return
@@ -543,6 +538,21 @@ function pinKeysLine() {
   if (sheet && !sheet.hidden) return
   pinAboveBar(el)
 }
+function bindKeysChip() {
+  const btn = document.getElementById('keys-chip')
+  const pop = document.getElementById('keys-pop')
+  if (!btn || !pop || btn.dataset.bound) return
+  btn.dataset.bound = '1'
+  btn.addEventListener('click', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const open = pop.hidden
+    pop.hidden = !open
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false')
+    pinKeysLine()
+  })
+}
+bindKeysChip()
 window.addEventListener('resize', () => pinKeysLine())
 requestAnimationFrame(() => pinKeysLine())
 setTimeout(pinKeysLine, 400)
@@ -810,6 +820,8 @@ let wideView = false
 let showHand = true
 let mainHand = 'right'
 let camBehind = false
+let allCaps = false
+let dyslexiaFont = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.cv >= 3 && savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
@@ -819,6 +831,8 @@ try {
   if (savedLook.hand === false) showHand = false
   if (savedLook.mainHand === 'left') mainHand = 'left'
   if (savedLook.cam === 'behind') camBehind = true
+  if (savedLook.allCaps === true) allCaps = true
+  if (savedLook.dyslexia === true) dyslexiaFont = true
 } catch (e) {}
 playerBody.autoStep = !!autoClimb
 moveState.airJumps = 0
@@ -6299,7 +6313,7 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -7414,6 +7428,11 @@ function paintBar() {
   const from = 0
   const ids = paletteIds.slice(0, CREATIVE_HOT) // 2.5.397: always 9 numbered slots
   bar.dataset.n = String(ids.length)
+  const nameEl = document.createElement('div')
+  nameEl.className = 'hot-name'
+  nameEl.textContent = wandSlot ? (t('wandShort') || t('buildWand')) : blockName(paletteIds[selectedSlot] ?? current)
+  const tray = document.createElement('div')
+  tray.className = 'hot-tray'
   const strip = document.createElement('div')
   strip.className = 'item-strip'
   ids.forEach((id, i) => {
@@ -7427,40 +7446,32 @@ function paintBar() {
     const name = blockName(id)
     b.setAttribute('aria-label', name)
     b.setAttribute('aria-pressed', String(!wandSlot && real === selectedSlot))
-    const d = document.createElement('span') // 2.5.397: slot number like Survival
+    const d = document.createElement('span')
     d.className = 'digit'
     d.textContent = String(real + 1)
     b.append(d)
-    const l = document.createElement('span')
-    l.className = 'lbl'
-    l.textContent = name
-    b.append(l)
     b.addEventListener('click', () => selectSlot(real))
     b.prepend(blockIcon(block, ATLAS))
     strip.append(b)
   })
-  bar.append(strip)
   const wandBtn = document.createElement('button')
   wandBtn.type = 'button'
   wandBtn.className = 'slot'
   wandBtn.dataset.item = 'buildWand'
   wandBtn.setAttribute('aria-label', t('buildWand'))
   wandBtn.setAttribute('aria-pressed', String(!!wandSlot))
-  wandBtn.title = t('buildWand')
   wandBtn.prepend(wandCanvas(wandMode))
-  const wl = document.createElement('span') // 2.5.395: wand tile has its name, same as block slots
-  wl.className = 'lbl'
-  wl.textContent = t('wandShort') || t('buildWand') // 2.5.401: short one-line label
-  const w0 = document.createElement('span') // 2.5.401: the 0 key number, like slots 1-9
-  w0.className = 'digit'; w0.textContent = '0'; wandBtn.append(w0, wl)
+  const w0 = document.createElement('span')
+  w0.className = 'digit'
+  w0.textContent = '0'
+  wandBtn.append(w0)
   wandBtn.addEventListener('click', () => selectWandSlot())
-  bar.append(wandBtn)
   const bagBtn = document.createElement('button')
   bagBtn.type = 'button'
   bagBtn.className = 'slot bag-tile'
   bagBtn.dataset.bag = '1'
-  bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
-  bagBtn.querySelector('.lbl').textContent = t('bag')
+  bagBtn.setAttribute('aria-label', t('bag'))
+  bagBtn.innerHTML = '<span class="digit">E</span><span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span>'
   bagBtn.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'touch') return
     e.preventDefault()
@@ -7472,7 +7483,8 @@ function paintBar() {
     e.stopPropagation()
     openBagFromHud()
   })
-  bar.append(bagBtn)
+  tray.append(strip, wandBtn, bagBtn)
+  bar.append(nameEl, tray)
   const on = strip.querySelector('[aria-pressed="true"]')
   if (on) {
     if (heldScroll != null) strip.scrollLeft = heldScroll
@@ -8873,7 +8885,9 @@ function applyLook() {
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
+  document.documentElement.dataset.allcaps = allCaps ? '1' : '0'
+  document.documentElement.dataset.dyslexia = dyslexiaFont ? '1' : '0'
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close', allCaps: !!allCaps, dyslexia: !!dyslexiaFont })) } catch (e) {}
 }
 const PICKER_KEYS = ['graphics', 'quality', 'textSize']
 const pickerWatched = new WeakSet()
@@ -8972,6 +8986,16 @@ function lookPill(name, on, flip, look, icon) {
   b.addEventListener('click', () => { flip(); draw() })
   row.append(b)
   return row
+}
+function paintTextOpts(g) {
+  const head = document.createElement('p')
+  head.className = 'gnote ghead'
+  head.textContent = t('textHead')
+  g.append(head)
+  g.append(
+    lookPill(t('allCaps'), () => allCaps, () => { allCaps = !allCaps; applyLook() }, 'allCaps', ''),
+    lookPill(t('dyslexiaFont'), () => dyslexiaFont, () => { dyslexiaFont = !dyslexiaFont; applyLook() }, 'dyslexia', ''),
+  )
 }
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')

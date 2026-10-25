@@ -421,6 +421,10 @@ export function createSession(api) {
     bar.classList.add('bagbar')
     bar.classList.remove('palette')
     bar.innerHTML = ''
+    const nameEl = document.createElement('div')
+    nameEl.className = 'hot-name'
+    const tray = document.createElement('div')
+    tray.className = 'hot-tray'
     const strip = document.createElement('div')
     strip.className = 'item-strip'
     const cap = hotCap()
@@ -445,31 +449,24 @@ export function createSession(api) {
         count.className = 'count'
         count.textContent = String(s.n)
         b.append(count)
-        const lbl = document.createElement('span')
-        lbl.className = 'lbl'
-        lbl.textContent = faceName(s.item)
-        b.append(lbl)
       }
       const wear = s && wearBar(item, s.uses)
       if (wear) b.append(wear)
       if (s) b.dataset.item = s.item
       b.setAttribute('aria-pressed', String(i === hot))
       b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
-      if (s) b.title = faceName(s.item)
       b.addEventListener('click', () => {
         if (i === hot) useHeld()
         else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
       })
       strip.append(b)
     }
-    bar.append(strip)
     const bagBtn = document.createElement('button')
     bagBtn.type = 'button'
     bagBtn.className = 'slot bag-tile'
     bagBtn.dataset.bag = '1'
-    bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
-    bagBtn.querySelector('.lbl').textContent = t('bag')
     bagBtn.setAttribute('aria-label', t('bag'))
+    bagBtn.innerHTML = '<span class="digit">E</span><span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span>'
     if (pocketDot) {
       const dot = document.createElement('span')
       dot.dataset.bagDot = '1'
@@ -484,8 +481,10 @@ export function createSession(api) {
       if (sheet && !sheet.hidden && sheet.dataset.panel === 'inventory') { if (api.close) api.close(); return }
       if (api.open) api.open('inventory')
     })
-    bar.append(bagBtn)
+    tray.append(strip, bagBtn)
+    bar.append(nameEl, tray)
     const held = bag.slots[hot]
+    nameEl.textContent = held ? ((held.item === 'buildWand' && t('wandShort')) || itemName(held.item)) : t('emptySlot')
     const label = document.getElementById('current')
     if (label) label.textContent = held ? ((held.item === 'buildWand' && t('wandShort')) || itemName(held.item)) : t('emptySlot') // 2.5.405: short wand name in Survival too
     const useBtn = document.getElementById('t-place')

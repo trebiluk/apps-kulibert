@@ -1,5 +1,10 @@
 [
   {
+    "key": "helpMachines",
+    "lang": "es",
+    "reason": "on-off"
+  },
+  {
     "key": "badgeGot",
     "lang": "ar",
     "reason": "missing"

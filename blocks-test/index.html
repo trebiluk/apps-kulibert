@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.447</title>
+<title>Bertopia 2.5.448</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.294">
 <link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.294">
 <style>
@@ -1187,7 +1187,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.447">
+<link rel="stylesheet" href="read.css?v=2.5.448">
 </head>
 <body>
 <div id="stage"></div>
@@ -1202,7 +1202,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.447</span>
+      <span class="ver" id="ver-plate">2.5.448</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1246,7 +1246,11 @@ body.tip-on #held-chip{display:none!important}
 <div id="wood-pop" hidden role="status"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8B5A2B" stroke="#3A2415" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="#C4A574" stroke-width="1.6"/></svg><b></b></div>
 <div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
-<div class="keys" data-i18n="keysLine">WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops · E bag · Esc menu</div>
+<div class="keys" id="keys-wrap">
+  <button type="button" class="keys-chip" id="keys-chip" data-i18n="keysChip" aria-expanded="false" aria-controls="keys-pop">? KEYS</button>
+  <span class="view-chip" role="note"><span class="view-eye" aria-hidden="true">👁</span> <span data-i18n="viewKey">V: change view</span></span>
+  <p id="keys-pop" class="keys-pop" hidden data-i18n="keysLine">WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops · E bag · Esc menu</p>
+</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
@@ -1300,14 +1304,14 @@ body.tip-on #held-chip{display:none!important}
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
     <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card kd-card" role="dialog" aria-labelledby="about-title">
     <h2 id="about-title" data-i18n="about">About</h2>
     <p data-i18n="aboutBody">Bertopia is a Solvay Tech Room build lab. The 3D engine is noa (MIT) and Babylon.js (Apache-2.0). Block art is the Kenney Voxel Pack (CC0).</p>
-    <p class="help">noa-engine · MIT · fenomas/noa<br>Babylon.js · Apache-2.0<br>Kenney Voxel Pack · CC0</p>
-    <p><a href="THIRD-PARTY.txt" target="_blank" rel="noopener">THIRD-PARTY.txt</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">KENNEY-LICENSE.txt</a></p>
+    <p class="help">noa-engine · MIT · fenomas/noa<br>Babylon.js · Apache-2.0<br>Kenney Voxel Pack · CC0<br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span></p>
+    <p><a href="THIRD-PARTY.txt" target="_blank" rel="noopener">THIRD-PARTY.txt</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">KENNEY-LICENSE.txt</a> · <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL.txt</a></p>
     <button class="row kd-key" id="about-close" type="button" data-i18n="close">Close</button>
   </div>
 </div>
@@ -1381,7 +1385,7 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.271"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.447" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.448" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var chip = document.getElementById('wallet-chip')
@@ -1530,6 +1534,6 @@ document.addEventListener('DOMContentLoaded', function () {
   } catch (e) {}
 })()
 </script>
-<script src="app.js?v=2.5.447" defer></script>
+<script src="app.js?v=2.5.448" defer></script>
 </body>
 </html>

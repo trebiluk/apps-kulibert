@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.448 hotbar-text:** One flat hotbar tray. Picked slot lifts 4px with an orange outline and a ▲. Name sits above the tray once. Settings > Text: All caps and Dyslexia font, each default OFF, saved on bloxbert-look. Arabic, Farsi and Tigrinya keep the normal font.
 - [x] **2.5.446 fly-stop-look:** Flying stops about 0.3s after you let go of the keys or the stick. Default look speed is 0.6, and a saved choice stays. Help line in all 8 languages. Kinyarwanda, Tigrinya, and Dari still need a native check. Plate stays 2.5.447 because that number was already on main.
 - [x] **2.5.445 machines alive:** Lever tilts 0.15s (snaps on reduced motion) and shows ON/OFF. Wires and belts use motion marks. Help line added.
 

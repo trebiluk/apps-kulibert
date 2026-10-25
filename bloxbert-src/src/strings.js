@@ -295,3 +295,14 @@ const BOT_COPY = {
   ti: { botTab: 'ቦት', bertyBot: 'ቦት ቤርቲ', botHave: 'ቦትካ ጠውቕ ንኽትሕዞ ትእዛዝ።', botSummon: 'ቦተይ ጸውዕ', botCame: 'ቦትካ ኣብዚ ኣሎ።', botGround: 'ናብ መሬት ኣመልክት ንኽትቐምጥ ቦትካ።', botForward: 'ቅድሚት', botTurn: 'ዞር', botDig: 'ጽሕር', botPlace: 'ኣቐምጥ', botRepeat: 'ደጋግም', botEnd: 'መወዳእታ', botSoon: 'ቀረባ', botRun: 'ኣስርሕ', botStop: 'ደው ኣብል', botUndo: 'መልስ', botClear: 'ኣጽርይ', botBlocked: 'ተዓጊቱ', botTooMany: 'ብዙሕ ስጉምትታት', botChallenge: 'ኣስርሕ ጠውቕ። ናይ 4 ብሎክ መንደቕ ህነጽ።', botWin: 'መንደቕ ተሃኒጹ! ★★★ (3 ብሎክ)', botStep: 'ስጉምቲ {n} ካብ {m}', botRight: 'የማን', botLeft: 'ጸጋም' },
 }
 for (const lang of Object.keys(STR)) Object.assign(STR[lang], BOT_COPY[lang] || BOT_COPY.en)
+const CREDIT_DYS = {
+  en: 'Dyslexia font: OpenDyslexic (OFL 1.1).',
+  uk: 'Шрифт для дислексії: OpenDyslexic (OFL 1.1).',
+  ru: 'Шрифт для дислексии: OpenDyslexic (OFL 1.1).',
+  es: 'Letra para dislexia: OpenDyslexic (OFL 1.1).',
+  ar: 'خط عسر القراءة: OpenDyslexic (OFL 1.1).',
+  'fa-AF': 'خط نارساخوانی: OpenDyslexic (OFL 1.1).',
+  rw: 'Imyandikire yo gusoma: OpenDyslexic (OFL 1.1).',
+  ti: 'ቅርጺ ፊደል ንጸገም ንባብ: OpenDyslexic (OFL 1.1).',
+}
+for (const lang of Object.keys(STR)) STR[lang].creditDyslexia = CREDIT_DYS[lang] || CREDIT_DYS.en

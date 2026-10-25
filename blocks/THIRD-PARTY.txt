@@ -1,5 +1,6 @@
 Block Builder test page: third-party software bundled in app.js
 Block art (assets/atlas.png, assets/glass.png): Kenney Voxel Pack, CC0. See assets/KENNEY-LICENSE.txt.
+Dyslexia font: OpenDyslexic by Abbie Gonzalez, SIL Open Font License 1.1. Font files and OFL.txt are in /fonts/.
 
 ========================================================================
 @babylonjs/core 6.49.0  License: Apache-2.0

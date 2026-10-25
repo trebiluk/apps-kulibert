@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.448', date: '2026-10-25', lines: {
+    en: ['2.5.448 — The hotbar is one flat tray. The picked slot lifts with an orange mark, and the name sits above it once. Settings > Text can turn on all caps or the dyslexia font.'],
+    simple: ['2.5.448 — One hotbar tray. The name sits above the picked slot. Text settings: big letters or a reading font.'],
+    uk: ['2.5.448 — Панель — одна пласка таця. Обрана клітинка піднімається з помаранчевою міткою, а назва стоїть над нею один раз. У Налаштуваннях можна ввімкнути великі літери або шрифт для дислексії.'],
+    ru: ['2.5.448 — Панель — один плоский поднос. Выбранная ячейка поднимается с оранжевой меткой, а название стоит над ней один раз. В Настройках можно включить большие буквы или шрифт для дислексии.'],
+    es: ['2.5.448 — La barra es una bandeja plana. La casilla elegida se alza con una marca naranja, y el nombre queda arriba una sola vez. En Ajustes > Texto puedes activar mayúsculas o la letra para dislexia.'],
+    ar: ['2.5.448 — الشريط صينية واحدة مسطحة. الخانة المختارة ترتفع بعلامة برتقالية، والاسم يظهر فوقها مرة واحدة. في الإعدادات > النص يمكن تشغيل الحروف الكبيرة أو خط عسر القراءة.'],
+    'fa-AF': ['2.5.448 — نوار یک سینی تخت است. خانهٔ برگزیده با نشان نارنجی بالا می‌رود و نام یک بار بالای آن است. در تنظیمات > متن می‌توان حروف بزرگ یا خط نارساخوانی را روشن کرد.'],
+    rw: ['2.5.448 — Umurongo ni agasanduku kamwe kagororotse. Akazu gatoranyijwe kizamuka n\'ikimenyetso cy\'umuhondo, n\'izina ririmwo hejuru rimwe. Muri Igenamiterere > Inyandiko ushobora gukoresha inyuguti nkuru cyangwa imyandikire yo gusoma.'],
+    ti: ['2.5.448 — መስመር ሓንቲ ጠፍጣፋ ትሪ እዩ። ዝተመርጸ ቦታ ብኣራንሾ ምልክት ይልዕል፡ ስም ድማ ሓንቲ ግዜ ኣብ ላዕሊ ይርአ። ኣብ መቃን > ጽሑፍ ዓበይቲ ፊደላት ወይ ንጸገም ንባብ ቅርጺ ፊደል ክትውልዕ ትኽእል።'],
+  }},
+
   { v: '2.5.447', date: '2026-10-25', lines: {
     en: ['2.5.447 — Machines look alive: levers tilt 0.15s (snap with reduced motion), wires show moving dashes when powered, belts scroll. ON/OFF on lever hover.'],
     simple: ['2.5.447 — Machines look alive: levers tilt, wires dash, belts scroll. ON/OFF on lever.'],

@@ -2716,3 +2716,83 @@ for (const [lang, row] of Object.entries(FLY446)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.448 hotbar tray + Settings > Text. simple falls back to these short English lines.
+const TEXT448 = {
+  en: {
+    textHead: 'Text',
+    allCaps: 'All caps',
+    dyslexiaFont: 'Dyslexia font',
+    keysChip: '? KEYS',
+    keysChipHint: 'The keys chip opens this list.',
+    whatsNewBody: '2.5.448 — The hotbar is one flat tray. The picked slot lifts with an orange mark, and the name sits above it once. Settings, Text: all caps or the dyslexia font.',
+  },
+  simple: {
+    textHead: 'Text',
+    allCaps: 'All caps',
+    dyslexiaFont: 'Dyslexia font',
+    keysChip: '? KEYS',
+    keysChipHint: 'The keys chip opens this list.',
+    whatsNewBody: '2.5.448 — One hotbar tray. The name sits above the picked slot. Text: big letters or a reading font.',
+  },
+  uk: {
+    textHead: 'Текст',
+    allCaps: 'Усі великі',
+    dyslexiaFont: 'Шрифт для дислексії',
+    keysChip: '? КЛАВІШІ',
+    keysChipHint: 'Чіп клавіш відкриває цей список.',
+    whatsNewBody: '2.5.448 — Панель — одна пласка таця. Обрана клітинка піднімається з помаранчевою міткою, а назва стоїть над нею один раз. У налаштуваннях, текст: великі літери або шрифт для дислексії.',
+  },
+  ru: {
+    textHead: 'Текст',
+    allCaps: 'Все заглавные',
+    dyslexiaFont: 'Шрифт для дислексии',
+    keysChip: '? КЛАВИШИ',
+    keysChipHint: 'Чип клавиш открывает этот список.',
+    whatsNewBody: '2.5.448 — Панель — один плоский поднос. Выбранная ячейка поднимается с оранжевой меткой, а название стоит над ней один раз. В настройках, текст: большие буквы или шрифт для дислексии.',
+  },
+  es: {
+    textHead: 'Texto',
+    allCaps: 'Todo en mayúsculas',
+    dyslexiaFont: 'Letra para dislexia',
+    keysChip: '? TECLAS',
+    keysChipHint: 'La ficha de teclas abre esta lista.',
+    whatsNewBody: '2.5.448 — La barra es una bandeja plana. La casilla elegida se alza con una marca naranja, y el nombre queda arriba una sola vez. En ajustes, texto: mayúsculas o la letra para dislexia.',
+  },
+  ar: {
+    textHead: 'النص',
+    allCaps: 'كل الحروف كبيرة',
+    dyslexiaFont: 'خط عسر القراءة',
+    keysChip: '? مفاتيح',
+    keysChipHint: 'زر المفاتيح يفتح هذه القائمة.',
+    whatsNewBody: '2.5.448 — الشريط صينية واحدة مسطحة. الخانة المختارة ترتفع بعلامة برتقالية، والاسم يظهر فوقها مرة واحدة. في الإعدادات، النص: حروف كبيرة أو خط عسر القراءة.',
+  },
+  'fa-AF': {
+    textHead: 'متن',
+    allCaps: 'همه حروف بزرگ',
+    dyslexiaFont: 'خط نارساخوانی',
+    keysChip: '? کلیدها',
+    keysChipHint: 'دکمه کلیدها این فهرست را باز می‌کند.',
+    whatsNewBody: '2.5.448 — نوار یک سینی تخت است. خانه برگزیده با نشان نارنجی بالا می‌رود و نام یک بار بالای آن است. در تنظیمات، متن: حروف بزرگ یا خط نارساخوانی.',
+  },
+  rw: {
+    textHead: 'Inyandiko',
+    allCaps: 'Inyuguti nkuru zose',
+    dyslexiaFont: 'Imyandikire yo gusoma',
+    keysChip: '? IMBOKO',
+    keysChipHint: 'Akabuto k\'imfunguzo gufungura uru rutonde.',
+    whatsNewBody: '2.5.448 — Umurongo ni agasanduku kamwe. Akazu gatoranyijwe kizamuka n\'ikimenyetso cy\'umuhondo, n\'izina ririmwo hejuru rimwe. Muri igenamiterere, inyandiko: inyuguti nkuru cyangwa imyandikire yo gusoma.',
+  },
+  ti: {
+    textHead: 'ጽሑፍ',
+    allCaps: 'ኩሉ ዓበይቲ ፊደላት',
+    dyslexiaFont: 'ቅርጺ ፊደል ንጸገም ንባብ',
+    keysChip: '? መጠወቒ',
+    keysChipHint: 'መጠወቒ መጠወቒታት ነዚ ዝርዝር ይኸፍት።',
+    whatsNewBody: '2.5.448 — መስመር ሓንቲ ጠፍጣፋ ትሪ እዩ። ዝተመርጸ ቦታ ብኣራንሾ ምልክት ይልዕል፡ ስም ድማ ሓንቲ ግዜ ኣብ ላዕሊ ይርአ። ኣብ መቃን፡ ጽሑፍ፡ ዓበይቲ ፊደላት ወይ ንጸገም ንባብ ቅርጺ ፊደል።',
+  },
+}
+for (const [lang, row] of Object.entries(TEXT448)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
