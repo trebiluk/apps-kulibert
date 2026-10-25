@@ -3161,3 +3161,20 @@ for (const [lang, row] of Object.entries(ONCE482)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.484 door click. fa-AF, rw, and ti are machine drafts.
+const DOOR484 = {
+  en: { whatsNewBody: '2.5.484 — A short click opens a door even if your hand wobbles a little.' },
+  simple: { whatsNewBody: '2.5.484 — A small wiggle still opens a door.' },
+  uk: { whatsNewBody: '2.5.484 — Коротке натискання відчиняє двері, навіть якщо рука трохи здригнулась.' },
+  ru: { whatsNewBody: '2.5.484 — Короткое нажатие открывает дверь, даже если рука чуть дрогнула.' },
+  es: { whatsNewBody: '2.5.484 — Un clic corto abre la puerta aunque la mano tiemble un poco.' },
+  ar: { whatsNewBody: '2.5.484 — نقرة قصيرة تفتح الباب حتى لو تحركت اليد قليلاً.' },
+  'fa-AF': { whatsNewBody: '2.5.484 — کلیک کوتاه در را باز می‌کند حتی اگر دست کمی بلرزد.' },
+  rw: { whatsNewBody: '2.5.484 — Gukanda gato gufungura urugi nubwo ikiganza kigenda gato.' },
+  ti: { whatsNewBody: '2.5.484 — ሓጺር ጠውቃይ ማዕጾ ይኸፍት፡ ኢድ እንተንኪዓ እውን።' },
+}
+for (const [lang, row] of Object.entries(DOOR484)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

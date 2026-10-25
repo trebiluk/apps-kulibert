@@ -9695,8 +9695,11 @@ window.addEventListener('pointerdown', (e) => {
     }
   }
   if (!canvasHit(e)) return
-  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') { armActLock(); return }
-  if (!TOUCH_UI && e.pointerType !== 'touch' && !playLocked() && performance.now() < lockSwallowUntil) return
+  const lockFirst = awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch'
+  const peek = lockFirst ? targetHit() : null
+  const doorFirst = !!(peek && isDoor(peek.blockID))
+  if (lockFirst && !doorFirst) { armActLock(); return }
+  if (!lockFirst && !TOUCH_UI && e.pointerType !== 'touch' && !playLocked() && performance.now() < lockSwallowUntil) return
   if (eatResume(e)) return
   const snap = targetHit()
   if (tryEatClick(snap)) {
@@ -9723,6 +9726,7 @@ window.addEventListener('pointerdown', (e) => {
     } else mouseRight = false
   } else mouseRight = false
   if (!reachable && !tableMode && !anyCard() && placeableHeld()) toastFarKey()
+  if (lockFirst && doorFirst) armActLock()
 }, true)
 window.addEventListener('pointermove', (e) => {
   if (wandPress) {
@@ -9769,7 +9773,8 @@ function finishRight(e) {
     if (down && up && down.x === up.x && down.y === up.y && down.z === up.z) placeBlock(upHit)
     return
   }
-  if (canUse(down, up, press.moved, false)) placeBlock(upHit)
+  const sameDoor = down && up && isDoor(down.id) && isDoor(up.id) && down.x === up.x && down.y === up.y && down.z === up.z && press.moved <= 16 && (!e || e.timeStamp - press.t < 400)
+  if (sameDoor || canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
 window.addEventListener('blur', () => dropLeft())
 window.addEventListener('pointercancel', () => dropLeft())

@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.484 door-click:** A short right-click opens a door even if the pointer wobbles a little, including the click that also starts looking. A long drag still does not use the door. The update script parses again.
 - [x] **2.5.483 suits:** Settings has Clothes: Berty, Clay, Bearcat, Grove, Snow. The body and the hand use that suit. Choice stays on this device. Worlds are unchanged.
 - [x] **2.5.481 stick-card:** Held item card (Stick) is only as tall as its words. The bottom pin no longer stretches it down to the hotbar.
 - [x] **2.5.480 chrome-zoom:** Hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap.
@@ -436,9 +437,9 @@ Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
 ## 2. Open fixes (from proof/bertopia-2.5.48/RESULT.md) -> `briefs/fixq/bertopia-2549-fix.md` = **BT 2.5.49**
-- [ ] **Night darkens the world (P1, 2.5.48 proof):** syncGlow (main.js ~1858) sets only the sky `uLum` and fog. Scale `scene.ambientColor` and `noa.rendering.light` by `basics.lum()`; grass at night 40-70% of day, Brighter nights >= 60%, Always day / Build world unchanged.
-- [ ] **Lantern lights are cheap (P1, 2.5.48 proof):** 1366 with 20 High lanterns in view 28 FPS vs 58 on 2.5.47 (1 High 45, 4 High 33). Limit the 4 PointLights' cost; smoke "lantern fps" must put the lanterns in view and want >= 90% of no lanterns.
-- [ ] **"door flips once 1366x768" (P2):** failed 1 of 2 runs again (30).
+- [x] **Night darkens the world (P1, 2.5.48 proof):** already shipped. See "Night darkens the blocks" below. Do not redo.
+- [x] **Lantern lights are cheap (P1, 2.5.48 proof):** already shipped. See "Lantern lights stay cheap" below. Do not redo.
+- [x] **"door flips once 1366x768" (P2):** a short click opens the door. A long drag still leaves it shut. 2.5.484.
 - [x] **2.5.477 at-fabricator:** After T5 is open, a fabricator recipe says "Make it at a Fabricator" instead of "Needs T5". The locked gate still says Needs T5. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.48 done (basics-1):** doors (wood/glass/metal/sliding, double, auto-close, lock, hold-safe), Lever, Push Button, palette-remap save safety, day/night + Always day + Brighter nights, Light Up badges, LED Lantern / Battery Cell / Charger behind T5, Starter Kit. Smoke "hold toast once" and "jitter chop 915x412" now pass (own page, steady aim).
 

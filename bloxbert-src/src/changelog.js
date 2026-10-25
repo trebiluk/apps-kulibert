@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.484', date: '2026-10-25', lines: {
+    en: ["2.5.484 — A short click opens a door even if your hand wobbles a little."],
+    simple: ["2.5.484 — A small wiggle still opens a door."],
+    uk: ["2.5.484 — Коротке натискання відчиняє двері, навіть якщо рука трохи здригнулась."],
+    ru: ["2.5.484 — Короткое нажатие открывает дверь, даже если рука чуть дрогнула."],
+    es: ["2.5.484 — Un clic corto abre la puerta aunque la mano tiemble un poco."],
+    ar: ["2.5.484 — نقرة قصيرة تفتح الباب حتى لو تحركت اليد قليلاً."],
+    'fa-AF': ["2.5.484 — کلیک کوتاه در را باز می‌کند حتی اگر دست کمی بلرزد."],
+    rw: ["2.5.484 — Gukanda gato gufungura urugi nubwo ikiganza kigenda gato."],
+    ti: ["2.5.484 — ሓጺር ጠውቃይ ማዕጾ ይኸፍት፡ ኢድ እንተንኪዓ እውን።"],
+  }},
+
   { v: '2.5.483', date: '2026-10-25', lines: {
     en: ["2.5.483 — Pick a suit in Settings. Berty, Clay, Bearcat, Grove, or Snow. Your hand matches."],
     simple: ["2.5.483 — Pick a suit in Settings. Your hand matches."],
