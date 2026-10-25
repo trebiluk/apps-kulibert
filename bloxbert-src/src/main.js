@@ -7172,6 +7172,8 @@ function mobsStep() {
 }
 noa.on('tick', () => {
   simTick++; beltAcc += 1000/30
+  // 2.5.447: shared machine animation tick (UV scroll / lever tween driver). Pauses off-screen via noa.
+  if (typeof window !== 'undefined') window.__btMachineAnim = (simTick % 16) / 16
   while (beltAcc >= 250) { beltAcc -= 250; beltStep() }
   if (simTick % 3 === 0) mobsStep()
   try { if (circuits && circuits.tick) circuits.tick(simTick * (1000/30)) } catch (e) {}

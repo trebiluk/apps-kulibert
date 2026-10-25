@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.447', date: '2026-10-25', lines: {
+    en: ['2.5.447 — Machines look alive: levers tilt 0.15s (snap with reduced motion), wires show moving dashes when powered, belts scroll. ON/OFF on lever hover.'],
+    simple: ['2.5.447 — Machines look alive: levers tilt, wires dash, belts scroll. ON/OFF on lever.'],
+    uk: ['2.5.447 — Машини виглядають живими: важелі нахиляються 0.15с, дроти рухають риски, стрічки скролять.'],
+    ru: ['2.5.447 — Машины выглядят живыми: рычаги наклоняются 0.15с, провода двигают штрихи, ленты скроллят.'],
+    es: ['2.5.447 — Las máquinas se ven vivas: palancas se inclinan 0.15s, cables muestran rayas móviles, cintas se desplazan.'],
+    ar: ['2.5.447 — الآلات تبدو حية: الرافعات تميل 0.15ث، الأسلاك تظهر شرطات متحركة، الأحزمة تتحرك.'],
+    'fa-AF': ['2.5.447 — ماشین‌ها زنده به نظر می‌رسند: اهرم‌ها 0.15ث کج می‌شوند، سیم‌ها خط‌چین متحرک نشان می‌دهند، نوارها اسکرول می‌کنند.'],
+    rw: ['2.5.447 — Imashini zisa nka ziriho: lever zikekama 0.15s, imiringoti yerekana imirongo igenda, imikandara iscrolla.'],
+    ti: ['2.5.447 — ማሽናት ህያው ይመስላ፡ ሌቨር 0.15ሰ ይዘንብ፣ ገመዳት ዝንቀሳቐሱ ረኸባታት የርእዩ፣ ቤልት ይስክሮል።'],
+  }},
+
   { v: '2.5.445', date: '2026-10-25', lines: {
     en: ['2.5.445 — Machines look alive: levers tilt, wires dash, belts scroll.'],
     simple: ['2.5.445 — Machines look alive.'],
