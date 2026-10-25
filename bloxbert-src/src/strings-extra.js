@@ -1511,14 +1511,14 @@ for (const [lang, row] of Object.entries(SHOW)) {
   Object.assign(EXTRA[lang], row)
 }
 const CHOPWOOD = {
-  en: { whatsNewBody: 'Chopping trees gives you wood again.', moveCloser: 'Move closer', gotWood: '+1 Planks' },
-  es: { whatsNewBody: 'Talar árboles vuelve a darte madera.', moveCloser: 'Acércate', gotWood: '+1 Tablas' },
-  uk: { whatsNewBody: 'Рубання дерев знову дає деревину.', moveCloser: 'Підійди ближче', gotWood: '+1 Дошки' },
-  ru: { whatsNewBody: 'Рубка деревьев снова даёт древесину.', moveCloser: 'Подойди ближе', gotWood: '+1 Доски' },
-  ar: { whatsNewBody: 'قطع الأشجار يعطيك خشباً من جديد.', moveCloser: 'اقترب', gotWood: '+1 ألواح' },
-  'fa-AF': { whatsNewBody: 'بریدن درخت دوباره چوب می‌دهد.', moveCloser: 'نزدیک‌تر بیا', gotWood: '+1 تخته' },
-  rw: { whatsNewBody: 'Gutema ibiti bisubiza ibiti.', moveCloser: 'Egerekera hafi', gotWood: '+1 Imbaho' },
-  ti: { whatsNewBody: 'ምቍራጽ ዕንጨይቲ እንደገና ዕንጨይቲ ይህብ።', moveCloser: 'ቀረብ', gotWood: '+1 ጣውላ' },
+  en: { whatsNewBody: 'Chopping trees gives you wood again.', moveCloser: 'Move closer', gotWood: '+1 Log' },
+  es: { whatsNewBody: 'Talar árboles vuelve a darte madera.', moveCloser: 'Acércate', gotWood: '+1 Tronco' },
+  uk: { whatsNewBody: 'Рубання дерев знову дає деревину.', moveCloser: 'Підійди ближче', gotWood: '+1 Колода' },
+  ru: { whatsNewBody: 'Рубка деревьев снова даёт древесину.', moveCloser: 'Подойди ближе', gotWood: '+1 Бревно' },
+  ar: { whatsNewBody: 'قطع الأشجار يعطيك خشباً من جديد.', moveCloser: 'اقترب', gotWood: '+1 جذع' },
+  'fa-AF': { whatsNewBody: 'بریدن درخت دوباره چوب می‌دهد.', moveCloser: 'نزدیک‌تر بیا', gotWood: '+1 کنده' },
+  rw: { whatsNewBody: 'Gutema ibiti bisubiza ibiti.', moveCloser: 'Egerekera hafi', gotWood: '+1 Igiti' },
+  ti: { whatsNewBody: 'ምቍራጽ ዕንጨይቲ እንደገና ዕንጨይቲ ይህብ።', moveCloser: 'ቀረብ', gotWood: '+1 ግንዲ' },
 }
 for (const [lang, row] of Object.entries(CHOPWOOD)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}

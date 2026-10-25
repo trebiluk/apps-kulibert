@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.457', date: '2026-10-25', lines: {
+    en: ["2.5.457 — The wood pop now says the real item and count, like +1 Log."],
+    simple: ["2.5.457 — The pop says +1 Log."],
+    uk: ["2.5.457 — Спливаюче вікно деревини тепер каже справжній предмет і кількість, як +1 Колода."],
+    ru: ["2.5.457 — Всплывающее окно древесины теперь говорит настоящий предмет и количество, как +1 Бревно."],
+    es: ["2.5.457 — El aviso de madera ahora dice el objeto y la cantidad reales, como +1 Tronco."],
+    ar: ["2.5.457 — نافذة الخشب الآن تقول العنصر والعدد الحقيقيين، مثل +1 جذع."],
+    'fa-AF': ["2.5.457 — پنجره چوب حالا آیتم و تعداد واقعی را می‌گوید، مثل +1 کنده."],
+    rw: ["2.5.457 — Idirishya ry'ibiti ubu rivuga ikintu n'umubare nyakuri, nka +1 Igiti."],
+    ti: ["2.5.457 — መስኮት ዕንጨይቲ ሕጂ ነቲ ንጹር ነገርን ቁጽርን ይብል፡ ከም +1 ግንዲ።"],
+  }},
+
   { v: '2.5.456', date: '2026-10-25', lines: {
     en: ['2.5.456 — New items go to an empty hotbar slot first, so you can use them right away.'],
     simple: ['2.5.456 — New things go to your hotbar.'],

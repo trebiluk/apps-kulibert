@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.457 wood-pop-log:** The wood pop says the real item and count, like +1 Log. gotWood strings updated in all 8 languages.
 - [x] **2.5.456 hotbar first:** give/pickup/craft prefers empty hotbar slot (0-8) before Pockets. sayPocket only when it truly lands in 9+.
 
 - [x] **2.5.453 tree-logs:** Felled trees give 1 log per trunk cell (min 1, cap 6). Single log breaks already give 'log' via dropOf.

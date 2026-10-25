@@ -2205,11 +2205,11 @@ function shakeChop() {
   void canvas.offsetWidth
   canvas.classList.add('chop-shake')
 }
-function showWoodPop() {
+function showWoodPop(item, n) { // 2.5.457: show the real item and count
   const el = $('wood-pop')
   if (!el) return
   const label = el.querySelector('b')
-  if (label) label.textContent = t('gotWood')
+  if (label) label.textContent = '+' + (n || 1) + ' ' + (item ? t(item) : t('log'))
   el.hidden = false
   clearTimeout(showWoodPop.t)
   showWoodPop.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1600)
@@ -2239,7 +2239,7 @@ function fellTree(tree) {
   logs = Math.max(1, Math.min(6, logs))
   if (session && session.give) session.give('log', logs)
   if (calm && calm.note) calm.note('tree')
-  showWoodPop()
+  showWoodPop('log', logs) // 2.5.457: pass the real item and count
   treeCache = null
   return true
 }
