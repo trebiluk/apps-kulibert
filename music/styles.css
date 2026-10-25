@@ -2532,7 +2532,19 @@ body.mu237 .tile-grid .btn, body.mu237 #styles .btn, body.mu237 #ode-slot .btn {
   body.mu237 #dock-left .tab { padding: 0; justify-content: center; }
   body.mu237 #dock-left .tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
-body.mu237 .transport .cover { width: 40px; height: 40px; min-width: 40px; }
+body.mu237 .transport .cover {
+  width: auto;
+  min-width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  color: #0E1A22;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 body.mu237 .transport .songbar-copy { flex: 1 1 8rem; min-width: 0; max-width: 16rem; }
 body.mu237 .transport .songbar-copy strong, body.mu237 .transport #play-pos,
 body.mu237 .transport .tempo, body.mu237 .transport .tempo b, body.mu237 #tempo-read { font-size: 14px !important; line-height: 1.2; }
@@ -3660,6 +3672,31 @@ body.mu237 .transport .tempo {
     width: 44px !important;
   }
   #new-beat { flex: 0 0 auto !important; width: auto !important; } /* MU 2.36.45: the word "New beat" stays inside its button, not 44px squeezed */
+  /* MU 2.36.56 — Play, Record, Perform, More and Tempo keep icon + word */
+  #play-btn,
+  #rec-btn,
+  #show-btn,
+  #more-tools {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 44px !important;
+    max-width: none !important;
+  }
+  #play-word,
+  #rec-btn .ctl-word,
+  #show-btn .ctl-word,
+  #more-tools .ctl-word,
+  .tempo > span,
+  #tempo-read {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
   .tempo {
     flex: 1 1 44px !important;
     min-width: 44px !important;
@@ -5804,5 +5841,10 @@ body.mu237.show canvas#viz {
   body.mu237 .viz-start { padding-inline-end: 56px; }
   body.mu237 .viz-start span { max-width: 100%; }
 }
+
+/* MU 2.36.56 — hidden count-in takes no row; the Tap step grid stays off (the strip already shows it) so nothing sits half under the piano */
+body.mu237 #count-in[hidden] { display: none !important; }
+body.mu237.tab-tap #drums,
+body.mu237.tab-tap #more-drums { display: none !important; }
 
 
