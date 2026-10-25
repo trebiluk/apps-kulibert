@@ -9,17 +9,28 @@ export function createBag() {
   function add(item, n = 1, stack) {
     const cap = stack || SOLO[item] || 64
     let left = n
-    for (const s of slots) if (s && s.item === item && s.n < cap) {
-      const take = Math.min(cap - s.n, left)
-      s.n += take
-      left -= take
-      if (!left) return 0
+    // 2.5.456: hotbar first — (a) stack in 0-8, (b) empty 0-8, (c) stack in 9+, (d) empty 9+
+    const tryStack = (from, to) => {
+      for (let i = from; i < to && left; i++) {
+        const s = slots[i]
+        if (s && s.item === item && s.n < cap) {
+          const take = Math.min(cap - s.n, left)
+          s.n += take
+          left -= take
+        }
+      }
     }
-    for (let i = 0; i < slots.length && left; i++) if (!slots[i]) {
-      const take = Math.min(cap, left)
-      slots[i] = { item, n: take }
-      left -= take
+    const tryEmpty = (from, to) => {
+      for (let i = from; i < to && left; i++) if (!slots[i]) {
+        const take = Math.min(cap, left)
+        slots[i] = { item, n: take }
+        left -= take
+      }
     }
+    tryStack(0, 9)
+    tryEmpty(0, 9)
+    tryStack(9, slots.length)
+    tryEmpty(9, slots.length)
     return left
   }
   function take(item, n) {
