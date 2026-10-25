@@ -80,3 +80,49 @@ test('teacher in one room fixes grief in another; a stale edit gets the true blo
   await hub.fan.tick(); await settle()
   assert.deepEqual(ops(a).map((o) => o[4]), [5, 0])
 })
+
+test('catch-up: sync replays missed ops, cget returns the chunk with its seq; bad world frames drop the connection', async (t) => {
+  timers(t)
+  const { hub, join } = setup()
+  await join('staffref-001', 'teacher')
+  const a = await join('kidref-0001')
+  const r = plotRect(a.plot)
+  await at(a, r.x0 + 2, r.z0 + 2)
+  for (let i = 0; i < 3; i++) { await send(a.room, a, { v: 0, t: 'b', x: r.x0 + 3 + i, y: 64, z: r.z0 + 2, id: 5, b: 0 }); await settle() }
+  const late = await join('kidref-0002')
+  await send(late.room, late, { v: 0, t: 'sync', s: 1 }); await settle()
+  assert.deepEqual(ops(late).map((o) => o[0]), [2, 3])
+  await send(late.room, late, { v: 0, t: 'cget', cx: Math.floor((r.x0 + 3) / 16), cz: Math.floor((r.z0 + 2) / 16) }); await settle()
+  const ch = frames(late.sock).find((f) => f.t === 'ch')
+  assert.equal(ch.s, 3)
+  assert.ok(decodeChunk(ch.d).edits.size >= 1)
+  await send(late.room, late, { v: 0, t: 'b', x: 1.5, y: 64, z: 0, id: 1, b: 0 })
+  assert.equal(late.sock.closed.code, CLOSE.BAD)
+  assert.equal(hub.world.head(), 3)
+})
+
+test('a room that empties unlinks from the world; the teacher\'s close stops new kids world-wide', async (t) => {
+  timers(t)
+  const { hub, join } = setup()
+  const teacher = await join('staffref-001', 'teacher')
+  const a = await join('kidref-0001')
+  assert.deepEqual(hub.fan.linked(), ['world-0001-r1'])
+  await send(teacher.room, teacher, { v: 0, t: 'st', a: 'close' }); await settle()
+  assert.deepEqual(await join('kidref-0002'), { err: 'closed' })
+  await a.room.webSocketClose(a.sock, 1000); await teacher.room.webSocketClose(teacher.sock, 1000); await settle()
+  assert.deepEqual(hub.fan.linked(), [])
+})
+
+test('repeated edits on other kids\' land earn a kick; a room that is not linked refuses pushes', async (t) => {
+  timers(t)
+  const { join } = setup()
+  await join('staffref-001', 'teacher')
+  const a = await join('kidref-0001')
+  const b = await join('kidref-0002')
+  const rb = plotRect(b.plot)
+  await at(a, rb.x0 + 2, rb.z0 + 2)
+  for (let i = 0; i < 9 && !a.sock.closed; i++) { await send(a.room, a, { v: 0, t: 'b', x: rb.x0 + 3, y: 64, z: rb.z0 + 3, id: 5, b: 0 }); await settle(); t.mock.timers.tick(100) }
+  assert.equal(a.sock.closed.code, CLOSE.ABUSE)
+  const lone = makeRoom({ open: false, env: {} }).room
+  assert.equal(await lone.deliver({ from: 0, ops: [{ s: 1, x: 0, y: 0, z: 0, i: 1 }] }), false)
+})
