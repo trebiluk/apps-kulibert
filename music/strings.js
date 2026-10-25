@@ -679,7 +679,8 @@
     news23653: "MU 2.36.53 — The song library's shelves and places (Africa, Ghana...) are in your language.",
     news23654: "MU 2.36.54 — After Tap a score, the help line is in your language.",
     news23655: "MU 2.36.55 — Starting a new song, the help line is in your language.",
-    news23656: "MU 2.36.56 — The bottom buttons show their names."
+    news23656: "MU 2.36.56 — The bottom buttons show their names.",
+    news23657: "MU 2.36.57 — Softer colours, no bright flashes."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1014,7 +1015,8 @@
     news23653: "MU 2.36.53 — Song shelves in your language.",
     news23654: "MU 2.36.54 — Tap a score help in your language.",
     news23655: "MU 2.36.55 — New song help in your language.",
-    news23656: "MU 2.36.56 — Buttons say their names."
+    news23656: "MU 2.36.56 — Buttons say their names.",
+    news23657: "MU 2.36.57 — Softer colours."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1694,7 +1696,8 @@
       "news23653": "MU 2.36.53 — Полиці й місця в бібліотеці пісень (Африка, Гана...) твоєю мовою.",
       "news23654": "MU 2.36.54 — Після «Натискай ноти» підказка твоєю мовою.",
       "news23655": "MU 2.36.55 — Коли починаєш нову пісню, підказка твоєю мовою.",
-      "news23656": "MU 2.36.56 — Нижні кнопки показують свої назви."
+      "news23656": "MU 2.36.56 — Нижні кнопки показують свої назви.",
+      "news23657": "MU 2.36.57 — М’якші кольори, без яскравих спалахів."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2371,7 +2374,8 @@
       "news23653": "MU 2.36.53 — Полки и места в библиотеке песен (Африка, Гана...) на твоём языке.",
       "news23654": "MU 2.36.54 — После «Нажимай ноты» подсказка на твоём языке.",
       "news23655": "MU 2.36.55 — Когда начинаешь новую песню, подсказка на твоём языке.",
-      "news23656": "MU 2.36.56 — Нижние кнопки показывают свои названия."
+      "news23656": "MU 2.36.56 — Нижние кнопки показывают свои названия.",
+      "news23657": "MU 2.36.57 — Более мягкие цвета, без ярких вспышек."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3049,7 +3053,8 @@
       "news23653": "MU 2.36.53 — Los estantes y lugares de la biblioteca de canciones (África, Ghana...) están en tu idioma.",
       "news23654": "MU 2.36.54 — Después de Toca una partitura, la ayuda está en tu idioma.",
       "news23655": "MU 2.36.55 — Al empezar una canción nueva, la ayuda está en tu idioma.",
-      "news23656": "MU 2.36.56 — Los botones de abajo muestran su nombre."
+      "news23656": "MU 2.36.56 — Los botones de abajo muestran su nombre.",
+      "news23657": "MU 2.36.57 — Colores más suaves, sin destellos brillantes."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3727,7 +3732,8 @@
       "news23653": "MU 2.36.53 — رفوف وأماكن مكتبة الأغاني (أفريقيا، غانا...) بلغتك.",
       "news23654": "MU 2.36.54 — بعد «انقر نوتة»، سطر المساعدة بلغتك.",
       "news23655": "MU 2.36.55 — عند بدء أغنية جديدة، سطر المساعدة بلغتك.",
-      "news23656": "MU 2.36.56 — أزرار الأسفل تُظهر أسماءها."
+      "news23656": "MU 2.36.56 — أزرار الأسفل تُظهر أسماءها.",
+      "news23657": "MU 2.36.57 — ألوان أهدأ، بلا ومضات ساطعة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4405,7 +4411,8 @@
       "news23653": "MU 2.36.53 — قفسه‌ها و جاهای کتابخانه آهنگ (افریقا، غنا...) به زبان خودت است.",
       "news23654": "MU 2.36.54 — بعد از «نت بزن»، خط راهنما به زبان خودت است.",
       "news23655": "MU 2.36.55 — وقتی آهنگ تازه شروع می‌کنی، خط راهنما به زبان خودت است.",
-      "news23656": "MU 2.36.56 — دکمه‌های پایین نام خود را نشان می‌دهند."
+      "news23656": "MU 2.36.56 — دکمه‌های پایین نام خود را نشان می‌دهند.",
+      "news23657": "MU 2.36.57 — رنگ‌های نرم‌تر، بدون درخشش‌های تند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5083,7 +5090,8 @@
       "news23653": "MU 2.36.53 — Amasahani n'ahantu mu isomero ry'indirimbo (Afurika, Ghana...) biri mu rurimi rwawe.",
       "news23654": "MU 2.36.54 — Nyuma ya Kanda inota, umurongo w'ubufasha uri mu rurimi rwawe.",
       "news23655": "MU 2.36.55 — Iyo utangiye indirimbo nshya, umurongo w'ubufasha uri mu rurimi rwawe.",
-      "news23656": "MU 2.36.56 — Buto zo hasi zerekana amazina yazo."
+      "news23656": "MU 2.36.56 — Buto zo hasi zerekana amazina yazo.",
+      "news23657": "MU 2.36.57 — Amabara yoroshye, nta murabyo mwinshi."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5761,7 +5769,8 @@
       "news23653": "MU 2.36.53 — መደርደሪታትን ቦታታትን ቤተ-መጻሕፍቲ ደርፍታት (ኣፍሪቃ፡ ጋና...) ብቋንቋኻ እዮም።",
       "news23654": "MU 2.36.54 — ድሕሪ «ነጥቢ ጠውቕ»፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
       "news23655": "MU 2.36.55 — ሓድሽ ደርፊ ክትጅምር ከለኻ፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
-      "news23656": "MU 2.36.56 — ታሕተዋይ መጠወቒታት ስማት ይርእዩ።"
+      "news23656": "MU 2.36.56 — ታሕተዋይ መጠወቒታት ስማት ይርእዩ።",
+      "news23657": "MU 2.36.57 — ርጉዳት ሕብርታት፣ ድምቀት የለን።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
