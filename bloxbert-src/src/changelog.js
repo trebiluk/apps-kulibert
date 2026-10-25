@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.458', date: '2026-10-25', lines: {
+    en: ['2.5.458 — The menu keeps the world visible behind a light dim, not a gray sheet, with no flash.'],
+    simple: ['2.5.458 — Menu keeps the world showing. No gray sheet. No flash.'],
+    uk: ['2.5.458 — Меню лишає світ видимим за легким затемненням, без сірого полотна і без спалаху.'],
+    ru: ['2.5.458 — Меню оставляет мир видимым за лёгким затемнением, без серой завесы и без вспышки.'],
+    es: ['2.5.458 — El menú deja el mundo a la vista tras un leve oscurecido, sin una hoja gris y sin destello.'],
+    ar: ['2.5.458 — القائمة تبقي العالم ظاهراً خلف تعتيم خفيف، بلا غطاء رمادي وبلا وميض.'],
+    'fa-AF': ['2.5.458 — فهرست جهان را پشت یک تاریکی کم نشان می‌دهد، نه پوشش خاکستری، و جرقه نیست.'],
+    rw: ['2.5.458 — Ibikubiyemo bisigira isi igaragara inyuma y\'ijimye gato, nta gipfupfu cy\'icyatsi, nta kurabagirana.'],
+    ti: ['2.5.458 — ምናሌ ዓለም ኣብ ድሕሪ ቁሩብ ጸልማት የርኢ፡ ግራጫ ሽፋን የለን፡ ምብራህ የለን።'],
+  }},
+
   { v: '2.5.457', date: '2026-10-25', lines: {
     en: ["2.5.457 — The wood pop now says the real item and count, like +1 Log."],
     simple: ["2.5.457 — The pop says +1 Log."],

@@ -2920,3 +2920,38 @@ for (const [lang, row] of Object.entries(BED450)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.458 clear menu sheet. rw, ti, and Dari are machine drafts.
+const DIM458 = {
+  en: {
+    whatsNewBody: '2.5.458 — The menu keeps the world visible behind a light dim, not a gray sheet, with no flash.',
+  },
+  simple: {
+    whatsNewBody: '2.5.458 — Menu keeps the world showing. No gray sheet. No flash.',
+  },
+  uk: {
+    whatsNewBody: '2.5.458 — Меню лишає світ видимим за легким затемненням, без сірого полотна і без спалаху.',
+  },
+  ru: {
+    whatsNewBody: '2.5.458 — Меню оставляет мир видимым за лёгким затемнением, без серой завесы и без вспышки.',
+  },
+  es: {
+    whatsNewBody: '2.5.458 — El menú deja el mundo a la vista tras un leve oscurecido, sin una hoja gris y sin destello.',
+  },
+  ar: {
+    whatsNewBody: '2.5.458 — القائمة تبقي العالم ظاهراً خلف تعتيم خفيف، بلا غطاء رمادي وبلا وميض.',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.458 — فهرست جهان را پشت یک تاریکی کم نشان می‌دهد، نه پوشش خاکستری، و جرقه نیست.',
+  },
+  rw: {
+    whatsNewBody: '2.5.458 — Ibikubiyemo bisigira isi igaragara inyuma y\'ijimye gato, nta gipfupfu cy\'icyatsi, nta kurabagirana.',
+  },
+  ti: {
+    whatsNewBody: '2.5.458 — ምናሌ ዓለም ኣብ ድሕሪ ቁሩብ ጸልማት የርኢ፡ ግራጫ ሽፋን የለን፡ ምብራህ የለን።',
+  },
+}
+for (const [lang, row] of Object.entries(DIM458)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

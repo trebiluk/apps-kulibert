@@ -1804,7 +1804,7 @@ html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !i
 html body {
   font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace;
 }
-html body #sheet,
+html body #sheet:not([data-panel="menu"]),
 html body .kd-panel {
   background-color: #222222 !important;
   background-image: none !important;
@@ -2299,7 +2299,8 @@ html body #use-pill {
   bottom: calc(var(--hotbar-top, 8px) + 56px + 8px) !important;
 }
 
-/* 2.5.452: menu and pause dim the world. The sheet outside the menu card is clear. No blur, no flash. */
+/* 2.5.458: the sheet itself is clear, so the world stays behind the 25% scrim.
+   The menu card stays solid. Other panels keep the gray plate. No blur, no flash. */
 html body #sheet#sheet[data-panel="menu"],
 html body #sheet#sheet[data-panel="menu"] #sheet-body {
   background: transparent !important;
@@ -2308,6 +2309,7 @@ html body #sheet#sheet[data-panel="menu"] #sheet-body {
   border: 0 !important;
   box-shadow: none !important;
   filter: none !important;
+  transition: none !important;
 }
 html body #sheet#sheet[data-panel="menu"] .sheet-bar,
 html body #sheet#sheet[data-panel="menu"] .ggrid {
