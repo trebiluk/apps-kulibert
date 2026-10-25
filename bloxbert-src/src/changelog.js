@@ -7,7 +7,7 @@ export const CHANGELOG = [
     es: ['2.5.456 — Los objetos nuevos van primero a un hueco vacío de la barra, para que puedas usarlos enseguida.'],
     ar: ['2.5.456 — العناصر الجديدة تذهب أولاً إلى خانة فارغة في الشريط حتى تستخدمها فوراً.'],
     'fa-AF': ['2.5.456 — آیتم‌های نو اول به جای خالی نوار می‌روند تا فوری استفاده کنی.'],
-    rw: ['2.5.456 — Ibintu bishya bijya mbere mu mwanya w'ubusa w'urubuga, kugira ngo ubikoreshe ako kanya.'],
+    rw: ['2.5.456 — Ibintu bishya bijya mbere mu mwanya w\'ubusa w\'urubuga, kugira ngo ubikoreshe ako kanya.'],
     ti: ['2.5.456 — ሓደሽቲ ነገራት ቀዳማይ ናብ ናይ ባዶ ሆትባር ስሎት ይኸዱ እሞ ብቐጥታ ክትጥቀመሉ ትኽእል።'],
   }},
 
