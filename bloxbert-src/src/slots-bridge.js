@@ -28,6 +28,7 @@ let swallowUntil = 0
 let press = null
 let tipTimer = 0
 let tipUntil = 0
+let tipAnchor = null
 let lastOrient = 0
 
 export function mountSlotQol(api) {
@@ -43,6 +44,12 @@ export function mountSlotQol(api) {
   document.addEventListener('contextmenu', onMenu, true)
   document.addEventListener('pointerover', onOver, true)
   document.addEventListener('pointerout', onOut, true)
+  window.addEventListener('blur', () => closeTip())
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || document.visibilityState === 'hidden') closeTip()
+  })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTip() }, true)
+  watchSheet()
   window.addEventListener('resize', onRotate)
   window.addEventListener('orientationchange', onRotate)
   window.__qolReturn = (opt) => returnHeld(opt || { silent: true })
@@ -185,7 +192,7 @@ function ownShift(loc) {
 
 function onDown(e) {
   const openTip = document.getElementById('qol-tip')
-  if (openTip && !openTip.hidden && !(e.target && openTip.contains(e.target))) hideTip()
+  if (openTip && !openTip.hidden && !(e.target && openTip.contains(e.target))) hideTip(true)
   if (swallowUntil && performance.now() > swallowUntil) swallowUntil = 0
   const barHit = e.target && e.target.closest && e.target.closest('#qol-bar')
   if (barHit) {
@@ -308,10 +315,14 @@ function onOver(e) {
   tipTimer = setTimeout(() => showTip(snapLoc, 0, false), 300)
 }
 function onOut(e) {
-  const loc = locate(e.target)
-  if (!loc) return
   clearTimeout(tipTimer)
-  if (performance.now() >= tipUntil) hideTip()
+  tipTimer = 0
+  const fromSlot = tipAnchor && e.target && (e.target === tipAnchor || tipAnchor.contains(e.target))
+  const to = e.relatedTarget
+  const toSlot = tipAnchor && to && (to === tipAnchor || tipAnchor.contains(to))
+  const toTip = to && to.closest && to.closest('#qol-tip')
+  if (fromSlot && !toSlot && !toTip) hideTip(true)
+  else if (performance.now() >= tipUntil) hideTip()
 }
 function onRotate() {
   const w = window.innerWidth
@@ -623,7 +634,8 @@ function ensureUi() {
   tip.className = 'kd-tip'
   tip.hidden = true
   tip.setAttribute('role', 'tooltip')
-  tip.addEventListener('pointerdown', () => { tip.hidden = true })
+  tip.addEventListener('pointerdown', () => closeTip())
+  tip.addEventListener('pointerleave', () => closeTip())
   const bar = document.createElement('div')
   bar.id = 'qol-bar'
   bar.className = 'kd-card'
@@ -685,12 +697,15 @@ function tipHitsHud(tip) {
 function showTip(loc, ms, sticky) {
   const shop = loc && loc.kind === 'shop'
   const s = stackOf(loc)
-  if (!s && !shop) return
+  const item = s ? s.item : (loc && loc.item)
+  if (!item) { hideTip(true); return }
+  if (!s && !shop) { hideTip(true); return }
+  const el = loc.el && loc.el.isConnected ? loc.el : null
+  if (!el) { hideTip(true); return }
   ensureUi()
   const tip = document.getElementById('qol-tip')
   if (!tip) return
   clearTimeout(showTip.hide)
-  const item = s ? s.item : loc.item
   const spec = {
     item: item,
     n: s ? s.n : (shop && loc.stock != null && loc.stock !== '' ? loc.stock : null),
@@ -720,8 +735,9 @@ function showTip(loc, ms, sticky) {
       tip.append(bar)
     }
   }
-  const el = loc.el && loc.el.isConnected ? loc.el : null
-  const rect = el ? el.getBoundingClientRect() : { left: 16, top: 64, width: 48 }
+  if (!String(tip.textContent || '').trim()) { hideTip(true); return }
+  watchTipSlot(el)
+  const rect = el.getBoundingClientRect()
   tip.hidden = false
   const narrow = document.body.classList.contains('touch') && window.innerWidth <= 480 && window.innerHeight > window.innerWidth
   let width = Math.min(420, window.innerWidth - 16)
@@ -746,20 +762,17 @@ function showTip(loc, ms, sticky) {
   pinAboveBar(tip)
   requestAnimationFrame(() => { if (tip.isConnected && !tip.hidden) pinAboveBar(tip) })
   tip.style.removeProperty('opacity')
-  tipUntil = performance.now() + 3000
+  tipUntil = sticky ? performance.now() + 3000 : performance.now()
   clearTimeout(showTip.hide)
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const lifeMs = ms > 0 ? ms : 3000
   showTip.hide = setTimeout(() => {
     if (!tip.isConnected || tip.hidden) return
-    if (reduce) { tip.hidden = true; return }
+    if (reduce || !sticky) { hideTip(true); return }
     tip.style.setProperty('transition', 'opacity .35s linear', 'important')
     tip.style.setProperty('opacity', '0', 'important')
-    showTip.hide = setTimeout(() => {
-      tip.hidden = true
-      tip.style.removeProperty('opacity')
-      tip.style.removeProperty('transition')
-    }, 360)
-  }, 3000)
+    showTip.hide = setTimeout(() => hideTip(true), 360)
+  }, lifeMs)
 }
 function placeReadTip(tip) {
   const w = window.innerWidth
@@ -786,10 +799,64 @@ function placeReadTip(tip) {
   tip.style.bottom = lift + 'px'
   tip.style.transform = 'none'
 }
-function hideTip() {
+function hideTip(force) {
+  if (!force && performance.now() < tipUntil) return
   clearTimeout(tipTimer)
+  tipTimer = 0
+  clearTimeout(showTip.hide)
+  showTip.hide = 0
+  tipUntil = 0
+  if (tipAnchor && tipAnchor._tipLeave) {
+    tipAnchor.removeEventListener('pointerleave', tipAnchor._tipLeave)
+    tipAnchor._tipLeave = null
+  }
+  tipAnchor = null
   const tip = document.getElementById('qol-tip')
-  if (tip && performance.now() >= tipUntil) tip.hidden = true
+  if (!tip) return
+  tip.hidden = true
+  tip.replaceChildren()
+  tip.textContent = ''
+  tip.style.removeProperty('opacity')
+  tip.style.removeProperty('transition')
+  tip.style.removeProperty('left')
+  tip.style.removeProperty('top')
+  tip.style.removeProperty('right')
+  tip.style.removeProperty('bottom')
+  tip.style.removeProperty('transform')
+  tip.style.removeProperty('width')
+  tip.style.removeProperty('max-width')
+}
+export function closeTip() { hideTip(true) }
+function watchTipSlot(el) {
+  if (tipAnchor && tipAnchor !== el && tipAnchor._tipLeave) {
+    tipAnchor.removeEventListener('pointerleave', tipAnchor._tipLeave)
+    tipAnchor._tipLeave = null
+  }
+  tipAnchor = el
+  if (!el._tipLeave) {
+    el._tipLeave = (e) => {
+      if (tipAnchor !== el) return
+      const to = e.relatedTarget
+      if (to && ((el.contains && el.contains(to)) || (to.closest && to.closest('#qol-tip')))) return
+      hideTip(true)
+    }
+    el.addEventListener('pointerleave', el._tipLeave)
+  }
+}
+function watchSheet() {
+  const sheet = document.getElementById('sheet')
+  if (!sheet || watchSheet.on) return
+  watchSheet.on = true
+  let panel = sheet.dataset.panel || ''
+  let hidden = !!sheet.hidden
+  const obs = new MutationObserver(() => {
+    const next = sheet.dataset.panel || ''
+    const nowHidden = !!sheet.hidden
+    if (nowHidden !== hidden || next !== panel) closeTip()
+    hidden = nowHidden
+    panel = next
+  })
+  obs.observe(sheet, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
 }
 function paintGhost(x, y) {
   const ghost = document.getElementById('qol-held')

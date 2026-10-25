@@ -2990,3 +2990,19 @@ for (const [lang, row] of Object.entries(SKY460)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const TIP462 = {
+  en: { whatsNewBody: '2.5.462 — Item tips close with the Bag and never get stuck on screen.' },
+  simple: { whatsNewBody: '2.5.462 — No stuck tip box.' },
+  uk: { whatsNewBody: '2.5.462 — Підказки предметів закриваються разом із сумкою і не застрягають на екрані.' },
+  ru: { whatsNewBody: '2.5.462 — Подсказки предметов закрываются вместе с сумкой и не зависают на экране.' },
+  es: { whatsNewBody: '2.5.462 — Los avisos de objetos se cierran con la Bolsa y no se quedan en la pantalla.' },
+  ar: { whatsNewBody: '2.5.462 — تلميحات الأغراض تُغلق مع الحقيبة ولا تعلق على الشاشة.' },
+  'fa-AF': { whatsNewBody: '2.5.462 — نکتهٔ اشیا با بکس بسته می‌شود و روی صفحه گیر نمی‌کند.' },
+  rw: { whatsNewBody: '2.5.462 — Inama z\'ibintu zifunga hamwe n\'agasaho kandi ntiziguma ku gikariro.' },
+  ti: { whatsNewBody: '2.5.462 — ምኽሪ ንብረት ምስ ቦርሳ ይዕጾ ኣብ መርኣይ ኣይጸንሕን።' },
+}
+for (const [lang, row] of Object.entries(TIP462)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

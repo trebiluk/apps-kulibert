@@ -2333,3 +2333,7 @@ html body.paused #scrim {
   html body #scrim { transition: none !important; }
 }
 html[data-kp-motion="less"] body #scrim { transition: none !important; }
+
+/* 2.5.462: an empty bag tip is never a dark panel on the left */
+html body #qol-tip:empty,
+html body #qol-tip[hidden] { display: none !important; }

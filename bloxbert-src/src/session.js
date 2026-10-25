@@ -11,7 +11,7 @@ import { visit } from './econ/vend.js'
 import { slotArt, menuIcon } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
-import { bindBertopiaSlots } from './slots-bridge.js'
+import { bindBertopiaSlots, closeTip } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
 import { bindStationBag } from './stations.js'
@@ -21,6 +21,10 @@ import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
 
 export function createSession(api) {
+  if (api && api.close) {
+    const shut = api.close
+    api.close = function () { closeTip(); return shut.apply(this, arguments) }
+  }
   const bagHover = { tile: null, at: 0 } // 2.5.407: track the tile under the mouse
   window.addEventListener('keydown', (e) => { // 2.5.407: hover a block, press 1-9
     if (!bagHover.tile || !api.putPalette) return

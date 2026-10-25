@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.462 bag tip:** Item tips close with the Bag, when the pointer leaves the slot, on blur, when the tab hides, and on Escape. An empty tip never stays as a dark panel.
+
 - [x] **chop-any-item (2.5.461):** Chop trees with anything in your hand.
 
 
