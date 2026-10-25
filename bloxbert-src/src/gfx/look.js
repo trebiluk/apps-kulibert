@@ -10,10 +10,10 @@ const SWAY = new Set(['flora-daisy', 'flora-poppy', 'flora-cornflower', 'flora-s
 const LIGHT_ID = new Set([47, 1101, 1103, 1401])
 
 const SKY = {
-  day: { zenith: [0.13, 0.34, 0.72], horizon: [0.72, 0.86, 0.97], sun: 1, moon: 0, stars: 0 },
-  dusk: { zenith: [0.11, 0.24, 0.52], horizon: [0.95, 0.55, 0.22], sun: 0.62, moon: 0.35, stars: 0.3 },
+  day: { zenith: [0.20, 0.38, 0.62], horizon: [0.70, 0.80, 0.86], sun: 1, moon: 0, stars: 0 },
+  dusk: { zenith: [0.11, 0.24, 0.52], horizon: [0.85, 0.55, 0.22], sun: 0.62, moon: 0.35, stars: 0.3 },
   night: { zenith: [0.02, 0.035, 0.09], horizon: [0.14, 0.18, 0.30], sun: 0, moon: 1, stars: 1 },
-  dawn: { zenith: [0.22, 0.16, 0.40], horizon: [0.98, 0.58, 0.36], sun: 0.85, moon: 0.2, stars: 0.12 },
+  dawn: { zenith: [0.22, 0.16, 0.40], horizon: [0.85, 0.58, 0.36], sun: 0.85, moon: 0.2, stars: 0.12 },
 }
 
 function hash2(x, z) {

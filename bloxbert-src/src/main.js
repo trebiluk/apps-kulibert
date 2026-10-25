@@ -791,7 +791,7 @@ const noa = new Engine({
   chunkSize: 24,
   chunkAddDistance: gfx.add,
   chunkRemoveDistance: gfx.rem,
-  clearColor: [0.64, 0.8, 0.93],
+  clearColor: [0.70, 0.80, 0.86],
   useAO: gfxLook.ao,
   ambientColor: [0.78, 0.82, 0.88],
   lightDiffuse: [1.15, 1.08, 0.98],
@@ -9789,7 +9789,7 @@ if (stickRow) stickRow.addEventListener('click', () => {
 
 const scene = noa.rendering.getScene()
 scene.fogMode = Scene.FOGMODE_LINEAR
-scene.fogColor = new Color3(0.64, 0.8, 0.93)
+scene.fogColor = new Color3(0.625, 0.71, 0.735)
 gfx.applyFog(scene)
 const uwEl = document.createElement('div')
 uwEl.id = 'uw'
@@ -9815,8 +9815,8 @@ skyMat.fogEnabled = false
 skyMat.setFloat('uTime', 0)
 skyMat.setFloat('uFlat', 0)
 skyMat.setFloat('uStars', 0)
-skyMat.setColor3('uZenith', new Color3(0.13, 0.34, 0.72))
-skyMat.setColor3('uHorizon', new Color3(0.72, 0.86, 0.97))
+skyMat.setColor3('uZenith', new Color3(0.20, 0.38, 0.62))
+skyMat.setColor3('uHorizon', new Color3(0.70, 0.80, 0.86))
 const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
 sky.material = skyMat
 sky.isPickable = false
@@ -9840,28 +9840,70 @@ function skyDisc(name, rgb, local) {
   noa.rendering.addMeshToScene(mesh, false)
   return mesh
 }
-const sunQuad = skyDisc('sun-quad', [1, 0.95, 0.62], [-6, 11, 22])
+const sunQuad = skyDisc('sun-quad', [0.95, 0.90, 0.66], [-6, 11, 22])
 const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], [7, 10, 22])
-const skyZen = new Color3(0.13, 0.34, 0.72)
-const skyHor = new Color3(0.72, 0.86, 0.97)
+const skyZen = new Color3(0.20, 0.38, 0.62)
+const skyHor = new Color3(0.70, 0.80, 0.86)
+const skyEase = { phase: '', z: [0.20, 0.38, 0.62], h: [0.70, 0.80, 0.86], f: [0.625, 0.71, 0.735], stars: 0, sun: 1, moon: 0, fromZ: null, fromH: null, fromF: null, fromStars: 0, fromSun: 1, fromMoon: 0, t0: 0 }
+function skyGlideMs() {
+  try {
+    if (document.documentElement.getAttribute('data-kp-motion') === 'less') return 1000
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return 1000
+  } catch (e) {}
+  return 3000
+}
+function mix3(out, from, to, u) {
+  out[0] = from[0] + (to[0] - from[0]) * u
+  out[1] = from[1] + (to[1] - from[1]) * u
+  out[2] = from[2] + (to[2] - from[2]) * u
+}
 function applySky() {
   const phase = basics && basics.phase ? basics.phase() : 'day'
   const row = gfxLook.sky(phase)
-  skyZen.set(row.zenith[0], row.zenith[1], row.zenith[2])
-  skyHor.set(row.horizon[0], row.horizon[1], row.horizon[2])
+  const tz = row.zenith
+  const th = row.horizon
+  const tf = atmosphereFog(phase, row)
+  const now = performance.now()
+  if (!skyEase.fromZ || skyEase.phase !== phase) {
+    if (!skyEase.fromZ) {
+      skyEase.z = tz.slice()
+      skyEase.h = th.slice()
+      skyEase.f = tf.slice()
+      skyEase.stars = row.stars
+      skyEase.sun = row.sun
+      skyEase.moon = row.moon
+    }
+    skyEase.fromZ = skyEase.z.slice()
+    skyEase.fromH = skyEase.h.slice()
+    skyEase.fromF = skyEase.f.slice()
+    skyEase.fromStars = skyEase.stars
+    skyEase.fromSun = skyEase.sun
+    skyEase.fromMoon = skyEase.moon
+    skyEase.phase = phase
+    skyEase.t0 = now
+  }
+  const u = Math.min(1, (now - skyEase.t0) / skyGlideMs())
+  mix3(skyEase.z, skyEase.fromZ, tz, u)
+  mix3(skyEase.h, skyEase.fromH, th, u)
+  mix3(skyEase.f, skyEase.fromF, tf, u)
+  skyEase.stars = skyEase.fromStars + (row.stars - skyEase.fromStars) * u
+  skyEase.sun = skyEase.fromSun + (row.sun - skyEase.fromSun) * u
+  skyEase.moon = skyEase.fromMoon + (row.moon - skyEase.fromMoon) * u
+  skyZen.set(skyEase.z[0], skyEase.z[1], skyEase.z[2])
+  skyHor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
   skyMat.setColor3('uZenith', skyZen)
   skyMat.setColor3('uHorizon', skyHor)
   skyMat.setFloat('uFlat', row.flat ? 1 : 0)
-  skyMat.setFloat('uStars', row.stars)
-  sunQuad.setEnabled(row.sun > 0.2)
-  moonQuad.setEnabled(row.moon > 0.2)
+  skyMat.setFloat('uStars', skyEase.stars)
+  sunQuad.setEnabled(skyEase.sun > 0.2)
+  moonQuad.setEnabled(skyEase.moon > 0.2)
   if (!underWater) {
-    const fog = atmosphereFog(phase, row)
+    const fog = skyEase.f
     scene.fogColor.set(fog[0], fog[1], fog[2])
-    if (scene.clearColor) scene.clearColor.set(row.horizon[0], row.horizon[1], row.horizon[2], 1)
+    if (scene.clearColor) scene.clearColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2], 1)
     if (gfxLook.name !== 'lite') {
       const end = scene.fogEnd || 32
-      const far = phase === 'dusk' || phase === 'dawn' ? 0.82 : 0.7
+      const far = phase === 'dusk' || phase === 'dawn' ? 0.62 : 0.55
       scene.fogStart = Math.max(scene.fogStart || 0, end * far)
     }
   }
@@ -9869,10 +9911,13 @@ function applySky() {
 function atmosphereFog(phase, row) {
   const h = row.horizon
   if (gfxLook.name === 'lite') return h
-  if (phase === 'dusk') return [h[0] * 0.38 + 0.32, h[1] * 0.38 + 0.28, h[2] * 0.38 + 0.24]
-  if (phase === 'dawn') return [h[0] * 0.45 + 0.26, h[1] * 0.45 + 0.24, h[2] * 0.45 + 0.22]
-  if (phase === 'night') return [h[0] * 0.55 + 0.05, h[1] * 0.55 + 0.06, h[2] * 0.55 + 0.07]
-  return [h[0] * 0.82 + 0.06, h[1] * 0.82 + 0.06, h[2] * 0.82 + 0.05]
+  const cap = (c) => Math.min(0.85, c)
+  let out
+  if (phase === 'dusk') out = [h[0] * 0.38 + 0.32, h[1] * 0.38 + 0.28, h[2] * 0.38 + 0.24]
+  else if (phase === 'dawn') out = [h[0] * 0.45 + 0.26, h[1] * 0.45 + 0.24, h[2] * 0.45 + 0.22]
+  else if (phase === 'night') out = [h[0] * 0.55 + 0.05, h[1] * 0.55 + 0.06, h[2] * 0.55 + 0.07]
+  else out = [h[0] * 0.75 + 0.10, h[1] * 0.75 + 0.11, h[2] * 0.75 + 0.09]
+  return [cap(out[0]), cap(out[1]), cap(out[2])]
 }
 const lampLights = []
 for (let i = 0; i < 4; i++) {
@@ -10053,7 +10098,7 @@ function syncGlow() {
   if (!basics) return
   const k = Effects.light(basics.lum())
   applySky()
-  const warm = gfxLook.name === 'lite' ? [1, 1, 1] : [1.06, 1, 0.88]
+  const warm = gfxLook.name === 'lite' ? [1, 1, 1] : [1.02, 1, 0.92]
   scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
   sunLight.diffuse.set(DAY_DIFF.r * k * warm[0], DAY_DIFF.g * k * warm[1], DAY_DIFF.b * k * warm[2])
   sunLight.specular.set(DAY_SPEC.r * k * warm[0], DAY_SPEC.g * k * warm[1], DAY_SPEC.b * k * warm[2])

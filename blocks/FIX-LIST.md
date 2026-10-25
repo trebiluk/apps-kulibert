@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.460 soft-sky:** Fog starts at 55% of the same end (62% at dusk and dawn) so the far world fades instead of hitting a wall. Day sky and haze are a soft warm gray. Phase changes glide for 3s (1s if motion is reduced). Lite fog stays the plain horizon.
+
 - [x] **2.5.458 menu-clear:** The menu sheet background is transparent, so the world stays visible behind a 25% dim. The menu card stays solid. Other panels keep their gray plate. No blur, no flash.
 - [x] **2.5.457 wood-pop-log:** The wood pop says the real item and count, like +1 Log. gotWood strings updated in all 8 languages.
 - [x] **2.5.456 hotbar first:** give/pickup/craft prefers empty hotbar slot (0-8) before Pockets. sayPocket only when it truly lands in 9+.

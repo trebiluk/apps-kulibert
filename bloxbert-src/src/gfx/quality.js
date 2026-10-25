@@ -24,7 +24,7 @@ function roundStep(n) {
 
 export function fogFor(addH) {
   const end = addH * 24 - 4
-  const start = Math.min(Math.max(20, end * 0.8), Math.max(0, end - 1))
+  const start = Math.min(Math.max(20, end * 0.55), Math.max(0, end - 1))
   return { start, end }
 }
 

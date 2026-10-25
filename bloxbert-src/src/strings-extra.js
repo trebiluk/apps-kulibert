@@ -2955,3 +2955,38 @@ for (const [lang, row] of Object.entries(DIM458)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.460 softer sky. rw, ti, and Dari are machine drafts.
+const SKY460 = {
+  en: {
+    whatsNewBody: '2.5.460 — The sky and far-away haze are softer, and day turns to night gently.',
+  },
+  simple: {
+    whatsNewBody: '2.5.460 — The sky is softer and changes slowly.',
+  },
+  uk: {
+    whatsNewBody: '2.5.460 — Небо й далека імла м’якші, і день м’яко переходить у ніч.',
+  },
+  ru: {
+    whatsNewBody: '2.5.460 — Небо и дальняя дымка мягче, и день мягко переходит в ночь.',
+  },
+  es: {
+    whatsNewBody: '2.5.460 — El cielo y la bruma lejana son más suaves, y el día pasa a la noche con calma.',
+  },
+  ar: {
+    whatsNewBody: '2.5.460 — السماء والضباب البعيد أنعم، والنهار يتحول إلى الليل بلطف.',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.460 — آسمان و مه‌دود دور نرم‌تر اند، و روز آرام به شب می‌رسد.',
+  },
+  rw: {
+    whatsNewBody: '2.5.460 — Ijuru n\'umwuka w\'ahantu haremwe biroroheje, kandi umunsi uhita ijoro buhoro.',
+  },
+  ti: {
+    whatsNewBody: '2.5.460 — ሰማይን ርሑቕ ጭጋግን ልስሉስ እዮም፡ መዓልቲ ድማ ቀስ ኢላ ናብ ለይቲ ትቕየር።',
+  },
+}
+for (const [lang, row] of Object.entries(SKY460)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
