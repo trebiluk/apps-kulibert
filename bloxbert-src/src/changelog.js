@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.441', date: '2026-10-25', lines: {
+    en: ["2.5.441 — Press V to switch the camera view. The hand sits closer and bobs while you walk."],
+    simple: ["2.5.441 — V changes the view. The hand is closer and moves."],
+    uk: ["2.5.441 — Натисни V, щоб змінити вигляд камери. Рука сидить ближче і хитається під час ходьби."],
+    ru: ["2.5.441 — Нажми V, чтобы сменить вид камеры. Рука сидит ближе и покачивается при ходьбе."],
+    es: ["2.5.441 — Pulsa V para cambiar la vista de la cámara. La mano está más cerca y se mueve al caminar."],
+    ar: ["2.5.441 — اضغط V لتبديل عرض الكاميرا. اليد أقرب وتتحرك أثناء المشي."],
+    'fa-AF': ["2.5.441 — V را بزن تا نمای دوربین عوض شود. دست نزدیک‌تر است و هنگام راه رفتن تکان می‌خورد."],
+    rw: ["2.5.441 — Kanda V uhindure imboni ya kamera. Ukuboko kuri hafi kandi kugenda."],
+    ti: ["2.5.441 — V ጠውቕ ንምቅያር ቅርጺ ካሜራ። ኢድ ቀረባ ኢያ እሞ ኣብ ምኻድ ትንቀጥቅጥ።"],
+  }},
+
   { v: '2.5.440', date: '2026-10-24', lines: {
     en: ["2.5.440 — Smoother play with big belt factories, and machines and creatures keep a steady speed even when the screen is busy."],
     simple: ["2.5.440 — Smoother play. Machines keep a steady speed."],

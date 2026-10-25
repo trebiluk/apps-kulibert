@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.441 v-view-hand:** V toggles the camera view. Hand sits closer, scales by 1.15, and bobs while walking. viewKey in all 8 languages.
 - [x] **2.5.440 sim-tick:** Belts, mobs and circuits run on the game tick. Belt visuals use tile.line. Machine save-pin coalesced to 1 s.
 - [x] **2.5.439 berty-os-theme:** Gray + orange solid theme. BERTY OS header. Held-item slot widened to min 240px (160px at 412).
 - [x] **2.5.432 keys-clear-topbar:** Keys line floor is the top bar bottom + 8. Hides if it still overlaps a chip. #safe-chip is in the crowd list.
