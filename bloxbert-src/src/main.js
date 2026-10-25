@@ -2265,10 +2265,10 @@ function pulseChop(tree, fresh) {
 function treeGesture() {
   if (!survivalOn() || tableMode || anyCard() || wandHeld()) return ''
   const aimed = noa.targetedBlock
-  if (aimed && aimed.position && canReach(aimed.position)) {
-    const id = aimed.blockID
-    if (isUseBlock(id) || machineKind(id) || isDoor(id)) return ''
-  }
+  if (!aimed || !aimed.position) return ''
+  const id = aimed.blockID
+  if (isUseBlock(id) || machineKind(id) || isDoor(id) || isCropId(id) || isBushId(id)) return ''
+  if (!logSets().s.has(id)) return ''
   const tree = scanTree()
   if (!tree || tree.d > TREE_NEAR) return ''
   hideWalkCloser()
@@ -3580,6 +3580,7 @@ noa.inputs.down.on('fire', () => {
   const aimed = noa.targetedBlock
   if (combatTarget()) { doBonk(); return }
   if (safeZoneFightTap()) return
+  if (treeGesture() === 'chop') return
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
   else {
