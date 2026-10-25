@@ -31,7 +31,7 @@ if (ids.status) process.exit(ids.status)
 const saves = spawnSync(process.execPath, ['tools/save-check.mjs'], { stdio: 'inherit' })
 if (saves.status) process.exit(saves.status)
 mkdirSync(OUT + '/assets', { recursive: true })
-const STUDENT = path.basename(OUT) === 'blocks'
+const STUDENT = ['blocks', 'bertopia'].includes(path.basename(OUT)) // 2.5.473: both doors are student
 console.log('student build:', STUDENT, OUT)
 // These includes are pulled in by StandardMaterial but only run behind defines the
 // game never sets (shadows, bones, morphs, bump, decals, OIT, prepass). The
@@ -55,7 +55,7 @@ await build({
   pure: ['console.debug'],
   plugins: [trimUnusedShaders],
   banner: { js: '/*! Bertopia ' + PKG.version + ' */' },
-  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
+  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', '__BLOX_DOOR__': JSON.stringify('/' + path.basename(OUT) + '/'), PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 // Icon test entry — no main.js, just the contact sheet
 await build({

@@ -1,12 +1,13 @@
 // Bertopia student door only. build.mjs writes the real version over __BLOX_VERSION__.
 const VERSION = '__BLOX_VERSION__'
 const CACHE = 'bloxbert-' + VERSION
+const SCOPE = new URL(self.registration.scope).pathname // 2.5.473
 const SHELL = [
-  '/blocks/app.js?v=' + VERSION,
-  '/blocks/index.html',
-  '/blocks/',
-  '/blocks/assets/atlas.png',
-  '/blocks/assets/atlas.json',
+  SCOPE + 'app.js?v=' + VERSION,
+  SCOPE + 'index.html',
+  SCOPE,
+  SCOPE + 'assets/atlas.png',
+  SCOPE + 'assets/atlas.json',
 ]
 
 self.addEventListener('install', (event) => {
@@ -39,7 +40,7 @@ self.addEventListener('activate', (event) => {
 })
 
 function inBlocks(url) {
-  return url.pathname === '/blocks' || url.pathname === '/blocks/' || url.pathname.startsWith('/blocks/')
+  return url.pathname === '/blocks' || url.pathname === SCOPE || url.pathname.startsWith(SCOPE)
 }
 
 function skip(url) {
@@ -51,7 +52,7 @@ function skip(url) {
 }
 
 function isDoc(url) {
-  return url.pathname === '/blocks' || url.pathname === '/blocks/' || url.pathname === '/blocks/index.html'
+  return url.pathname === '/blocks' || url.pathname === SCOPE || url.pathname === SCOPE + 'index.html'
 }
 
 function shell(url) {

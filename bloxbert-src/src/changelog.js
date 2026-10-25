@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.473', date: '2026-10-25', lines: {
+    en: ["2.5.473 — /bertopia/ is now the student door. The first time, you can bring your old world or start fresh."],
+    simple: ["2.5.473 — /bertopia/ is the student door. Bring your old world or start fresh."],
+    uk: ["2.5.473 — /bertopia/ тепер двері учня. Першого разу можна перенести старий світ або почати знову."],
+    ru: ["2.5.473 — /bertopia/ теперь дверь ученика. В первый раз можно перенести старый мир или начать заново."],
+    es: ["2.5.473 — /bertopia/ ahora es la puerta del estudiante. La primera vez puedes traer tu mundo viejo o empezar de nuevo."],
+    ar: ["2.5.473 — /bertopia/ الآن باب الطالب. في المرة الأولى يمكنك نقل عالمك القديم أو البدء من جديد."],
+    'fa-AF': ["2.5.473 — /bertopia/ حالا در دانش‌آموز است. بار اول می‌توانی دنیای قدیمی‌ات را بیاوری یا از نو شروع کنی."],
+    rw: ["2.5.473 — /bertopia/ ubu ni urugi rw'umunyeshuri. Ubwa mbere ushobora kuzana isi ya kera cyangwa utangire bushya."],
+    ti: ["2.5.473 — /bertopia/ ሕጂ ማዕጾ ተምሃራይ እዩ። ንመጀመርታ ግዜ ናይ ቀደም ዓለምካ ክትወስድ ወይ ብሓድሽ ክትጅምር ትኽእል።"],
+  }},
+
   { v: '2.5.472', date: '2026-10-25', lines: {
     en: ["2.5.472 — Badges Part 1: pick berries from 5 bushes, light 6 lanterns, or plant 4 seeds for 10 Cogs each."],
     simple: ["2.5.472 — Badges: berries, lanterns, or seeds. 10 Cogs each."],

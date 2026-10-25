@@ -5156,7 +5156,7 @@ async function acceptUpdate() {
     return
   }
   try {
-    const reg = await navigator.serviceWorker.getRegistration('/blocks/')
+    const reg = await navigator.serviceWorker.getRegistration(__BLOX_DOOR__) // 2.5.473
     const waiting = reg && reg.waiting
     if (!waiting) return
     navigator.serviceWorker.addEventListener('controllerchange', () => {
