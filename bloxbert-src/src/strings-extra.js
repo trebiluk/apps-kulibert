@@ -3178,3 +3178,20 @@ for (const [lang, row] of Object.entries(DOOR484)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.485: the 2.5.480 zoom scale was wiped by a later hotbar transform. rw, ti, and Dari are machine drafts.
+const ZOOM485 = {
+  en: { whatsNewBody: '2.5.485 — The hotbar really shrinks when the page is zoomed past 125%, so the buttons do not pile up.' },
+  simple: { whatsNewBody: '2.5.485 — The hotbar shrinks when zoom is high.' },
+  uk: { whatsNewBody: '2.5.485 — Панель інструментів справді меншає, коли сторінка збільшена понад 125%, тож кнопки не накладаються.' },
+  ru: { whatsNewBody: '2.5.485 — Панель инструментов правда уменьшается, когда страница больше 125%, чтобы кнопки не накладывались.' },
+  es: { whatsNewBody: '2.5.485 — La barra sí se reduce cuando la página está ampliada más del 125%, para que los botones no se amontonen.' },
+  ar: { whatsNewBody: '2.5.485 — الشريط يصغر فعلاً عندما تكبر الصفحة فوق 125%، حتى لا تتراكم الأزرار.' },
+  'fa-AF': { whatsNewBody: '2.5.485 — نوار ابزار واقعاً کوچک می‌شود وقتی صفحه بیش از ۱۲۵٪ بزرگ شود، تا دکمه‌ها روی هم نروند.' },
+  rw: { whatsNewBody: '2.5.485 — Umurongo w\'ibikoresho uragabanuka koko iyo byongerewe hejuru ya 125%, kugira ngo buto zitagana.' },
+  ti: { whatsNewBody: '2.5.485 — መስመር መሳርሒታት ብሓቂ ይንኪ፡ ገጽ ልዕሊ 125% ምስ ዓብየ፡ መጠወቒታት ከይዓጉዱ።' },
+}
+for (const [lang, row] of Object.entries(ZOOM485)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

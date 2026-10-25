@@ -2147,7 +2147,9 @@ html body #hotbar#hotbar {
   right: auto !important;
   bottom: 8px !important;
   top: auto !important;
-  transform: translateX(-50%) !important;
+  /* 2.5.485: keep the Chrome-zoom shrink. A bare translateX here used to wipe scale(var(--ui-scale)). */
+  transform: translateX(-50%) scale(var(--ui-scale, 1)) !important;
+  transform-origin: bottom center !important;
   overflow: visible !important;
   padding: 0 !important;
   background: transparent !important;
@@ -2277,7 +2279,8 @@ html body.mode-creative #hotbar#hotbar .item-strip .slot:not(.bag-tile)[aria-pre
   html body #hotbar#hotbar {
     left: 8px !important;
     right: auto !important;
-    transform: none !important;
+    transform: scale(var(--ui-scale, 1)) !important;
+    transform-origin: bottom left !important;
     width: calc(100vw - 88px) !important;
     max-width: calc(100vw - 88px) !important;
   }

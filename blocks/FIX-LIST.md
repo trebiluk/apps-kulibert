@@ -1,5 +1,5 @@
 # Bertopia FIX-LIST
-- [x] **2.5.484 door-click:** A short right-click opens a door even if the pointer wobbles a little, including the click that also starts looking. A long drag still does not use the door. The update script parses again.
+- [x] **2.5.485 hotbar zoom:** The hotbar really shrinks when the page is zoomed past 125%. The 2.5.480 scale was wiped by a later transform.
 - [x] **2.5.483 suits:** Settings has Clothes: Berty, Clay, Bearcat, Grove, Snow. The body and the hand use that suit. Choice stays on this device. Worlds are unchanged.
 - [x] **2.5.481 stick-card:** Held item card (Stick) is only as tall as its words. The bottom pin no longer stretches it down to the hotbar.
 - [x] **2.5.480 chrome-zoom:** Hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap.

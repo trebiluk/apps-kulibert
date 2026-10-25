@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.485', date: '2026-10-25', lines: {
+    en: ["2.5.485 — The hotbar really shrinks when the page is zoomed past 125%, so the buttons do not pile up."],
+    simple: ["2.5.485 — The hotbar shrinks when zoom is high."],
+    uk: ["2.5.485 — Панель інструментів справді меншає, коли сторінка збільшена понад 125%, тож кнопки не накладаються."],
+    ru: ["2.5.485 — Панель инструментов правда уменьшается, когда страница больше 125%, чтобы кнопки не накладывались."],
+    es: ["2.5.485 — La barra sí se reduce cuando la página está ampliada más del 125%, para que los botones no se amontonen."],
+    ar: ["2.5.485 — الشريط يصغر فعلاً عندما تكبر الصفحة فوق 125%، حتى لا تتراكم الأزرار."],
+    'fa-AF': ["2.5.485 — نوار ابزار واقعاً کوچک می‌شود وقتی صفحه بیش از ۱۲۵٪ بزرگ شود، تا دکمه‌ها روی هم نروند."],
+    rw: ["2.5.485 — Umurongo w'ibikoresho uragabanuka koko iyo byongerewe hejuru ya 125%, kugira ngo buto zitagana."],
+    ti: ["2.5.485 — መስመር መሳርሒታት ብሓቂ ይንኪ፡ ገጽ ልዕሊ 125% ምስ ዓብየ፡ መጠወቒታት ከይዓጉዱ።"],
+  }},
+
   { v: '2.5.484', date: '2026-10-25', lines: {
     en: ["2.5.484 — A short click opens a door even if your hand wobbles a little."],
     simple: ["2.5.484 — A small wiggle still opens a door."],
