@@ -7755,7 +7755,7 @@ function openMenu(on) {
       if (session) session.paused = false
     }
   }
-  drawer.classList.remove('open'); scrim.hidden = true
+  drawer.classList.remove('open')
   $('menu-btn').setAttribute('aria-expanded', String(!!on))
   const gm = $('game-menu')
   if (gm) gm.setAttribute('aria-expanded', String(!!on))
@@ -10720,6 +10720,7 @@ function togglePause() {
   kidPause = !kidPause
   try { noa.setPaused(kidPause) } catch (e) {}
   if (session) session.paused = kidPause
+  document.body.classList.toggle('paused', kidPause)
   const btn = $('pause-btn')
   if (btn) {
     btn.setAttribute('aria-pressed', kidPause ? 'true' : 'false')

@@ -2283,3 +2283,46 @@ html body.mode-creative #hotbar#hotbar .item-strip .slot:not(.bag-tile)[aria-pre
   }
 }
 
+
+/* 2.5.451: hide keys tip bar when any tool bar or held label is showing */
+body.hud-busy .keys { display: none !important; }
+/* shared stack: hotbar → label → tool bar */
+html body #hotbar { --hotbar-top: 8px; }
+html body #held-chip,
+html body #wand-pill,
+html body #use-pill {
+  bottom: calc(var(--hotbar-top, 8px) + 56px + 8px) !important;
+}
+
+/* 2.5.452: menu and pause dim the world. The sheet outside the menu card is clear. No blur, no flash. */
+html body #sheet#sheet[data-panel="menu"],
+html body #sheet#sheet[data-panel="menu"] #sheet-body {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html body #sheet#sheet[data-panel="menu"] .sheet-bar,
+html body #sheet#sheet[data-panel="menu"] .ggrid {
+  background-color: #222222 !important;
+  background-image: none !important;
+  color: #e8e6e3 !important;
+}
+html body #scrim {
+  background: rgba(5, 8, 20, .25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms linear;
+}
+html body.menu-open:has(#sheet[data-panel="menu"]:not([hidden])) #scrim,
+html body.paused #scrim {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #scrim { transition: none !important; }
+}
+html[data-kp-motion="less"] body #scrim { transition: none !important; }

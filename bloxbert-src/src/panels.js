@@ -80,6 +80,7 @@ export function mountPanels(api) {
     if (root) stack = ['menu']
     else if (stack[stack.length - 1] !== id) stack.push(id)
     freshSlots()
+    sheet.dataset.panel = id
     sheet.hidden = false
     title.textContent = label
     back.hidden = !!root
@@ -92,7 +93,6 @@ export function mountPanels(api) {
       const bar = sheet.querySelector('.sheet-bar')
       if (bar) sheet.append(bar)
     }
-    sheet.dataset.panel = id
     if (id === 'tour') {
       sheet.style.height = 'auto'
       sheet.style.maxHeight = 'min(200px, calc(100% - 200px))'

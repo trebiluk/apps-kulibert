@@ -2796,3 +2796,38 @@ for (const [lang, row] of Object.entries(TEXT448)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.452 menu dim. rw, ti, and Dari are machine drafts.
+const DIM452 = {
+  en: {
+    whatsNewBody: '2.5.452 — The menu and pause dim the world a little instead of covering it in gray, with no flash.',
+  },
+  simple: {
+    whatsNewBody: '2.5.452 — Menu keeps the world showing. No flash.',
+  },
+  uk: {
+    whatsNewBody: '2.5.452 — Меню й пауза трохи тьмянять світ замість сірої завіси, без спалаху.',
+  },
+  ru: {
+    whatsNewBody: '2.5.452 — Меню и пауза чуть затемняют мир вместо серой завесы, без вспышки.',
+  },
+  es: {
+    whatsNewBody: '2.5.452 — El menú y la pausa atenúan un poco el mundo en vez de cubrirlo de gris, sin destello.',
+  },
+  ar: {
+    whatsNewBody: '2.5.452 — القائمة والإيقاف المؤقت يخفتان العالم قليلاً بدل الغطاء الرمادي، بلا وميض.',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.452 — فهرست و مکث جهان را کمی تاریک می‌کنند، به‌جای پوشاندن با خاکستری، و جرقه نیست.',
+  },
+  rw: {
+    whatsNewBody: '2.5.452 — Ibikubiyemo n\'uhagarara birabura isi gato aho kuyifukiriza icyatsi, nta kurabagirana.',
+  },
+  ti: {
+    whatsNewBody: '2.5.452 — ምናሌን መቋረጽን ዓለም ቁሩብ የጸልምዋ፡ ብግራጫ ኣይሽፍንዋን፡ ምብራህ የለን።',
+  },
+}
+for (const [lang, row] of Object.entries(DIM452)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.452', date: '2026-10-25', lines: {
+    en: ['2.5.452 — The menu and pause dim the world a little instead of covering it in gray, with no flash.'],
+    simple: ['2.5.452 — Menu keeps the world showing. No flash.'],
+    uk: ['2.5.452 — Меню й пауза трохи тьмянять світ замість сірої завіси, без спалаху.'],
+    ru: ['2.5.452 — Меню и пауза чуть затемняют мир вместо серой завесы, без вспышки.'],
+    es: ['2.5.452 — El menú y la pausa atenúan un poco el mundo en vez de cubrirlo de gris, sin destello.'],
+    ar: ['2.5.452 — القائمة والإيقاف المؤقت يخفتان العالم قليلاً بدل الغطاء الرمادي، بلا وميض.'],
+    'fa-AF': ['2.5.452 — فهرست و مکث جهان را کمی تاریک می‌کنند، به‌جای پوشاندن با خاکستری، و جرقه نیست.'],
+    rw: ['2.5.452 — Ibikubiyemo n\'uhagarara birabura isi gato aho kuyifukiriza icyatsi, nta kurabagirana.'],
+    ti: ['2.5.452 — ምናሌን መቋረጽን ዓለም ቁሩብ የጸልምዋ፡ ብግራጫ ኣይሽፍንዋን፡ ምብራህ የለን።'],
+  }},
+
   { v: '2.5.451', date: '2026-10-25', lines: {
     en: ['2.5.451 — The keys tip hides while a tool bar or item name shows, so nothing above the hotbar overlaps.'],
     simple: ['2.5.451 — No more overlap above the hotbar.'],
@@ -21,7 +33,6 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.449 — پیش‌نمایش بلوک درست روی نشانه با اندازه واقعی‌اش می‌نشیند. ✓ فیروزه‌ای یعنی جا می‌شود؛ ✕ قرمز یعنی جا نیست."],
     rw: ["2.5.449 — Igaragaza ry'ibuye riyicara ku mukororongo ku bunini bwarwo. ✓ y'icyatsi bishobora; ✕ itukura nta mwanya."],
     ti: ["2.5.449 — ቅድመ-ምርኢት ብሎክ ኣብ ምልክት መስቀል ብናይ ብሓቂ ዓቐኑ ይቐመጥ። ✓ ሰማያዊ ማለት ይትከል፤ ✕ ቀይሕ ማለት ቦታ የለን።"],
-  }},
   }},
 
   { v: '2.5.448', date: '2026-10-25', lines: {

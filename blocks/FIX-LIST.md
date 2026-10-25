@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.452 menu-dim:** Menu and pause dim the world at about 25% instead of a solid gray sheet. The menu card stays solid. Dim fades in 180ms; reduced motion is instant. No blur.
 - [x] **2.5.451 HUD overlap:** Keys tip bar hides (body.hud-busy) while held label or any tool bar (wand/use/held/dig/door) shows. Clean stack above hotbar.
 
 - [x] **2.5.449 ghost-colours:** Placement ghost uses teal for fits and red outline for blocked. Amber fill removed.
