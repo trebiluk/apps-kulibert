@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.453', date: '2026-10-25', lines: {
+    en: ["2.5.453 — Every tree now gives logs. Turn logs into planks at the Workbench."],
+    simple: ["2.5.453 — Trees always give logs."],
+    uk: ["2.5.453 — Кожне дерево тепер дає колоди. Перетвори колоди на дошки на верстаті."],
+    ru: ["2.5.453 — Каждое дерево теперь даёт брёвна. Преврати брёвна в доски на верстаке."],
+    es: ["2.5.453 — Cada árbol ahora da troncos. Convierte troncos en tablones en el banco de trabajo."],
+    ar: ["2.5.453 — كل شجرة الآن تعطي جذوعًا. حوّل الجذوع إلى ألواح في منضدة العمل."],
+    'fa-AF': ["2.5.453 — هر درخت حالا کنده می‌دهد. کنده‌ها را در میز کار به تخته تبدیل کن."],
+    rw: ["2.5.453 — Buri giti ubu gitanga imiti. Hindura imiti ibiti ku meza y'akazi."],
+    ti: ["2.5.453 — ነፍሲ ወከፍ ገረብ ሕጂ ግንዲ ይህብ። ግንዲ ኣብ መደብ ስራሕ ናብ ሰሌዳ ቀይር።"],
+  }},
+
   { v: '2.5.450', date: '2026-10-25', lines: {
     en: ['2.5.450 — Beds are low and two blocks long. The bed card has three big buttons: Sleep, Set home, and Pick up. The workbench uses one picture everywhere.'],
     simple: ['2.5.450 — New bed. Big buttons: Sleep, Home, Pick up.'],
