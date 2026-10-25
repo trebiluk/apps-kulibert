@@ -1143,10 +1143,10 @@ function farmlandWetMesh() {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const waterDye = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
+const waterDye = dye('shape-water', 0.16, 0.42, 0.78, 0.55)
 waterDye.backFaceCulling = true
 Effect.ShadersStore.bertWaterVertexShader = 'precision highp float;attribute vec3 position;attribute vec3 normal;uniform mat4 worldViewProjection;varying vec3 vN;void main(){vN=normal;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertWaterFragmentShader = 'precision highp float;varying vec3 vN;void main(){float up=clamp(normalize(vN).y,0.0,1.0);vec3 deep=vec3(0.03,0.14,0.36);vec3 body=vec3(0.09,0.32,0.60);vec3 skin=vec3(0.50,0.80,0.94);vec3 col=mix(deep,body,0.6);col=mix(col,skin,smoothstep(0.22,0.9,up));float a=mix(0.66,0.44,up);gl_FragColor=vec4(col,a);}'
+Effect.ShadersStore.bertWaterFragmentShader = 'precision highp float;varying vec3 vN;void main(){float up=clamp(normalize(vN).y,0.0,1.0);vec3 deep=vec3(0.04,0.16,0.34);vec3 body=vec3(0.10,0.34,0.56);vec3 skin=vec3(0.42,0.68,0.78);vec3 col=mix(deep,body,0.6);col=mix(col,skin,smoothstep(0.22,0.9,up));float a=mix(0.66,0.44,up);gl_FragColor=vec4(col,a);}'
 const waterMat = new ShaderMaterial('bert-water', shapeScene, { vertex: 'bertWater', fragment: 'bertWater' }, { attributes: ['position', 'normal'], uniforms: ['worldViewProjection'] })
 waterMat.alpha = 0.55
 waterMat.backFaceCulling = false
