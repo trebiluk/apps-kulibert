@@ -5941,5 +5941,18 @@ body.mu237.tab-tap:not(.show) .out.frame-glow {
   }
 }
 
+/* The Songs page used min-height: 100dvh, so it grew under the player.
+   The last cards (Change the picture, Band) could not be tapped. */
+body.mu237.tab-songs #home,
+body.mu237.tab-songs #make,
+body.mu237.tab-songs #library {
+  top: calc(var(--bar) + var(--tabs)) !important;
+  bottom: var(--player) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+
 
 
