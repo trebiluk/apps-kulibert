@@ -3212,3 +3212,20 @@ for (const [lang, row] of Object.entries(PLACE486)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.487: phones have no V key. The eye chip is a real button. rw, ti, and Dari are machine drafts.
+const VIEW487 = {
+  en: { whatsNewBody: '2.5.487 — On a phone, tap the eye to change the view.' },
+  simple: { whatsNewBody: '2.5.487 — On a phone, tap the eye to change the view.' },
+  uk: { whatsNewBody: '2.5.487 — На телефоні торкнись ока, щоб змінити вигляд.' },
+  ru: { whatsNewBody: '2.5.487 — На телефоне коснись глаза, чтобы сменить вид.' },
+  es: { whatsNewBody: '2.5.487 — En el teléfono, toca el ojo para cambiar la vista.' },
+  ar: { whatsNewBody: '2.5.487 — على الهاتف، المس العين لتغيير العرض.' },
+  'fa-AF': { whatsNewBody: '2.5.487 — در گوشی، چشم را لمس کن تا نما عوض شود.' },
+  rw: { whatsNewBody: '2.5.487 — Kuri telefoni, kanda ijisho uhindure imboni.' },
+  ti: { whatsNewBody: '2.5.487 — ኣብ ተሌፎን ዓይኒ ጠውቕ ቅርጺ ንምቕያር።' },
+}
+for (const [lang, row] of Object.entries(VIEW487)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

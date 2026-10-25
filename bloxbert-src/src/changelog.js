@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.487', date: '2026-10-25', lines: {
+    en: ["2.5.487 — On a phone, tap the eye to change the view."],
+    simple: ["2.5.487 — On a phone, tap the eye to change the view."],
+    uk: ["2.5.487 — На телефоні торкнись ока, щоб змінити вигляд."],
+    ru: ["2.5.487 — На телефоне коснись глаза, чтобы сменить вид."],
+    es: ["2.5.487 — En el teléfono, toca el ojo para cambiar la vista."],
+    ar: ["2.5.487 — على الهاتف، المس العين لتغيير العرض."],
+    'fa-AF': ["2.5.487 — در گوشی، چشم را لمس کن تا نما عوض شود."],
+    rw: ["2.5.487 — Kuri telefoni, kanda ijisho uhindure imboni."],
+    ti: ["2.5.487 — ኣብ ተሌፎን ዓይኒ ጠውቕ ቅርጺ ንምቕያር።"],
+  }},
+
   { v: '2.5.486', date: '2026-10-25', lines: {
     en: ["2.5.486 — Right-click places a block and does not open the browser menu."],
     simple: ["2.5.486 — Right-click places. No browser menu."],

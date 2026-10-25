@@ -2028,7 +2028,7 @@ html body .view-chip {
   box-shadow: 4px 4px 0 #000 !important;
   filter: none !important;
 }
-html body .view-chip { pointer-events: none !important; }
+html body .view-chip { pointer-events: auto !important; cursor: pointer !important; } /* 2.5.487: the eye is a button, including on a phone */
 html body .keys-chip:hover {
   background: #3a4554 !important;
   color: #e8e6e3 !important;

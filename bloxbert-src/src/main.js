@@ -511,9 +511,11 @@ function applyI18n() {
   dressTop()
   paintBackTab()
   try { paintModeChip() } catch (e) {}
+  if (lookReady) paintViewChip()
   painting = false
 }
 let painting = false
+let lookReady = false
 let langArm = 0
 function langDrifted() {
   if (document.documentElement.lang !== LANG) return true
@@ -576,6 +578,30 @@ function bindKeysChip() {
   })
 }
 bindKeysChip()
+function paintViewChip() {
+  const word = document.getElementById('view-chip-word')
+  const btn = document.getElementById('view-chip')
+  if (!word || !btn) return
+  const label = TOUCH_UI
+    ? (t('cameraView') + ': ' + (camBehind ? t('camBehind') : t('camClose')))
+    : t('viewKey')
+  word.textContent = label
+  btn.setAttribute('aria-label', label)
+  btn.setAttribute('aria-pressed', camBehind ? 'true' : 'false')
+}
+function bindViewChip() {
+  const btn = document.getElementById('view-chip')
+  if (!btn || btn.dataset.bound) return
+  btn.dataset.bound = '1'
+  btn.addEventListener('pointerdown', (e) => { e.stopPropagation() })
+  btn.addEventListener('click', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    camBehind = !camBehind
+    applyLook()
+  })
+}
+bindViewChip()
 window.addEventListener('resize', () => pinKeysLine())
 requestAnimationFrame(() => pinKeysLine())
 setTimeout(pinKeysLine, 400)
@@ -9227,6 +9253,8 @@ function applyLook() {
   document.documentElement.dataset.allcaps = allCaps ? '1' : '0'
   document.documentElement.dataset.dyslexia = dyslexiaFont ? '1' : '0'
   try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close', allCaps: !!allCaps, dyslexia: !!dyslexiaFont, suit: suitId })) } catch (e) {}
+  lookReady = true
+  paintViewChip()
 }
 const PICKER_KEYS = ['graphics', 'quality', 'textSize']
 const pickerWatched = new WeakSet()
@@ -9362,6 +9390,7 @@ function paintLook(g) {
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
   camBtn.className = 'pill on'
+  camBtn.dataset.cam = '1'
   const paintCam = () => {
     camBtn.textContent = camBehind ? t('camBehind') : t('camClose')
     camBtn.setAttribute('aria-label', t('cameraView') + ': ' + camBtn.textContent)
