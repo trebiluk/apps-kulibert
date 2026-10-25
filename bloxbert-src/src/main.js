@@ -4253,6 +4253,38 @@ async function load() {
       ])
       if (pulled) doc = pulled
     } catch (e) {}
+    if (__BLOX_STUDENT__ && !doc && localStorage.getItem('bert-oldworld-done') !== '1') { // 2.5.474: old world card
+      try {
+        const old = await Promise.race([
+          new Promise((res) => {
+            const req = indexedDB.open('kuliblocks-test')
+            req.onupgradeneeded = (e) => { e.target.transaction.abort(); res(null) }
+            req.onsuccess = () => {
+              const db = req.result
+              if (!db.objectStoreNames.contains('worlds')) { db.close(); res(null); return }
+              const tx = db.transaction('worlds', 'readonly')
+              const g = tx.objectStore('worlds').get(WORLD)
+              g.onsuccess = () => { db.close(); res(g.result || null) }
+              g.onerror = () => { db.close(); res(null) }
+            }
+            req.onerror = () => res(null)
+          }),
+          new Promise(r => setTimeout(() => r(null), 3000))
+        ])
+        if (old) {
+          const bring = await new Promise((res) => {
+            const card = document.createElement('div')
+            card.style.cssText = 'position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)'
+            card.innerHTML = '<div style="background:#222;color:#e8e6e3;padding:24px;border:2px solid #E85820;max-width:320px;text-align:center"><p style="font-size:18px;margin:0 0 16px">' + t('oldWorldAsk') + '</p><button id="ow-bring" style="min-height:48px;margin:4px;padding:8px 16px;background:#E85820;color:#fff;border:none;font-size:16px">' + t('oldWorldBring') + '</button><button id="ow-fresh" style="min-height:48px;margin:4px;padding:8px 16px;background:#2b2b2b;color:#e8e6e3;border:1px solid #E85820;font-size:16px">' + t('oldWorldFresh') + '</button></div>'
+            document.body.appendChild(card)
+            document.getElementById('ow-bring').onclick = () => { card.remove(); res(true) }
+            document.getElementById('ow-fresh').onclick = () => { card.remove(); res(false) }
+          })
+          localStorage.setItem('bert-oldworld-done', '1')
+          if (bring) { doc = old; idbPut(WORLD, doc) }
+        }
+      } catch (e) {}
+    }
     if (!doc) {
       Rules.load({})
       Effects.load({})

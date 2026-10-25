@@ -61,7 +61,7 @@ export const STR = {
     brickRed: 'Червона цегла', brickGrey: 'Сіра цегла', planks: 'Дошки', log: 'Колода', leaves: 'Листя',
     woolBlue: 'Синя вовна', woolGreen: 'Зелена вовна', woolRed: 'Червона вовна', woolTan: 'Пісочна вовна', snow: 'Сніг', ice: 'Лід', redSand: 'Рудий пісок', glass: 'Скло',
     needsFuel: 'Потрібне паливо', bakingNow: 'Печеться...', takeYour: 'Забери свій {item}', inPockets: '{item} у кишенях сумки',
-    doorHint: 'Тримай ліву кнопку для опцій дверей', doorHintTouch: 'Тримай на дверях для опцій', clickToPlay: 'Натисни, щоб грати', showHand: 'Показати руку', mainHand: 'Основна рука', cameraView: 'Камера', camClose: 'Близько', camBehind: 'Ззаду', viewKey: 'V: змінити вигляд', crouchPlace: 'Присід і права кнопка, щоб поставити поруч.', signIn: 'Увійти', code: 'Код', signNote: 'Код і ПІН дає вчитель. Ім’я з’явиться, коли вони збіжаться.',
+    doorHint: 'Тримай ліву кнопку для опцій дверей', doorHintTouch: 'Тримай на дверях для опцій', clickToPlay: 'Натисни, щоб грати', showHand: 'Показати руку', mainHand: 'Основна рука', cameraView: 'Камера', camClose: 'Близько', camBehind: 'Ззаду', viewKey: 'V: змінити вигляд', oldWorldAsk: 'Перенести мій старий світ?', oldWorldBring: 'Перенести', oldWorldFresh: 'Почати знову', crouchPlace: 'Присід і права кнопка, щоб поставити поруч.', signIn: 'Увійти', code: 'Код', signNote: 'Код і ПІН дає вчитель. Ім’я з’явиться, коли вони збіжаться.',
   },
   ru: {
     menu: 'Меню', close: 'Закрыть', settings: 'Настройки', whatsNew: 'Что нового', help: 'Помощь',
