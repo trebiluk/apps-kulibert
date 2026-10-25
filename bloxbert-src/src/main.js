@@ -2231,8 +2231,13 @@ function fellTree(tree) {
   if (!group) return false
   changeLog.note(group)
   dirty = true
-  const item = 'planks'
-  if (session && session.give) session.give(item, 4)
+  let logs = 0 // 2.5.453: count trunk log cells
+  for (const [x, y, z] of cells) {
+    const id = getVoxel(x, y, z)
+    if (id && sets.s.has(id)) logs += 1
+  }
+  logs = Math.max(1, Math.min(6, logs))
+  if (session && session.give) session.give('log', logs)
   if (calm && calm.note) calm.note('tree')
   showWoodPop()
   treeCache = null
