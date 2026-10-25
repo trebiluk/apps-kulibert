@@ -2533,6 +2533,7 @@ body.mu237 .tile-grid .btn, body.mu237 #styles .btn, body.mu237 #ode-slot .btn {
   body.mu237 #dock-left .tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 body.mu237 .transport .cover {
+  flex: 0 0 auto;
   width: auto;
   min-width: 44px;
   height: 44px;
@@ -2540,11 +2541,14 @@ body.mu237 .transport .cover {
   align-items: center;
   justify-content: center;
   padding: 0 8px;
+  overflow: hidden;
   color: #0E1A22;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
 }
+/* MU 2.36.56 — the cover button says "This song", so the copy line must not say it again. */
+body.mu237 .transport .songbar-copy .whose { display: none; }
 body.mu237 .transport .songbar-copy { flex: 1 1 8rem; min-width: 0; max-width: 16rem; }
 body.mu237 .transport .songbar-copy strong, body.mu237 .transport #play-pos,
 body.mu237 .transport .tempo, body.mu237 .transport .tempo b, body.mu237 #tempo-read { font-size: 14px !important; line-height: 1.2; }
