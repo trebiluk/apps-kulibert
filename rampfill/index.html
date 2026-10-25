@@ -9,11 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <meta name="theme-color" content="#1C2B26" />
-  <title>Ramp & Fill — RF 1.0.19</title>
+  <title>Ramp & Fill — RF 1.0.20</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
 
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.19" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.20" />
 
   <script src="/shared/hub-staff-auth.js?v=RF-1.0.9"></script>
 
@@ -41,7 +41,7 @@
       <span class="brand">Ramp & Fill</span>
 
       <span class="level-pill" id="level-name">First ramp</span>
-      <span class="chip" id="ver-plate">RF 1.0.19</span>
+      <span class="chip" id="ver-plate">RF 1.0.20</span>
       <button type="button" id="pause-btn" class="ghost-btn">
 
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
@@ -85,6 +85,8 @@
         <span data-k="refTile">Referee</span>
 
       </button>
+
+      <button type="button" id="home-pl" class="home-tile"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 14L30 30H52" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M34 38H58L54 58H38Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg><span id="home-pl-t">Pour Lines</span></button>
 
     </div>
 
@@ -477,7 +479,7 @@
     <div class="menu-head">
 
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.19</span>
+      <span class="ver-plate">RF 1.0.20</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
 
     </div>
@@ -485,7 +487,7 @@
     <section id="whats-new">
 
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.19 — The home menu no longer shows Pause or the fill bar.</p>
+      <p id="whats-body">RF 1.0.20 — Pour Lines is new.</p>
     </section>
 
     <section id="rf-help">
@@ -577,11 +579,12 @@
     </section>
 
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.19" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.20" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
 
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
 
-  <script src="./app.js?v=RF-1.0.19"></script>
+  <script src="./app.js?v=RF-1.0.20"></script>
+  <script src="./pourlines.js?v=RF-1.0.20"></script>
 </body>
 
 </html>

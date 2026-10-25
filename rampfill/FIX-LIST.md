@@ -1,4 +1,10 @@
 # Ramp & Fill FIX-LIST
+Stage 21. Version locked: RF 1.0.20.
+
+- [x] **pl-engine:** Pour Lines has its own screen, canvas, grains, lines, jars and arms.
+- [x] **pl-levels-1-7:** Levels 1 to 7, with a letter and a gram count on every jar.
+- [x] **pl-pour-rewind:** Pour, pause, resume, rewind, undo and a two-tap clear. Rewind keeps the lines.
+
 Stage 20. Version locked: RF 1.0.19.
 
 - [x] **home-no-pause:** The home menu hides Pause and the fill bar. Both come back when a level starts. Escape on the home menu does not open Pause.

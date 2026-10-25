@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.20
+
+RF 1.0.20 — Pour Lines is new.
+
 ## RF 1.0.19
 
 RF 1.0.19 — The home menu no longer shows Pause or the fill bar.
