@@ -2021,7 +2021,7 @@ export function createSession(api) {
       const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
       const ready = !isBread && full && !st.station && !st.gate
       const blocked = (st.station || st.gate)
-        ? (st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.station === 'fabricator' || st.gate === 'T5' ? t('needsT5') : '')
+        ? (st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.gate === 'T5' ? t('needsT5') : st.station === 'fabricator' ? t('atFab') : '')
         : ''
       let times = 64
       for (const [item, need] of r.in) times = Math.min(times, Math.floor(heldCount(r, item) / need))

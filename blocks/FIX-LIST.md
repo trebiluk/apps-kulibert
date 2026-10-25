@@ -433,7 +433,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 - [ ] **Night darkens the world (P1, 2.5.48 proof):** syncGlow (main.js ~1858) sets only the sky `uLum` and fog. Scale `scene.ambientColor` and `noa.rendering.light` by `basics.lum()`; grass at night 40-70% of day, Brighter nights >= 60%, Always day / Build world unchanged.
 - [ ] **Lantern lights are cheap (P1, 2.5.48 proof):** 1366 with 20 High lanterns in view 28 FPS vs 58 on 2.5.47 (1 High 45, 4 High 33). Limit the 4 PointLights' cost; smoke "lantern fps" must put the lanterns in view and want >= 90% of no lanterns.
 - [ ] **"door flips once 1366x768" (P2):** failed 1 of 2 runs again (30).
-- [ ] **"Needs T5 - Fabricator" after T5 opens (P2, cosmetic):** the station line still says it; it means "make it at a Fabricator".
+- [x] **2.5.477 at-fabricator:** After T5 is open, a fabricator recipe says "Make it at a Fabricator" instead of "Needs T5". The locked gate still says Needs T5. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.48 done (basics-1):** doors (wood/glass/metal/sliding, double, auto-close, lock, hold-safe), Lever, Push Button, palette-remap save safety, day/night + Always day + Brighter nights, Light Up badges, LED Lantern / Battery Cell / Charger behind T5, Starter Kit. Smoke "hold toast once" and "jitter chop 915x412" now pass (own page, steady aim).
 
 ### Earlier open fixes (from proof/bertopia-2.5.47/RESULT.md)

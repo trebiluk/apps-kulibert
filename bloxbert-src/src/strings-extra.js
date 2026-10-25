@@ -3111,3 +3111,20 @@ for (const [lang, row] of Object.entries(BADGES_UI)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.477: once T5 is open, a fabricator recipe says where to make it. rw, ti, fa-AF need a native check.
+const FAB477 = {
+  en: { atFab: 'Make it at a Fabricator', whatsNewBody: '2.5.477 — After T5 is open, the recipe says make it at a Fabricator.' },
+  simple: { atFab: 'Make it at a Fabricator', whatsNewBody: '2.5.477 — Make it at a Fabricator.' },
+  uk: { atFab: 'Зроби це на виробнику', whatsNewBody: '2.5.477 — Коли рівень 5 відкрито, рецепт каже зробити це на виробнику.' },
+  ru: { atFab: 'Сделай это на изготовителе', whatsNewBody: '2.5.477 — Когда ступень 5 открыта, рецепт говорит сделать это на изготовителе.' },
+  es: { atFab: 'Hazlo en el fabricador', whatsNewBody: '2.5.477 — Con el nivel 5 abierto, la receta dice hazlo en el fabricador.' },
+  ar: { atFab: 'اصنعه في المصنع', whatsNewBody: '2.5.477 — بعد فتح المستوى 5، الوصفة تقول اصنعه في المصنع.' },
+  'fa-AF': { atFab: 'آن را در سازنده بساز', whatsNewBody: '2.5.477 — پس از باز شدن پله ۵، دستور می‌گوید آن را در سازنده بساز.' },
+  rw: { atFab: 'Bikore ku mukorwa', whatsNewBody: '2.5.477 — Urwego 5 rumaze gufungura, inyandiko ivuga ko ukora ku mukorwa.' },
+  ti: { atFab: 'ኣብ ሰራሒ ግበሮ', whatsNewBody: '2.5.477 — ደረጃ 5 ምስ ተኸፍተ፡ መምርሒ ኣብ ሰራሒ ግበሮ ይብል።' },
+}
+for (const [lang, row] of Object.entries(FAB477)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

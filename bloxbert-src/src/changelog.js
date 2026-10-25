@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.477', date: '2026-10-25', lines: {
+    en: ["2.5.477 — After T5 is open, the recipe says make it at a Fabricator."],
+    simple: ["2.5.477 — Make it at a Fabricator."],
+    uk: ["2.5.477 — Коли рівень 5 відкрито, рецепт каже зробити це на виробнику."],
+    ru: ["2.5.477 — Когда ступень 5 открыта, рецепт говорит сделать это на изготовителе."],
+    es: ["2.5.477 — Con el nivel 5 abierto, la receta dice hazlo en el fabricador."],
+    ar: ["2.5.477 — بعد فتح المستوى 5، الوصفة تقول اصنعه في المصنع."],
+    'fa-AF': ["2.5.477 — پس از باز شدن پله ۵، دستور می‌گوید آن را در سازنده بساز."],
+    rw: ["2.5.477 — Urwego 5 rumaze gufungura, inyandiko ivuga ko ukora ku mukorwa."],
+    ti: ["2.5.477 — ደረጃ 5 ምስ ተኸፍተ፡ መምርሒ ኣብ ሰራሒ ግበሮ ይብል።"],
+  }},
+
   { v: '2.5.476', date: '2026-10-25', lines: {
     en: ["2.5.476 — A Badges tile in the menu shows your progress."],
     simple: ["2.5.476 — Badges tile in the menu."],
