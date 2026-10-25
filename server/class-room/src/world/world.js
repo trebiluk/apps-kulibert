@@ -53,6 +53,12 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
       return { ops, head: wseq }
     },
 
+    // Current chunk for a client, with the seq it is good up to.
+    chunk(cx, cz) {
+      const c = load(cx, cz)
+      return c.locked ? { error: c.locked } : { s: wseq, d: encodeChunk(c.edits) }
+    },
+
     // Write all dirty chunks and new ops in ONE commit. If it throws, nothing is marked clean
     // and the next flush retries, so no edit is lost and none is applied twice.
     flush() {
