@@ -5874,4 +5874,72 @@ body.mu237.tab-tap:not(.show) .out.frame-glow {
   box-shadow: 0 0 0 2px #276F7A;
 }
 
+/* MU 2.36.58 — sideways Score: 1 beat, Fast, Longer, and Rest sit above the player, not under it. */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237.tab-score .work,
+  body.mu237.tab-score.is-both .work {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  body.mu237.tab-score #notes-pane,
+  body.mu237.tab-score.is-both #notes-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+  }
+  body.mu237.tab-score .staff-wrap,
+  body.mu237.tab-score.is-both .staff-wrap {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: auto !important;
+  }
+  body.mu237.tab-score .note-row {
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-height: 44px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+  body.mu237.tab-score #inks,
+  body.mu237.tab-score #pen {
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+  body.mu237.tab-score #inks .btn,
+  body.mu237.tab-score #pen .btn {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    flex: 0 0 auto !important;
+  }
+  body.mu237.tab-score.is-both #drums-pane {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    flex: 0 0 56px !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    max-height: 56px !important;
+    height: 56px !important;
+    overflow: auto !important;
+  }
+}
+
+
 

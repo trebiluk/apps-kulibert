@@ -4,6 +4,8 @@
 
 MU 2.36.58 — Fewer tabs: Songs, Tap, Score, Remix, Show.
 
+Sideways Score: 1 beat, Fast, Longer, and Rest sit above the player.
+
 ## Earlier
 
 **Chip: MU 2.36.57** · 2026-10-25 · channel **live**
