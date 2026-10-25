@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.475', date: '2026-10-25', lines: {
+    en: ["2.5.475 — Badge names show correctly. The old world card closes with Escape and focuses the first button. Lantern and garden badges count."],
+    simple: ["2.5.475 — Badge names fixed. Escape closes the old world card. Lantern and garden badges count."],
+    uk: ["2.5.475 — Назви значків показуються правильно. Картка старого світу закривається Escape і фокусує першу кнопку. Значки ліхтарів і саду рахуються."],
+    ru: ["2.5.475 — Названия значков показываются правильно. Карточка старого мира закрывается Escape и фокусирует первую кнопку. Значки фонарей и сада считаются."],
+    es: ["2.5.475 — Los nombres de las insignias se muestran bien. La tarjeta del mundo viejo se cierra con Escape y enfoca el primer botón. Las insignias de faroles y jardín cuentan."],
+    ar: ["2.5.475 — أسماء الشارات تظهر بشكل صحيح. بطاقة العالم القديم تغلق بـ Escape وتركز الزر الأول. شارات الفوانيس والحديقة تُحسب."],
+    'fa-AF': ["2.5.475 — نام نشان‌ها درست نشان داده می‌شود. کارت دنیای قدیمی با Escape بسته می‌شود و دکمه اول را فوکوس می‌کند. نشان‌های چراغ و باغ شمرده می‌شوند."],
+    rw: ["2.5.475 — Amazina y'ibimenyetso agaragara neza. Ikarita y'isi ya kera ifunga na Escape kandi yibanda ku buto ya mbere. Ibimenyetso by'amatara n'ubusitani birabarwa."],
+    ti: ["2.5.475 — ስም ምልክታት ብትኽክል ይረአ። ካርድ ናይ ቀደም ዓለም ብEscape ይዕጾ እሞ ነቲ ቀዳማይ መልጎም ይትኩር። ምልክታት ፋኑስን ጀርዲንን ይቑጸሩ።"],
+  }},
+
   { v: '2.5.474', date: '2026-10-25', lines: {
     en: ["2.5.474 — Fixed: kulibert.net/blocks opens the game again. The old world card now shows."],
     simple: ["2.5.474 — Fixed: /blocks opens. The old world card shows."],

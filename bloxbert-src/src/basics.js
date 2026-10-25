@@ -2,6 +2,7 @@
 import { isDoor, doorKind, doorTopId, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
 import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK, NIGHT, DAWN } from './day.js'
 import { Rules } from './rules.js'
+import * as Badges from './badges.js' // 2.5.475
 
 const PREF = 'bloxbert-day'
 export function createBasics(api) {
@@ -259,6 +260,7 @@ export function createBasics(api) {
   }
   function considerBadges() {
     const n = countSpaced(litPoints(), 3)
+    if (typeof Badges !== 'undefined' && Badges.set) Badges.set('lanternWalk', n) // 2.5.475: wire lantern badge
     for (const tier of [10, 50, 200]) {
       if (n >= tier && !badges.has(tier)) {
         badges.add(tier)

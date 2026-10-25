@@ -77,7 +77,7 @@ import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import * as Badges from './badges.js'
 Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   if (!session || session.mode !== 'survival') return
-  const name = t('bdg' + id[0].toUpperCase() + id.slice(1) + 'Name') || id
+  const name = t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Name') || id // 2.5.475: fix name key
   if (session.wallet && session.wallet.post) session.wallet.post({ kind: 'badge', cogs: 10, by: 'you', ref: id, metal: 'bronze' })
   toast(t('bdgEarned').replace('{name}', name))
   setTimeout(() => toast(t('bdgPaid').replace('{n}', '10')), 800)
@@ -3400,6 +3400,7 @@ function tryPlant(aimed, repeat) {
   plantStroke.n += 1
   if (learn.addNote('farmSeed')) showCard(t('farmSeed'))
   if (wet && learn.addNote('farmWet')) showCard(t('farmWet'))
+  if (farm && farm.rows) { const wetRows = farm.rows().filter(r => r.wet).length; Badges.set('gardenCorner', wetRows) } // 2.5.475: wire garden badge
   return true
 }
 let sproutStroke = null
@@ -4271,14 +4272,19 @@ async function load() {
           }),
           new Promise(r => setTimeout(() => r(null), 3000))
         ])
+        if (!old) { try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {} } // 2.5.475: don't retry if no old world
         if (old) {
           const bring = await new Promise((res) => {
             const card = document.createElement('div')
             card.style.cssText = 'position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)'
             card.innerHTML = '<div style="background:#222;color:#e8e6e3;padding:24px;border:2px solid #E85820;max-width:320px;text-align:center"><p style="font-size:18px;margin:0 0 16px">' + t('oldWorldAsk') + '</p><button id="ow-bring" style="min-height:48px;margin:4px;padding:8px 16px;background:#E85820;color:#fff;border:none;font-size:16px">' + t('oldWorldBring') + '</button><button id="ow-fresh" style="min-height:48px;margin:4px;padding:8px 16px;background:#2b2b2b;color:#e8e6e3;border:1px solid #E85820;font-size:16px">' + t('oldWorldFresh') + '</button></div>'
             document.body.appendChild(card)
-            document.getElementById('ow-bring').onclick = () => { card.remove(); res(true) }
-            document.getElementById('ow-fresh').onclick = () => { card.remove(); res(false) }
+            const bringBtn = document.getElementById('ow-bring')
+            const freshBtn = document.getElementById('ow-fresh')
+            bringBtn.onclick = () => { card.remove(); res(true) }
+            freshBtn.onclick = () => { card.remove(); res(false) }
+            card.onkeydown = (e) => { if (e.key === 'Escape') { card.remove(); res(false) } } // 2.5.475: Escape closes
+            bringBtn.focus() // 2.5.475: focus the first button
           })
           localStorage.setItem('bert-oldworld-done', '1')
           if (bring) { doc = old; idbPut(WORLD, doc) }
