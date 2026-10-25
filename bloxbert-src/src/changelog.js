@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.479', date: '2026-10-25', lines: {
+    en: ["2.5.479 — Badge shapes match the kind: circle for alias, square for stamp, diamond for trophy."],
+    simple: ["2.5.479 — Badge shapes match the kind."],
+    uk: ["2.5.479 — Форми значків відповідають виду: коло для імені, квадрат для штампа, ромб для трофея."],
+    ru: ["2.5.479 — Формы значков соответствуют виду: круг для имени, квадрат для штампа, ромб для трофея."],
+    es: ["2.5.479 — Las formas de las insignias coinciden con el tipo: círculo para alias, cuadrado para sello, diamante para trofeo."],
+    ar: ["2.5.479 — أشكال الشارات تطابق النوع: دائرة للاسم، مربع للختم، معين للكأس."],
+    'fa-AF': ["2.5.479 — شکل نشان‌ها با نوع مطابقت دارد: دایره برای نام، مربع برای مهر، لوزی برای جام."],
+    rw: ["2.5.479 — Imiterere y'ibimenyetso ihuye n'ubwoko: uruziga ku izina, kare ku kashe, diamondi ku gikombe."],
+    ti: ["2.5.479 — ቅርጺ ምልክታት ምስ ዓይነት ይሰማማዕ: ክብ ንስም፡ ርብዒ ንማሕተም፡ ራምብ ንዋንጫ።"],
+  }},
+
   { v: '2.5.478', date: '2026-10-25', lines: {
     en: ["2.5.478 — Shop, Help, Settings and the other menus sit in a smaller card, and the notes are easier to read."],
     simple: ["2.5.478 — Menus are smaller cards and easier to read."],

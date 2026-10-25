@@ -378,10 +378,11 @@ export function mountPanels(api) {
           const row = document.createElement('div')
           row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px;min-height:44px;border-bottom:1px solid #333'
           const prog = (window.Badges && window.Badges.progress) ? window.Badges.progress(id) : { n: 0, m: 5, done: false }
-          const kind = id === 'berryRound' ? 'Alias badge' : id === 'lanternWalk' ? 'Stamp' : 'Trophy'
+          const kind = id === 'berryRound' ? api.t('bdgKindAlias') : id === 'lanternWalk' ? api.t('bdgKindStamp') : api.t('bdgKindTrophy') // 2.5.479: shape + word
+          const shape = id === 'berryRound' ? 'border-radius:50%' : id === 'lanternWalk' ? 'border-radius:2px' : 'transform:rotate(45deg)'
           const name = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Name') || id
           const goal = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Goal') || ''
-          row.innerHTML = '<span style="width:24px;height:24px;border-radius:50%;background:#0d9488;display:inline-block"></span><div><b>' + name + '</b><br><small>' + kind + ' · ' + goal + '</small><br><small>' + (prog.done ? api.t('bdgDone') : prog.n + ' / ' + prog.m) + '</small></div>'
+          row.innerHTML = '<span style="width:24px;height:24px;' + shape + ';background:#0d9488;display:inline-block"></span><div><b>' + name + '</b><br><small>' + kind + ' · ' + goal + '</small><br><small>' + (prog.done ? api.t('bdgDone') : prog.n + ' / ' + prog.m) + '</small></div>'
           g.append(row)
         }
       }),
