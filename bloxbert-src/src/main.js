@@ -10060,13 +10060,20 @@ placeGhost.material = ghostMat
 placeGhost.isPickable = false
 placeGhost.setEnabled(false)
 noa.rendering.addMeshToScene(placeGhost, false)
-const amberMat = new StandardMaterial('place-ghost-amber', scene)
-amberMat.diffuseColor = new Color3(0.95, 0.62, 0.12)
-amberMat.emissiveColor = new Color3(0.72, 0.38, 0.05)
-amberMat.specularColor = new Color3(0, 0, 0)
-amberMat.alpha = 0.55
-amberMat.transparencyMode = 2
-amberMat.backFaceCulling = false
+const blockedMat = new StandardMaterial('place-ghost-blocked', scene) // 2.5.449: red outline, no fill
+blockedMat.diffuseColor = new Color3(0.8, 0.1, 0.1)
+blockedMat.emissiveColor = new Color3(0.6, 0.05, 0.05)
+blockedMat.specularColor = new Color3(0, 0, 0)
+blockedMat.alpha = 0.0
+blockedMat.transparencyMode = 2
+blockedMat.backFaceCulling = false
+const tealMat = new StandardMaterial('place-ghost-teal', scene) // 2.5.449: teal fill for fits
+tealMat.diffuseColor = new Color3(0.13, 0.83, 0.93)
+tealMat.emissiveColor = new Color3(0.08, 0.5, 0.55)
+tealMat.specularColor = new Color3(0, 0, 0)
+tealMat.alpha = 0.35
+tealMat.transparencyMode = 2
+tealMat.backFaceCulling = false
 const placeGhostSide = CreateBox('place-ghost-side', { size: 0.98 }, scene)
 placeGhostSide.material = ghostMat
 placeGhostSide.isPickable = false
@@ -10151,17 +10158,14 @@ function syncPlaceGhost() {
     side = shopSpan(spot.x, spot.y, spot.z)
     amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
   }
-  if (amber) {
-    placeGhost.material = amberMat
-    placeGhostSide.material = amberMat
-    outline.color.copyFrom(amberLine)
+  if (amber) { // 2.5.449: blocked = red outline, no fill
+    placeGhost.material = blockedMat
+    placeGhostSide.material = blockedMat
+    outline.color.set(0.9, 0.15, 0.15)
   } else {
-    const tint = ghostTint(id)
-    ghostMat.diffuseColor.set(tint[0], tint[1], tint[2])
-    ghostMat.emissiveColor.set(tint[0] * 0.55, tint[1] * 0.55, tint[2] * 0.55)
-    placeGhost.material = ghostMat
-    placeGhostSide.material = ghostMat
-    outline.color.copyFrom(cyanLine)
+    placeGhost.material = tealMat
+    placeGhostSide.material = tealMat
+    outline.color.set(0.13, 0.83, 0.93)
   }
   const lp = noa.globalToLocal([spot.x + 0.5, spot.y + 0.5, spot.z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
