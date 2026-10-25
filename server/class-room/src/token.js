@@ -24,7 +24,7 @@ import { cleanAlias, isOpaqueId, isStaff, isConfigId, ROLES, MAX_TOKEN_TTL_SEC, 
 const enc = new TextEncoder()
 const dec = new TextDecoder()
 const SKEW_SEC = 30
-const CLAIM_KEYS = new Set(['v', 'ref', 'room', 'alias', 'exp', 'jti', 'role', 'amr', 'cfg'])
+const CLAIM_KEYS = new Set(['v', 'ref', 'room', 'world', 'grp', 'bld', 'alias', 'exp', 'jti', 'role', 'amr', 'cfg'])
 
 function toB64u(bytes) {
   let s = ''
@@ -77,7 +77,11 @@ export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now()
   try { c = JSON.parse(dec.decode(fromB64u(parts[0]))) } catch (e) { return bad('json') }
   if (!c || typeof c !== 'object' || Array.isArray(c) || c.v !== 1) return bad('version')
   for (const k of Object.keys(c)) if (!CLAIM_KEYS.has(k)) return bad('claims')
-  if (!isOpaqueId(c.ref) || !isOpaqueId(c.room) || !isOpaqueId(c.jti)) return bad('id')
+  // One of room (a single 30-kid room) or world (TechWorks names the world; the hub picks the room).
+  if ((c.room === undefined) === (c.world === undefined)) return bad('id')
+  if (!isOpaqueId(c.ref) || !isOpaqueId(c.room ?? c.world) || !isOpaqueId(c.jti)) return bad('id')
+  if (c.grp !== undefined && !isOpaqueId(c.grp)) return bad('id')
+  if (c.bld !== undefined && c.bld !== 's' && c.bld !== 't') return bad('bld')
   if (!isConfigId(c.cfg)) return bad('cfg')
   if (!ROLES.includes(c.role)) return bad('role')
   const staff = isStaff(c.role)
@@ -91,5 +95,5 @@ export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now()
   const maxTtl = staff ? MAX_STAFF_TOKEN_TTL_SEC : MAX_TOKEN_TTL_SEC
   if (c.exp > nowSec + maxTtl + SKEW_SEC) return bad('ttl')
 
-  return { ok: true, claims: { ref: c.ref, room: c.room, alias, jti: c.jti, exp: c.exp, role: c.role, cfg: c.cfg } }
+  return { ok: true, claims: { ref: c.ref, room: c.room ?? null, world: c.world ?? null, grp: c.grp ?? null, bld: c.bld ?? 's', alias, jti: c.jti, exp: c.exp, role: c.role, cfg: c.cfg } }
 }

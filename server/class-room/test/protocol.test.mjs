@@ -128,7 +128,7 @@ test('rate limit: a normal client passes, a flood is cut off, tokens come back',
 test('tokens: round trip', async () => {
   const t = await signToken(good, SECRET)
   const v = await verifyToken(t, [SECRET], NOW)
-  assert.deepEqual(v, { ok: true, claims: { ref: 'kidref-0001', room: 'class-room-01', alias: 'Test Pup 01', jti: 'jti-00000001', exp: NOW + 60, role: 'kid', cfg: 'period' } })
+  assert.deepEqual(v, { ok: true, claims: { ref: 'kidref-0001', room: 'class-room-01', world: null, grp: null, bld: 's', alias: 'Test Pup 01', jti: 'jti-00000001', exp: NOW + 60, role: 'kid', cfg: 'period' } })
   const sv = await verifyToken(await signToken(staff, SECRET), [SECRET], NOW)
   assert.equal(sv.ok, true)
   assert.equal(sv.claims.role, 'teacher')
@@ -138,6 +138,18 @@ test('tokens: a previous secret still verifies during rotation', async () => {
   const t = await signToken(good, SECRET)
   const v = await verifyToken(t, ['another-secret-0123456789abc', SECRET], NOW)
   assert.equal(v.ok, true)
+})
+
+test('tokens: a ticket names a room OR a world, never both, never neither; build and group are checked', async () => {
+  const w = { ...good, world: 'world-0001' }
+  delete w.room
+  const ok = await verifyToken(await signToken({ ...w, grp: 'class-6a-01', bld: 't' }, SECRET), [SECRET], NOW)
+  assert.deepEqual([ok.ok, ok.claims.world, ok.claims.room, ok.claims.grp, ok.claims.bld], [true, 'world-0001', null, 'class-6a-01', 't'])
+  const why = async (o) => (await verifyToken(await signToken(o, SECRET), [SECRET], NOW)).why
+  assert.equal(await why({ ...good, world: 'world-0001' }), 'id')
+  assert.equal(await why({ ...w, room: undefined, world: undefined }), 'id')
+  assert.equal(await why({ ...w, grp: 'bad grp' }), 'id')
+  assert.equal(await why({ ...w, bld: 'x' }), 'bld')
 })
 
 test('tokens: every one of the 7 configs is accepted and nothing else is', async () => {
@@ -193,5 +205,5 @@ test('tokens: nothing can carry a name or an email', async () => {
     assert.equal((await verifyToken(await signToken({ ...good, ...extra }, SECRET), [SECRET], NOW)).why, 'claims', JSON.stringify(extra))
   }
   const v = await verifyToken(await signToken(good, SECRET), [SECRET], NOW)
-  assert.deepEqual(Object.keys(v.claims).sort(), ['alias', 'cfg', 'exp', 'jti', 'ref', 'role', 'room'])
+  assert.deepEqual(Object.keys(v.claims).sort(), ['alias', 'bld', 'cfg', 'exp', 'grp', 'jti', 'ref', 'role', 'room', 'world'])
 })

@@ -54,7 +54,7 @@ export function checkBlockEdit(edit, pos, knownIds) {
   if (!edit || (edit.op !== 'place' && edit.op !== 'break')) return { ok: false, why: 'shape' }
   for (const k of ['x', 'y', 'z']) if (!Number.isInteger(edit[k])) return { ok: false, why: 'shape' }
   if (edit.y < LIMITS.yMin || edit.y > LIMITS.yMax) return { ok: false, why: 'bounds' }
-  if (edit.op === 'place' && !(Number.isInteger(edit.id) && knownIds && knownIds.has(edit.id))) return { ok: false, why: 'item' }
+  if (edit.op === 'place' && !(Number.isInteger(edit.id) && (knownIds ? knownIds.has(edit.id) : edit.id > 0 && edit.id <= 65535))) return { ok: false, why: 'item' }
   if (!pos || !checkReach(pos, edit)) return { ok: false, why: 'reach' }
   return { ok: true }
 }
