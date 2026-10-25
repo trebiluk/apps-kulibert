@@ -48,12 +48,12 @@ export const CHANGELOG = [
   { v: '2.5.459', date: '2026-10-25', lines: {
     en: ['2.5.459 — Grass, dirt, stone, wood and leaves have calmer, softer colors.'],
     simple: ['2.5.459 — The world colors are softer.'],
-    uk: ['2.5.459 — Трава, земля, камінь, дерево і листя мають м'якші кольори.'],
+    uk: ['2.5.459 — Трава, земля, камінь, дерево і листя мають м\'якші кольори.'],
     ru: ['2.5.459 — Трава, земля, камень, дерево и листья имеют более мягкие цвета.'],
     es: ['2.5.459 — El césped, la tierra, la piedra, la madera y las hojas tienen colores más suaves.'],
     ar: ['2.5.459 — العشب والتراب والحجر والخشب والأوراق لها ألوان أهدأ.'],
     'fa-AF': ['2.5.459 — علف، خاک، سنگ، چوب و برگ‌ها رنگ‌های نرم‌تری دارند.'],
-    rw: ['2.5.459 — Ibyatsi, ubutaka, ibuye, ibiti n'amababi bifite ibara ryoroshye.'],
+    rw: ['2.5.459 — Ibyatsi, ubutaka, ibuye, ibiti n\'amababi bifite ibara ryoroshye.'],
     ti: ['2.5.459 — ሳዕሪ፡ ሓመድ፡ እምኒ፡ ዕንጨይቲን ቆጽልን ልዕሊ ርጉዕ ሕብሪ ኣለዎም።'],
   }},
 
