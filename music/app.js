@@ -2885,6 +2885,12 @@
       btn.classList.toggle("on", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    const showRail = $("rail-perform");
+    if (showRail) {
+      const showOn = tab === "viz";
+      showRail.classList.toggle("on", showOn);
+      showRail.setAttribute("aria-pressed", showOn ? "true" : "false");
+    }
     const exit = $("perform-exit");
     if (exit) exit.hidden = !document.body.classList.contains("show");
     const line = $("tool-line");
@@ -3766,7 +3772,6 @@
     ["menu-band", () => setMode("band")],
     ["menu-sound", () => setMode("sound")],
     ["menu-lights", () => setMode("lights")],
-    ["menu-show", () => { if ($("show-btn")) $("show-btn").click(); }],
     ["menu-library", () => { if (typeof showLibrary === "function") showLibrary(); }],
   ].forEach(([id, go]) => {
     const btn = $(id);
@@ -5021,7 +5026,18 @@
     return "";
   })();
   if (startBoard) setMode(startBoard);
-  else openTab("tap");
+  else {
+    let reopen = "";
+    try {
+      const raw = localStorage.getItem(WS_KEY);
+      if (raw) {
+        const data = JSON.parse(raw);
+        const preset = data && data.preset;
+        if (preset === "band" || preset === "sound" || preset === "lights") reopen = tabForMode(preset);
+      }
+    } catch (errRe) { reopen = ""; }
+    openTab(reopen || "tap"); // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
+  }
   if ($("tempo") && state.song && state.song.bpm) {
     $("tempo").value = String(state.song.bpm);
     if ($("tempo-read")) $("tempo-read").textContent = String(state.song.bpm);
@@ -5206,25 +5222,10 @@
         hitPad(map[e.code], pads.querySelector("[data-pad='" + map[e.code] + "']"));
       });
     }
-    document.querySelectorAll(".rail-next").forEach((btn) => {
-      if (btn.dataset.wired) return;
-      btn.dataset.wired = "1";
-      btn.addEventListener("click", () => {
-        if (btn.dataset.next === "perform") {
-          const show = $("show-btn");
-          if (show) show.click();
-          return;
-        }
-        openTab(btn.dataset.next);
-      });
-    });
     const railPerform = $("rail-perform");
     if (railPerform && !railPerform.dataset.wired) {
       railPerform.dataset.wired = "1";
-      railPerform.addEventListener("click", () => {
-        const show = $("show-btn");
-        if (show) show.click();
-      });
+      railPerform.addEventListener("click", () => openTab("viz")); // MU 2.36.58: Show opens the picture. Perform stays the bar button.
     }
     ["save-dock", "mute-btn", "share-btn", "clear-song"].forEach((id) => {
       const el = $(id);
