@@ -78,6 +78,15 @@ export function createCalm(api) {
     }
     pump()
   }
+  function pathSays(word) {
+    const needle = String(word || '').trim()
+    if (!needle) return false
+    const el = document.getElementById('path-chip')
+    if (!el || el.hidden) return false
+    const title = el.querySelector('.path-title')
+    const text = title ? String(title.textContent || '') : ''
+    return text.toLowerCase().indexOf(needle.toLowerCase()) >= 0
+  }
   function pump() {
     let changed = false
     for (const step of ORDER) {
@@ -85,7 +94,9 @@ export function createCalm(api) {
       if (state[step]) continue
       state[step] = true
       changed = true
-      wait.push({ chip: true, step, text: api.t('chipNew') + ': ' + api.t(WORD[step]) })
+      const named = api.t(WORD[step])
+      // 2.5.482: the path chip already names this step. Don't toast the same words.
+      if (!pathSays(named)) wait.push({ chip: true, step, text: api.t('chipNew') + ': ' + named })
     }
     if (!changed) return
     apply()

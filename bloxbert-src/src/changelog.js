@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.482', date: '2026-10-25', lines: {
+    en: ["2.5.482 — After the first log, the path chip is the only line that says make a workbench."],
+    simple: ["2.5.482 — One line says make a workbench."],
+    uk: ["2.5.482 — Після першої колоди картка шляху сама каже зробити верстак."],
+    ru: ["2.5.482 — После первого бревна карточка пути сама говорит сделать верстак."],
+    es: ["2.5.482 — Tras el primer tronco, la ficha del camino es la única que dice haz un banco."],
+    ar: ["2.5.482 — بعد أول جذع، بطاقة المسار وحدها تقول اصنع منضدة."],
+    'fa-AF': ["2.5.482 — پس از اولین کنده، کارت راه تنها خطی است که می‌گوید میز کار بساز."],
+    rw: ["2.5.482 — Nyuma y'igiti cya mbere, akarita y'inzira niyo yonyine ivuga kora ameza."],
+    ti: ["2.5.482 — ድሕሪ ናይ መጀመርታ ግንዲ፡ ናይ መንገዲ ካርድ ጥራይ ሰደቓ ግበር ይብል።"],
+  }},
+
   { v: '2.5.481', date: '2026-10-25', lines: {
     en: ["2.5.481 — The Stick card is only as tall as its words. It no longer fills the screen."],
     simple: ["2.5.481 — The Stick card is short now."],

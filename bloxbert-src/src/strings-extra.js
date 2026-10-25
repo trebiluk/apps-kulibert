@@ -3145,3 +3145,19 @@ for (const [lang, row] of Object.entries(MENU478)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+// 2.5.482: one path line after the first log. rw, ti, and Dari need a native check.
+const ONCE482 = {
+  en: { whatsNewBody: '2.5.482 — After the first log, the path chip is the only line that says make a workbench.' },
+  simple: { whatsNewBody: '2.5.482 — One line says make a workbench.' },
+  uk: { whatsNewBody: '2.5.482 — Після першої колоди картка шляху сама каже зробити верстак.' },
+  ru: { whatsNewBody: '2.5.482 — После первого бревна карточка пути сама говорит сделать верстак.' },
+  es: { whatsNewBody: '2.5.482 — Tras el primer tronco, la ficha del camino es la única que dice haz un banco.' },
+  ar: { whatsNewBody: '2.5.482 — بعد أول جذع، بطاقة المسار وحدها تقول اصنع منضدة.' },
+  'fa-AF': { whatsNewBody: '2.5.482 — پس از اولین کنده، کارت راه تنها خطی است که می‌گوید میز کار بساز.' },
+  rw: { whatsNewBody: '2.5.482 — Nyuma y\'igiti cya mbere, akarita y\'inzira niyo yonyine ivuga kora ameza.' },
+  ti: { whatsNewBody: '2.5.482 — ድሕሪ ናይ መጀመርታ ግንዲ፡ ናይ መንገዲ ካርድ ጥራይ ሰደቓ ግበር ይብል።' },
+}
+for (const [lang, row] of Object.entries(ONCE482)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
