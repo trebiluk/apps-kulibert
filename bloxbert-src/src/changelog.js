@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.471', date: '2026-10-25', lines: {
+    en: ['2.5.471 — Block pictures in the hotbar and Bag now match the world.'],
+    simple: ['2.5.471 — Block pictures match.'],
+    uk: ['2.5.471 — Малюнки блоків на панелі й у сумці тепер як у світі.'],
+    ru: ['2.5.471 — Картинки блоков на панели и в сумке теперь как в мире.'],
+    es: ['2.5.471 — Las imágenes de los bloques en la barra y la Bolsa ahora coinciden con el mundo.'],
+    ar: ['2.5.471 — صور المكعبات في الشريط والحقيبة صارت مثل العالم.'],
+    'fa-AF': ['2.5.471 — تصویر بلاک‌ها در نوار و بکس حالا مثل جهان است.'],
+    rw: ['2.5.471 — Amashusho y\'ibice ku murongo no mu gasaho ubu asa n\'isi.'],
+    ti: ['2.5.471 — ስእሊ ብሎክ ኣብ መስመርን ቦርሳን ሕጂ ከም ዓለም እዩ።'],
+  }},
+
   { v: '2.5.470', date: '2026-10-25', lines: {
     en: ['2.5.470 — The item in your hand matches the world light, and the crosshair is easier to see.'],
     simple: ['2.5.470 — Softer hand, clearer aim.'],

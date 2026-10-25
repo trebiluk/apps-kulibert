@@ -483,6 +483,52 @@ const FACE = {
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
 const BLOCK_ALIAS = { leverOn: 'lever', pushButtonOn: 'pushButton', reed: 'leaves', woodshopSide: 'woodshop' }
+// World cubes whose icon tile is atlas 0–20. Plants, tools, and shaped blocks keep their own pictures.
+const WORLD_CUBE = {
+  grass: 1, dirt: 1, stone: 1, slate: 1, coal: 1, sand: 1, gravel: 1,
+  brickRed: 1, brickGrey: 1, planks: 1, log: 1, leaves: 1,
+  woolBlue: 1, woolGreen: 1, woolRed: 1, woolTan: 1,
+  snow: 1, ice: 1, redSand: 1,
+}
+function iconTex(block) {
+  if (!block) return ''
+  return block[4] || (Array.isArray(block[2]) ? block[2][2] : block[2]) || ''
+}
+function atlasSlot(tex, atlas) {
+  if (!atlas || typeof tex !== 'string' || !Object.prototype.hasOwnProperty.call(atlas, tex)) return -1
+  const i = atlas[tex]
+  if (typeof i !== 'number' || i < 0 || i > 20) return -1
+  return i
+}
+function calmFrame(ctx) {
+  ctx.imageSmoothingEnabled = false
+  ctx.strokeStyle = 'rgba(0,0,0,.35)'
+  ctx.lineWidth = 1
+  ctx.strokeRect(8.5, 8.5, 31, 31)
+  ctx.fillStyle = 'rgba(0,0,0,.35)'
+  ctx.fillRect(8, 38, 32, 2)
+}
+function drawTile(c, img, sx, sy, sw, sh) {
+  const ctx = c.getContext('2d', READ2D)
+  ctx.imageSmoothingEnabled = false
+  ctx.clearRect(0, 0, 48, 48)
+  ctx.drawImage(img, sx, sy, sw, sh, 8, 8, 32, 32)
+  calmFrame(ctx)
+}
+function atlasCanvas(block, tex, index) {
+  const c = document.createElement('canvas')
+  c.width = 48
+  c.height = 48
+  c.dataset.block = String(block[0])
+  c.dataset.kind = 'atlas'
+  c.dataset.tex = tex
+  const img = new Image()
+  img.src = 'assets/atlas.png'
+  const paint = () => drawTile(c, img, 2, index * 36 + 2, 32, 32)
+  if (img.complete && img.naturalWidth) paint()
+  else img.onload = paint
+  return c
+}
 export function blockIcon(block, atlas) {
   const name = block && block[1];
   const alias = BLOCK_ALIAS[name] || name
@@ -502,6 +548,9 @@ export function blockIcon(block, atlas) {
     if (!wrap.dataset.wrap) wrap.dataset.wrap = alias
     return wrap;
   }
+  const tex = iconTex(block)
+  const ix = atlasSlot(tex, atlas)
+  if (ix >= 0 && (WORLD_CUBE[name] || WORLD_CUBE[alias])) return atlasCanvas(block, tex, ix)
   const painter = FACE[name] || FACE[alias]
   if (painter) {
     const c = asArt(alias || name, painter)
@@ -512,24 +561,15 @@ export function blockIcon(block, atlas) {
   c.width = 48
   c.height = 48
   c.dataset.block = String(block[0])
-  c.getContext('2d', READ2D)
-  const g0 = c.getContext('2d', READ2D)
-  g0.fillStyle = '#3a4450'
-  g0.fillRect(8, 8, 32, 32)
-  g0.strokeStyle = '#c5d0d6'
-  g0.lineWidth = 2
-  g0.strokeRect(9, 9, 30, 30)
-  const tex = block[4] || (Array.isArray(block[2]) ? block[2][2] : block[2])
   const img = new Image()
   img.src = PNG[tex] || 'assets/atlas.png'
-  img.onload = () => {
-    const ctx = c.getContext('2d', READ2D)
-    if (PNG[tex]) ctx.drawImage(img, 8, 8, 32, 32)
-    else if (atlas) {
-      const y = (atlas[tex] || 0) * 36 + 2
-      ctx.drawImage(img, 2, y, 32, 32, 8, 8, 32, 32)
-    }
+  const paint = () => {
+    if (PNG[tex]) drawTile(c, img, 0, 0, img.naturalWidth || 32, img.naturalHeight || 32)
+    else if (atlas && atlas[tex] != null) drawTile(c, img, 2, (atlas[tex] || 0) * 36 + 2, 32, 32)
+    else calmFrame(c.getContext('2d', READ2D))
   }
+  if (img.complete && img.naturalWidth) paint()
+  else img.onload = paint
   return c
 }
 const FOOD = {
@@ -600,6 +640,11 @@ export function slotArt(key, blockNode) {
     img.dataset.kind = 'png'
     img.dataset.item = key
     return img
+  }
+  // 2.5.471: hotbar and Bag use the same atlas tile as the world cube
+  if (blockNode && WORLD_CUBE[key]) {
+    if (blockNode.dataset) blockNode.dataset.item = key
+    return blockNode
   }
   // 2.5.303: distinct pictures for wood items — FACE wins over wrap for these keys
   if (key === 'planks' || key === 'log' || key === 'berry' || key === 'sapling' || key === 'stick') {

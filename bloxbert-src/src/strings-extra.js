@@ -3023,3 +3023,20 @@ for (const [lang, row] of Object.entries(HAND470)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.471 block pictures match the world. rw, ti, and Dari are machine drafts.
+const TILE471 = {
+  en: { whatsNewBody: '2.5.471 — Block pictures in the hotbar and Bag now match the world.' },
+  simple: { whatsNewBody: '2.5.471 — Block pictures match.' },
+  uk: { whatsNewBody: '2.5.471 — Малюнки блоків на панелі й у сумці тепер як у світі.' },
+  ru: { whatsNewBody: '2.5.471 — Картинки блоков на панели и в сумке теперь как в мире.' },
+  es: { whatsNewBody: '2.5.471 — Las imágenes de los bloques en la barra y la Bolsa ahora coinciden con el mundo.' },
+  ar: { whatsNewBody: '2.5.471 — صور المكعبات في الشريط والحقيبة صارت مثل العالم.' },
+  'fa-AF': { whatsNewBody: '2.5.471 — تصویر بلاک‌ها در نوار و بکس حالا مثل جهان است.' },
+  rw: { whatsNewBody: '2.5.471 — Amashusho y\'ibice ku murongo no mu gasaho ubu asa n\'isi.' },
+  ti: { whatsNewBody: '2.5.471 — ስእሊ ብሎክ ኣብ መስመርን ቦርሳን ሕጂ ከም ዓለም እዩ።' },
+}
+for (const [lang, row] of Object.entries(TILE471)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

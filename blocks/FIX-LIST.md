@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.471 block icons:** Hotbar and Bag pictures for grass, dirt, stone, log, planks, leaves, sand, bricks and wool are the same atlas tile as the world. The old gray icon frame is gone. Workbench, oven, glass and tool pictures stay as they were.
+
 - [x] **calm-topbar (2.5.469):** Top bar chips are calmer with icons. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
