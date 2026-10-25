@@ -1,4 +1,28 @@
 export const CHANGELOG = [
+  { v: '2.5.467', date: '2026-10-25', lines: {
+    en: ['2.5.467 — Fixed the game door so it loads again after the calm-color update.'],
+    simple: ['2.5.467 — The game loads again.'],
+    uk: ['2.5.467 — Виправлено двері гри, щоб вона знову завантажувалась після оновлення кольорів.'],
+    ru: ['2.5.467 — Исправлены двери игры, чтобы она снова загружалась после обновления цветов.'],
+    es: ['2.5.467 — Arreglada la puerta del juego para que vuelva a cargar tras la actualización de colores.'],
+    ar: ['2.5.467 — أُصلح باب اللعبة ليحمّل مرة أخرى بعد تحديث الألوان.'],
+    'fa-AF': ['2.5.467 — در بازی درست شد تا بعد از به‌روزرسانی رنگ‌ها دوباره بار شود.'],
+    rw: ['2.5.467 — Urugi rw\'umukino rwakosowe kugira ngo wongere wikore neza nyuma y\'amabara.'],
+    ti: ['2.5.467 — ናይ ጸወታ ደገ ተኣሪሙ እሞ ድሕሪ ሕብሪ ምዕራፍ ደጊሙ ይጽዓን።'],
+  }},
+
+  { v: '2.5.466', date: '2026-10-25', lines: {
+    en: ['2.5.466 — Menus and the Bag use calmer colors and clearer buttons.'],
+    simple: ['2.5.466 — Calmer menus.'],
+    uk: ['2.5.466 — Меню та Сумка використовують спокійніші кольори й чіткіші кнопки.'],
+    ru: ['2.5.466 — Меню и Сумка используют более спокойные цвета и более понятные кнопки.'],
+    es: ['2.5.466 — Los menús y la Bolsa usan colores más calmados y botones más claros.'],
+    ar: ['2.5.466 — القوائم والحقيبة تستخدم ألوانًا أهدأ وأزرارًا أوضح.'],
+    'fa-AF': ['2.5.466 — منوها و کیف از رنگ‌های آرام‌تر و دکمه‌های واضح‌تر استفاده می‌کنند.'],
+    rw: ['2.5.466 — Ibikoresho n\'Agasanduku bikoresha amabara yoroshye n\'amabuto asobanutse.'],
+    ti: ['2.5.466 — ምናሌታትን ቦርሳን ዝረጋጉ ሕብርታትን ንጹር መቐየርታትን ይጥቀሙ።'],
+  }},
+
   { v: '2.5.464', date: '2026-10-25', lines: {
     en: ['2.5.464 — Sand, gravel, bricks, wool and water have calmer colors.'],
     simple: ['2.5.464 — More soft world colors.'],
