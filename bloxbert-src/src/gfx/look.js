@@ -24,9 +24,10 @@ function hash2(x, z) {
 
 export function leafTint(id, x, z) {
   const h = hash2(x, z)
-  if (id === 1201) return [1.02 + h * 0.16, 1.10 + h * 0.10, 0.90 + h * 0.08]
-  if (id === 1204) return [0.58 + h * 0.12, 0.68 + h * 0.10, 0.50 + h * 0.08]
-  if (id === 12) return [0.86 + h * 0.18, 0.94 + h * 0.14, 0.74 + h * 0.10]
+  const cap = (v) => Math.min(1, v)
+  if (id === 1201) return [cap(1.02 + h * 0.16), cap(1.10 + h * 0.10), cap(0.90 + h * 0.08)]
+  if (id === 1204) return [cap(0.58 + h * 0.12), cap(0.68 + h * 0.10), cap(0.50 + h * 0.08)]
+  if (id === 12) return [cap(0.86 + h * 0.18), cap(0.94 + h * 0.14), cap(0.74 + h * 0.10)]
   return null
 }
 

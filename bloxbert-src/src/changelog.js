@@ -1,4 +1,9 @@
 export const CHANGELOG = [
+  { v: '2.5.459', date: '2026-10-25', lines: {
+    en: ['2.5.459 — Grass, dirt, stone, wood and leaves have calmer, softer colors.'],
+    simple: ['2.5.459 — The world colors are softer.'],
+  }},
+
   { v: '2.5.458', date: '2026-10-25', lines: {
     en: ['2.5.458 — The menu keeps the world visible behind a light dim, not a gray sheet, with no flash.'],
     simple: ['2.5.458 — Menu keeps the world showing. No gray sheet. No flash.'],
