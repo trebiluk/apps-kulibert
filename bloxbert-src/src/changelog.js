@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.449', date: '2026-10-25', lines: {
+    en: ["2.5.449 — The block preview sits right on the crosshair at its real size. Teal ✓ means it fits; red ✕ means no room. Beds start at your aim and turn with R."],
+    simple: ["2.5.449 — The preview sits on the cross. Teal ✓ fits. Red ✕ no room."],
+    uk: ["2.5.449 — Попередній перегляд блока сидить прямо на прицілі у своєму реальному розмірі. Бірюзова ✓ означає, що вміщується; червона ✕ означає, що немає місця."],
+    ru: ["2.5.449 — Предпросмотр блока сидит прямо на прицеле в своём реальном размере. Бирюзовая ✓ значит, что помещается; красная ✕ значит, что нет места."],
+    es: ["2.5.449 — La vista previa del bloque se sienta justo en la mira a su tamaño real. ✓ verde azulado significa que cabe; ✕ rojo significa que no hay sitio."],
+    ar: ["2.5.449 — معاينة الكتلة تجلس على الشعيرات المتقاطعة بحجمها الحقيقي. ✓ فيروزي يعني أنها تناسب؛ ✕ أحمر يعني لا مكان."],
+    'fa-AF': ["2.5.449 — پیش‌نمایش بلوک درست روی نشانه با اندازه واقعی‌اش می‌نشیند. ✓ فیروزه‌ای یعنی جا می‌شود؛ ✕ قرمز یعنی جا نیست."],
+    rw: ["2.5.449 — Igaragaza ry'ibuye riyicara ku mukororongo ku bunini bwarwo. ✓ y'icyatsi bishobora; ✕ itukura nta mwanya."],
+    ti: ["2.5.449 — ቅድመ-ምርኢት ብሎክ ኣብ ምልክት መስቀል ብናይ ብሓቂ ዓቐኑ ይቐመጥ። ✓ ሰማያዊ ማለት ይትከል፤ ✕ ቀይሕ ማለት ቦታ የለን።"],
+  }},
+
   { v: '2.5.448', date: '2026-10-25', lines: {
     en: ['2.5.448 — The hotbar is one flat tray. The picked slot lifts with an orange mark, and the name sits above it once. Settings > Text can turn on all caps or the dyslexia font.'],
     simple: ['2.5.448 — One hotbar tray. The name sits above the picked slot. Text settings: big letters or a reading font.'],
