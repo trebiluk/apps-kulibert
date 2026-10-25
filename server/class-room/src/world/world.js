@@ -59,6 +59,16 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
       return c.locked ? { error: c.locked } : { s: wseq, d: encodeChunk(c.edits) }
     },
 
+    // Block now at a cell, or undefined if never edited and no worldgen. (For undo and tests.)
+    cell(x, y, z) {
+      const { cx, cz, idx } = locate(x, y, z)
+      const c = load(cx, cz)
+      return c.edits.has(idx) ? c.edits.get(idx) : gen ? gen(x, y, z) : undefined
+    },
+
+    // Every op still kept, oldest first (for undo).
+    log() { return db.opsSince(0, KEEP_OPS).concat(pending) },
+
     // Write all dirty chunks and new ops in ONE commit. If it throws, nothing is marked clean
     // and the next flush retries, so no edit is lost and none is applied twice.
     flush() {
