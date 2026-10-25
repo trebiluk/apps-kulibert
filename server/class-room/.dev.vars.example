@@ -1,0 +1,5 @@
+# Copy to .dev.vars (gitignored) for local runs ONLY. Never put a real secret in this example file.
+ROOM_JOIN_SECRET=local-test-secret-change-me-0123456789
+ALLOWED_ORIGINS=http://127.0.0.1:8787,http://localhost:8787
+# Local sockets are ws://, not wss://. Production keeps the default (TLS required).
+REQUIRE_TLS=0

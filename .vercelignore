@@ -5,3 +5,6 @@
 /alice-src
 # Volt Duel source; the built door is /voltduel/.
 /voltduel-src
+
+# Phase 0 class room server. Standalone. Not a Vercel route. Do not deploy.
+/server/class-room

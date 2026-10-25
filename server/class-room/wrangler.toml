@@ -1,0 +1,37 @@
+name = "bertopia-room-server"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+# No public *.workers.dev address. Solvay blocks vercel.app hosts and may block
+# others; the only intended address is same-origin under apps.kulibert.net.
+workers_dev = false
+
+[vars]
+# Browser origins allowed to open a socket. Local tests override this in .dev.vars.
+ALLOWED_ORIGINS = "https://apps.kulibert.net"
+# Sockets must arrive over https/wss. Only .dev.vars turns this off (local ws:// tests).
+REQUIRE_TLS = "1"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]   # SQLite-backed class (the free-plan kind). Phase 0 stores nothing in it.
+
+# OFF on purpose. Failure records (alias + code + time, no IP, no ref, no token) are written
+# with console.log, which is only visible in `wrangler tail` while this is off. Turning on
+# persistent logs is a privacy decision for Diego and the district (alias-keyed data):
+# see SECURITY.md, "Failure log". If it is ever turned on, also set invocation_logs = false
+# so request logs (which carry IPs) are not kept.
+[observability]
+enabled = false
+
+# NOT ENABLED. Waits for Diego (Q2: may a Worker run on the kulibert.net account?)
+# and for the district's written OK. Do not uncomment or deploy before then.
+# routes = [{ pattern = "apps.kulibert.net/rt/*", zone_name = "kulibert.net" }]
+#
+# Secrets (never in this file, never in git):
+#   wrangler secret put ROOM_JOIN_SECRET        (at least 16 characters, random)
+#   wrangler secret put ROOM_JOIN_SECRET_PREV   (optional, only while rotating)
