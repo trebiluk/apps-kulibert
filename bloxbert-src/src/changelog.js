@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.469', date: '2026-10-25', lines: {
+    en: ['2.5.469 — The top bar is calmer and easier to read, with an icon on every chip.'],
+    simple: ['2.5.469 — Calmer top bar.'],
+    uk: ['2.5.469 — Верхня панель спокійніша і легше читається, з іконкою на кожному чипі.'],
+    ru: ['2.5.469 — Верхняя панель спокойнее и легче читается, с иконкой на каждом чипе.'],
+    es: ['2.5.469 — La barra de arriba está más calmada y fácil de leer, con un icono en cada chip.'],
+    ar: ['2.5.469 — الشريط العلوي أهدأ وأسهل للقراءة، مع أيقونة على كل شريحة.'],
+    'fa-AF': ['2.5.469 — نوار بالا آرام‌تر و خواناتر است، با یک آیکون روی هر چیپ.'],
+    rw: ['2.5.469 — Umurongo wo hejuru urahora kandi urasoma, n’icyitegererezo kuri buri chip.'],
+    ti: ['2.5.469 — ላዕለዋይ መስመር ዝዓርኽን ዝንበብን እዩ፡ ኣብ ነፍሲ ወከፍ ቺፕ ምልክት ኣሎ።'],
+  }},
+
   { v: '2.5.468', date: '2026-10-25', lines: {
     en: ["2.5.468 — Update notes in every language, and the softer block colors now load for everyone."],
     simple: ["2.5.468 — Notes fixed."],
