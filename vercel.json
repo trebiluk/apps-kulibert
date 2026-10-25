@@ -499,6 +499,11 @@
       "source": "/bertopia",
       "destination": "/bertopia/",
       "permanent": false
+    },
+    {
+      "source": "/blocks",
+      "destination": "/blocks/",
+      "permanent": false
     }
   ],
   "rewrites": [

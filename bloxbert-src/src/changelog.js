@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.474', date: '2026-10-25', lines: {
+    en: ["2.5.474 — Fixed: kulibert.net/blocks opens the game again. The old world card now shows."],
+    simple: ["2.5.474 — Fixed: /blocks opens. The old world card shows."],
+    uk: ["2.5.474 — Виправлено: kulibert.net/blocks знову відкриває гру. Картка старого світу тепер показується."],
+    ru: ["2.5.474 — Исправлено: kulibert.net/blocks снова открывает игру. Карточка старого мира теперь показывается."],
+    es: ["2.5.474 — Arreglado: kulibert.net/blocks abre el juego de nuevo. La tarjeta del mundo viejo ahora se muestra."],
+    ar: ["2.5.474 — تم الإصلاح: kulibert.net/blocks يفتح اللعبة مرة أخرى. بطاقة العالم القديم تظهر الآن."],
+    'fa-AF': ["2.5.474 — درست شد: kulibert.net/blocks بازی را دوباره باز می‌کند. کارت دنیای قدیمی حالا نشان داده می‌شود."],
+    rw: ["2.5.474 — Byakozwe: kulibert.net/blocks ifungura umukino nanone. Ikarita y'isi ya kera ubu igaragara."],
+    ti: ["2.5.474 — ተዓሪሙ: kulibert.net/blocks ጸወታ እንደገና ይኸፍት። ካርድ ናይ ቀደም ዓለም ሕጂ ይረአ።"],
+  }},
+
   { v: '2.5.473', date: '2026-10-25', lines: {
     en: ["2.5.473 — /bertopia/ is now the student door. The first time, you can bring your old world or start fresh."],
     simple: ["2.5.473 — /bertopia/ is the student door. Bring your old world or start fresh."],
