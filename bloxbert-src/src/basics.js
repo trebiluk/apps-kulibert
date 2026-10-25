@@ -138,9 +138,14 @@ export function createBasics(api) {
     if (id === LEVER.off || id === LEVER.on) {
       click()
       const on = id === LEVER.off
-      api.set(x, y, z, on ? LEVER.on : LEVER.off)
-      api.toast(api.t(on ? 'leverToastOn' : 'leverToastOff'))
-      powerDoors(x, y, z, on, 0)
+      const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const doFlip = () => {
+        api.set(x, y, z, on ? LEVER.on : LEVER.off)
+        api.toast(api.t(on ? 'leverToastOn' : 'leverToastOff'))
+        powerDoors(x, y, z, on, 0)
+      }
+      if (reduce) doFlip()
+      else setTimeout(doFlip, 150) // 0.15s tilt feel between states
       return true
     }
     if (id === BUTTON.off || id === BUTTON.on) {

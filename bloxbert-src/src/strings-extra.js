@@ -2655,3 +2655,20 @@ for (const [lang, row] of Object.entries(PHASES)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.445 machines help
+const MACH445 = {
+  en: { helpMachines: 'Moving dashes mean the wire has power; belts stop when paused; levers show ON/OFF.' },
+  simple: { helpMachines: 'Dashes move when the wire has power. Belts stop when paused. Levers show ON or OFF.' },
+  uk: { helpMachines: 'Рухомі риски означають, що дріт має живлення; стрічки зупиняються, коли на паузі; важелі показують УВІМК/ВИМК.' },
+  ru: { helpMachines: 'Движущиеся чёрточки значат, что провод под током; ленты останавливаются на паузе; рычаги показывают ВКЛ/ВЫКЛ.' },
+  es: { helpMachines: 'Las rayas que se mueven significan que el cable tiene energía; las cintas se paran al pausar; las palancas muestran ON/OFF.' },
+  ar: { helpMachines: 'الشرطات المتحركة تعني أن السلك به طاقة؛ الأحزمة تتوقف عند الإيقاف المؤقت؛ الروافع تظهر تشغيل/إيقاف.' },
+  'fa-AF': { helpMachines: 'خط‌های متحرک یعنی سیم برق دارد؛ نوارها هنگام توقف می‌ایستند؛ اهرم‌ها روشن/خاموش نشان می‌دهند.' },
+  rw: { helpMachines: 'Imirongo igenda ivuga ko umugozi ufite ingufu; imikandara ihagarara iyo yahagaritswe; amaboko agaragaza KUBIKA/KUZIMYA.' },
+  ti: { helpMachines: 'ዝንቀሳቐሱ መስመራት ማለት ገመድ ኤሌክትሪክ ኣለዎ፤ ቀበቶታት እንተ ደው ኢሎም ይቕመጡ፤ ሌቨራት ክፉት/ዕጹው የርእዩ።' },
+}
+for (const [lang, row] of Object.entries(MACH445)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

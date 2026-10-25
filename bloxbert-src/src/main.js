@@ -10274,7 +10274,9 @@ function beltBadgeMat(sig, item, n, pause) {
   ctx.fillText(String(letter).slice(0, 2), 8, 26)
   ctx.font = '700 26px sans-serif'
   ctx.textAlign = 'right'
-  ctx.fillText(pause ? 'II' : String(n || 1), 58, 52)
+  const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const mark = reduce ? (pause ? '⏸' : '▶') : (pause ? 'II' : String(n || 1))
+  ctx.fillText(mark, 58, 52)
   tex.update()
   const mat = new StandardMaterial('beltm-' + beltMats.size, shapeScene)
   mat.diffuseTexture = tex
