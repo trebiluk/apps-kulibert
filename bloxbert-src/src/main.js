@@ -803,7 +803,7 @@ const playerBody = noa.ents.getPhysicsBody(noa.playerEntity)
 playerBody.gravityMultiplier = GRAV_MULT
 playerBody.airDrag = 0
 const LOOK_KEY = 'bloxbert-look'
-let lookSens = 1
+let lookSens = 0.6
 let lookInvert = false
 let autoClimb = typeof matchMedia === 'function' && matchMedia('(pointer:coarse)').matches
 let wideView = false
@@ -812,10 +812,10 @@ let mainHand = 'right'
 let camBehind = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
-  if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
+  if (savedLook.cv >= 3 && savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
   lookInvert = !!savedLook.invert
   wideView = !!savedLook.wide
-  if (savedLook.cv === 2 && typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
+  if (savedLook.cv >= 2 && typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
   if (savedLook.hand === false) showHand = false
   if (savedLook.mainHand === 'left') mainHand = 'left'
   if (savedLook.cam === 'behind') camBehind = true
@@ -8585,7 +8585,7 @@ function feelTick(dt) {
     jumpBufferAt = 0
     lastGroundAt = 0
   }
-  if (carryOn && lastMove) {
+  if (carryOn && lastMove && !flying) {
     noa.inputs.state.forward = lastMove.forward
     noa.inputs.state.backward = lastMove.backward
     noa.inputs.state.left = lastMove.left
@@ -8594,6 +8594,17 @@ function feelTick(dt) {
   }
   const stickRun = runSince && now - runSince >= 300
   moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && (!survivalOn() || Effects.has('fly')) }) * Effects.speedMul()
+  if (flying && !tableMode && !seated && !window.__useLook && !window.__shotLook) {
+    const st = noa.inputs.state
+    const horiz = !!(st.forward || st.backward || st.left || st.right)
+    const vert = !!(st.jump || jumpHeld || downHeld)
+    if (!horiz || !vert) {
+      const k = Math.exp(-((dt || 33) / 1000) * 15)
+      const damp = (v) => { const n = v * k; return Math.abs(n) < 0.05 ? 0 : n }
+      if (!horiz) { body.velocity[0] = damp(body.velocity[0]); body.velocity[2] = damp(body.velocity[2]) }
+      if (!vert) body.velocity[1] = damp(body.velocity[1])
+    }
+  }
   if (grounded) airCap = airLimit(Math.hypot(body.velocity[0], body.velocity[2]), moveState.maxSpeed, WALK)
   else if (!flying && !tableMode) {
     const next = capAir(body.velocity[0], body.velocity[2], airCap)
@@ -8862,7 +8873,7 @@ function applyLook() {
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 3, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
 }
 const PICKER_KEYS = ['graphics', 'quality', 'textSize']
 const pickerWatched = new WeakSet()

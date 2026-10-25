@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.447 — ማሽናት ህያው ይመስላ፡ ሌቨር 0.15ሰ ይዘንብ፣ ገመዳት ዝንቀሳቐሱ ረኸባታት የርእዩ፣ ቤልት ይስክሮል።'],
   }},
 
+  { v: '2.5.446', date: '2026-10-25', lines: {
+    en: ['2.5.446 — Flying stops when you let go, and look speed starts calmer.'],
+    simple: ['2.5.446 — Let go to stop flying. Looking starts slower.'],
+    uk: ['2.5.446 — Політ зупиняється, коли відпускаєш, і швидкість огляду спочатку спокійніша.'],
+    ru: ['2.5.446 — Полёт останавливается, когда отпускаешь, и скорость взгляда сначала спокойнее.'],
+    es: ['2.5.446 — Volar se detiene al soltar, y la velocidad de mirada empieza más calmada.'],
+    ar: ['2.5.446 — يتوقف الطيران حين تترك، وسرعة النظر تبدأ أهدأ.'],
+    'fa-AF': ['2.5.446 — پرواز با رها کردن می‌ایستد، و سرعت نگاه آرام‌تر شروع می‌شود.'],
+    rw: ['2.5.446 — Kuguruka birahagarara iyo ubikuye, kandi umuvuduko w\'amaso utangira buhoro.'],
+    ti: ['2.5.446 — ምንፋስ ምስ ሓደጋኻ ይቁም፡ ፍጥነት ምርኣይ ድማ ቀስ ኢሉ ይጅምር።'],
+  }},
+
   { v: '2.5.445', date: '2026-10-25', lines: {
     en: ['2.5.445 — Machines look alive: levers tilt, wires dash, belts scroll.'],
     simple: ['2.5.445 — Machines look alive.'],

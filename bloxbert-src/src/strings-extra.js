@@ -2662,13 +2662,57 @@ const MACH445 = {
   simple: { helpMachines: 'Dashes move when the wire has power. Belts stop when paused. Levers show ON or OFF.' },
   uk: { helpMachines: 'Рухомі риски означають, що дріт має живлення; стрічки зупиняються, коли на паузі; важелі показують УВІМК/ВИМК.' },
   ru: { helpMachines: 'Движущиеся чёрточки значат, что провод под током; ленты останавливаются на паузе; рычаги показывают ВКЛ/ВЫКЛ.' },
-  es: { helpMachines: 'Las rayas que se mueven significan que el cable tiene energía; las cintas se paran al pausar; las palancas muestran ON/OFF.' },
+  es: { helpMachines: 'Las rayas que se mueven significan que el cable tiene energía; las cintas se paran al pausar; las palancas muestran encendido o apagado.' },
   ar: { helpMachines: 'الشرطات المتحركة تعني أن السلك به طاقة؛ الأحزمة تتوقف عند الإيقاف المؤقت؛ الروافع تظهر تشغيل/إيقاف.' },
   'fa-AF': { helpMachines: 'خط‌های متحرک یعنی سیم برق دارد؛ نوارها هنگام توقف می‌ایستند؛ اهرم‌ها روشن/خاموش نشان می‌دهند.' },
   rw: { helpMachines: 'Imirongo igenda ivuga ko umugozi ufite ingufu; imikandara ihagarara iyo yahagaritswe; amaboko agaragaza KUBIKA/KUZIMYA.' },
   ti: { helpMachines: 'ዝንቀሳቐሱ መስመራት ማለት ገመድ ኤሌክትሪክ ኣለዎ፤ ቀበቶታት እንተ ደው ኢሎም ይቕመጡ፤ ሌቨራት ክፉት/ዕጹው የርእዩ።' },
 }
 for (const [lang, row] of Object.entries(MACH445)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.446 fly brake + calmer look. rw, ti, and Dari are machine drafts.
+const FLY446 = {
+  en: {
+    helpFlyLook: 'Flying: let go to stop. Look speed: Settings > Controls.',
+    whatsNewBody: '2.5.446 — Flying stops when you let go, and look speed starts calmer.',
+  },
+  simple: {
+    helpFlyLook: 'Flying: let go and you stop. Look speed is under Settings, then Controls.',
+    whatsNewBody: '2.5.446 — Let go to stop flying. Looking starts slower.',
+  },
+  uk: {
+    helpFlyLook: 'Політ: відпусти, щоб зупинитись. Швидкість огляду: Налаштування, потім Керування.',
+    whatsNewBody: '2.5.446 — Політ зупиняється, коли відпускаєш, і швидкість огляду спочатку спокійніша.',
+  },
+  ru: {
+    helpFlyLook: 'Полёт: отпусти, чтобы остановиться. Скорость взгляда: Настройки, затем Управление.',
+    whatsNewBody: '2.5.446 — Полёт останавливается, когда отпускаешь, и скорость взгляда сначала спокойнее.',
+  },
+  es: {
+    helpFlyLook: 'Volar: suelta para parar. Velocidad de mirada: Ajustes > Controles.',
+    whatsNewBody: '2.5.446 — Volar se detiene al soltar, y la velocidad de mirada empieza más calmada.',
+  },
+  ar: {
+    helpFlyLook: 'الطيران: اترك لتتوقف. سرعة النظر: الإعدادات ثم التحكم.',
+    whatsNewBody: '2.5.446 — يتوقف الطيران حين تترك، وسرعة النظر تبدأ أهدأ.',
+  },
+  'fa-AF': {
+    helpFlyLook: 'پرواز: رها کن تا بایستی. سرعت نگاه: تنظیمات سپس کنترل‌ها.',
+    whatsNewBody: '2.5.446 — پرواز با رها کردن می‌ایستد، و سرعت نگاه آرام‌تر شروع می‌شود.',
+  },
+  rw: {
+    helpFlyLook: 'Kuguruka: reka ubike uhagarare. Umuvuduko w\'amaso: Igenamiterere, hanyuma Igenzacyerekezo.',
+    whatsNewBody: '2.5.446 — Kuguruka birahagarara iyo ubikuye, kandi umuvuduko w\'amaso utangira buhoro.',
+  },
+  ti: {
+    helpFlyLook: 'ምንፋስ፡ ሓድግ እሞ ትቁም። ፍጥነት ምርኣይ፡ ቅንብራት ድሕሪኡ መቆጻጸሪ።',
+    whatsNewBody: '2.5.446 — ምንፋስ ምስ ሓደጋኻ ይቁም፡ ፍጥነት ምርኣይ ድማ ቀስ ኢሉ ይጅምር።',
+  },
+}
+for (const [lang, row] of Object.entries(FLY446)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

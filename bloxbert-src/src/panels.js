@@ -377,6 +377,7 @@ export function mountPanels(api) {
         keys.dataset.helpKeys = '1'
         keys.textContent = api.t(touch ? 'keysHintTouch' : 'keysHint')
         g.append(keys)
+        const flyLook = document.createElement('p'); flyLook.className = 'gnote'; flyLook.textContent = api.t('helpFlyLook'); g.append(flyLook)
         const lamps = document.createElement('p'); lamps.className = 'gnote'; lamps.textContent = api.t('helpLamps'); g.append(lamps)
         const shop = document.createElement('p'); shop.className = 'gnote'; shop.textContent = api.t('helpWoodshop'); g.append(shop)
         const pvp = document.createElement('p'); pvp.className = 'gnote'; pvp.textContent = api.t('pvpHint'); g.append(pvp)

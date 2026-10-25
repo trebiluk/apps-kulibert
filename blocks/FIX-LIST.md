@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.446 fly-stop-look:** Flying stops about 0.3s after you let go of the keys or the stick. Default look speed is 0.6, and a saved choice stays. Help line in all 8 languages. Kinyarwanda, Tigrinya, and Dari still need a native check. Plate stays 2.5.447 because that number was already on main.
 - [x] **2.5.445 machines alive:** Lever tilts 0.15s (snaps on reduced motion) and shows ON/OFF. Wires and belts use motion marks. Help line added.
 
 - [x] **ghost-clicks (2.5.442):** Ghost left clicks no longer break blocks. Kinyarwanda, Tigrinya, and Dari still need a native check.
