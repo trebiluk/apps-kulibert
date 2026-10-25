@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.445', date: '2026-10-25', lines: {
+    en: ['2.5.445 — Machines look alive: levers tilt, wires dash, belts scroll.'],
+    simple: ['2.5.445 — Machines look alive.'],
+    uk: ['2.5.445 — Машини виглядають живими: важелі нахиляються, дроти з рисками, стрічки прокручуються.'],
+    ru: ['2.5.445 — Машины выглядят живыми: рычаги наклоняются, провода с чёрточками, ленты прокручиваются.'],
+    es: ['2.5.445 — Las máquinas parecen vivas: las palancas se inclinan, los cables tienen rayas, las cintas se desplazan.'],
+    ar: ['2.5.445 — الآلات تبدو حية: الروافع تميل، الأسلاك بها شرطات، الأحزمة تتحرك.'],
+    'fa-AF': ['2.5.445 — ماشین‌ها زنده به نظر می‌رسند: اهرم‌ها خم می‌شوند، سیم‌ها خط دارند، نوارها می‌چرخند.'],
+    rw: ['2.5.445 — Imashini zisa nka zizima: amaboko agororoka, imigozi ifite imirongo, imikandara igenda.'],
+    ti: ['2.5.445 — ማሽናት ህያው ይመስሉ፡ ሌቨራት ይደርብዩ፡ ገመዳት መስመር ኣለዎም፡ ቀበቶታት ይንቀሳቐሱ።'],
+  }},
+
   { v: '2.5.442', date: '2026-10-25', lines: {
     en: ['2.5.442 — Fixed ghost clicks breaking blocks. A block breaks only while you hold left on it.'],
     simple: ['2.5.442 — Ghost clicks no longer break blocks.'],

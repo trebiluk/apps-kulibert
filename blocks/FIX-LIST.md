@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.445 machines alive:** Lever tilts 0.15s (snaps on reduced motion) and shows ON/OFF. Wires and belts use motion marks. Help line added.
+
 - [x] **ghost-clicks (2.5.442):** Ghost left clicks no longer break blocks. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
