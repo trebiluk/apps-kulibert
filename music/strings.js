@@ -678,7 +678,8 @@
     news23652: "MU 2.36.52 — The start cards (Make a song, Tap a score...) are in your language.",
     news23653: "MU 2.36.53 — The song library's shelves and places (Africa, Ghana...) are in your language.",
     news23654: "MU 2.36.54 — After Tap a score, the help line is in your language.",
-    news23655: "MU 2.36.55 — Starting a new song, the help line is in your language."
+    news23655: "MU 2.36.55 — Starting a new song, the help line is in your language.",
+    news23656: "MU 2.36.56 — The bottom buttons show their names."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1012,7 +1013,8 @@
     news23652: "MU 2.36.52 — Start cards in your language.",
     news23653: "MU 2.36.53 — Song shelves in your language.",
     news23654: "MU 2.36.54 — Tap a score help in your language.",
-    news23655: "MU 2.36.55 — New song help in your language."
+    news23655: "MU 2.36.55 — New song help in your language.",
+    news23656: "MU 2.36.56 — Buttons say their names."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1691,7 +1693,8 @@
       "news23652": "MU 2.36.52 — Стартові картки («Створи пісню», «Натискай ноти»...) твоєю мовою.",
       "news23653": "MU 2.36.53 — Полиці й місця в бібліотеці пісень (Африка, Гана...) твоєю мовою.",
       "news23654": "MU 2.36.54 — Після «Натискай ноти» підказка твоєю мовою.",
-      "news23655": "MU 2.36.55 — Коли починаєш нову пісню, підказка твоєю мовою."
+      "news23655": "MU 2.36.55 — Коли починаєш нову пісню, підказка твоєю мовою.",
+      "news23656": "MU 2.36.56 — Нижні кнопки показують свої назви."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2367,7 +2370,8 @@
       "news23652": "MU 2.36.52 — Стартовые карточки («Создай песню», «Нажимай ноты»...) на твоём языке.",
       "news23653": "MU 2.36.53 — Полки и места в библиотеке песен (Африка, Гана...) на твоём языке.",
       "news23654": "MU 2.36.54 — После «Нажимай ноты» подсказка на твоём языке.",
-      "news23655": "MU 2.36.55 — Когда начинаешь новую песню, подсказка на твоём языке."
+      "news23655": "MU 2.36.55 — Когда начинаешь новую песню, подсказка на твоём языке.",
+      "news23656": "MU 2.36.56 — Нижние кнопки показывают свои названия."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3044,7 +3048,8 @@
       "news23652": "MU 2.36.52 — Las tarjetas de inicio (Haz una canción, Toca una partitura...) están en tu idioma.",
       "news23653": "MU 2.36.53 — Los estantes y lugares de la biblioteca de canciones (África, Ghana...) están en tu idioma.",
       "news23654": "MU 2.36.54 — Después de Toca una partitura, la ayuda está en tu idioma.",
-      "news23655": "MU 2.36.55 — Al empezar una canción nueva, la ayuda está en tu idioma."
+      "news23655": "MU 2.36.55 — Al empezar una canción nueva, la ayuda está en tu idioma.",
+      "news23656": "MU 2.36.56 — Los botones de abajo muestran su nombre."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3721,7 +3726,8 @@
       "news23652": "MU 2.36.52 — بطاقات البداية («اصنع أغنية»، «انقر نوتة»...) بلغتك.",
       "news23653": "MU 2.36.53 — رفوف وأماكن مكتبة الأغاني (أفريقيا، غانا...) بلغتك.",
       "news23654": "MU 2.36.54 — بعد «انقر نوتة»، سطر المساعدة بلغتك.",
-      "news23655": "MU 2.36.55 — عند بدء أغنية جديدة، سطر المساعدة بلغتك."
+      "news23655": "MU 2.36.55 — عند بدء أغنية جديدة، سطر المساعدة بلغتك.",
+      "news23656": "MU 2.36.56 — أزرار الأسفل تُظهر أسماءها."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4398,7 +4404,8 @@
       "news23652": "MU 2.36.52 — کارت‌های شروع («یک آهنگ بساز»، «نت بزن»...) به زبان خودت است.",
       "news23653": "MU 2.36.53 — قفسه‌ها و جاهای کتابخانه آهنگ (افریقا، غنا...) به زبان خودت است.",
       "news23654": "MU 2.36.54 — بعد از «نت بزن»، خط راهنما به زبان خودت است.",
-      "news23655": "MU 2.36.55 — وقتی آهنگ تازه شروع می‌کنی، خط راهنما به زبان خودت است."
+      "news23655": "MU 2.36.55 — وقتی آهنگ تازه شروع می‌کنی، خط راهنما به زبان خودت است.",
+      "news23656": "MU 2.36.56 — دکمه‌های پایین نام خود را نشان می‌دهند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5075,7 +5082,8 @@
       "news23652": "MU 2.36.52 — Amakarita yo gutangira (Kora indirimbo, Kanda inota...) ari mu rurimi rwawe.",
       "news23653": "MU 2.36.53 — Amasahani n'ahantu mu isomero ry'indirimbo (Afurika, Ghana...) biri mu rurimi rwawe.",
       "news23654": "MU 2.36.54 — Nyuma ya Kanda inota, umurongo w'ubufasha uri mu rurimi rwawe.",
-      "news23655": "MU 2.36.55 — Iyo utangiye indirimbo nshya, umurongo w'ubufasha uri mu rurimi rwawe."
+      "news23655": "MU 2.36.55 — Iyo utangiye indirimbo nshya, umurongo w'ubufasha uri mu rurimi rwawe.",
+      "news23656": "MU 2.36.56 — Buto zo hasi zerekana amazina yazo."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5752,7 +5760,8 @@
       "news23652": "MU 2.36.52 — ካርድታት መጀመርታ («ደርፊ ስራሕ»፡ «ነጥቢ ጠውቕ»...) ብቋንቋኻ እዮም።",
       "news23653": "MU 2.36.53 — መደርደሪታትን ቦታታትን ቤተ-መጻሕፍቲ ደርፍታት (ኣፍሪቃ፡ ጋና...) ብቋንቋኻ እዮም።",
       "news23654": "MU 2.36.54 — ድሕሪ «ነጥቢ ጠውቕ»፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
-      "news23655": "MU 2.36.55 — ሓድሽ ደርፊ ክትጅምር ከለኻ፡ መስመር ሓገዝ ብቋንቋኻ እዩ።"
+      "news23655": "MU 2.36.55 — ሓድሽ ደርፊ ክትጅምር ከለኻ፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
+      "news23656": "MU 2.36.56 — ታሕተዋይ መጠወቒታት ስማት ይርእዩ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

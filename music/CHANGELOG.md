@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.56** · 2026-10-25 · channel **live**
+
+MU 2.36.56 — The bottom buttons show their names.
+
+## Earlier
+
 **Chip: MU 2.36.55** · 2026-10-23 · channel **live**
 
 MU 2.36.55 — Starting a new song, the help line is in your language.
