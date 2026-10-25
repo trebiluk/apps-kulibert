@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **chop-any-item (2.5.461):** Chop trees with anything in your hand.
+
+
 - [x] **2.5.460 soft-sky:** Fog starts at 55% of the same end (62% at dusk and dawn) so the far world fades instead of hitting a wall. Day sky and haze are a soft warm gray. Phase changes glide for 3s (1s if motion is reduced). Lite fog stays the plain horizon.
 
 - [x] **2.5.458 menu-clear:** The menu sheet background is transparent, so the world stays visible behind a 25% dim. The menu card stays solid. Other panels keep their gray plate. No blur, no flash.

@@ -1,4 +1,9 @@
 export const CHANGELOG = [
+  { v: '2.5.461', date: '2026-10-25', lines: {
+    en: ['2.5.461 — You can chop trees with anything in your hand, even the Hoe.'],
+    simple: ['2.5.461 — Chop trees with any item.'],
+  }},
+
   { v: '2.5.460', date: '2026-10-25', lines: {
     en: ['2.5.460 — The sky and far-away haze are softer, and day turns to night gently.'],
     simple: ['2.5.460 — The sky is softer and changes slowly.'],
