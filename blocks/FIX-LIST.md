@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.472 badges-1:** Badges Part 1: berryRound (5 bushes), lanternWalk (6 lanterns 3+ apart), gardenCorner (4 wet crop rows). Each pays 10 bronze cogs once. Survival only.
 - [x] **2.5.471 block icons:** Hotbar and Bag pictures for grass, dirt, stone, log, planks, leaves, sand, bricks and wool are the same atlas tile as the world. The old gray icon frame is gone. Workbench, oven, glass and tool pictures stay as they were.
 
 - [x] **calm-topbar (2.5.469):** Top bar chips are calmer with icons. Kinyarwanda, Tigrinya, and Dari still need a native check.

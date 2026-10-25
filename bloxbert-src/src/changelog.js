@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.472', date: '2026-10-25', lines: {
+    en: ["2.5.472 — Badges Part 1: pick berries from 5 bushes, light 6 lanterns, or plant 4 seeds for 10 Cogs each."],
+    simple: ["2.5.472 — Badges: berries, lanterns, or seeds. 10 Cogs each."],
+    uk: ["2.5.472 — Значки частина 1: збери ягоди з 5 кущів, запали 6 ліхтарів або посади 4 насіння за 10 Шестерень кожен."],
+    ru: ["2.5.472 — Значки часть 1: собери ягоды с 5 кустов, зажги 6 фонарей или посади 4 семечка за 10 Шестерёнок каждый."],
+    es: ["2.5.472 — Insignias parte 1: recoge bayas de 5 arbustos, enciende 6 faroles o planta 4 semillas por 10 Engranajes cada una."],
+    ar: ["2.5.472 — الشارات الجزء 1: اجمع التوت من 5 شجيرات، أشعل 6 فوانيس، أو ازرع 4 بذور مقابل 10 تروس لكل منها."],
+    'fa-AF': ["2.5.472 — نشان‌ها بخش 1: از 5 بوته توت بچین، 6 چراغ روشن کن، یا 4 دانه بکار برای 10 چرخ‌دنده هر کدام."],
+    rw: ["2.5.472 — Ibimenyetso igice 1: kusanya imbuto ku bishyamba 5, kana amatara 6, cyangwa utere imbuto 4 kuri 10 Amacog buri kimwe."],
+    ti: ["2.5.472 — ምልክታት ክፋል 1: ካብ 5 ቁጥቋጦታት ፍረ ኣቕርብ፡ 6 ፋኑስ ኣብርህ፡ ወይ 4 ዘርኢ ተኸል ን10 ጎማ ነፍሲ ወከፍ።"],
+  }},
+
   { v: '2.5.471', date: '2026-10-25', lines: {
     en: ['2.5.471 — Block pictures in the hotbar and Bag now match the world.'],
     simple: ['2.5.471 — Block pictures match.'],

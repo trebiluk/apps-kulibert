@@ -3040,3 +3040,74 @@ for (const [lang, row] of Object.entries(TILE471)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.472 badges Part 1. rw, ti, and Dari are machine drafts.
+const BADGES_UI = {
+  en: {
+    bdgTitle: 'Badges', bdgEarned: 'Badge earned: {name}', bdgPaid: '+{n} Cogs', bdgProgress: '{n} of {m}', bdgDone: 'Done',
+    bdgKindAlias: 'Alias badge', bdgKindStamp: 'Stamp', bdgKindTrophy: 'Trophy',
+    bdgBerryName: 'Berry Picker', bdgBerryGoal: 'Pick berries from 5 different wild bushes',
+    bdgLanternName: 'Lantern Walker', bdgLanternGoal: 'Light 6 lanterns, at least 3 blocks apart',
+    bdgGardenName: 'Green Thumb', bdgGardenGoal: 'Plant 4 seeds on watered soil',
+  },
+  simple: {
+    bdgTitle: 'Badges', bdgEarned: 'You got a badge: {name}', bdgPaid: '+{n} Cogs', bdgProgress: '{n} of {m}', bdgDone: 'Done',
+    bdgKindAlias: 'Name badge', bdgKindStamp: 'Stamp', bdgKindTrophy: 'Trophy',
+    bdgBerryName: 'Berry Picker', bdgBerryGoal: 'Pick berries from 5 bushes',
+    bdgLanternName: 'Lantern Walker', bdgLanternGoal: 'Light 6 lanterns. Keep them 3 blocks apart.',
+    bdgGardenName: 'Green Thumb', bdgGardenGoal: 'Plant 4 seeds near water',
+  },
+  uk: {
+    bdgTitle: 'Значки', bdgEarned: 'Значок отримано: {name}', bdgPaid: '+{n} Шестерень', bdgProgress: '{n} з {m}', bdgDone: 'Готово',
+    bdgKindAlias: 'Значок імені', bdgKindStamp: 'Штамп', bdgKindTrophy: 'Трофей',
+    bdgBerryName: 'Збирач ягід', bdgBerryGoal: 'Збери ягоди з 5 різних диких кущів',
+    bdgLanternName: 'Ліхтарник', bdgLanternGoal: 'Запали 6 ліхтарів, щонайменше 3 блоки один від одного',
+    bdgGardenName: 'Зелений палець', bdgGardenGoal: 'Посади 4 насіння на политу землю',
+  },
+  ru: {
+    bdgTitle: 'Значки', bdgEarned: 'Значок получен: {name}', bdgPaid: '+{n} Шестерёнок', bdgProgress: '{n} из {m}', bdgDone: 'Готово',
+    bdgKindAlias: 'Значок имени', bdgKindStamp: 'Штамп', bdgKindTrophy: 'Трофей',
+    bdgBerryName: 'Собиратель ягод', bdgBerryGoal: 'Собери ягоды с 5 разных диких кустов',
+    bdgLanternName: 'Фонарщик', bdgLanternGoal: 'Зажги 6 фонарей, не ближе 3 блоков друг от друга',
+    bdgGardenName: 'Зелёный палец', bdgGardenGoal: 'Посади 4 семечка на политую землю',
+  },
+  es: {
+    bdgTitle: 'Insignias', bdgEarned: 'Insignia ganada: {name}', bdgPaid: '+{n} Engranajes', bdgProgress: '{n} de {m}', bdgDone: 'Hecho',
+    bdgKindAlias: 'Insignia de nombre', bdgKindStamp: 'Sello', bdgKindTrophy: 'Trofeo',
+    bdgBerryName: 'Recogedor de bayas', bdgBerryGoal: 'Recoge bayas de 5 arbustos silvestres diferentes',
+    bdgLanternName: 'Caminante de faroles', bdgLanternGoal: 'Enciende 6 faroles, al menos a 3 bloques de distancia',
+    bdgGardenName: 'Pulgar verde', bdgGardenGoal: 'Planta 4 semillas en tierra regada',
+  },
+  ar: {
+    bdgTitle: 'الشارات', bdgEarned: 'شارة مكتسبة: {name}', bdgPaid: '+{n} تروس', bdgProgress: '{n} من {m}', bdgDone: 'تم',
+    bdgKindAlias: 'شارة الاسم', bdgKindStamp: 'ختم', bdgKindTrophy: 'كأس',
+    bdgBerryName: 'جامع التوت', bdgBerryGoal: 'اجمع التوت من 5 شجيرات برية مختلفة',
+    bdgLanternName: 'ماشي الفوانيس', bdgLanternGoal: 'أشعل 6 فوانيس، على بعد 3 مربعات على الأقل',
+    bdgGardenName: 'الإبهام الأخضر', bdgGardenGoal: 'ازرع 4 بذور في تربة مروية',
+  },
+  'fa-AF': {
+    bdgTitle: 'نشان‌ها', bdgEarned: 'نشان کسب شد: {name}', bdgPaid: '+{n} چرخ‌دنده', bdgProgress: '{n} از {m}', bdgDone: 'تمام',
+    bdgKindAlias: 'نشان نام', bdgKindStamp: 'مهر', bdgKindTrophy: 'جام',
+    bdgBerryName: 'جمع‌کننده توت', bdgBerryGoal: 'از 5 بوته وحشی مختلف توت بچین',
+    bdgLanternName: 'چراغ‌دار', bdgLanternGoal: '6 چراغ روشن کن، حداقل 3 بلاک فاصله',
+    bdgGardenName: 'انگشت سبز', bdgGardenGoal: '4 دانه روی خاک آبیاری‌شده بکار',
+  },
+  rw: {
+    bdgTitle: 'Ibimenyetso', bdgEarned: 'Ikimenyetso cyabonetse: {name}', bdgPaid: '+{n} Amacog', bdgProgress: '{n} kuri {m}', bdgDone: 'Byarangiye',
+    bdgKindAlias: 'Ikimenyetso cy\'izina', bdgKindStamp: 'Kashe', bdgKindTrophy: 'Igikombe',
+    bdgBerryName: 'Ukusanya imbuto', bdgBerryGoal: 'Kusanya imbuto ku bishyamba 5 bitandukanye',
+    bdgLanternName: 'Umucana w\'amatara', bdgLanternGoal: 'Kana amatara 6, nibura 3 amabuye hagati',
+    bdgGardenName: 'Intoki y\'icyatsi', bdgGardenGoal: 'Tera imbuto 4 ku butaka bwashyizweho amazi',
+  },
+  ti: {
+    bdgTitle: 'ምልክታት', bdgEarned: 'ምልክት ተረኺቡ: {name}', bdgPaid: '+{n} ጎማ', bdgProgress: '{n} ካብ {m}', bdgDone: 'ተወዲኡ',
+    bdgKindAlias: 'ምልክት ስም', bdgKindStamp: 'ማሕተም', bdgKindTrophy: 'ዋንጫ',
+    bdgBerryName: 'ኣቃራቢ ፍረ', bdgBerryGoal: 'ካብ 5 ዝተፈላለዩ ናይ ዱር ቁጥቋጦታት ፍረ ኣቕርብ',
+    bdgLanternName: 'መምርሒ ፋኑስ', bdgLanternGoal: '6 ፋኑስ ኣብርህ፡ እንተወሓደ 3 ብሎክ ርሕቐት',
+    bdgGardenName: 'ቆጽሊ ኣጻብዕ', bdgGardenGoal: '4 ዘርኢ ኣብ ዝተጠመቐ ሓመድ ተኸል',
+  },
+}
+for (const [lang, row] of Object.entries(BADGES_UI)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

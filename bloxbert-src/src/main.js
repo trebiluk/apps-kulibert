@@ -74,6 +74,15 @@ import { ITEMS } from './data/items.js'
   for (const it of packItems()) if ((it.pack === 'decor' || it.pack === 'flora') && !ITEMS[it.key]) ITEMS[it.key] = it.def
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
+import * as Badges from './badges.js'
+Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
+  if (!session || session.mode !== 'survival') return
+  const name = t('bdg' + id[0].toUpperCase() + id.slice(1) + 'Name') || id
+  if (session.wallet && session.wallet.post) session.wallet.post({ kind: 'badge', cogs: 10, by: 'you', ref: id, metal: 'bronze' })
+  toast(t('bdgEarned').replace('{name}', name))
+  setTimeout(() => toast(t('bdgPaid').replace('{n}', '10')), 800)
+  dirty = true
+})
 import { wildBushLoot } from './drops.js'
 import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -3231,6 +3240,7 @@ function popBerry(x, y, z, n) {
 function pickBush(x, y, z, row) {
   const n = berryPickCount(x, y, z)
   session.give('berry', n)
+  Badges.bump('berryRound', cell) // 2.5.472
   popBerry(x, y, z, n)
   const now = Date.now()
   row.regrow = true
@@ -4099,6 +4109,7 @@ async function snapshot() {
     gifts,
     crops: farm.dump(),
     forage: forage.dump(),
+    badges: Badges.dump(), // 2.5.472
     bots: bot.dump(),
     pondAid: !!pondAid,
     maker: makerSnap(),
@@ -4462,6 +4473,7 @@ async function applyDoc(doc, bootSpot) {
   farm.load(src && src.crops)
   syncCrops(Date.now())
   forage.load(src && src.forage)
+  Badges.load(src && src.badges) // 2.5.472
   syncForage(Date.now())
   bot.load(botsFrom(src))
   if (belts) belts.adopt()
