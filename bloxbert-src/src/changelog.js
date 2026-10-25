@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.464', date: '2026-10-25', lines: {
+    en: ['2.5.464 — Sand, gravel, bricks, wool and water have calmer colors.'],
+    simple: ['2.5.464 — More soft world colors.'],
+    uk: ['2.5.464 — Пісок, гравій, цегла, вовна і вода мають спокійніші кольори.'],
+    ru: ['2.5.464 — Песок, гравий, кирпич, шерсть и вода имеют более спокойные цвета.'],
+    es: ['2.5.464 — La arena, la grava, los ladrillos, la lana y el agua tienen colores más calmados.'],
+    ar: ['2.5.464 — الرمل والحصى والطوب والصوف والماء لها ألوان أهدأ.'],
+    'fa-AF': ['2.5.464 — شن، شن‌ریزه، آجر، پشم و آب رنگ‌های آرام‌تری دارند.'],
+    rw: ['2.5.464 — Umucanga, amabuye, amatafari, ubwoya n’amazi bifite ibara ryoroheje.'],
+    ti: ['2.5.464 — ሑጻ፡ ጠጠር፡ ሽኮር፡ ጸጉሪን ማይን ዝዓርኽ ሕብሪ ኣለዎም።'],
+  }},
+
   { v: '2.5.463', date: '2026-10-25', lines: {
     en: ["2.5.463 — The softer world colors now have notes in every language."],
     simple: ["2.5.463 — Notes in every language."],

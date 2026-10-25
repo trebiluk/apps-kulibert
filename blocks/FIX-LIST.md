@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **calm-textures-2 (2.5.464):** Sand, gravel, bricks, wool, and water have calmer colors. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.463 calm-atlas-proof:** 2.5.459 changelog has all 9 languages. check-atlas.py asserts no neon green. leafTint test asserts channels ≤ 1.0.
 - [x] **2.5.462 bag tip:** Item tips close with the Bag, when the pointer leaves the slot, on blur, when the tab hides, and on Escape. An empty tip never stays as a dark panel.
 
