@@ -32,13 +32,14 @@
 
 import { DurableObject } from 'cloudflare:workers'
 import {
-  PROTOCOL, isConfigId, MAX_PLAYERS, MAX_STAFF_EXTRA, TICK_MS, FULL_EVERY_TICKS, IDLE_CLOSE_MS, CLOSE, ROLES,
+  PROTOCOL, isConfigId, MAX_FRAME_CHARS, MAX_PLAYERS, MAX_STAFF_EXTRA, TICK_MS, FULL_EVERY_TICKS, IDLE_CLOSE_MS, CLOSE, ROLES,
   isOpaqueId, isStaff, cleanAlias, parseFrame, frag, newBucket, takeToken,
 } from './protocol.js'
 import { checkMove } from './rules.js'
 import { makeLedger, logFailure } from './guard.js'
-import { EDITS_PER_SEC, CHUNK_REQ_PER_SEC } from './world/protocol2.js'
+import { parseFrame2, EDITS_PER_SEC, CHUNK_REQ_PER_SEC } from './world/protocol2.js'
 import { makeInbox } from './world/fanout.js'
+import { checkBlockEdit } from './rules.js'
 
 const SWEEP_EVERY = 25    // ticks (about 5 s): idle sockets, used tickets, old limiters
 const FORGIVE_EVERY = 50  // ticks (about 10 s): forget flood and speed counts
@@ -227,6 +228,11 @@ export class Room extends DurableObject {
       return
     }
 
+    if (this.wid && typeof message === 'string' && message.length <= MAX_FRAME_CHARS) {
+      let m = null
+      try { m = JSON.parse(message) } catch (e) {}
+      if (m && (m.t === 'b' || m.t === 'sync' || m.t === 'cget')) return this.worldFrame(p, m, now)
+    }
     const f = parseFrame(message)
     if (f.err) return this.hardFail(p, f.err, now)
 
@@ -254,6 +260,42 @@ export class Room extends DurableObject {
     this.staffCommand(p, f)
   }
 
+  // Shared-world frames. Cheap checks here; the hub does the claims check and the one real write.
+  async worldFrame(p, m, now) {
+    const f = parseFrame2(m)
+    if (f.err) return this.hardFail(p, f.err, now)
+    if (f.t === 'cget') {
+      if (!takeToken(p.cbucket, now)) return
+      const r = await this.stub.chunk(f.cx, f.cz)
+      return this.send(p, r.error ? { t: 'no', c: 'chunk' } : { t: 'ch', cx: f.cx, cz: f.cz, s: r.s, d: r.d })
+    }
+    if (f.t === 'sync') {
+      if (!takeToken(p.cbucket, now)) return
+      const r = await this.stub.since(f.s, 200)
+      return this.send(p, r.resync ? { t: 'rs' } : { t: 'o', o: r.ops.map((o) => [o.s, o.x, o.y, o.z, o.i]) })
+    }
+    const no = (c, extra) => this.send(p, { t: 'no', c, x: f.x, y: f.y, z: f.z, ...extra })
+    if (!takeToken(p.ebucket, now)) return no('rate')
+    if (this.frozen && !isStaff(p.role)) return no('frozen')
+    const v = checkBlockEdit({ op: f.id === 0 ? 'break' : 'place', x: f.x, y: f.y, z: f.z, id: f.id }, p.pos, null)
+    if (!v.ok) return no(v.why)
+    const [r] = await this.stub.edit({ ref: p.ref, staff: isStaff(p.role) }, [{ x: f.x, y: f.y, z: f.z, id: f.id, b: f.b }])
+    if (r.ok) return   // everyone, including this kid, hears it through the world's fan-out
+    no(r.why, r.cur === undefined ? {} : { cur: r.cur })
+    if (r.strike) this.punish(p, r.why, CLOSE.ABUSE, now)
+  }
+
+  // World -> this room (RPC). Ordered ops from the hub; repeats are dropped; a gap tells clients to reload.
+  async deliver(msg) {
+    if (!this.inbox) return false
+    const r = this.inbox.push(msg)
+    if (r.gap) {
+      this.inbox = makeInbox(msg.resync ? msg.head : msg.ops.length ? msg.ops[msg.ops.length - 1].s : msg.from)
+      this.broadcast({ t: 'rs' })
+    } else if (r.fresh.length) this.broadcast({ t: 'o', o: r.fresh.map((o) => [o.s, o.x, o.y, o.z, o.i]) })
+    return true
+  }
+
   staffCommand(p, f) {
     if (f.a === 'kick') {
       const t = this.players.get(f.i)
@@ -267,8 +309,12 @@ export class Room extends DurableObject {
       this.broadcast({ t: 'frz', on: f.on })
       return this.send(p, { t: 'ok', a: 'freeze' })
     }
-    if (f.a === 'open') { this.locked = false; this.open = true; return this.send(p, { t: 'ok', a: 'open' }) }
-    if (f.a === 'close') { this.locked = true; this.open = false; return this.send(p, { t: 'ok', a: 'close' }) }
+    if (f.a === 'open' || f.a === 'close') {
+      const on = f.a === 'open'
+      this.locked = !on; this.open = on || !!this.wid
+      if (this.wid) this.ctx.waitUntil(this.stub.setLocked(!on))   // the whole world, every room
+      return this.send(p, { t: 'ok', a: f.a })
+    }
     // rollback: nothing is edited or stored in Phase 0, so there is nothing to roll back.
     return this.send(p, { t: 'err', c: p.role === 'admin' ? 'unsupported' : 'role' })
   }
