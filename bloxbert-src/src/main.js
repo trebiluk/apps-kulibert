@@ -75,6 +75,13 @@ import { ITEMS } from './data/items.js'
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import * as Badges from './badges.js'
+function fixZoom() { // 2.5.480: Chrome zoom makes fixed UI overlap
+  const z = window.devicePixelRatio || 1
+  if (z > 1.25) document.documentElement.style.setProperty('--ui-scale', String(Math.min(1, 1.25 / z)))
+  else document.documentElement.style.removeProperty('--ui-scale')
+}
+window.addEventListener('resize', fixZoom)
+fixZoom()
 window.Badges = Badges // 2.5.476: panel reads progress
 Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   if (!session || session.mode !== 'survival') return

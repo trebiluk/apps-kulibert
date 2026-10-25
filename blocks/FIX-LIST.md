@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.480 chrome-zoom:** Hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap.
 - [x] **2.5.479 badge-shapes:** Badge shapes match the kind: circle for alias, square for stamp, diamond for trophy. Kind words translated.
 - [x] **2.5.478 menu cards:** Shop, Help, Settings, World, Wallet, Notebook and the changelog sit in a smaller card. The world stays visible behind the same light dim as the pause menu. Notes are even rows. Bag and Crafting keep their own layout.
 

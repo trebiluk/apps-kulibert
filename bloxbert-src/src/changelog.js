@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.480', date: '2026-10-25', lines: {
+    en: ["2.5.480 — The hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap."],
+    simple: ["2.5.480 — Hotbar scales down when Chrome zoom is high."],
+    uk: ["2.5.480 — Панель інструментів зменшується, коли масштаб Chrome вище 125%, щоб кнопки не накладались."],
+    ru: ["2.5.480 — Панель инструментов уменьшается, когда масштаб Chrome выше 125%, чтобы кнопки не накладывались."],
+    es: ["2.5.480 — La barra se reduce cuando el zoom de Chrome es mayor al 125%, para que los botones no se superpongan."],
+    ar: ["2.5.480 — الشريط يتصغر عندما يكون تكبير Chrome أعلى من 125%، حتى لا تتداخل الأزرار."],
+    'fa-AF': ["2.5.480 — نوار ابزار وقتی بزرگ‌نمایی Chrome بالاتر از 125% است کوچک می‌شود تا دکمه‌ها روی هم نروند."],
+    rw: ["2.5.480 — Umurongo w'ibikoresho ugabanuka iyo Chrome yongerewe hejuru ya 125%, kugira ngo buto zitagana."],
+    ti: ["2.5.480 — ናይ መሳርሒታት መስመር ይንኪ ኣብ Chrome ልዕሊ 125% ምስ ዝዓቢ፡ መልጎምታት ከይዓጉድ።"],
+  }},
+
   { v: '2.5.479', date: '2026-10-25', lines: {
     en: ["2.5.479 — Badge shapes match the kind: circle for alias, square for stamp, diamond for trophy."],
     simple: ["2.5.479 — Badge shapes match the kind."],
