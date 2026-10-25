@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.481', date: '2026-10-25', lines: {
+    en: ["2.5.481 — The Stick card is only as tall as its words. It no longer fills the screen."],
+    simple: ["2.5.481 — The Stick card is short now."],
+    uk: ["2.5.481 — Картка Палиці така висока, як її слова. Вона більше не закриває екран."],
+    ru: ["2.5.481 — Карточка Палки такая высокая, как её слова. Она больше не закрывает экран."],
+    es: ["2.5.481 — La ficha del Palo es solo tan alta como sus palabras. Ya no llena la pantalla."],
+    ar: ["2.5.481 — بطاقة العصا بارتفاع كلماتها فقط. لم تعد تملأ الشاشة."],
+    'fa-AF': ["2.5.481 — کارت چوب فقط به اندازه واژه‌هایش بلند است. دیگر صفحه را پر نمی‌کند."],
+    rw: ["2.5.481 — Ikarita ya Stick iringaniye amagambo yayo. Ntikongera kwuzuza ecran."],
+    ti: ["2.5.481 — ካርድ ስቲክ ከም ቃላቱ ጥራይ እዩ ልዑል። ስክሪን ኣይመልእን።"],
+  }},
+
   { v: '2.5.480', date: '2026-10-25', lines: {
     en: ["2.5.480 — The hotbar scales down when Chrome zoom is above 125%, so buttons don't overlap."],
     simple: ["2.5.480 — Hotbar scales down when Chrome zoom is high."],
