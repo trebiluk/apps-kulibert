@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **ghost-clicks (2.5.442):** Ghost left clicks no longer break blocks. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.441 v-view-hand:** V toggles the camera view. Hand sits closer, scales by 1.15, and bobs while walking. viewKey in all 8 languages.
 - [x] **2.5.440 sim-tick:** Belts, mobs and circuits run on the game tick. Belt visuals use tile.line. Machine save-pin coalesced to 1 s.
 - [x] **2.5.439 berty-os-theme:** Gray + orange solid theme. BERTY OS header. Held-item slot widened to min 240px (160px at 412).

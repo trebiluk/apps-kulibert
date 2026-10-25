@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.442', date: '2026-10-25', lines: {
+    en: ['2.5.442 — Fixed ghost clicks breaking blocks. A block breaks only while you hold left on it.'],
+    simple: ['2.5.442 — Ghost clicks no longer break blocks.'],
+    uk: ['2.5.442 — Виправлено примарні кліки, що ламали блоки. Блок ламається лише поки ти тримаєш ліву кнопку на ньому.'],
+    ru: ['2.5.442 — Исправлены призрачные клики, ломавшие блоки. Блок ломается только пока держишь левую кнопку на нём.'],
+    es: ['2.5.442 — Corregidos los clics fantasma que rompían bloques. Un bloque se rompe solo mientras mantienes el clic izquierdo sobre él.'],
+    ar: ['2.5.442 — أُصلح النقر الشبحي الذي كان يكسر المكعبات. المكعب ينكسر فقط وأنت تضغط يسارًا عليه.'],
+    'fa-AF': ['2.5.442 — کلیک‌های شبح که بلاک‌ها را می‌شکستند درست شد. بلاک فقط وقتی می‌شکند که کلیک چپ را رویش نگه داری.'],
+    rw: ['2.5.442 — Byakosowe kanda y’igicu yavangaga ibibanza. Ikibanza kivangika gusa ukiri gukanda ibumoso kuryo.'],
+    ti: ['2.5.442 — ሕማቕ ጠውቓት ዝሰብረ ብሎክ ተኸኣለ። ብሎክ ዝሰብር እቲ ጸጋማይ ጠውቕ ኣብኡ ክትሕዝ ከለኻ ጥራይ እዩ።'],
+  }},
+
   { v: '2.5.441', date: '2026-10-25', lines: {
     en: ["2.5.441 — Press V to switch the camera view. The hand sits closer and bobs while you walk."],
     simple: ["2.5.441 — V changes the view. The hand is closer and moves."],
