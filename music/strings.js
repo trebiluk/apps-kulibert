@@ -680,7 +680,8 @@
     news23654: "MU 2.36.54 — After Tap a score, the help line is in your language.",
     news23655: "MU 2.36.55 — Starting a new song, the help line is in your language.",
     news23656: "MU 2.36.56 — The bottom buttons show their names.",
-    news23657: "MU 2.36.57 — Softer colours, no bright flashes."
+    news23657: "MU 2.36.57 — Softer colours, no bright flashes.",
+    news23658: "MU 2.36.58 — Fewer tabs: Songs, Tap, Score, Remix, Show."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1016,7 +1017,8 @@
     news23654: "MU 2.36.54 — Tap a score help in your language.",
     news23655: "MU 2.36.55 — New song help in your language.",
     news23656: "MU 2.36.56 — Buttons say their names.",
-    news23657: "MU 2.36.57 — Softer colours."
+    news23657: "MU 2.36.57 — Softer colours.",
+    news23658: "MU 2.36.58 — Fewer tabs."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1697,7 +1699,8 @@
       "news23654": "MU 2.36.54 — Після «Натискай ноти» підказка твоєю мовою.",
       "news23655": "MU 2.36.55 — Коли починаєш нову пісню, підказка твоєю мовою.",
       "news23656": "MU 2.36.56 — Нижні кнопки показують свої назви.",
-      "news23657": "MU 2.36.57 — М’якші кольори, без яскравих спалахів."
+      "news23657": "MU 2.36.57 — М’якші кольори, без яскравих спалахів.",
+      "news23658": "MU 2.36.58 — Менше вкладок: Пісні, Тап, Ноти, Ремікс, Покажи."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2375,7 +2378,8 @@
       "news23654": "MU 2.36.54 — После «Нажимай ноты» подсказка на твоём языке.",
       "news23655": "MU 2.36.55 — Когда начинаешь новую песню, подсказка на твоём языке.",
       "news23656": "MU 2.36.56 — Нижние кнопки показывают свои названия.",
-      "news23657": "MU 2.36.57 — Более мягкие цвета, без ярких вспышек."
+      "news23657": "MU 2.36.57 — Более мягкие цвета, без ярких вспышек.",
+      "news23658": "MU 2.36.58 — Меньше вкладок: Песни, Тап, Ноты, Ремикс, Покажи."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3054,7 +3058,8 @@
       "news23654": "MU 2.36.54 — Después de Toca una partitura, la ayuda está en tu idioma.",
       "news23655": "MU 2.36.55 — Al empezar una canción nueva, la ayuda está en tu idioma.",
       "news23656": "MU 2.36.56 — Los botones de abajo muestran su nombre.",
-      "news23657": "MU 2.36.57 — Colores más suaves, sin destellos brillantes."
+      "news23657": "MU 2.36.57 — Colores más suaves, sin destellos brillantes.",
+      "news23658": "MU 2.36.58 — Menos pestañas: Canciones, Tocar, Partitura, Remix, Muestra."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3733,7 +3738,8 @@
       "news23654": "MU 2.36.54 — بعد «انقر نوتة»، سطر المساعدة بلغتك.",
       "news23655": "MU 2.36.55 — عند بدء أغنية جديدة، سطر المساعدة بلغتك.",
       "news23656": "MU 2.36.56 — أزرار الأسفل تُظهر أسماءها.",
-      "news23657": "MU 2.36.57 — ألوان أهدأ، بلا ومضات ساطعة."
+      "news23657": "MU 2.36.57 — ألوان أهدأ، بلا ومضات ساطعة.",
+      "news23658": "MU 2.36.58 — تبويبات أقل: أغانٍ، نقر، نوتة، ريمكس، اعرض."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4412,7 +4418,8 @@
       "news23654": "MU 2.36.54 — بعد از «نت بزن»، خط راهنما به زبان خودت است.",
       "news23655": "MU 2.36.55 — وقتی آهنگ تازه شروع می‌کنی، خط راهنما به زبان خودت است.",
       "news23656": "MU 2.36.56 — دکمه‌های پایین نام خود را نشان می‌دهند.",
-      "news23657": "MU 2.36.57 — رنگ‌های نرم‌تر، بدون درخشش‌های تند."
+      "news23657": "MU 2.36.57 — رنگ‌های نرم‌تر، بدون درخشش‌های تند.",
+      "news23658": "MU 2.36.58 — تب‌های کمتر: آهنگ‌ها، ضربه، نت، ریمیکس، نشان بده."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5091,7 +5098,8 @@
       "news23654": "MU 2.36.54 — Nyuma ya Kanda inota, umurongo w'ubufasha uri mu rurimi rwawe.",
       "news23655": "MU 2.36.55 — Iyo utangiye indirimbo nshya, umurongo w'ubufasha uri mu rurimi rwawe.",
       "news23656": "MU 2.36.56 — Buto zo hasi zerekana amazina yazo.",
-      "news23657": "MU 2.36.57 — Amabara yoroshye, nta murabyo mwinshi."
+      "news23657": "MU 2.36.57 — Amabara yoroshye, nta murabyo mwinshi.",
+      "news23658": "MU 2.36.58 — Ibirango bike: Indirimbo, Kanda, Inota, Remix, Erekana."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5770,7 +5778,8 @@
       "news23654": "MU 2.36.54 — ድሕሪ «ነጥቢ ጠውቕ»፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
       "news23655": "MU 2.36.55 — ሓድሽ ደርፊ ክትጅምር ከለኻ፡ መስመር ሓገዝ ብቋንቋኻ እዩ።",
       "news23656": "MU 2.36.56 — ታሕተዋይ መጠወቒታት ስማት ይርእዩ።",
-      "news23657": "MU 2.36.57 — ርጉዳት ሕብርታት፣ ድምቀት የለን።"
+      "news23657": "MU 2.36.57 — ርጉዳት ሕብርታት፣ ድምቀት የለን።",
+      "news23658": "MU 2.36.58 — ውሑዳት መቐመጢ: ደርፍታት፣ ንኻእ፣ ነጥቢ፣ ሪሚክስ፣ ኣርኢ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

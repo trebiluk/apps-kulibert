@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.58** · 2026-10-25 · channel **live**
+
+MU 2.36.58 — Fewer tabs: Songs, Tap, Score, Remix, Show.
+
+## Earlier
+
 **Chip: MU 2.36.57** · 2026-10-25 · channel **live**
 
 MU 2.36.57 — Softer colours, no bright flashes.

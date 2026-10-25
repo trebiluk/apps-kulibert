@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] fewer-tabs: Rail is Songs, Tap, Score, Remix, Show. Piano, Mix, Band, and Viz stay in the menu. MU 2.36.58.
 - [x] calm-cyan: Softer colours, no bright flashes. MU 2.36.57.
 - [x] tap-bar-names: The bottom buttons show their names, and the Tap row is not half-hidden. MU 2.36.56.
 - [x] new-song-how-lang: The Make, empty staff, and meter/key help lines speak the kid's language. MU 2.36.55.
