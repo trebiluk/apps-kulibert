@@ -1,4 +1,6 @@
 # Bertopia FIX-LIST
+- [x] **2.5.478 menu cards:** Shop, Help, Settings, World, Wallet, Notebook and the changelog sit in a smaller card. The world stays visible behind the same light dim as the pause menu. Notes are even rows. Bag and Crafting keep their own layout.
+
 - [x] **2.5.476 badges-panel:** Badges tile in the menu shows progress for berryRound, lanternWalk, and gardenCorner.
 - [x] **2.5.475 badge-fixes:** Badge name key fixed. Old world card closes with Escape, focuses first button, and doesn't retry if no old world. Lantern and garden badges wired.
 - [x] **2.5.474 door-hotfix:** /blocks redirects to /blocks/. Old world card strings in all 8 languages. SW scope follows the door.

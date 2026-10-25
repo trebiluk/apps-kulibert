@@ -197,7 +197,7 @@ export function mountPanels(api) {
     sheet.hidden = true
     stack = []
     sheet.dataset.panel = ''
-    sheet.classList.remove('kd-panel')
+    sheet.classList.remove('kd-panel', 'menu-fit')
     const bar = sheet.querySelector('.sheet-bar')
     if (bar) bar.classList.remove('kd-plate')
   }
@@ -309,7 +309,9 @@ export function mountPanels(api) {
   }
   function dress(id) {
     const framed = !!id && id !== 'menu'
+    const full = { inventory: 1, crafting: 1, station: 1, bench: 1, box: 1, woodshop: 1, tour: 1 }
     sheet.classList.toggle('kd-panel', framed)
+    sheet.classList.toggle('menu-fit', framed && !full[id])
     const bar = sheet.querySelector('.sheet-bar')
     if (bar) bar.classList.toggle('kd-plate', framed)
     if (back) back.classList.add('kd-key')

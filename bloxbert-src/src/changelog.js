@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.478', date: '2026-10-25', lines: {
+    en: ["2.5.478 — Shop, Help, Settings and the other menus sit in a smaller card, and the notes are easier to read."],
+    simple: ["2.5.478 — Menus are smaller cards and easier to read."],
+    uk: ["2.5.478 — Крамниця, Довідка, Налаштування й інші меню тепер на меншій картці, а нотатки легше читати."],
+    ru: ["2.5.478 — Магазин, Справка, Настройки и другие меню теперь на меньшей карточке, а заметки легче читать."],
+    es: ["2.5.478 — La tienda, Ayuda, Ajustes y los otros menús van en una tarjeta más chica, y las notas se leen mejor."],
+    ar: ["2.5.478 — المتجر والمساعدة والإعدادات وبقية القوائم صارت في بطاقة أصغر، والملاحظات أسهل للقراءة."],
+    'fa-AF': ["2.5.478 — دکان، راهنما، تنظیمات و فهرست‌های دیگر حالا در کارت کوچک‌تر اند، و یادداشت‌ها خواناتر اند."],
+    rw: ["2.5.478 — Iduka, Ubufasha, Igenamiterere n'ibindi menu ubu biri mu karita ntoya, kandi inyandiko zoroshye gusoma."],
+    ti: ["2.5.478 — ድኳን፡ ሓገዝ፡ ምርጫታትን ካልኦት ምናሌታትን ሕጂ ኣብ ንእሽቶ ካርድ እዮም፡ መዘኻኸሪታት ድማ ብቐሊሉ ይንበቡ።"],
+  }},
+
   { v: '2.5.477', date: '2026-10-25', lines: {
     en: ["2.5.477 — After T5 is open, the recipe says make it at a Fabricator."],
     simple: ["2.5.477 — Make it at a Fabricator."],

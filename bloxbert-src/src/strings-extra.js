@@ -3128,3 +3128,20 @@ for (const [lang, row] of Object.entries(FAB477)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.478 menu cards. rw, ti, and Dari are machine drafts.
+const MENU478 = {
+  en: { whatsNewBody: '2.5.478 — Shop, Help, Settings and the other menus sit in a smaller card, and the notes are easier to read.' },
+  simple: { whatsNewBody: '2.5.478 — Menus are smaller cards and easier to read.' },
+  uk: { whatsNewBody: '2.5.478 — Крамниця, Довідка, Налаштування й інші меню тепер на меншій картці, а нотатки легше читати.' },
+  ru: { whatsNewBody: '2.5.478 — Магазин, Справка, Настройки и другие меню теперь на меньшей карточке, а заметки легче читать.' },
+  es: { whatsNewBody: '2.5.478 — La tienda, Ayuda, Ajustes y los otros menús van en una tarjeta más chica, y las notas se leen mejor.' },
+  ar: { whatsNewBody: '2.5.478 — المتجر والمساعدة والإعدادات وبقية القوائم صارت في بطاقة أصغر، والملاحظات أسهل للقراءة.' },
+  'fa-AF': { whatsNewBody: '2.5.478 — دکان، راهنما، تنظیمات و فهرست‌های دیگر حالا در کارت کوچک‌تر اند، و یادداشت‌ها خواناتر اند.' },
+  rw: { whatsNewBody: '2.5.478 — Iduka, Ubufasha, Igenamiterere n\'ibindi menu ubu biri mu karita ntoya, kandi inyandiko zoroshye gusoma.' },
+  ti: { whatsNewBody: '2.5.478 — ድኳን፡ ሓገዝ፡ ምርጫታትን ካልኦት ምናሌታትን ሕጂ ኣብ ንእሽቶ ካርድ እዮም፡ መዘኻኸሪታት ድማ ብቐሊሉ ይንበቡ።' },
+}
+for (const [lang, row] of Object.entries(MENU478)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.477</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.477">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.477">
+<title>Bertopia 2.5.478</title>
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.478">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.478">
 <style>
 :root{--top-h:60px;--accent:#5fb3c4;--accent-soft:rgba(95,179,196,.18);--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:var(--accent);--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -55,7 +55,7 @@ html[data-kb-bar]:not(.kb-framed) .top{top:48px}
 }
 .tool.save{border-color:rgba(20,184,166,.7);background:rgba(20,184,166,.18)}
 #toast{position:fixed;left:50%;top:calc(var(--top-h) + 10px);transform:translateX(-50%);z-index:12;background:var(--ink2);border:1px solid var(--teal);border-radius:10px;padding:8px 14px;font-size:14px;max-width:90vw}
-#update-chip{position:fixed;z-index:45;left:50%;top:calc(var(--top-h) + 8px);transform:translateX(-50%);margin:0;padding:5px 12px;border-radius:999px;border:1px solid var(--accent-soft),.45);background:rgba(14,26,34,.92);color:#E6EEF2;font:600 13px/1.3 inherit;cursor:pointer}
+#update-chip{position:fixed;z-index:45;left:50%;top:calc(var(--top-h) + 8px);transform:translateX(-50%);margin:0;padding:5px 12px;border-radius:999px;border:1px solid rgba(95,179,196,.45);background:rgba(14,26,34,.92);color:#E6EEF2;font:600 13px/1.3 inherit;cursor:pointer}
 #lamp-card,#maker-card{position:fixed;left:50%;bottom:108px;transform:translateX(-50%);z-index:14;display:flex;gap:8px;background:rgba(11,18,32,.94);border:1px solid var(--teal);border-radius:12px;padding:8px}
 #maker-card{max-width:min(92vw,36rem);min-height:44px;align-items:center;justify-content:center;text-align:center;font-size:var(--ks-fs-m);line-height:1.35;padding:8px 12px;flex-wrap:wrap}
 #lamp-card[hidden],#maker-card[hidden]{display:none}
@@ -126,7 +126,7 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .help kbd{font:12px ui-monospace,monospace;background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--snow)}
 .credit{color:var(--muted);font-size:12px;margin-top:auto;padding-top:10px}
 .credit a{color:var(--cyan)}
-#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow:hidden;align-items:flex-end;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid var(--accent-soft),.4);scrollbar-width:thin}
+#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow:hidden;align-items:flex-end;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(95,179,196,.4);scrollbar-width:thin}
 #hotbar .item-strip{display:flex;gap:6px;overflow-x:auto;flex:1 1 auto;min-width:0;position:relative;scrollbar-width:thin}
 #pick-chip{display:none}
 body.touch #pick-chip{display:flex;align-items:center;justify-content:center;gap:6px;position:fixed;right:calc(16px + env(safe-area-inset-right));bottom:calc(16px + 64px + 16px + 56px + 8px + env(safe-area-inset-bottom));z-index:6;min-width:72px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid var(--accent);background:rgba(11,18,32,.92);color:#f8fafc;font-weight:700}
@@ -137,7 +137,7 @@ body.touch.stick-right #pick-chip{right:auto;left:calc(16px + env(safe-area-inse
 .slot{flex:0 0 auto;width:64px;min-height:64px;position:relative;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
 .slot .wear,.gtile .wear{position:absolute;left:8px;right:8px;bottom:4px;height:4px;border-radius:2px;background:#1c2740;pointer-events:none}
 .slot .wear .fill,.gtile .wear .fill{display:block;height:100%;background:#e2b15a;border-radius:2px}
-.slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px var(--accent-soft),.25),0 0 14px var(--accent-soft),.45)}
+.slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(95,179,196,.25),0 0 14px rgba(95,179,196,.45)}
 .sw{width:30px;height:30px;border-radius:4px;background-image:url(assets/atlas.png);image-rendering:pixelated;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
 .sw.pat-1{box-shadow:inset 0 0 0 2px rgba(248,250,252,.55), inset 0 0 0 1px rgba(0,0,0,.35)}
 .sw.pat-2{background-blend-mode:multiply}
@@ -152,7 +152,7 @@ body.touch.stick-right #pick-chip{right:auto;left:calc(16px + env(safe-area-inse
 .pad{display:none}
 body.touch:not(.table) .pad{display:grid}
 .pad{position:fixed;z-index:4;gap:6px}
-.pad button{width:56px;height:56px;border-radius:12px;border:1px solid var(--accent-soft),.4);background:rgba(11,18,32,.66);font-size:20px;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad button{width:56px;height:56px;border-radius:12px;border:1px solid rgba(95,179,196,.4);background:rgba(11,18,32,.66);font-size:20px;touch-action:none;user-select:none;-webkit-user-select:none}
 .pad button.down{background:rgba(20,184,166,.55)}
 .move{left:12px;bottom:92px;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px)}
 .move .f{grid-column:2;grid-row:1}.move .l{grid-column:1;grid-row:2}.move .b{grid-column:2;grid-row:2}.move .r{grid-column:3;grid-row:2}
@@ -163,11 +163,11 @@ body.touch:not(.table) .pad{display:grid}
 .acts .jump{grid-column:1/span 2;width:auto;height:52px}
 .stickpad{display:none;position:fixed;z-index:4;left:12px;bottom:var(--hud-lift);width:120px;height:120px;touch-action:none}
 body.touch:not(.table) .stickpad{display:block}
-.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent-soft),.75);background:radial-gradient(circle at 50% 45%, rgba(20,184,166,.28), rgba(11,18,32,.62));box-shadow:inset 0 0 18px var(--accent-soft),.25);pointer-events:none}
+.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(95,179,196,.75);background:radial-gradient(circle at 50% 45%, rgba(20,184,166,.28), rgba(11,18,32,.62));box-shadow:inset 0 0 18px rgba(95,179,196,.25);pointer-events:none}
 .stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #5eead4, #0f766e);border:2px solid #f8fafc;box-shadow:0 4px 10px rgba(0,0,0,.35);pointer-events:none}
 .jumpcol{display:none;position:fixed;z-index:4;left:auto;right:calc(16px + env(safe-area-inset-right));bottom:calc(var(--hud-lift) + 16px);gap:16px}
 body.touch:not(.table) .jumpcol{display:flex;flex-direction:column;align-items:center}
-.jumpcol button{display:grid;place-items:center;padding:0;border-radius:12px;border:1px solid var(--accent-soft),.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;touch-action:none;transition:none;animation:none}
+.jumpcol button{display:grid;place-items:center;padding:0;border-radius:12px;border:1px solid rgba(95,179,196,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;touch-action:none;transition:none;animation:none}
 .jumpcol .crouch{width:56px;height:56px;background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px}
 .jumpcol .crouch svg{width:28px;height:28px;display:block;pointer-events:none}
 .jumpcol .jump{width:64px;height:64px;font-size:13px;line-height:1.05;text-align:center}
@@ -178,7 +178,7 @@ body.stick-right .jumpcol{left:calc(16px + env(safe-area-inset-left));right:auto
 .keys{position:fixed;inset-inline-start:12px;bottom:96px;z-index:3;font-size:12px;line-height:1.35;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(880px,calc(100vw - 24px));box-sizing:border-box;overflow:visible;white-space:normal;overflow-wrap:anywhere}
 body.table .keys{display:none}
 html[dir=rtl] .keys{direction:rtl;text-align:start}
-.ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid var(--accent-soft),.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
+.ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(95,179,196,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
 @media(max-width:500px){.ver{font-size:10px;padding:1px 4px}}
 @media (max-height:500px){.top{min-height:56px;padding:4px 8px}.icon-btn,.tool{height:48px}.icon-btn{width:48px}
   .lbl{font-size:12px}
@@ -217,13 +217,13 @@ html[dir=rtl] .row .later{margin-left:0;margin-right:auto}
 .qbtn b{display:block;font-size:15px}
 .qbtn small{display:block;color:var(--muted);font-size:12px}
 .qbtn:hover{border-color:var(--teal)}
-.qbtn.on{border-color:var(--cyan);box-shadow:inset 3px 0 0 var(--cyan);background:var(--accent-soft),.10)}
+.qbtn.on{border-color:var(--cyan);box-shadow:inset 3px 0 0 var(--cyan);background:rgba(95,179,196,.10)}
 .qbtn.on svg{color:var(--cyan)}
 html[dir=rtl] .qbtn.on{box-shadow:inset -3px 0 0 var(--cyan)}
 .sec h3 svg{width:14px;height:14px;vertical-align:-2px;margin-inline-end:6px;color:var(--teal)}
 #q-now{color:var(--cyan);font-size:12px;margin:6px 2px 0}
 .new{background:rgba(20,184,166,.10);border:1px solid rgba(20,184,166,.45);border-radius:10px;padding:8px 10px;font-size:13px;margin:4px 0 2px}
-.plate{display:inline-block;margin-top:6px;font-size:12px;color:var(--cyan);border:1px solid var(--accent-soft),.45);border-radius:999px;padding:2px 9px}
+.plate{display:inline-block;margin-top:6px;font-size:12px;color:var(--cyan);border:1px solid rgba(95,179,196,.45);border-radius:999px;padding:2px 9px}
 #fs-btn{position:fixed;top:calc(var(--top-h) + 8px);right:12px;z-index:6;width:48px;height:48px;border-radius:10px;border:1px solid rgba(248,250,252,.45);background:rgba(11,18,32,.35);color:var(--snow);font-size:18px}
 html[data-kb-bar]:not(.kb-framed) #fs-btn{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #fs-btn{right:auto;left:12px}
@@ -339,7 +339,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
 /* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
 .ggrid>.gnote,.ggrid>.craft-row,.ggrid>input[type=range],.ggrid>.wide,.ggrid>.break{grid-column:1 / -1}
-.gtile{position:relative;min-height:72px;min-width:0;border-radius:12px;border:1px solid var(--accent-soft),.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px}
+.gtile{position:relative;min-height:72px;min-width:0;border-radius:12px;border:1px solid rgba(95,179,196,.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px}
 .craft-row{display:flex;gap:6px;align-items:stretch}
 .craft-row .gtile{flex:1;min-height:72px}
 .craft-row .xmax{flex:0 0 76px;min-width:76px;font-weight:700}
@@ -353,7 +353,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #sheet input[type=range]{width:100%;min-height:44px;accent-color:var(--accent)}
 .gtile:disabled{color:#e2e8f0;border-color:#64748b;background:#121826}
 #pick-ring.tick{border-color:#F6C453}
-#poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,var(--accent-soft),.45),transparent 60%)}
+#poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(95,179,196,.45),transparent 60%)}
 .ggrid.baggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .ggrid.baggrid .gtile.wide{grid-column:1 / -1;min-height:52px}
 .ggrid.baggrid .gtile.slot{min-height:64px;overflow:hidden}
@@ -361,9 +361,9 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .ggrid.baggrid .gtile.on{border-color:var(--cyan);box-shadow:inset 0 0 0 2px var(--cyan)}
 @media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
 @media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
-#mode-pill{position:relative;z-index:6;display:flex;flex:0 0 auto;min-height:48px;border-radius:999px;overflow:hidden;border:1px solid var(--accent-soft),.75);background:rgba(11,18,32,.94);pointer-events:auto}
+#mode-pill{position:relative;z-index:6;display:flex;flex:0 0 auto;min-height:48px;border-radius:999px;overflow:hidden;border:1px solid rgba(95,179,196,.75);background:rgba(11,18,32,.94);pointer-events:auto}
 #mode-pill button{flex:0 0 auto;min-width:44px;min-height:48px;padding:0 12px;border:0;background:transparent;color:#f8fafc;font-weight:700;white-space:nowrap;touch-action:manipulation}
-#mode-pill button + button{border-inline-start:1px solid var(--accent-soft),.5)}
+#mode-pill button + button{border-inline-start:1px solid rgba(95,179,196,.5)}
 #mode-pill button[aria-pressed="true"]{background:#14B8A6;color:#04221e}
 html[dir=rtl] #mode-pill{flex-direction:row}
 #energy-bar{flex:1 0 100%;display:flex;gap:3px;align-items:center;height:18px;margin:0;pointer-events:none}
@@ -764,7 +764,7 @@ body[data-glasses="1"] .cross{box-shadow:none}
 .qol-shake{animation:qol-shake 160ms linear 1}
 @media (prefers-reduced-motion:reduce){.qol-shake{animation:none}}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.477">
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.478">
 <style>
 .top{
   flex-wrap:nowrap;align-items:center;gap:6px;padding:1px 8px;min-height:60px;
@@ -1177,7 +1177,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="read.css?v=2.5.477">
+<link rel="stylesheet" href="read.css?v=2.5.478">
 </head>
 <body>
 <div id="stage"></div>
@@ -1192,7 +1192,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.477</span>
+      <span class="ver" id="ver-plate">2.5.478</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1245,7 +1245,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.477 — After T5 is open, the recipe says make it at a Fabricator.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.478 — Shop, Help, Settings and the other menus sit in a smaller card, and the notes are easier to read.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1294,7 +1294,7 @@ body.tip-on #held-chip{display:none!important}
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
     <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">2.5.477</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.5.478</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card kd-card" role="dialog" aria-labelledby="about-title">
@@ -1314,7 +1314,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="stick-knob" id="stick-knob"></div>
 </div>
 <div class="jumpcol" id="jump-col">
-  <button id="t-bonk" type="button" hidden style="width:64px;height:56px;min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--accent-soft),.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;font-size:13px">🔨 Bonk</button>
+  <button id="t-bonk" type="button" hidden style="width:64px;height:56px;min-width:44px;min-height:44px;border-radius:12px;border:1px solid rgba(95,179,196,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;font-size:13px">🔨 Bonk</button>
   <button class="crouch" id="t-crouch" type="button" aria-pressed="false" data-i18n-label="crouch" aria-label="Crouch"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v11M7 10l5 6 5-6M4 21h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="jump" type="button" data-hold="jump" data-i18n="jump" data-i18n-label="jump" aria-label="Jump">Jump</button>
 </div>
@@ -1374,9 +1374,9 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.477"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.477" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.477" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.478"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.478" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.478" defer></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

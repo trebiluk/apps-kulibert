@@ -537,9 +537,9 @@ html body #sheet #sheet-x:focus,
 html body #sheet #sheet-x:focus-visible,
 html body #sheet #sheet-back:focus,
 html body #sheet #sheet-back:focus-visible {
-  outline: 3px solid #F8FAFC !important;
-  outline-offset: -4px !important;
-  box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
+  outline: 3px solid #E85820 !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
 }
 html body #sheet #sheet-back:focus:not(:focus-visible) { outline: none !important; box-shadow: none !important; } /* 2.5.391: no white ring on Menu when the Bag opens by mouse/touch */
 html body #sheet button.kd-go:focus:not(:focus-visible) { outline: none !important; box-shadow: none !important; } /* 2.5.393: no white ring on Seguir when the menu opens by mouse/touch */
@@ -2337,3 +2337,92 @@ html[data-kp-motion="less"] body #scrim { transition: none !important; }
 /* 2.5.462: an empty bag tip is never a dark panel on the left */
 html body #qol-tip:empty,
 html body #qol-tip[hidden] { display: none !important; }
+
+/* 2.5.478: sparse menus are a card, not a full-screen gray slab.
+   The world stays behind the same light dim as the pause menu.
+   Help, Notebook, and changelog notes sit in even rows. */
+html body.menu-open #scrim { opacity: 1 !important; }
+html body #sheet.menu-fit {
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 12px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  gap: 0 !important;
+}
+html body #sheet#sheet.menu-fit .sheet-bar,
+html body #sheet#sheet.menu-fit .sheet-bar.kd-plate,
+html body #sheet#sheet.menu-fit #sheet-body {
+  width: min(760px, calc(100vw - 24px)) !important;
+  max-width: min(760px, calc(100vw - 24px)) !important;
+  flex: 0 1 auto !important;
+  box-sizing: border-box !important;
+  background-color: #1a1a1a !important;
+  background-image: none !important;
+  color: #e8e6e3 !important;
+}
+html body #sheet.menu-fit .sheet-bar {
+  border: 1px solid #E85820 !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+}
+html body #sheet.menu-fit #sheet-body {
+  border: 1px solid #E85820 !important;
+  border-top: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: 6px 6px 0 #000 !important;
+  max-height: calc(100vh - 88px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 8px 12px 12px !important;
+}
+html body #sheet.menu-fit #sheet-title {
+  flex: 1 1 auto;
+  margin: 0;
+  text-align: start;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html body #sheet.menu-fit .qbtn.on {
+  border-color: #E85820 !important;
+  box-shadow: inset 4px 0 0 #E85820 !important;
+  background-color: #2a1a14 !important;
+  color: #e8e6e3 !important;
+}
+html[dir=rtl] body #sheet.menu-fit .qbtn.on { box-shadow: inset -4px 0 0 #E85820 !important; }
+html body #sheet.menu-fit .pill.on {
+  background: #2a1a14 !important;
+  color: #e8e6e3 !important;
+  border-color: #E85820 !important;
+}
+html body #sheet.menu-fit .set-val { color: #f08a4b !important; }
+html body #sheet.menu-fit,
+html body #sheet.menu-fit #sheet-body { scrollbar-color: #E85820 #141414; }
+html body #sheet.menu-fit .ggrid > .gnote:not(.ghead) {
+  margin: 0 0 8px !important;
+  padding: 10px 12px !important;
+  background: #141414 !important;
+  border: 1px solid #3a3a3a !important;
+  border-inline-start: 4px solid #E85820 !important;
+  line-height: 1.35 !important;
+  box-sizing: border-box !important;
+}
+html body #sheet.menu-fit .ggrid > .gnote.ghead {
+  margin: 8px 0 4px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+@media (max-height: 500px) {
+  html body #sheet.menu-fit { padding: 8px !important; }
+  html body #sheet.menu-fit #sheet-body { max-height: calc(100vh - 72px) !important; padding: 6px 8px 8px !important; }
+  html body #sheet.menu-fit .ggrid > .gnote:not(.ghead) { padding: 6px 8px !important; margin-bottom: 6px !important; }
+}
+
