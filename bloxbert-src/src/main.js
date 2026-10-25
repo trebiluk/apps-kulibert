@@ -8217,6 +8217,19 @@ document.addEventListener('keydown', (e) => {
       return
     }
   }
+  if (e.key === 'v' || e.key === 'V') { // 2.5.441: V toggles the camera view
+    if (!e.ctrlKey && !e.metaKey && !e.repeat && $('sheet') && $('sheet').hidden) {
+      e.preventDefault()
+      camBehind = !camBehind
+      applyLook()
+      const camBtn = document.querySelector('#look-card .pill.on')
+      if (camBtn && camBtn.textContent) {
+        camBtn.textContent = camBehind ? t('camBehind') : t('camClose')
+        camBtn.setAttribute('aria-label', t('cameraView') + ': ' + camBtn.textContent)
+      }
+      return
+    }
+  }
   if (e.key === 'c' || e.key === 'C') {
     if (e.ctrlKey || e.metaKey) return
     if (calm && !calm.workbenchOn()) return

@@ -54,7 +54,7 @@ export function createHands(opts) {
   flatMat.fogEnabled = false
   flatMat.backFaceCulling = false
 
-  const HAND = 0.48
+  const HAND = 0.48 * 1.15 // 2.5.441: bigger hand
   const mainRoot = new TransformNode('hand-main', scene)
   mainRoot.parent = camera
   mainRoot.position.set(0, -0.02, 1.05)
@@ -67,10 +67,10 @@ export function createHands(opts) {
 
   const pivot = new TransformNode('hand-pivot', scene)
   pivot.parent = mainRoot
-  pivot.position.set(0.2, -0.26, 0)
+  pivot.position.set(0.24, -0.30, 0) // 2.5.441: closer hand
   const itemAnchor = new TransformNode('hand-item', scene)
   itemAnchor.parent = pivot
-  itemAnchor.position.set(0.22, -0.16, 0.16)
+  itemAnchor.position.set(0.22, -0.14, 0.12) // 2.5.441: closer item
 
   const handMesh = buildHand(scene, flatMat)
   handMesh.parent = pivot
@@ -163,10 +163,11 @@ export function createHands(opts) {
     syncItem()
     const now = performance.now()
     const lite = opts.lite()
+    const less = document.documentElement.getAttribute('data-kp-motion') === 'less' || window.matchMedia('(prefers-reduced-motion: reduce)').matches // 2.5.441
     let swayX = 0
     let swayZ = 0
     let bob = 0
-    if (!lite) {
+    if (!lite && !less) {
       const t = now * 0.001
       swayX = Math.sin(t * 1.3) * 0.03
       swayZ = Math.sin(t * 0.8) * 0.02
