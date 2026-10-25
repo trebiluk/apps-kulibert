@@ -6570,6 +6570,7 @@ function paintWandPill() {
   if (!pill) return
   const on = wandHeld()
   pill.hidden = !on
+  syncHudBusy()
   if (!on) return
   const modeBtn = $('wand-mode')
   if (modeBtn) {
@@ -6596,6 +6597,7 @@ function noteWandTip() {
   showCard(t('wandTip'))
 }
 function syncWandUi() {
+  syncHudBusy()
   const on = wandHeld()
   if (!on) rememberPaint()
   if (on && !wandWas) noteWandTip()
@@ -7570,6 +7572,14 @@ function pick(id) {
   if (i >= 0 && i < CREATIVE_HOT) selectSlot(i) // 2.5.397
   else putPalette(selectedSlot, id) // 2.5.397: not in 1-9 -> into the held slot
 }
+
+function syncHudBusy() {
+  const busy = ['wand-pill', 'use-pill', 'held-chip', 'dig-chip', 'door-opt'].some(id => {
+    const el = document.getElementById(id)
+    return el && !el.hidden
+  })
+  document.body.classList.toggle('hud-busy', busy)
+}
 function flashHeld(name) {
   const chip = $('held-chip')
   if (!chip || chip.dataset.hold === '1') return
@@ -7585,7 +7595,8 @@ function flashHeld(name) {
     if (c.left < s.right && c.right > s.left && c.top < s.bottom && c.bottom > s.top) chip.style.top = (s.bottom + 6) + 'px'
   }
   clearTimeout(flashHeld.t)
-  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on'); chip.style.top = '' }, 1500)
+  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on'); chip.style.top = ''; syncHudBusy() }, 1500)
+  syncHudBusy()
 }
 function bagPick(item, slot) {
   selectedSlot = slot

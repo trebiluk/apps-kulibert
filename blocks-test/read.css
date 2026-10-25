@@ -2283,3 +2283,13 @@ html body.mode-creative #hotbar#hotbar .item-strip .slot:not(.bag-tile)[aria-pre
   }
 }
 
+
+/* 2.5.451: hide keys tip bar when any tool bar or held label is showing */
+body.hud-busy .keys { display: none !important; }
+/* shared stack: hotbar → label → tool bar */
+html body #hotbar { --hotbar-top: 8px; }
+html body #held-chip,
+html body #wand-pill,
+html body #use-pill {
+  bottom: calc(var(--hotbar-top, 8px) + 56px + 8px) !important;
+}

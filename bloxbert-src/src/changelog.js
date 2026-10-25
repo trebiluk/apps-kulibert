@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.451', date: '2026-10-25', lines: {
+    en: ['2.5.451 — The keys tip hides while a tool bar or item name shows, so nothing above the hotbar overlaps.'],
+    simple: ['2.5.451 — No more overlap above the hotbar.'],
+    uk: ['2.5.451 — Підказка клавіш ховається, коли видно панель інструментів або назву предмета, щоб нічого над хотбаром не перекривалось.'],
+    ru: ['2.5.451 — Подсказка клавиш прячется, когда видна панель инструментов или имя предмета, чтобы ничего над хотбаром не перекрывалось.'],
+    es: ['2.5.451 — El aviso de teclas se oculta mientras se muestra una barra de herramientas o el nombre del objeto, para que nada se superponga encima de la barra.'],
+    ar: ['2.5.451 — يختفي تلميح المفاتيح عندما يظهر شريط أدوات أو اسم العنصر، حتى لا يتداخل شيء فوق الشريط.'],
+    'fa-AF': ['2.5.451 — نکته کلیدها پنهان می‌شود وقتی نوار ابزار یا نام آیتم دیده می‌شود، تا چیزی بالای نوار روی هم نرود.'],
+    rw: ['2.5.451 — Inama y\'imfunguzo ihisha iyo urubuga rw\'ibikoresho cyangwa izina ry\'ikintu rigaragara, kugira ngo ntacyo ryegeranye hejuru y\'urubuga.'],
+    ti: ['2.5.451 — ምኽሪ መፍትሕ ይሕባእ ኣብ እዋን ናይ መሳርሒ ባር ወይ ስም ንብረት እንተ ቐሪቡ፡ እሞ ኣብ ላዕሊ ሆትባር ዝዓጽፍ ነገር የለን።'],
+  }},
+
   { v: '2.5.449', date: '2026-10-25', lines: {
     en: ["2.5.449 — The block preview sits right on the crosshair at its real size. Teal ✓ means it fits; red ✕ means no room. Beds start at your aim and turn with R."],
     simple: ["2.5.449 — The preview sits on the cross. Teal ✓ fits. Red ✕ no room."],
@@ -9,6 +21,7 @@ export const CHANGELOG = [
     'fa-AF': ["2.5.449 — پیش‌نمایش بلوک درست روی نشانه با اندازه واقعی‌اش می‌نشیند. ✓ فیروزه‌ای یعنی جا می‌شود؛ ✕ قرمز یعنی جا نیست."],
     rw: ["2.5.449 — Igaragaza ry'ibuye riyicara ku mukororongo ku bunini bwarwo. ✓ y'icyatsi bishobora; ✕ itukura nta mwanya."],
     ti: ["2.5.449 — ቅድመ-ምርኢት ብሎክ ኣብ ምልክት መስቀል ብናይ ብሓቂ ዓቐኑ ይቐመጥ። ✓ ሰማያዊ ማለት ይትከል፤ ✕ ቀይሕ ማለት ቦታ የለን።"],
+  }},
   }},
 
   { v: '2.5.448', date: '2026-10-25', lines: {
