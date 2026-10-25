@@ -36,8 +36,9 @@ export function makeRoom(opts = {}) {
     sockets: new Set(),
     acceptWebSocket(ws) { ws.ctx = this; this.sockets.add(ws) },
     getWebSockets() { return [...this.sockets] },
+    waitUntil(p) { Promise.resolve(p).catch(() => {}) },
   }
-  const room = new Room(ctx, {})
+  const room = new Room(ctx, opts.env || {})
   if (opts.open !== false) { room.open = true; room.cfg = 'period' }
   return { ctx, room }
 }

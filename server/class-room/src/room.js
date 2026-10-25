@@ -37,6 +37,8 @@ import {
 } from './protocol.js'
 import { checkMove } from './rules.js'
 import { makeLedger, logFailure } from './guard.js'
+import { EDITS_PER_SEC, CHUNK_REQ_PER_SEC } from './world/protocol2.js'
+import { makeInbox } from './world/fanout.js'
 
 const SWEEP_EVERY = 25    // ticks (about 5 s): idle sockets, used tickets, old limiters
 const FORGIVE_EVERY = 50  // ticks (about 10 s): forget flood and speed counts
@@ -67,6 +69,10 @@ export class Room extends DurableObject {
     this.locked = false      // a teacher closed it on purpose: staff joining does not reopen it
     this.cfg = null
     this.frozen = false
+    this.wid = null          // shared-world id (null = single-room mode)
+    this.rid = null          // this room's name inside the world
+    this.stub = null
+    this.inbox = null        // set once the world has linked this room
 
     // If this object was evicted and woken while sockets stayed open, rebuild the player
     // list from the sockets' small attachments. Positions are not kept; the next frame
@@ -75,6 +81,7 @@ export class Room extends DurableObject {
     for (const ws of ctx.getWebSockets()) {
       const a = ws.deserializeAttachment()
       if (!a || !a.id) continue
+      if (a.wid && !this.wid) { this.wid = a.wid; this.rid = a.rid; this.stub = env.WORLDS.get(env.WORLDS.idFromName(a.wid)); this.open = true }
       const p = this.makePlayer(ws, a.id, a.ref, a.alias, a.role || 'kid', 'none', now)
       this.players.set(a.id, p)
       this.byRef.set(a.ref, a.id)
@@ -83,12 +90,15 @@ export class Room extends DurableObject {
       if (a.cfg && isConfigId(a.cfg)) this.cfg = a.cfg
     }
     if (this.players.size) this.startTimer()
+    if (this.wid && this.players.size) this.relink()
   }
+
+  relink() { this.ctx.waitUntil(this.stub.link(this.rid).then((head) => { this.inbox = makeInbox(head) })) }
 
   makePlayer(ws, id, ref, alias, role, ip, now) {
     return {
       ws, id, ref, alias, role, ip, pos: null, posAt: now, dirty: false, last: now,
-      bucket: newBucket(now), lastQ: -1, flood: 0, viol: 0,
+      bucket: newBucket(now), ebucket: newBucket(now, EDITS_PER_SEC), cbucket: newBucket(now, CHUNK_REQ_PER_SEC, 8), lastQ: -1, flood: 0, viol: 0,
     }
   }
 
@@ -131,6 +141,8 @@ export class Room extends DurableObject {
     const role = h('x-bt-role')
     const jti = h('x-bt-jti')
     const cfg = h('x-bt-cfg')
+    const wid = h('x-bt-world')
+    const rid = h('x-bt-rid')
     const ip = /^[0-9a-f]{16}$/.test(h('x-bt-ip')) ? h('x-bt-ip') : 'none'
     if (!isOpaqueId(ref) || !alias || !ROLES.includes(role) || !isOpaqueId(jti) || !isConfigId(cfg)) return refuse(400, 'bad identity')
 
@@ -146,10 +158,16 @@ export class Room extends DurableObject {
     if (this.ledger.isBanned(ref, now)) { logFailure(alias, 'banned-join', now); return refuse(403, 'banned') }
 
     const staff = isStaff(role)
+    if (wid) {   // shared world: the hub already checked open/config/build when it seated this kid
+      if (!isOpaqueId(wid) || !isOpaqueId(rid) || !this.env.WORLDS) return refuse(400, 'bad identity')
+      if (this.wid && (this.wid !== wid || this.rid !== rid)) return refuse(403, 'config')
+      if (!this.wid) { this.wid = wid; this.rid = rid; this.stub = this.env.WORLDS.get(this.env.WORLDS.idFromName(wid)) }
+      this.open = true
+    }
     if (!staff && !this.open) return refuse(403, 'closed')
     // A room is one config. Kids must carry the same config id as the staff who opened it.
-    if (!staff && cfg !== this.cfg) return refuse(403, 'config')
-    if (staff && this.cfg && this.players.size > 0 && cfg !== this.cfg) return refuse(403, 'config')
+    if (!this.wid && !staff && cfg !== this.cfg) return refuse(403, 'config')
+    if (!this.wid && staff && this.cfg && this.players.size > 0 && cfg !== this.cfg) return refuse(403, 'config')
 
     // A second tab from the same kid replaces the first, so there are no ghost avatars.
     const dup = this.byRef.get(ref)
@@ -174,7 +192,7 @@ export class Room extends DurableObject {
 
     this.ctx.acceptWebSocket(server)
     const id = this.allocId()
-    server.serializeAttachment({ id, ref, alias, role, cfg: this.cfg })
+    server.serializeAttachment({ id, ref, alias, role, cfg: this.cfg, wid: this.wid, rid: this.rid })
     const me = this.makePlayer(server, id, ref, alias, role, ip, now)
 
     const others = []
@@ -187,6 +205,7 @@ export class Room extends DurableObject {
     this.send(me, { t: 'hello', you: id, role: roleLetter(role), max: MAX_PLAYERS, tick: TICK_MS, frozen: this.frozen ? 1 : 0, players: others })
     this.broadcast({ t: 'join', i: id, a: alias }, id)
     this.startTimer()
+    if (this.wid && this.players.size === 1) this.relink()
     return upgraded(client)
   }
 
@@ -300,7 +319,10 @@ export class Room extends DurableObject {
       for (const p of everyone) if (now - p.last > IDLE_CLOSE_MS) this.drop(p.id, CLOSE.IDLE, 'idle')
       this.sweepState(now)
     }
-    if (this.tick % FORGIVE_EVERY === 0) for (const p of everyone) { p.flood = 0; p.viol = 0 }
+    if (this.tick % FORGIVE_EVERY === 0) {
+      for (const p of everyone) { p.flood = 0; p.viol = 0 }
+      if (this.wid && this.inbox) this.ctx.waitUntil(this.stub.touch(this.rid))   // heartbeat to the world
+    }
 
     const full = this.tick % FULL_EVERY_TICKS === 0
     const entries = []
@@ -346,5 +368,9 @@ export class Room extends DurableObject {
     const ok = Number.isInteger(code) && code >= 1000 && code <= 4999 && ![1004, 1005, 1006, 1015].includes(code)
     try { p.ws.close(ok ? code : 1000, reason) } catch (e) {}
     this.broadcast({ t: 'leave', i: id }, id)
+    if (this.wid) {
+      this.ctx.waitUntil(this.stub.left(p.ref))
+      if (this.players.size === 0) { this.inbox = null; this.ctx.waitUntil(this.stub.unlink(this.rid)) }
+    }
   }
 }
