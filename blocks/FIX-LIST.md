@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **2.5.468 changelog-langs:** 2.5.459/460/461 entries have all 9 languages. whatsNewBody says 2.5.468. Atlas md5 matches across doors.
 - [x] **calm-textures-2 (2.5.464):** Sand, gravel, bricks, wool, and water have calmer colors. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 

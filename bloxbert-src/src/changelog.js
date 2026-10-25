@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.468', date: '2026-10-25', lines: {
+    en: ["2.5.468 — Update notes in every language, and the softer block colors now load for everyone."],
+    simple: ["2.5.468 — Notes fixed."],
+    uk: ["2.5.468 — Нотатки оновлення кожною мовою, і м'якші кольори блоків тепер завантажуються для всіх."],
+    ru: ["2.5.468 — Заметки об обновлении на каждом языке, и более мягкие цвета блоков теперь загружаются для всех."],
+    es: ["2.5.468 — Notas de actualización en cada idioma, y los colores más suaves de los bloques ahora cargan para todos."],
+    ar: ["2.5.468 — ملاحظات التحديث بكل لغة، وألوان الكتل الأهدأ تحمل الآن للجميع."],
+    'fa-AF': ["2.5.468 — یادداشت‌های به‌روزرسانی به هر زبان، و رنگ‌های نرم‌تر بلوک‌ها حالا برای همه بارگذاری می‌شوند."],
+    rw: ["2.5.468 — Inyandiko z'ivugurura mu rurimi rwose, kandi amabara yoroshye y'ibibuye ubu yikora kuri bose."],
+    ti: ["2.5.468 — መዘኻኸሪ ምዕባለ ኣብ ነፍሲ ወከፍ ቋንቋ፡ ልዕሊ ርጉዕ ሕብሪ ብሎክ ድማ ሕጂ ንኹሉ ይጽዕን።"],
+  }},
+
   { v: '2.5.467', date: '2026-10-25', lines: {
     en: ['2.5.467 — Fixed the game door so it loads again after the calm-color update.'],
     simple: ['2.5.467 — The game loads again.'],
@@ -62,11 +74,25 @@ export const CHANGELOG = [
   { v: '2.5.461', date: '2026-10-25', lines: {
     en: ['2.5.461 — You can chop trees with anything in your hand, even the Hoe.'],
     simple: ['2.5.461 — Chop trees with any item.'],
+    uk: ['2.5.461 — Можна рубати дерева чим завгодно в руці, навіть мотикою.'],
+    ru: ['2.5.461 — Можно рубить деревья чем угодно в руке, даже мотыгой.'],
+    es: ['2.5.461 — Puedes talar árboles con cualquier cosa en la mano, incluso el azadón.'],
+    ar: ['2.5.461 — يمكنك قطع الأشجار بأي شيء في يدك، حتى بالمعول.'],
+    'fa-AF': ['2.5.461 — می‌توانی درخت‌ها را با هر چیزی در دستت ببری، حتی با بیلچه.'],
+    rw: ['2.5.461 — Ushobora gutema ibiti n\'ikintu cyose ufite mu ntoki, ndetse n\'isuka.'],
+    ti: ['2.5.461 — ገረብ ብዝኾነ ነገር ኣብ ኢድካ ክትቑርጽ ትኽእል፡ ብሓሳብ እኳ።'],
   }},
 
   { v: '2.5.460', date: '2026-10-25', lines: {
     en: ['2.5.460 — The sky and far-away haze are softer, and day turns to night gently.'],
     simple: ['2.5.460 — The sky is softer and changes slowly.'],
+    uk: ['2.5.460 — Небо і далекий серпанок м\'якші, а день м\'яко переходить у ніч.'],
+    ru: ['2.5.460 — Небо и далёкая дымка мягче, а день мягко переходит в ночь.'],
+    es: ['2.5.460 — El cielo y la bruma lejana son más suaves, y el día pasa a la noche con suavidad.'],
+    ar: ['2.5.460 — السماء والضباب البعيد أكثر هدوءًا، والنهار يتحول إلى الليل بلطف.'],
+    'fa-AF': ['2.5.460 — آسمان و مه دور نرم‌ترند و روز به آرامی به شب تبدیل می‌شود.'],
+    rw: ['2.5.460 — Ijuru n\'igicu kiri kure biroroshye, kandi umunsi uhinduka ijoro buhoro.'],
+    ti: ['2.5.460 — ሰማይን ርሑቕ ደበናን ልዕሊ ርጉዕ እዮም፡ መዓልቲ ድማ ብለውሒ ናብ ለይቲ ትቕየር።'],
   }},
 
   { v: '2.5.459', date: '2026-10-25', lines: {
