@@ -2,7 +2,7 @@
 Slow mode: one item per turn. Finish, ship, verify live, then pull your next.
 
 Each item: `git pull` → read the file in `bloxbert-src/pull/` → if already done on main, check it off here and skip → else ship it.
-Version: next free 2.5.x after the newest on main (git log). Never reuse/lower. No force-push.
+Version: use ONLY the version written on your item; if none, post EMPTY and stop. Next free 2.5.x after the newest on main (git log). Never reuse/lower. No force-push.
 Limit: ≤3 fixes, ≤5 files. Two failed tries = stop, write BLOCKED + why under your item.
 Out of scope: deleting saves, save format, server deploy, chat, TechWorks.
 DONE only when seen live on /bertopia/. Check your box here in the same commit.
@@ -22,7 +22,8 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
-- [x] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x.
+- [x] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x. (shipped ac12014)
+- [ ] rampfill-pourlines-part4.md — RF 1.0.23
 
 ## BOB
 - [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
