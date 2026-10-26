@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.491', date: '2026-10-26', lines: {
+    en: ["2.5.491 — On a big screen the goal, inspect, and held name share one stack. On a phone the goal stays at the bottom."],
+    simple: ["2.5.491 — On a big screen those notes share one stack. On a phone the goal stays at the bottom."],
+    uk: ["2.5.491 — На великому екрані ціль, огляд і назва в руці стоять одним стовпчиком. На телефоні ціль лишається внизу."],
+    ru: ["2.5.491 — На большом экране цель, осмотр и название в руке стоят одним столбиком. На телефоне цель остаётся внизу."],
+    es: ["2.5.491 — En una pantalla grande la meta, inspeccionar y el nombre en la mano van en una sola pila. En el teléfono la meta se queda abajo."],
+    ar: ["2.5.491 — على الشاشة الكبيرة الهدف والفحص والاسم في اليد في رصة واحدة. على الهاتف يبقى الهدف في الأسفل."],
+    'fa-AF': ["2.5.491 — در صفحهٔ بزرگ هدف، بررسی و نام در دست در یک ستون می‌نشینند. در گوشی هدف پایین می‌ماند."],
+    rw: ["2.5.491 — Ku rubuga runini intego, kugenzura n'izina mu ntoki biri mu murongo umwe. Kuri telefoni intego iguma hasi."],
+    ti: ["2.5.491 — ኣብ ዓቢ ስክሪን ዕላማ፡ ምርመራን ስም ኣብ ኢድን ኣብ ሓደ ዓምዲ ይቐመጡ። ኣብ ተሌፎን ዕላማ ኣብ ታሕቲ ይጸንሕ።"],
+  }},
+
   { v: '2.5.490', date: '2026-10-26', lines: {
     en: ["2.5.490 — A see-through box shows where a block will go. Seeds only fit on farm soil."],
     simple: ["2.5.490 — A see-through box shows where it goes. Seeds need farm soil."],

@@ -3323,3 +3323,19 @@ for (const [lang, row] of Object.entries(GHOST490)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+// 2.5.491: goal, inspect, held join the lane. rw, ti, and Dari need a native check.
+const LANE491 = {
+  en: { whatsNewBody: '2.5.491 — On a big screen the goal, inspect, and held name share one stack. On a phone the goal stays at the bottom.' },
+  simple: { whatsNewBody: '2.5.491 — On a big screen those notes share one stack. On a phone the goal stays at the bottom.' },
+  uk: { whatsNewBody: '2.5.491 — На великому екрані ціль, огляд і назва в руці стоять одним стовпчиком. На телефоні ціль лишається внизу.' },
+  ru: { whatsNewBody: '2.5.491 — На большом экране цель, осмотр и название в руке стоят одним столбиком. На телефоне цель остаётся внизу.' },
+  es: { whatsNewBody: '2.5.491 — En una pantalla grande la meta, inspeccionar y el nombre en la mano van en una sola pila. En el teléfono la meta se queda abajo.' },
+  ar: { whatsNewBody: '2.5.491 — على الشاشة الكبيرة الهدف والفحص والاسم في اليد في رصة واحدة. على الهاتف يبقى الهدف في الأسفل.' },
+  'fa-AF': { whatsNewBody: '2.5.491 — در صفحهٔ بزرگ هدف، بررسی و نام در دست در یک ستون می‌نشینند. در گوشی هدف پایین می‌ماند.' },
+  rw: { whatsNewBody: '2.5.491 — Ku rubuga runini intego, kugenzura n\'izina mu ntoki biri mu murongo umwe. Kuri telefoni intego iguma hasi.' },
+  ti: { whatsNewBody: '2.5.491 — ኣብ ዓቢ ስክሪን ዕላማ፡ ምርመራን ስም ኣብ ኢድን ኣብ ሓደ ዓምዲ ይቐመጡ። ኣብ ተሌፎን ዕላማ ኣብ ታሕቲ ይጸንሕ።' },
+}
+for (const [lang, row] of Object.entries(LANE491)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

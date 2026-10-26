@@ -248,7 +248,7 @@ function ensureLane() {
       for (const rec of recs) {
         if (rec.target && rec.target.parentElement === lane) { capLane(); return }
       }
-    }).observe(lane, { subtree: true, attributes: true, attributeFilter: ['hidden'] })
+    }).observe(lane, { subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] })
   }
   return lane
 }
@@ -273,13 +273,22 @@ function laneAdd(el, prio) {
   else if (el !== lane.lastElementChild) lane.append(el)
   capLane()
 }
+function laneRelease(el) {
+  if (!el) return
+  const lane = document.getElementById('chip-lane')
+  if (!lane || el.parentElement !== lane) return
+  if (el.hasAttribute('data-wait')) el.removeAttribute('data-wait')
+  document.body.append(el)
+  capLane()
+}
 function capLane() {
   const lane = document.getElementById('chip-lane')
   if (!lane) return
   const cap = (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
   let n = 0
   for (const el of lane.children) {
-    const off = el.hidden || el.style.display === 'none'
+    const fading = el.id === 'path-chip' && el.classList.contains('path-out')
+    const off = el.hidden || el.style.display === 'none' || fading
     if (off) {
       if (el.hasAttribute('data-wait')) el.removeAttribute('data-wait')
       continue
@@ -6948,6 +6957,7 @@ const learn = createLearn({
   queueHint: (kind) => queueHint(kind),
   claimHint: (kind) => claimHint(kind),
   releaseHint: (kind) => releaseHint(kind),
+  laneAdd, laneRelease,
 })
 markPath = (id) => learn.bump(id)
 learnRef = learn
@@ -8045,14 +8055,8 @@ function flashHeld(name) {
   chip.classList.remove('on')
   void chip.offsetWidth
   chip.classList.add('on')
-  chip.style.top = ''
-  const safe = document.getElementById('safe-chip')
-  if (safe && !safe.hidden) {
-    const c = chip.getBoundingClientRect(), s = safe.getBoundingClientRect()
-    if (c.left < s.right && c.right > s.left && c.top < s.bottom && c.bottom > s.top) chip.style.top = (s.bottom + 6) + 'px'
-  }
   clearTimeout(flashHeld.t)
-  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on'); chip.style.top = ''; syncHudBusy() }, 1500)
+  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on'); syncHudBusy() }, 1500)
   syncHudBusy()
 }
 function bagPick(item, slot) {
@@ -11368,6 +11372,8 @@ if (window.MutationObserver) {
   new MutationObserver(() => layoutLane()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-kb-bar', 'dir'] })
 }
 laneAdd(document.getElementById('save-chip'), 5)
+laneAdd(document.getElementById('inspect-chip'), 3)
+laneAdd(document.getElementById('held-chip'), 6)
 refit()
 
 const FSKEY = 'kulibert-fullscreen'

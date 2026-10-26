@@ -3085,6 +3085,20 @@ export function createSession(api) {
   }
   function placeHeld(chip) {
     if (!chip || !chip.isConnected || chip.hidden) return
+    if (chip.parentElement && chip.parentElement.id === 'chip-lane') {
+      chip.style.position = ''
+      chip.style.left = ''
+      chip.style.right = ''
+      chip.style.top = ''
+      chip.style.bottom = ''
+      chip.style.transform = ''
+      chip.style.zIndex = ''
+      chip.style.marginLeft = ''
+      chip.style.marginRight = ''
+      chip.style.width = ''
+      chip.style.maxWidth = ''
+      return
+    }
     const vw = window.innerWidth
     const vh = window.innerHeight
     const margin = 16

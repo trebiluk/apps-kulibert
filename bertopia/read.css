@@ -721,7 +721,6 @@ html body #path-chip {
   flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
-  z-index: 48;
   background: #0B1220;
 }
 html body #path-chip[hidden] { display: none !important; }
@@ -1743,7 +1742,7 @@ html body #dig-chip:not([hidden]) {
   :root { --hud-lift: 150px; }
 }
 
-/* 2.5.489: one chip lane. Boss, saved, safe, and update share it. Goal chip still lifts the lane until 1b. */
+/* 2.5.490: goal, inspect, and held name join the lane on a big screen. Phones keep the bottom goal chip. */
 :root { --lane-top: calc(var(--top-h, 56px) + 8px); }
 html[data-kb-bar]:not(.kb-framed) { --lane-top: calc(48px + var(--top-h, 56px) + 8px); }
 #chip-lane {
@@ -1788,9 +1787,6 @@ body:has(#sheet:not([hidden])) #chip-lane > #update-chip { display: inline-flex 
   #chip-lane > * { transition: none; }
 }
 html[data-kp-motion="less"] #chip-lane > * { transition: none; }
-@media (min-width: 521px) and (min-height: 521px) {
-  body:has(#path-chip:not([hidden]):not(.path-out)) { --lane-top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 74px); }
-}
 /* 2.5.426: students see 4 menu groups; only a teacher device has a 5th */
 @media (min-width: 700px) {
   html body #sheet[data-panel="menu"] .kd-groups:not(:has(.kd-teacher)) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
@@ -2314,14 +2310,13 @@ img.bench-png { width: 32px; height: 32px; object-fit: contain; image-rendering:
 
 /* 2.5.451: hide keys tip bar when any tool bar or held label is showing */
 body.hud-busy .keys { display: none !important; }
-/* shared stack: hotbar → tool bar. The held label stays content-sized (2.5.481). */
+/* shared stack: hotbar → tool bar. Held name is in the chip lane when it sits at the top (2.5.490). */
 html body #hotbar { --hotbar-top: 8px; }
 html body #wand-pill,
 html body #use-pill {
   bottom: calc(var(--hotbar-top, 8px) + 56px + 8px) !important;
 }
 html body #held-chip {
-  bottom: auto !important;
   height: auto !important;
   max-height: none !important;
 }

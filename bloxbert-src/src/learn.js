@@ -181,6 +181,7 @@ export function createLearn(api) {
     const phone = window.innerWidth <= 980 || window.innerHeight <= 520
     if (phone) {
       el.classList.remove('path-corner')
+      if (api.laneRelease) api.laneRelease(el)
       const hot = document.getElementById('hotbar')
       const hr = hot ? hot.getBoundingClientRect() : null
       let bottom = 108
@@ -227,23 +228,10 @@ export function createLearn(api) {
       el.style.outline = ''
       el.style.pointerEvents = ''
       if (window.innerHeight > 500) {
-        el.style.top = ''
-        el.style.left = ''
         el.style.maxWidth = ''
-        el.style.bottom = ''
+        el.style.width = ''
         el.style.fontSize = ''
-        const fs = document.getElementById('fs-btn')
-        const pause = document.getElementById('pause-btn')
-        if (!fs) return
-        const fr = fs.getBoundingClientRect()
-        const pauseR = pause && !pause.hidden ? pause.getBoundingClientRect() : null
-        const block = pauseR && pauseR.width > 2 ? pauseR : fr
-        if (!(block.width > 2 && block.height > 2)) return
-        const chip = el.getBoundingClientRect()
-        if (block.left < chip.left) return
-        if (block.top < chip.bottom && block.bottom > chip.top) {
-          el.style.maxWidth = Math.max(160, block.left - chip.left - 8) + 'px'
-        }
+        if (api.laneAdd) api.laneAdd(el, 2)
         return
       }
       const jump = document.getElementById('jump-col')
