@@ -1,4 +1,8 @@
 # Bertopia FIX-LIST
+- [x] **chip-earn (2.5.496):** One door, earnChip. Medic and Flanker count to 10, Foundry once. A second earn shows nothing.
+- [x] **chip-save (2.5.496):** Crew counts and badge ids save in the world and load back. A world with no crew key starts at zero. Bad shapes do not throw.
+- [x] **chip-list (2.5.496):** The Notebook crew list uses your language. Done is a word plus a check mark, not color alone. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
 - [x] **2.5.487 phone view:** On a phone the eye chip is a button. It says Camera and the current view, and a tap switches Close and Behind. It no longer tells you to press V. Chromebooks still show the V hint, and that button switches the view too.
 - [x] **2.5.486 right-click:** Right-click places while you are looking, and the browser menu stays closed. A text box can still use its own menu.
 - [x] **2.5.485 hotbar zoom:** The hotbar really shrinks when the page is zoomed past 125%. The 2.5.480 scale was wiped by a later transform.

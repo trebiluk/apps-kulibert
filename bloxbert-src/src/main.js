@@ -75,6 +75,7 @@ import { ITEMS } from './data/items.js'
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import * as Badges from './badges.js'
+import * as CrewBadges from './crew-badges.js'
 window.addEventListener('contextmenu', (e) => {
   const t = e.target
   const tag = t && t.tagName
@@ -97,6 +98,7 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   setTimeout(() => toast(t('bdgPaid').replace('{n}', '10')), 800)
   dirty = true
 })
+CrewBadges.setHost({ t: t, markDirty: function () { dirty = true } })
 import { wildBushLoot } from './drops.js'
 import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -4275,6 +4277,7 @@ async function snapshot() {
     crops: farm.dump(),
     forage: forage.dump(),
     badges: Badges.dump(), // 2.5.472
+    crew: CrewBadges.dump(),
     bots: bot.dump(),
     pondAid: !!pondAid,
     maker: makerSnap(),
@@ -4676,6 +4679,7 @@ async function applyDoc(doc, bootSpot) {
   syncCrops(Date.now())
   forage.load(src && src.forage)
   Badges.load(src && src.badges) // 2.5.472
+  CrewBadges.load(src && src.crew)
   syncForage(Date.now())
   bot.load(botsFrom(src))
   if (belts) belts.adopt()

@@ -3400,3 +3400,20 @@ for (const [lang, row] of Object.entries(DOOR495)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.496: crew badges save and the pop-up uses your language. rw, ti, and Dari need a native check.
+const CREW496 = {
+  en: { whatsNewBody: '2.5.496 — Crew badges now save when you leave, and the badge pop-up speaks your language.' },
+  simple: { whatsNewBody: '2.5.496 — Crew badges are now saved. The badge message uses your language.' },
+  uk: { whatsNewBody: '2.5.496 — Значки екіпажу тепер зберігаються, а повідомлення про значок — вашою мовою.' },
+  ru: { whatsNewBody: '2.5.496 — Значки команды теперь сохраняются, а сообщение о значке — на вашем языке.' },
+  es: { whatsNewBody: '2.5.496 — Las insignias de equipo ahora se guardan, y el aviso de insignia está en tu idioma.' },
+  ar: { whatsNewBody: '2.5.496 — شارات الطاقم تُحفظ الآن، ورسالة الشارة بلغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.496 — نشان‌های خدمه حالا ذخیره می‌شوند و پیام نشان به زبان تو است.' },
+  rw: { whatsNewBody: '2.5.496 — Ibimenyetso by\'itsinda ubu bibikwa, kandi ubutumwa bw\'ikimenyetso buri mu rurimi rwawe.' },
+  ti: { whatsNewBody: '2.5.496 — ባጃት ጋንታ ሕጂ ይዕቀቡ፣ መልእኽቲ ባጅ ድማ ብቋንቋኻ እዩ።' },
+}
+for (const [lang, row] of Object.entries(CREW496)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

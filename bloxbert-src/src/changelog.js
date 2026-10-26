@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.496', date: '2026-10-26', lines: {
+    en: ["2.5.496 — Crew badges now save when you leave, and the badge pop-up speaks your language."],
+    simple: ["2.5.496 — Crew badges are now saved. The badge message uses your language."],
+    uk: ["2.5.496 — Значки екіпажу тепер зберігаються, а повідомлення про значок — вашою мовою."],
+    ru: ["2.5.496 — Значки команды теперь сохраняются, а сообщение о значке — на вашем языке."],
+    es: ["2.5.496 — Las insignias de equipo ahora se guardan, y el aviso de insignia está en tu idioma."],
+    ar: ["2.5.496 — شارات الطاقم تُحفظ الآن، ورسالة الشارة بلغتك."],
+    'fa-AF': ["2.5.496 — نشان‌های خدمه حالا ذخیره می‌شوند و پیام نشان به زبان تو است."],
+    rw: ["2.5.496 — Ibimenyetso by'itsinda ubu bibikwa, kandi ubutumwa bw'ikimenyetso buri mu rurimi rwawe."],
+    ti: ["2.5.496 — ባጃት ጋንታ ሕጂ ይዕቀቡ፣ መልእኽቲ ባጅ ድማ ብቋንቋኻ እዩ።"],
+  }},
+
   { v: '2.5.495', date: '2026-10-26', lines: {
     en: ["2.5.495 — The menu dims to flat gray. Top buttons wrap so they do not cover each other, and the keys tip hides after you move."],
     simple: ["2.5.495 — The menu turns flat gray. Top buttons wrap. The keys tip hides after you move."],
