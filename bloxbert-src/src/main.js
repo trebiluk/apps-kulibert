@@ -631,15 +631,51 @@ applyI18n()
 pinKeysLine()
 
 let walkPresses = 0
-function fadeKeys() {
-  return
+const KEYS_SEEN = 'bert-keys-tip-seen'
+const TOUCH_ONLY = matchMedia('(hover: none) and (pointer: coarse)').matches || qs.has('touch')
+let keysGone = false
+function keysStored() {
+  try { return localStorage.getItem(KEYS_SEEN) === '1' } catch (e) { return false }
 }
+function hideKeysTip(remember) {
+  const chip = document.getElementById('keys-chip')
+  const pop = document.getElementById('keys-pop')
+  if (chip) chip.hidden = true
+  if (pop) pop.hidden = true
+  if (!remember) return
+  keysGone = true
+  try { localStorage.setItem(KEYS_SEEN, '1') } catch (e) {}
+}
+function fadeKeys() {
+  if (keysGone) return
+  hideKeysTip(true)
+}
+function showKeysAgain() {
+  const chip = document.getElementById('keys-chip')
+  const pop = document.getElementById('keys-pop')
+  if (chip) {
+    chip.hidden = false
+    chip.setAttribute('aria-expanded', 'true')
+  }
+  if (pop) pop.hidden = false
+  pinKeysLine()
+}
+if (TOUCH_ONLY) hideKeysTip(false)
+else if (keysStored()) hideKeysTip(false)
+else setTimeout(() => { if (!keysGone) fadeKeys() }, 8000)
 document.addEventListener('keydown', (e) => {
-  if (TOUCH_UI || e.repeat) return
+  if (e.repeat) return
+  const typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)
+  if (!typing && (e.key === '?' || (e.shiftKey && e.code === 'Slash'))) {
+    e.preventDefault()
+    showKeysAgain()
+    return
+  }
+  if (TOUCH_ONLY || typing) return
   const code = e.code
   if (code !== 'KeyW' && code !== 'KeyA' && code !== 'KeyS' && code !== 'KeyD' && code !== 'ArrowUp' && code !== 'ArrowDown' && code !== 'ArrowLeft' && code !== 'ArrowRight') return
   walkPresses += 1
-  if (walkPresses >= 3) fadeKeys()
+  fadeKeys()
 }, true)
 
 function pinKeysLine() {
@@ -9592,6 +9628,7 @@ document.addEventListener('mousemove', (e) => {
   if (performance.now() < lockSwallowUntil) return
   if (performance.now() < lookHoldUntil) return
   applyLockedLook(dx, dy)
+  if (dx || dy) fadeKeys()
 }, true)
 let deskStationAt = 0
 function deskOpenStation(hit) {
@@ -11372,6 +11409,8 @@ function refit() {
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)
+const kbWatch = document.querySelector('.kb-bar')
+if (kbWatch) new ResizeObserver(refit).observe(kbWatch)
 addEventListener('resize', refit)
 addEventListener('orientationchange', () => { refit(); setTimeout(refit, 300) })
 if (window.visualViewport) visualViewport.addEventListener('resize', refit)

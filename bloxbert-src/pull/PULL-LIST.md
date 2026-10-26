@@ -9,7 +9,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 
 ## BILL
 - [x] Commit your uncommitted menu polish as 2.5.488 (rebase on main first) — already shipped in 2.5.478 (148c895). Live /bertopia/ 2.5.487 still has menu-fit in read.css and app.js. Skipped a new version.
-- [ ] door-part4.md (menu dim, Entrar/Deshacer wrap, keys tip)
+- [x] door-part4.md (menu dim, Entrar/Deshacer wrap, keys tip) — 2.5.495. Flat gray scrim, no blur. Entrar and Deshacer wrap at 412 (no overlap). Keys tip hides on first move or 8s, stays hidden, never on touch-only. Help says press ? .
 
 ## BOOBS
 - [x] A-chiplane-1a.md (chip lane + priority/cap) — 2.5.489. Boss, saved, safe, and update share #chip-lane. Sideways phone check BLOCKED-rig.

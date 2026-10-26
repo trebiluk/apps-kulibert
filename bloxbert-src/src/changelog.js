@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.495', date: '2026-10-26', lines: {
+    en: ["2.5.495 — The menu dims to flat gray. Top buttons wrap so they do not cover each other, and the keys tip hides after you move."],
+    simple: ["2.5.495 — The menu turns flat gray. Top buttons wrap. The keys tip hides after you move."],
+    uk: ["2.5.495 — Меню стає рівним сірим. Верхні кнопки переносяться і не накривають одна одну, а підказка клавіш зникає після руху."],
+    ru: ["2.5.495 — Меню становится ровно-серым. Верхние кнопки переносятся и не накрывают друг друга, а подсказка клавиш пропадает после движения."],
+    es: ["2.5.495 — El menú se pone gris plano. Los botones de arriba se acomodan y no se tapan, y el aviso de teclas se esconde al moverte."],
+    ar: ["2.5.495 — القائمة تصير رمادية مسطحة. أزرار الأعلى تلتف ولا تغطي بعضها، وتلميح المفاتيح يختفي بعد أن تتحرك."],
+    'fa-AF': ["2.5.495 — فهرست خاکستری تخت می‌شود. دکمه‌های بالا می‌پیچند و روی هم نمی‌افتند، و نکتهٔ کلیدها پس از حرکت پنهان می‌شود."],
+    rw: ["2.5.495 — Ibikubiyemo birabura burabura. Buto zo hejuru zirambika ntizisakare, kandi inama y'imfunguzo ihisha nyuma yo kugenda."],
+    ti: ["2.5.495 — ዝርዝር ጠፍጣፋ ሕሙር ይኸውን። ላዕለዋይ መጠወቒታት ይጠቕለሉ እሞ ኣይሽፈኑን፡ ምኽሪ መጠወቒ ድማ ምስ ተንቀሳቐስካ ይሕባእ።"],
+  }},
+
   { v: '2.5.494', date: '2026-10-26', lines: {
     en: ["2.5.494 — The item tip goes away when the Bag closes, and the update note shows once."],
     simple: ["2.5.494 — The item tip goes away when you close the Bag. The update note shows once."],

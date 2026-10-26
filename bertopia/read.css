@@ -2340,7 +2340,7 @@ html body #sheet#sheet[data-panel="menu"] .ggrid {
   color: #e8e6e3 !important;
 }
 html body #scrim {
-  background: rgba(5, 8, 20, .25) !important;
+  background: rgba(20, 20, 22, .72) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   opacity: 0;
@@ -2447,4 +2447,69 @@ html body #sheet.menu-fit .ggrid > .gnote.ghead {
   html body #sheet.menu-fit #sheet-body { max-height: calc(100vh - 72px) !important; padding: 6px 8px 8px !important; }
   html body #sheet.menu-fit .ggrid > .gnote:not(.ghead) { padding: 6px 8px !important; margin-bottom: 6px !important; }
 }
+
+/* 2.5.495: keys tip can hide. The eye button stays. */
+html body #keys-chip[hidden],
+html body #keys-pop[hidden] { display: none !important; }
+
+/* 2.5.495: Entrar and Deshacer wrap instead of covering each other. */
+@media (max-width: 520px) {
+  html body .kb-bar {
+    height: auto !important;
+    min-height: 48px !important;
+    max-height: none !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    overflow: visible !important;
+    max-width: 100vw !important;
+  }
+  html body .kb-bar .kb-alias {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  html[data-kb-bar]:not(.kb-framed) body header.top {
+    top: var(--kb-h, 48px) !important;
+  }
+  html body header.top {
+    height: auto !important;
+    max-height: none !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    justify-content: flex-end !important;
+  }
+  html body header.top .tools {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
+    max-width: calc(100vw - 16px) !important;
+    margin-left: auto !important;
+  }
+  html body header.top .tool {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    white-space: nowrap !important;
+  }
+  html body header.top .tool .tl,
+  html body #hub-back .tl {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+}
+
 

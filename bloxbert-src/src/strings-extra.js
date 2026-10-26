@@ -3356,3 +3356,47 @@ for (const [lang, row] of Object.entries(TIP493)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.495: flat gray menu, wrapping top buttons, keys tip hides. rw, ti, and Dari are drafts.
+const DOOR495 = {
+  en: {
+    keysAgain: 'Press ? to see the keys again.',
+    whatsNewBody: '2.5.495 — The menu dims to flat gray. Top buttons wrap so they do not cover each other, and the keys tip hides after you move.',
+  },
+  simple: {
+    keysAgain: 'Press ? to see the keys again.',
+    whatsNewBody: '2.5.495 — The menu turns flat gray. Top buttons wrap. The keys tip hides after you move.',
+  },
+  uk: {
+    keysAgain: 'Натисни ?, щоб знову побачити клавіші.',
+    whatsNewBody: '2.5.495 — Меню стає рівним сірим. Верхні кнопки переносяться і не накривають одна одну, а підказка клавіш зникає після руху.',
+  },
+  ru: {
+    keysAgain: 'Нажми ?, чтобы снова увидеть клавиши.',
+    whatsNewBody: '2.5.495 — Меню становится ровно-серым. Верхние кнопки переносятся и не накрывают друг друга, а подсказка клавиш пропадает после движения.',
+  },
+  es: {
+    keysAgain: 'Pulsa ? para ver las teclas otra vez.',
+    whatsNewBody: '2.5.495 — El menú se pone gris plano. Los botones de arriba se acomodan y no se tapan, y el aviso de teclas se esconde al moverte.',
+  },
+  ar: {
+    keysAgain: 'اضغط ? لترى المفاتيح مرة أخرى.',
+    whatsNewBody: '2.5.495 — القائمة تصير رمادية مسطحة. أزرار الأعلى تلتف ولا تغطي بعضها، وتلميح المفاتيح يختفي بعد أن تتحرك.',
+  },
+  'fa-AF': {
+    keysAgain: '? را بزن تا کلیدها را دوباره ببینی.',
+    whatsNewBody: '2.5.495 — فهرست خاکستری تخت می‌شود. دکمه‌های بالا می‌پیچند و روی هم نمی‌افتند، و نکتهٔ کلیدها پس از حرکت پنهان می‌شود.',
+  },
+  rw: {
+    keysAgain: 'Kanda ? urebe imfunguzo ukundi.',
+    whatsNewBody: '2.5.495 — Ibikubiyemo birabura burabura. Buto zo hejuru zirambika ntizisakare, kandi inama y\'imfunguzo ihisha nyuma yo kugenda.',
+  },
+  ti: {
+    keysAgain: '? ጠውቕ መጠወቒታት ዳግማይ ንምርኣይ።',
+    whatsNewBody: '2.5.495 — ዝርዝር ጠፍጣፋ ሕሙር ይኸውን። ላዕለዋይ መጠወቒታት ይጠቕለሉ እሞ ኣይሽፈኑን፡ ምኽሪ መጠወቒ ድማ ምስ ተንቀሳቐስካ ይሕባእ።',
+  },
+}
+for (const [lang, row] of Object.entries(DOOR495)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
