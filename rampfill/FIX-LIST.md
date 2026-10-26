@@ -1,4 +1,10 @@
 # Ramp & Fill FIX-LIST
+Stage 23. Version locked: RF 1.0.22.
+
+- [x] **pl-materials:** Sugar, gel, syrup, and water each fall their own way. A wrong pour mixes the jar. A full jar with a rim spills that material back out.
+- [x] **pl-levels-8-21:** Levels 8 to 21. The 21 level chips wrap and stay 44 by 48.
+- [x] **pl-shapes-words:** Sugar is a circle, gel a rounded square, syrup a diamond, and water a ring. Jar badges and lose titles use words in every language.
+
 Stage 22. Version locked: RF 1.0.21.
 
 - [x] **pl-layout:** Wide screens put the board beside a 260 px rail. A phone stacks the controls. A sideways phone uses a slim rail and a tall board.

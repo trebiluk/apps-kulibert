@@ -22,7 +22,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
-- [ ] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x.
+- [x] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x.
 
 ## BOB
 - [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
