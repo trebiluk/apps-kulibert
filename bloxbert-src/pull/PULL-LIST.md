@@ -8,7 +8,7 @@ Out of scope: deleting saves, save format, server deploy, chat, TechWorks.
 DONE only when seen live on /bertopia/. Check your box here in the same commit.
 
 ## BILL
-- [ ] Commit your uncommitted menu polish as 2.5.488 (rebase on main first)
+- [x] Commit your uncommitted menu polish as 2.5.488 (rebase on main first) — already shipped in 2.5.478 (148c895). Live /bertopia/ 2.5.487 still has menu-fit in read.css and app.js. Skipped a new version.
 - [ ] door-part4.md (menu dim, Entrar/Deshacer wrap, keys tip)
 
 ## BOOBS
