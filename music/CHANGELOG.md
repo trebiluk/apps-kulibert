@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.60** · 2026-10-26 · channel **live**
+
+MU 2.36.60 — Your click comes back. A record click turns off.
+
+## Earlier
+
 **Chip: MU 2.36.59** · 2026-10-26 · channel **live**
 
 MU 2.36.59 — Happy Birthday plays just the tune.

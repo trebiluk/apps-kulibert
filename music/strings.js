@@ -682,7 +682,8 @@
     news23656: "MU 2.36.56 — The bottom buttons show their names.",
     news23657: "MU 2.36.57 — Softer colours, no bright flashes.",
     news23658: "MU 2.36.58 — Fewer tabs: Songs, Tap, Score, Remix, Show.",
-    news23659: "MU 2.36.59 — Happy Birthday plays just the tune."
+    news23659: "MU 2.36.59 — Happy Birthday plays just the tune.",
+    news23660: "MU 2.36.60 — Your click comes back. A record click turns off."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1020,7 +1021,8 @@
     news23656: "MU 2.36.56 — Buttons say their names.",
     news23657: "MU 2.36.57 — Softer colours.",
     news23658: "MU 2.36.58 — Fewer tabs.",
-    news23659: "MU 2.36.59 — Happy Birthday is just the tune."
+    news23659: "MU 2.36.59 — Happy Birthday is just the tune.",
+    news23660: "MU 2.36.60 — Your click stays. Record click turns off."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1703,7 +1705,8 @@
       "news23656": "MU 2.36.56 — Нижні кнопки показують свої назви.",
       "news23657": "MU 2.36.57 — М’якші кольори, без яскравих спалахів.",
       "news23658": "MU 2.36.58 — Менше вкладок: Пісні, Тап, Ноти, Ремікс, Покажи.",
-      "news23659": "MU 2.36.59 — Happy Birthday грає лише мелодію."
+      "news23659": "MU 2.36.59 — Happy Birthday грає лише мелодію.",
+      "news23660": "MU 2.36.60 — Твій клік лишається. Клік запису вимикається."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2383,7 +2386,8 @@
       "news23656": "MU 2.36.56 — Нижние кнопки показывают свои названия.",
       "news23657": "MU 2.36.57 — Более мягкие цвета, без ярких вспышек.",
       "news23658": "MU 2.36.58 — Меньше вкладок: Песни, Тап, Ноты, Ремикс, Покажи.",
-      "news23659": "MU 2.36.59 — Happy Birthday играет только мелодию."
+      "news23659": "MU 2.36.59 — Happy Birthday играет только мелодию.",
+      "news23660": "MU 2.36.60 — Твой клик остаётся. Клик записи выключается."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3064,7 +3068,8 @@
       "news23656": "MU 2.36.56 — Los botones de abajo muestran su nombre.",
       "news23657": "MU 2.36.57 — Colores más suaves, sin destellos brillantes.",
       "news23658": "MU 2.36.58 — Menos pestañas: Canciones, Tocar, Partitura, Remix, Muestra.",
-      "news23659": "MU 2.36.59 — Happy Birthday suena solo la melodía."
+      "news23659": "MU 2.36.59 — Happy Birthday suena solo la melodía.",
+      "news23660": "MU 2.36.60 — Tu clic se queda. El clic de grabar se apaga."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3745,7 +3750,8 @@
       "news23656": "MU 2.36.56 — أزرار الأسفل تُظهر أسماءها.",
       "news23657": "MU 2.36.57 — ألوان أهدأ، بلا ومضات ساطعة.",
       "news23658": "MU 2.36.58 — تبويبات أقل: أغانٍ، نقر، نوتة، ريمكس، اعرض.",
-      "news23659": "MU 2.36.59 — Happy Birthday يعزف اللحن فقط."
+      "news23659": "MU 2.36.59 — Happy Birthday يعزف اللحن فقط.",
+      "news23660": "MU 2.36.60 — نقرتك تبقى. نقرة التسجيل تنطفئ."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4426,7 +4432,8 @@
       "news23656": "MU 2.36.56 — دکمه‌های پایین نام خود را نشان می‌دهند.",
       "news23657": "MU 2.36.57 — رنگ‌های نرم‌تر، بدون درخشش‌های تند.",
       "news23658": "MU 2.36.58 — تب‌های کمتر: آهنگ‌ها، ضربه، نت، ریمیکس، نشان بده.",
-      "news23659": "MU 2.36.59 — Happy Birthday فقط آهنگ را می‌نوازد."
+      "news23659": "MU 2.36.59 — Happy Birthday فقط آهنگ را می‌نوازد.",
+      "news23660": "MU 2.36.60 — کلیک تو می‌ماند. کلیک ضبط خاموش می‌شود."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5107,7 +5114,8 @@
       "news23656": "MU 2.36.56 — Buto zo hasi zerekana amazina yazo.",
       "news23657": "MU 2.36.57 — Amabara yoroshye, nta murabyo mwinshi.",
       "news23658": "MU 2.36.58 — Ibirango bike: Indirimbo, Kanda, Inota, Remix, Erekana.",
-      "news23659": "MU 2.36.59 — Happy Birthday iririmba indirimbo gusa."
+      "news23659": "MU 2.36.59 — Happy Birthday iririmba indirimbo gusa.",
+      "news23660": "MU 2.36.60 — Kanda yawe iguma. Kanda yo kwandika irazimya."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5788,7 +5796,8 @@
       "news23656": "MU 2.36.56 — ታሕተዋይ መጠወቒታት ስማት ይርእዩ።",
       "news23657": "MU 2.36.57 — ርጉዳት ሕብርታት፣ ድምቀት የለን።",
       "news23658": "MU 2.36.58 — ውሑዳት መቐመጢ: ደርፍታት፣ ንኻእ፣ ነጥቢ፣ ሪሚክስ፣ ኣርኢ።",
-      "news23659": "MU 2.36.59 — Happy Birthday ዜማ ጥራይ ይጻውት።"
+      "news23659": "MU 2.36.59 — Happy Birthday ዜማ ጥራይ ይጻውት።",
+      "news23660": "MU 2.36.60 — ጠውታኻ ይቕጽል። ጠውታ ምዝገባ ይጠፍእ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

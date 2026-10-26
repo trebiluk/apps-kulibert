@@ -10,7 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
-- [x] shelf-song-no-drums: A list song with no drums plays just the tune. Happy Birthday is 90, with no leftover beat. MU 2.36.59.
+- [x] click-restore: A click you turned on comes back. A click that record turned on turns off. MU 2.36.60.
 - [x] score-pen-sideways: On a sideways phone the Score note-length row sits above the player. MU 2.36.58.
 - [x] songs-last-cards: Change the picture and Band can be tapped. They no longer sit under the player. MU 2.36.58.
 - [x] calm-cyan: Softer colours, no bright flashes. MU 2.36.57.

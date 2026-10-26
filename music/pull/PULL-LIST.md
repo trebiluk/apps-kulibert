@@ -8,7 +8,7 @@ Do not change: sound engine, saving, song format, shared/kulibert-bar.js, shared
 DONE only when seen live at apps.kulibert.net/music/ (1366 + 412 upright). Check the box here in the same commit.
 
 - [x] 1-shelf-song-no-drums.md (Happy Birthday plays just the tune, right tempo) MU 2.36.59
-- [ ] 2-click-restore.md (saved click comes back on load; auto click turns off)
+- [x] 2-click-restore.md (saved click comes back on load; auto click turns off) MU 2.36.60
 - [ ] 3-mixer-device-look.md (look only: mixer panels with gaps, optional calm underlay)
 
 ## Not yet (needs Debugzy after Tue)

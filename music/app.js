@@ -199,6 +199,7 @@
     mix: { kick: 100, snare: 90, hat: 70, clap: 80, tom: 75, shaker: 60, rim: 55, bell: 65, tamb: 50, crash: 70 },
     swing: 0,
     click: false,
+    clickAuto: false,
     along: false,
     blend: 50,
     expert: false,
@@ -272,6 +273,7 @@
     if (saved.look) state.look = saved.look;
     if (saved.mix && typeof saved.mix === "object") state.mix = Object.assign(state.mix, saved.mix);
     if (typeof saved.swing === "number") state.swing = saved.swing;
+    if (typeof saved.click === "boolean") state.click = saved.click;
     if (typeof saved.along === "boolean") state.along = saved.along;
     if (typeof saved.blend === "number") state.blend = saved.blend;
     if (saved.expert) state.expert = true;
@@ -1853,6 +1855,7 @@
     if (playWord) playWord.textContent = playWordText(false);
     snack("snackStop");
     state.recording = false;
+    endAutoClick();
     state.armBeats = 0;
     state.turn = "";
     state.held = {};
@@ -3072,6 +3075,7 @@
       state.turn = "";
       paintRec();
       $("lesson").textContent = mu("recOff");
+      endAutoClick();
       return;
     }
     state.turn = "";
@@ -3079,6 +3083,7 @@
     const per = Song.beatsFor ? Song.beatsFor(state.song.meter) : 4;
     state.armTotal = per;
     state.armBeats = per;
+    state.clickAuto = !state.click;
     state.click = true;
     paintRec();
     if (!state.playing) play();
@@ -5124,6 +5129,7 @@
   }
   function stopTapWrite() {
     tapOn = false;
+    endAutoClick();
     window.clearTimeout(tapTimer);
     const box = $("count-in");
     if (box) box.hidden = true;
@@ -5160,6 +5166,7 @@
     if (tapOn) { stopTapWrite(); return; }
     tapPass = JSON.parse(JSON.stringify(state.drums));
     tapOn = true;
+    state.clickAuto = !state.click;
     state.click = true;
     const btn = $("tap-write");
     if (btn) btn.classList.add("on");
@@ -5322,6 +5329,19 @@
     } catch (err) { /* music words still work */ }
     return mu(key) || fallback || "";
   }
+  function paintClick() {
+    const btn = $("click-btn");
+    if (!btn) return;
+    btn.classList.toggle("on", state.click);
+    btn.setAttribute("aria-pressed", String(state.click));
+  }
+  function endAutoClick() {
+    if (!state.clickAuto) return;
+    state.clickAuto = false;
+    state.click = false;
+    paintClick();
+    keep();
+  }
   function paintMixLabels() {
     const box = $("mix");
     if (!box) return;
@@ -5375,8 +5395,7 @@
     }
     const click = $("click-btn");
     if (click) {
-      click.classList.toggle("on", state.click);
-      click.setAttribute("aria-pressed", String(state.click));
+      paintClick();
       click.addEventListener("click", () => {
         state.click = !state.click;
         click.classList.toggle("on", state.click);
