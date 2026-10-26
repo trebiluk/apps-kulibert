@@ -5580,6 +5580,22 @@ function toast(text, act) {
   if (calm) { calm.say(text, act); return }
   showToast(text, { act })
 }
+let woodTipOn = false
+function clearWoodTip() {
+  if (!woodTipOn) return
+  woodTipOn = false
+  const el = document.getElementById('toast')
+  if (el && el.dataset.wood === '1') {
+    el.hidden = true
+    el.dataset.wood = ''
+  }
+}
+function showWoodTip() {
+  toast(t('toolFaster'))
+  woodTipOn = true
+  const el = document.getElementById('toast')
+  if (el) el.dataset.wood = '1'
+}
 const blockedAt = new Map()
 function blockedToast(ruleId) {
   const now = performance.now()
@@ -9111,11 +9127,11 @@ function feelTick(dt) {
     const same = !!(aimed && ax === dig.x && ay === dig.y && az === dig.z)
     if (breaking && aimed && !same) beginDig('mouse')
     else if (!breaking && lingerQuick(dig, now)) { }
-    else if (!breaking && !same) { dig = null; hideCrack() }
+    else if (!breaking && !same) { clearWoodTip(); dig = null; hideCrack() }
     else {
       const next = advanceDig(dig, now, breaking, true)
       if (!next) {
-        if (!lingerQuick(dig, now)) { dig = null; hideCrack() }
+        if (!lingerQuick(dig, now)) { clearWoodTip(); dig = null; hideCrack() }
       }
       else {
         dig = next
@@ -9123,7 +9139,7 @@ function feelTick(dt) {
         const elapsed = now - dig.t0
         if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
         else hideCrack()
-        if (!blocked && !dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
+        if (!blocked && !dig.draining && survivalOn() && dig.p > 0 && logSets().s.has(dig.id) && elapsed >= 2000 && !dig.hinted && heldTool() !== 'wood' && heldTool() !== 'stone') { dig.hinted = true; showWoodTip() }
         if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) { dig.broke = true; breakAt(dig.x, dig.y, dig.z, true); hideCrack(); puff() }
       }
     }
@@ -9136,14 +9152,14 @@ function feelTick(dt) {
       if (look.pt === 'touch' && elapsed >= 150) showCrack(dig.p, look.x, look.y, true)
       else if (crackVisible(elapsed, dig.p)) showCrack(dig.p, look.x, look.y)
       else hideCrack()
-      if (!blocked && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
+      if (!blocked && survivalOn() && dig.p > 0 && logSets().s.has(dig.id) && elapsed >= 2000 && !dig.hinted && heldTool() !== 'wood' && heldTool() !== 'stone') { dig.hinted = true; showWoodTip() }
       if (!blocked && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) {
         breakAt(dig.x, dig.y, dig.z, true)
         dig.broke = true
         puff()
         dig.t0 = now
         if (!survivalOn()) dig.need = 250
-        else { dig = null; hideCrack() }
+        else { clearWoodTip(); dig = null; hideCrack() }
       } else if (dig.broke && !survivalOn() && now - dig.t0 >= dig.need) {
         const hit = rayAt(look.x, look.y)
         if (hit) breakAt(hit.position[0], hit.position[1], hit.position[2])
@@ -9151,7 +9167,7 @@ function feelTick(dt) {
       }
     } else if (dig.draining && !dig.broke) {
       const next = advanceDig(dig, now, false, true)
-      if (!next) { dig = null; hideCrack() }
+      if (!next) { clearWoodTip(); dig = null; hideCrack() }
       else { dig = next; if (crackVisible(250, dig.p)) showCrack(dig.p); else hideCrack() }
     }
   }
@@ -9566,7 +9582,7 @@ canvas.addEventListener('pointermove', (e) => {
     if (drift >= 24) farHit = null
     if (drift < 24) { look.x = e.clientX; look.y = e.clientY; return }
     lastLookAt = performance.now()
-    if (dig && dig.kind === 'touch') { dig = null; hideCrack() }
+    if (dig && dig.kind === 'touch') { clearWoodTip(); dig = null; hideCrack() }
     const dx0 = e.clientX - look.sx
     const dy0 = e.clientY - look.sy
     if (!look.looking) {

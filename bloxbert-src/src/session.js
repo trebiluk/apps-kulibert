@@ -2922,6 +2922,24 @@ export function createSession(api) {
     const open = host.dataset && host.dataset.open === '1'
     host.replaceChildren()
     host.classList.add('brief')
+    if (host.id === 'held-chip') {
+      const top = document.createElement('span')
+      top.className = 'brief-top'
+      const ico = document.createElement('span')
+      ico.className = 'gic'
+      const pic = faceIcon(itemKey)
+      if (pic) ico.append(pic)
+      const line = document.createElement('span')
+      line.className = 'brief-name'
+      line.dir = 'auto'
+      const n = extra.n != null && extra.n !== '' ? extra.n : bag.count(itemKey)
+      line.textContent = faceName(itemKey) + ' ×' + n
+      top.append(ico, line)
+      host.append(top)
+      host.title = line.textContent
+      host.setAttribute('aria-label', line.textContent)
+      return
+    }
     const top = document.createElement('span')
     top.className = 'brief-top'
     const ico = document.createElement('span')

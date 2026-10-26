@@ -3229,3 +3229,18 @@ for (const [lang, row] of Object.entries(VIEW487)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const DOOR3 = {
+  en: { bunk: 'Bed', poofBunk: 'Poof! Back at your bed.', toolFaster: 'Chop wood faster with a Wood Tool.' },
+  simple: { bunk: 'Bed', poofBunk: 'Poof! Back at your bed.', toolFaster: 'Chop wood faster with a Wood Tool.' },
+  uk: { bunk: 'Ліжко', poofBunk: 'Пуф! Знову у твоєму ліжку.', toolFaster: 'Рубай дерево швидше дерев\'яним інструментом.' },
+  ru: { bunk: 'Кровать', poofBunk: 'Пуф! Снова у твоей кровати.', toolFaster: 'Руби дерево быстрее деревянным инструментом.' },
+  es: { bunk: 'Cama', poofBunk: '¡Puf! De vuelta en tu cama.', toolFaster: 'Corta madera más rápido con una herramienta de madera.' },
+  ar: { bunk: 'سرير', poofBunk: 'بوف! عدت إلى سريرك.', toolFaster: 'اقطع الخشب أسرع بأداة خشبية.' },
+  'fa-AF': { bunk: 'تخت', poofBunk: 'پوف! دوباره کنار تختت.', toolFaster: 'با ابزار چوبی چوب را تیزتر ببُر.' },
+  rw: { bunk: 'Igitanda', poofBunk: 'Poof! Subira ku gitanda cyawe.', toolFaster: 'Tema ibiti vuba ukoresheje igikoresho cy\'igiti.' },
+  ti: { bunk: 'ዓራት', poofBunk: 'ፑፍ! ናብ ዓራትካ ተመሊስካ.', toolFaster: 'ብመሳርሒ ዕንጨይቲ ዕንጨይቲ ቀልጢፍካ ቁረጽ።' },
+}
+for (const [lang, row] of Object.entries(DOOR3)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

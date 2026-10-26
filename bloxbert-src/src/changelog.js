@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.488', date: '2026-10-26', lines: {
+    en: ["2.5.488 — The held card says Stick ×2. A bed is a Bed. The wood tip only shows while you chop a log."],
+    simple: ["2.5.488 — The card says Stick ×2. A bed is a Bed. The wood tip shows only while you chop."],
+    uk: ["2.5.488 — Картка каже Палиця ×2. Ліжко — це ліжко. Підказка про дерево лише поки рубаєш колоду."],
+    ru: ["2.5.488 — Карточка говорит Палка ×2. Кровать — это кровать. Подсказка про дерево только пока рубишь бревно."],
+    es: ["2.5.488 — La ficha dice Palo ×2. Una cama es una Cama. El aviso de madera solo sale mientras cortas un tronco."],
+    ar: ["2.5.488 — البطاقة تقول عصا ×2. السرير سرير. تنبيه الخشب يظهر فقط وأنت تقطع جذعاً."],
+    'fa-AF': ["2.5.488 — کارت می‌گوید چوب ×2. تخت، تخت است. نکته چوب فقط هنگام بریدن کُنده می‌آید."],
+    rw: ["2.5.488 — Ikarita ivuga Stick ×2. Igitanda ni igitanda. Inama y'igiti igaragara gusa mu gihe utema igiti."],
+    ti: ["2.5.488 — ካርድ ስቲክ ×2 ይብል። ዓራት ዓራት እዩ። ናይ ዕንጨይቲ ምኽሪ ክትቑርጽ ከለኻ ጥራይ ይረአ።"],
+  }},
+
   { v: '2.5.487', date: '2026-10-25', lines: {
     en: ["2.5.487 — On a phone, tap the eye to change the view."],
     simple: ["2.5.487 — On a phone, tap the eye to change the view."],

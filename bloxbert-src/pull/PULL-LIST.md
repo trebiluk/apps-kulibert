@@ -19,7 +19,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 - [ ] door-part2.md (one-box held-item ghost)
 
 ## BALLER
-- [ ] door-part3.md (Bed text, ×n, wood tip timing)
+- [x] door-part3.md (Bed text, ×n, wood tip timing)
 
 ## BOB
 - [ ] door-part5.md (sticky item tip, update toast once)
