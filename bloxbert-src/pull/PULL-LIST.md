@@ -14,6 +14,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 ## BOOBS
 - [x] A-chiplane-1a.md (chip lane + priority/cap) — 2.5.489. Boss, saved, safe, and update share #chip-lane. Sideways phone check BLOCKED-rig.
 - [x] A-chiplane-1b.md (only after 1a is live) — 2.5.491. Goal joins #chip-lane on big screens (prio 2); phones keep the bottom dock. Inspect prio 3. Held name was at the top (360 y=158, 915 y=68, 1366 y=68), so it joins prio 6. Sideways phone check BLOCKED-rig.
+- [ ] A-chiplane-1c.md (only after 1b is live, which it is: 2.5.491) — 2.5.492.
 
 ## BASSFISH
 - [x] door-part2.md (one-box held-item ghost) — 2.5.490
