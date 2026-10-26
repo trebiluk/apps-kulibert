@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.490', date: '2026-10-26', lines: {
+    en: ["2.5.490 — A see-through box shows where a block will go. Seeds only fit on farm soil."],
+    simple: ["2.5.490 — A see-through box shows where it goes. Seeds need farm soil."],
+    uk: ["2.5.490 — Прозора коробка показує, куди стане блок. Насіння лише на ріллі."],
+    ru: ["2.5.490 — Прозрачная коробка показывает, куда встанет блок. Семена только на пашне."],
+    es: ["2.5.490 — Una caja transparente muestra dónde irá el bloque. Las semillas solo van en tierra de cultivo."],
+    ar: ["2.5.490 — صندوق شفاف يُظهر أين سيذهب المكعب. البذور فقط على تربة زراعية."],
+    'fa-AF': ["2.5.490 — یک جعبه شفاف نشان می‌دهد بلاک کجا می‌رود. دانه‌ها فقط روی خاک زراعتی."],
+    rw: ["2.5.490 — Agasanduku kareba kagaragaza aho block izajya. Imbuto zishyirwa gusa ku butaka bw'umurima."],
+    ti: ["2.5.490 — ዘይሕቡእ ሳንዱቕ ኣበይ ከም ዝኸይድ ብሎክ የርኢ። ዘርኢ ኣብ ሓመድ ግራት ጥራይ።"],
+  }},
+
   { v: '2.5.489', date: '2026-10-26', lines: {
     en: ["2.5.489 — Boss, saved, safe, and update notes share one stack under the top bar."],
     simple: ["2.5.489 — Those notes sit in one stack."],

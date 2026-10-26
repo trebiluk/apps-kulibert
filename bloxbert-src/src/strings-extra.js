@@ -3256,7 +3256,70 @@ const LANE489 = {
   rw: { whatsNewBody: '2.5.489 — Umuyobozi, kubika, ahantu hateganye n\'ivugurura biri mu murongo umwe munsi y\'umurongo wo hejuru.' },
   ti: { whatsNewBody: '2.5.489 — ሓላፊ፡ ምዕቃብ፡ ውሑስ ቦታን ምሕዳስን ኣብ ሓደ ዓምዲ ኣብ ትሕቲ ላዕለዋይ መስመር ይቐመጡ።' },
 }
+
 for (const [lang, row] of Object.entries(LANE489)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.490: one see-through box on the tile. rw, ti, and Dari are machine drafts.
+const GHOST490 = {
+  en: {
+    needsFarmSoil: 'Needs farm soil',
+    placeFits: 'Fits',
+    ghostHelp: 'Hold a block to see a see-through box where it goes. Seeds only go on farm soil: look for ✓.',
+    whatsNewBody: '2.5.490 — A see-through box shows where a block will go. Seeds only fit on farm soil.',
+  },
+  simple: {
+    needsFarmSoil: 'Needs farm soil',
+    placeFits: 'Fits',
+    ghostHelp: 'Hold a block. A see-through box shows where it goes. Seeds need farm soil. Look for ✓.',
+    whatsNewBody: '2.5.490 — A see-through box shows where it goes. Seeds need farm soil.',
+  },
+  uk: {
+    needsFarmSoil: 'Потрібна рілля',
+    placeFits: 'Пасує',
+    ghostHelp: 'Тримай блок, щоб бачити прозору коробку, куди він стане. Насіння лише на ріллі: шукай ✓.',
+    whatsNewBody: '2.5.490 — Прозора коробка показує, куди стане блок. Насіння лише на ріллі.',
+  },
+  ru: {
+    needsFarmSoil: 'Нужна пашня',
+    placeFits: 'Подходит',
+    ghostHelp: 'Держи блок, чтобы видеть прозрачную коробку, куда он встанет. Семена только на пашне: ищи ✓.',
+    whatsNewBody: '2.5.490 — Прозрачная коробка показывает, куда встанет блок. Семена только на пашне.',
+  },
+  es: {
+    needsFarmSoil: 'Necesita tierra de cultivo',
+    placeFits: 'Cabe',
+    ghostHelp: 'Sujeta un bloque para ver una caja transparente donde irá. Las semillas solo van en tierra de cultivo: busca ✓.',
+    whatsNewBody: '2.5.490 — Una caja transparente muestra dónde irá el bloque. Las semillas solo van en tierra de cultivo.',
+  },
+  ar: {
+    needsFarmSoil: 'تحتاج إلى تربة زراعية',
+    placeFits: 'يناسب',
+    ghostHelp: 'أمسك مكعباً لترى صندوقاً شفافاً حيث سيذهب. البذور فقط على تربة زراعية: ابحث عن ✓.',
+    whatsNewBody: '2.5.490 — صندوق شفاف يُظهر أين سيذهب المكعب. البذور فقط على تربة زراعية.',
+  },
+  'fa-AF': {
+    needsFarmSoil: 'به خاک زراعتی نیاز دارد',
+    placeFits: 'می‌گنجد',
+    ghostHelp: 'یک بلاک را نگه دار تا جعبه شفاف جایی که می‌رود دیده شود. دانه‌ها فقط روی خاک زراعتی می‌روند: دنبال ✓ بگرد.',
+    whatsNewBody: '2.5.490 — یک جعبه شفاف نشان می‌دهد بلاک کجا می‌رود. دانه‌ها فقط روی خاک زراعتی.',
+  },
+  rw: {
+    needsFarmSoil: "Bikenera ubutaka bw'umurima",
+    placeFits: 'Biragenda',
+    ghostHelp: "Fata block ubone agasanduku kareba aho kizajya. Imbuto zishyirwa gusa ku butaka bw'umurima: shaka ✓.",
+    whatsNewBody: "2.5.490 — Agasanduku kareba kagaragaza aho block izajya. Imbuto zishyirwa gusa ku butaka bw'umurima.",
+  },
+  ti: {
+    needsFarmSoil: 'ሓመድ ግራት የድሊ',
+    placeFits: 'ይኣክል',
+    ghostHelp: 'ብሎክ ሓዝ፡ ኣበይ ከም ዝኸይድ ዘይሕቡእ ሳንዱቕ ክትርኢ። ዘርኢ ኣብ ሓመድ ግራት ጥራይ ይኸውን፡ ✓ ድለ።',
+    whatsNewBody: '2.5.490 — ዘይሕቡእ ሳንዱቕ ኣበይ ከም ዝኸይድ ብሎክ የርኢ። ዘርኢ ኣብ ሓመድ ግራት ጥራይ።',
+  },
+}
+for (const [lang, row] of Object.entries(GHOST490)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

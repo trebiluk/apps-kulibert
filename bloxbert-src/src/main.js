@@ -15,7 +15,7 @@ import { Effect } from '@babylonjs/core/Materials/effect'
 import { Scene } from '@babylonjs/core/scene'
 import { Vector3, Vector4, Matrix, Quaternion } from '@babylonjs/core/Maths/math.vector'
 import { Ray } from '@babylonjs/core/Culling/ray'
-import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Light } from '@babylonjs/core/Lights/light'
 import { PointLight } from '@babylonjs/core/Lights/pointLight'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
@@ -10674,10 +10674,10 @@ blockedMat.alpha = 0.0
 blockedMat.transparencyMode = 2
 blockedMat.backFaceCulling = false
 const tealMat = new StandardMaterial('place-ghost-teal', scene) // 2.5.449: teal fill for fits
-tealMat.diffuseColor = new Color3(0.13, 0.83, 0.93)
-tealMat.emissiveColor = new Color3(0.08, 0.5, 0.55)
+tealMat.diffuseColor = new Color3(0.13, 0.72, 0.7)
+tealMat.emissiveColor = new Color3(0, 0, 0)
 tealMat.specularColor = new Color3(0, 0, 0)
-tealMat.alpha = 0.35
+tealMat.alpha = 0.25
 tealMat.transparencyMode = 2
 tealMat.backFaceCulling = false
 const placeGhostSide = CreateBox('place-ghost-side', { size: 0.98 }, scene)
@@ -10753,13 +10753,90 @@ function ghostBedScale(on) {
   if (placeGhost) placeGhost.scaling.set(1, s, 1)
   if (placeGhostSide) placeGhostSide.scaling.set(1, s, 1)
 }
+function seedHeld() {
+  if (!survivalOn() || !session || !session.selectedItem) return false
+  return (session.selectedItem() || '') === 'wheatSeeds'
+}
+function hideGhosts() {
+  if (placeGhost) placeGhost.setEnabled(false)
+  if (placeGhostSide) placeGhostSide.setEnabled(false)
+}
+function ghostEdge(mesh, rgb) {
+  if (!mesh || !mesh.enableEdgesRendering) return
+  const key = rgb.join(',')
+  if (mesh.__edgeKey === key) return
+  mesh.enableEdgesRendering()
+  mesh.edgesWidth = 2
+  mesh.edgesColor = new Color4(rgb[0], rgb[1], rgb[2], 1)
+  mesh.__edgeKey = key
+}
+let cueState = ''
+function paintCue(kind, reason) {
+  const el = document.getElementById('place-cue')
+  const live = document.getElementById('place-cue-live')
+  if (!el) return
+  const why = reason || ''
+  const label = kind === 'ok' ? t('placeFits') : kind === 'no' ? why : ''
+  const next = kind ? kind + ':' + label : ''
+  if (cueState === next) return
+  cueState = next
+  el.hidden = !kind
+  el.dataset.state = kind || ''
+  const mark = el.querySelector('.mark')
+  const word = el.querySelector('.word')
+  if (mark) mark.textContent = kind === 'ok' ? '✓' : kind === 'no' ? '✕' : ''
+  if (word) word.textContent = label
+  if (live && live.textContent !== label) live.textContent = label
+}
+function paintSoilTip(on) {
+  const el = document.getElementById('soil-tip')
+  const live = document.getElementById('place-cue-live')
+  if (!el) return
+  if (!on) {
+    el.hidden = true
+    const cue = document.getElementById('place-cue')
+    if (live && cue && cue.hidden && live.textContent) live.textContent = ''
+    return
+  }
+  const word = el.querySelector('.word')
+  const text = t('needsFarmSoil')
+  if (word && word.textContent !== text) word.textContent = text
+  el.hidden = false
+  if (live && live.textContent !== text) live.textContent = text
+}
 function syncPlaceGhost() {
   noteMissingAim()
+  if (seedHeld()) {
+    hideGhosts()
+    if (placeGhostSide) placeGhostSide.scaling.set(1, 1, 1)
+    const aimed = tableMode ? tableTarget() : noa.targetedBlock
+    const soilId = aimed && (aimed.blockID || 0)
+    const soil = soilId === DRY || soilId === WET
+    if (!aimed || !aimed.position || !soil) {
+      if (outline) outline.color.copyFrom(cyanLine)
+      paintCue('', '')
+      paintSoilTip(!!aimed)
+      return
+    }
+    paintSoilTip(false)
+    placeGhost.scaling.set(0.34, 0.42, 0.34)
+    placeGhost.material = tealMat
+    ghostEdge(placeGhost, [0.08, 0.45, 0.48])
+    const x = Math.round(aimed.position[0])
+    const y = Math.round(aimed.position[1])
+    const z = Math.round(aimed.position[2])
+    const lp = noa.globalToLocal([x + 0.5, y + 1.21, z + 0.5], null, ghostLocal)
+    placeGhost.position.set(lp[0], lp[1], lp[2])
+    placeGhost.setEnabled(true)
+    paintCue('ok', '')
+    return
+  }
+  paintSoilTip(false)
   const spot = ghostCell()
   if (!spot) {
-    placeGhost.setEnabled(false)
-    placeGhostSide.setEnabled(false)
+    hideGhosts()
     if (outline) outline.color.copyFrom(cyanLine)
+    paintCue('', '')
     return
   }
   const id = heldBlockId()
@@ -10769,15 +10846,25 @@ function syncPlaceGhost() {
     side = shopSpan(spot.x, spot.y, spot.z)
     amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
   }
-  ghostBedScale(id === ID.bunk)
-  if (amber) { // 2.5.449: blocked = red outline, no fill
+  if (id === ID.bunk) ghostBedScale(true)
+  else {
+    placeGhost.scaling.set(1, 1, 1)
+    if (placeGhostSide) placeGhostSide.scaling.set(1, 1, 1)
+  }
+  if (amber) {
     placeGhost.material = blockedMat
     placeGhostSide.material = blockedMat
+    ghostEdge(placeGhost, [0.9, 0.15, 0.15])
+    ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
+    paintCue('no', t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat
-    outline.color.set(0.13, 0.83, 0.93)
+    ghostEdge(placeGhost, [0.08, 0.45, 0.48])
+    ghostEdge(placeGhostSide, [0.08, 0.45, 0.48])
+    outline.color.set(0.13, 0.55, 0.58)
+    paintCue('ok', '')
   }
   const gy = id === ID.bunk ? 0.275 : 0.5
   const lp = noa.globalToLocal([spot.x + 0.5, spot.y + gy, spot.z + 0.5], null, ghostLocal)
@@ -10796,9 +10883,12 @@ function paintOutline() {
   const id = tgt ? (tgt.blockID || 0) : 0
   const low = lowPlant(id)
   outline.scaling.set(low ? 0.6 / 1.04 : 1, low ? 0.7 / 1.04 : 1, low ? 0.6 / 1.04 : 1)
-  outline.setEnabled(true)
-  const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + (low ? 0.35 : 0.5), pos[2] + 0.5], null, [])
-  outline.position.copyFromFloats(local[0], local[1], local[2])
+  const oneBox = !!(heldBlockId() && ghostCell()) || (seedHeld() && (id === DRY || id === WET))
+  outline.setEnabled(!oneBox)
+  if (!oneBox) {
+    const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + (low ? 0.35 : 0.5), pos[2] + 0.5], null, [])
+    outline.position.copyFromFloats(local[0], local[1], local[2])
+  }
   syncPlaceGhost()
 }
 function eyeVoxel() {
@@ -10835,6 +10925,7 @@ function fillHeld() {
     const key = session.selectedItem() || ''
     if (!key) return heldScratch
     const def = ITEMS[key]
+    if (key === 'wheatSeeds' || key === 'bushSprout') return heldScratch
     if (def && def.block && !def.svg && !def.tool) {
       heldScratch.kind = 'block'
       heldScratch.key = key

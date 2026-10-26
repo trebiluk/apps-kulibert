@@ -401,6 +401,7 @@ export function mountPanels(api) {
         g.append(chipNote)
         const lamps = document.createElement('p'); lamps.className = 'gnote'; lamps.textContent = api.t('helpLamps'); g.append(lamps)
         const shop = document.createElement('p'); shop.className = 'gnote'; shop.textContent = api.t('helpWoodshop'); g.append(shop)
+        const ghost = document.createElement('p'); ghost.className = 'gnote'; ghost.textContent = api.t('ghostHelp'); g.append(ghost)
         const pvp = document.createElement('p'); pvp.className = 'gnote'; pvp.textContent = api.t('pvpHint'); g.append(pvp)
         const boss = document.createElement('p'); boss.className = 'gnote'; boss.textContent = api.t('helpBossBar'); g.append(boss)
         const use = document.createElement('p'); use.className = 'gnote'; use.textContent = api.t('helpUse'); g.append(use)

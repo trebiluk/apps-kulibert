@@ -16,7 +16,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 - [ ] A-chiplane-1b.md (only after 1a is live)
 
 ## BASSFISH
-- [ ] door-part2.md (one-box held-item ghost)
+- [x] door-part2.md (one-box held-item ghost) — 2.5.490
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
