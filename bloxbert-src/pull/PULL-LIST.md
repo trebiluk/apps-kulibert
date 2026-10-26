@@ -25,7 +25,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 - [ ] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x.
 
 ## BOB
-- [ ] door-part5.md (sticky item tip, update toast once)
+- [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
 - [ ] door-part6.md (What's new + Badges tile — likely already shipped; verify, then skip)
 
 ## Nobody yet (needs Debugzy/Fixzy after Tue)

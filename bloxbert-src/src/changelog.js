@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.494', date: '2026-10-26', lines: {
+    en: ["2.5.494 — The item tip goes away when the Bag closes, and the update note shows once."],
+    simple: ["2.5.494 — The item tip goes away when you close the Bag. The update note shows once."],
+    uk: ["2.5.494 — Підказка речі зникає, коли закриваєш Сумку, а нотатка про оновлення з’являється один раз."],
+    ru: ["2.5.494 — Подсказка вещи пропадает, когда закрываешь Сумку, а заметка об обновлении показывается один раз."],
+    es: ["2.5.494 — La nota del objeto se va al cerrar la Bolsa, y el aviso de actualización sale una vez."],
+    ar: ["2.5.494 — تختفي ملاحظة الغرض عند إغلاق الحقيبة، وتظهر ملاحظة التحديث مرة واحدة."],
+    'fa-AF': ["2.5.494 — نکتهٔ چیز وقتی بکس بسته شود می‌رود، و یادداشت به‌روزرسانی یک بار می‌آید."],
+    rw: ["2.5.494 — Inyandiko y'ikintu iravanwa iyo ufunze agasaho, kandi inyandiko y'ivugurura igaragara rimwe."],
+    ti: ["2.5.494 — መዘኻኸሪ ንብረት ቦርሳ ምስ ተዓጸወ ይጠፍእ፡ መዘኻኸሪ ምዕራፍ ድማ ሓንሳእ ይረአ።"],
+  }},
+
   { v: '2.5.491', date: '2026-10-26', lines: {
     en: ["2.5.491 — On a big screen the goal, inspect, and held name share one stack. On a phone the goal stays at the bottom."],
     simple: ["2.5.491 — On a big screen those notes share one stack. On a phone the goal stays at the bottom."],

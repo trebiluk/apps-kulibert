@@ -5294,7 +5294,14 @@ function saveFailToast(e) {
   if (e && e.code === 'newer') toast(t('saveNewer'))
   else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
 }
+function updateSeen() {
+  try { return localStorage.getItem('bert-update-seen') === VERSION } catch (e) { return false }
+}
+function markUpdateSeen() {
+  try { localStorage.setItem('bert-update-seen', VERSION) } catch (e) {}
+}
 function showUpdateChip() {
+  if (updateSeen()) return
   let b = document.getElementById('update-chip')
   if (!b) {
     b = document.createElement('button')
@@ -5311,6 +5318,7 @@ function showUpdateChip() {
   laneAdd(b, 8)
   b.textContent = t('updateReady')
   b.hidden = false
+  markUpdateSeen()
 }
 async function acceptUpdate() {
   try {
@@ -5335,6 +5343,7 @@ async function acceptUpdate() {
   } catch (e) {}
 }
 window.addEventListener('bert-update', async () => {
+  if (updateSeen()) return
   try {
     if (dirty && allowSave) await save()
   } catch (e) {
