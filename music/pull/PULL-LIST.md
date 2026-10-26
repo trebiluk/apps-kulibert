@@ -7,7 +7,7 @@ Limit: ≤3 fixes, ≤5 files. Two failed tries = stop, write BLOCKED + why unde
 Do not change: sound engine, saving, song format, shared/kulibert-bar.js, shared/kulibert-prefs.js.
 DONE only when seen live at apps.kulibert.net/music/ (1366 + 412 upright). Check the box here in the same commit.
 
-- [ ] 1-shelf-song-no-drums.md (Happy Birthday plays just the tune, right tempo)
+- [x] 1-shelf-song-no-drums.md (Happy Birthday plays just the tune, right tempo) MU 2.36.59
 - [ ] 2-click-restore.md (saved click comes back on load; auto click turns off)
 - [ ] 3-mixer-device-look.md (look only: mixer panels with gaps, optional calm underlay)
 

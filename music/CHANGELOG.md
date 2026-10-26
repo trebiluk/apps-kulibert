@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.59** · 2026-10-26 · channel **live**
+
+MU 2.36.59 — Happy Birthday plays just the tune.
+
+## Earlier
+
 **Chip: MU 2.36.58** · 2026-10-25 · channel **live**
 
 MU 2.36.58 — Fewer tabs: Songs, Tap, Score, Remix, Show.

@@ -4394,6 +4394,11 @@
     });
     state.cursor = 0;
     state.step = 0;
+    if (!opts.drums) {
+      ROWS.forEach(([id]) => { state.drums[id] = to16([]); });
+      state.blend = 50;
+      if ($("blend")) { $("blend").value = "50"; $("blend-read").textContent = blendWord(50); }
+    }
     if (opts.drums) {
       ROWS.forEach(([id]) => {
         if (Array.isArray(opts.drums[id])) state.drums[id] = to16(opts.drums[id]);

@@ -1,11 +1,11 @@
-window.MU_VERSION = "MU 2.36.58";
+window.MU_VERSION = "MU 2.36.59";
 (function () {
   var v = window.MU_VERSION;
   document.title = document.title.indexOf("Teacher") >= 0
     ? "DJ Berty — Teacher · " + v
     : "DJ Berty · " + v;
   if (document.getElementById("transport") && !document.querySelector("script[src*='kulibert-bar.js']")) {
-    document.write('<script src="/shared/kulibert-bar.js?v=mu23658" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-menu="#menu-btn" data-version="' + v + '"><\/script>');
+    document.write('<script src="/shared/kulibert-bar.js?v=mu23659" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-menu="#menu-btn" data-version="' + v + '"><\/script>');
   }
   var bar = document.querySelector("script[src*='kulibert-bar.js']");
   if (bar) bar.setAttribute("data-version", v);
