@@ -612,3 +612,97 @@ html[data-kp-motion="less"] .stamp { transform: none; }
     overflow: visible;
   }
 }
+
+
+/* RF 1.0.24 — home matches Pour Lines. Play chrome stays the shop. */
+body.at-home {
+  background: #E7ECF0;
+  color: #16202A;
+  font-family: "IBM Plex Sans", var(--font);
+}
+body.at-home .bar {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  right: auto;
+  z-index: 6;
+  min-height: 0;
+  width: auto;
+}
+body.at-home .bar .brand,
+body.at-home .level-pill,
+body.at-home #ver-plate,
+body.at-home #pause-btn { display: none !important; }
+body.at-home #menu-btn {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+  border: 2px solid #16202A;
+  background: #F8FAFB;
+  color: #16202A;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+body.at-home .home {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 22px;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 64px 8px 36px;
+}
+.pl-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.pl-brand { min-width: 0; }
+.pl-kicker {
+  margin: 0 0 8px;
+  font: 500 12px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4F5E6C;
+}
+body.at-home h1 {
+  margin: 0;
+  font: 800 clamp(34px, 7vw, 46px)/0.95 "Syne", "Arial Black", system-ui, sans-serif;
+  letter-spacing: -0.035em;
+  color: #16202A;
+}
+.pl-tag {
+  margin: 8px 0 0;
+  max-width: 42ch;
+  color: #4F5E6C;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.pl-tabs, .pl-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pl-tab, .pl-chip {
+  min-width: 44px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 2px solid #16202A;
+  border-radius: 4px;
+  background: #F8FAFB;
+  color: #16202A;
+  font: 600 14px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.pl-tab:hover, .pl-chip:hover { background: #C9D3DB; }
+.pl-tab:active, .pl-chip:active { transform: translateY(1px); }
+#home-levels.pl-tab { background: #16202A; color: #F8FAFB; }
+#home-pl.pl-tab { background: #D6205F; border-color: #D6205F; color: #FFFFFF; }
+#home-pl.pl-tab:hover { filter: brightness(1.08); }
+@media (max-width: 560px) {
+  .pl-tab, .pl-chip { flex: 1 1 calc(50% - 8px); }
+}

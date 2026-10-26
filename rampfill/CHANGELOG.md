@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.24
+
+RF 1.0.24 — Home matches Pour Lines. Buttons stay easy to tap.
+
 ## RF 1.0.22
 
 RF 1.0.22 — Pour Lines: 14 new levels with gel, syrup and water.

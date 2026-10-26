@@ -8,12 +8,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <meta name="theme-color" content="#1C2B26" />
-  <title>Ramp & Fill — RF 1.0.22</title>
+  <meta name="theme-color" content="#E7ECF0" />
+  <title>Ramp & Fill — RF 1.0.24</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=Syne:wght@700;800&display=swap" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
 
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.22" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.24" />
 
   <script src="/shared/hub-staff-auth.js?v=RF-1.0.9"></script>
 
@@ -41,7 +44,7 @@
       <span class="brand">Ramp & Fill</span>
 
       <span class="level-pill" id="level-name">First ramp</span>
-      <span class="chip" id="ver-plate">RF 1.0.22</span>
+      <span class="chip" id="ver-plate">RF 1.0.24</span>
       <button type="button" id="pause-btn" class="ghost-btn">
 
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
@@ -53,41 +56,22 @@
     </header>
 
     <div id="home" class="home">
-
-      <button type="button" id="home-levels" class="home-tile">
-
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 18 H28 L34 28 H56" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M40 36 H58 L54 56 H44 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/><path d="M46 46 H54 L52 54 H48 Z" fill="#E0A106"/></svg>
-
-        <span data-k="levels">Levels</span>
-
-      </button>
-
-      <button type="button" id="home-stack" class="home-tile">
-
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 8 H42 L40 22 H24 Z M18 26 H46 L43 42 H21 Z M14 46 H50 L46 60 H18 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
-
-        <span data-k="stackTile">Cup Stack</span>
-
-      </button>
-
-      <button type="button" id="home-ideas" class="home-tile">
-
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 40 H24 L22 56 H10 Z M28 28 H44 L42 56 H30 Z M48 16 H60 L58 56 H50 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
-
-        <span data-k="ideas">Stack ideas</span>
-
-      </button>
-
-      <button type="button" id="home-ref" class="home-tile">
-
-        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="18" fill="none" stroke="#1A120C" stroke-width="4"/><path d="M32 34 V22 M32 34 L42 40" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M32 8 V14" stroke="#1A120C" stroke-width="4"/></svg>
-
-        <span data-k="refTile">Referee</span>
-
-      </button>
-
-      <button type="button" id="home-pl" class="home-tile"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 14L30 30H52" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M34 38H58L54 58H38Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg><span id="home-pl-t">Pour Lines</span></button>
-
+      <header class="pl-top">
+        <div class="pl-brand">
+          <p class="pl-kicker">RF 1.0.24</p>
+          <h1>Ramp & Fill</h1>
+          <p class="pl-tag" data-k="homeTag">Draw a line. Pour the grains. Fill the cup.</p>
+        </div>
+        <div class="pl-tabs" role="group" aria-label="Open">
+          <button type="button" id="home-levels" class="pl-tab"><span data-k="levels">Levels</span></button>
+          <button type="button" id="home-pl" class="pl-tab"><span id="home-pl-t">Pour Lines</span></button>
+        </div>
+      </header>
+      <div class="pl-row">
+        <button type="button" id="home-stack" class="pl-chip"><span data-k="stackTile">Cup Stack</span></button>
+        <button type="button" id="home-ref" class="pl-chip"><span data-k="refTile">Referee</span></button>
+        <button type="button" id="home-ideas" class="pl-chip"><span data-k="ideas">Stack ideas</span></button>
+      </div>
     </div>
 
     <section id="ideas" class="ideas" hidden>
@@ -479,7 +463,7 @@
     <div class="menu-head">
 
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.22</span>
+      <span class="ver-plate">RF 1.0.24</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
 
     </div>
@@ -487,7 +471,7 @@
     <section id="whats-new">
 
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.22 — Pour Lines: 14 new levels with gel, syrup and water.</p>
+      <p id="whats-body">RF 1.0.24 — Pour Lines: 14 new levels with gel, syrup and water.</p>
     </section>
 
     <section id="rf-help">
@@ -502,23 +486,23 @@
 
         <li data-k="helpSpill">A spill stays circled. Flatten the ramp and try again. Ramps stay on Retry.</li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L14 8 H21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpLesson" data-i18n="rfHelpLesson">Read the lesson line when you win.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L14 8 H21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpLesson">Read the lesson line when you win.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H14 L12 20 H6 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 H22 M19 5 V11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpFewer" data-i18n="rfHelpFewer">Try to win with fewer ramps.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H14 L12 20 H6 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 H22 M19 5 V11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpFewer">Try to win with fewer ramps.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg><span data-k="helpPause" data-i18n="rfHelpPause">Pause is always easy to tap, even sideways.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg><span data-k="helpPause">Pause is always easy to tap, even sideways.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C12 3 6 10 6 14 A6 6 0 0 0 18 14 C18 10 12 3 12 3 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpSplash" data-i18n="rfHelpSplash">Pouring splashes. The fill percent counts up. Mute turns the tone off.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C12 3 6 10 6 14 A6 6 0 0 0 18 14 C18 10 12 3 12 3 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpSplash">Pouring splashes. The fill percent counts up. Mute turns the tone off.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 L14 9 H20 L15 13 L17 19 L12 15 L7 19 L9 13 L4 9 H10 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpStars" data-i18n="rfHelpStars">The level list shows your stars and your fewest ramps.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 L14 9 H20 L15 13 L17 19 L12 15 L7 19 L9 13 L4 9 H10 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpStars">The level list shows your stars and your fewest ramps.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpClear" data-i18n="rfHelpClear">When you win, stars show one by one. Next is ready.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpClear">When you win, stars show one by one. Next is ready.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 L14 8" fill="none" stroke="currentColor" stroke-width="3" opacity="0.35"/><path d="M6 18 L16 10" fill="none" stroke="currentColor" stroke-width="3"/></svg><span data-k="helpGhost" data-i18n="rfHelpGhost">Retry can show a faint grey copy of your best ramps. Show best turns it on or off.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 L14 8" fill="none" stroke="currentColor" stroke-width="3" opacity="0.35"/><path d="M6 18 L16 10" fill="none" stroke="currentColor" stroke-width="3"/></svg><span data-k="helpGhost">Retry can show a faint grey copy of your best ramps. Show best turns it on or off.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4 H18 L16 16 H8 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpDaily" data-i18n="rfHelpDaily">The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4 H18 L16 16 H8 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpDaily">The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only.</span></li>
 
-        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H14 M4 20 H10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpDailyBest" data-i18n="rfHelpDailyBest">The Daily cup tile shows your best for today.</span></li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H14 M4 20 H10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpDailyBest">The Daily cup tile shows your best for today.</span></li>
         <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 H12 M8 14 V18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpRamps">"1 ramp" and "2 ramps" use the right word in every language.</span></li>
         <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4 V8 M16 4 V8 M4 11 H20" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-k="helpDate">The Daily cup date shows in your language.</span></li>
 
@@ -579,12 +563,12 @@
     </section>
 
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.22" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.24" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
 
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
 
-  <script src="./app.js?v=RF-1.0.22"></script>
-  <script src="./pourlines.js?v=RF-1.0.22"></script>
+  <script src="./app.js?v=RF-1.0.24"></script>
+  <script src="./pourlines.js?v=RF-1.0.24"></script>
 </body>
 
 </html>

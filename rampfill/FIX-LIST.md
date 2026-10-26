@@ -1,4 +1,11 @@
 # Ramp & Fill FIX-LIST
+Stage 24. Version locked: RF 1.0.24.
+
+- [x] **home-pour-lines:** The home screen uses the Pour Lines paper, Syne title, and two tabs (Levels, Pour Lines), plus Cup Stack, Referee, and Stack ideas. No illustrated tiles.
+- [x] **tap-44:** Home tabs, chips, and the menu button are at least 44px.
+- [x] **whats-new:** What's new says RF 1.0.24 in all 8 languages and Simple.
+- [x] **help-guide:** Help lines no longer carry data-i18n, so the shared English pack cannot overwrite the guide.
+
 Stage 23. Version locked: RF 1.0.22.
 
 - [x] **pl-materials:** Sugar, gel, syrup, and water each fall their own way. A wrong pour mixes the jar. A full jar with a rim spills that material back out.
