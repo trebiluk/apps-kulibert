@@ -18,13 +18,15 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 
 ## BASSFISH
 - [x] door-part2.md (one-box held-item ghost) — 2.5.490
+- [ ] master-control-part1.md (staff Master Control page, view-only for all) — 2.5.493
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
+- [ ] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x.
 
 ## BOB
 - [ ] door-part5.md (sticky item tip, update toast once)
 - [ ] door-part6.md (What's new + Badges tile — likely already shipped; verify, then skip)
 
 ## Nobody yet (needs Debugzy/Fixzy after Tue)
-Room server claims add-on, Pour Lines 2–4, chat (needs compliance), Botz cutting.
+Room server claims add-on, Pour Lines 4 (after 3 is live), chat (needs compliance), Botz cutting.
