@@ -237,15 +237,92 @@ function paintBonk() {
   }
 }
 
+function ensureLane() {
+  let lane = document.getElementById('chip-lane')
+  if (lane) return lane
+  lane = document.createElement('div')
+  lane.id = 'chip-lane'
+  document.body.append(lane)
+  if (window.MutationObserver) {
+    new MutationObserver((recs) => {
+      for (const rec of recs) {
+        if (rec.target && rec.target.parentElement === lane) { capLane(); return }
+      }
+    }).observe(lane, { subtree: true, attributes: true, attributeFilter: ['hidden'] })
+  }
+  return lane
+}
+function laneAdd(el, prio) {
+  if (!el) return
+  const lane = ensureLane()
+  el.dataset.prio = String(prio)
+  el.style.position = ''
+  el.style.left = ''
+  el.style.right = ''
+  el.style.top = ''
+  el.style.bottom = ''
+  el.style.transform = ''
+  el.style.zIndex = ''
+  let before = null
+  for (const kid of lane.children) {
+    if (kid === el) continue
+    if (Number(kid.dataset.prio || 99) > prio) { before = kid; break }
+  }
+  if (before) lane.insertBefore(el, before)
+  else if (el.parentElement !== lane) lane.append(el)
+  else if (el !== lane.lastElementChild) lane.append(el)
+  capLane()
+}
+function capLane() {
+  const lane = document.getElementById('chip-lane')
+  if (!lane) return
+  const cap = (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
+  let n = 0
+  for (const el of lane.children) {
+    const off = el.hidden || el.style.display === 'none'
+    if (off) {
+      if (el.hasAttribute('data-wait')) el.removeAttribute('data-wait')
+      continue
+    }
+    n += 1
+    if (n > cap) el.dataset.wait = '1'
+    else if (el.hasAttribute('data-wait')) el.removeAttribute('data-wait')
+  }
+}
+function layoutLane() {
+  const lane = document.getElementById('chip-lane')
+  if (!lane) return
+  const box = (id) => {
+    const node = document.getElementById(id)
+    if (!node || node.hidden) return null
+    const r = node.getBoundingClientRect()
+    if (r.width < 2 || r.height < 2) return null
+    return r
+  }
+  let left = 76
+  let right = 12
+  const bump = (r) => {
+    if (!r) return
+    const mid = (r.left + r.right) / 2
+    if (mid < window.innerWidth / 2) left = Math.max(left, Math.round(r.right) + 8)
+    else right = Math.max(right, Math.round(window.innerWidth - r.left) + 8)
+  }
+  bump(box('game-menu'))
+  bump(box('pause-btn'))
+  bump(box('fs-btn'))
+  lane.style.left = left + 'px'
+  lane.style.right = right + 'px'
+  capLane()
+}
 function ensureSafeChip() {
   let chip = document.getElementById('safe-chip')
   if (!chip) {
     chip = document.createElement('div')
     chip.id = 'safe-chip'
     chip.setAttribute('role', 'status')
-    chip.style.cssText = 'position:fixed;top:calc(var(--top-h,48px) + 8px);left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:6px 12px;border-radius:8px;z-index:6;font-size:13px;font-weight:700;min-height:32px;display:flex;align-items:center;gap:6px'
+    chip.style.cssText = 'background:#0f766e;color:#fff;padding:6px 12px;border-radius:8px;font-size:14px;font-weight:700;min-height:32px;display:flex;align-items:center;gap:6px;max-width:100%;box-sizing:border-box'
     chip.hidden = true
-    document.body.append(chip)
+    laneAdd(chip, 7)
   }
   return chip
 }
@@ -5222,6 +5299,7 @@ function showUpdateChip() {
     })
     document.body.appendChild(b)
   }
+  laneAdd(b, 8)
   b.textContent = t('updateReady')
   b.hidden = false
 }
@@ -5518,6 +5596,15 @@ function markSave(text) {
   if (typeof text === 'string' && text.indexOf(t('saved')) === 0) paintSaveChip(navigator.onLine ? 'saved' : 'offline')
 }
 function placeSaveChip(el) {
+  if (el && el.parentElement && el.parentElement.id === 'chip-lane') {
+    el.style.left = ''
+    el.style.top = ''
+    el.style.right = ''
+    el.style.bottom = ''
+    el.style.transform = ''
+    el.style.position = ''
+    return
+  }
   el.style.right = 'auto'
   el.style.bottom = 'auto'
   el.style.transform = 'none'
@@ -10947,32 +11034,26 @@ function ensureBossBar() {
   bossBar.setAttribute('role', 'status')
   bossBar.setAttribute('aria-live', 'polite')
   bossBar.innerHTML = '<div data-boss-vis aria-hidden="true"></div><span data-boss-sr style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></span>'
-  bossBar.style.cssText = 'position:fixed;top:48px;left:50%;transform:translateX(-50%);background:#0f172a;color:#f8fafc;padding:8px 16px;border-radius:8px;z-index:25;min-width:200px;text-align:center;font-size:14px;display:none'
+  bossBar.style.cssText = 'background:#0f172a;color:#f8fafc;padding:8px 16px;border-radius:8px;min-width:0;max-width:100%;text-align:center;font-size:14px;line-height:1.25;display:none;box-sizing:border-box'
   bossBar.dir = document.documentElement.dir || 'ltr'
-  document.body.append(bossBar)
+  laneAdd(bossBar, 1)
   return bossBar
 }
 let lastBossPhase = 0
 function paintBossBar() {
   const bar = ensureBossBar()
-  if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; return }
-  if (mobs && mobs.blockedWorld && mobs.blockedWorld()) { bar.style.display = 'none'; return }
+  if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; capLane(); return }
+  if (mobs && mobs.blockedWorld && mobs.blockedWorld()) { bar.style.display = 'none'; capLane(); return }
   const list = mobs && mobs.list ? mobs.list() : []
   const boss = list.find(m => m.kind === 'overseer')
-  if (!boss) { bar.style.display = 'none'; return }
+  if (!boss) { bar.style.display = 'none'; capLane(); return }
   const phase = boss.phase || 1
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && performance.now() < boss.weakOpen
   const adds = list.filter(m => m.fromBoss === boss.id).length; const vis = bar.querySelector('[data-boss-vis]'); vis.innerHTML = '⚙️ ' + (t ? t('c5barName') : 'Foundry Overseer') + (adds ? ' ⚡ ×' + adds : '') + '<br><div style="background:#334155;height:8px;border-radius:4px;margin:4px 0"><div style="background:#f59e0b;height:8px;width:' + Math.max(0, Math.round(100 * boss.hp / boss.maxHp)) + '%"></div></div>' + boss.hp + '/' + boss.maxHp + ' · ' + phaseWord + (weak ? '<br>⚡ ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
   vis.innerHTML += '<br>' + (t ? t('c5barHint') : 'Bring a crewmate — it\'s a team boss.')
-  const hdr = document.querySelector('header.top')
-  bar.style.top = ((hdr ? Math.round(hdr.getBoundingClientRect().bottom) : 48) + 8) + 'px'
-  const pb = document.getElementById('pause-btn')
-  const room = pb && pb.getBoundingClientRect().width > 0 ? Math.floor(2 * (pb.getBoundingClientRect().left - innerWidth / 2) - 24) : 0
-  bar.style.boxSizing = 'border-box'
-  bar.style.maxWidth = room > 0 && room < 320 ? room + 'px' : ''
-  bar.style.minWidth = room > 0 && room < 200 ? room + 'px' : '200px'
-  bar.style.display = 'block' 
+  bar.style.display = 'block'
+  capLane() 
   const step = Math.ceil(4 * Math.max(0, boss.hp) / (boss.maxHp || 1)) * 25
   const say = (t ? t('c5barName') : 'Foundry Overseer') + ' ' + step + '% · ' + phaseWord + (adds ? ' · ⚡ ×' + adds : '') + (weak ? ' · ' + (t ? t('c5barWeak') : 'Weak point open!') : '')
   if (say !== bar._said) { bar._said = say; bar.querySelector('[data-boss-sr]').textContent = say }
@@ -11183,6 +11264,7 @@ function refit() {
   const h = Math.ceil(topBar.getBoundingClientRect().height)
   document.documentElement.style.setProperty('--top-h', h + 'px')
   document.documentElement.style.setProperty('--phone-top', h + 'px')
+  layoutLane()
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)
@@ -11191,6 +11273,10 @@ addEventListener('orientationchange', () => { refit(); setTimeout(refit, 300) })
 if (window.visualViewport) visualViewport.addEventListener('resize', refit)
 document.addEventListener('fullscreenchange', refit)
 document.addEventListener('webkitfullscreenchange', refit)
+if (window.MutationObserver) {
+  new MutationObserver(() => layoutLane()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-kb-bar', 'dir'] })
+}
+laneAdd(document.getElementById('save-chip'), 5)
 refit()
 
 const FSKEY = 'kulibert-fullscreen'

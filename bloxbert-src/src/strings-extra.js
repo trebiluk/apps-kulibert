@@ -3244,3 +3244,19 @@ for (const [lang, row] of Object.entries(DOOR3)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+// 2.5.489: chip lane. rw, ti, and Dari need a native check.
+const LANE489 = {
+  en: { whatsNewBody: '2.5.489 — Boss, saved, safe, and update notes share one stack under the top bar.' },
+  simple: { whatsNewBody: '2.5.489 — Those notes sit in one stack.' },
+  uk: { whatsNewBody: '2.5.489 — Бос, збереження, безпека й оновлення стоять одним стовпчиком під верхньою смугою.' },
+  ru: { whatsNewBody: '2.5.489 — Босс, сохранение, безопасность и обновление стоят одним столбиком под верхней полосой.' },
+  es: { whatsNewBody: '2.5.489 — Jefe, guardado, zona segura y actualización van en una sola pila bajo la barra de arriba.' },
+  ar: { whatsNewBody: '2.5.489 — الزعيم والحفظ والمنطقة الآمنة والتحديث في رصة واحدة تحت الشريط العلوي.' },
+  'fa-AF': { whatsNewBody: '2.5.489 — رئیس، ذخیره، جای امن و تازه‌سازی در یک ستون زیر نوار بالا می‌نشینند.' },
+  rw: { whatsNewBody: '2.5.489 — Umuyobozi, kubika, ahantu hateganye n\'ivugurura biri mu murongo umwe munsi y\'umurongo wo hejuru.' },
+  ti: { whatsNewBody: '2.5.489 — ሓላፊ፡ ምዕቃብ፡ ውሑስ ቦታን ምሕዳስን ኣብ ሓደ ዓምዲ ኣብ ትሕቲ ላዕለዋይ መስመር ይቐመጡ።' },
+}
+for (const [lang, row] of Object.entries(LANE489)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

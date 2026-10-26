@@ -12,7 +12,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 - [ ] door-part4.md (menu dim, Entrar/Deshacer wrap, keys tip)
 
 ## BOOBS
-- [ ] A-chiplane-1a.md (chip lane + priority/cap)
+- [x] A-chiplane-1a.md (chip lane + priority/cap) — 2.5.489. Boss, saved, safe, and update share #chip-lane. Sideways phone check BLOCKED-rig.
 - [ ] A-chiplane-1b.md (only after 1a is live)
 
 ## BASSFISH

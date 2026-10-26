@@ -257,7 +257,7 @@ export function pinAboveBar(el) {
   if (bars.length && top + h > ceil + 0.5) top = Math.max(8, Math.round(ceil - h))
   if (wide) {
     const crowd = []
-    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip', '#suit-bar', '#safe-chip']) { // 2.5.432: also clear the safe-zone chip
+    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip', '#suit-bar', '#chip-lane']) { // 2.5.489: the lane is the obstacle, not the safe chip alone
       const node = document.querySelector(sel)
       if (!node || node.hidden) continue
       const r = node.getBoundingClientRect()

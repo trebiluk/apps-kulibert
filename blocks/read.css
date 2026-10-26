@@ -638,7 +638,6 @@ html body #hotbar .digit {
   line-height: 1.1 !important;
   min-height: 16px;
 }
-html body #save-chip:not([hidden]),
 html body #toast.nice-chip:not([hidden]) {
   left: 12px !important;
   right: auto !important;
@@ -1744,32 +1743,53 @@ html body #dig-chip:not([hidden]) {
   :root { --hud-lift: 150px; }
 }
 
-/* 2.5.372: safe-zone chip sits under the top bar, not behind it; on short wide screens it also clears the Tap to play chip */
-html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important; }
-html body:has(#sheet:not([hidden])) #safe-chip { display: none !important; } /* 2.5.387: Bag / Menu open -> the safe-zone chip waits; it comes back when the panel closes */
-html body:has(#sheet:not([hidden])) #play-chip { display: none !important; } /* 2.5.390: Bag / Menu open -> no "Click to play" hint beside it; it comes back when the panel closes */
-@media (max-height: 520px) and (min-width: 700px) {
-  html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+/* 2.5.489: one chip lane. Boss, saved, safe, and update share it. Goal chip still lifts the lane until 1b. */
+:root { --lane-top: calc(var(--top-h, 56px) + 8px); }
+html[data-kb-bar]:not(.kb-framed) { --lane-top: calc(48px + var(--top-h, 56px) + 8px); }
+#chip-lane {
+  position: fixed;
+  top: var(--lane-top);
+  z-index: 26;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: none;
 }
-
-/* 2.5.373: boss bar sits under the top bar; on short wide screens it also clears the Tap to play chip */
-html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important; }
-@media (max-height: 520px) and (min-width: 700px) {
-  html body #boss-bar { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+#chip-lane > * {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  transform: none;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  pointer-events: auto;
+  font-size: 14px;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-height: 32px;
+  transition: opacity 120ms linear;
 }
-
-/* 2.5.378: on narrow phones the safe-zone chip drops below the Pause / full-screen row so it never runs under Pause */
-@media (max-width: 520px) {
-  html body #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 60px) !important; }
+#chip-lane > button,
+#chip-lane > #update-chip { min-width: 44px; min-height: 44px; }
+#chip-lane > [data-wait] { display: none !important; }
+body:has(#sheet:not([hidden])) #chip-lane > :not(#update-chip) { display: none !important; }
+html body:has(#sheet:not([hidden])) #play-chip { display: none !important; } /* 2.5.390: Bag / Menu open -> no "Click to play" hint beside it */
+body:has(#sheet:not([hidden])) #chip-lane > #update-chip { display: inline-flex !important; align-items: center; justify-content: center; }
+@media (prefers-reduced-motion: reduce) {
+  #chip-lane > * { transition: none; }
 }
-
-/* 2.5.389: on big screens, while the update-ready chip shows, the safe-zone chip sits below it instead of under it (path chip rule below still wins) */
+html[data-kp-motion="less"] #chip-lane > * { transition: none; }
 @media (min-width: 521px) and (min-height: 521px) {
-  html body:not(.hud-calm):has(#update-chip:not([hidden])) #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 56px) !important; }
-}
-/* 2.5.380: on big screens, while the goal (path) chip shows, the safe-zone chip sits below it instead of under it */
-@media (min-width: 521px) and (min-height: 521px) {
-  html body:has(#path-chip:not([hidden]):not(.path-out)) #safe-chip { top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 74px) !important; }
+  body:has(#path-chip:not([hidden]):not(.path-out)) { --lane-top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 74px); }
 }
 /* 2.5.426: students see 4 menu groups; only a teacher device has a 5th */
 @media (min-width: 700px) {

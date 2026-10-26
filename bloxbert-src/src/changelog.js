@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.489', date: '2026-10-26', lines: {
+    en: ["2.5.489 — Boss, saved, safe, and update notes share one stack under the top bar."],
+    simple: ["2.5.489 — Those notes sit in one stack."],
+    uk: ["2.5.489 — Бос, збереження, безпека й оновлення стоять одним стовпчиком під верхньою смугою."],
+    ru: ["2.5.489 — Босс, сохранение, безопасность и обновление стоят одним столбиком под верхней полосой."],
+    es: ["2.5.489 — Jefe, guardado, zona segura y actualización van en una sola pila bajo la barra de arriba."],
+    ar: ["2.5.489 — الزعيم والحفظ والمنطقة الآمنة والتحديث في رصة واحدة تحت الشريط العلوي."],
+    'fa-AF': ["2.5.489 — رئیس، ذخیره، جای امن و تازه‌سازی در یک ستون زیر نوار بالا می‌نشینند."],
+    rw: ["2.5.489 — Umuyobozi, kubika, ahantu hateganye n'ivugurura biri mu murongo umwe munsi y'umurongo wo hejuru."],
+    ti: ["2.5.489 — ሓላፊ፡ ምዕቃብ፡ ውሑስ ቦታን ምሕዳስን ኣብ ሓደ ዓምዲ ኣብ ትሕቲ ላዕለዋይ መስመር ይቐመጡ።"],
+  }},
+
   { v: '2.5.488', date: '2026-10-26', lines: {
     en: ["2.5.488 — The held card says Stick ×2. A bed is a Bed. The wood tip only shows while you chop a log."],
     simple: ["2.5.488 — The card says Stick ×2. A bed is a Bed. The wood tip shows only while you chop."],
