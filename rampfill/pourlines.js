@@ -1,15 +1,15 @@
-/* Pour Lines RF 1.0.20 — sugar, jars, and ink. No sound. No saves. */
+/* Pour Lines RF 1.0.21 — phone layout, keyboard pen, words. No sound. No saves. */
 (function () {
   var W = 800, H = 600, R = 2.6, STEP = 1 / 180, MAX_STEPS = 9;
   var PL = {
-    en: { ink: "Ink", rewind: "Rewind", notYet: "Not full yet", noInk: "Out of ink" },
-    uk: { ink: "Чорнило", rewind: "Назад", notYet: "Ще не повні", noInk: "Чорнило скінчилось" },
-    ru: { ink: "Чернила", rewind: "Заново", notYet: "Ещё не полные", noInk: "Чернила кончились" },
-    es: { ink: "Tinta", rewind: "Repetir", notYet: "Aún no", noInk: "Sin tinta" },
-    ar: { ink: "الحبر", rewind: "إعادة", notYet: "لم تمتلئ بعد", noInk: "نفد الحبر" },
-    "fa-AF": { ink: "جوهر", rewind: "دوباره", notYet: "هنوز پر نشده", noInk: "جوهر تمام شد" },
-    rw: { ink: "Wino", rewind: "Subiramo", notYet: "Ntibiruzura", noInk: "Wino warashize" },
-    ti: { ink: "ቀለም", rewind: "ድገም", notYet: "ገና ኣይመልአን", noInk: "ቀለም ወዲኡ" }
+    en: { ink: "Ink", rewind: "Rewind", notYet: "Not full yet", noInk: "Out of ink", board: "Draw lines so the sugar falls into the jars. Arrows move the pen, Enter puts it down, Space pours.", penDown: "Pen down", penUp: "Pen up", jar: "Jar", level: "Level" },
+    uk: { ink: "Чорнило", rewind: "Назад", notYet: "Ще не повні", noInk: "Чорнило скінчилось", board: "Малюй лінії, щоб цукор потрапив у банки. Стрілки рухають перо, Enter опускає, Пробіл сипле.", penDown: "Перо опущено", penUp: "Перо піднято", jar: "Банка", level: "Рівень" },
+    ru: { ink: "Чернила", rewind: "Заново", notYet: "Ещё не полные", noInk: "Чернила кончились", board: "Рисуй линии, чтобы сахар попал в банки. Стрелки двигают перо, Enter опускает, Пробел сыплет.", penDown: "Перо опущено", penUp: "Перо поднято", jar: "Банка", level: "Уровень" },
+    es: { ink: "Tinta", rewind: "Repetir", notYet: "Aún no", noInk: "Sin tinta", board: "Dibuja líneas para que el azúcar caiga en los frascos. Flechas mueven el lápiz, Enter lo baja, Espacio vierte.", penDown: "Lápiz abajo", penUp: "Lápiz arriba", jar: "Frasco", level: "Nivel" },
+    ar: { ink: "الحبر", rewind: "إعادة", notYet: "لم تمتلئ بعد", noInk: "نفد الحبر", board: "ارسم خطوطًا ليسقط السكر في الجرار. الأسهم تحرّك القلم، وEnter يُنزله، والمسافة تصبّ.", penDown: "القلم منزل", penUp: "القلم مرفوع", jar: "جرة", level: "المستوى" },
+    "fa-AF": { ink: "جوهر", rewind: "دوباره", notYet: "هنوز پر نشده", noInk: "جوهر تمام شد", board: "خط بکش تا قند در کوزه‌ها بیفتد. کلیدهای جهت قلم را حرکت می‌دهند، Enter پایین می‌آورد، Space می‌ریزد.", penDown: "قلم پایین", penUp: "قلم بالا", jar: "کوزه", level: "مرحله" },
+    rw: { ink: "Wino", rewind: "Subiramo", notYet: "Ntibiruzura", noInk: "Wino warashize", board: "Shushanya imirongo isukari igwe mu bibindi. Imyambi igendesha ikaramu, Enter iyamanura, Space isuka.", penDown: "Ikaramu imanuye", penUp: "Ikaramu izamuye", jar: "Ikibindi", level: "Urwego" },
+    ti: { ink: "ቀለም", rewind: "ድገም", notYet: "ገና ኣይመልአን", noInk: "ቀለም ወዲኡ", board: "ሽኮር ኣብ ድስቲታት ኪወድቕ መስመራት ስኣል። ኣሰርቲ ብርዒ የንቅሉ፣ Enter የውርድ፣ Space የፍስስ።", penDown: "ብርዒ ወሪዱ", penUp: "ብርዒ ደይቡ", jar: "ድስቲ", level: "ደረጃ" }
   };
   var LV = [
     { ink: 10, S: [[150, 70, 70]], J: [[560, 470, 100, 90, 40]], L: [], M: [] },
@@ -27,6 +27,7 @@
   var simT = 0, accT = 0, running = false, paused = false, cardOn = false, won = false;
   var winWait = 0, slowT = 0, lastSpawn = -1, dirty = true, raf = 0, lastNow = 0, blurred = false;
   var clearUntil = 0, built = false;
+  var penX = 400, penY = 300, penDown = false;
 
   function host() { return window.RFHost || {}; }
   function tr(key) {
@@ -52,26 +53,32 @@
     var s = document.createElement("style");
     s.id = "pl-css";
     s.textContent = [
+      "body.at-pl .app{padding:4px 8px;gap:4px}",
+      "body.at-pl .bar{min-height:44px}",
       "body.at-pl .home,body.at-pl .toolslot,body.at-pl .lesson-row,body.at-pl .stage,body.at-pl .status,body.at-pl .spill-line,body.at-pl .score,body.at-pl .ref,body.at-pl .ideas{display:none !important}",
       "body.at-pl #pause-btn{visibility:hidden}",
-      ".pl{flex:1 1 auto;min-height:0;display:flex;gap:8px;overflow:hidden;position:relative}",
+      ".pl{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;overflow:hidden;position:relative;font-size:16px}",
       ".pl[hidden]{display:none !important}",
-      "#pl-stage{flex:1 1 auto;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center}",
-      "#pl-cv{touch-action:none;background:#f3e6c8;border:3px solid #1a120c;border-radius:16px;max-width:100%;max-height:100%}",
-      "#pl-cv:focus-visible,.pl button:focus-visible{outline:3px solid #0b6e4f;outline-offset:2px}",
-      ".pl-side{width:232px;flex:none;display:flex;flex-direction:column;gap:8px;min-height:0}",
-      ".pl-chips,.pl-btns,.pl-jars{display:flex;flex-wrap:wrap;gap:6px}",
-      ".pl button{min-width:44px;min-height:44px;padding:8px 10px;border-radius:12px;border:3px solid #1a120c;background:#f3e6c8;color:#1a120c;font-weight:800}",
-      ".pl-chip{width:44px;height:48px;min-width:44px;min-height:48px;padding:0}",
-      ".pl-chip[aria-pressed=true]{outline:4px solid #1a120c}",
-      "#pl-ink{margin:0;font-weight:800;min-height:44px;display:flex;align-items:center}",
-      "#pl-inkbar{height:12px;border:2px solid #1a120c;border-radius:999px;background:#f7f1e4;overflow:hidden;min-width:80px}",
+      "#pl-stage{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;direction:ltr}",
+      "#pl-cv{touch-action:none;background:#f3e6c8;border:3px solid #1a120c;border-radius:16px;max-width:100%;max-height:100%;direction:ltr}",
+      ".pl button:focus-visible,#pl-cv:focus-visible{outline:3px solid var(--ink,#1a120c);outline-offset:2px;box-shadow:0 0 0 2px var(--sand,#f3e6c8)}",
+      ".pl-side{min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;overflow:auto}",
+      ".pl-chips,.pl-jars{display:flex;flex-wrap:wrap;gap:6px}",
+      ".pl-btns{display:flex;flex-direction:column;gap:6px}",
+      ".pl button{min-width:0;min-height:44px;padding:8px 6px;border-radius:12px;border:3px solid #1a120c;background:#f3e6c8;color:#1a120c;font-weight:800;font-size:16px;overflow-wrap:anywhere;line-height:1.15}",
+      ".pl-btns button{width:100%}",
+      ".pl button.pl-chip{width:auto;min-width:44px;height:48px;min-height:48px;padding:0 4px}",
+      ".pl-chip[aria-pressed=true]{background:#1f3a34;color:#f3e6c8}",
+      "#pl-ink{margin:0;font-weight:800;min-height:24px;display:flex;align-items:center;overflow-wrap:anywhere}",
+      "#pl-inkbar{height:12px;border:2px solid #1a120c;border-radius:999px;background:#f7f1e4;overflow:hidden}",
       "#pl-inkbar > span{display:block;height:100%;background:#1f3a34}",
-      ".pl-jar{margin:0;font-weight:800}",
-      "#pl-card{position:absolute;left:8px;right:8px;bottom:8px;background:#f3e6c8;color:#1a120c;border:3px solid #1a120c;border-radius:16px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:5}",
+      ".pl-jar{margin:0;font-weight:800;overflow-wrap:anywhere}",
+      "#pl-card{position:absolute;inset:0;margin:auto;width:min(320px,calc(100% - 16px));height:fit-content;max-height:calc(100% - 16px);background:#f3e6c8;color:#1a120c;border:3px solid #1a120c;border-radius:16px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:5}",
       "#pl-card[hidden]{display:none !important}",
-      "#pl-card p{margin:0;font-weight:800;font-size:1.3rem;flex:1 1 160px}",
-      "@media (max-width:800px),(max-height:520px){.pl{flex-direction:column}.pl-side{width:auto;flex:none;flex-direction:row;flex-wrap:wrap;align-items:center}#pl-stage{flex:1 1 auto;min-height:160px}#pl-ink{flex:1 1 160px}#pl-inkbar{flex:1 1 100px}.pl-jars{flex:1 1 120px}}"
+      "#pl-card p{margin:0;font-weight:800;font-size:1.15rem;flex:1 1 140px;overflow-wrap:anywhere}",
+      "#pl-live{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}",
+      "@media (max-width:560px){.pl:not([hidden]){display:flex;flex-direction:column;gap:8px}.pl-side{width:auto;overflow:visible;flex:none}.pl-btns{display:grid;grid-template-columns:1fr 1fr;width:100%}#pl-stage{flex:1 1 auto}}",
+      "@media (orientation:landscape) and (max-height:520px){body.at-pl.kb-on{padding-top:0 !important}body.at-pl .kb-bar{display:none !important}body.at-pl .app{padding:2px 6px;gap:2px}body.at-pl .bar{min-height:40px;height:40px}.pl:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:8px}.pl-side{width:auto;overflow:auto;display:flex;flex-direction:column;gap:6px}#pl-jars{display:none !important}.pl-btns{order:1;display:grid;grid-template-columns:1fr 1fr;width:100%}#pl-ink{order:2;min-height:0}#pl-inkbar{order:3}.pl-chips{order:4;display:grid;grid-template-columns:repeat(3,1fr)}.pl-chips button{width:100%}}"
     ].join("");
     document.head.appendChild(s);
   }
@@ -83,7 +90,7 @@
     section.id = "pl";
     section.className = "pl";
     section.hidden = true;
-    section.innerHTML = '<div id="pl-stage"><canvas id="pl-cv" tabindex="0"></canvas></div><div class="pl-side"><div class="pl-chips" id="pl-chips"></div><p id="pl-ink"></p><div id="pl-inkbar" role="progressbar" aria-valuemin="0"><span></span></div><div class="pl-jars" id="pl-jars"></div><div class="pl-btns"><button type="button" id="pl-pour"></button><button type="button" id="pl-rewind"></button><button type="button" id="pl-undo"></button><button type="button" id="pl-clear"></button></div><div id="pl-card" role="dialog" hidden><p id="pl-card-t"></p><button type="button" id="pl-next"></button><button type="button" id="pl-retry"></button><button type="button" id="pl-card-rewind"></button></div></div>';
+    section.innerHTML = '<div id="pl-stage"><canvas id="pl-cv" tabindex="0"></canvas><div id="pl-card" role="dialog" hidden><p id="pl-card-t"></p><button type="button" id="pl-next"></button><button type="button" id="pl-retry"></button><button type="button" id="pl-card-rewind"></button></div></div><div class="pl-side"><div class="pl-chips" id="pl-chips"></div><p id="pl-ink"></p><div id="pl-inkbar" role="progressbar" aria-valuemin="0"><span></span></div><div class="pl-jars" id="pl-jars"></div><div class="pl-btns"><button type="button" id="pl-pour"></button><button type="button" id="pl-rewind"></button><button type="button" id="pl-undo"></button><button type="button" id="pl-clear"></button></div></div><p id="pl-live" aria-live="polite"></p>';
     if (ideas && ideas.parentNode) ideas.parentNode.insertBefore(section, ideas);
     else document.querySelector(".app").appendChild(section);
     stage = document.getElementById("pl-stage");
@@ -130,6 +137,8 @@
     cv.addEventListener("pointercancel", onUp);
     cv.addEventListener("lostpointercapture", onUp);
     cv.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    cv.addEventListener("focus", function () { dirty = true; });
+    cv.addEventListener("blur", function () { dirty = true; });
     new ResizeObserver(fit).observe(stage);
     window.addEventListener("keydown", onKey, true);
     window.addEventListener("blur", function () { blurred = true; });
@@ -185,12 +194,15 @@
     for (i = 0; i < jars.length; i++) {
       var p = document.createElement("p");
       p.className = "pl-jar";
-      p.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] + " " + gText(jars[i].n) + " / " + gText(jars[i].tg) + " g";
+      p.textContent = pl("jar") + " " + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] + ": " + gText(jars[i].n) + " / " + gText(jars[i].tg) + " g";
       jarEl.appendChild(p);
     }
     var chips = chipEl.querySelectorAll("button");
-    for (i = 0; i < chips.length; i++) chips[i].setAttribute("aria-pressed", i === level ? "true" : "false");
-    cv.setAttribute("aria-label", tr("startHint"));
+    for (i = 0; i < chips.length; i++) {
+      chips[i].setAttribute("aria-pressed", i === level ? "true" : "false");
+      chips[i].setAttribute("aria-label", pl("level") + " " + (i + 1));
+    }
+    cv.setAttribute("aria-label", pl("board"));
     if (cardOn) {
       cardTitle.textContent = won ? ("✓ " + tr("filled")) : ("✗ " + pl("notYet"));
       nextBtn.hidden = !won;
@@ -207,7 +219,7 @@
     paused = false;
     card.hidden = false;
     paint();
-    if (!win) cardRewind.focus();
+    (win ? nextBtn : cardRewind).focus();
   }
   function hideCard() {
     cardOn = false;
@@ -219,6 +231,9 @@
     strokes = [];
     drawing = null;
     pointerId = null;
+    penX = 400;
+    penY = 300;
+    penDown = false;
     hideCard();
     rewind(true);
     paint();
@@ -502,6 +517,20 @@
       ctx.strokeStyle = "#1a120c";
       ctx.stroke();
     }
+    if (document.activeElement === cv) {
+      ctx.beginPath();
+      ctx.arc(penX, penY, 10, 0, Math.PI * 2);
+      ctx.moveTo(penX - 16, penY);
+      ctx.lineTo(penX + 16, penY);
+      ctx.moveTo(penX, penY - 16);
+      ctx.lineTo(penX, penY + 16);
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#f7f1e4";
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#1a120c";
+      ctx.stroke();
+    }
     dirty = false;
   }
   function strokePoly(p, width) {
@@ -553,37 +582,68 @@
     dirty = true;
     paint();
   }
-  function onDown(e) {
-    if (pointerId !== null || cardOn) return;
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    if (inkPx() / 100 >= budget() - 0.001) return;
-    pointerId = e.pointerId;
-    try { cv.setPointerCapture(e.pointerId); } catch (err) {}
-    cv.focus();
-    drawing = { pts: [worldPoint(e)], len: 0 };
-    e.preventDefault();
+  function say(text) {
+    var live = document.getElementById("pl-live");
+    if (!live) return;
+    live.textContent = "";
+    live.textContent = text;
   }
-  function onMove(e) {
-    if (e.pointerId !== pointerId || !drawing) return;
-    if (e.pointerType === "mouse" && e.buttons === 0) { endDraw(); return; }
-    var p = worldPoint(e);
+  function beginStrokeAt(p) {
+    if (inkPx() / 100 >= budget() - 0.001) { say(pl("noInk")); return false; }
+    drawing = { pts: [{ x: p.x, y: p.y }], len: 0 };
+    dirty = true;
+    return true;
+  }
+  function extendStroke(p) {
+    if (!drawing) return;
     var last = drawing.pts[drawing.pts.length - 1];
     var dx = p.x - last.x, dy = p.y - last.y;
     var dist = Math.hypot(dx, dy);
     if (dist < 5) return;
     var remain = Math.max(0, budget() * 100 - inkPx());
-    if (remain <= 0) { endDraw(); return; }
+    if (remain <= 0) { endDraw(); say(pl("noInk")); return; }
+    var next = p;
     if (dist > remain) {
-      var s = remain / dist;
-      p = { x: last.x + dx * s, y: last.y + dy * s };
+      var scale = remain / dist;
+      next = { x: last.x + dx * scale, y: last.y + dy * scale };
       dist = remain;
     }
-    drawing.pts.push(p);
+    drawing.pts.push(next);
     drawing.len += dist;
     dirty = true;
     paint();
+    if (inkPx() / 100 >= budget() - 0.001) { endDraw(); say(pl("noInk")); }
+  }
+  function setPenDown(on) {
+    if (on === penDown) return;
+    if (on) {
+      if (cardOn) return;
+      if (!beginStrokeAt({ x: penX, y: penY })) return;
+      penDown = true;
+      say(pl("penDown"));
+    } else {
+      penDown = false;
+      endDraw();
+      say(pl("penUp"));
+    }
+    dirty = true;
+  }
+  function onDown(e) {
+    if (pointerId !== null || cardOn) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (penDown) { penDown = false; endDraw(); }
+    if (inkPx() / 100 >= budget() - 0.001) { say(pl("noInk")); return; }
+    pointerId = e.pointerId;
+    try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+    cv.focus();
+    beginStrokeAt(worldPoint(e));
     e.preventDefault();
-    if (inkPx() / 100 >= budget() - 0.001) endDraw();
+  }
+  function onMove(e) {
+    if (e.pointerId !== pointerId || !drawing) return;
+    if (e.pointerType === "mouse" && e.buttons === 0) { endDraw(); return; }
+    extendStroke(worldPoint(e));
+    e.preventDefault();
   }
   function onUp(e) {
     if (pointerId === null || (e && e.pointerId !== undefined && e.pointerId !== pointerId)) return;
@@ -594,9 +654,62 @@
   }
   function onKey(e) {
     if (!document.body.classList.contains("at-pl")) return;
-    if (e.key === "Escape") return;
+    if (e.key === "Escape") {
+      if (penDown) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setPenDown(false);
+        return;
+      }
+      if (cardOn && !won) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        rewind();
+        return;
+      }
+      return;
+    }
+    var inField = document.activeElement && document.activeElement.closest && document.activeElement.closest("input, textarea");
+    if (e.key === "Backspace" && !inField) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (penDown) setPenDown(false);
+      undo();
+      return;
+    }
     if (typingTarget(document.activeElement)) return;
     var k = e.key.toLowerCase();
+    var onCanvas = document.activeElement === cv;
+    if (onCanvas && (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var stepPx = e.shiftKey ? 40 : 10;
+      if (e.key === "ArrowLeft") penX -= stepPx;
+      else if (e.key === "ArrowRight") penX += stepPx;
+      else if (e.key === "ArrowUp") penY -= stepPx;
+      else penY += stepPx;
+      if (penX < 0) penX = 0; else if (penX > W) penX = W;
+      if (penY < 0) penY = 0; else if (penY > H) penY = H;
+      if (penDown && drawing) {
+        var start = drawing.pts[0];
+        drawing.pts = [start];
+        drawing.len = 0;
+        extendStroke({ x: penX, y: penY });
+        if (!drawing) penDown = false;
+        else if (drawing.pts.length > 1) {
+          penX = drawing.pts[drawing.pts.length - 1].x;
+          penY = drawing.pts[drawing.pts.length - 1].y;
+        }
+      }
+      dirty = true;
+      return;
+    }
+    if (onCanvas && e.key === "Enter") {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      setPenDown(!penDown);
+      return;
+    }
     if (e.key === " " || e.code === "Space") {
       e.preventDefault();
       e.stopImmediatePropagation();

@@ -1,4 +1,10 @@
 # Ramp & Fill FIX-LIST
+Stage 22. Version locked: RF 1.0.21.
+
+- [x] **pl-layout:** Wide screens put the board beside a 260 px rail. A phone stacks the controls. A sideways phone uses a slim rail and a tall board.
+- [x] **pl-keyboard-pen:** Arrows move a pen on the board. Enter puts it down or lifts it. Space pours. Esc lifts the pen, closes a lose card, or goes home.
+- [x] **pl-words:** The board, the pen, the jars and the level chips have words in every language. Pour Lines stays English.
+
 Stage 21. Version locked: RF 1.0.20.
 
 - [x] **pl-engine:** Pour Lines has its own screen, canvas, grains, lines, jars and arms.

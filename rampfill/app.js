@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.20 — Pour Lines is new. No trackers. */
+/* Ramp & Fill RF 1.0.21 — Pour Lines fits phones and works with a keyboard. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.20";
+  var VERSION = "RF 1.0.21";
   var testScriptAsked = false;
   function staffUnlocked() {
     try {
@@ -90,7 +90,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.20 — Pour Lines is new.",
+      whats: "RF 1.0.21 — Pour Lines fits phones and works with a keyboard.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -172,7 +172,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.20 — Pour Lines — нова гра.",
+      whats: "RF 1.0.21 — Pour Lines підходить телефонам і клавіатурі.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -252,7 +252,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.20 — Pour Lines — новая игра.",
+      whats: "RF 1.0.21 — Pour Lines работает на телефонах и с клавиатуры.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -332,7 +332,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.20 — Pour Lines es nueva.",
+      whats: "RF 1.0.21 — Pour Lines funciona en móvil y con teclado.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -412,7 +412,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.20 — Pour Lines جديدة.",
+      whats: "RF 1.0.21 — Pour Lines تعمل على الهاتف ولوحة المفاتيح.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -492,7 +492,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.20 — Pour Lines تازه است.",
+      whats: "RF 1.0.21 — Pour Lines روی تلفن و با صفحه‌کلید کار می‌کند.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -572,7 +572,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.20 — Pour Lines nshya.",
+      whats: "RF 1.0.21 — Pour Lines ikora kuri telefoni no kuri clavier.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -652,7 +652,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.20 — Pour Lines ሓድሽ እዩ።",
+      whats: "RF 1.0.21 — Pour Lines ኣብ ተሌፎንን ኪቦርድን ይሰርሕ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -701,7 +701,7 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.20 — Pour Lines is new.",
+      whats: "RF 1.0.21 — Pour Lines fits phones and works with a keyboard.",
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
       helpClear: "When you win, stars show one by one. Next is ready.",
