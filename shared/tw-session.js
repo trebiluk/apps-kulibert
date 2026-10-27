@@ -190,6 +190,7 @@
       "html[data-hub-theme=graph] .tw-menu button:hover,html[data-hub-theme=spa] .tw-menu button:hover,html[data-hub-theme=nature] .tw-menu button:hover,html[data-hub-theme=peaks] .tw-menu button:hover{background:#efeae0}",
       ".tw-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:50;width:16.5rem;padding:.7rem;border-radius:12px;background:#071018;color:#e8f7ff;border:1px solid #24506d;box-shadow:0 10px 30px rgba(0,0,0,.35)}",
       ".tw-pop[hidden]{display:none !important}",
+      ".tw-solo-out[hidden],.tw-solo-in[hidden]{display:none !important}",
       ".tw-pop label{display:block;font-size:.75rem;font-weight:700;margin:.35rem 0}",
       ".tw-pop input{width:100%;height:36px;border-radius:8px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;padding:0 .5rem;font:inherit}",
       ".tw-pop .tw-row{display:flex;gap:.35rem;margin-top:.45rem}",
@@ -264,6 +265,7 @@
     document.addEventListener("mousedown", function (event) {
       if (!pop || pop.hidden) return;
       if (pop.contains(event.target)) return;
+      if (pop.__anchor && (event.target === pop.__anchor || (pop.__anchor.contains && pop.__anchor.contains(event.target)))) return;
       pop.hidden = true;
     });
     armLock(pop);
@@ -386,6 +388,112 @@
   function aliasesOff() {
     try { return localStorage.getItem("kw-hub-aliases") === "0"; } catch (e) { return false; }
   }
+  function placeSolo(pop, anchor) {
+    placeMenu(pop, anchor);
+    pop.style.zIndex = "130";
+    pop.style.maxWidth = "calc(100vw - 16px)";
+    pop.style.boxSizing = "border-box";
+    var rtl = false;
+    try { rtl = document.documentElement.getAttribute("dir") === "rtl"; } catch (e) {}
+    pop.style.direction = rtl ? "rtl" : "ltr";
+    var width = pop.offsetWidth || 264;
+    var r = anchor.getBoundingClientRect();
+    var left = rtl ? (r.right - width) : r.left;
+    var maxLeft = Math.max(8, root.innerWidth - width - 8);
+    pop.style.left = Math.max(8, Math.min(left, maxLeft)) + "px";
+    pop.style.right = "auto";
+  }
+  function paintSolo(pop) {
+    var api = whoApi();
+    var who = api && api.read();
+    var signed = on() && !!who;
+    var out = pop.querySelector(".tw-solo-out");
+    var inn = pop.querySelector(".tw-solo-in");
+    if (out) out.hidden = !signed ? false : true;
+    if (inn) inn.hidden = signed ? false : true;
+    var name = pop.querySelector(".tw-pick");
+    if (name) name.textContent = signed ? who.alias : "";
+    pop.setAttribute("aria-label", signed ? who.alias : tt("signIn", "Sign in"));
+  }
+  function focusAnchor(pop) {
+    var anc = pop && pop.__anchor;
+    if (anc && anc.focus) anc.focus();
+  }
+  function ensureSoloPop() {
+    var pop = document.getElementById("tw-solo-pop");
+    if (pop) return pop;
+    pop = document.createElement("div");
+    pop.id = "tw-solo-pop";
+    pop.className = "tw-pop";
+    pop.setAttribute("role", "dialog");
+    pop.hidden = true;
+    pop.innerHTML = [
+      '<div class="tw-solo-out">',
+      formHtml(),
+      '<p class="tw-note" data-i18n="signOptional">You can use every app without signing in. Tap Sign in to keep your marks and your alias.</p>',
+      '</div>',
+      '<div class="tw-solo-in" hidden>',
+      '<p class="tw-pick"></p>',
+      '<div class="tw-row">',
+      '<button type="button" class="tw-solo-off" data-i18n="signOut">Sign out</button>',
+      '<button type="button" class="tw-solo-close" data-i18n="close">Close</button>',
+      '</div>',
+      '</div>'
+    ].join("");
+    document.body.appendChild(pop);
+    bindForm(pop, function () {
+      var fn = pop.__done;
+      if (fn) fn();
+      focusAnchor(pop);
+    });
+    pop.querySelector(".tw-solo-off").addEventListener("click", function () {
+      signOut();
+      var pinEl = pop.querySelector(".tw-pin");
+      if (pinEl) pinEl.value = "";
+      paintSolo(pop);
+      pop.hidden = true;
+      var fn = pop.__done;
+      if (fn) fn();
+      focusAnchor(pop);
+    });
+    pop.querySelector(".tw-solo-close").addEventListener("click", function () {
+      pop.hidden = true;
+      focusAnchor(pop);
+    });
+    pop.addEventListener("click", function (event) {
+      var t = event.target;
+      if (!t || !t.closest || !t.closest(".tw-close")) return;
+      var anc = pop.__anchor;
+      setTimeout(function () { if (anc && anc.focus) anc.focus(); }, 0);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (!event || event.key !== "Escape" || event.repeat || pop.hidden) return;
+      pop.__wantFocus = 1;
+    }, true);
+    document.addEventListener("keydown", function (event) {
+      if (!event || event.key !== "Escape" || !pop.__wantFocus) return;
+      pop.__wantFocus = 0;
+      focusAnchor(pop);
+    });
+    return pop;
+  }
+  function openSolo(anchor, done) {
+    if (!anchor) return;
+    try { if (localStorage.getItem("kw-hub-aliases") === "0") return; } catch (e) {}
+    css();
+    var pop = ensureSoloPop();
+    pop.__anchor = anchor;
+    pop.__done = done || function () {};
+    paintSolo(pop);
+    pop.hidden = false;
+    placeSolo(pop, anchor);
+    if (root.KulibertI18n && root.KulibertI18n.paint) {
+      try { root.KulibertI18n.paint(); } catch (e2) {}
+    }
+    var signed = on() && whoApi() && whoApi().read();
+    var focusEl = signed ? pop.querySelector(".tw-solo-off") : pop.querySelector(".tw-code");
+    if (focusEl && focusEl.focus) focusEl.focus();
+  }
   function returnToHub() {
     if (framed() || solo() || hubPage()) return;
     location.replace("/?open=" + encodeURIComponent(location.pathname + location.search));
@@ -507,7 +615,7 @@
       if (bar && bar.__paint) bar.__paint();
     });
   }
-  root.TwSession = { boot: boot, light: light };
+  root.TwSession = { boot: boot, light: light, open: openSolo };
   root.addEventListener("kulibert-lang", function (ev) {
     var lang = ev && ev.detail && ev.detail.lang;
     function go() {
