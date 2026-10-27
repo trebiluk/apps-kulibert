@@ -3417,3 +3417,20 @@ for (const [lang, row] of Object.entries(CREW496)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.498: berry bushes empty on pick; wild bushes count. rw, ti, and Dari are machine drafts.
+const BERRY498 = {
+  en: { whatsNewBody: '2.5.498 — Berry bushes now empty when you pick them. Wild bushes count for the Berry badge too.' },
+  simple: { whatsNewBody: '2.5.498 — Berry bushes go empty when you pick them. Wild bushes count for the Berry badge too.' },
+  uk: { whatsNewBody: '2.5.498 — Кущі з ягодами тепер порожніють, коли ти їх збираєш. Дикі кущі теж рахуються для значка «Ягоди».' },
+  ru: { whatsNewBody: '2.5.498 — Кусты с ягодами теперь пустеют, когда ты их собираешь. Дикие кусты тоже считаются для значка «Ягоды».' },
+  es: { whatsNewBody: '2.5.498 — Los arbustos de bayas ahora quedan vacíos cuando los recoges. Los arbustos silvestres también cuentan para la insignia de Bayas.' },
+  ar: { whatsNewBody: '2.5.498 — شجيرات التوت تصبح فارغة الآن عندما تقطفها. الشجيرات البرية تُحسب أيضًا لشارة التوت.' },
+  'fa-AF': { whatsNewBody: '2.5.498 — بته‌های توت حالا وقتی آن‌ها را می‌چینی خالی می‌شوند. بته‌های وحشی هم برای نشان توت حساب می‌شوند.' },
+  rw: { whatsNewBody: '2.5.498 — Ibihuru by\'imbuto ubu birashira iyo ubisoromye. Ibihuru byo mu gasozi nabyo bibarwa ku kimenyetso cy\'Imbuto.' },
+  ti: { whatsNewBody: '2.5.498 — ኣቑጽልቲ ፍረ ሕጂ ምስ ለቐምካዮም ባዶ ይኾኑ። ናይ በረኻ ኣቑጽልቲ እውን ንምልክት ፍረ ይቑጸሩ።' },
+}
+for (const [lang, row] of Object.entries(BERRY498)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

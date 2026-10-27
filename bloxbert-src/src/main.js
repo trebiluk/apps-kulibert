@@ -3300,6 +3300,7 @@ function leftHarvest(x, y, z, id) {
       setVoxel(x, y, z, BARE_BUSH)
       forage.add(x, y, z, 'bush', Date.now())
       showCard(wildBushText(x, y, z))
+      Badges.bump('berryRound', cell)
       dirty = true
     }
   } else if (isCropId(id)) harvestCrop(x, y, z)
@@ -3406,7 +3407,6 @@ function popBerry(x, y, z, n) {
 function pickBush(x, y, z, row) {
   const n = berryPickCount(x, y, z)
   session.give('berry', n)
-  Badges.bump('berryRound', cell) // 2.5.472
   popBerry(x, y, z, n)
   const now = Date.now()
   row.regrow = true
@@ -3414,6 +3414,7 @@ function pickBush(x, y, z, row) {
   row.lastSeen = now
   paintCrop(row)
   showCropCard(x, y, z)
+  Badges.bump('berryRound', x + ',' + y + ',' + z)
 }
 function wildBushText(x, y, z) {
   const row = forage.get(x, y, z)
@@ -3446,6 +3447,7 @@ function tryWildBush(x, y, z) {
   setVoxel(x, y, z, BARE_BUSH)
   forage.add(x, y, z, 'bush', now)
   showCard(wildBushText(x, y, z))
+  Badges.bump('berryRound', cell)
   harvestStroke.seen.add(cell)
   harvestStroke.n += 1
   dirty = true

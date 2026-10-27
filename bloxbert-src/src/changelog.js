@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.498', date: '2026-10-27', lines: {
+    en: ["2.5.498 — Berry bushes now empty when you pick them. Wild bushes count for the Berry badge too."],
+    simple: ["2.5.498 — Berry bushes go empty when you pick them. Wild bushes count for the Berry badge too."],
+    uk: ["2.5.498 — Кущі з ягодами тепер порожніють, коли ти їх збираєш. Дикі кущі теж рахуються для значка «Ягоди»."],
+    ru: ["2.5.498 — Кусты с ягодами теперь пустеют, когда ты их собираешь. Дикие кусты тоже считаются для значка «Ягоды»."],
+    es: ["2.5.498 — Los arbustos de bayas ahora quedan vacíos cuando los recoges. Los arbustos silvestres también cuentan para la insignia de Bayas."],
+    ar: ["2.5.498 — شجيرات التوت تصبح فارغة الآن عندما تقطفها. الشجيرات البرية تُحسب أيضًا لشارة التوت."],
+    'fa-AF': ["2.5.498 — بته‌های توت حالا وقتی آن‌ها را می‌چینی خالی می‌شوند. بته‌های وحشی هم برای نشان توت حساب می‌شوند."],
+    rw: ["2.5.498 — Ibihuru by'imbuto ubu birashira iyo ubisoromye. Ibihuru byo mu gasozi nabyo bibarwa ku kimenyetso cy'Imbuto."],
+    ti: ["2.5.498 — ኣቑጽልቲ ፍረ ሕጂ ምስ ለቐምካዮም ባዶ ይኾኑ። ናይ በረኻ ኣቑጽልቲ እውን ንምልክት ፍረ ይቑጸሩ።"],
+  }},
+
   { v: '2.5.496', date: '2026-10-26', lines: {
     en: ["2.5.496 — Crew badges now save when you leave, and the badge pop-up speaks your language."],
     simple: ["2.5.496 — Crew badges are now saved. The badge message uses your language."],
