@@ -15,6 +15,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 - [x] A-chiplane-1a.md (chip lane + priority/cap) — 2.5.489. Boss, saved, safe, and update share #chip-lane. Sideways phone check BLOCKED-rig.
 - [x] A-chiplane-1b.md (only after 1a is live) — 2.5.491. Goal joins #chip-lane on big screens (prio 2); phones keep the bottom dock. Inspect prio 3. Held name was at the top (360 y=158, 915 y=68, 1366 y=68), so it joins prio 6. Sideways phone check BLOCKED-rig.
 - [x] A-chiplane-1c.md (only after 1b is live, which it is: 2.5.491) — 2.5.496. Crew badges save in the world. The pop-up and Notebook list use your language.
+- [ ] bertopia-berry-badge.md (berry bush empties on pick, wild bushes count, Berry Picker badge; What's new in all 8 languages, rw/ti/fa-AF machine drafts) — 2.5.498
 
 ## BASSFISH
 - [x] door-part2.md (one-box held-item ghost) — 2.5.490
@@ -29,6 +30,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 ## BOB
 - [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
 - [x] door-part6.md (What's new + Badges tile — likely already shipped; verify, then skip) — shipped. Changelog 2.5.472 is the badges line. Menu tile `bdgTitle` opens the badges card (2.5.476, c7a2039). What's new has moved on; the 472 line stays in the log. No new version.
+- [ ] bertopia-2.5.499-chips-pill-count.md (chip overlap, update pill into chip lane, held card name × count; only after 2.5.498 is live) — 2.5.499
 
 ## Nobody yet (needs Debugzy/Fixzy after Tue)
 Room server claims add-on, chat (needs compliance), Botz cutting.
