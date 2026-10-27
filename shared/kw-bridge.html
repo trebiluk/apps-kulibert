@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title></title>
+<script src="/shared/kw-who.js"></script>
+</head>
+<body>
+<script>
+(function () {
+  function school(origin) {
+    try {
+      var url = new URL(origin);
+      if (url.protocol !== "https:") return false;
+      var host = url.hostname;
+      return host === "kulibert.net" || host.slice(-13) === ".kulibert.net";
+    } catch (e) { return false; }
+  }
+  window.addEventListener("message", function (ev) {
+    if (!school(ev.origin)) return;
+    var data = ev.data;
+    if (!data || data.type !== "kw-who-ask") return;
+    var api = window.KulibertWho;
+    if (!api || !api.read || !api.active || !api.active()) return;
+    var who = api.read();
+    if (!who || who.verified !== true || !who.alias || !who.code) return;
+    try {
+      ev.source.postMessage({ type: "kw-who", on: true, alias: who.alias, code: who.code, at: who.at }, ev.origin);
+    } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
