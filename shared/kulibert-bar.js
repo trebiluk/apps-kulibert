@@ -15,7 +15,7 @@
   }
   var script = barScript();
   var app = (script && script.getAttribute("data-app")) || "";
-  var version = (script && script.getAttribute("data-version")) || "";
+  var version = (script && script.getAttribute("data-version")) || (document.documentElement.getAttribute("data-version")) || "";
   var name = (script && script.getAttribute("data-name")) || "";
   var helpSel = (script && script.getAttribute("data-help")) || "";
   var menuSel = (script && script.getAttribute("data-menu")) || "";
@@ -54,7 +54,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-05-plate");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-27-sign-optional");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -76,6 +76,29 @@
     var on = root.KulibertWho && root.KulibertWho.active && root.KulibertWho.active();
     if (on && who && who.alias) { node.textContent = who.alias; return; }
     node.textContent = trBar("signIn", "Sign in");
+  }
+  function aliasesHidden() {
+    try { return localStorage.getItem("kw-hub-aliases") === "0"; } catch (e) { return false; }
+  }
+  function openAlias(aliasBtn) {
+    if (!aliasBtn || aliasBtn.hidden || aliasesHidden()) return;
+    var rev = (root.HUB_REV) || "2026-10-27-sign-optional";
+    function go() {
+      if (root.TwSession && root.TwSession.open) {
+        root.TwSession.open(aliasBtn, function () { paintAlias(aliasBtn); });
+      }
+    }
+    if (root.TwSession && root.TwSession.open) { go(); return; }
+    var existing = document.getElementById("tw-session-js");
+    if (existing) {
+      existing.addEventListener("load", go);
+      return;
+    }
+    var s = document.createElement("script");
+    s.id = "tw-session-js";
+    s.src = asset("/shared/tw-session.js?v=" + rev);
+    s.onload = go;
+    (document.head || document.documentElement).appendChild(s);
   }
   function toast(text) {
     ensureCss();
@@ -547,7 +570,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=mu23617");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-27-sign-optional");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -644,7 +667,7 @@
       '<a class="kb-home" href="https://apps.kulibert.net/" target="_top">\u2302 ' + trBar("home", "Home") + '</a>',
       '<span class="kb-plate"></span>',
       '<button type="button" class="kb-settings" hidden aria-label="My settings">\u2699</button>',
-      '<span class="kb-alias">' + trBar("signIn", "Sign in") + '</span>',
+      '<button type="button" class="kb-alias" aria-haspopup="dialog">' + trBar("signIn", "Sign in") + '</button>',
       helpSel ? '<button type="button" class="kb-help" aria-label="Help">?</button>' : ''
     ].join("");
     document.body.insertBefore(bar, document.body.firstChild);
@@ -657,6 +680,20 @@
     }
     var helpBtn = bar.querySelector(".kb-help");
     if (helpBtn) helpBtn.addEventListener("click", openHelp);
+    var aliasBtn = bar.querySelector(".kb-alias");
+    if (aliasBtn) {
+      if (aliasesHidden()) aliasBtn.hidden = true;
+      aliasBtn.addEventListener("click", function () {
+        if (aliasBtn.hidden || aliasesHidden()) return;
+        var pop = document.getElementById("tw-solo-pop");
+        if (pop && !pop.hidden) {
+          pop.hidden = true;
+          aliasBtn.focus();
+          return;
+        }
+        openAlias(aliasBtn);
+      });
+    }
     ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); paintBar(); });
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
     root.addEventListener("resize", function () { fitPlate(); });
