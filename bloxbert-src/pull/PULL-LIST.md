@@ -19,15 +19,16 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 ## BASSFISH
 - [x] door-part2.md (one-box held-item ghost) — 2.5.490
 - [x] master-control-part1.md (staff Master Control page, view-only for all) — /master-control/ MC 1. No Bertopia game bump: 2.5.493 was already past (game is 2.5.495) and this brief does not change game files.
+- [ ] classnet-part1.md (class server Part 1 of 9: the dark gate, CLASS_SERVER=false, no deploy, no Cloudflare) — 2.5.497
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
 - [x] rampfill-pourlines-part3.md (Ramp & Fill, not Bertopia) — RF 1.0.22. Bump the Ramp & Fill version, not 2.5.x. (shipped ac12014)
-- [ ] rampfill-pourlines-part4.md — RF 1.0.23
+- [ ] rampfill-pourlines-part4.md (stars, saves, Solve; Ramp & Fill, not Bertopia) — RF 1.0.25. Re-locked from RF 1.0.23: RF 1.0.24 (157a945) shipped first without this work, so 1.0.23 would be a lower version.
 
 ## BOB
 - [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
 - [x] door-part6.md (What's new + Badges tile — likely already shipped; verify, then skip) — shipped. Changelog 2.5.472 is the badges line. Menu tile `bdgTitle` opens the badges card (2.5.476, c7a2039). What's new has moved on; the 472 line stays in the log. No new version.
 
 ## Nobody yet (needs Debugzy/Fixzy after Tue)
-Room server claims add-on, Pour Lines 4 (after 3 is live), chat (needs compliance), Botz cutting.
+Room server claims add-on, chat (needs compliance), Botz cutting.

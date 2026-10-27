@@ -1,10 +1,10 @@
 ## Part 4 of 6
 
 ````text
-Ramp & Fill RF 1.0.23 — Pour Lines
-Part 4 of 6: stars, saved progress, Solve. Parts 1-3 are on main: pull --rebase first, no force-push.
+Ramp & Fill RF 1.0.25 — Pour Lines
+Part 4 of 6: stars, saved progress, Solve. Parts 1-3 and RF 1.0.24 (home restyle) are on main: pull --rebase first, no force-push.
 
-VERSION STAMP: Debugzy locks RF 1.0.23; never pick or lower it. Sites as in Part 1 (index.html title, #ver-plate, .ver-plate, #whats-body, data-version, 3 ?v=RF-… busters; app.js line-1 comment, VERSION, 9 `whats:` lines). whats = "RF RF 1.0.23 — " + en "Pour Lines now has stars and a Solve button." / uk "Pour Lines тепер має зірки й кнопку «Розв’язати»." / ru "В Pour Lines теперь есть звёзды и кнопка «Решить»." / es "Pour Lines ahora tiene estrellas y el botón Resolver." / ar "في Pour Lines الآن نجوم وزر حلّ." / fa-AF "Pour Lines حالا ستاره و دکمهٔ حل دارد." / rw "Pour Lines ifite inyenyeri n'ikinyabutabo Kemura." / ti "Pour Lines ሕጂ ኮኸብን ፍታሕ መልጎምን ኣለዎ።" / simple = en.
+VERSION STAMP: Debugzy locks RF 1.0.25; never pick or lower it. Sites as in Part 1 (index.html title, #ver-plate, .ver-plate, #whats-body, data-version, 3 ?v=RF-… busters; app.js line-1 comment, VERSION, 9 `whats:` lines). whats = "RF 1.0.25 — " + en "Pour Lines now has stars and a Solve button." / uk "Pour Lines тепер має зірки й кнопку «Розв’язати»." / ru "В Pour Lines теперь есть звёзды и кнопка «Решить»." / es "Pour Lines ahora tiene estrellas y el botón Resolver." / ar "في Pour Lines الآن نجوم وزر حلّ." / fa-AF "Pour Lines حالا ستاره و دکمهٔ حل دارد." / rw "Pour Lines ifite inyenyeri n'ikinyabutabo Kemura." / ti "Pour Lines ሕጂ ኮኸብን ፍታሕ መልጎምን ኣለዎ።" / simple = en.
 
 OUT OF SCOPE: new levels or physics; the ramp game's own stars and saves (rampfill_progress etc. untouched).
 
@@ -50,7 +50,7 @@ rw Kemura|Urabyemeza?|Byakemuwe n'ubufasha. Nta nyenyeri.|Siba inyenyeri|Inyenye
 ti ፍታሕ|ርግጸኛ?|ብሓገዝ ተፈቲሑ። ኮኸብ የለን።|ኮኸባት ደምስስ|ኮኸባት
 simple = en. rw, ti, fa-AF need a native check. No sound; a win never flashes.
 
-EDITS: pourlines.js (all), index.html and app.js (stamp sites), CHANGELOG.md, FIX-LIST.md ("Stage 24. Version locked: RF RF 1.0.23." [x] `pl-stars`, `pl-saves`, `pl-solve`).
+EDITS: pourlines.js (all), index.html and app.js (stamp sites), CHANGELOG.md, FIX-LIST.md ("Stage 25. Version locked: RF 1.0.25." [x] `pl-stars`, `pl-saves`, `pl-solve`).
 
 ACCEPT
 1. 1366x768: level 1 with (110,185)→(585,462) earns 2 stars; level 3's two-line answer (5.45 of 14 ml) earns 3. Reload: chip 1 shows 2, total 2 / 63.
