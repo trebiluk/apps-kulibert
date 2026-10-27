@@ -657,6 +657,29 @@
     return;
   }
 
+  var bridgeAsked = false;
+  function askBridge() {
+    if (bridgeAsked) return;
+    if (location.origin === assetOrigin) return;
+    if (!schoolOrigin(location.origin)) return;
+    var api = root.KulibertWho;
+    if (api && api.active && api.active()) return;
+    bridgeAsked = true;
+    var rev = (root.HUB_REV) || "2026-10-27-sign-carry";
+    var frame = document.createElement("iframe");
+    frame.hidden = true;
+    frame.setAttribute("aria-hidden", "true");
+    frame.tabIndex = -1;
+    frame.title = "";
+    frame.src = asset("/shared/kw-bridge.html?v=" + rev);
+    frame.addEventListener("load", function () {
+      try { frame.contentWindow.postMessage({ type: "kw-who-ask" }, assetOrigin); } catch (e) {}
+    });
+    document.body.appendChild(frame);
+    setTimeout(function () {
+      if (frame.parentNode) frame.parentNode.removeChild(frame);
+    }, 3000);
+  }
   function draw() {
     if (document.querySelector(".kb-bar")) return;
     ensureCss();
@@ -694,7 +717,7 @@
         openAlias(aliasBtn);
       });
     }
-    ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); paintBar(); });
+    ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); paintBar(); askBridge(); });
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
     root.addEventListener("resize", function () { fitPlate(); });
     if (document.fonts && document.fonts.addEventListener) {
