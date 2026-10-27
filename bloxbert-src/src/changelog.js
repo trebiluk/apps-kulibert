@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.497', date: '2026-10-27', lines: {
+    en: ["2.5.497 — The class server switch stays off."],
+    simple: ["2.5.497 — The class server switch stays off."],
+    uk: ["2.5.497 — Вимикач сервера класу лишається вимкненим."],
+    ru: ["2.5.497 — Выключатель сервера класса остаётся выключенным."],
+    es: ["2.5.497 — El interruptor del servidor de la clase sigue apagado."],
+    ar: ["2.5.497 — مفتاح خادم الصف يبقى مغلقاً."],
+    'fa-AF': ["2.5.497 — کلید سرور صنف خاموش می‌ماند."],
+    rw: ["2.5.497 — Igikoresho cya seriveri y'ishuri kiracyazimye."],
+    ti: ["2.5.497 — መብራህቲ ናይ ክፍሊ ሰርቨር ዕጹው ጸኒሑ።"],
+  }},
+
   { v: '2.5.498', date: '2026-10-27', lines: {
     en: ["2.5.498 — Berry bushes now empty when you pick them. Wild bushes count for the Berry badge too."],
     simple: ["2.5.498 — Berry bushes go empty when you pick them. Wild bushes count for the Berry badge too."],

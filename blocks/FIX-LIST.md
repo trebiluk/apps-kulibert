@@ -1,4 +1,5 @@
 # Bertopia FIX-LIST
+- [x] **cs-gate (2.5.497):** The class server switch is off. No socket, no request, and no button. 7a2c3f25e009a05c5c90708bf61baef0709bda71
 - [x] **chip-earn (2.5.496):** One door, earnChip. Medic and Flanker count to 10, Foundry once. A second earn shows nothing.
 - [x] **chip-save (2.5.496):** Crew counts and badge ids save in the world and load back. A world with no crew key starts at zero. Bad shapes do not throw.
 - [x] **chip-list (2.5.496):** The Notebook crew list uses your language. Done is a word plus a check mark, not color alone. Kinyarwanda, Tigrinya, and Dari still need a native check.

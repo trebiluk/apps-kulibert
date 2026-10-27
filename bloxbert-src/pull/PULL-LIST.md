@@ -20,7 +20,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 ## BASSFISH
 - [x] door-part2.md (one-box held-item ghost) — 2.5.490
 - [x] master-control-part1.md (staff Master Control page, view-only for all) — /master-control/ MC 1. No Bertopia game bump: 2.5.493 was already past (game is 2.5.495) and this brief does not change game files.
-- [ ] classnet-part1.md (class server Part 1 of 9: the dark gate, CLASS_SERVER=false, no deploy, no Cloudflare) — 2.5.497
+- [x] classnet-part1.md (class server Part 1 of 9: the dark gate, CLASS_SERVER=false, no deploy, no Cloudflare) — 2.5.497. Switch stays off. No socket and no request.
 
 ## BALLER
 - [x] door-part3.md (Bed text, ×n, wood tip timing)
