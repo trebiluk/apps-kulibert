@@ -35,6 +35,7 @@ function clearChip() {
   if (chipEl && chipEl.remove) chipEl.remove()
   chipEl = null
   showing = ''
+  if (host && host.capLane) host.capLane()
 }
 function paintChip(id) {
   showing = id
@@ -48,10 +49,11 @@ function paintChip(id) {
   text.dir = 'auto'
   text.textContent = chipLine(id)
   el.append(medal, text)
-  el.style.cssText = 'position:fixed;top:18%;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;max-width:90vw;box-sizing:border-box;background:#1e3a8a;color:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:16px;font-family:inherit;line-height:1.3;text-align:center;z-index:42;pointer-events:none;overflow-wrap:anywhere'
+  el.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;max-width:100%;box-sizing:border-box;background:#1e3a8a;color:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:16px;font-family:inherit;line-height:1.3;text-align:center;pointer-events:none;overflow-wrap:anywhere'
   text.style.overflowWrap = 'anywhere'
   text.style.minWidth = '0'
-  document.body.append(el)
+  if (host && host.laneAdd) host.laneAdd(el, 4)
+  else document.body.append(el)
   chipEl = el
   chipTimer = setTimeout(advanceChip, 4000)
 }

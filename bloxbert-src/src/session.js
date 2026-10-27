@@ -2932,8 +2932,8 @@ export function createSession(api) {
       const line = document.createElement('span')
       line.className = 'brief-name'
       line.dir = 'auto'
-      const n = extra.n != null && extra.n !== '' ? extra.n : bag.count(itemKey)
-      line.textContent = faceName(itemKey) + ' ×' + n
+      const n = Number(extra.n != null && extra.n !== '' ? extra.n : bag.count(itemKey)) || 0
+      line.textContent = n > 1 ? faceName(itemKey) + ' × ' + n : faceName(itemKey)
       top.append(ico, line)
       host.append(top)
       host.title = line.textContent
@@ -3191,7 +3191,7 @@ export function createSession(api) {
     const chip = document.getElementById('held-chip')
     if (!chip) return
     bindHeldChip(chip)
-    const s = mode === 'survival' ? bag.slots[hot] : null
+    const s = bag.slots[hot]
     if (!s || !s.item) {
       chip.hidden = true
       chip.dataset.hold = ''

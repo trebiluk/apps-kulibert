@@ -1742,7 +1742,7 @@ html body #dig-chip:not([hidden]) {
   :root { --hud-lift: 150px; }
 }
 
-/* 2.5.490: goal, inspect, and held name join the lane on a big screen. Phones keep the bottom goal chip. */
+/* 2.5.499: goal, inspect, held, saved, safe, and boss stay in the lane on every screen. */
 :root { --lane-top: calc(var(--top-h, 56px) + 8px); }
 html[data-kb-bar]:not(.kb-framed) { --lane-top: calc(48px + var(--top-h, 56px) + 8px); }
 #chip-lane {
@@ -1758,6 +1758,28 @@ html[data-kb-bar]:not(.kb-framed) { --lane-top: calc(48px + var(--top-h, 56px) +
   border: 0;
   background: none;
   pointer-events: none;
+}
+html body #chip-lane > :is(#path-chip, #held-chip, #save-chip, #inspect-chip, #safe-chip, #boss-bar, #update-chip) {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: auto !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+html body:has(#sheet:not([hidden])) #chip-lane > #update-chip {
+  position: fixed !important;
+  z-index: 45 !important;
+  top: auto !important;
+  bottom: calc(var(--hotbar-h, 76px) + 12px + env(safe-area-inset-bottom, 0px)) !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  max-width: calc(100vw - 24px) !important;
 }
 #chip-lane > * {
   position: relative;

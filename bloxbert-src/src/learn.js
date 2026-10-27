@@ -176,177 +176,26 @@ export function createLearn(api) {
     x.setAttribute('aria-label', api.t('close'))
     el.append(x)
   }
-  function placePath(el, follow) {
+  function placePath(el) {
     if (!el) return
-    const phone = window.innerWidth <= 980 || window.innerHeight <= 520
-    if (phone) {
-      el.classList.remove('path-corner')
-      if (api.laneRelease) api.laneRelease(el)
-      const hot = document.getElementById('hotbar')
-      const hr = hot ? hot.getBoundingClientRect() : null
-      let bottom = 108
-      if (hr && hr.height > 2 && hr.top > 40) bottom = Math.max(12, Math.round(window.innerHeight - hr.top + 8))
-      const stick = document.getElementById('stick-pad')
-      const sr = stick ? stick.getBoundingClientRect() : null
-      const header = document.querySelector('header.top')
-      const headerBottom = header ? header.getBoundingClientRect().bottom : 120
-      const maxBottom = Math.max(12, window.innerHeight - headerBottom - 64)
-      if (sr && sr.width > 2 && sr.height > 2) {
-        const cardW = Math.min(el.offsetWidth || 260, window.innerWidth * 0.92)
-        const cardLeft = (window.innerWidth - cardW) / 2
-        if (cardLeft < sr.right - 4 && cardLeft + cardW > sr.left + 4) {
-          const stickClear = Math.round(window.innerHeight - sr.top + 8)
-          if (stickClear > bottom && stickClear <= maxBottom) bottom = stickClear
-        }
-      }
-      if (bottom > maxBottom) bottom = maxBottom
-      document.documentElement.style.setProperty('--goal-bottom', bottom + 'px')
-      el.style.top = ''
-      el.style.left = ''
-      el.style.right = ''
-      el.style.bottom = ''
-      el.style.transform = ''
-      el.style.maxWidth = ''
-      el.style.width = ''
-      el.style.background = ''
-      el.style.color = ''
-      el.style.border = ''
-      el.style.boxShadow = ''
-      el.style.outline = ''
-      el.style.pointerEvents = ''
-      return
-    }
-    const touch = document.body.classList.contains('touch') || (api.touch && api.touch())
-    if (!(touch && window.innerHeight <= 500)) {
-      el.classList.remove('path-corner')
-      el.style.right = ''
-      el.style.transform = ''
-      el.style.background = ''
-      el.style.color = ''
-      el.style.border = ''
-      el.style.boxShadow = ''
-      el.style.outline = ''
-      el.style.pointerEvents = ''
-      if (window.innerHeight > 500) {
-        el.style.maxWidth = ''
-        el.style.width = ''
-        el.style.fontSize = ''
-        if (api.laneAdd) api.laneAdd(el, 2)
-        return
-      }
-      const jump = document.getElementById('jump-col')
-      const jr = jump ? jump.getBoundingClientRect() : null
-      const stick = document.getElementById('stick-pad')
-      const sr = stick ? stick.getBoundingClientRect() : null
-      const pick = document.getElementById('pick-chip')
-      const pr = pick ? pick.getBoundingClientRect() : null
-      let left = 12
-      let rightEdge = window.innerWidth - 12
-      const shown = (r) => !!(r && r.width > 2 && r.height > 2)
-      const park = (r) => {
-        if (!shown(r)) return
-        if (r.left < window.innerWidth * 0.5) left = Math.max(left, r.right + 12)
-        if (r.right > window.innerWidth * 0.5) rightEdge = Math.min(rightEdge, r.left - 12)
-      }
-      park(sr)
-      park(jr)
-      park(pr)
-      const hot = document.getElementById('hotbar')
-      const hr = hot ? hot.getBoundingClientRect() : null
-      let limit = hr && hr.width > 2 && hr.height > 2 ? hr.top : window.innerHeight
-      const held = document.getElementById('held-chip')
-      if (held && !held.hidden) {
-        const hd = held.getBoundingClientRect()
-        if (hd.width > 2 && hd.height > 2) limit = Math.min(limit, hd.top)
-      }
-      const suit = document.getElementById('suit-bar')
-      if (suit && !suit.hidden) {
-        const sd = suit.getBoundingClientRect()
-        if (sd.width > 2 && sd.height > 2) {
-          const chipLeft = left, chipRight = left + Math.min(220, rightEdge - left)
-          if (chipLeft < sd.right && chipRight > sd.left) limit = Math.min(limit, sd.top)
-        }
-      }
-      el.style.top = 'auto'
-      el.style.left = left + 'px'
-      el.style.maxWidth = Math.max(120, rightEdge - left) + 'px'
-      el.style.bottom = (window.innerHeight - limit + 8) + 'px'
-      el.style.fontSize = '13px'
-      if (follow) return
-      if (placePath.again) cancelAnimationFrame(placePath.again)
-      placePath.again = requestAnimationFrame(() => {
-        placePath.again = 0
-        const chip = document.getElementById('path-chip')
-        if (!chip || chip.hidden) return
-        placePath(chip, true)
-        placeMake()
-      })
-      return
-    }
-    const rtl = document.documentElement.dir === 'rtl'
-    const shownBox = (el) => {
-      if (!el || el.hidden) return null
-      const s = getComputedStyle(el)
-      if (s.display === 'none' || s.visibility === 'hidden') return null
-      const r = el.getBoundingClientRect()
-      if (r.width < 2 || r.height < 2) return null
-      return r
-    }
-    const mr = shownBox(document.getElementById('game-menu'))
-    const fs = document.getElementById('fs-btn')
-    const fr = shownBox(fs)
-    const pauseBox = shownBox(document.getElementById('pause-btn'))
-    const rightBtn = (!rtl && pauseBox) ? pauseBox : fr
-    el.classList.add('path-corner')
-    el.style.bottom = 'auto'
-    el.style.maxWidth = '40vw'
-    el.style.fontSize = '16px'
-    el.style.transform = 'none'
-    el.style.background = '#0E1A22'
-    el.style.color = '#E6EEF2'
-    el.style.border = '0'
-    el.style.boxShadow = 'none'
-    el.style.outline = 'none'
-    el.style.pointerEvents = 'none'
-    if (!rtl) {
-      if (mr) {
-        el.style.top = mr.top + 'px'
-        el.style.left = (mr.right + 12) + 'px'
-      } else {
-        el.style.top = (fr ? fr.top : 8) + 'px'
-        el.style.left = '12px'
-      }
-      el.style.right = 'auto'
-    } else if (fr) {
-      el.style.left = 'auto'
-      el.style.right = (window.innerWidth - fr.left + 12) + 'px'
-      el.style.top = fr.top + 'px'
-    } else if (mr) {
-      el.style.left = 'auto'
-      el.style.right = (mr.right + 12) + 'px'
-      el.style.top = mr.top + 'px'
-    } else {
-      el.style.left = 'auto'
-      el.style.right = '12px'
-      el.style.top = '8px'
-    }
-    if (follow) {
-      const box = el.getBoundingClientRect()
-      if (!rtl && rightBtn && box.width > 2 && box.right > rightBtn.left - 8 && box.left < rightBtn.left) {
-        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, rightBtn.left - box.left - 12)) + 'px'
-      }
-      if (rtl && mr && box.width > 2 && box.left < mr.right + 8 && box.right > mr.right) {
-        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, box.right - mr.right - 12)) + 'px'
-      }
-      return
-    }
-    if (placePath.again) cancelAnimationFrame(placePath.again)
-    placePath.again = requestAnimationFrame(() => {
-      placePath.again = 0
-      const chip = document.getElementById('path-chip')
-      if (!chip || chip.hidden) return
-      placePath(chip, true)
-    })
+    el.classList.remove('path-corner')
+    el.style.top = ''
+    el.style.left = ''
+    el.style.right = ''
+    el.style.bottom = ''
+    el.style.transform = ''
+    el.style.maxWidth = ''
+    el.style.width = ''
+    el.style.position = ''
+    el.style.background = ''
+    el.style.color = ''
+    el.style.border = ''
+    el.style.boxShadow = ''
+    el.style.outline = ''
+    el.style.pointerEvents = ''
+    el.style.fontSize = ''
+    el.style.zIndex = ''
+    if (api.laneAdd) api.laneAdd(el, 2)
   }
   function onPathResize() {
     const el = document.getElementById('path-chip')

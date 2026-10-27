@@ -30,7 +30,7 @@ DONE only when seen live on /bertopia/. Check your box here in the same commit.
 ## BOB
 - [x] door-part5.md (sticky item tip, update toast once) — 2.5.494
 - [x] door-part6.md (What's new + Badges tile — likely already shipped; verify, then skip) — shipped. Changelog 2.5.472 is the badges line. Menu tile `bdgTitle` opens the badges card (2.5.476, c7a2039). What's new has moved on; the 472 line stays in the log. No new version.
-- [ ] bertopia-2.5.499-chips-pill-count.md (chip overlap, update pill into chip lane, held card name × count; only after 2.5.498 is live) — 2.5.499
+- [x] bertopia-2.5.499-chips-pill-count.md (chip overlap, update pill into chip lane, held card name × count; only after 2.5.498 is live) — 2.5.499
 
 ## Nobody yet (needs Debugzy/Fixzy after Tue)
 Room server claims add-on, chat (needs compliance), Botz cutting.

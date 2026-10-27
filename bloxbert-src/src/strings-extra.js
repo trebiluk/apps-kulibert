@@ -3434,3 +3434,20 @@ for (const [lang, row] of Object.entries(BERRY498)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.499: chips line up, update note in the top row, held stack count. rw, ti, and Dari are machine drafts.
+const LANE499 = {
+  en: { whatsNewBody: '2.5.499 — Top messages line up and don\'t cover each other. The update note moved to the top row. Your held item shows how many you have.' },
+  simple: { whatsNewBody: '2.5.499 — Top notes line up. The update note is in the top row. Your held item shows how many you have.' },
+  uk: { whatsNewBody: '2.5.499 — Верхні повідомлення стоять у ряд і не накривають одне одного. Нотатка про оновлення вгорі. Предмет у руці показує, скільки їх.' },
+  ru: { whatsNewBody: '2.5.499 — Верхние сообщения стоят в ряд и не закрывают друг друга. Заметка об обновлении наверху. Предмет в руке показывает, сколько их.' },
+  es: { whatsNewBody: '2.5.499 — Los avisos de arriba se alinean y no se tapan. La nota de actualización está en la fila de arriba. Lo que sostienes muestra cuántos tienes.' },
+  ar: { whatsNewBody: '2.5.499 — رسائل الأعلى تصطف ولا تغطي بعضها. ملاحظة التحديث في الصف الأعلى. ما في يدك يظهر كم لديك.' },
+  'fa-AF': { whatsNewBody: '2.5.499 — پیام‌های بالا در یک ردیف می‌نشینند و روی هم نمی‌افتند. یادداشت به‌روزرسانی در ردیف بالا است. چیزی که در دست داری تعداد را نشان می‌دهد.' },
+  rw: { whatsNewBody: '2.5.499 — Ubutumwa bwo hejuru burahurirana ntibugerekane. Inyandiko y\'ivugurura iri mu murongo wo hejuru. Icyo ufite kigaragaza umubare.' },
+  ti: { whatsNewBody: '2.5.499 — ላዕለዋይ መልእኽቲ ይሰለፉ ኣይሸፍኑን። መዘኻኸሪ ምዕራፍ ኣብ ላዕለዋይ መስመር እዩ። ዝሓዝካዮ ብዝሒ የርኢ።' },
+}
+for (const [lang, row] of Object.entries(LANE499)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

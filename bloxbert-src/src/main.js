@@ -98,7 +98,7 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   setTimeout(() => toast(t('bdgPaid').replace('{n}', '10')), 800)
   dirty = true
 })
-CrewBadges.setHost({ t: t, markDirty: function () { dirty = true } })
+CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
 import { wildBushLoot } from './drops.js'
 import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -213,13 +213,11 @@ function showSafeChip() {
   const now = performance.now()
   if (now - lastSafeChip < 2000) return
   lastSafeChip = now
-  const chip = document.createElement('div')
-  chip.setAttribute('role', 'status')
-  chip.setAttribute('aria-live', 'polite')
+  const chip = ensureSafeChip()
   chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone') + ' — ' + (t('c1NoFightHere') || 'No fighting here')
-  chip.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:8px 16px;border-radius:8px;z-index:40;min-height:44px;display:flex;align-items:center'
-  document.body.append(chip)
-  setTimeout(() => chip.remove(), 2000)
+  chip.hidden = false
+  capLane()
+  setTimeout(() => { if (chip.isConnected) paintSafeChip() }, 2000)
 }
 
 let lastSafe = false
@@ -5358,7 +5356,14 @@ function showUpdateChip() {
     document.body.appendChild(b)
   }
   laneAdd(b, 8)
-  b.textContent = t('updateReady')
+  b.replaceChildren()
+  const ico = document.createElement('span')
+  ico.setAttribute('aria-hidden', 'true')
+  ico.textContent = '↻'
+  const word = document.createElement('span')
+  word.textContent = t('updateReady')
+  b.append(ico, document.createTextNode(' '), word)
+  b.setAttribute('aria-label', t('updateReady'))
   b.hidden = false
   markUpdateSeen()
 }

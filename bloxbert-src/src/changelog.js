@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.499', date: '2026-10-27', lines: {
+    en: ["2.5.499 — Top messages line up and don't cover each other. The update note moved to the top row. Your held item shows how many you have."],
+    simple: ["2.5.499 — Top notes line up. The update note is in the top row. Your held item shows how many you have."],
+    uk: ["2.5.499 — Верхні повідомлення стоять у ряд і не накривають одне одного. Нотатка про оновлення вгорі. Предмет у руці показує, скільки їх."],
+    ru: ["2.5.499 — Верхние сообщения стоят в ряд и не закрывают друг друга. Заметка об обновлении наверху. Предмет в руке показывает, сколько их."],
+    es: ["2.5.499 — Los avisos de arriba se alinean y no se tapan. La nota de actualización está en la fila de arriba. Lo que sostienes muestra cuántos tienes."],
+    ar: ["2.5.499 — رسائل الأعلى تصطف ولا تغطي بعضها. ملاحظة التحديث في الصف الأعلى. ما في يدك يظهر كم لديك."],
+    'fa-AF': ["2.5.499 — پیام‌های بالا در یک ردیف می‌نشینند و روی هم نمی‌افتند. یادداشت به‌روزرسانی در ردیف بالا است. چیزی که در دست داری تعداد را نشان می‌دهد."],
+    rw: ["2.5.499 — Ubutumwa bwo hejuru burahurirana ntibugerekane. Inyandiko y'ivugurura iri mu murongo wo hejuru. Icyo ufite kigaragaza umubare."],
+    ti: ["2.5.499 — ላዕለዋይ መልእኽቲ ይሰለፉ ኣይሸፍኑን። መዘኻኸሪ ምዕራፍ ኣብ ላዕለዋይ መስመር እዩ። ዝሓዝካዮ ብዝሒ የርኢ።"],
+  }},
+
   { v: '2.5.497', date: '2026-10-27', lines: {
     en: ["2.5.497 — The class server switch stays off."],
     simple: ["2.5.497 — The class server switch stays off."],
