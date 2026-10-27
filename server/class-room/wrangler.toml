@@ -5,6 +5,7 @@ compatibility_date = "2025-09-01"
 # No public *.workers.dev address. Solvay blocks vercel.app hosts and may block
 # others; the only intended address is same-origin under apps.kulibert.net.
 workers_dev = false
+routes = [{ pattern = "class.kulibert.net", custom_domain = true }]   # Diego GO 2026-10-27 6:34 AM ET
 
 [vars]
 # Browser origins allowed to open a socket. Local tests override this in .dev.vars.
