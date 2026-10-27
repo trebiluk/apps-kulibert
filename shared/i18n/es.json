@@ -29,6 +29,7 @@
   "pinHint": "De tu profe",
   "signNote": "El código y el PIN los da tu profe. Tu nombre sale cuando coinciden.",
   "signOptional": "Puedes usar cada app sin entrar. Toca Entrar para guardar tus marcas y tu alias.",
+  "signCarry": "¿Entraste en el Hub? Baboo, TechWorks y Koderized también conocen tu alias.",
   "signTeacher": "El código y el PIN los da tu profe.",
   "errWait": "Espera un momento y vuelve a intentar.",
   "errNeedBoth": "Escribe el código de 5 caracteres y el PIN de 4 números.",

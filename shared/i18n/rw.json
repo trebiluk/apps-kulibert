@@ -29,6 +29,7 @@
   "pinHint": "Biva ku mwarimu",
   "signNote": "Kode na PIN biva ku mwarimu. Izina ryawe rigaragara nibyo bihuye.",
   "signOptional": "Ushobora gukoresha porogaramu zose utinjiye. Kanda Injira kugira ngo ubike amanota yawe n'izina ryawe ry'irihimbano.",
+  "signCarry": "Winjiye muri Hub? Baboo, TechWorks na Koderized nazo zizi izina ryawe ry'irihimbano.",
   "signTeacher": "Kode na PIN biva ku mwarimu.",
   "errWait": "Tegereza gato, hanyuma ongera ugerageze.",
   "errNeedBoth": "Andika kode y'inyuguti 5 na PIN y'imibare 4.",

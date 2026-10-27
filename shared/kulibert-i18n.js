@@ -2,7 +2,7 @@
 (function (root) {
   // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
   // Apps: do not edit.
-  var I18N_REV = "2026-10-27-sign-optional";
+  var I18N_REV = "2026-10-27-sign-carry";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -34,6 +34,7 @@
   "pinHint": "From your teacher",
   "signNote": "The code and the PIN come from your teacher. Your name shows after they match.",
   "signOptional": "You can use every app without signing in. Tap Sign in to keep your marks and your alias.",
+  "signCarry": "Signed in on the Hub? Baboo, TechWorks and Koderized know your alias too.",
   "signTeacher": "The code and the PIN come from your teacher.",
   "errWait": "Wait a moment, then try again.",
   "errNeedBoth": "Enter the 5-character code and the 4-digit PIN.",
