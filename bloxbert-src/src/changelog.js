@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.500', date: '2026-10-27', lines: {
+    en: ["2.5.500 — Game keys like Tab, Space and the arrows stay in the game now. Press Esc any time to get your mouse back."],
+    simple: ["2.5.500 — Game keys like Tab, Space and the arrows stay in the game. Press Esc any time to get your mouse back."],
+    uk: ["2.5.500 — Ігрові клавіші Tab, пробіл і стрілки тепер працюють тільки в грі. Натисни Esc, щоб повернути мишу."],
+    ru: ["2.5.500 — Игровые клавиши Tab, пробел и стрелки теперь работают только в игре. Нажми Esc, чтобы вернуть мышь."],
+    es: ["2.5.500 — Las teclas del juego como Tab, Espacio y las flechas ahora se quedan en el juego. Pulsa Esc para recuperar el ratón."],
+    ar: ["2.5.500 — مفاتيح اللعبة مثل Tab والمسافة والأسهم تبقى في اللعبة الآن. اضغط Esc لاستعادة الفأرة."],
+    'fa-AF': ["2.5.500 — کلیدهای بازی مثل Tab، فاصله و تیرها حالا در بازی می‌مانند. برای پس گرفتن موس Esc را بزنید."],
+    rw: ["2.5.500 — Utubuto tw'umukino nka Tab, Space n'imyambi ubu bigumye mu mukino. Kanda Esc kugira ngo ugarure imbeba."],
+    ti: ["2.5.500 — ከም Tab፣ Space ከምኡ'ውን ምልክታት ዝኣመሰሉ መጥወቒ ጸወታ ሕጂ ኣብ ጸወታ ይጸንሑ። ኣይጥ ንምምላስ Esc ጠውቕ።"],
+  }},
+
   { v: '2.5.499', date: '2026-10-27', lines: {
     en: ["2.5.499 — Top messages line up and don't cover each other. The update note moved to the top row. Your held item shows how many you have."],
     simple: ["2.5.499 — Top notes line up. The update note is in the top row. Your held item shows how many you have."],

@@ -3451,3 +3451,47 @@ for (const [lang, row] of Object.entries(LANE499)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.500: game keys stay in the game. rw, ti, and Dari are machine drafts.
+const KEYS500 = {
+  en: {
+    helpKeysStay: 'Game keys like Tab, Space and the arrows stay in the game now. Press Esc any time to get your mouse back.',
+    whatsNewBody: '2.5.500 — Game keys like Tab, Space and the arrows stay in the game now. Press Esc any time to get your mouse back.',
+  },
+  simple: {
+    helpKeysStay: 'Game keys like Tab, Space and the arrows stay in the game. Press Esc any time to get your mouse back.',
+    whatsNewBody: '2.5.500 — Game keys like Tab, Space and the arrows stay in the game. Press Esc any time to get your mouse back.',
+  },
+  uk: {
+    helpKeysStay: 'Ігрові клавіші Tab, пробіл і стрілки тепер працюють тільки в грі. Натисни Esc, щоб повернути мишу.',
+    whatsNewBody: '2.5.500 — Ігрові клавіші Tab, пробіл і стрілки тепер працюють тільки в грі. Натисни Esc, щоб повернути мишу.',
+  },
+  ru: {
+    helpKeysStay: 'Игровые клавиши Tab, пробел и стрелки теперь работают только в игре. Нажми Esc, чтобы вернуть мышь.',
+    whatsNewBody: '2.5.500 — Игровые клавиши Tab, пробел и стрелки теперь работают только в игре. Нажми Esc, чтобы вернуть мышь.',
+  },
+  es: {
+    helpKeysStay: 'Las teclas del juego como Tab, Espacio y las flechas ahora se quedan en el juego. Pulsa Esc para recuperar el ratón.',
+    whatsNewBody: '2.5.500 — Las teclas del juego como Tab, Espacio y las flechas ahora se quedan en el juego. Pulsa Esc para recuperar el ratón.',
+  },
+  ar: {
+    helpKeysStay: 'مفاتيح اللعبة مثل Tab والمسافة والأسهم تبقى في اللعبة الآن. اضغط Esc لاستعادة الفأرة.',
+    whatsNewBody: '2.5.500 — مفاتيح اللعبة مثل Tab والمسافة والأسهم تبقى في اللعبة الآن. اضغط Esc لاستعادة الفأرة.',
+  },
+  'fa-AF': {
+    helpKeysStay: 'کلیدهای بازی مثل Tab، فاصله و تیرها حالا در بازی می‌مانند. برای پس گرفتن موس Esc را بزنید.',
+    whatsNewBody: '2.5.500 — کلیدهای بازی مثل Tab، فاصله و تیرها حالا در بازی می‌مانند. برای پس گرفتن موس Esc را بزنید.',
+  },
+  rw: {
+    helpKeysStay: 'Utubuto tw\'umukino nka Tab, Space n\'imyambi ubu bigumye mu mukino. Kanda Esc kugira ngo ugarure imbeba.',
+    whatsNewBody: '2.5.500 — Utubuto tw\'umukino nka Tab, Space n\'imyambi ubu bigumye mu mukino. Kanda Esc kugira ngo ugarure imbeba.',
+  },
+  ti: {
+    helpKeysStay: 'ከም Tab፣ Space ከምኡ\'ውን ምልክታት ዝኣመሰሉ መጥወቒ ጸወታ ሕጂ ኣብ ጸወታ ይጸንሑ። ኣይጥ ንምምላስ Esc ጠውቕ።',
+    whatsNewBody: '2.5.500 — ከም Tab፣ Space ከምኡ\'ውን ምልክታት ዝኣመሰሉ መጥወቒ ጸወታ ሕጂ ኣብ ጸወታ ይጸንሑ። ኣይጥ ንምምላስ Esc ጠውቕ።',
+  },
+}
+for (const [lang, row] of Object.entries(KEYS500)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

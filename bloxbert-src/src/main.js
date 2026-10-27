@@ -6481,7 +6481,8 @@ function showPlayChip() {
   const el = $('play-chip')
   if (!el) return
   if (window.__playChipGone) return
-  el.textContent = t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay')
+  el.textContent = '▶ ' + t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay')
+  el.setAttribute('aria-label', t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay'))
   el.hidden = false
 }
 function startFromChip() {
@@ -7660,6 +7661,7 @@ document.addEventListener('pointerlockchange', () => {
   dropRightHold()
   if (document.pointerLockElement) {
     hadLock = true
+    try { noa.container.canvas.focus({ preventScroll: true }) } catch (e) {}
     menuFromLock = false
     playLockWanted = false
     lockTries = 0
@@ -8703,6 +8705,21 @@ window.addEventListener('keydown', (e) => {
   rememberOpener(document.activeElement)
   openMenu(true)
 }, true)
+const GAME_KEYS = new Set(['Tab', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'AltLeft', 'AltRight'])
+function gameKeyGuard(e) {
+  if (e.key === 'Escape' || !playLocked() || topLayer()) return
+  const ae = document.activeElement
+  if (ae && (ae.closest('input,textarea,select,[contenteditable]') || ae.isContentEditable)) return
+  const c = noa.container
+  if (!c) return
+  if (ae !== c.canvas && ae !== c.element && ae !== document.body) return
+  const mod = (e.ctrlKey || e.metaKey) && /^Key[SDFPRG]$/.test(e.code)
+  if (!GAME_KEYS.has(e.code) && !/^F([1-9]|10)$/.test(e.code) && !mod) return
+  e.preventDefault()
+  if (e.code === 'Tab') e.stopImmediatePropagation()
+}
+document.addEventListener('keydown', gameKeyGuard, true)
+document.addEventListener('keyup', gameKeyGuard, true)
 document.addEventListener('keydown', (e) => {
   const layer = topLayer()
   if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
@@ -9987,7 +10004,23 @@ window.addEventListener('pointerup', (e) => {
   if (e.button === 2) finishRight(e)
 }, true)
 window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false; rightDown = false; releaseFar() })
-window.addEventListener('blur', () => dropRightHold())
+window.addEventListener('blur', () => {
+  dropRightHold()
+  downHeld = false
+  crouchKey = false
+  spaceChop = false
+  treeHold = false
+  jumpHeld = false
+  window.__playChipGone = false
+  try {
+    noa.inputs.state.fire = false
+    noa.inputs.state.forward = false
+    noa.inputs.state.backward = false
+    noa.inputs.state.left = false
+    noa.inputs.state.right = false
+    noa.inputs.state.jump = false
+  } catch (e) {}
+})
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }
@@ -11448,6 +11481,9 @@ function canFs() {
   return !!(el.requestFullscreen || el.webkitRequestFullscreen)
 }
 let fsFails = 0
+const LOCK_KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyN', 'KeyT', 'Tab', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'AltLeft', 'AltRight', 'F1', 'F3', 'F5', 'F6', 'F7', 'F10']
+function lockKeys() { try { if (navigator.keyboard && navigator.keyboard.lock) navigator.keyboard.lock(LOCK_KEYS).catch(() => {}) } catch (e) {} }
+function unlockKeys() { try { if (navigator.keyboard && navigator.keyboard.unlock) navigator.keyboard.unlock() } catch (e) {} }
 async function enterFs() {
   const el = document.documentElement
   try {
@@ -11455,6 +11491,7 @@ async function enterFs() {
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen()
     else throw new Error('no-fs')
     fsFails = 0
+    lockKeys()
   } catch (e) {
     fsFails++
     if (fsFails >= 2) fsSet('off')
@@ -11505,6 +11542,7 @@ document.addEventListener('keydown', (e) => {
   enterFs().then(paintFs).catch(() => {})
 }, { capture: true, passive: true })
 document.addEventListener('fullscreenchange', paintFs)
+document.addEventListener('fullscreenchange', () => { if (!isFs()) unlockKeys() })
 document.addEventListener('webkitfullscreenchange', paintFs)
 paintFs()
 

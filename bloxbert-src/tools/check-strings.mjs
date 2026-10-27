@@ -11,7 +11,7 @@ const scripts = {
   uk: /[А-Яа-яІіЇїЄєҐґ]/, ru: /[А-Яа-яЁё]/,
   ar: /[\u0600-\u06FF]/, 'fa-AF': /[\u0600-\u06FF]/, ti: /[\u1200-\u137F]/,
 }
-const names = /Bertopia|Bertyville|Tally|Kulibert|PvP|WASD|PIN|⚙/
+const names = /Bertopia|Bertyville|Tally|Kulibert|PvP|WASD|PIN|Tab|Space|Esc|⚙/
 const CYR = /[\u0400-\u04FF]/
 const ARAB = /[\u0600-\u06FF]/
 const ETHI = /[\u1200-\u137F]/

@@ -399,6 +399,11 @@ export function mountPanels(api) {
         keysAgain.dataset.helpKeysAgain = '1'
         keysAgain.textContent = api.t('keysAgain')
         g.append(keysAgain)
+        const stay = document.createElement('p')
+        stay.className = 'gnote'
+        stay.dataset.helpKeysStay = '1'
+        stay.textContent = api.t('helpKeysStay')
+        g.append(stay)
         const flyLook = document.createElement('p'); flyLook.className = 'gnote'; flyLook.textContent = api.t('helpFlyLook'); g.append(flyLook)
         const chipNote = document.createElement('p')
         chipNote.className = 'gnote'
