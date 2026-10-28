@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // rw, ti, fa-AF are machine drafts.
+  { v: '2.5.505', date: '2026-10-28', lines: {
+    en: ['2.5.505 — Pick your language from a list. Your game mode stays the same.'],
+    simple: ['2.5.505 — Pick your language from a list. Your mode stays the same.'],
+    uk: ['2.5.505 — Обери мову зі списку. Режим гри лишається тим самим.'],
+    ru: ['2.5.505 — Выбери язык из списка. Режим игры остаётся тем же.'],
+    es: ['2.5.505 — Elige tu idioma en una lista. Tu modo de juego sigue igual.'],
+    ar: ['2.5.505 — اختر لغتك من قائمة. وضع اللعب يبقى كما هو.'],
+    'fa-AF': ['2.5.505 — زبان خود را از یک فهرست برگزین. حالت بازی همان می‌ماند.'],
+    rw: ['2.5.505 — Hitamo ururimi rwawe mu rutonde. Uburyo bw\'umukino burakomeza.'],
+    ti: ['2.5.505 — ቋንቋኻ ካብ ዝርዝር ምረጽ። ኩነት ጸወታኻ ከምቲ ዝነበረ ይጸንሕ።'],
+  }},
+
   { v: '2.5.504', date: '2026-10-28', lines: {
     en: ["2.5.504 — Fixed some words in the game and on the badges tile."],
     simple: ["2.5.504 — Fixed some words in the game and on the badges tile."],

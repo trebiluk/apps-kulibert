@@ -2,7 +2,7 @@
 export const STR = {
   en: {
     menu: 'Menu', close: 'Close', settings: 'Settings', whatsNew: "What's new", help: 'Help',
-    whatsNewBody: 'The Oven fire is big and lively, and new things you craft go where you can find them.',
+    whatsNewBody: '2.5.505 — Pick your language from a list. Your game mode stays the same.',
     redo: 'Redo', undid: 'Undid {n} blocks', redid: 'Redid {n} blocks', inspect: 'Inspect', inspectEmpty: 'No changes here yet. The world made this.', you: 'You', placed: 'placed', broke: 'broke', changed: 'changed', picked: 'Picked:',
     world: 'World', worldRules: 'World Rules', saveNow: 'Save now', loadSaved: 'Load my saved world', exportWorld: 'Export world file', importWorld: 'Import world file', freshWorld: 'Fresh world',
     mode: 'Mode', creative: 'Creative', buildTable: 'Build Table', survival: 'Survival', contest: 'Build contest', later: 'later cut',
@@ -34,7 +34,7 @@ export const STR = {
   },
   uk: {
     menu: 'Меню', close: 'Закрити', settings: 'Налаштування', whatsNew: 'Що нового', help: 'Допомога',
-    whatsNewBody: 'Вогонь печі великий і живий, і нові речі, які ти робиш, лягають туди, де їх знайти.',
+    whatsNewBody: '2.5.505 — Обери мову зі списку. Режим гри лишається тим самим.',
     redo: 'Повторити', undid: 'Скасовано {n} блоків', redid: 'Повторено {n} блоків', inspect: 'Огляд', inspectEmpty: 'Тут ще немає змін. Це зробив світ.', you: 'Ви', placed: 'поставив', broke: 'зламав', changed: 'змінив', picked: 'Обрано:',
     world: 'Світ', worldRules: 'Правила світу', saveNow: 'Зберегти зараз', loadSaved: 'Завантажити мій світ', exportWorld: 'Експорт файлу світу', importWorld: 'Імпорт файлу світу', freshWorld: 'Новий світ',
     mode: 'Режим', creative: 'Творчий', buildTable: 'Стіл будови', survival: 'Виживання', contest: 'Конкурс будівель', later: 'пізніше',
@@ -65,7 +65,7 @@ export const STR = {
   },
   ru: {
     menu: 'Меню', close: 'Закрыть', settings: 'Настройки', whatsNew: 'Что нового', help: 'Помощь',
-    whatsNewBody: 'Огонь печи большой и живой, и новые вещи, которые ты делаешь, ложатся туда, где их найти.',
+    whatsNewBody: '2.5.505 — Выбери язык из списка. Режим игры остаётся тем же.',
     redo: 'Повтор', undid: 'Отменено {n} блоков', redid: 'Повторено {n} блоков', inspect: 'Осмотр', inspectEmpty: 'Здесь ещё нет изменений. Это сделал мир.', you: 'Вы', placed: 'поставил', broke: 'сломал', changed: 'изменил', picked: 'Выбрано:',
     world: 'Мир', worldRules: 'Правила мира', saveNow: 'Сохранить сейчас', loadSaved: 'Загрузить мой мир', exportWorld: 'Экспорт файла мира', importWorld: 'Импорт файла мира', freshWorld: 'Новый мир',
     mode: 'Режим', creative: 'Творческий', buildTable: 'Стол стройки', survival: 'Выживание', contest: 'Конкурс построек', later: 'позже',
@@ -96,7 +96,7 @@ export const STR = {
   },
   es: {
     menu: 'Menú', close: 'Cerrar', settings: 'Ajustes', whatsNew: 'Novedades', help: 'Ayuda',
-    whatsNewBody: 'El fuego del horno es grande y vivo, y lo nuevo que fabricas va donde puedes encontrarlo.',
+    whatsNewBody: '2.5.505 — Elige tu idioma en una lista. Tu modo de juego sigue igual.',
     redo: 'Rehacer', undid: 'Deshiciste {n} bloques', redid: 'Rehiciste {n} bloques', inspect: 'Inspeccionar', inspectEmpty: 'Aquí no hay cambios todavía. El mundo hizo esto.', you: 'Tú', placed: 'puso', broke: 'rompió', changed: 'cambió', picked: 'Elegido:',
     world: 'Mundo', worldRules: 'Reglas del mundo', saveNow: 'Guardar ahora', loadSaved: 'Cargar mi mundo', exportWorld: 'Exportar archivo', importWorld: 'Importar archivo', freshWorld: 'Mundo nuevo',
     mode: 'Modo', creative: 'Creativo', buildTable: 'Mesa de construir', survival: 'Supervivencia', contest: 'Concurso', later: 'más tarde',
@@ -127,7 +127,7 @@ export const STR = {
   },
   ar: {
     menu: 'القائمة', close: 'إغلاق', settings: 'الإعدادات', whatsNew: 'ما الجديد', help: 'مساعدة',
-    whatsNewBody: 'نار الفرن كبيرة وحية، والأشياء الجديدة التي تصنعها تذهب حيث تجدها.',
+    whatsNewBody: '2.5.505 — اختر لغتك من قائمة. وضع اللعب يبقى كما هو.',
     redo: 'إعادة', undid: 'تراجعت عن {n} مكعبًا', redid: 'أعدت {n} مكعبًا', inspect: 'فحص', inspectEmpty: 'لا تغييرات هنا بعد. العالم صنع هذا.', you: 'أنت', placed: 'وضع', broke: 'كسر', changed: 'غيّر', picked: 'تم الاختيار:',
     world: 'العالم', worldRules: 'قواعد العالم', saveNow: 'احفظ الآن', loadSaved: 'حمّل عالمي المحفوظ', exportWorld: 'تصدير ملف العالم', importWorld: 'استيراد ملف العالم', freshWorld: 'عالم جديد',
     mode: 'الوضع', creative: 'إبداعي', buildTable: 'طاولة البناء', survival: 'بقاء', contest: 'مسابقة بناء', later: 'لاحقًا',
@@ -158,7 +158,7 @@ export const STR = {
   },
   'fa-AF': {
     menu: 'فهرست', close: 'بستن', settings: 'تنظیمات', whatsNew: 'تازه‌ها', help: 'کمک',
-    whatsNewBody: 'آتش تنور بزرگ و زنده است، و چیزهای تازه‌ای که می‌سازی جایی می‌روند که پیدایشان کنی.',
+    whatsNewBody: '2.5.505 — زبان خود را از یک فهرست برگزین. حالت بازی همان می‌ماند.',
     redo: 'دوباره', undid: '{n} بلاک واپس شد', redid: '{n} بلاک دوباره شد', inspect: 'بررسی', inspectEmpty: 'اینجا هنوز تغییری نیست. جهان این را ساخته.', you: 'تو', placed: 'گذاشت', broke: 'شکست', changed: 'عوض کرد', picked: 'برگزیده:',
     world: 'جهان', worldRules: 'قانون دنیا', saveNow: 'همین حالا ذخیره کن', loadSaved: 'جهان ذخیره‌شده‌ام را باز کن', exportWorld: 'بیرون بردن فایل جهان', importWorld: 'آوردن فایل جهان', freshWorld: 'جهان تازه',
     mode: 'حالت', creative: 'خلاق', buildTable: 'میز ساخت', survival: 'بقا', contest: 'مسابقه ساخت', later: 'بعدتر',
@@ -189,7 +189,7 @@ export const STR = {
   },
   rw: {
     menu: 'Ibikubiyemo', close: 'Funga', settings: 'Igenamiterere', whatsNew: 'Ibishya', help: 'Ubufasha',
-    whatsNewBody: 'Umuriro w\'icyoto ni munini kandi urimo ubuzima, kandi ibishya ukora bijya aho ushobora kubibona.',
+    whatsNewBody: '2.5.505 — Hitamo ururimi rwawe mu rutonde. Uburyo bw\'umukino burakomeza.',
     redo: 'Ongera', undid: 'Wasubije inyuma block {n}', redid: 'Wongereye block {n}', inspect: 'Suzuma', inspectEmpty: 'Nta mpinduka ziri hano. Isi ni yo yabikoze.', you: 'Wowe', placed: 'yashyize', broke: 'yavunaguye', changed: 'yahinduye', picked: 'Byahiswemo:',
     world: 'Isi', worldRules: 'Amategeko y\'isi', saveNow: 'Bika ubu', loadSaved: 'Fungura isi nabitse', exportWorld: 'Sohora dosiye y’isi', importWorld: 'Injiza dosiye y’isi', freshWorld: 'Isi nshya',
     mode: 'Uburyo', creative: 'Kurema', buildTable: 'Ameza yo kubaka', survival: 'Kubaho', contest: 'Marushanwa', later: 'nyuma',
@@ -220,7 +220,7 @@ export const STR = {
   },
   ti: {
     menu: 'ዝርዝር', close: 'ዕጸው', settings: 'ቅጥዕታት', whatsNew: 'ሓድሽ', help: 'ሓገዝ',
-    whatsNewBody: 'ሓዊ እቶን ዓቢን ህያውን እዩ፡ ሓደሽቲ እተሰርሖም ድማ ናብ እተረኽቦም ቦታ ይኸዱ።',
+    whatsNewBody: '2.5.505 — ቋንቋኻ ካብ ዝርዝር ምረጽ። ኩነት ጸወታኻ ከምቲ ዝነበረ ይጸንሕ።',
     redo: 'ደጊም', undid: '{n} ብሎክ ተመሊሱ', redid: '{n} ብሎክ ደጊሙ', inspect: 'ምርምር', inspectEmpty: 'ኣብዚ ገና ለውጢ የለን። ዓለም እያ ዝሰርሓቶ።', you: 'ንስኻ', placed: 'ኣቐመጠ', broke: 'ሰበረ', changed: 'ቀየረ', picked: 'ተመሪጹ:',
     world: 'ዓለም', worldRules: 'ሕግታት ዓለም', saveNow: 'ሕጂ ዓቅብ', loadSaved: 'ዝዓቀብኩዎ ዓለም ክፈት', exportWorld: 'ፋይል ዓለም ኣውጽእ', importWorld: 'ፋይል ዓለም ኣእቱ', freshWorld: 'ሓድሽ ዓለም',
     mode: 'ኩነታት', creative: 'ፈጠራ', buildTable: 'ጠረጴዛ ህንጻ', survival: 'ምንባር', contest: 'ውድድር ህንጻ', later: 'ድሕሪት',

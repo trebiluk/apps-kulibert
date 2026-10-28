@@ -8656,6 +8656,8 @@ function arrowPick(list, key) {
 }
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
+  const langList = document.getElementById('lang-list')
+  if (langList && !langList.hidden) return
   const rulesCard = document.getElementById('rules-card')
   if (rulesCard && !rulesCard.hidden) {
     e.preventDefault()
@@ -8760,7 +8762,7 @@ document.addEventListener('keydown', (e) => {
     }
   }
   if (!layer || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return
-  if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
+  if (e.target && e.target.closest && e.target.closest('input, textarea, select, .lang-list')) return
   const sheet = document.getElementById('sheet')
   const panel = sheet && !sheet.hidden ? sheet.dataset.panel : ''
   const grid = panel === 'menu' || panel === 'world'
@@ -12703,40 +12705,119 @@ function paintLangRow(g) {
   ico.textContent = '🌐'
   const lab = document.createElement('span')
   lab.className = 'set-lab'
-  const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple']
-  const names = { en: 'English', uk: 'Українська', ru: 'Русский', es: 'Español', ar: 'العربية', 'fa-AF': 'دری', rw: 'Kinyarwanda', ti: 'ትግርኛ', simple: 'Simple' }
+  const picks = [
+    ['en', 'English'],
+    ['uk', 'Українська'],
+    ['ru', 'Русский'],
+    ['es', 'Español'],
+    ['ar', 'العربية'],
+    ['fa-AF', 'دری'],
+    ['rw', 'Kinyarwanda'],
+    ['ti', 'ትግርኛ'],
+  ]
+  const rtlCode = { ar: 1, 'fa-AF': 1 }
   const cur = LANG || 'en'
-  const curName = names[cur] || cur
+  const curName = (picks.find((p) => p[0] === cur) || ['', cur === 'simple' ? 'Simple' : cur])[1]
   lab.textContent = (t('language') || 'Language') + ': ' + curName
-  const sel = document.createElement('select')
-  sel.className = 'pill'
-  sel.style.minWidth = '44px'
-  sel.style.minHeight = '44px'
-  sel.style.maxWidth = '100%'
-  sel.style.fontSize = '16px'
-  sel.style.colorScheme = 'dark'
-  sel.setAttribute('aria-label', t('language') || 'Language')
-  const rtlCodes = { ar: 1, 'fa-AF': 1 }
-  sel.dir = document.documentElement.dir || (rtlCodes[cur] ? 'rtl' : 'ltr')
-  for (const code of langs) {
-    const opt = document.createElement('option')
-    opt.value = code
-    opt.textContent = names[code] || code
-    opt.lang = code === 'simple' ? 'en' : code
-    opt.dir = rtlCodes[code] ? 'rtl' : 'ltr'
-    if (code === cur) opt.selected = true
-    sel.append(opt)
+  const btn = document.createElement('button')
+  btn.type = 'button'
+  btn.className = 'pill'
+  btn.textContent = t('change') || 'Change'
+  btn.setAttribute('aria-expanded', 'false')
+  btn.setAttribute('aria-haspopup', 'listbox')
+  btn.setAttribute('aria-controls', 'lang-list')
+  const list = document.createElement('div')
+  list.id = 'lang-list'
+  list.className = 'lang-list'
+  list.hidden = true
+  list.setAttribute('role', 'listbox')
+  list.setAttribute('aria-label', t('language') || 'Language')
+  list.dir = rtlCode[cur] ? 'rtl' : 'ltr'
+  const opts = []
+  for (const [code, name] of picks) {
+    const opt = document.createElement('button')
+    opt.type = 'button'
+    opt.className = 'pill lang-opt'
+    opt.setAttribute('role', 'option')
+    opt.lang = code
+    opt.dir = rtlCode[code] ? 'rtl' : 'ltr'
+    opt.dataset.lang = code
+    const on = code === cur
+    opt.setAttribute('aria-selected', on ? 'true' : 'false')
+    opt.setAttribute('aria-checked', on ? 'true' : 'false')
+    if (on) opt.classList.add('on')
+    const mark = document.createElement('span')
+    mark.className = 'lang-mark'
+    mark.setAttribute('aria-hidden', 'true')
+    mark.textContent = on ? '✓' : ''
+    const word = document.createElement('span')
+    word.className = 'lang-name'
+    word.textContent = name
+    opt.append(mark, word)
+    opt.addEventListener('click', () => pickLang(code))
+    list.append(opt)
+    opts.push(opt)
   }
-  sel.addEventListener('change', async () => {
-    sel.disabled = true
-    const next = sel.value
-    if (typeof saveKidLang === 'function') saveKidLang(next)
-    else try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
-    try { await save() } catch (e) {}
-    location.reload()
+  function closeList() {
+    if (!list.isConnected) return
+    list.hidden = true
+    btn.setAttribute('aria-expanded', 'false')
+    if (btn.isConnected) btn.focus()
+  }
+  function openList() {
+    list.hidden = false
+    btn.setAttribute('aria-expanded', 'true')
+    const hit = opts.find((o) => o.dataset.lang === cur) || opts[0]
+    if (hit) hit.focus()
+  }
+  function pickLang(code) {
+    const next = normLang(code)
+    if (!next || next === LANG) { closeList(); return }
+    const mode = session && session.mode
+    saveKidLang(next)
+    LANG = next
+    applyI18n()
+    if (session && mode && session.mode !== mode && session.setMode) session.setMode(mode)
+    if (panels && panels.softRepaint) panels.softRepaint()
+    const sheet = document.getElementById('sheet')
+    if (sheet && !sheet.hidden && sheet.dataset.panel === 'settings') {
+      const title = document.getElementById('sheet-title')
+      if (title) title.textContent = t('settings')
+    }
+    const xlab = document.querySelector('#sheet-x .xlab')
+    if (xlab) xlab.textContent = t('close')
+    const x = document.getElementById('sheet-x')
+    if (x) x.setAttribute('aria-label', t('close'))
+  }
+  btn.addEventListener('click', () => { if (list.hidden) openList(); else closeList() })
+  list.addEventListener('keydown', (e) => {
+    const i = opts.indexOf(document.activeElement)
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeList(); return }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      e.stopPropagation()
+      const dir = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1
+      const n = opts.length
+      opts[((i < 0 ? 0 : i) + dir + n) % n].focus()
+    }
   })
-  row.append(ico, lab, sel)
-  g.append(row)
+  const onEsc = (e) => {
+    if (!list.isConnected) { document.removeEventListener('keydown', onEsc, true); return }
+    if (e.key !== 'Escape' || list.hidden) return
+    e.preventDefault()
+    e.stopPropagation()
+    closeList()
+  }
+  document.addEventListener('keydown', onEsc, true)
+  const back = document.getElementById('sheet-back')
+  if (back) back.addEventListener('click', (e) => {
+    if (!list.isConnected || list.hidden) return
+    e.preventDefault()
+    e.stopPropagation()
+    closeList()
+  }, true)
+  row.append(ico, lab, btn)
+  g.append(row, list)
 }
 function paintPvpSettings(g) {
   paintLangRow(g)

@@ -2599,4 +2599,32 @@ html body #sheet[data-panel="badges"] .bdg-count {
 }
 
 
+/* 2.5.505: Settings language list. Rows stay at least 44px. Arabic and Dari read right to left. */
+html body #sheet .lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-height: min(420px, calc(100vh - 140px));
+  overflow: auto;
+  margin: 0 0 8px;
+}
+html body #sheet .lang-list[hidden] { display: none !important; }
+html body #sheet .lang-opt {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 16px;
+  text-align: start;
+}
+html body #sheet .lang-opt .lang-mark { flex: 0 0 1.2em; width: 1.2em; }
+html body #sheet .lang-opt[dir="rtl"] { flex-direction: row-reverse; text-align: right; }
+html body #sheet .lang-list[dir="rtl"] { direction: rtl; }
+
 
