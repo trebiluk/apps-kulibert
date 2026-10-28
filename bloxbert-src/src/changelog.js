@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Main was already 2.5.529, so this is 2.5.530. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.530', date: '2026-10-28', lines: {
+    en: ['2.5.530 — Help keys fit on one line, and one tap picks your language.'],
+    simple: ['2.5.530 — Help keys fit on one line. One tap picks your language.'],
+    uk: ['2.5.530 — Клавіші в Допомозі вміщаються в один рядок, і один дотик обирає мову.'],
+    ru: ['2.5.530 — Клавиши в Помощи умещаются в одну строку, и одно нажатие выбирает язык.'],
+    es: ['2.5.530 — Las teclas de Ayuda caben en una línea, y un toque elige tu idioma.'],
+    ar: ['2.5.530 — مفاتيح المساعدة تبقى في سطر واحد، ولمسة واحدة تختار لغتك.'],
+    'fa-AF': ['2.5.530 — کلیدهای راهنما در یک خط می‌مانند، و یک لمس زبان تو را برمی‌گزیند.'],
+    rw: ['2.5.530 — Utubuto two muri Ubufasha buguma ku murongo umwe, kandi ukanda rimwe uhitamo ururimi.'],
+    ti: ['2.5.530 — ናይ ሓገዝ መጠወቒታት ኣብ ሓንቲ መስመር ይኣትዉ፡ ሓደ ጠውቕ ድማ ቋንቋ ይመርጽ።'],
+  }},
+
   // Locked 2.5.527 was already below main (2.5.528 Bag detail), so this shipped as 2.5.529.
   // rw, ti, and fa-AF are machine drafts.
   { v: '2.5.529', date: '2026-10-28', lines: {

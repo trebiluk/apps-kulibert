@@ -398,18 +398,17 @@ for (const [lang, row] of Object.entries(COG515)) {
   Object.assign(EXTRA[lang], row)
 }
 
-// 2.5.529 what's new. Locked 2.5.527 was already below main (2.5.528), so this shipped as 2.5.529.
-// rw, ti, and fa-AF are machine drafts.
+// 2.5.530 what's new. Main was already 2.5.529. rw, ti, and fa-AF are machine drafts.
 const WN529 = {
-  en: { whatsNewBody: '2.5.529 — Switching language now changes every word on screen.' },
-  simple: { whatsNewBody: '2.5.529 — Switching language now changes every word you can see.' },
-  uk: { whatsNewBody: '2.5.529 — Зміна мови тепер змінює кожне слово на екрані.' },
-  ru: { whatsNewBody: '2.5.529 — Смена языка теперь меняет каждое слово на экране.' },
-  es: { whatsNewBody: '2.5.529 — Cambiar el idioma ahora cambia cada palabra en la pantalla.' },
-  ar: { whatsNewBody: '2.5.529 — تغيير اللغة يغيّر الآن كل كلمة على الشاشة.' },
-  'fa-AF': { whatsNewBody: '2.5.529 — تغییر زبان حالا هر واژه روی صفحه را عوض می‌کند.' },
-  rw: { whatsNewBody: '2.5.529 — Guhindura ururimi ubu bihindura ijambo ryose ku gikariro.' },
-  ti: { whatsNewBody: '2.5.529 — ቋንቋ ምቕያር ሕጂ ንኩሉ ቃል ኣብ ገጽ የቕይር።' },
+  en: { whatsNewBody: '2.5.530 — Help keys fit on one line, and one tap picks your language.' },
+  simple: { whatsNewBody: '2.5.530 — Help keys fit on one line. One tap picks your language.' },
+  uk: { whatsNewBody: '2.5.530 — Клавіші в Допомозі вміщаються в один рядок, і один дотик обирає мову.' },
+  ru: { whatsNewBody: '2.5.530 — Клавиши в Помощи умещаются в одну строку, и одно нажатие выбирает язык.' },
+  es: { whatsNewBody: '2.5.530 — Las teclas de Ayuda caben en una línea, y un toque elige tu idioma.' },
+  ar: { whatsNewBody: '2.5.530 — مفاتيح المساعدة تبقى في سطر واحد، ولمسة واحدة تختار لغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.530 — کلیدهای راهنما در یک خط می‌مانند، و یک لمس زبان تو را برمی‌گزیند.' },
+  rw: { whatsNewBody: '2.5.530 — Utubuto two muri Ubufasha buguma ku murongo umwe, kandi ukanda rimwe uhitamo ururimi.' },
+  ti: { whatsNewBody: '2.5.530 — ናይ ሓገዝ መጠወቒታት ኣብ ሓንቲ መስመር ይኣትዉ፡ ሓደ ጠውቕ ድማ ቋንቋ ይመርጽ።' },
 }
 for (const [lang, row] of Object.entries(WN529)) {
   if (STR[lang]) Object.assign(STR[lang], row)

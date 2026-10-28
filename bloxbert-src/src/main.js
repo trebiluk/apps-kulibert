@@ -25,18 +25,17 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.529 what's new. Locked 2.5.527 was already below main (2.5.528), so this shipped as 2.5.529.
-// rw, ti, and fa-AF are machine drafts.
+// 2.5.530 what's new. Main was already 2.5.529, so this is the next patch. rw, ti, and fa-AF are machine drafts.
 const WN529 = {
-  en: { whatsNewBody: '2.5.529 — Switching language now changes every word on screen.' },
-  simple: { whatsNewBody: '2.5.529 — Switching language now changes every word you can see.' },
-  uk: { whatsNewBody: '2.5.529 — Зміна мови тепер змінює кожне слово на екрані.' },
-  ru: { whatsNewBody: '2.5.529 — Смена языка теперь меняет каждое слово на экране.' },
-  es: { whatsNewBody: '2.5.529 — Cambiar el idioma ahora cambia cada palabra en la pantalla.' },
-  ar: { whatsNewBody: '2.5.529 — تغيير اللغة يغيّر الآن كل كلمة على الشاشة.' },
-  'fa-AF': { whatsNewBody: '2.5.529 — تغییر زبان حالا هر واژه روی صفحه را عوض می‌کند.' },
-  rw: { whatsNewBody: '2.5.529 — Guhindura ururimi ubu bihindura ijambo ryose ku gikariro.' },
-  ti: { whatsNewBody: '2.5.529 — ቋንቋ ምቕያር ሕጂ ንኩሉ ቃል ኣብ ገጽ የቕይር።' },
+  en: { whatsNewBody: '2.5.530 — Help keys fit on one line, and one tap picks your language.' },
+  simple: { whatsNewBody: '2.5.530 — Help keys fit on one line. One tap picks your language.' },
+  uk: { whatsNewBody: '2.5.530 — Клавіші в Допомозі вміщаються в один рядок, і один дотик обирає мову.' },
+  ru: { whatsNewBody: '2.5.530 — Клавиши в Помощи умещаются в одну строку, и одно нажатие выбирает язык.' },
+  es: { whatsNewBody: '2.5.530 — Las teclas de Ayuda caben en una línea, y un toque elige tu idioma.' },
+  ar: { whatsNewBody: '2.5.530 — مفاتيح المساعدة تبقى في سطر واحد، ولمسة واحدة تختار لغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.530 — کلیدهای راهنما در یک خط می‌مانند، و یک لمس زبان تو را برمی‌گزیند.' },
+  rw: { whatsNewBody: '2.5.530 — Utubuto two muri Ubufasha buguma ku murongo umwe, kandi ukanda rimwe uhitamo ururimi.' },
+  ti: { whatsNewBody: '2.5.530 — ናይ ሓገዝ መጠወቒታት ኣብ ሓንቲ መስመር ይኣትዉ፡ ሓደ ጠውቕ ድማ ቋንቋ ይመርጽ።' },
 }
 for (const [lang, row] of Object.entries(WN529)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
@@ -13206,9 +13205,32 @@ function paintLangRow(g) {
     word.className = 'lang-name'
     word.textContent = name
     opt.append(mark, word)
-    opt.addEventListener('click', () => pickLang(code))
+    opt.addEventListener('pointerdown', (e) => {
+      if (e.button > 0) return
+      opt._lx = e.clientX
+      opt._ly = e.clientY
+      e.stopPropagation()
+    })
+    opt.addEventListener('pointerup', (e) => {
+      if (e.button > 0) return
+      const dx = e.clientX - (opt._lx == null ? e.clientX : opt._lx)
+      const dy = e.clientY - (opt._ly == null ? e.clientY : opt._ly)
+      if (dx * dx + dy * dy > 144) return
+      chooseLang(code, e)
+    })
+    opt.addEventListener('click', (e) => chooseLang(code, e))
     list.append(opt)
     opts.push(opt)
+  }
+  function chooseLang(code, e) {
+    const now = performance.now()
+    if (now - (window.__langPickedAt || 0) < 450) return
+    window.__langPickedAt = now
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    pickLang(code)
   }
   function closeList() {
     if (!list.isConnected) return
@@ -13216,9 +13238,10 @@ function paintLangRow(g) {
     btn.setAttribute('aria-expanded', 'false')
     if (btn.isConnected) btn.focus()
   }
-  function openList() {
+  function openList(byKey) {
     list.hidden = false
     btn.setAttribute('aria-expanded', 'true')
+    if (!byKey) return
     const hit = opts.find((o) => o.dataset.lang === cur) || opts[0]
     if (hit) hit.focus()
   }
@@ -13241,7 +13264,7 @@ function paintLangRow(g) {
     const x = document.getElementById('sheet-x')
     if (x) x.setAttribute('aria-label', t('close'))
   }
-  btn.addEventListener('click', () => { if (list.hidden) openList(); else closeList() })
+  btn.addEventListener('click', (e) => { if (list.hidden) openList(!e.detail); else closeList() })
   list.addEventListener('keydown', (e) => {
     const i = opts.indexOf(document.activeElement)
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeList(); return }

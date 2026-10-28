@@ -445,7 +445,8 @@ export function mountPanels(api) {
         const keys = document.createElement('p')
         keys.className = 'gnote'
         keys.dataset.helpKeys = '1'
-        keys.textContent = api.t(touch ? 'keysHintTouch' : 'keysHint')
+        const raw = api.t(touch ? 'keysLineTouch' : 'keysLine')
+        keys.textContent = String(raw || '').replace(/\s*·\s*/g, '·')
         g.append(keys)
         const keysAgain = document.createElement('p')
         keysAgain.className = 'gnote'

@@ -2647,6 +2647,7 @@ html body #sheet .lang-opt {
   padding: 8px 12px;
   font-size: 16px;
   text-align: start;
+  touch-action: manipulation;
 }
 html body #sheet .lang-opt .lang-mark { flex: 0 0 1.2em; width: 1.2em; }
 /* 2.5.513: Arabic row only. The word starts on the right. The check stays on the left. The list stays left to right. */
@@ -2773,6 +2774,21 @@ html body:has(#sheet[data-panel="settings"]:not([hidden])) header.top {
 html body:has(#sheet[data-panel="menu"]:not([hidden])) #sheet,
 html body:has(#sheet[data-panel="settings"]:not([hidden])) #sheet {
   top: calc(var(--kb-h, 48px) + 68px) !important;
+}
+
+/* 2.5.530: Help's keys line is one line on a laptop. A phone may use two. */
+html body #sheet.menu-fit .ggrid > .gnote[data-help-keys="1"] {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+@media (max-width: 800px) {
+  html body #sheet.menu-fit .ggrid > .gnote[data-help-keys="1"] {
+    font-size: 11px !important;
+    white-space: normal !important;
+  }
 }
 
 
