@@ -3529,3 +3529,56 @@ for (const [lang, row] of Object.entries(WORDS504)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.510: Creative hotbar stays, E opens the Bag, R changes the wand. rw, ti, and fa-AF are machine drafts.
+const HOT506 = {
+  en: {
+    keysHint: 'WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one. E opens the Bag. R changes the wand. Esc opens the menu.',
+    keysLine: 'WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops · E bag · R wand · Esc menu',
+    whatsNewBody: '2.5.510 — Your Creative hotbar stays the way you set it. E always opens the Bag.',
+  },
+  simple: {
+    keysHint: 'WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one. E opens the Bag. R changes the wand. Esc opens the menu.',
+    keysLine: 'WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops · E bag · R wand · Esc menu',
+    whatsNewBody: '2.5.510 — Your Creative hotbar stays as you set it. E always opens the Bag.',
+  },
+  uk: {
+    keysHint: 'WASD крок. Shift біг. Z присід. Пробіл стрибає на 1 блок. Тримай ліву кнопку щоб ламати. Права ставить. Q кидає 1. E відкриває сумку. R змінює жезл. Esc відкриває меню.',
+    keysLine: 'WASD крок · Shift біг · Z присід · Пробіл стрибок · Ліва тримай ламає · Права ставить · Q кидає · E сумка · R жезл · Esc меню',
+    whatsNewBody: '2.5.510 — Твоя панель у Творчості лишається такою, як ти її склав. Клавіша сумки завжди її відкриває.',
+  },
+  ru: {
+    keysHint: 'WASD шаг. Shift бег. Z присед. Пробел прыгает на 1 блок. Держи левую кнопку чтобы ломать. Правая ставит. Q бросает 1. E открывает сумку. R меняет жезл. Esc открывает меню.',
+    keysLine: 'WASD шаг · Shift бег · Z присед · Пробел прыжок · Левая держи ломает · Правая ставит · Q бросает · E сумка · R жезл · Esc меню',
+    whatsNewBody: '2.5.510 — Твоя панель в Творчестве остаётся такой, как ты её собрал. Клавиша сумки всегда её открывает.',
+  },
+  es: {
+    keysHint: 'WASD camina. Shift corre. Z se agacha. Espacio salta un bloque. Mantén el clic izquierdo para romper. El derecho pone. Q suelta uno. E abre la Bolsa. R cambia la varita. Esc abre el menú.',
+    keysLine: 'WASD camina · Shift corre · Z agacha · Espacio salta · Izquierda rompe · Derecha pone · Q suelta · E bolsa · R varita · Esc menú',
+    whatsNewBody: '2.5.510 — Tu barra de Creativo se queda como la dejaste. E siempre abre la Bolsa.',
+  },
+  ar: {
+    keysHint: 'WASD للمشي. Shift للجري. Z للانحناء. المسافة تقفز مكعباً واحداً. اضغط الزر الأيسر مطولاً للكسر. الأيمن يضع. Q يُسقط واحداً. E يفتح الحقيبة. R يغيّر العصا. Esc يفتح القائمة.',
+    keysLine: 'WASD مشي · Shift جري · Z انحناء · مسافة قفز · يسار مطول يكسر · يمين يضع · Q يسقط · E حقيبة · R العصا · Esc القائمة',
+    whatsNewBody: '2.5.510 — شريطك الإبداعي يبقى كما رتبته. مفتاح الحقيبة يفتحها دائماً.',
+  },
+  'fa-AF': {
+    keysHint: 'WASD راه رفتن. Shift دویدن. Z خم شدن. فاصله یک بلاک می‌پرد. کلیک چپ را نگه دار تا بشکند. راست می‌گذارد. Q یکی می‌اندازد. E بکس را باز می‌کند. R عصا را عوض می‌کند. Esc فهرست را باز می‌کند.',
+    keysLine: 'WASD راه · Shift دو · Z خم · فاصله پرش · چپ نگه می‌شکند · راست می‌گذارد · Q می‌اندازد · E بکس · R عصا · Esc فهرست',
+    whatsNewBody: '2.5.510 — نوار خلاقانه‌ات همان طور که چیدی می‌ماند. کلید بکس همیشه آن را باز می‌کند.',
+  },
+  rw: {
+    keysHint: 'WASD kugenda. Shift kwiruka. Z kwicaramye. Umwanya usimbuka igice kimwe. Fata ibumoso uvunagure. Iburyo gushyira. Q ikubita 1. E ifungura agasaho. R ihindura inkoni. Esc ifungura ibikubiyemo.',
+    keysLine: 'WASD genda · Shift iruka · Z icaramye · Umwanya simbu · Ibumoso fata vunagura · Iburyo shyira · Q kubita · E agasaho · R inkoni · Esc ibikubiyemo',
+    whatsNewBody: '2.5.510 — Umurongo wawe wa Creative uguma uko wawushyize. E buri gihe ifungura agasaho.',
+  },
+  ti: {
+    keysHint: 'WASD ምኻድ። Shift ምጉያይ። Z ምድንጋር። Space ሓደ ብሎክ ይነጥ። ጸጋማይ ሓዝ ንምስባር። የማናይ የቐምጥ። Q ሓደ የውድቕ። E ቦርሳ ይኸፍት። R በትሪ ይቕይር። Esc ዝርዝር ይኸፍት።',
+    keysLine: 'WASD ኺድ · Shift ጉያይ · Z ድንጋር · Space ነጥ · ጸጋማይ ሓዝ ይስብር · የማናይ የቐምጥ · Q የውድቕ · E ቦርሳ · R በትሪ · Esc ዝርዝር',
+    whatsNewBody: '2.5.510 — ናይ ፈጠራ መስመርካ ከም ዝሰረዕካዮ ይጸንሕ። መጥወቒ ቦርሳ ኩሉ ግዜ ይኸፍታ።',
+  },
+}
+for (const [lang, row] of Object.entries(HOT506)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.510', date: '2026-10-28', lines: {
+    en: ["2.5.510 — Your Creative hotbar stays the way you set it. E always opens the Bag."],
+    simple: ["2.5.510 — Your Creative hotbar stays as you set it. E always opens the Bag."],
+    uk: ["2.5.510 — Твоя панель у Творчості лишається такою, як ти її склав. E завжди відкриває Сумку."],
+    ru: ["2.5.510 — Твоя панель в Творчестве остаётся такой, как ты её собрал. E всегда открывает Сумку."],
+    es: ["2.5.510 — Tu barra de Creativo se queda como la dejaste. E siempre abre la Bolsa."],
+    ar: ["2.5.510 — شريطك الإبداعي يبقى كما رتبته. E يفتح الحقيبة دائماً."],
+    'fa-AF': ["2.5.510 — نوار خلاقانه‌ات همان طور که چیدی می‌ماند. E همیشه بکس را باز می‌کند."],
+    rw: ["2.5.510 — Umurongo wawe wa Creative uguma uko wawushyize. E buri gihe ifungura agasaho."],
+    ti: ["2.5.510 — ናይ ፈጠራ መስመርካ ከም ዝሰረዕካዮ ይጸንሕ። E ኩሉ ግዜ ቦርሳ ይኸፍት።"]
+  }},
+
   // 2.5.508 what's new. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.508', date: '2026-10-28', lines: {
     en: ['2.5.508 — Pop-up messages no longer cover the boss bar.'],

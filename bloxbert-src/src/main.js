@@ -3853,6 +3853,8 @@ function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
 }
 let lastClient = { x: 0, y: 0 }
+let lastPointing = 0 // 2.5.506: mouse moved last vs keyboard focus in the Bag
+let lastKeyNav = 0
 function hudEl(el) {
   if (!el || !el.closest) return false
   const canvas = noa.container && noa.container.canvas
@@ -3865,7 +3867,7 @@ function overHud() {
   try { el = document.elementFromPoint(lastClient.x, lastClient.y) } catch (e) { return false }
   return hudEl(el)
 }
-window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
+window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (!e.pointerType || e.pointerType !== 'touch') lastPointing = performance.now(); if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
 window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
 noa.inputs.down.on('fire', () => {
   if (!leftPress || leftPress.acted) return
@@ -4397,6 +4399,7 @@ async function snapshot() {
     palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(), tabId,
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
+    creativeBar: paletteIds.slice(0, CREATIVE_HOT), // 2.5.506: Creative hotbar order, per world
     stations: stations.dump(),
     basics: clock,
     gifts,
@@ -4776,6 +4779,7 @@ async function applyDoc(doc, bootSpot) {
   protect = normProtect(src.protect)
   if (session) {
     shopsLive = false
+    applyCreativeHotbar(src && src.creativeBar) // 2.5.506: restore this world's Creative hotbar
     const slice = fromDoc(src)
     slice.playedExtra = !!(
       (src.stations && Object.keys(src.stations).length) ||
@@ -4846,6 +4850,7 @@ async function resetWorld() {
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
+  if (session) applyCreativeHotbar(null) // 2.5.506: a fresh world does not inherit the last hotbar
   if (session && session.freshStart) session.freshStart()
   else if (session && session.clearLoose) session.clearLoose()
   if (basics && basics.freshDay) basics.freshDay()
@@ -7930,24 +7935,40 @@ if (!localStorage.getItem('bloxbert-menu-hint')) showMenuHint()
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET && b[1] !== 'woodshopSide').map((b) => b[0])
-if (packOn('tech')) {
-  for (const id of [TECH.cell, TECH.line, TECH.switch, TECH.button]) {
-    if (BLOCKS.some((b) => b[0] === id) && paletteIds.indexOf(id) < 0) paletteIds.push(id)
-  try {
-    const saved = JSON.parse(localStorage.getItem('bloxbert-creative-hot') || '[]')
-    if (Array.isArray(saved)) {
-      saved.forEach((id, i) => {
-        if (i >= CREATIVE_HOT) return
-        const j = paletteIds.indexOf(Number(id))
-        if (j >= 0 && j !== i) { const prev = paletteIds[i]; paletteIds[i] = paletteIds[j]; paletteIds[j] = prev }
-      })
+const CREATIVE_HOT = 9 // 2.5.397: Creative hotbar is 9 numbered slots like Survival
+function defaultPalette() {
+  const ids = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET && b[1] !== 'woodshopSide').map((b) => b[0])
+  if (packOn('tech')) {
+    for (const id of [TECH.cell, TECH.line, TECH.switch, TECH.button]) {
+      if (BLOCKS.some((b) => b[0] === id) && ids.indexOf(id) < 0) ids.push(id)
     }
-  } catch (e) {}
+  }
+  return ids
+}
+const paletteIds = defaultPalette()
+function knownBlockId(id) {
+  const n = Number(id)
+  if (!Number.isFinite(n) || n <= 0) return 0
+  return BLOCKS.some((b) => b[0] === n) ? n : 0
+}
+function applyCreativeHotbar(saved) { // 2.5.506: unknown ids keep that slot's default block
+  const base = defaultPalette()
+  paletteIds.length = 0
+  for (const id of base) paletteIds.push(id)
+  if (!Array.isArray(saved)) return
+  for (let i = 0; i < CREATIVE_HOT && i < saved.length; i++) {
+    const id = knownBlockId(saved[i])
+    if (!id) continue
+    const j = paletteIds.indexOf(id)
+    if (j === i) continue
+    if (j >= 0) {
+      const prev = paletteIds[i]
+      paletteIds[i] = paletteIds[j]
+      paletteIds[j] = prev
+    } else paletteIds[i] = id
   }
 }
 let selectedSlot = 0
-const CREATIVE_HOT = 9 // 2.5.397: Creative hotbar is 9 numbered slots like Survival
 function bertSlotContentBox(slot) {
   const r = slot.getBoundingClientRect()
   const cs = getComputedStyle(slot)
@@ -8215,12 +8236,12 @@ function putPalette(i, id) {
   selectedSlot = n
   current = paletteIds[n]
   wandSlot = false
-  try { localStorage.setItem('bloxbert-creative-hot', JSON.stringify(paletteIds.slice(0, CREATIVE_HOT))) } catch (e) {}
   paintBar()
   const name = blockName(current)
   const label = $('current')
   if (label) label.textContent = name
   flashHeld(name)
+  try { saveSoon().catch(() => {}) } catch (e) {} // 2.5.506: the order lives in this world's save
 }
 function pick(id) {
   const i = paletteIds.indexOf(id)
@@ -8573,6 +8594,23 @@ function openBagFromHud() {
   }
   if (panels) panels.open('inventory')
 }
+function bagWellBlock(well) {
+  if (!well) return 0
+  const raw = well.dataset && well.dataset.block
+  let n = Number(raw)
+  if (n) return n
+  const node = well.querySelector && well.querySelector('[data-block]')
+  n = Number(node && node.dataset && node.dataset.block)
+  return n || 0
+}
+function bagWell(el) {
+  if (!el || !el.closest) return null
+  const well = el.closest('#sheet[data-panel="inventory"] .well')
+  if (!well || !bagWellBlock(well)) return null
+  const sheet = $('sheet')
+  if (!sheet || sheet.hidden || !sheet.contains(well)) return null
+  return well
+}
 window.addEventListener('pointerdown', (e) => {
   if (!bagUnderPointer(e)) { bagDown = false; return }
   e.preventDefault()
@@ -8853,6 +8891,7 @@ function gameKeyGuard(e) {
 document.addEventListener('keydown', gameKeyGuard, true)
 document.addEventListener('keyup', gameKeyGuard, true)
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') lastKeyNav = performance.now()
   const layer = topLayer()
   if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
     const list = focusList(layer || document)
@@ -8896,18 +8935,13 @@ function shutByKey() {
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
   if (e.key === 'Escape' || e.key === 'Tab') return
-  if (e.key === 'e' || e.key === 'E') {
-    if (e.ctrlKey || e.metaKey) return
+  if (e.key === 'e' || e.key === 'E') { // 2.5.506: E toggles the Bag even while the wand is held
+    if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return
     e.preventDefault()
-    if (shutByKey()) return
-    openMenu(true); panels.open('inventory'); return
+    openBagFromHud()
+    return
   }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
-    if (wandHeld() && $('sheet') && $('sheet').hidden) {
-      e.preventDefault()
-      if (!e.repeat) cycleWand(-1)
-      return
-    }
     if ($('sheet') && !$('sheet').hidden) return
     e.preventDefault()
     if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
@@ -8948,9 +8982,29 @@ document.addEventListener('keydown', (e) => {
     return
   }
   const n = '123456789'.indexOf(e.key)
-  if (n >= 0 && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden) {
-    if (session && session.mode === 'survival' && session.pressHot) session.pressHot(n)
-    else selectSlot(n)
+  if (n >= 0 && !tableMode && !e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    const sheet = $('sheet')
+    const bagOpen = !!(sheet && !sheet.hidden && sheet.dataset.panel === 'inventory')
+    if (bagOpen && session && session.mode !== 'survival') { // 2.5.506: hover wins only when the mouse moved last
+      const under = document.elementFromPoint(lastClient.x, lastClient.y)
+      const hovered = bagWell(under)
+      const focused = bagWell(document.activeElement)
+      const mouseLast = lastPointing > lastKeyNav
+      const tile = hovered && focused && hovered !== focused ? (mouseLast ? hovered : focused) : (mouseLast ? (hovered || focused) : (focused || hovered))
+      if (tile) {
+        const block = bagWellBlock(tile)
+        if (block) {
+          e.preventDefault()
+          e.stopPropagation()
+          putPalette(n, block)
+          toast((tile.getAttribute('aria-label') || '') + ' → ' + (n + 1))
+          return
+        }
+      }
+    } else if (sheet && sheet.hidden) {
+      if (session && session.mode === 'survival' && session.pressHot) session.pressHot(n)
+      else selectSlot(n)
+    }
   }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
@@ -8959,6 +9013,11 @@ document.addEventListener('keydown', (e) => {
   if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat) {
     const sheet = $('sheet')
     if (!(sheet && !sheet.hidden) && !(e.target && e.target.closest && e.target.closest('input, textarea'))) {
+      if (wandHeld()) { // 2.5.506: R cycles the wand. E stays the Bag.
+        e.preventDefault()
+        cycleWand(1)
+        return
+      }
       const aimed = noa.targetedBlock
       if (aimed && aimed.position && getVoxel(aimed.position[0], aimed.position[1], aimed.position[2]) === ID.conveyor) {
         e.preventDefault()
