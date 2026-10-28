@@ -398,10 +398,15 @@ export function createSession(api) {
     const n = wallet.balance()
     const el = document.getElementById('wallet-chip')
     if (el) {
-      el.hidden = mode !== 'survival'
-      el.innerHTML = '<span class="gic" data-ico="coin" aria-hidden="true"></span><bdi>' + n + ' ' + t('practice') + '</bdi>'
-      el.title = t('practiceTip')
-      el.setAttribute('aria-label', t('practiceTip'))
+      // 2.5.526: stay blank until the save has loaded, then show in Creative and Survival.
+      // The old coin + practice line was the mid-load flash.
+      if (el.dataset.cogHold === '1') {
+        el.hidden = true
+        if (el.childNodes.length) el.replaceChildren()
+      } else {
+        el.hidden = false
+        if (api.dressChip) api.dressChip()
+      }
     }
     const live = document.querySelector('#sheet[data-panel="wallet"] .balance')
     if (live) live.innerHTML = '<bdi>⚙ ' + n + ' ' + t('practice') + '</bdi>'

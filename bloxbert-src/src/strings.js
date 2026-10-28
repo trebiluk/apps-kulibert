@@ -308,10 +308,10 @@ const CREDIT_DYS = {
 }
 for (const lang of Object.keys(STR)) STR[lang].creditDyslexia = CREDIT_DYS[lang] || CREDIT_DYS.en
 
-// 2.5.525: bronze cog card. Locked 2.5.520 was below main. 2.5.524 was the start-screen ship. rw, ti, and fa-AF are machine drafts.
+// 2.5.526: cog wallet in Creative. rw, ti, and fa-AF are machine drafts.
 const COG515 = {
   en: {
-    whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.',
+    whatsNewBody: '2.5.526 — Your Cog wallet now shows in Creative too.',
     cogBronze: 'Bronze Cog',
     cogHard: 'Bronze is copper plus tin, harder than either alone.',
     cogToday: 'Today {n}/150',
@@ -320,7 +320,7 @@ const COG515 = {
     cogGold: 'Gold',
   },
   simple: {
-    whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to see why.',
+    whatsNewBody: '2.5.526 — Your Cog wallet shows in Creative too.',
     cogBronze: 'Bronze Cog',
     cogHard: 'Bronze is copper plus tin. It is harder than either one alone.',
     cogToday: 'Today {n}/150',
@@ -329,7 +329,7 @@ const COG515 = {
     cogGold: 'Gold',
   },
   uk: {
-    whatsNewBody: '2.5.525 — Твої шестерні бронзові. Торкнись гаманця, щоб дізнатися чому.',
+    whatsNewBody: '2.5.526 — Гаманець шестерень тепер є і в Творчому.',
     cogBronze: 'Бронзова шестірня',
     cogHard: 'Бронза — це мідь із оловом, твердіша за кожну окремо.',
     cogToday: 'Сьогодні {n}/150',
@@ -338,7 +338,7 @@ const COG515 = {
     cogGold: 'Золото',
   },
   ru: {
-    whatsNewBody: '2.5.525 — Твои шестерни бронзовые. Нажми на кошелёк, чтобы узнать почему.',
+    whatsNewBody: '2.5.526 — Кошелёк шестерён теперь есть и в Творческом.',
     cogBronze: 'Бронзовая шестерня',
     cogHard: 'Бронза — это медь с оловом, твёрже каждой по отдельности.',
     cogToday: 'Сегодня {n}/150',
@@ -347,7 +347,7 @@ const COG515 = {
     cogGold: 'Золото',
   },
   es: {
-    whatsNewBody: '2.5.525 — Tus Engranajes son de bronce. Toca tu monedero para saber por qué.',
+    whatsNewBody: '2.5.526 — Tu monedero de engranajes ahora también se ve en Creativo.',
     cogBronze: 'Engranaje de bronce',
     cogHard: 'El bronce es cobre más estaño, más duro que cada uno solo.',
     cogToday: 'Hoy {n}/150',
@@ -356,7 +356,7 @@ const COG515 = {
     cogGold: 'Oro',
   },
   ar: {
-    whatsNewBody: '2.5.525 — تروسك من البرونز. المس محفظتك لتعرف السبب.',
+    whatsNewBody: '2.5.526 — محفظة التروس تظهر الآن في الإبداعي أيضًا.',
     cogBronze: 'ترس برونزي',
     cogHard: 'البرونز نحاس مع قصدير، أقسى من كل واحد وحده.',
     cogToday: 'اليوم {n}/150',
@@ -365,7 +365,7 @@ const COG515 = {
     cogGold: 'ذهب',
   },
   'fa-AF': {
-    whatsNewBody: '2.5.525 — چرخ‌دنده‌هایت برنجی اند. کیف را بزن تا بدانی چرا.',
+    whatsNewBody: '2.5.526 — کیف چرخ‌دنده‌ات حالا در خلاق هم دیده می‌شود.',
     cogBronze: 'چرخ‌دندهٔ برنجی',
     cogHard: 'برنج مس با قلعی است، از هر کدام تنها سخت‌تر.',
     cogToday: 'امروز {n}/150',
@@ -374,7 +374,7 @@ const COG515 = {
     cogGold: 'طلا',
   },
   rw: {
-    whatsNewBody: '2.5.525 — Amapine yawe ni bronze. Kanda ikofi kugira ngo umenye impamvu.',
+    whatsNewBody: '2.5.526 — Ikofi y\'amapine igaragara na muri Kurema.',
     cogBronze: 'Ipini ya bronze',
     cogHard: 'Bronze ni umuringa n\'itini, ikomeye kurusha buri kimwe cyonyine.',
     cogToday: 'Uyu munsi {n}/150',
@@ -383,7 +383,7 @@ const COG515 = {
     cogGold: 'Zahabu',
   },
   ti: {
-    whatsNewBody: '2.5.525 — ኮግታትካ ናይ ነሓስ እዮም። ነቲ ቦርሳ ጠውቕ ምኽንያት ንምፍላጥ።',
+    whatsNewBody: '2.5.526 — ናይ ኮግ ቦርሳ ኣብ ፈጠራ እውን ይርአ።',
     cogBronze: 'ናይ ነሓስ ኮግ',
     cogHard: 'ነሓስን ቆርቆሮን ምውህሃድ እዩ፡ ካብ ነፍሲ ወከፍ ጥራይ ይደፍእ።',
     cogToday: 'ሎሚ {n}/150',

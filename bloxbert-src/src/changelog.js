@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.526 what's new. Locked version. Main was 2.5.525. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.526', date: '2026-10-28', lines: {
+    en: ['2.5.526 — Your Cog wallet now shows in Creative too.'],
+    simple: ['2.5.526 — Your Cog wallet shows in Creative too.'],
+    uk: ['2.5.526 — Гаманець шестерень тепер є і в Творчому.'],
+    ru: ['2.5.526 — Кошелёк шестерён теперь есть и в Творческом.'],
+    es: ['2.5.526 — Tu monedero de engranajes ahora también se ve en Creativo.'],
+    ar: ['2.5.526 — محفظة التروس تظهر الآن في الإبداعي أيضًا.'],
+    'fa-AF': ['2.5.526 — کیف چرخ‌دنده‌ات حالا در خلاق هم دیده می‌شود.'],
+    rw: ['2.5.526 — Ikofi y\'amapine igaragara na muri Kurema.'],
+    ti: ['2.5.526 — ናይ ኮግ ቦርሳ ኣብ ፈጠራ እውን ይርአ።'],
+  }},
+
   // 2.5.525 what's new. Locked 2.5.520 was already below main. 2.5.524 was the start-screen ship. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.525', date: '2026-10-28', lines: {
     en: ['2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.'],

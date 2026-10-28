@@ -25,23 +25,31 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.525 what's new wins over the 2.5.524 start-screen line.
-// Locked 2.5.520 was already below main. rw, ti, and fa-AF are machine drafts.
-const WN525 = {
-  en: { whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.' },
-  simple: { whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to see why.' },
-  uk: { whatsNewBody: '2.5.525 — Твої шестерні бронзові. Торкнись гаманця, щоб дізнатися чому.' },
-  ru: { whatsNewBody: '2.5.525 — Твои шестерни бронзовые. Нажми на кошелёк, чтобы узнать почему.' },
-  es: { whatsNewBody: '2.5.525 — Tus Engranajes son de bronce. Toca tu monedero para saber por qué.' },
-  ar: { whatsNewBody: '2.5.525 — تروسك من البرونز. المس محفظتك لتعرف السبب.' },
-  'fa-AF': { whatsNewBody: '2.5.525 — چرخ‌دنده‌هایت برنجی اند. کیف را بزن تا بدانی چرا.' },
-  rw: { whatsNewBody: '2.5.525 — Amapine yawe ni bronze. Kanda ikofi kugira ngo umenye impamvu.' },
-  ti: { whatsNewBody: '2.5.525 — ኮግታትካ ናይ ነሓስ እዮም። ነቲ ቦርሳ ጠውቕ ምኽንያት ንምፍላጥ።' },
+// 2.5.526 what's new wins over the 2.5.525 bronze line.
+// rw, ti, and fa-AF are machine drafts.
+const WN526 = {
+  en: { whatsNewBody: '2.5.526 — Your Cog wallet now shows in Creative too.' },
+  simple: { whatsNewBody: '2.5.526 — Your Cog wallet shows in Creative too.' },
+  uk: { whatsNewBody: '2.5.526 — Гаманець шестерень тепер є і в Творчому.' },
+  ru: { whatsNewBody: '2.5.526 — Кошелёк шестерён теперь есть и в Творческом.' },
+  es: { whatsNewBody: '2.5.526 — Tu monedero de engranajes ahora también se ve en Creativo.' },
+  ar: { whatsNewBody: '2.5.526 — محفظة التروس تظهر الآن في الإبداعي أيضًا.' },
+  'fa-AF': { whatsNewBody: '2.5.526 — کیف چرخ‌دنده‌ات حالا در خلاق هم دیده می‌شود.' },
+  rw: { whatsNewBody: '2.5.526 — Ikofi y\'amapine igaragara na muri Kurema.' },
+  ti: { whatsNewBody: '2.5.526 — ናይ ኮግ ቦርሳ ኣብ ፈጠራ እውን ይርአ።' },
 }
-for (const [lang, row] of Object.entries(WN525)) {
+for (const [lang, row] of Object.entries(WN526)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+function holdWalletChip() {
+  const el = document.getElementById('wallet-chip')
+  if (!el || el.dataset.cogReady === '1') return
+  el.dataset.cogHold = '1'
+  el.hidden = true
+  if (el.childNodes.length) el.replaceChildren()
+}
+holdWalletChip()
 import { inSafeZone } from './safe-zone.js'
 import { createEdits } from './world-edit.js'
 import { createLog } from './change-log.js'
@@ -793,9 +801,15 @@ function metalMini(metal, n) {
   return s
 }
 function dressWalletChip() {
-  if (!walletReady || dressingWallet) return
   const el = document.getElementById('wallet-chip')
   if (!el || !session || !session.wallet) return
+  if (el.dataset.cogHold === '1') {
+    el.hidden = true
+    if (el.childNodes.length) el.replaceChildren()
+    return
+  }
+  if (!walletReady || dressingWallet) return
+  el.hidden = false
   const n = session.wallet.balance('bronze')
   const bals = session.wallet.balances()
   const word = t('practice')
@@ -826,6 +840,17 @@ function dressWalletChip() {
   el.title = t('practiceTip')
   el.setAttribute('aria-label', t('cogBronze') + ', ' + want)
   if (cogOpen()) paintCogCard()
+}
+function releaseWalletChip() {
+  const el = document.getElementById('wallet-chip')
+  if (el) {
+    delete el.dataset.cogHold
+    el.dataset.cogReady = '1'
+  }
+  walletReady = true
+  watchWalletChip()
+  if (session && session.paintChip) session.paintChip()
+  dressWalletChip()
 }
 function watchWalletChip() {
   const el = document.getElementById('wallet-chip')
@@ -6224,13 +6249,12 @@ session = createSession({
   onMode: () => { calm.apply(); paintModeChip() },
   calmAll: () => calm.allOn(),
   setCalmAll: (on) => calm.setAll(on),
+  dressChip: () => dressWalletChip(),
 })
 session.mountEnergy(noa)
 Effects.mount(document.getElementById('energy-bar'), { toast, lang: () => LANG })
-session.paintChip()
-walletReady = true
+holdWalletChip()
 watchWalletChip()
-dressWalletChip()
 let pendingGifts = []
 let gifts = {}
 function grantSaplings() {
@@ -12467,6 +12491,7 @@ window.__bertopiaRotateCheck = function () {
 }
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
+  releaseWalletChip()
   if (allowSave) window.__bertOpen = true
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()
