@@ -25,21 +25,20 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.524 what's new. rw, ti, and fa-AF are machine drafts.
-// Assigned here so it wins: t() prefers EXTRA, and strings-extra.js still ends earlier.
-// Locked 2.5.523 was already on main, so this ship is 2.5.524.
-const WN524 = {
-  en: { whatsNewBody: '2.5.524 — The start screen is tidier and shows more of your world.' },
-  simple: { whatsNewBody: '2.5.524 — The start screen is tidier. You can see more of your world.' },
-  uk: { whatsNewBody: '2.5.524 — Початковий екран охайніший і показує більше твого світу.' },
-  ru: { whatsNewBody: '2.5.524 — Начальный экран аккуратнее и показывает больше твоего мира.' },
-  es: { whatsNewBody: '2.5.524 — La pantalla de inicio está más ordenada y muestra más de tu mundo.' },
-  ar: { whatsNewBody: '2.5.524 — شاشة البداية أصبحت أرتب وتُظهر المزيد من عالمك.' },
-  'fa-AF': { whatsNewBody: '2.5.524 — صفحهٔ آغاز مرتب‌تر است و بیشتر جهان تو را نشان می‌دهد.' },
-  rw: { whatsNewBody: '2.5.524 — Ikurikirana ry\'itangiriro rirahindutse neza kandi rerekana isi yawe cyane.' },
-  ti: { whatsNewBody: '2.5.524 — መጀመርታ ገጽ ጽሩይ ኮይኑ ዝያዳ ካብ ዓለምካ የርኢ።' },
+// 2.5.525 what's new wins over the 2.5.524 start-screen line.
+// Locked 2.5.520 was already below main. rw, ti, and fa-AF are machine drafts.
+const WN525 = {
+  en: { whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.' },
+  simple: { whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to see why.' },
+  uk: { whatsNewBody: '2.5.525 — Твої шестерні бронзові. Торкнись гаманця, щоб дізнатися чому.' },
+  ru: { whatsNewBody: '2.5.525 — Твои шестерни бронзовые. Нажми на кошелёк, чтобы узнать почему.' },
+  es: { whatsNewBody: '2.5.525 — Tus Engranajes son de bronce. Toca tu monedero para saber por qué.' },
+  ar: { whatsNewBody: '2.5.525 — تروسك من البرونز. المس محفظتك لتعرف السبب.' },
+  'fa-AF': { whatsNewBody: '2.5.525 — چرخ‌دنده‌هایت برنجی اند. کیف را بزن تا بدانی چرا.' },
+  rw: { whatsNewBody: '2.5.525 — Amapine yawe ni bronze. Kanda ikofi kugira ngo umenye impamvu.' },
+  ti: { whatsNewBody: '2.5.525 — ኮግታትካ ናይ ነሓስ እዮም። ነቲ ቦርሳ ጠውቕ ምኽንያት ንምፍላጥ።' },
 }
-for (const [lang, row] of Object.entries(WN524)) {
+for (const [lang, row] of Object.entries(WN525)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -57,6 +56,7 @@ import { paintRules, rulesWord } from './rules-editor.js'
 import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
+import { dayCap } from './econ/cogs.js'
 import { createMobs } from './mobs.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
@@ -733,7 +733,138 @@ function i18nKey(el) {
   if (name === 'keysLine') return 'keysLineTouch'
   return name
 }
+var walletReady = false
+var dressingWallet = false
+function kidSignedIn() {
+  try {
+    const who = window.KulibertWho
+    if (!who || typeof who.active !== 'function' || !who.active()) return false
+    const row = typeof who.read === 'function' ? who.read() : null
+    return !!(row && row.alias)
+  } catch (e) { return false }
+}
+function cogOpen() {
+  const card = document.getElementById('cog-card')
+  return !!(card && !card.hidden)
+}
+function todayEarned() {
+  if (!walletReady || !session || !session.wallet) return 0
+  const ledger = session.wallet.state && session.wallet.state.ledger
+  const row = dayCap(ledger, Date.now(), 'quest')
+  return row && typeof row.earned === 'number' ? row.earned : 0
+}
+function paintCogCard() {
+  const card = document.getElementById('cog-card')
+  if (!card) return
+  const title = card.querySelector('[data-cog="title"]')
+  const hard = card.querySelector('[data-cog="hard"]')
+  const today = card.querySelector('[data-cog="today"]')
+  const stay = card.querySelector('[data-cog="stay"]')
+  const x = card.querySelector('.cog-x')
+  if (title) title.textContent = t('cogBronze')
+  if (hard) hard.textContent = t('cogHard')
+  if (today) today.textContent = t('cogToday').replace('{n}', String(todayEarned()))
+  if (stay) {
+    stay.hidden = !!kidSignedIn()
+    stay.textContent = t('cogStay')
+  }
+  if (x) x.setAttribute('aria-label', t('close'))
+}
+function ensureCogStyle() {
+  if (document.getElementById('cog-card-css')) return
+  const s = document.createElement('style')
+  s.id = 'cog-card-css'
+  s.textContent = '#cog-card{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:rgba(5,8,20,.55);padding:12px;box-sizing:border-box}#cog-card[hidden]{display:none!important}#cog-card .card{position:relative;width:min(420px,100%);box-sizing:border-box;background:#0E1A22;color:#E6EEF2;border:1px solid #1F8A8A;border-radius:16px;padding:16px 16px 14px}#cog-card h2{margin:0;margin-inline-end:48px;margin-bottom:8px;font-size:1.25rem;font-weight:800}#cog-card p{margin:0 0 8px;font-size:15px;line-height:1.4}#cog-card .cog-x{position:absolute;top:8px;inset-inline-end:8px;min-width:44px;min-height:44px;width:44px;height:44px}#wallet-chip .metal-mini{display:inline-flex;align-items:center;gap:4px;margin-inline-start:6px}#wallet-chip .metal-mini .gic,#wallet-chip > .gic{width:16px;height:16px;display:flex;flex:0 0 16px}html body .kb-bar #wallet-chip{position:relative!important;z-index:4!important}'
+  document.head.append(s)
+}
+function metalMini(metal, n) {
+  const s = document.createElement('span')
+  s.className = 'metal-mini'
+  s.dataset.metal = metal
+  const g = document.createElement('span')
+  g.className = 'gic'
+  g.dataset.ico = metal === 'gold' ? 'cogGold' : 'cogSilver'
+  g.setAttribute('aria-hidden', 'true')
+  const pic = menuIcon(g.dataset.ico)
+  if (pic) g.append(pic)
+  const b = document.createElement('bd' + 'i')
+  b.textContent = n + ' ' + t(metal === 'gold' ? 'cogGold' : 'cogSilver')
+  s.append(g, b)
+  return s
+}
+function dressWalletChip() {
+  if (!walletReady || dressingWallet) return
+  const el = document.getElementById('wallet-chip')
+  if (!el || !session || !session.wallet) return
+  const n = session.wallet.balance('bronze')
+  const bals = session.wallet.balances()
+  const word = t('practice')
+  const want = n + ' ' + word
+  const silverOn = (bals.silver || 0) > 0
+  const goldOn = (bals.gold || 0) > 0
+  const mainIco = el.querySelector(':scope > .gic')
+  const mainBdi = el.querySelector(':scope > bdi')
+  const ok = !!(mainIco && mainIco.dataset.ico === 'cog' && mainIco.querySelector('canvas')
+    && mainBdi && mainBdi.textContent === want
+    && !!el.querySelector(':scope > .metal-mini[data-metal="silver"]') === silverOn
+    && !!el.querySelector(':scope > .metal-mini[data-metal="gold"]') === goldOn)
+  if (!ok) {
+    dressingWallet = true
+    const g = document.createElement('span')
+    g.className = 'gic'
+    g.dataset.ico = 'cog'
+    g.setAttribute('aria-hidden', 'true')
+    const pic = menuIcon('cog')
+    if (pic) g.append(pic)
+    const b = document.createElement('bd' + 'i')
+    b.textContent = want
+    el.replaceChildren(g, b)
+    if (silverOn) el.append(metalMini('silver', bals.silver))
+    if (goldOn) el.append(metalMini('gold', bals.gold))
+    dressingWallet = false
+  }
+  el.title = t('practiceTip')
+  el.setAttribute('aria-label', t('cogBronze') + ', ' + want)
+  if (cogOpen()) paintCogCard()
+}
+function watchWalletChip() {
+  const el = document.getElementById('wallet-chip')
+  if (!el || el.dataset.cogWatch) return
+  el.dataset.cogWatch = '1'
+  new MutationObserver(() => {
+    if (dressingWallet) return
+    dressWalletChip()
+  }).observe(el, { childList: true, characterData: true, subtree: true })
+}
+function closeCogCard() {
+  const card = document.getElementById('cog-card')
+  if (card) card.hidden = true
+  const chip = document.getElementById('wallet-chip')
+  if (chip) chip.focus()
+}
+function openCogCard() {
+  ensureCogStyle()
+  let card = document.getElementById('cog-card')
+  if (!card) {
+    card = document.createElement('div')
+    card.id = 'cog-card'
+    card.hidden = true
+    card.setAttribute('role', 'dialog')
+    card.setAttribute('aria-modal', 'true')
+    card.setAttribute('aria-labelledby', 'cog-card-title')
+    card.innerHTML = '<div class="card"><button type="button" class="icon-btn cog-x" aria-label="Close"><span class="ti" data-ico="x"></span></button><h2 id="cog-card-title" data-cog="title"></h2><p data-cog="hard"></p><p data-cog="today"></p><p data-cog="stay" hidden></p></div>'
+    document.body.append(card)
+    fillIco(card)
+    card.querySelector('.cog-x').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeCogCard() })
+    card.addEventListener('click', (e) => { if (e.target === card) closeCogCard() })
+  }
+  paintCogCard()
+  card.hidden = false
+  const x = card.querySelector('.cog-x')
+  if (x) x.focus()
+}
 function applyI18n() {
+  ensureCogStyle()
   painting = true
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
@@ -759,6 +890,7 @@ function applyI18n() {
   if (lookReady) paintViewChip()
   repaintLiveNotes()
   paintHeldHeader()
+  if (walletReady) dressWalletChip()
   painting = false
 }
 let heldHeaderOn = false
@@ -6096,6 +6228,9 @@ session = createSession({
 session.mountEnergy(noa)
 Effects.mount(document.getElementById('energy-bar'), { toast, lang: () => LANG })
 session.paintChip()
+walletReady = true
+watchWalletChip()
+dressWalletChip()
 let pendingGifts = []
 let gifts = {}
 function grantSaplings() {
@@ -7867,7 +8002,12 @@ if (pathChip) {
   })
 }
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
-$('wallet-chip').addEventListener('click', () => { toast(t('practiceTip')); openMenu(true); panels.open('wallet') })
+$('wallet-chip').addEventListener('click', (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  if (cogOpen()) closeCogCard()
+  else openCogCard()
+})
 let menuFromLock = false
 let hadLock = false
 let escUnlock = false
@@ -8821,7 +8961,7 @@ function focusList(root) {
   })
 }
 function topLayer() {
-  for (const id of ['rules-card', 'shop-safe', 'fs-hint', 'door-opt', 'inspect-card', 'about', 'sheet']) {
+  for (const id of ['cog-card', 'rules-card', 'shop-safe', 'fs-hint', 'door-opt', 'inspect-card', 'about', 'sheet']) {
     const el = document.getElementById(id)
     if (el && !el.hidden && seenBox(el)) return el
   }
@@ -8893,6 +9033,13 @@ window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
   const langList = document.getElementById('lang-list')
   if (langList && !langList.hidden) return
+  const cogCard = document.getElementById('cog-card')
+  if (cogCard && !cogCard.hidden) {
+    e.preventDefault()
+    e.stopPropagation()
+    closeCogCard()
+    return
+  }
   const rulesCard = document.getElementById('rules-card')
   if (rulesCard && !rulesCard.hidden) {
     e.preventDefault()

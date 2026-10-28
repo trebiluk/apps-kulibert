@@ -1,4 +1,5 @@
 // Bloxbert student strings. Dari (fa-AF) is Dari, not a copy of Arabic.
+import { EXTRA } from './strings-extra.js'
 export const STR = {
   en: {
     menu: 'Menu', close: 'Close', settings: 'Settings', whatsNew: "What's new", help: 'Help',
@@ -306,3 +307,93 @@ const CREDIT_DYS = {
   ti: 'ቅርጺ ፊደል ንጸገም ንባብ: OpenDyslexic (OFL 1.1).',
 }
 for (const lang of Object.keys(STR)) STR[lang].creditDyslexia = CREDIT_DYS[lang] || CREDIT_DYS.en
+
+// 2.5.525: bronze cog card. Locked 2.5.520 was below main. 2.5.524 was the start-screen ship. rw, ti, and fa-AF are machine drafts.
+const COG515 = {
+  en: {
+    whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.',
+    cogBronze: 'Bronze Cog',
+    cogHard: 'Bronze is copper plus tin, harder than either alone.',
+    cogToday: 'Today {n}/150',
+    cogStay: 'Practice Cogs stay on this device.',
+    cogSilver: 'Silver',
+    cogGold: 'Gold',
+  },
+  simple: {
+    whatsNewBody: '2.5.525 — Your Cogs are Bronze. Tap your wallet to see why.',
+    cogBronze: 'Bronze Cog',
+    cogHard: 'Bronze is copper plus tin. It is harder than either one alone.',
+    cogToday: 'Today {n}/150',
+    cogStay: 'Practice Cogs stay on this device.',
+    cogSilver: 'Silver',
+    cogGold: 'Gold',
+  },
+  uk: {
+    whatsNewBody: '2.5.525 — Твої шестерні бронзові. Торкнись гаманця, щоб дізнатися чому.',
+    cogBronze: 'Бронзова шестірня',
+    cogHard: 'Бронза — це мідь із оловом, твердіша за кожну окремо.',
+    cogToday: 'Сьогодні {n}/150',
+    cogStay: 'Тренувальні шестерні лишаються на цьому пристрої.',
+    cogSilver: 'Срібло',
+    cogGold: 'Золото',
+  },
+  ru: {
+    whatsNewBody: '2.5.525 — Твои шестерни бронзовые. Нажми на кошелёк, чтобы узнать почему.',
+    cogBronze: 'Бронзовая шестерня',
+    cogHard: 'Бронза — это медь с оловом, твёрже каждой по отдельности.',
+    cogToday: 'Сегодня {n}/150',
+    cogStay: 'Учебные шестерни остаются на этом устройстве.',
+    cogSilver: 'Серебро',
+    cogGold: 'Золото',
+  },
+  es: {
+    whatsNewBody: '2.5.525 — Tus Engranajes son de bronce. Toca tu monedero para saber por qué.',
+    cogBronze: 'Engranaje de bronce',
+    cogHard: 'El bronce es cobre más estaño, más duro que cada uno solo.',
+    cogToday: 'Hoy {n}/150',
+    cogStay: 'Los Engranajes de práctica se quedan en este aparato.',
+    cogSilver: 'Plata',
+    cogGold: 'Oro',
+  },
+  ar: {
+    whatsNewBody: '2.5.525 — تروسك من البرونز. المس محفظتك لتعرف السبب.',
+    cogBronze: 'ترس برونزي',
+    cogHard: 'البرونز نحاس مع قصدير، أقسى من كل واحد وحده.',
+    cogToday: 'اليوم {n}/150',
+    cogStay: 'تروس التدريب تبقى على هذا الجهاز.',
+    cogSilver: 'فضة',
+    cogGold: 'ذهب',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.525 — چرخ‌دنده‌هایت برنجی اند. کیف را بزن تا بدانی چرا.',
+    cogBronze: 'چرخ‌دندهٔ برنجی',
+    cogHard: 'برنج مس با قلعی است، از هر کدام تنها سخت‌تر.',
+    cogToday: 'امروز {n}/150',
+    cogStay: 'چرخ‌دنده‌های تمرین روی همین دستگاه می‌مانند.',
+    cogSilver: 'نقره',
+    cogGold: 'طلا',
+  },
+  rw: {
+    whatsNewBody: '2.5.525 — Amapine yawe ni bronze. Kanda ikofi kugira ngo umenye impamvu.',
+    cogBronze: 'Ipini ya bronze',
+    cogHard: 'Bronze ni umuringa n\'itini, ikomeye kurusha buri kimwe cyonyine.',
+    cogToday: 'Uyu munsi {n}/150',
+    cogStay: 'Amapine y\'imyitozo aguma kuri iki gikoresho.',
+    cogSilver: 'Ifeza',
+    cogGold: 'Zahabu',
+  },
+  ti: {
+    whatsNewBody: '2.5.525 — ኮግታትካ ናይ ነሓስ እዮም። ነቲ ቦርሳ ጠውቕ ምኽንያት ንምፍላጥ።',
+    cogBronze: 'ናይ ነሓስ ኮግ',
+    cogHard: 'ነሓስን ቆርቆሮን ምውህሃድ እዩ፡ ካብ ነፍሲ ወከፍ ጥራይ ይደፍእ።',
+    cogToday: 'ሎሚ {n}/150',
+    cogStay: 'ናይ ምልምማድ ኮግ ኣብዚ መሳርሒ ይጸንሕ።',
+    cogSilver: 'ብሩር',
+    cogGold: 'ወርቂ',
+  },
+}
+for (const [lang, row] of Object.entries(COG515)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

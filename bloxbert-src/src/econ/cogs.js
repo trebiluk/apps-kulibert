@@ -63,7 +63,7 @@ export function dayCap(entries, dateET, src) {
     if (groupCap && groupOf(row.src) === group) grouped += pay
   }
   const full = day >= 150 || hour >= 60 || (groupCap > 0 && grouped >= groupCap)
-  const entry = { metal: 'bronze', src: src || 'legacy', cogs: full ? 0 : 1, at: at }
+  const entry = { metal: 'bronze', src: src || 'legacy', cogs: full ? 0 : 1, at: at, earned: day, cap: 150 }
   if (full) entry.note = 'full-today'
   return entry
 }

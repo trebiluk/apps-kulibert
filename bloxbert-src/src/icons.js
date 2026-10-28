@@ -691,6 +691,8 @@ const MENU_PAL = {
   b: '#c4a574',
   k: '#0a1428',
   n: '#16264a',
+  c: '#cd7f32',
+  u: '#8a4b16',
 }
 const MENU_GLYPH = {
   bag: ['..tt....', '.tttt...', 'tttttttt', 'twwwwwwt', 'twwwwwwt', 'twtttwwt', 'tttttttt', '........'],
@@ -708,6 +710,9 @@ const MENU_GLYPH = {
   target: ['.rrrrrr.', 'r......r', 'r.oooo.r', 'r.o..o.r', 'r.oooo.r', 'r......r', '.rrrrrr.', '........'],
   shop: ['rorororo', 'rorororo', 'wwwwwwww', 'w......w', 'w..dd..w', 'w..dd..w', 'w......w', 'wwwwwwww'],
   coin: ['.oooooo.', 'owwwwwwo', 'owoaawwo', 'owwwwwwo', 'owoaawwo', 'owwwwwwo', '.oooooo.', '........'],
+  cog: ['.t.cc.t.', 'cccccccc', 'c.uuuu.c', 'cc.tt.cc', 'cc.tt.cc', 'c.uuuu.c', 'cccccccc', '.t.cc.t.'],
+  cogSilver: ['.t.ww.t.', 'wwwwwwww', 'w.nnnn.w', 'ww.tt.ww', 'ww.tt.ww', 'w.nnnn.w', 'wwwwwwww', '.t.ww.t.'],
+  cogGold: ['.t.aa.t.', 'aaaaaaaa', 'a.oooo.a', 'aa.tt.aa', 'aa.tt.aa', 'a.oooo.a', 'aaaaaaaa', '.t.aa.t.'],
   gear: ['.t.tt.t.', 'tttttttt', 't.oooo.t', 'tto..ott', 'tto..ott', 't.oooo.t', 'tttttttt', '.t.tt.t.'],
   eye: ['........', '.tttttt.', 'twwwwwwt', 'twooowwt', 'twottowt', 'twwwwwwt', '.tttttt.', '........'],
   full: ['tt....tt', 't......t', '........', '........', '........', '........', 't......t', 'tt....tt'],

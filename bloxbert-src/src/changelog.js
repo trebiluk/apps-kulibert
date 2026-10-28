@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.525 what's new. Locked 2.5.520 was already below main. 2.5.524 was the start-screen ship. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.525', date: '2026-10-28', lines: {
+    en: ['2.5.525 — Your Cogs are Bronze. Tap your wallet to learn why.'],
+    simple: ['2.5.525 — Your Cogs are Bronze. Tap your wallet to see why.'],
+    uk: ['2.5.525 — Твої шестерні бронзові. Торкнись гаманця, щоб дізнатися чому.'],
+    ru: ['2.5.525 — Твои шестерни бронзовые. Нажми на кошелёк, чтобы узнать почему.'],
+    es: ['2.5.525 — Tus Engranajes son de bronce. Toca tu monedero para saber por qué.'],
+    ar: ['2.5.525 — تروسك من البرونز. المس محفظتك لتعرف السبب.'],
+    'fa-AF': ['2.5.525 — چرخ‌دنده‌هایت برنجی اند. کیف را بزن تا بدانی چرا.'],
+    rw: ['2.5.525 — Amapine yawe ni bronze. Kanda ikofi kugira ngo umenye impamvu.'],
+    ti: ['2.5.525 — ኮግታትካ ናይ ነሓስ እዮም። ነቲ ቦርሳ ጠውቕ ምኽንያት ንምፍላጥ።'],
+  }},
+
   // Locked 2.5.523 was already on main (Daily Board, internal), so this shipped as 2.5.524.
   // rw, ti, and fa-AF are machine drafts.
   { v: '2.5.524', date: '2026-10-28', lines: {
