@@ -25,6 +25,24 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
+// 2.5.524 what's new. rw, ti, and fa-AF are machine drafts.
+// Assigned here so it wins: t() prefers EXTRA, and strings-extra.js still ends earlier.
+// Locked 2.5.523 was already on main, so this ship is 2.5.524.
+const WN524 = {
+  en: { whatsNewBody: '2.5.524 — The start screen is tidier and shows more of your world.' },
+  simple: { whatsNewBody: '2.5.524 — The start screen is tidier. You can see more of your world.' },
+  uk: { whatsNewBody: '2.5.524 — Початковий екран охайніший і показує більше твого світу.' },
+  ru: { whatsNewBody: '2.5.524 — Начальный экран аккуратнее и показывает больше твоего мира.' },
+  es: { whatsNewBody: '2.5.524 — La pantalla de inicio está más ordenada y muestra más de tu mundo.' },
+  ar: { whatsNewBody: '2.5.524 — شاشة البداية أصبحت أرتب وتُظهر المزيد من عالمك.' },
+  'fa-AF': { whatsNewBody: '2.5.524 — صفحهٔ آغاز مرتب‌تر است و بیشتر جهان تو را نشان می‌دهد.' },
+  rw: { whatsNewBody: '2.5.524 — Ikurikirana ry\'itangiriro rirahindutse neza kandi rerekana isi yawe cyane.' },
+  ti: { whatsNewBody: '2.5.524 — መጀመርታ ገጽ ጽሩይ ኮይኑ ዝያዳ ካብ ዓለምካ የርኢ።' },
+}
+for (const [lang, row] of Object.entries(WN524)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 import { inSafeZone } from './safe-zone.js'
 import { createEdits } from './world-edit.js'
 import { createLog } from './change-log.js'
@@ -740,7 +758,21 @@ function applyI18n() {
   try { paintModeChip() } catch (e) {}
   if (lookReady) paintViewChip()
   repaintLiveNotes()
+  paintHeldHeader()
   painting = false
+}
+let heldHeaderOn = false
+function paintHeldHeader() {
+  if (!heldHeaderOn) return
+  const el = document.getElementById('current')
+  if (!el) return
+  let word = t('emptySlot')
+  if (session && session.mode === 'survival') {
+    const held = session.selectedItem && session.selectedItem()
+    word = held ? ((held === 'buildWand' && t('wandShort')) || t(held)) : t('emptySlot')
+  } else if (wandSlot) word = t('wandShort') || t('buildWand')
+  else word = blockName(current)
+  el.textContent = word
 }
 let liveNotesReady = false
 function refreshSaveChip() {
@@ -7234,6 +7266,8 @@ const WAND_RGB = {
 }
 let wandMode = 'select'
 let wandSlot = false
+heldHeaderOn = true
+paintHeldHeader()
 let paintId = 0
 let wandWas = false
 let wandPainted = ''

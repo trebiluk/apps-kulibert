@@ -2714,4 +2714,65 @@ html body #hotbar#hotbar .slot.bag-tile .lbl {
   height: auto !important;
 }
 
+/* 2.5.523: the held name is one short phrase. Never clip it to "Empt…". */
+html body header.top .brand {
+  max-width: none !important;
+  overflow: visible !important;
+}
+html body header.top small.tb-lcd {
+  flex: 0 0 auto !important;
+  min-width: 12em !important;
+  width: max-content !important;
+  max-width: 22em !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  font-size: 14px !important;
+}
+
+/* 2.5.523: Click to play is one line, low, and leaves the world centre clear. */
+html body #play-chip:not([hidden]) {
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 140px !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  max-width: 40vw !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 14px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  z-index: 30 !important;
+}
+@media (max-width: 520px) {
+  html body #play-chip:not([hidden]) {
+    max-width: 80vw !important;
+    bottom: 240px !important;
+  }
+}
+@media (max-height: 520px) and (min-width: 700px) {
+  html body #play-chip:not([hidden]) {
+    top: auto !important;
+    bottom: 140px !important;
+  }
+}
+
+/* 2.5.523: the held name stays visible while the menu is open. */
+html body:has(#sheet[data-panel="menu"]:not([hidden])) header.top,
+html body:has(#sheet[data-panel="settings"]:not([hidden])) header.top {
+  display: flex !important;
+  z-index: 46 !important;
+}
+html body:has(#sheet[data-panel="menu"]:not([hidden])) #sheet,
+html body:has(#sheet[data-panel="settings"]:not([hidden])) #sheet {
+  top: calc(var(--kb-h, 48px) + 68px) !important;
+}
+
 

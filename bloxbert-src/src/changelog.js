@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  // Locked 2.5.523 was already on main (Daily Board, internal), so this shipped as 2.5.524.
+  // rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.524', date: '2026-10-28', lines: {
+    en: ['2.5.524 — The start screen is tidier and shows more of your world.'],
+    simple: ['2.5.524 — The start screen is tidier. You can see more of your world.'],
+    uk: ['2.5.524 — Початковий екран охайніший і показує більше твого світу.'],
+    ru: ['2.5.524 — Начальный экран аккуратнее и показывает больше твоего мира.'],
+    es: ['2.5.524 — La pantalla de inicio está más ordenada y muestra más de tu mundo.'],
+    ar: ['2.5.524 — شاشة البداية أصبحت أرتب وتُظهر المزيد من عالمك.'],
+    'fa-AF': ['2.5.524 — صفحهٔ آغاز مرتب‌تر است و بیشتر جهان تو را نشان می‌دهد.'],
+    rw: ['2.5.524 — Ikurikirana ry\'itangiriro rirahindutse neza kandi rerekana isi yawe cyane.'],
+    ti: ['2.5.524 — መጀመርታ ገጽ ጽሩይ ኮይኑ ዝያዳ ካብ ዓለምካ የርኢ።'],
+  }},
+
   // Internal only. dev:true so paintLog skips it. No kid-visible line.
   // Locked 2.5.521 was already below main (2.5.522), so this shipped as 2.5.523.
   { v: '2.5.523', date: '2026-10-28', dev: true, lines: {
