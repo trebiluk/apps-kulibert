@@ -335,6 +335,119 @@ function layoutLane() {
   lane.style.left = left + 'px'
   lane.style.right = right + 'px'
   capLane()
+  seatToasts()
+}
+let seatingToasts = false
+function shownBottom(node) {
+  if (!node || node.hidden) return 0
+  const cs = getComputedStyle(node)
+  if (cs.display === 'none' || cs.visibility === 'hidden') return 0
+  const r = node.getBoundingClientRect()
+  if (r.width < 2 || r.height < 2) return 0
+  if (r.bottom <= 0 || r.top >= window.innerHeight) return 0
+  return r.bottom
+}
+function setImp(el, prop, value) {
+  if (el.style.getPropertyValue(prop) === value && el.style.getPropertyPriority(prop) === 'important') return
+  el.style.setProperty(prop, value, 'important')
+}
+// Toasts start 8px under the lowest of the top bar, the chip lane and the boss bar.
+// The boss bar (lane z-index 26) paints above them (z-index 24).
+function seatToasts() {
+  if (seatingToasts) return
+  const toast = document.getElementById('toast')
+  const zap = document.getElementById('c2-zap')
+  const up = (el) => !!(el && el.isConnected && !el.hidden && getComputedStyle(el).display !== 'none' && el.dataset.sheetDock !== '1')
+  if (!up(toast) && !up(zap)) return
+  seatingToasts = true
+  try {
+    const floor = Math.round(Math.max(
+      shownBottom(document.querySelector('header.top')),
+      shownBottom(document.getElementById('chip-lane')),
+      shownBottom(document.getElementById('boss-bar'))
+    ) + 8)
+    let ceil = window.innerHeight - 8
+    const hot = document.getElementById('hotbar')
+    if (hot && !hot.hidden) {
+      const hr = hot.getBoundingClientRect()
+      if (hr.height > 8 && hr.top > 40) ceil = Math.min(ceil, hr.top - 8)
+    }
+    const wand = document.getElementById('wand-pill')
+    if (wand && !wand.hidden) {
+      const wr = wand.getBoundingClientRect()
+      if (wr.height > 8 && wr.width > 8) ceil = Math.min(ceil, wr.top - 8)
+    }
+    for (const el of [toast, zap]) {
+      if (!up(el)) continue
+      setImp(el, 'position', 'fixed')
+      setImp(el, 'left', '50%')
+      setImp(el, 'right', 'auto')
+      setImp(el, 'bottom', 'auto')
+      setImp(el, 'transform', 'translateX(-50%)')
+      setImp(el, 'margin', '0')
+      setImp(el, 'z-index', '24')
+      setImp(el, 'max-width', 'min(420px, calc(100vw - 16px))')
+      setImp(el, 'top', floor + 'px')
+      const key = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120)
+      if (el.dataset.toastKey !== key) {
+        el.dataset.toastKey = key
+        el.classList.remove('toast-one')
+        delete el.dataset.toastH
+        if (el.dataset.toastCut === '1') {
+          el.removeAttribute('aria-label')
+          el.dataset.toastCut = ''
+        }
+      }
+      let r = el.getBoundingClientRect()
+      const gap = ceil - floor
+      const natural = Number(el.dataset.toastH || 0)
+      if (el.classList.contains('toast-one') && natural && gap >= natural + 1) {
+        el.classList.remove('toast-one')
+        delete el.dataset.toastH
+        if (el.dataset.toastCut === '1') {
+          el.removeAttribute('aria-label')
+          el.dataset.toastCut = ''
+        }
+        r = el.getBoundingClientRect()
+      }
+      if (!el.classList.contains('toast-one') && r.bottom > ceil + 0.5) {
+        el.dataset.toastH = String(Math.ceil(r.height))
+        el.classList.add('toast-one')
+        const full = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim()
+        if (full) {
+          el.setAttribute('aria-label', full)
+          el.dataset.toastCut = '1'
+        }
+        r = el.getBoundingClientRect()
+        if (r.bottom > ceil + 0.5) setImp(el, 'top', Math.max(floor, Math.round(ceil - r.height)) + 'px')
+      }
+    }
+  } finally {
+    seatingToasts = false
+  }
+}
+function watchToasts() {
+  if (watchToasts.armed || !window.MutationObserver) return
+  watchToasts.armed = true
+  let arm = 0
+  const queue = () => {
+    if (arm || seatingToasts) return
+    arm = requestAnimationFrame(() => { arm = 0; seatToasts() })
+  }
+  const mo = new MutationObserver(() => {
+    const zap = document.getElementById('c2-zap')
+    if (zap && !zap.dataset.toastWatch) {
+      zap.dataset.toastWatch = '1'
+      mo.observe(zap, { attributes: true, attributeFilter: ['style', 'class', 'hidden'], childList: true })
+    }
+    queue()
+  })
+  const toast = document.getElementById('toast')
+  if (toast) mo.observe(toast, { attributes: true, attributeFilter: ['style', 'class', 'hidden'], childList: true })
+  mo.observe(document.body, { childList: true })
+  const lane = document.getElementById('chip-lane')
+  if (lane) mo.observe(lane, { attributes: true, subtree: true, attributeFilter: ['style', 'class', 'hidden'] })
+  window.addEventListener('resize', queue)
 }
 function ensureSafeChip() {
   let chip = document.getElementById('safe-chip')
@@ -5743,8 +5856,9 @@ function paintSaveChip(state) {
   if (saved) paintSaveChip.hideT = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1500)
 }
 function toast(text, act) {
-  if (calm) { calm.say(text, act); return }
-  showToast(text, { act })
+  if (calm) calm.say(text, act)
+  else showToast(text, { act })
+  seatToasts()
 }
 let woodTipOn = false
 function clearWoodTip() {
@@ -11245,11 +11359,11 @@ function ensureBossBar() {
 let lastBossPhase = 0
 function paintBossBar() {
   const bar = ensureBossBar()
-  if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; capLane(); return }
-  if (mobs && mobs.blockedWorld && mobs.blockedWorld()) { bar.style.display = 'none'; capLane(); return }
+  if (inSafeZone && playerPos && inSafeZone(playerPos()[0], playerPos()[2])) { bar.style.display = 'none'; capLane(); seatToasts(); return }
+  if (mobs && mobs.blockedWorld && mobs.blockedWorld()) { bar.style.display = 'none'; capLane(); seatToasts(); return }
   const list = mobs && mobs.list ? mobs.list() : []
   const boss = list.find(m => m.kind === 'overseer')
-  if (!boss) { bar.style.display = 'none'; capLane(); return }
+  if (!boss) { bar.style.display = 'none'; capLane(); seatToasts(); return }
   const phase = boss.phase || 1
   const phaseWord = phase === 1 ? (t ? t('phase1') : 'Stamp coming') : phase === 2 ? (t ? t('phase2') : 'Conveyor') : (t ? t('phase3') : 'Vent left')
   const weak = boss.weakOpen && performance.now() < boss.weakOpen
@@ -11263,6 +11377,7 @@ function paintBossBar() {
   if (phase !== lastBossPhase) lastBossPhase = phase
   // 2.5.376: bar may have grown (weak-point line), so re-check the Stamp warning against it
   if (mobs && mobs.fitStamp) mobs.fitStamp()
+  seatToasts()
 }
 
 noa.on('beforeRender', (dt) => {
@@ -11488,6 +11603,7 @@ if (window.MutationObserver) {
 laneAdd(document.getElementById('save-chip'), 5)
 laneAdd(document.getElementById('inspect-chip'), 3)
 laneAdd(document.getElementById('held-chip'), 6)
+watchToasts()
 refit()
 
 const FSKEY = 'kulibert-fullscreen'

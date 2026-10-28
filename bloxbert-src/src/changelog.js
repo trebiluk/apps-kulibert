@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.508 what's new. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.508', date: '2026-10-28', lines: {
+    en: ['2.5.508 — Pop-up messages no longer cover the boss bar.'],
+    simple: ['2.5.508 — Pop-up messages stay off the boss bar.'],
+    uk: ['2.5.508 — Спливні повідомлення більше не закривають смугу боса.'],
+    ru: ['2.5.508 — Всплывающие сообщения больше не закрывают полосу босса.'],
+    es: ['2.5.508 — Los avisos emergentes ya no tapan la barra del jefe.'],
+    ar: ['2.5.508 — الرسائل المنبثقة لم تعد تغطي شريط الزعيم.'],
+    'fa-AF': ['2.5.508 — پیام‌های بازشو دیگر نوار رئیس را نمی‌پوشانند.'],
+    rw: ['2.5.508 — Ubutumwa bugaragara ntibukingira umurongo w\'umukuru.'],
+    ti: ['2.5.508 — ዝወጽኡ መልእኽቲ ነቲ ናይ ኣለቓ መስመር ደጊም ኣይሸፍንዎን።'],
+  }},
+
   // rw, ti, fa-AF are machine drafts.
   { v: '2.5.505', date: '2026-10-28', lines: {
     en: ['2.5.505 — Pick your language from a list. Your game mode stays the same.'],

@@ -1821,6 +1821,31 @@ html[data-kp-motion="less"] #chip-lane > * { transition: none; }
     transform: none !important;
   }
 }
+/* 2.5.508: a pop-up starts under the lane. The boss bar paints above it, and stays two lines on a phone. */
+html body #chip-lane { z-index: 26 !important; }
+html body #toast,
+html body #c2-zap { z-index: 24 !important; }
+html body #chip-lane > #boss-bar { position: relative !important; z-index: 3 !important; }
+html body #toast.toast-one:not([hidden]),
+html body #c2-zap.toast-one {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: min(420px, calc(100vw - 16px)) !important;
+}
+html body #c2-zap.toast-one { display: flex !important; }
+html body #c2-zap.toast-one > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  html body #chip-lane > #boss-bar {
+    max-height: calc(2.5em + 32px) !important;
+    overflow: hidden !important;
+  }
+}
 /* 2.5.426: students see 4 menu groups; only a teacher device has a 5th */
 @media (min-width: 700px) {
   html body #sheet[data-panel="menu"] .kd-groups:not(:has(.kd-teacher)) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
