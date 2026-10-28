@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  // Internal only. dev:true so paintLog skips it. No kid-visible line.
+  // Locked 2.5.521 was already below main (2.5.522), so this shipped as 2.5.523.
+  { v: '2.5.523', date: '2026-10-28', dev: true, lines: {
+    en: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    simple: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    uk: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    ru: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    es: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    ar: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    'fa-AF': ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    rw: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+    ti: ['2.5.523 — Daily Board config. Not shown in the game yet.'],
+  }},
+
   // 2.5.522 what's new. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.522', date: '2026-10-28', lines: {
     en: ['2.5.522 — Goals now name the exact thing to make, and where.'],
