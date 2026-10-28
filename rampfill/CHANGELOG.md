@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.26
+
+RF 1.0.26 — After a win, pick your next level.
+
 ## RF 1.0.25
 
 RF 1.0.25 — Pick your level. Win one to unlock the next.

@@ -1,4 +1,9 @@
 # Ramp & Fill FIX-LIST
+Stage 26. Version locked: RF 1.0.26.
+
+- [x] **win-levels:** After a win, Levels (icon and word, at least 48px) opens the picker. Next level shows when the next level is unlocked. Home still goes to the Hub.
+- [x] **level-1-guide:** Level 1 keeps a faint dotted ramp on the board. Help still says to draw like the dotted guide.
+
 Stage 25. Version locked: RF 1.0.25.
 
 - [x] **level-picker:** Levels opens a picker. Level 1 is open. The next level unlocks only after a win. Locked tiles show a lock icon and the word Locked. Tiles are at least 48px and keyboard focusable. Unlocks stay in localStorage.

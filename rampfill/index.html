@@ -9,14 +9,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <meta name="theme-color" content="#E7ECF0" />
-  <title>Ramp & Fill — RF 1.0.25</title>
+  <title>Ramp & Fill — RF 1.0.26</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=Syne:wght@700;800&display=swap" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
 
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.25" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.26" />
 
   <script src="/shared/hub-staff-auth.js?v=RF-1.0.9"></script>
 
@@ -44,7 +44,7 @@
       <span class="brand">Ramp & Fill</span>
 
       <span class="level-pill" id="level-name">First ramp</span>
-      <span class="chip" id="ver-plate">RF 1.0.25</span>
+      <span class="chip" id="ver-plate">RF 1.0.26</span>
       <button type="button" id="pause-btn" class="ghost-btn">
 
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
@@ -58,7 +58,7 @@
     <div id="home" class="home">
       <header class="pl-top">
         <div class="pl-brand">
-          <p class="pl-kicker">RF 1.0.25</p>
+          <p class="pl-kicker">RF 1.0.26</p>
           <h1>Ramp & Fill</h1>
           <p class="pl-tag" data-k="homeTag">Draw a line. Pour the grains. Fill the cup.</p>
         </div>
@@ -344,6 +344,22 @@
 
         </button>
 
+        <button type="button" id="win-levels">
+
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
+          <span data-k="levels">Levels</span>
+
+        </button>
+
+        <button type="button" id="win-next">
+
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 H17 M13 6 L19 12 L13 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
+          <span data-k="nextLevel">Next level</span>
+
+        </button>
+
       </div>
 
     </div>
@@ -426,6 +442,14 @@
 
         <div class="pair">
 
+          <button type="button" id="end-levels">
+
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
+            <span data-k="levels">Levels</span>
+
+          </button>
+
           <button type="button" id="next-level-btn" data-k="nextLevel">Next level</button>
 
           <button type="button" id="again-btn" data-k="beat">Beat your fill</button>
@@ -471,7 +495,7 @@
     <div class="menu-head">
 
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.25</span>
+      <span class="ver-plate">RF 1.0.26</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
 
     </div>
@@ -479,7 +503,7 @@
     <section id="whats-new">
 
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.25 — Pick your level. Win one to unlock the next.</p>
+      <p id="whats-body">RF 1.0.26 — After a win, pick your next level.</p>
     </section>
 
     <section id="rf-help">
@@ -571,12 +595,12 @@
     </section>
 
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.25" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.26" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
 
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
 
-  <script src="./app.js?v=RF-1.0.25"></script>
-  <script src="./pourlines.js?v=RF-1.0.25"></script>
+  <script src="./app.js?v=RF-1.0.26"></script>
+  <script src="./pourlines.js?v=RF-1.0.26"></script>
 </body>
 
 </html>

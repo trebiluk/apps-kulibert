@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.25 — Pick your level. Win one to unlock the next. No trackers. */
+/* Ramp & Fill RF 1.0.26 — After a win, pick your next level. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.25";
+  var VERSION = "RF 1.0.26";
   var testScriptAsked = false;
   function staffUnlocked() {
     try {
@@ -90,7 +90,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.25 — Pick your level. Win one to unlock the next.",
+      whats: "RF 1.0.26 — After a win, pick your next level.",
       levels: "Levels", home: "Home", homeTag: "Draw a line. Pour the grains. Fill the cup.",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -172,7 +172,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.25 — Обери рівень. Виграй один, щоб відкрити наступний.",
+      whats: "RF 1.0.26 — Після перемоги обери наступний рівень.",
       levels: "Рівні", home: "Дім", homeTag: "Намалюй лінію. Налий зерна. Наповни чашку.",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -252,7 +252,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.25 — Выбери уровень. Выиграй один, чтобы открыть следующий.",
+      whats: "RF 1.0.26 — После победы выбери следующий уровень.",
       levels: "Уровни", home: "Дом", homeTag: "Нарисуй линию. Налей зёрна. Наполни чашку.",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -332,7 +332,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.25 — Elige tu nivel. Gana uno para abrir el siguiente.",
+      whats: "RF 1.0.26 — Después de ganar, elige el siguiente nivel.",
       levels: "Niveles", home: "Inicio", homeTag: "Dibuja una línea. Vierte los granos. Llena la taza.",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -412,7 +412,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.25 — اختر مستواك. اربح واحدًا لفتح التالي.",
+      whats: "RF 1.0.26 — بعد الفوز، اختر المستوى التالي.",
       levels: "المراحل", home: "البداية", homeTag: "ارسم خطًا. اسكب الحبوب. املأ الكوب.",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -492,7 +492,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.25 — مرحله‌ات را انتخاب کن. یکی را ببر تا بعدی باز شود.",
+      whats: "RF 1.0.26 — بعد از برد، مرحلهٔ بعد را انتخاب کن.",
       levels: "مرحله‌ها", home: "خانه", homeTag: "یک خط بکش. دانه‌ها را بریز. پیاله را پر کن.",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -572,7 +572,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.25 — Hitamo urwego. Tsinda rumwe ukingure urukurikira.",
+      whats: "RF 1.0.26 — Nyuma yo gutsinda, hitamo urwego rukurikira.",
       levels: "Ingero", home: "Ahabanza", homeTag: "Shushanya umurongo. Suka ibinyanye. Uzuza igikombe.",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -652,7 +652,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.25 — ደረጃኻ ምረጽ። ሓደ ምስ ዓወትካ ዝቕጽል ይኽፈት።",
+      whats: "RF 1.0.26 — ድሕሪ ዓወት ዝቕጽል ደረጃ ምረጽ።",
       levels: "ደረጃታት", home: "መጀመርታ", homeTag: "መስመር ስኣል። እኽሊ ቀድሕ። ኽባያ ምላእ።",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -701,7 +701,7 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.25 — Pick your level. Win one to unlock the next.",
+      whats: "RF 1.0.26 — After a win, pick your next level.",
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
       helpClear: "When you win, stars show one by one. Next is ready.",
@@ -862,6 +862,26 @@
     return "lesson";
   }
   function matName() { return level === 4 ? "gel" : level === 3 ? "water" : "grains"; }
+  function syncNextLevel() {
+    var open = !dailyOn && level < 5 && (level + 1) <= unlocked;
+    var winNext = document.getElementById("win-next");
+    if (winNext) winNext.hidden = !open;
+    return open;
+  }
+  function goNextLevel() {
+    if (!syncNextLevel()) return;
+    ended = false;
+    pouring = false;
+    paused = false;
+    var card = document.getElementById("endcard");
+    var bar = document.getElementById("donebar");
+    var pause = document.getElementById("pause-layer");
+    if (card) card.hidden = true;
+    if (bar) bar.hidden = true;
+    if (pause) pause.hidden = true;
+    setLevel(level + 1);
+    syncModal();
+  }
   function paintEndCopy() {
     var card = document.getElementById("endcard");
     if (!card || card.hidden) return;
@@ -869,6 +889,7 @@
     var note = document.getElementById("end-note");
     var nextBtn = document.getElementById("next-level-btn");
     var hubBtn = document.getElementById("hub-btn");
+    var nextOpen = !dailyOn && level < 5 && (level + 1) <= unlocked;
     if (title) title.textContent = testLoseOn ? t("testLose") : t("done" + level);
     if (level >= 5) {
       if (note) { note.hidden = false; note.textContent = t("noMore"); }
@@ -876,9 +897,10 @@
       if (hubBtn) hubBtn.hidden = false;
     } else {
       if (note) { note.hidden = true; note.textContent = ""; }
-      if (nextBtn) nextBtn.hidden = false;
+      if (nextBtn) nextBtn.hidden = !nextOpen;
       if (hubBtn) hubBtn.hidden = true;
     }
+    syncNextLevel();
     var tag = LEVEL_TAG[level - 1] || "slope";
     var key = tag === "gel" ? "teachGel" : tag === "rate" ? "teachRate" : "teachSlope";
     var line = document.getElementById("end-lesson-text");
@@ -2207,6 +2229,7 @@
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
+      syncNextLevel();
       paintEndStars();
       var nextClear = document.getElementById("next-btn");
       if (nextClear) nextClear.focus();
@@ -2486,6 +2509,15 @@
   function openLevels() {
     stackFromHome = false;
     if (mode === "stack") leaveStack();
+    ended = false;
+    pouring = false;
+    paused = false;
+    var card = document.getElementById("endcard");
+    var bar = document.getElementById("donebar");
+    var pause = document.getElementById("pause-layer");
+    if (card) card.hidden = true;
+    if (bar) bar.hidden = true;
+    if (pause) pause.hidden = true;
     document.body.classList.remove("at-home");
     document.body.classList.remove("at-ideas");
     document.body.classList.remove("at-ref");
@@ -2494,6 +2526,7 @@
     if (picker) picker.hidden = false;
     paintPicker();
     paintText();
+    syncModal();
     var first = picker && picker.querySelector(".pick-tile:not(.is-locked)");
     if (first) first.focus();
   }
@@ -3165,7 +3198,19 @@
     ctx.fillRect(0, 0, viewW, viewH);
     ctx.fillStyle = "#C4A574";
     ctx.fillRect(0, viewH - 14, viewW, 14);
-    if (ghost.length && performance.now() < ghostUntil) {
+    if (level === 1 && !dailyOn && !ghost.length && cupList.length) buildGhost();
+    if (ghost.length && level === 1 && !dailyOn) {
+      ctx.save();
+      ctx.globalAlpha = 0.55;
+      ctx.strokeStyle = "#6B5344";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([2, 9]);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ghost.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
+      ctx.stroke();
+      ctx.restore();
+    } else if (ghost.length && performance.now() < ghostUntil) {
       ctx.save();
       ctx.strokeStyle = "#3E6B4F";
       ctx.lineWidth = 4;
@@ -3430,7 +3475,13 @@
   });
   document.getElementById("repour-btn").addEventListener("click", repour);
   document.getElementById("next-btn").addEventListener("click", finishNext);
-  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 5) setLevel(level + 1); });
+  document.getElementById("next-level-btn").addEventListener("click", goNextLevel);
+  var winLevels = document.getElementById("win-levels");
+  var endLevels = document.getElementById("end-levels");
+  var winNext = document.getElementById("win-next");
+  if (winLevels) winLevels.addEventListener("click", openLevels);
+  if (endLevels) endLevels.addEventListener("click", openLevels);
+  if (winNext) winNext.addEventListener("click", goNextLevel);
   document.getElementById("again-btn").addEventListener("click", beatFill);
   document.getElementById("fewer-btn").addEventListener("click", beatFill);
   document.getElementById("hub-btn").addEventListener("click", function () { window.location.href = "/"; });
