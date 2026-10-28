@@ -57,6 +57,22 @@ for (const [lang, row] of Object.entries(WN540)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.541 what's new. Locked 2.5.534 was already below main (2.5.540). rw, ti, and fa-AF are machine drafts.
+const WN541 = {
+  en: { whatsNewBody: '2.5.541 — The Menu opens on the first click and speaks your language.' },
+  simple: { whatsNewBody: '2.5.541 — The Menu opens on the first click. It uses your language.' },
+  uk: { whatsNewBody: '2.5.541 — Меню відкривається з першого клацання і говорить твоєю мовою.' },
+  ru: { whatsNewBody: '2.5.541 — Меню открывается с первого щелчка и говорит на твоём языке.' },
+  es: { whatsNewBody: '2.5.541 — El Menú se abre al primer clic y habla tu idioma.' },
+  ar: { whatsNewBody: '2.5.541 — القائمة تُفتح من أول نقرة وتتحدث بلغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.541 — فهرست از اولین کلیک باز می‌شود و به زبان تو حرف می‌زند.' },
+  rw: { whatsNewBody: '2.5.541 — Menyu ifunguka ku gukanda kwa mbere kandi ivuga ururimi rwawe.' },
+  ti: { whatsNewBody: '2.5.541 — ዝርዝር ካብ ቀዳማይ ጠውቃይ ይኸፍትን ብቋንቋኻ ይዛረብን።' },
+}
+for (const [lang, row] of Object.entries(WN541)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function holdWalletChip() {
   const el = document.getElementById('wallet-chip')
   if (!el || el.dataset.cogReady === '1') return
@@ -954,6 +970,14 @@ function applyI18n() {
   painting = false
 }
 function paintMenuLabels() {
+  const drawer = document.getElementById('drawer')
+  if (drawer) {
+    const name = t('drawerName')
+    if (name && name !== 'drawerName') {
+      drawer.setAttribute('aria-label', name)
+      if (drawer.hasAttribute('title')) drawer.setAttribute('title', name)
+    }
+  }
   const word = t('menu')
   if (!word || word === 'menu') return
   for (const id of ['game-menu', 'menu-btn']) {
@@ -8081,9 +8105,10 @@ function armCraft() {
   window.__craftReady = true
 }
 $('game-menu').setAttribute('aria-label', t('menu'))
-$('game-menu').addEventListener('click', () => {
+$('game-menu').addEventListener('click', (e) => {
+  e.stopPropagation()
   rememberOpener(document.querySelector('.kb-bar .kb-menu') || $('game-menu'))
-  openMenu(true)
+  openMenu(!menuSheetOpen())
 })
 const pathChip = $('path-chip')
 if (pathChip) {
@@ -8797,11 +8822,31 @@ function sealPanels() {
     })
   }
 }
+function menuSheetOpen() {
+  const sheet = document.getElementById('sheet')
+  return !!(sheet && !sheet.hidden)
+}
+function onBarMenu(e) {
+  e.stopPropagation()
+  e.stopImmediatePropagation()
+  const btn = e.currentTarget
+  rememberOpener(btn)
+  openMenu(!menuSheetOpen())
+  if (btn && btn.setAttribute) btn.setAttribute('aria-expanded', menuSheetOpen() ? 'true' : 'false')
+}
+function liftMenuButton() {
+  if (document.getElementById('bert-menu-hit')) return
+  const css = document.createElement('style')
+  css.id = 'bert-menu-hit'
+  css.textContent = 'html body .kb-bar{z-index:90!important;pointer-events:auto!important}html body .kb-bar .kb-menu{position:relative!important;z-index:6!important;pointer-events:auto!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar{display:flex!important;pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;z-index:90!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important;display:inline-flex!important}'
+  document.head.append(css)
+}
 function bindBarMenu() {
+  liftMenuButton()
   const btn = document.querySelector('.kb-bar .kb-menu')
   if (!btn || btn.dataset.bertMenu === '1') return
   btn.dataset.bertMenu = '1'
-  btn.addEventListener('click', () => { rememberOpener(btn); openMenu(true) })
+  btn.addEventListener('click', onBarMenu, true)
 }
 bindBarMenu()
 setTimeout(bindBarMenu, 300)
@@ -9259,6 +9304,17 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Tab' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') lastKeyNav = performance.now()
   const layer = topLayer()
   if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+    const sheet = document.getElementById('sheet')
+    const menuBtn = document.querySelector('.kb-bar .kb-menu')
+    const ae = document.activeElement
+    const canvas = noa.container && (noa.container.canvas || noa.container.element)
+    const atStart = !ae || ae === document.body || ae === document.documentElement || ae.id === 'play-chip' || ae === canvas
+    if (!e.shiftKey && menuBtn && seenBox(menuBtn) && (!sheet || sheet.hidden) && atStart) {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      focusChoice(menuBtn)
+      return
+    }
     const list = focusList(layer || document)
     if (!list.length) return
     e.preventDefault()
@@ -9947,9 +10003,93 @@ function hudAt(e) {
   return top
 }
 const stageEl = document.getElementById('stage')
+// 2.5.541: pointer lock retargets the click onto #stage and zeroes clientX/clientY.
+// Chrome still emits a pointermove pair (+x,+y then -x,-y) for the real aim.
+// Do not preventDefault on the Menu pointerdown, or the click never arrives.
+let menuAim = null
+let movePending = null
+let menuClickAt = 0
+function menuButtonOf(el) {
+  if (!el || !el.closest) return null
+  if (el.closest('.kb-bar')) {
+    const hit = el.closest('.kb-menu')
+    if (hit) return hit
+  }
+  return el.closest('#game-menu, #menu-btn')
+}
+function menuHitAt(x, y) {
+  const btn = document.querySelector('.kb-bar .kb-menu') || document.getElementById('game-menu')
+  if (!btn) return null
+  const r = btn.getBoundingClientRect()
+  if (r.width < 8 || r.height < 8) return null
+  if (x >= r.left && y >= r.top && x <= r.right && y <= r.bottom) return btn
+  return null
+}
+function noteLockMove(e) {
+  if (!document.pointerLockElement || TOUCH_UI) return
+  const mx = e.movementX || 0
+  const my = e.movementY || 0
+  if (!mx && !my) return
+  if (movePending && performance.now() - movePending.t > 300) movePending = null
+  if (movePending && Math.abs(movePending.x + mx) <= 1 && Math.abs(movePending.y + my) <= 1) {
+    const hit = menuHitAt(movePending.x, movePending.y) || menuHitAt(mx, my)
+    const justClicked = performance.now() - menuClickAt < 120
+    menuAim = hit ? { btn: hit, t: performance.now() } : null
+    movePending = null
+    if (hit && justClicked) {
+      menuClickAt = 0
+      const box = hit.getBoundingClientRect()
+      const ev = new MouseEvent('click', { bubbles: true, cancelable: true, clientX: box.left + 8, clientY: box.top + 8, button: 0 })
+      ev.bertMenuFwd = true
+      hit.dispatchEvent(ev)
+    }
+    return
+  }
+  movePending = { x: mx, y: my, t: performance.now() }
+}
+function freshMenuAim() {
+  if (!menuAim) return null
+  if (performance.now() - menuAim.t > 500) { menuAim = null; return null }
+  return menuAim.btn
+}
 function keepHudClick(e) {
+  if (e.bertMenuFwd) return
+  if (menuButtonOf(e.target)) return
+  if (document.pointerLockElement && !TOUCH_UI) {
+    if (e.type === 'click') {
+      menuClickAt = performance.now()
+      if (movePending) {
+        const pendingHit = menuHitAt(movePending.x, movePending.y) || menuHitAt(-movePending.x, -movePending.y)
+        if (pendingHit) menuAim = { btn: pendingHit, t: performance.now() }
+      }
+    }
+    const lockedMenu = freshMenuAim()
+    if (lockedMenu) {
+      e.stopPropagation()
+      if (e.type === 'click') {
+        menuAim = null
+        movePending = null
+        menuClickAt = 0
+        const r = lockedMenu.getBoundingClientRect()
+        const ev = new MouseEvent('click', { bubbles: true, cancelable: true, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, button: 0 })
+        ev.bertMenuFwd = true
+        lockedMenu.dispatchEvent(ev)
+      }
+      return
+    }
+  }
   const top = hudAt(e)
   if (!top) return
+  const menu = menuButtonOf(top)
+  if (menu) {
+    e.stopPropagation()
+    if (e.type === 'click') {
+      const ev = new MouseEvent('click', { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY, button: e.button || 0 })
+      ev.bertMenuFwd = true
+      menu.dispatchEvent(ev)
+    }
+    return
+  }
   e.preventDefault()
   e.stopPropagation()
   const shell = noa.container && noa.container._shell
@@ -9958,6 +10098,7 @@ function keepHudClick(e) {
     top.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY, button: e.button || 0 }))
   }
 }
+window.addEventListener('pointermove', noteLockMove, true)
 window.addEventListener('pointerdown', keepHudClick, true)
 window.addEventListener('mousedown', keepHudClick, true)
 window.addEventListener('click', keepHudClick, true)

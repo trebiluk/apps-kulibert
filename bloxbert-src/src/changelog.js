@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Locked 2.5.534 was already below main (2.5.540), so this is 2.5.541. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.541', date: '2026-10-28', lines: {
+    en: ['2.5.541 — The Menu opens on the first click and speaks your language.'],
+    simple: ['2.5.541 — The Menu opens on the first click. It uses your language.'],
+    uk: ['2.5.541 — Меню відкривається з першого клацання і говорить твоєю мовою.'],
+    ru: ['2.5.541 — Меню открывается с первого щелчка и говорит на твоём языке.'],
+    es: ['2.5.541 — El Menú se abre al primer clic y habla tu idioma.'],
+    ar: ['2.5.541 — القائمة تُفتح من أول نقرة وتتحدث بلغتك.'],
+    'fa-AF': ['2.5.541 — فهرست از اولین کلیک باز می‌شود و به زبان تو حرف می‌زند.'],
+    rw: ['2.5.541 — Menyu ifunguka ku gukanda kwa mbere kandi ivuga ururimi rwawe.'],
+    ti: ['2.5.541 — ዝርዝር ካብ ቀዳማይ ጠውቃይ ይኸፍትን ብቋንቋኻ ይዛረብን።'],
+  }},
+
   // Locked 2.5.537 was already below main (2.5.539), so this is 2.5.540. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.540', date: '2026-10-28', lines: {
     en: ['2.5.540 — Beds now tell you why they won\'t fit.'],

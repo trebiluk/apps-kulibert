@@ -572,3 +572,21 @@ for (const [lang, row] of Object.entries(BED540)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.541 what's new. Locked 2.5.534 was already below main (2.5.540). rw, ti, and fa-AF are machine drafts.
+const WN541 = {
+  en: { whatsNewBody: '2.5.541 — The Menu opens on the first click and speaks your language.' },
+  simple: { whatsNewBody: '2.5.541 — The Menu opens on the first click. It uses your language.' },
+  uk: { whatsNewBody: '2.5.541 — Меню відкривається з першого клацання і говорить твоєю мовою.' },
+  ru: { whatsNewBody: '2.5.541 — Меню открывается с первого щелчка и говорит на твоём языке.' },
+  es: { whatsNewBody: '2.5.541 — El Menú se abre al primer clic y habla tu idioma.' },
+  ar: { whatsNewBody: '2.5.541 — القائمة تُفتح من أول نقرة وتتحدث بلغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.541 — فهرست از اولین کلیک باز می‌شود و به زبان تو حرف می‌زند.' },
+  rw: { whatsNewBody: '2.5.541 — Menyu ifunguka ku gukanda kwa mbere kandi ivuga ururimi rwawe.' },
+  ti: { whatsNewBody: '2.5.541 — ዝርዝር ካብ ቀዳማይ ጠውቃይ ይኸፍትን ብቋንቋኻ ይዛረብን።' },
+}
+for (const [lang, row] of Object.entries(WN541)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
