@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  // Locked 2.5.527 was already below main (2.5.528 Bag detail), so this shipped as 2.5.529.
+  // rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.529', date: '2026-10-28', lines: {
+    en: ['2.5.529 — Switching language now changes every word on screen.'],
+    simple: ['2.5.529 — Switching language now changes every word you can see.'],
+    uk: ['2.5.529 — Зміна мови тепер змінює кожне слово на екрані.'],
+    ru: ['2.5.529 — Смена языка теперь меняет каждое слово на экране.'],
+    es: ['2.5.529 — Cambiar el idioma ahora cambia cada palabra en la pantalla.'],
+    ar: ['2.5.529 — تغيير اللغة يغيّر الآن كل كلمة على الشاشة.'],
+    'fa-AF': ['2.5.529 — تغییر زبان حالا هر واژه روی صفحه را عوض می‌کند.'],
+    rw: ['2.5.529 — Guhindura ururimi ubu bihindura ijambo ryose ku gikariro.'],
+    ti: ['2.5.529 — ቋንቋ ምቕያር ሕጂ ንኩሉ ቃል ኣብ ገጽ የቕይር።'],
+  }},
+
   // 2.5.528 what's new. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.528', date: '2026-10-28', lines: {
     en: ['2.5.528 — The Bag shows your item in every mode, and goals tell you where to make things.'],
@@ -167,7 +181,7 @@ export const CHANGELOG = [
     ti: ["2.5.504 — ዝተወሰኑ ቃላት ኣብ ጸወታን ኣብ ሰሌዳ ምልክታትን ተኣሪሙ።"],
   }},
 
-  { v: '2.5.502', date: '2026-10-28', dev: true, lines: {
+  { v: '2.5.502', date: '2026-10-28', lines: {
     en: ["2.5.502 — Cogs know their metal."],
     simple: ["2.5.502 — Cogs know their metal."],
     uk: ["2.5.502 — Cogs know their metal."],

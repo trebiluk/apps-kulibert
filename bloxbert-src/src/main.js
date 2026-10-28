@@ -25,20 +25,20 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.528 what's new. The Bag detail is the same in Creative, and goals say where to make it.
+// 2.5.529 what's new. Locked 2.5.527 was already below main (2.5.528), so this shipped as 2.5.529.
 // rw, ti, and fa-AF are machine drafts.
-const WN528 = {
-  en: { whatsNewBody: '2.5.528 — The Bag shows your item in every mode, and goals tell you where to make things.' },
-  simple: { whatsNewBody: '2.5.528 — The Bag shows your item in every mode. Goals say where to make it.' },
-  uk: { whatsNewBody: '2.5.528 — Сумка показує предмет у кожному режимі, а цілі кажуть, де його зробити.' },
-  ru: { whatsNewBody: '2.5.528 — Сумка показывает предмет в каждом режиме, а цели говорят, где его сделать.' },
-  es: { whatsNewBody: '2.5.528 — La Bolsa muestra tu objeto en cada modo, y las metas dicen dónde hacerlo.' },
-  ar: { whatsNewBody: '2.5.528 — الحقيبة تُظهر غرضك في كل وضع، والأهداف تقول أين تصنعه.' },
-  'fa-AF': { whatsNewBody: '2.5.528 — بکس چیزت را در هر حالت نشان می‌دهد، و هدف‌ها می‌گویند کجا بسازی.' },
-  rw: { whatsNewBody: '2.5.528 — Agasaho kerekana ikintu cyawe muri buri buryo, kandi intego zivuga aho cyakorerwa.' },
-  ti: { whatsNewBody: '2.5.528 — ቦርሳ ነቲ ነገርካ ኣብ ነፍሲ ወከፍ ኩነታት የርኢ፡ ዕላማታት ድማ ኣበይ ከም እትገብሮ ይነግሩ።' },
+const WN529 = {
+  en: { whatsNewBody: '2.5.529 — Switching language now changes every word on screen.' },
+  simple: { whatsNewBody: '2.5.529 — Switching language now changes every word you can see.' },
+  uk: { whatsNewBody: '2.5.529 — Зміна мови тепер змінює кожне слово на екрані.' },
+  ru: { whatsNewBody: '2.5.529 — Смена языка теперь меняет каждое слово на экране.' },
+  es: { whatsNewBody: '2.5.529 — Cambiar el idioma ahora cambia cada palabra en la pantalla.' },
+  ar: { whatsNewBody: '2.5.529 — تغيير اللغة يغيّر الآن كل كلمة على الشاشة.' },
+  'fa-AF': { whatsNewBody: '2.5.529 — تغییر زبان حالا هر واژه روی صفحه را عوض می‌کند.' },
+  rw: { whatsNewBody: '2.5.529 — Guhindura ururimi ubu bihindura ijambo ryose ku gikariro.' },
+  ti: { whatsNewBody: '2.5.529 — ቋንቋ ምቕያር ሕጂ ንኩሉ ቃል ኣብ ገጽ የቕይር።' },
 }
-for (const [lang, row] of Object.entries(WN528)) {
+for (const [lang, row] of Object.entries(WN529)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -915,6 +915,8 @@ function applyI18n() {
   if (lookReady) paintViewChip()
   repaintLiveNotes()
   paintHeldHeader()
+  try { paintSuit() } catch (e) {}
+  try { paintUpdateChip() } catch (e) {}
   if (walletReady) dressWalletChip()
   painting = false
 }
@@ -922,14 +924,25 @@ let heldHeaderOn = false
 function paintHeldHeader() {
   if (!heldHeaderOn) return
   const el = document.getElementById('current')
-  if (!el) return
   let word = t('emptySlot')
-  if (session && session.mode === 'survival') {
+  const survival = !!(session && session.mode === 'survival')
+  if (survival) {
     const held = session.selectedItem && session.selectedItem()
     word = held ? ((held === 'buildWand' && t('wandShort')) || t(held)) : t('emptySlot')
+    try { if (session.paintHotbar) session.paintHotbar() } catch (e) {}
   } else if (wandSlot) word = t('wandShort') || t('buildWand')
   else word = blockName(current)
-  el.textContent = word
+  if (el) el.textContent = word
+  const flash = document.getElementById('held-chip')
+  if (flash && !flash.hidden && flash.dataset.hold !== '1') flash.textContent = word
+  if (!survival) {
+    const nameEl = document.querySelector('#hotbar .hot-name')
+    if (nameEl) nameEl.textContent = word
+    for (const b of document.querySelectorAll('#hotbar .slot[data-id]')) {
+      const id = Number(b.dataset.id)
+      if (Number.isFinite(id)) b.setAttribute('aria-label', blockName(id))
+    }
+  }
 }
 let liveNotesReady = false
 function refreshSaveChip() {
@@ -5707,6 +5720,23 @@ function updateSeen() {
 function markUpdateSeen() {
   try { localStorage.setItem('bert-update-seen', VERSION) } catch (e) {}
 }
+function paintUpdateChip() {
+  const b = document.getElementById('update-chip')
+  if (!b || b.hidden) return
+  const word = t('updateReady')
+  let lab = b.querySelector('[data-upd]')
+  if (!lab) {
+    b.replaceChildren()
+    const ico = document.createElement('span')
+    ico.setAttribute('aria-hidden', 'true')
+    ico.textContent = '↻'
+    lab = document.createElement('span')
+    lab.dataset.upd = '1'
+    b.append(ico, document.createTextNode(' '), lab)
+  }
+  lab.textContent = word
+  b.setAttribute('aria-label', word)
+}
 function showUpdateChip() {
   if (updateSeen()) return
   let b = document.getElementById('update-chip')
@@ -5723,15 +5753,8 @@ function showUpdateChip() {
     document.body.appendChild(b)
   }
   laneAdd(b, 8)
-  b.replaceChildren()
-  const ico = document.createElement('span')
-  ico.setAttribute('aria-hidden', 'true')
-  ico.textContent = '↻'
-  const word = document.createElement('span')
-  word.textContent = t('updateReady')
-  b.append(ico, document.createTextNode(' '), word)
-  b.setAttribute('aria-label', t('updateReady'))
   b.hidden = false
+  paintUpdateChip()
   markUpdateSeen()
   layoutLane()
 }

@@ -397,3 +397,22 @@ for (const [lang, row] of Object.entries(COG515)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.529 what's new. Locked 2.5.527 was already below main (2.5.528), so this shipped as 2.5.529.
+// rw, ti, and fa-AF are machine drafts.
+const WN529 = {
+  en: { whatsNewBody: '2.5.529 — Switching language now changes every word on screen.' },
+  simple: { whatsNewBody: '2.5.529 — Switching language now changes every word you can see.' },
+  uk: { whatsNewBody: '2.5.529 — Зміна мови тепер змінює кожне слово на екрані.' },
+  ru: { whatsNewBody: '2.5.529 — Смена языка теперь меняет каждое слово на экране.' },
+  es: { whatsNewBody: '2.5.529 — Cambiar el idioma ahora cambia cada palabra en la pantalla.' },
+  ar: { whatsNewBody: '2.5.529 — تغيير اللغة يغيّر الآن كل كلمة على الشاشة.' },
+  'fa-AF': { whatsNewBody: '2.5.529 — تغییر زبان حالا هر واژه روی صفحه را عوض می‌کند.' },
+  rw: { whatsNewBody: '2.5.529 — Guhindura ururimi ubu bihindura ijambo ryose ku gikariro.' },
+  ti: { whatsNewBody: '2.5.529 — ቋንቋ ምቕያር ሕጂ ንኩሉ ቃል ኣብ ገጽ የቕይር።' },
+}
+for (const [lang, row] of Object.entries(WN529)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
