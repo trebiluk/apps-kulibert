@@ -510,7 +510,13 @@ export function mountPanels(api) {
         const dex = document.createElement('p')
         dex.className = 'gnote'
         const seen = (typeof window !== 'undefined' && window.dexSeen) ? window.dexSeen() : {}
-        dex.textContent = (api.t('c4tDex') || 'Bertodex: ') + (Object.keys(seen).length ? Object.keys(seen).join(', ') : 'none')
+        const ids = Object.keys(seen).filter((k) => k && k !== 'none' && k !== 'null' && k !== 'undefined')
+        const dexKey = ids.length ? 'c4tDexReady' : 'c4tDexEmpty'
+        let dexWord = api.t(dexKey)
+        if (!dexWord || dexWord === dexKey || dexWord === 'none' || dexWord === 'null' || dexWord === 'undefined') {
+          dexWord = ids.length ? 'Bertodex: ready' : 'Bertodex: nothing yet'
+        }
+        dex.textContent = dexWord
         g.append(dex)
         const reopen = document.createElement('button')
         reopen.textContent = api.t('c4tReopen') || 'Reopen'

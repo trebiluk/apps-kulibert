@@ -415,3 +415,22 @@ for (const [lang, row] of Object.entries(WN529)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.532 Notebook Bertodex line and what's new. Locked version. Main was 2.5.530.
+// rw, ti, and fa-AF are machine drafts.
+const DEX532 = {
+  en: { c4tDexReady: 'Bertodex: ready', c4tDexEmpty: 'Bertodex: nothing yet', whatsNewBody: '2.5.532 — The Notebook and Menu button now speak your language.' },
+  simple: { c4tDexReady: 'Bertodex: ready', c4tDexEmpty: 'Bertodex: nothing yet', whatsNewBody: '2.5.532 — The Notebook and Menu button now use your language.' },
+  uk: { c4tDexReady: 'Бертодекс: готово', c4tDexEmpty: 'Бертодекс: ще нічого', whatsNewBody: '2.5.532 — Зошит і кнопка меню тепер говорять твоєю мовою.' },
+  ru: { c4tDexReady: 'Бертодекс: готово', c4tDexEmpty: 'Бертодекс: пока пусто', whatsNewBody: '2.5.532 — Тетрадь и кнопка меню теперь говорят на твоём языке.' },
+  es: { c4tDexReady: 'Bertodex lista', c4tDexEmpty: 'Bertodex: nada aún', whatsNewBody: '2.5.532 — El Cuaderno y el botón Menú ahora hablan tu idioma.' },
+  ar: { c4tDexReady: 'بيرتودكس: جاهز', c4tDexEmpty: 'بيرتودكس: لا شيء بعد', whatsNewBody: '2.5.532 — الدفتر وزر القائمة يتكلمان الآن بلغتك.' },
+  'fa-AF': { c4tDexReady: 'برتودکس: آماده', c4tDexEmpty: 'برتودکس: هنوز چیزی نیست', whatsNewBody: '2.5.532 — دفترچه و دکمه فهرست حالا به زبان تو حرف می‌زنند.' },
+  rw: { c4tDexReady: 'Bertodex: byiteguye', c4tDexEmpty: 'Bertodex: nta kintu ubu', whatsNewBody: '2.5.532 — Igitabo n\'ubuto bwa Menyu ubu bivuga ururimi rwawe.' },
+  ti: { c4tDexReady: 'በርቶዴክስ፦ ድሉው', c4tDexEmpty: 'በርቶዴክስ፦ ገና የለን', whatsNewBody: '2.5.532 — መጽሓፍን መጠወቒ ዝርዝርን ሕጂ ብቋንቋኻ ይዛረቡ።' },
+}
+for (const [lang, row] of Object.entries(DEX532)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

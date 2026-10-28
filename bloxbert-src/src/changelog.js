@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Locked 2.5.532. Main was 2.5.530. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.532', date: '2026-10-28', lines: {
+    en: ['2.5.532 — The Notebook and Menu button now speak your language.'],
+    simple: ['2.5.532 — The Notebook and Menu button now use your language.'],
+    uk: ['2.5.532 — Зошит і кнопка меню тепер говорять твоєю мовою.'],
+    ru: ['2.5.532 — Тетрадь и кнопка меню теперь говорят на твоём языке.'],
+    es: ['2.5.532 — El Cuaderno y el botón Menú ahora hablan tu idioma.'],
+    ar: ['2.5.532 — الدفتر وزر القائمة يتكلمان الآن بلغتك.'],
+    'fa-AF': ['2.5.532 — دفترچه و دکمه فهرست حالا به زبان تو حرف می‌زنند.'],
+    rw: ['2.5.532 — Igitabo n\'ubuto bwa Menyu ubu bivuga ururimi rwawe.'],
+    ti: ['2.5.532 — መጽሓፍን መጠወቒ ዝርዝርን ሕጂ ብቋንቋኻ ይዛረቡ።'],
+  }},
+
   // Main was already 2.5.529, so this is 2.5.530. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.530', date: '2026-10-28', lines: {
     en: ['2.5.530 — Help keys fit on one line, and one tap picks your language.'],

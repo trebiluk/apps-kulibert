@@ -25,19 +25,19 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.530 what's new. Main was already 2.5.529, so this is the next patch. rw, ti, and fa-AF are machine drafts.
-const WN529 = {
-  en: { whatsNewBody: '2.5.530 — Help keys fit on one line, and one tap picks your language.' },
-  simple: { whatsNewBody: '2.5.530 — Help keys fit on one line. One tap picks your language.' },
-  uk: { whatsNewBody: '2.5.530 — Клавіші в Допомозі вміщаються в один рядок, і один дотик обирає мову.' },
-  ru: { whatsNewBody: '2.5.530 — Клавиши в Помощи умещаются в одну строку, и одно нажатие выбирает язык.' },
-  es: { whatsNewBody: '2.5.530 — Las teclas de Ayuda caben en una línea, y un toque elige tu idioma.' },
-  ar: { whatsNewBody: '2.5.530 — مفاتيح المساعدة تبقى في سطر واحد، ولمسة واحدة تختار لغتك.' },
-  'fa-AF': { whatsNewBody: '2.5.530 — کلیدهای راهنما در یک خط می‌مانند، و یک لمس زبان تو را برمی‌گزیند.' },
-  rw: { whatsNewBody: '2.5.530 — Utubuto two muri Ubufasha buguma ku murongo umwe, kandi ukanda rimwe uhitamo ururimi.' },
-  ti: { whatsNewBody: '2.5.530 — ናይ ሓገዝ መጠወቒታት ኣብ ሓንቲ መስመር ይኣትዉ፡ ሓደ ጠውቕ ድማ ቋንቋ ይመርጽ።' },
+// 2.5.532 what's new. Locked version. Main was 2.5.530. rw, ti, and fa-AF are machine drafts.
+const WN532 = {
+  en: { whatsNewBody: '2.5.532 — The Notebook and Menu button now speak your language.' },
+  simple: { whatsNewBody: '2.5.532 — The Notebook and Menu button now use your language.' },
+  uk: { whatsNewBody: '2.5.532 — Зошит і кнопка меню тепер говорять твоєю мовою.' },
+  ru: { whatsNewBody: '2.5.532 — Тетрадь и кнопка меню теперь говорят на твоём языке.' },
+  es: { whatsNewBody: '2.5.532 — El Cuaderno y el botón Menú ahora hablan tu idioma.' },
+  ar: { whatsNewBody: '2.5.532 — الدفتر وزر القائمة يتكلمان الآن بلغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.532 — دفترچه و دکمه فهرست حالا به زبان تو حرف می‌زنند.' },
+  rw: { whatsNewBody: '2.5.532 — Igitabo n\'ubuto bwa Menyu ubu bivuga ururimi rwawe.' },
+  ti: { whatsNewBody: '2.5.532 — መጽሓፍን መጠወቒ ዝርዝርን ሕጂ ብቋንቋኻ ይዛረቡ።' },
 }
-for (const [lang, row] of Object.entries(WN529)) {
+for (const [lang, row] of Object.entries(WN532)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -917,7 +917,26 @@ function applyI18n() {
   try { paintSuit() } catch (e) {}
   try { paintUpdateChip() } catch (e) {}
   if (walletReady) dressWalletChip()
+  try { paintMenuLabels() } catch (e) {}
   painting = false
+}
+function paintMenuLabels() {
+  const word = t('menu')
+  if (!word || word === 'menu') return
+  for (const id of ['game-menu', 'menu-btn']) {
+    const el = document.getElementById(id)
+    if (!el) continue
+    el.setAttribute('aria-label', word)
+    el.title = word
+  }
+  const bar = document.querySelector('.kb-bar .kb-menu')
+  if (!bar) return
+  bar.setAttribute('aria-label', word)
+  bar.title = word
+  if (!bar.childElementCount) {
+    const lead = (bar.textContent || '').indexOf('\u2630') !== -1 ? '\u2630 ' : ''
+    bar.textContent = lead + word
+  }
 }
 let heldHeaderOn = false
 function paintHeldHeader() {
