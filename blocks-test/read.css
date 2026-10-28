@@ -652,7 +652,7 @@ html body #hotbar .bag-tile {
   min-width: 76px !important;
   height: auto !important;
   min-height: 72px !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   box-sizing: border-box;
 }
 html body #hotbar .bag-tile .lbl {
@@ -662,9 +662,9 @@ html body #hotbar .bag-tile .lbl {
   max-width: 100% !important;
   margin: 0 !important;
   font-size: 13px !important;
-  line-height: 1.1 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  overflow: visible !important;
   text-overflow: clip !important;
   text-align: center !important;
 }
@@ -907,7 +907,7 @@ html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .tw-app-bar {
   }
   html body #hotbar .bag-tile .lbl {
     font-size: 14px !important;
-    line-height: 1.1 !important;
+    line-height: 1.25 !important;
     overflow: visible !important;
   }
 }
@@ -1552,7 +1552,7 @@ html body #sheet[data-panel="inventory"] .well .glbl {
   font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
   font-size: 14px !important;
   font-weight: 700 !important;
-  line-height: 1.15 !important;
+  line-height: 1.25 !important;
 }
 html body #sheet[data-panel="inventory"] .count {
   font-size: 16px !important;
@@ -1585,7 +1585,7 @@ html body #sheet[data-panel="inventory"] .wells .well .glbl {
   overflow-wrap: break-word !important;
   word-break: normal !important;
   font-size: 12px !important;
-  line-height: 1.15 !important;
+  line-height: 1.25 !important;
   max-width: 100% !important;
   height: auto !important;
   max-height: none !important;
@@ -2689,5 +2689,29 @@ html body #keys-pop {
   hyphens: manual !important;
 }
 html body #keys-pop { white-space: normal !important; }
+
+/* 2.5.519: the tapped Bag item keeps a 3px cyan ring. Keyboard focus stays a separate ring. */
+html body #sheet[data-panel="inventory"] .well.on,
+html body #sheet[data-panel="inventory"] .well.on:focus,
+html body #sheet[data-panel="inventory"] .well.on:focus-visible {
+  box-shadow: inset 0 2px 0 #00000080, inset 0 -1px 0 #2A4A55, 0 0 0 3px #22D3EE !important;
+}
+html body #sheet[data-panel="inventory"] .well:focus-visible {
+  outline: 3px solid #F8FAFC !important;
+  outline-offset: 3px !important;
+}
+html body #sheet[data-panel="inventory"] .bag-name {
+  line-height: 1.25 !important;
+  overflow: visible !important;
+}
+html body #hotbar#hotbar .bag-tile .lbl,
+html body #hotbar#hotbar .slot.bag-tile .lbl {
+  line-height: 1.25 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  max-height: none !important;
+  height: auto !important;
+}
 
 

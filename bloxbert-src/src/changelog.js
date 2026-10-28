@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.519 what's new. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.519', date: '2026-10-28', lines: {
+    en: ['2.5.519 — The Bag shows which item you picked and has clearer buttons.'],
+    simple: ['2.5.519 — The Bag shows the item you picked. The buttons are clearer.'],
+    uk: ['2.5.519 — Сумка показує, який предмет ти вибрав, і має зрозуміліші кнопки.'],
+    ru: ['2.5.519 — Сумка показывает, какой предмет ты выбрал, и кнопки стали понятнее.'],
+    es: ['2.5.519 — La Bolsa muestra el objeto que elegiste y tiene botones más claros.'],
+    ar: ['2.5.519 — الحقيبة تُظهر الغرض الذي اخترته وأزرارها أوضح.'],
+    'fa-AF': ['2.5.519 — بکس نشان می‌دهد کدام چیز را برگزیدی و دکمه‌هایش روشن‌تر است.'],
+    rw: ['2.5.519 — Agasaho kerekana ikintu watoranyije, kandi buto birumvikana neza.'],
+    ti: ['2.5.519 — ቦርሳ ነቲ ዝመረጽካዮ ነገር የርኢ፡ መልጎም ድማ ንጹር እዩ።'],
+  }},
+
   // 2.5.517 what's new. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.517', date: '2026-10-28', lines: {
     en: ['2.5.517 — The menu shows your badge count, and languages are easier to find.'],
