@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  // Locked 2.5.531 was already below main (2.5.532 Notebook language), so this is 2.5.533.
+  // rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.533', date: '2026-10-28', lines: {
+    en: ['2.5.533 — Find your goals in the menu, and see where to make each one.'],
+    simple: ['2.5.533 — Find your goals in the menu. See where to make each one.'],
+    uk: ['2.5.533 — Знайди свої цілі в меню і побач, де зробити кожну.'],
+    ru: ['2.5.533 — Найди свои цели в меню и смотри, где сделать каждую.'],
+    es: ['2.5.533 — Encuentra tus metas en el menú y mira dónde hacer cada una.'],
+    ar: ['2.5.533 — اعثر على أهدافك في القائمة، وانظر أين تصنع كل واحدة.'],
+    'fa-AF': ['2.5.533 — هدف‌هایت را در فهرست بیاب، و ببین هر کدام را کجا بسازی.'],
+    rw: ['2.5.533 — Shaka intego zawe mu menu, kandi urebe aho ukora buri imwe.'],
+    ti: ['2.5.533 — ዕላማታትካ ኣብ መእተዊ ረኸብ፡ ነፍሲ ወከፍ ድማ ኣበይ ከም እትገብሮ ርአ።'],
+  }},
+
   // Locked 2.5.532. Main was 2.5.530. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.532', date: '2026-10-28', lines: {
     en: ['2.5.532 — The Notebook and Menu button now speak your language.'],

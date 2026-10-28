@@ -113,8 +113,16 @@ export function createLearn(api) {
     const sub = document.createElement('span')
     sub.className = 'path-where'
     sub.style.display = 'block'
+    sub.style.whiteSpace = 'normal'
+    sub.style.fontSize = '14px'
+    sub.style.lineHeight = '1.25'
     sub.textContent = where
     title.append(sub)
+    title.style.display = 'block'
+    title.style.whiteSpace = 'normal'
+    title.style.overflow = 'visible'
+    title.style.webkitLineClamp = 'unset'
+    title.style.maxHeight = 'none'
   }
   function goalLine(g) {
     if (!g) return ''
@@ -195,6 +203,12 @@ export function createLearn(api) {
     title.className = 'path-title'
     fillTitle(title, g)
     el.append(title)
+    if (goalWhere(g)) {
+      el.style.flexWrap = 'wrap'
+      el.style.height = 'auto'
+      el.style.maxHeight = 'none'
+      el.style.overflow = 'visible'
+    }
     pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)
@@ -392,18 +406,29 @@ export function createLearn(api) {
   }
   function paintGoals(g) {
     showPath()
-    const g0 = goals.find((x) => !x.done) || goals[goals.length - 1]
-    const p = document.createElement('p')
-    p.className = 'gnote'
-    p.textContent = api.t(g0.id) + ' ' + g0.n + '/' + g0.need
-    g.append(p)
-    const where = goalWhere(g0)
-    if (where) {
+    const box = document.createElement('div')
+    box.className = 'goals-list'
+    box.dataset.goalsList = '1'
+    const head = document.createElement('p')
+    head.className = 'gnote ghead'
+    head.dataset.goalsHead = '1'
+    head.textContent = api.t('goals')
+    box.append(head)
+    for (const goal of goals) {
+      const p = document.createElement('p')
+      p.className = 'gnote'
+      p.dataset.goal = goal.id
+      p.textContent = api.t(goal.id) + ' ' + (goal.n | 0) + '/' + goal.need
+      box.append(p)
+      const where = goalWhere(goal)
+      if (!where) continue
       const sub = document.createElement('p')
       sub.className = 'gnote path-where'
+      sub.dataset.goalWhere = goal.id
       sub.textContent = where
-      g.append(sub)
+      box.append(sub)
     }
+    g.append(box)
   }
   function paintA11y(g) {
     const b = document.createElement('button')

@@ -25,19 +25,19 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.532 what's new. Locked version. Main was 2.5.530. rw, ti, and fa-AF are machine drafts.
-const WN532 = {
-  en: { whatsNewBody: '2.5.532 — The Notebook and Menu button now speak your language.' },
-  simple: { whatsNewBody: '2.5.532 — The Notebook and Menu button now use your language.' },
-  uk: { whatsNewBody: '2.5.532 — Зошит і кнопка меню тепер говорять твоєю мовою.' },
-  ru: { whatsNewBody: '2.5.532 — Тетрадь и кнопка меню теперь говорят на твоём языке.' },
-  es: { whatsNewBody: '2.5.532 — El Cuaderno y el botón Menú ahora hablan tu idioma.' },
-  ar: { whatsNewBody: '2.5.532 — الدفتر وزر القائمة يتكلمان الآن بلغتك.' },
-  'fa-AF': { whatsNewBody: '2.5.532 — دفترچه و دکمه فهرست حالا به زبان تو حرف می‌زنند.' },
-  rw: { whatsNewBody: '2.5.532 — Igitabo n\'ubuto bwa Menyu ubu bivuga ururimi rwawe.' },
-  ti: { whatsNewBody: '2.5.532 — መጽሓፍን መጠወቒ ዝርዝርን ሕጂ ብቋንቋኻ ይዛረቡ።' },
+// 2.5.533 what's new. Locked 2.5.531 was already below 2.5.532. rw, ti, and fa-AF are machine drafts.
+const WN533 = {
+  en: { whatsNewBody: '2.5.533 — Find your goals in the menu, and see where to make each one.' },
+  simple: { whatsNewBody: '2.5.533 — Find your goals in the menu. See where to make each one.' },
+  uk: { whatsNewBody: '2.5.533 — Знайди свої цілі в меню і побач, де зробити кожну.' },
+  ru: { whatsNewBody: '2.5.533 — Найди свои цели в меню и смотри, где сделать каждую.' },
+  es: { whatsNewBody: '2.5.533 — Encuentra tus metas en el menú y mira dónde hacer cada una.' },
+  ar: { whatsNewBody: '2.5.533 — اعثر على أهدافك في القائمة، وانظر أين تصنع كل واحدة.' },
+  'fa-AF': { whatsNewBody: '2.5.533 — هدف‌هایت را در فهرست بیاب، و ببین هر کدام را کجا بسازی.' },
+  rw: { whatsNewBody: '2.5.533 — Shaka intego zawe mu menu, kandi urebe aho ukora buri imwe.' },
+  ti: { whatsNewBody: '2.5.533 — ዕላማታትካ ኣብ መእተዊ ረኸብ፡ ነፍሲ ወከፍ ድማ ኣበይ ከም እትገብሮ ርአ።' },
 }
-for (const [lang, row] of Object.entries(WN532)) {
+for (const [lang, row] of Object.entries(WN533)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -8759,6 +8759,29 @@ function bindBarMenu() {
 bindBarMenu()
 setTimeout(bindBarMenu, 300)
 setTimeout(bindBarMenu, 1200)
+function mountGoalsHud() {
+  if (document.getElementById('goals-hud')) return
+  const css = document.createElement('style')
+  css.textContent = '#goals-hud{position:fixed;z-index:32;top:calc(var(--top-h, 60px) + 8px);left:76px;min-width:44px;min-height:44px;height:48px;padding:0 12px;border-radius:12px;border:1px solid #e2e8f0;background:rgba(11,18,32,.92);color:#f8fafc;font:700 15px/1 system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer}html[data-kb-bar]:not(.kb-framed) #goals-hud{top:calc(48px + var(--top-h, 60px) + 8px)}'
+  document.head.append(css)
+  const b = document.createElement('button')
+  b.type = 'button'
+  b.id = 'goals-hud'
+  b.dataset.i18n = 'goals'
+  b.dataset.i18nLabel = 'goals'
+  b.textContent = t('goals')
+  b.setAttribute('aria-label', t('goals'))
+  const menu = document.getElementById('game-menu')
+  if (menu && menu.parentNode) menu.parentNode.insertBefore(b, menu.nextSibling)
+  else document.body.append(b)
+  b.addEventListener('click', () => {
+    rememberOpener(b)
+    if (!panels) return
+    panels.open('goals')
+    sealPanels()
+  })
+}
+mountGoalsHud()
 $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contains('open')))
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))

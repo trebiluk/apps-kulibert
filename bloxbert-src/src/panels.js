@@ -286,6 +286,7 @@ export function mountPanels(api) {
       keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
       keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
       keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
+      keyTile('target', 'goals', api.t('goals'), () => open('goals')),
       (() => {
         const b = keyTile('star', 'badges', api.t('bdgTitle'), () => open('badges')) // 2.5.476: badges tile
         const n = document.createElement('span')
@@ -310,7 +311,6 @@ export function mountPanels(api) {
       ]),
       menuGroup('make', api.t('menuMake'), [
         keyTile('pick', 'tools', api.t('buildWand'), () => { close(); api.tools() }),
-        keyTile('target', 'goals', api.t('tryThis'), () => open('goals')),
         keyTile('shop', 'shop', api.t('shop'), () => open('shop')),
         keyTile('coin', 'wallet', api.t('wallet'), () => open('wallet')),
       ]),
@@ -481,6 +481,7 @@ export function mountPanels(api) {
         const c5 = document.createElement('p'); c5.className = 'gnote'; c5.textContent = api.t('c5Help'); g.append(c5)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
+        if (api.paintGoals) api.paintGoals(g)
         const lines = api.notes ? api.notes() : []
         if (!lines.length) {
           const p = document.createElement('p')
@@ -526,7 +527,7 @@ export function mountPanels(api) {
         g.append(reopen)
       }),
       tour: () => show('tour', api.t('tour'), (g) => api.paintTour(g)),
-      goals: () => show('goals', api.t('tryThis'), (g) => api.paintGoals(g)),
+      goals: () => show('goals', api.t('goals'), (g) => api.paintGoals(g)),
       a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
         g.append(

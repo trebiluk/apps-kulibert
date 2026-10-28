@@ -434,3 +434,51 @@ for (const [lang, row] of Object.entries(DEX532)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.533 what's new. Locked 2.5.531 was already below 2.5.532. rw, ti, and fa-AF are machine drafts.
+const WN533 = {
+  en: {
+    whatsNewBody: '2.5.533 — Find your goals in the menu, and see where to make each one.',
+    goals: 'Goals',
+    goalAtBench: 'Make it at the Workbench',
+  },
+  simple: {
+    whatsNewBody: '2.5.533 — Find your goals in the menu. See where to make each one.',
+    goals: 'Goals',
+    goalAtBench: 'Make it at the Workbench',
+  },
+  uk: {
+    whatsNewBody: '2.5.533 — Знайди свої цілі в меню і побач, де зробити кожну.',
+    goals: 'Цілі',
+  },
+  ru: {
+    whatsNewBody: '2.5.533 — Найди свои цели в меню и смотри, где сделать каждую.',
+    goals: 'Цели',
+  },
+  es: {
+    whatsNewBody: '2.5.533 — Encuentra tus metas en el menú y mira dónde hacer cada una.',
+    goals: 'Metas',
+    goalAtBench: 'Hazlo en la Mesa de trabajo',
+  },
+  ar: {
+    whatsNewBody: '2.5.533 — اعثر على أهدافك في القائمة، وانظر أين تصنع كل واحدة.',
+    goals: 'الأهداف',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.533 — هدف‌هایت را در فهرست بیاب، و ببین هر کدام را کجا بسازی.',
+    goals: 'هدف‌ها',
+  },
+  rw: {
+    whatsNewBody: '2.5.533 — Shaka intego zawe mu menu, kandi urebe aho ukora buri imwe.',
+    goals: 'Intego',
+  },
+  ti: {
+    whatsNewBody: '2.5.533 — ዕላማታትካ ኣብ መእተዊ ረኸብ፡ ነፍሲ ወከፍ ድማ ኣበይ ከም እትገብሮ ርአ።',
+    goals: 'ዕላማታት',
+  },
+}
+for (const [lang, row] of Object.entries(WN533)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
