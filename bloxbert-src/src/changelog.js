@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.516', date: '2026-10-28', lines: {
+    en: ["2.5.516 — Switching language now changes every note on screen."],
+    simple: ["2.5.516 — Switching language now changes every note on the screen."],
+    uk: ["2.5.516 — Зміна мови тепер змінює кожну нотатку на екрані."],
+    ru: ["2.5.516 — Смена языка теперь меняет каждую заметку на экране."],
+    es: ["2.5.516 — Cambiar el idioma ahora cambia cada nota en la pantalla."],
+    ar: ["2.5.516 — تغيير اللغة الآن يغيّر كل ملاحظة على الشاشة."],
+    'fa-AF': ["2.5.516 — عوض کردن زبان حالا هر یادداشت روی صفحه را هم عوض می‌کند."],
+    rw: ["2.5.516 — Guhindura ururimi ubu bihindura inyandiko yose ku rubuga."],
+    ti: ["2.5.516 — ምቕያር ቋንቋ ሕጂ ነፍሲ ወከፍ መዘኻኸሪ ኣብ ገጽ ይቕይር።"],
+  }},
+
   { v: '2.5.510', date: '2026-10-28', lines: {
     en: ["2.5.510 — Your Creative hotbar stays the way you set it. E always opens the Bag."],
     simple: ["2.5.510 — Your Creative hotbar stays as you set it. E always opens the Bag."],
@@ -49,7 +61,7 @@ export const CHANGELOG = [
     ti: ["2.5.504 — ዝተወሰኑ ቃላት ኣብ ጸወታን ኣብ ሰሌዳ ምልክታትን ተኣሪሙ።"],
   }},
 
-  { v: '2.5.502', date: '2026-10-28', lines: {
+  { v: '2.5.502', date: '2026-10-28', dev: true, lines: {
     en: ["2.5.502 — Cogs know their metal."],
     simple: ["2.5.502 — Cogs know their metal."],
     uk: ["2.5.502 — Cogs know their metal."],

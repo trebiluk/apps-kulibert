@@ -209,15 +209,25 @@ function doBonk() {
   if (dmg > 0) showFloat('-' + dmg)
 }
 let lastSafeChip = 0
+function safeChipLine(chip) {
+  const zone = t('c1SafeZone') || 'Bertyville is a safe zone'
+  if (chip && chip.dataset.safe === 'fight') return '🛡 ' + zone + ' — ' + (t('c1NoFightHere') || 'No fighting here')
+  return '🛡 ' + zone
+}
 function showSafeChip() {
   const now = performance.now()
   if (now - lastSafeChip < 2000) return
   lastSafeChip = now
   const chip = ensureSafeChip()
-  chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone') + ' — ' + (t('c1NoFightHere') || 'No fighting here')
+  chip.dataset.safe = 'fight'
+  chip.textContent = safeChipLine(chip)
   chip.hidden = false
   capLane()
-  setTimeout(() => { if (chip.isConnected) paintSafeChip() }, 2000)
+  setTimeout(() => {
+    if (!chip.isConnected) return
+    if (chip.dataset.safe === 'fight') chip.dataset.safe = 'zone'
+    paintSafeChip()
+  }, 2000)
 }
 
 let lastSafe = false
@@ -464,13 +474,18 @@ function ensureSafeChip() {
 function paintSafeChip() {
   const chip = ensureSafeChip()
   const pos = playerPos()
-  if (!pos) return
+  if (!pos) {
+    if (!chip.hidden) chip.textContent = safeChipLine(chip)
+    return
+  }
   const now = inSafeZone(pos[0], pos[2])
-  if (now && chip.hidden) {
-    chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone')
+  if (now) {
+    if (chip.hidden && chip.dataset.safe !== 'fight') chip.dataset.safe = 'zone'
+    chip.textContent = safeChipLine(chip)
     chip.hidden = false
-  } else if (!now && !chip.hidden) {
+  } else if (!chip.hidden) {
     chip.hidden = true
+    chip.dataset.safe = ''
   }
 }
 function checkSafeEntry() {
@@ -724,7 +739,38 @@ function applyI18n() {
   paintBackTab()
   try { paintModeChip() } catch (e) {}
   if (lookReady) paintViewChip()
+  repaintLiveNotes()
   painting = false
+}
+let liveNotesReady = false
+function refreshSaveChip() {
+  const el = document.getElementById('save-chip')
+  if (!el || el.hidden) return
+  const saved = el.dataset.state === 'saved' || el.dataset.state === 'synced' || el.dataset.state === 'offline'
+  const word = saved ? t('saved') : t('s2bSaving')
+  const lab = el.querySelector('.sc-word')
+  if (lab) lab.textContent = word
+  el.setAttribute('aria-label', word)
+}
+function refreshUsePill() {
+  const el = document.getElementById('use-pill')
+  if (!el || el.hidden || !useTarget || !useTarget.verb) return
+  const word = t(useTarget.verb)
+  const lab = el.querySelector('.glbl')
+  if (lab) lab.textContent = word
+  el.setAttribute('aria-label', word)
+}
+function refreshPathChip() {
+  const el = document.getElementById('path-chip')
+  if (!el || el.hidden) return
+  paintPath()
+}
+function repaintLiveNotes() {
+  if (!liveNotesReady) return
+  try { paintSafeChip() } catch (e) {}
+  try { refreshSaveChip() } catch (e) {}
+  try { refreshPathChip() } catch (e) {}
+  try { refreshUsePill() } catch (e) {}
 }
 let painting = false
 let lookReady = false
@@ -6993,6 +7039,7 @@ panels = mountPanels({
     }
     const merged = []
     for (const row of CHANGELOG.slice().sort(byNewest)) {
+      if (row.dev) continue
       let cur = merged[merged.length - 1]
       if (!cur || cur.v !== row.v) {
         cur = { v: row.v, lines: {} }
@@ -7375,6 +7422,7 @@ bindWandPill()
 let seated = null
 let sleepBusy = false
 let useTarget = null
+liveNotesReady = true
 let useScanAt = 0
 function useVerb(id) {
   if (id === ID.chair) return 'useSit'

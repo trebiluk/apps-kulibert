@@ -3582,3 +3582,20 @@ for (const [lang, row] of Object.entries(HOT506)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.516: notes follow the language. rw, ti, and Dari (fa-AF) are machine drafts.
+const NOTES516 = {
+  en: { whatsNewBody: '2.5.516 — Switching language now changes every note on screen.' },
+  simple: { whatsNewBody: '2.5.516 — Switching language now changes every note on the screen.' },
+  uk: { whatsNewBody: '2.5.516 — Зміна мови тепер змінює кожну нотатку на екрані.' },
+  ru: { whatsNewBody: '2.5.516 — Смена языка теперь меняет каждую заметку на экране.' },
+  es: { whatsNewBody: '2.5.516 — Cambiar el idioma ahora cambia cada nota en la pantalla.' },
+  ar: { whatsNewBody: '2.5.516 — تغيير اللغة الآن يغيّر كل ملاحظة على الشاشة.' },
+  'fa-AF': { whatsNewBody: '2.5.516 — عوض کردن زبان حالا هر یادداشت روی صفحه را هم عوض می‌کند.' },
+  rw: { whatsNewBody: '2.5.516 — Guhindura ururimi ubu bihindura inyandiko yose ku rubuga.' },
+  ti: { whatsNewBody: '2.5.516 — ምቕያር ቋንቋ ሕጂ ነፍሲ ወከፍ መዘኻኸሪ ኣብ ገጽ ይቕይር።' },
+}
+for (const [lang, row] of Object.entries(NOTES516)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
