@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.502', date: '2026-10-28', lines: {
+    en: ["2.5.502 — Cogs know their metal."],
+    simple: ["2.5.502 — Cogs know their metal."],
+    uk: ["2.5.502 — Cogs know their metal."],
+    ru: ["2.5.502 — Cogs know their metal."],
+    es: ["2.5.502 — Cogs know their metal."],
+    ar: ["2.5.502 — Cogs know their metal."],
+    'fa-AF': ["2.5.502 — Cogs know their metal."],
+    rw: ["2.5.502 — Cogs know their metal."],
+    ti: ["2.5.502 — Cogs know their metal."],
+  }},
+
   { v: '2.5.501', date: '2026-10-28', lines: {
     en: ["2.5.501 — The update note stays out of your way, even with the menu open."],
     simple: ["2.5.501 — The update note stays out of the way, even when the menu is open."],
