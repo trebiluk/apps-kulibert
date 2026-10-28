@@ -2624,7 +2624,7 @@ html body #sheet[data-panel="badges"] .bdg-count {
 }
 
 
-/* 2.5.505: Settings language list. Rows stay at least 44px. Arabic and Dari read right to left. */
+/* 2.5.505: Settings language list. Rows stay at least 44px. */
 html body #sheet .lang-list {
   display: flex;
   flex-direction: column;
@@ -2649,7 +2649,18 @@ html body #sheet .lang-opt {
   text-align: start;
 }
 html body #sheet .lang-opt .lang-mark { flex: 0 0 1.2em; width: 1.2em; }
-html body #sheet .lang-opt[dir="rtl"] { flex-direction: row-reverse; text-align: right; }
-html body #sheet .lang-list[dir="rtl"] { direction: rtl; }
+/* 2.5.513: Arabic row only. The word starts on the right. The check stays on the left. The list stays left to right. */
+html body #sheet .lang-list { direction: ltr; }
+html body #sheet .lang-opt[dir="rtl"] {
+  direction: rtl;
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: start;
+}
+html body #sheet .lang-opt[dir="rtl"] .lang-name {
+  flex: 1 1 auto;
+  text-align: start;
+}
+html body #sheet .lang-opt[dir="rtl"] .lang-mark { order: 2; }
 
 

@@ -12890,7 +12890,6 @@ function paintLangRow(g) {
     ['rw', 'Kinyarwanda'],
     ['ti', 'ትግርኛ'],
   ]
-  const rtlCode = { ar: 1, 'fa-AF': 1 }
   const cur = LANG || 'en'
   const curName = (picks.find((p) => p[0] === cur) || ['', cur === 'simple' ? 'Simple' : cur])[1]
   lab.textContent = (t('language') || 'Language') + ': ' + curName
@@ -12907,15 +12906,15 @@ function paintLangRow(g) {
   list.hidden = true
   list.setAttribute('role', 'listbox')
   list.setAttribute('aria-label', t('language') || 'Language')
-  list.dir = rtlCode[cur] ? 'rtl' : 'ltr'
+  list.dir = 'ltr'
   const opts = []
   for (const [code, name] of picks) {
     const opt = document.createElement('button')
     opt.type = 'button'
     opt.className = 'pill lang-opt'
     opt.setAttribute('role', 'option')
-    opt.lang = code
-    opt.dir = rtlCode[code] ? 'rtl' : 'ltr'
+    opt.lang = code === 'ar' ? 'ar' : code
+    opt.dir = code === 'ar' ? 'rtl' : 'ltr'
     opt.dataset.lang = code
     const on = code === cur
     opt.setAttribute('aria-selected', on ? 'true' : 'false')
