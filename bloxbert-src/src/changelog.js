@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.539. Main was 2.5.536. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.539', date: '2026-10-28', lines: {
+    en: ['2.5.539 — Menu and mode buttons have more room on phones.'],
+    simple: ['2.5.539 — Menu and mode buttons have more room on phones.'],
+    uk: ['2.5.539 — Кнопки меню і режиму мають більше місця на телефоні.'],
+    ru: ['2.5.539 — Кнопки меню и режима получили больше места на телефоне.'],
+    es: ['2.5.539 — Los botones de Menú y de modo tienen más espacio en el teléfono.'],
+    ar: ['2.5.539 — أزرار القائمة والوضع صار بينهما فراغ أكبر على الهاتف.'],
+    'fa-AF': ['2.5.539 — دکمه‌های فهرست و حالت در تلفن فاصلهٔ بیشتری دارند.'],
+    rw: ['2.5.539 — Ubuto bwa Menu n\'ubw\'uburyo bufite umwanya munini kuri telefoni.'],
+    ti: ['2.5.539 — መጠወቒ ዝርዝርን ኩነትን ኣብ ተሌፎን ዝያዳ ቦታ ኣለዎም።'],
+  }},
+
   // Locked 2.5.536. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.536', date: '2026-10-28', lines: {
     en: ['2.5.536 — Tap your cog chip to see today\'s cogs.'],

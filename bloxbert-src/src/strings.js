@@ -500,3 +500,21 @@ for (const [lang, row] of Object.entries(COG536)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.539 what's new. rw, ti, and fa-AF are machine drafts.
+const WN539 = {
+  en: { whatsNewBody: '2.5.539 — Menu and mode buttons have more room on phones.' },
+  simple: { whatsNewBody: '2.5.539 — Menu and mode buttons have more room on phones.' },
+  uk: { whatsNewBody: '2.5.539 — Кнопки меню і режиму мають більше місця на телефоні.' },
+  ru: { whatsNewBody: '2.5.539 — Кнопки меню и режима получили больше места на телефоне.' },
+  es: { whatsNewBody: '2.5.539 — Los botones de Menú y de modo tienen más espacio en el teléfono.' },
+  ar: { whatsNewBody: '2.5.539 — أزرار القائمة والوضع صار بينهما فراغ أكبر على الهاتف.' },
+  'fa-AF': { whatsNewBody: '2.5.539 — دکمه‌های فهرست و حالت در تلفن فاصلهٔ بیشتری دارند.' },
+  rw: { whatsNewBody: '2.5.539 — Ubuto bwa Menu n\'ubw\'uburyo bufite umwanya munini kuri telefoni.' },
+  ti: { whatsNewBody: '2.5.539 — መጠወቒ ዝርዝርን ኩነትን ኣብ ተሌፎን ዝያዳ ቦታ ኣለዎም።' },
+}
+for (const [lang, row] of Object.entries(WN539)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

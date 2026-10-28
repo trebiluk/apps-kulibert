@@ -1193,6 +1193,34 @@ html body .kb-bar .kb-plate {
   html body #hub-back .ti { display: flex !important; }
 }
 
+/* 2.5.539: Menu and the mode chips stay at least 12px apart. Targets stay 44px. */
+html body header.top #mode-pill {
+  margin-inline-start: 12px !important;
+  margin-top: 12px !important;
+}
+html body header.top #menu-btn,
+html body header.top #mode-pill button,
+html body #game-menu,
+html body .kb-bar .kb-menu {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+@media (max-width: 980px), (max-height: 520px) {
+  html body header.top { row-gap: 12px !important; }
+}
+/* 2.5.539: upright phones. Mode chips move to the right so Menu stands alone top-left. */
+@media (max-width: 480px) {
+  html body header.top { padding-right: 112px !important; }
+  html body header.top #mode-pill {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    left: auto !important;
+    margin: 0 !important;
+    z-index: 4 !important;
+  }
+}
+
 /* 2.5.269 wins over the short-screen clip. Names, counts, and Output stay whole. */
 @media (max-height: 500px) and (min-width: 700px) {
   html body #sheet[data-panel="crafting"] #sheet-body,
@@ -2568,6 +2596,24 @@ html body #keys-pop[hidden] { display: none !important; }
     line-height: 1.2 !important;
     white-space: nowrap !important;
     border: 0 !important;
+  }
+}
+
+/* 2.5.539: narrow phones. Menu stays top-left. Mode chips sit on the right, 12px clear. */
+@media (max-width: 480px) {
+  html body .kb-bar { justify-content: flex-start !important; }
+  html body .kb-bar .kb-menu { margin-inline-end: auto !important; }
+  html body header.top {
+    justify-content: flex-start !important;
+    padding-right: 112px !important;
+  }
+  html body header.top #mode-pill {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    left: auto !important;
+    margin: 0 !important;
+    z-index: 5 !important;
   }
 }
 
