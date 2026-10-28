@@ -232,7 +232,11 @@ export function pinAboveBar(el) {
   el.style.setProperty('margin', '0', 'important')
   const wide = el.classList && el.classList.contains('keys')
   el.style.setProperty('width', 'max-content', 'important')
-  el.style.setProperty('max-width', wide ? 'min(880px, calc(100vw - 16px))' : 'min(420px, calc(100vw - 16px))', 'important')
+  el.style.setProperty('max-width', wide ? 'min(1320px, calc(100vw - 16px))' : 'min(420px, calc(100vw - 16px))', 'important')
+  if (wide) {
+    el.style.setProperty('overflow-wrap', 'normal', 'important')
+    el.style.setProperty('word-break', 'normal', 'important')
+  }
   const box = el.getBoundingClientRect()
   const w = Math.min(Math.max(box.width || 140, 96), window.innerWidth - 16)
   const h = Math.max(box.height || 36, 32)

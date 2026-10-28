@@ -2663,4 +2663,31 @@ html body #sheet .lang-opt[dir="rtl"] .lang-name {
 }
 html body #sheet .lang-opt[dir="rtl"] .lang-mark { order: 2; }
 
+/* 2.5.517: the badge tile uses the same n-of-N line as the badges page title. */
+html body #sheet[data-panel="menu"] .bdg-tile-n {
+  display: block;
+  max-width: 100%;
+  font-size: 14px !important;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  color: #e8e6e3;
+}
+
+/* 2.5.517: Language sits first. At 1366 the open list is fully on screen, not clipped. */
+html body #sheet[data-panel="settings"] #lang-list:not([hidden]) {
+  max-height: none;
+  overflow: visible;
+}
+
+/* 2.5.517: the keys line may wrap at 412, but only on spaces. At 1366 it stays one line. */
+html body > .keys,
+html body #keys-pop {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: manual !important;
+}
+html body #keys-pop { white-space: normal !important; }
+
 

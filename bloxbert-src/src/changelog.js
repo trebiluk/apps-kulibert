@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.517 what's new. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.517', date: '2026-10-28', lines: {
+    en: ['2.5.517 — The menu shows your badge count, and languages are easier to find.'],
+    simple: ['2.5.517 — The menu shows your badge count. Languages are easier to find.'],
+    uk: ['2.5.517 — Меню показує кількість значків, а мови легше знайти.'],
+    ru: ['2.5.517 — Меню показывает число значков, а языки легче найти.'],
+    es: ['2.5.517 — El menú muestra cuántas insignias tienes, y los idiomas se encuentran más fácil.'],
+    ar: ['2.5.517 — تعرض القائمة عدد شاراتك، واللغات أسهل في العثور عليها.'],
+    'fa-AF': ['2.5.517 — فهرست شمار نشان‌هایت را نشان می‌دهد، و زبان‌ها آسان‌تر پیدا می‌شوند.'],
+    rw: ['2.5.517 — Ibikubiyemo birerekana umubare w\'ibimenyetso, kandi indimi ziroroha kuboneka.'],
+    ti: ['2.5.517 — ዝርዝር ናይ ምልክታት ቍጽሪ የርኢ፣ ቋንቋታት ድማ ቀሊል ክርከቡ ይኽእሉ።'],
+  }},
+
   { v: '2.5.516', date: '2026-10-28', lines: {
     en: ["2.5.516 — Switching language now changes every note on screen."],
     simple: ["2.5.516 — Switching language now changes every note on the screen."],

@@ -240,6 +240,34 @@ export function mountPanels(api) {
     for (const b of tiles) box.append(b)
     return box
   }
+  function badgeIds() { return ['berryRound', 'lanternWalk', 'gardenCorner'] }
+  function badgeCountLine() {
+    const ids = badgeIds()
+    let got = 0
+    for (const id of ids) {
+      const prog = window.Badges && window.Badges.progress ? window.Badges.progress(id) : null
+      if (prog && prog.done) got += 1
+    }
+    return (api.t('bdgProgress') || '{n} of {m}').replace('{n}', String(got)).replace('{m}', String(ids.length))
+  }
+  function badgeHead() { return api.t('bdgTitle') + ' · ' + badgeCountLine() }
+  function liftLang(g) {
+    const list = g.querySelector('#lang-list')
+    if (!list) return
+    const row = list.previousElementSibling
+    if (!row || !row.classList.contains('set-line')) return
+    g.insertBefore(row, g.firstChild)
+    g.insertBefore(list, row.nextSibling)
+    const btn = row.querySelector('button[aria-controls="lang-list"]')
+    if (!btn || btn.dataset.langLift === '1') return
+    btn.dataset.langLift = '1'
+    btn.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        if (list.hidden || !list.scrollIntoView) return
+        list.scrollIntoView({ block: 'nearest' })
+      })
+    })
+  }
   function paintMenu(g) {
     g.classList.add('kd-panel')
     const plate = document.createElement('div')
@@ -258,7 +286,15 @@ export function mountPanels(api) {
       keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
       keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
       keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
-      keyTile('star', 'badges', api.t('bdgTitle'), () => open('badges')), // 2.5.476: badges tile
+      (() => {
+        const b = keyTile('star', 'badges', api.t('bdgTitle'), () => open('badges')) // 2.5.476: badges tile
+        const n = document.createElement('span')
+        n.className = 'bdg-tile-n'
+        n.dataset.bdgCount = '1'
+        n.textContent = badgeCountLine()
+        b.append(n)
+        return b
+      })(),
       keyTile('help', 'help', api.t('help'), () => open('help')),
     ]
     const groups = document.createElement('div')
@@ -360,7 +396,7 @@ export function mountPanels(api) {
       crafting: () => show('crafting', api.t('crafting'), (g) => api.paintCraft(g)),
       shop: () => show('shop', api.t('shop'), (g) => api.paintShop(g)),
       wallet: () => show('wallet', api.t('wallet'), (g) => api.paintWallet(g)),
-      settings: () => show('settings', api.t('settings'), (g) => api.paintSettings(g)),
+      settings: () => show('settings', api.t('settings'), (g) => { api.paintSettings(g); liftLang(g) }),
       teacher: () => show('teacher', api.t('teacher'), (g) => {
         const host = document.createElement('div')
         host.className = 'ggrid wide'
@@ -372,7 +408,7 @@ export function mountPanels(api) {
         b.dataset.rulesTile = '1'
         g.append(b)
       }),
-      badges: () => show('badges', api.t('bdgTitle'), (g) => { // 2.5.476: badges panel
+      badges: () => show('badges', badgeHead(), (g) => { // 2.5.476: badges panel
         const list = ['berryRound', 'lanternWalk', 'gardenCorner']
         for (const id of list) {
           const row = document.createElement('div')
