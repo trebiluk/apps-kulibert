@@ -25,20 +25,20 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.526 what's new wins over the 2.5.525 bronze line.
+// 2.5.528 what's new. The Bag detail is the same in Creative, and goals say where to make it.
 // rw, ti, and fa-AF are machine drafts.
-const WN526 = {
-  en: { whatsNewBody: '2.5.526 — Your Cog wallet now shows in Creative too.' },
-  simple: { whatsNewBody: '2.5.526 — Your Cog wallet shows in Creative too.' },
-  uk: { whatsNewBody: '2.5.526 — Гаманець шестерень тепер є і в Творчому.' },
-  ru: { whatsNewBody: '2.5.526 — Кошелёк шестерён теперь есть и в Творческом.' },
-  es: { whatsNewBody: '2.5.526 — Tu monedero de engranajes ahora también se ve en Creativo.' },
-  ar: { whatsNewBody: '2.5.526 — محفظة التروس تظهر الآن في الإبداعي أيضًا.' },
-  'fa-AF': { whatsNewBody: '2.5.526 — کیف چرخ‌دنده‌ات حالا در خلاق هم دیده می‌شود.' },
-  rw: { whatsNewBody: '2.5.526 — Ikofi y\'amapine igaragara na muri Kurema.' },
-  ti: { whatsNewBody: '2.5.526 — ናይ ኮግ ቦርሳ ኣብ ፈጠራ እውን ይርአ።' },
+const WN528 = {
+  en: { whatsNewBody: '2.5.528 — The Bag shows your item in every mode, and goals tell you where to make things.' },
+  simple: { whatsNewBody: '2.5.528 — The Bag shows your item in every mode. Goals say where to make it.' },
+  uk: { whatsNewBody: '2.5.528 — Сумка показує предмет у кожному режимі, а цілі кажуть, де його зробити.' },
+  ru: { whatsNewBody: '2.5.528 — Сумка показывает предмет в каждом режиме, а цели говорят, где его сделать.' },
+  es: { whatsNewBody: '2.5.528 — La Bolsa muestra tu objeto en cada modo, y las metas dicen dónde hacerlo.' },
+  ar: { whatsNewBody: '2.5.528 — الحقيبة تُظهر غرضك في كل وضع، والأهداف تقول أين تصنعه.' },
+  'fa-AF': { whatsNewBody: '2.5.528 — بکس چیزت را در هر حالت نشان می‌دهد، و هدف‌ها می‌گویند کجا بسازی.' },
+  rw: { whatsNewBody: '2.5.528 — Agasaho kerekana ikintu cyawe muri buri buryo, kandi intego zivuga aho cyakorerwa.' },
+  ti: { whatsNewBody: '2.5.528 — ቦርሳ ነቲ ነገርካ ኣብ ነፍሲ ወከፍ ኩነታት የርኢ፡ ዕላማታት ድማ ኣበይ ከም እትገብሮ ይነግሩ።' },
 }
-for (const [lang, row] of Object.entries(WN526)) {
+for (const [lang, row] of Object.entries(WN528)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }

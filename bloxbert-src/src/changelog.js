@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.528 what's new. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.528', date: '2026-10-28', lines: {
+    en: ['2.5.528 — The Bag shows your item in every mode, and goals tell you where to make things.'],
+    simple: ['2.5.528 — The Bag shows your item in every mode. Goals say where to make it.'],
+    uk: ['2.5.528 — Сумка показує предмет у кожному режимі, а цілі кажуть, де його зробити.'],
+    ru: ['2.5.528 — Сумка показывает предмет в каждом режиме, а цели говорят, где его сделать.'],
+    es: ['2.5.528 — La Bolsa muestra tu objeto en cada modo, y las metas dicen dónde hacerlo.'],
+    ar: ['2.5.528 — الحقيبة تُظهر غرضك في كل وضع، والأهداف تقول أين تصنعه.'],
+    'fa-AF': ['2.5.528 — بکس چیزت را در هر حالت نشان می‌دهد، و هدف‌ها می‌گویند کجا بسازی.'],
+    rw: ['2.5.528 — Agasaho kerekana ikintu cyawe muri buri buryo, kandi intego zivuga aho cyakorerwa.'],
+    ti: ['2.5.528 — ቦርሳ ነቲ ነገርካ ኣብ ነፍሲ ወከፍ ኩነታት የርኢ፡ ዕላማታት ድማ ኣበይ ከም እትገብሮ ይነግሩ።'],
+  }},
+
   // 2.5.526 what's new. Locked version. Main was 2.5.525. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.526', date: '2026-10-28', lines: {
     en: ['2.5.526 — Your Cog wallet now shows in Creative too.'],

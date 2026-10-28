@@ -96,8 +96,10 @@ export function createLearn(api) {
     const id = goalItem(g)
     if (!id) return ''
     const rec = RECIPES.find((r) => r.out && r.out[0] === id)
-    if (!rec || rec.at !== 'bench') return ''
-    return api.t('goalAtBench').replace('{where}', api.t('workbench'))
+    // The bench itself is crafted in hand, but the goal still says where.
+    // Anything made at the bench (wood pickaxe, and so on) uses the same line.
+    if (!rec || (rec.at !== 'bench' && id !== 'workbench')) return ''
+    return api.t('goalAtBench')
   }
   function fillTitle(title, g) {
     if (!title) return
@@ -395,6 +397,13 @@ export function createLearn(api) {
     p.className = 'gnote'
     p.textContent = api.t(g0.id) + ' ' + g0.n + '/' + g0.need
     g.append(p)
+    const where = goalWhere(g0)
+    if (where) {
+      const sub = document.createElement('p')
+      sub.className = 'gnote path-where'
+      sub.textContent = where
+      g.append(sub)
+    }
   }
   function paintA11y(g) {
     const b = document.createElement('button')

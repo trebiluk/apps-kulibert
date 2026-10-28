@@ -311,7 +311,7 @@ for (const lang of Object.keys(STR)) STR[lang].creditDyslexia = CREDIT_DYS[lang]
 // 2.5.526: cog wallet in Creative. rw, ti, and fa-AF are machine drafts.
 const COG515 = {
   en: {
-    whatsNewBody: '2.5.526 — Your Cog wallet now shows in Creative too.',
+    whatsNewBody: '2.5.528 — The Bag shows your item in every mode, and goals tell you where to make things.',
     cogBronze: 'Bronze Cog',
     cogHard: 'Bronze is copper plus tin, harder than either alone.',
     cogToday: 'Today {n}/150',
@@ -320,7 +320,7 @@ const COG515 = {
     cogGold: 'Gold',
   },
   simple: {
-    whatsNewBody: '2.5.526 — Your Cog wallet shows in Creative too.',
+    whatsNewBody: '2.5.528 — The Bag shows your item in every mode. Goals say where to make it.',
     cogBronze: 'Bronze Cog',
     cogHard: 'Bronze is copper plus tin. It is harder than either one alone.',
     cogToday: 'Today {n}/150',
@@ -329,7 +329,7 @@ const COG515 = {
     cogGold: 'Gold',
   },
   uk: {
-    whatsNewBody: '2.5.526 — Гаманець шестерень тепер є і в Творчому.',
+    whatsNewBody: '2.5.528 — Сумка показує предмет у кожному режимі, а цілі кажуть, де його зробити.',
     cogBronze: 'Бронзова шестірня',
     cogHard: 'Бронза — це мідь із оловом, твердіша за кожну окремо.',
     cogToday: 'Сьогодні {n}/150',
@@ -338,7 +338,7 @@ const COG515 = {
     cogGold: 'Золото',
   },
   ru: {
-    whatsNewBody: '2.5.526 — Кошелёк шестерён теперь есть и в Творческом.',
+    whatsNewBody: '2.5.528 — Сумка показывает предмет в каждом режиме, а цели говорят, где его сделать.',
     cogBronze: 'Бронзовая шестерня',
     cogHard: 'Бронза — это медь с оловом, твёрже каждой по отдельности.',
     cogToday: 'Сегодня {n}/150',
@@ -347,7 +347,7 @@ const COG515 = {
     cogGold: 'Золото',
   },
   es: {
-    whatsNewBody: '2.5.526 — Tu monedero de engranajes ahora también se ve en Creativo.',
+    whatsNewBody: '2.5.528 — La Bolsa muestra tu objeto en cada modo, y las metas dicen dónde hacerlo.',
     cogBronze: 'Engranaje de bronce',
     cogHard: 'El bronce es cobre más estaño, más duro que cada uno solo.',
     cogToday: 'Hoy {n}/150',
@@ -356,7 +356,7 @@ const COG515 = {
     cogGold: 'Oro',
   },
   ar: {
-    whatsNewBody: '2.5.526 — محفظة التروس تظهر الآن في الإبداعي أيضًا.',
+    whatsNewBody: '2.5.528 — الحقيبة تُظهر غرضك في كل وضع، والأهداف تقول أين تصنعه.',
     cogBronze: 'ترس برونزي',
     cogHard: 'البرونز نحاس مع قصدير، أقسى من كل واحد وحده.',
     cogToday: 'اليوم {n}/150',
@@ -365,7 +365,7 @@ const COG515 = {
     cogGold: 'ذهب',
   },
   'fa-AF': {
-    whatsNewBody: '2.5.526 — کیف چرخ‌دنده‌ات حالا در خلاق هم دیده می‌شود.',
+    whatsNewBody: '2.5.528 — بکس چیزت را در هر حالت نشان می‌دهد، و هدف‌ها می‌گویند کجا بسازی.',
     cogBronze: 'چرخ‌دندهٔ برنجی',
     cogHard: 'برنج مس با قلعی است، از هر کدام تنها سخت‌تر.',
     cogToday: 'امروز {n}/150',
@@ -374,7 +374,7 @@ const COG515 = {
     cogGold: 'طلا',
   },
   rw: {
-    whatsNewBody: '2.5.526 — Ikofi y\'amapine igaragara na muri Kurema.',
+    whatsNewBody: '2.5.528 — Agasaho kerekana ikintu cyawe muri buri buryo, kandi intego zivuga aho cyakorerwa.',
     cogBronze: 'Ipini ya bronze',
     cogHard: 'Bronze ni umuringa n\'itini, ikomeye kurusha buri kimwe cyonyine.',
     cogToday: 'Uyu munsi {n}/150',
@@ -383,7 +383,7 @@ const COG515 = {
     cogGold: 'Zahabu',
   },
   ti: {
-    whatsNewBody: '2.5.526 — ናይ ኮግ ቦርሳ ኣብ ፈጠራ እውን ይርአ።',
+    whatsNewBody: '2.5.528 — ቦርሳ ነቲ ነገርካ ኣብ ነፍሲ ወከፍ ኩነታት የርኢ፡ ዕላማታት ድማ ኣበይ ከም እትገብሮ ይነግሩ።',
     cogBronze: 'ናይ ነሓስ ኮግ',
     cogHard: 'ነሓስን ቆርቆሮን ምውህሃድ እዩ፡ ካብ ነፍሲ ወከፍ ጥራይ ይደፍእ።',
     cogToday: 'ሎሚ {n}/150',

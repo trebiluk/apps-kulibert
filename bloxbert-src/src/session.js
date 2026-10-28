@@ -60,6 +60,7 @@ export function createSession(api) {
   let hot = 0
   const wins = { log: false, make: false, place: false, wall: false }
   let bagSel = -1
+  let creativeKey = ''
   let bagSkip = 0
   function slotsHeld() {
     const sheet = document.getElementById('sheet')
@@ -720,14 +721,16 @@ export function createSession(api) {
   }
   function refreshBag() {
     const g = document.querySelector('#sheet[data-panel="inventory"] .ggrid')
-    if (!g || mode !== 'survival') return
+    if (!g) return
     g.innerHTML = ''
     paintBag(g)
   }
   function card(itemKey, index) {
     const item = ITEMS[itemKey]
-    const s = bag.slots[index]
-    const n = s && s.item === itemKey ? s.n : 0
+    const creative = mode !== 'survival'
+    const s = creative ? null : bag.slots[index]
+    const carried = creative ? (bag.count(itemKey) || 0) : (s && s.item === itemKey ? s.n : 0)
+    const countLabel = creative ? (carried > 0 ? String(carried) : '∞') : (carried ? String(carried) : '')
     const panel = document.createElement('div')
     panel.className = 'bag-card'
     const head = document.createElement('div')
@@ -737,10 +740,12 @@ export function createSession(api) {
     ic.append(faceIcon(itemKey))
     const name = document.createElement('span')
     name.className = 'bag-name'
-    name.textContent = faceName(itemKey) + (n ? ' × ' + n : '')
+    name.textContent = faceName(itemKey) + (countLabel ? ' × ' + countLabel : '')
     const facts = document.createElement('p')
     facts.className = 'bag-facts'
-    facts.textContent = factsLine(itemKey, { n: n, uses: s && s.uses }).text
+    facts.textContent = creative && carried < 1
+      ? t('youHave') + ' ∞'
+      : factsLine(itemKey, { n: carried, uses: s && s.uses }).text
     const words = document.createElement('span')
     words.className = 'bag-words'
     words.append(name, facts)
@@ -758,12 +763,28 @@ export function createSession(api) {
       b.addEventListener('click', (e) => { e.stopPropagation(); fn(e) })
       keys.append(b)
     }
-    addKey('hold', t('holdIt'), (e) => { if (e && e.stopPropagation) e.stopPropagation(); holdItem(itemKey, index); if (api.close) api.close() })
-    addKey('drop1', t('drop1'), () => { dropStack(index, false); refreshBag() })
-    addKey('dropall', t('dropAll'), () => { dropStack(index, true); refreshBag() })
+    const dropCreative = (all) => {
+      const i = bag.slots.findIndex((sl) => sl && sl.item === itemKey)
+      if (i >= 0) { dropStack(i, all); refreshBag(); return }
+      const p = dropSpot()
+      spawnDrop(itemKey, 1, p[0], p[1], p[2], 'q')
+    }
+    if (creative) {
+      addKey('hold', t('holdIt'), (e) => {
+        if (e && e.stopPropagation) e.stopPropagation()
+        if (item && item.block && api.assign) api.assign(item.block, itemKey)
+        if (api.close) api.close()
+      })
+      addKey('drop1', t('drop1'), () => dropCreative(false))
+      addKey('dropall', t('dropAll'), () => dropCreative(true))
+    } else {
+      addKey('hold', t('holdIt'), (e) => { if (e && e.stopPropagation) e.stopPropagation(); holdItem(itemKey, index); if (api.close) api.close() })
+      addKey('drop1', t('drop1'), () => { dropStack(index, false); refreshBag() })
+      addKey('dropall', t('dropAll'), () => { dropStack(index, true); refreshBag() })
+    }
     if (!slotMuted(itemKey)) addKey('worth', t('worth'), () => {
       const pay = quoteSell(item, wallet.state.soldToday[itemKey] || 0, wallet.state.dial || 1, { ...ECON, dial: wallet.state.dial })
-      api.toast(t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey))
+      api.toast(t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + (creative && carried < 1 ? '∞' : bag.count(itemKey)))
     })
     panel.append(keys)
     return panel
@@ -869,6 +890,13 @@ export function createSession(api) {
     g.classList.add('baggrid')
     if (mode !== 'survival') {
       if (title) title.textContent = t('bag')
+      if (!creativeKey) {
+        const heldId = api.creativeBlock && api.creativeBlock()
+        if (heldId) {
+          const hit = Object.entries(ITEMS).find(([, it]) => it.block === heldId)
+          if (hit && !slotMuted(hit[0])) creativeKey = hit[0]
+        }
+      }
       const wells = document.createElement('div')
       wells.className = 'wells'
       for (const [k, item] of Object.entries(ITEMS)) {
@@ -876,7 +904,7 @@ export function createSession(api) {
         const b = document.createElement('button')
         b.type = 'button'
         b.className = 'well gtile'
-        const held = api.creativeBlock && api.creativeBlock() === item.block
+        const held = (api.creativeBlock && api.creativeBlock() === item.block) || k === creativeKey
         b.classList.toggle('on', held)
         b.setAttribute('aria-pressed', held ? 'true' : 'false')
         const pic = document.createElement('span')
@@ -992,18 +1020,21 @@ export function createSession(api) {
         b.addEventListener('click', () => {
           if (blockSlot()) return
           if (bagSkip && performance.now() - bagSkip < 700) return
+          creativeKey = k
           if (api.assign) api.assign(item.block, k)
           api.toast(itemName(k))
-          for (const el of wells.querySelectorAll('.well.on')) {
-            el.classList.remove('on')
-            el.setAttribute('aria-pressed', 'false')
-          }
-          b.classList.add('on')
-          b.setAttribute('aria-pressed', 'true')
+          refreshBag()
         })
         wells.append(b)
       }
-      g.append(wells)
+      const layout = document.createElement('div')
+      layout.className = 'bag-layout'
+      const main = document.createElement('div')
+      main.className = 'bag-main'
+      main.append(wells)
+      layout.append(main)
+      if (creativeKey && ITEMS[creativeKey]) layout.append(card(creativeKey, -1))
+      g.append(layout)
       return
     }
     if (title) title.textContent = t('bag')
