@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.24 — Pour Lines: 14 new levels with gel, syrup and water. No trackers. */
+/* Ramp & Fill RF 1.0.25 — Pick your level. Win one to unlock the next. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.24";
+  var VERSION = "RF 1.0.25";
   var testScriptAsked = false;
   function staffUnlocked() {
     try {
@@ -90,11 +90,11 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.24 — Home matches Pour Lines. Buttons stay easy to tap.",
+      whats: "RF 1.0.25 — Pick your level. Win one to unlock the next.",
       levels: "Levels", home: "Home", homeTag: "Draw a line. Pour the grains. Fill the cup.",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
-      progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
+      progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked", lockedTile: "Locked",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
       helpPour: "Press Pour. Grains (water later) slide into the cup.",
@@ -172,11 +172,11 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.24 — Домашня сторінка як у Pour Lines. Кнопки лишаються зручними.",
+      whats: "RF 1.0.25 — Обери рівень. Виграй один, щоб відкрити наступний.",
       levels: "Рівні", home: "Дім", homeTag: "Намалюй лінію. Налий зерна. Наповни чашку.",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
-      progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
+      progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито", lockedTile: "Замкнено",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
       helpPour: "Натисни Лий. Зерна (вода пізніше) їдуть у чашку.",
@@ -252,11 +252,11 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.24 — Домашняя страница как у Pour Lines. Кнопки остаются удобными.",
+      whats: "RF 1.0.25 — Выбери уровень. Выиграй один, чтобы открыть следующий.",
       levels: "Уровни", home: "Дом", homeTag: "Нарисуй линию. Налей зёрна. Наполни чашку.",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
-      progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
+      progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт", lockedTile: "Закрыто",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
       helpPour: "Нажми Лей. Зёрна (вода позже) едут в чашку.",
@@ -332,11 +332,11 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.24 — El inicio se ve como Pour Lines. Los botones siguen siendo fáciles de tocar.",
+      whats: "RF 1.0.25 — Elige tu nivel. Gana uno para abrir el siguiente.",
       levels: "Niveles", home: "Inicio", homeTag: "Dibuja una línea. Vierte los granos. Llena la taza.",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
-      progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
+      progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado", lockedTile: "Bloqueado",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
       helpPour: "Pulsa Vierte. Los granos (el agua, más tarde) bajan a la taza.",
@@ -412,11 +412,11 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.24 — الصفحة الأولى تشبه Pour Lines. الأزرار تبقى سهلة اللمس.",
+      whats: "RF 1.0.25 — اختر مستواك. اربح واحدًا لفتح التالي.",
       levels: "المراحل", home: "البداية", homeTag: "ارسم خطًا. اسكب الحبوب. املأ الكوب.",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
-      progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
+      progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق", lockedTile: "مقفل",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
       helpPour: "اضغط اسكب. الحبوب (الماء لاحقًا) تنزلق إلى الكوب.",
@@ -492,11 +492,11 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.24 — صفحهٔ خانه مثل Pour Lines است. دکمه‌ها هنوز راحت لمس می‌شوند.",
+      whats: "RF 1.0.25 — مرحله‌ات را انتخاب کن. یکی را ببر تا بعدی باز شود.",
       levels: "مرحله‌ها", home: "خانه", homeTag: "یک خط بکش. دانه‌ها را بریز. پیاله را پر کن.",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
-      progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
+      progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته", lockedTile: "قفل",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
       helpPour: "بریز را بزن. دانه‌ها (آب بعداً) به پیاله می‌لغزند.",
@@ -572,11 +572,11 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.24 — Urupapuro rw'itangiriro rusa na Pour Lines. Buto zikomeza kuba zoroshye gukanda.",
+      whats: "RF 1.0.25 — Hitamo urwego. Tsinda rumwe ukingure urukurikira.",
       levels: "Ingero", home: "Ahabanza", homeTag: "Shushanya umurongo. Suka ibinyanye. Uzuza igikombe.",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
-      progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
+      progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze", lockedTile: "Gufunze",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
       helpPour: "Kanda Suka. Ibinyanye (amazi nyuma) bigera mu gikombe.",
@@ -652,11 +652,11 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.24 — መእተዊ ገጽ ከም Pour Lines እዩ። መልጎምቲ ንኽንኻእ ቀሊል ይቕጽል።",
+      whats: "RF 1.0.25 — ደረጃኻ ምረጽ። ሓደ ምስ ዓወትካ ዝቕጽል ይኽፈት።",
       levels: "ደረጃታት", home: "መጀመርታ", homeTag: "መስመር ስኣል። እኽሊ ቀድሕ። ኽባያ ምላእ።",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
-      progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
+      progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው", lockedTile: "ተዓጽዩ",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
       helpPour: "ቀድሕ ጠውቕ። እኽሊ (ማይ ድሕሪት) ናብ ኽባያ ይንሸራተት።",
@@ -701,7 +701,7 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.24 — Home matches Pour Lines. Buttons stay easy to tap.",
+      whats: "RF 1.0.25 — Pick your level. Win one to unlock the next.",
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
       helpClear: "When you win, stars show one by one. Next is ready.",
@@ -1040,6 +1040,7 @@
     var chip = document.getElementById("ver-plate");
     if (chip) chip.textContent = VERSION;
     document.querySelectorAll(".ver-plate").forEach(function (el) { el.textContent = VERSION; });
+    document.querySelectorAll(".pl-kicker").forEach(function (el) { el.textContent = VERSION; });
     var bar = document.querySelector("script[data-app='rampfill']");
     if (bar) bar.setAttribute("data-version", VERSION);
     var body = document.getElementById("whats-body");
@@ -1077,7 +1078,7 @@
     var l2 = document.getElementById("lesson-2");
     if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = document.body.classList.contains("at-ideas") ? t("ideas") : document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : dailyOn ? t("dailyCup") : t("lv" + level);
+    if (lv) lv.textContent = document.body.classList.contains("at-ideas") ? t("ideas") : document.body.classList.contains("at-ref") ? t("refTile") : document.body.classList.contains("at-pick") ? t("levels") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : dailyOn ? t("dailyCup") : t("lv" + level);
     canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
@@ -1331,6 +1332,54 @@
     });
     daily.appendChild(dayBtn);
     list.appendChild(daily);
+    paintPicker();
+  }
+  function hidePicker() {
+    document.body.classList.remove("at-pick");
+    var picker = document.getElementById("picker");
+    if (picker) picker.hidden = true;
+  }
+  function paintPicker() {
+    var grid = document.getElementById("picker-grid");
+    if (!grid) return;
+    grid.replaceChildren();
+    for (var i = 1; i <= 5; i++) {
+      var open = i <= unlocked;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pick-tile" + (open ? "" : " is-locked");
+      btn.setAttribute("role", "listitem");
+      var name = t("lv" + i);
+      if (open) {
+        btn.textContent = i + ". " + name;
+        btn.setAttribute("aria-label", name);
+        btn.addEventListener("click", (function (n) {
+          return function () { chooseLevel(n); };
+        })(i));
+      } else {
+        btn.setAttribute("aria-disabled", "true");
+        btn.innerHTML = '<span class="pick-lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>';
+        var label = document.createElement("span");
+        label.className = "pick-name";
+        label.textContent = i + ". " + name;
+        var state = document.createElement("span");
+        state.className = "pick-lock-word";
+        state.textContent = t("lockedTile");
+        btn.appendChild(label);
+        btn.appendChild(state);
+        btn.setAttribute("aria-label", name + ". " + t("lockedTile"));
+        btn.addEventListener("click", function (e) { e.preventDefault(); });
+      }
+      grid.appendChild(btn);
+    }
+  }
+  function chooseLevel(n) {
+    if (n > unlocked || n < 1) return;
+    hidePicker();
+    stackFromHome = false;
+    if (mode === "stack") leaveStack();
+    showPlay();
+    setLevel(n);
   }
   function doReset() {
     unlocked = 1;
@@ -2221,12 +2270,14 @@
       syncStackTools();
     }
     document.body.classList.add("at-home");
+    hidePicker();
     var lv = document.getElementById("level-name");
     if (lv) lv.textContent = t("home");
     paintStatus();
   }
   function showPlay() {
     document.body.classList.remove("at-home");
+    hidePicker();
     layout();
     paintText();
   }
@@ -2435,8 +2486,16 @@
   function openLevels() {
     stackFromHome = false;
     if (mode === "stack") leaveStack();
-    showPlay();
-    setLevel(unlocked);
+    document.body.classList.remove("at-home");
+    document.body.classList.remove("at-ideas");
+    document.body.classList.remove("at-ref");
+    document.body.classList.add("at-pick");
+    var picker = document.getElementById("picker");
+    if (picker) picker.hidden = false;
+    paintPicker();
+    paintText();
+    var first = picker && picker.querySelector(".pick-tile:not(.is-locked)");
+    if (first) first.focus();
   }
   function openHomeStack() {
     stackFromHome = true;
@@ -2776,7 +2835,7 @@
     clearFills();
   }
   function setPaused(on) {
-    if (atHome()) return;
+    if (atHome() || document.body.classList.contains("at-pick")) return;
     paused = on;
     document.getElementById("pause-layer").hidden = !on;
     syncModal();
@@ -3324,6 +3383,8 @@
     enterStack();
   });
   document.getElementById("home-levels").addEventListener("click", openLevels);
+  var pickerHome = document.getElementById("picker-home");
+  if (pickerHome) pickerHome.addEventListener("click", showHome);
   document.getElementById("home-stack").addEventListener("click", openHomeStack);
   document.getElementById("home-ref").addEventListener("click", openRef);
   document.getElementById("home-ideas").addEventListener("click", openIdeas);
@@ -3398,7 +3459,7 @@
         document.getElementById("ask").hidden = true; syncModal(); e.preventDefault(); return;
       }
       if (!document.getElementById("menu").hidden) { toggleMenu(false); e.preventDefault(); return; }
-      if (document.body.classList.contains("at-pl")) { if (window.PourLines) window.PourLines.close(); e.preventDefault(); return; }
+      if (document.body.classList.contains("at-pick")) { showHome(); e.preventDefault(); return; }
       if (document.body.classList.contains("at-ideas")) { closeIdeas(); e.preventDefault(); return; }
       if (document.body.classList.contains("at-ref")) { closeRef(); e.preventDefault(); return; }
       if (!document.getElementById("endcard").hidden) {

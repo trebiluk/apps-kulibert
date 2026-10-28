@@ -1,4 +1,9 @@
 # Ramp & Fill FIX-LIST
+Stage 25. Version locked: RF 1.0.25.
+
+- [x] **level-picker:** Levels opens a picker. Level 1 is open. The next level unlocks only after a win. Locked tiles show a lock icon and the word Locked. Tiles are at least 48px and keyboard focusable. Unlocks stay in localStorage.
+- [x] **pill-clear:** Sign in and Back to the Hub no longer cover the version chip or Close on the play screen or the menu at 1366×768, 412×915, and 915×412.
+
 Stage 24. Version locked: RF 1.0.24.
 
 - [x] **home-pour-lines:** The home screen uses the Pour Lines paper, Syne title, and two tabs (Levels, Pour Lines), plus Cup Stack, Referee, and Stack ideas. No illustrated tiles.

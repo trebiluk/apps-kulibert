@@ -706,3 +706,94 @@ body.at-home h1 {
 @media (max-width: 560px) {
   .pl-tab, .pl-chip { flex: 1 1 calc(50% - 8px); }
 }
+
+/* RF 1.0.25 — level picker. Home look stays as 1.0.24. */
+.picker { display: none; }
+.picker[hidden] { display: none !important; }
+body.at-pick {
+  background: #E7ECF0;
+  color: #16202A;
+}
+body.at-pick .home,
+body.at-pick .toolslot,
+body.at-pick .lesson-row,
+body.at-pick .stage,
+body.at-pick .status,
+body.at-pick .spill-line,
+body.at-pick .score,
+body.at-pick .ref,
+body.at-pick .ideas { display: none !important; }
+body.at-pick #pause-btn { visibility: hidden; }
+body.at-pick .picker {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+}
+body.at-pick .picker h2 {
+  margin: 0;
+  font: 800 clamp(28px, 6vw, 40px)/1 "Syne", "Arial Black", system-ui, sans-serif;
+  letter-spacing: -0.03em;
+  color: #16202A;
+}
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 10px;
+}
+.pick-tile, .pick-home {
+  min-width: 48px;
+  min-height: 48px;
+  border: 2px solid #16202A;
+  border-radius: 4px;
+  background: #F8FAFB;
+  color: #16202A;
+  font: 600 15px/1.2 "IBM Plex Sans", var(--font);
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.pick-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-height: 72px;
+}
+.pick-tile.is-locked { color: #16202A; }
+.pick-lock { display: inline-flex; }
+.pick-lock svg { width: 22px; height: 22px; display: block; }
+.pick-lock-word {
+  font: 600 13px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pick-home { align-self: flex-start; padding: 0 16px; }
+.pick-tile:focus-visible, .pick-home:focus-visible {
+  outline: 3px solid #D6205F;
+  outline-offset: 2px;
+}
+
+/* RF 1.0.25 — Sign in and Back to the Hub must not cover the version chip or Close. */
+body.kb-on .menu,
+body:has(.tw-app-bar) .menu {
+  top: 48px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+}
+body:has(.tw-app-bar):not(.kb-on) { padding-top: 48px; }
+@media (max-height: 520px) {
+  body.kb-on .menu,
+  body:has(.tw-app-bar) .menu { top: 48px; }
+  body:has(.tw-app-bar):not(.kb-on) { padding-top: 48px; }
+}
+
