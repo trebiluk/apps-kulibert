@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Locked 2.5.537 was already below main (2.5.539), so this is 2.5.540. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.540', date: '2026-10-28', lines: {
+    en: ['2.5.540 — Beds now tell you why they won\'t fit.'],
+    simple: ['2.5.540 — Beds now say why they will not fit.'],
+    uk: ['2.5.540 — Ліжка тепер кажуть, чому не вміщаються.'],
+    ru: ['2.5.540 — Кровати теперь говорят, почему не помещаются.'],
+    es: ['2.5.540 — Las camas ahora dicen por qué no caben.'],
+    ar: ['2.5.540 — الأسرّة الآن تقول لماذا لا تتسع.'],
+    'fa-AF': ['2.5.540 — بسترها حالا می‌گویند چرا جا نمی‌شوند.'],
+    rw: ['2.5.540 — Ibitanda ubu bivuga impamvu bitinjira.'],
+    ti: ['2.5.540 — ዓራታት ሕጂ ስለምን ከምዘይኣትዉ ይነግሩ።'],
+  }},
+
   // 2.5.539. Main was 2.5.536. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.539', date: '2026-10-28', lines: {
     en: ['2.5.539 — Menu and mode buttons have more room on phones.'],

@@ -41,6 +41,22 @@ for (const [lang, row] of Object.entries(WN536)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.540 what's new. Locked 2.5.537 was already below main (2.5.539). rw, ti, and fa-AF are machine drafts.
+const WN540 = {
+  en: { whatsNewBody: '2.5.540 — Beds now tell you why they won\'t fit.' },
+  simple: { whatsNewBody: '2.5.540 — Beds now say why they will not fit.' },
+  uk: { whatsNewBody: '2.5.540 — Ліжка тепер кажуть, чому не вміщаються.' },
+  ru: { whatsNewBody: '2.5.540 — Кровати теперь говорят, почему не помещаются.' },
+  es: { whatsNewBody: '2.5.540 — Las camas ahora dicen por qué no caben.' },
+  ar: { whatsNewBody: '2.5.540 — الأسرّة الآن تقول لماذا لا تتسع.' },
+  'fa-AF': { whatsNewBody: '2.5.540 — بسترها حالا می‌گویند چرا جا نمی‌شوند.' },
+  rw: { whatsNewBody: '2.5.540 — Ibitanda ubu bivuga impamvu bitinjira.' },
+  ti: { whatsNewBody: '2.5.540 — ዓራታት ሕጂ ስለምን ከምዘይኣትዉ ይነግሩ።' },
+}
+for (const [lang, row] of Object.entries(WN540)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function holdWalletChip() {
   const el = document.getElementById('wallet-chip')
   if (!el || el.dataset.cogReady === '1') return
@@ -3194,17 +3210,30 @@ function ensureBedPair(x, y, z) {
     }
   } finally { bedBusy = false }
 }
+// Why a bed will not sit: two free floor blocks, or one free block above them.
+function bedBlockReason(x, y, z, span) {
+  const taken = (cx, cy, cz) => !!getVoxel(cx, cy, cz)
+  if (taken(x, y, z) || taken(span.sx, span.sy, span.sz)) return 'bedFloor'
+  if (!tableMode) {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (overlapsPlayer(span.sx, span.sy, span.sz, p[0], p[1], p[2])) return 'bedFloor'
+  }
+  if (!teacherOn() && !townHelper() && protectedCell(span.sx, span.sy, span.sz, protect)) return 'bedFloor'
+  if (taken(x, y + 1, z) || taken(span.sx, span.sy + 1, span.sz)) return 'bedAbove'
+  if (!tableMode && !canReach([span.sx, span.sy, span.sz])) return 'far'
+  return ''
+}
 function placeBed(x, y, z) {
   if (!tableMode && !canReach([x, y, z])) { toastFarKey(); return false }
   const p = noa.entities.getPosition(noa.playerEntity)
   if (!tableMode && overlapsPlayer(x, y, z, p[0], p[1], p[2])) { toast(t('standing')); return false }
   const span = shopSpan(x, y, z)
-  const sideFar = !tableMode && !canReach([span.sx, span.sy, span.sz])
-  const bedRoom = t('needFree').replace('{n}', '2')
-  if (getVoxel(x, y, z) || shopBlocked(span) || sideFar) {
+  const why = bedBlockReason(x, y, z, span)
+  if (why) {
     ghostBedScale(true)
     syncPlaceGhost()
-    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz, bedRoom)
+    if (why === 'far') toastFarKey()
+    else tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz + ':' + why, t(why))
     return false
   }
   if (session && !session.onPlace(x, y, z, ID.bunk)) return false
@@ -3221,7 +3250,7 @@ function placeBed(x, y, z) {
     if (session && session.meta) { session.meta.delete(bedKey(x, y, z)); session.meta.delete(bedKey(span.sx, span.sy, span.sz)) }
     ghostBedScale(true)
     syncPlaceGhost()
-    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz, t('needFree').replace('{n}', '2'))
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz + ':bedFloor', t('bedFloor'))
     return false
   }
   return true
@@ -11463,9 +11492,13 @@ function syncPlaceGhost() {
   const id = heldBlockId()
   let side = null
   let amber = false
+  let bunkWhy = ''
   if (id === ID.woodshop || id === ID.bunk) {
     side = shopSpan(spot.x, spot.y, spot.z)
-    amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
+    if (id === ID.bunk) {
+      bunkWhy = bedBlockReason(spot.x, spot.y, spot.z, side)
+      amber = !!bunkWhy
+    } else amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
   }
   if (id === ID.bunk) ghostBedScale(true)
   else {
@@ -11478,7 +11511,7 @@ function syncPlaceGhost() {
     ghostEdge(placeGhost, [0.9, 0.15, 0.15])
     ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
-    paintCue('no', id === ID.bunk ? t('needFree').replace('{n}', '2') : t('noRoom'))
+    paintCue('no', id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat

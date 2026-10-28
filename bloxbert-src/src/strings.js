@@ -518,3 +518,57 @@ for (const [lang, row] of Object.entries(WN539)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.540 bed tight-spot. Locked 2.5.537 was already below main (2.5.539). rw, ti, and fa-AF are machine drafts.
+const BED540 = {
+  en: {
+    bedFloor: 'A bed needs 2 free floor blocks',
+    bedAbove: 'Leave 1 free block above',
+    whatsNewBody: '2.5.540 — Beds now tell you why they won\'t fit.',
+  },
+  simple: {
+    bedFloor: 'A bed needs 2 free blocks on the floor.',
+    bedAbove: 'Leave 1 free block above.',
+    whatsNewBody: '2.5.540 — Beds now say why they will not fit.',
+  },
+  uk: {
+    bedFloor: 'Ліжку треба 2 вільні блоки на підлозі',
+    bedAbove: 'Залиш 1 вільний блок зверху',
+    whatsNewBody: '2.5.540 — Ліжка тепер кажуть, чому не вміщаються.',
+  },
+  ru: {
+    bedFloor: 'Кровати нужно 2 свободных блока на полу',
+    bedAbove: 'Оставь 1 свободный блок сверху',
+    whatsNewBody: '2.5.540 — Кровати теперь говорят, почему не помещаются.',
+  },
+  es: {
+    bedFloor: 'La cama necesita 2 bloques libres en el suelo',
+    bedAbove: 'Deja 1 bloque libre encima',
+    whatsNewBody: '2.5.540 — Las camas ahora dicen por qué no caben.',
+  },
+  ar: {
+    bedFloor: 'السرير يحتاج مكعبين فارغين على الأرض',
+    bedAbove: 'اترك مكعباً واحداً فارغاً فوقه',
+    whatsNewBody: '2.5.540 — الأسرّة الآن تقول لماذا لا تتسع.',
+  },
+  'fa-AF': {
+    bedFloor: 'بستر به دو بلاک خالی روی زمین نیاز دارد',
+    bedAbove: 'یک بلاک خالی بالا بگذار',
+    whatsNewBody: '2.5.540 — بسترها حالا می‌گویند چرا جا نمی‌شوند.',
+  },
+  rw: {
+    bedFloor: 'Igitanda gikeneye bloki 2 zisanzwe hasi',
+    bedAbove: 'Siga blok 1 yubusa hejuru',
+    whatsNewBody: '2.5.540 — Ibitanda ubu bivuga impamvu bitinjira.',
+  },
+  ti: {
+    bedFloor: 'ዓራት ክልተ ናጻ ብሎካት ኣብ መሬት የድልዮ',
+    bedAbove: 'ሓደ ናጻ ብሎክ ኣብ ላዕሊ ግደፍ',
+    whatsNewBody: '2.5.540 — ዓራታት ሕጂ ስለምን ከምዘይኣትዉ ይነግሩ።',
+  },
+}
+for (const [lang, row] of Object.entries(BED540)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
