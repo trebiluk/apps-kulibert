@@ -376,13 +376,30 @@ export function mountPanels(api) {
         const list = ['berryRound', 'lanternWalk', 'gardenCorner']
         for (const id of list) {
           const row = document.createElement('div')
-          row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px;min-height:44px;border-bottom:1px solid #333'
+          row.className = 'bdg-row'
           const prog = (window.Badges && window.Badges.progress) ? window.Badges.progress(id) : { n: 0, m: 5, done: false }
           const kind = id === 'berryRound' ? api.t('bdgKindAlias') : id === 'lanternWalk' ? api.t('bdgKindStamp') : api.t('bdgKindTrophy') // 2.5.479: shape + word
-          const shape = id === 'berryRound' ? 'border-radius:50%' : id === 'lanternWalk' ? 'border-radius:2px' : 'transform:rotate(45deg)'
-          const name = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Name') || id
-          const goal = api.t('bdg' + id.replace(/Round|Walk|Corner/, '')[0].toUpperCase() + id.replace(/Round|Walk|Corner/, '').slice(1) + 'Goal') || ''
-          row.innerHTML = '<span style="width:24px;height:24px;' + shape + ';background:#0d9488;display:inline-block"></span><div><b>' + name + '</b><br><small>' + kind + ' · ' + goal + '</small><br><small>' + (prog.done ? api.t('bdgDone') : prog.n + ' / ' + prog.m) + '</small></div>'
+          const stem = id.replace(/Round|Walk|Corner/, '')
+          const name = api.t('bdg' + stem[0].toUpperCase() + stem.slice(1) + 'Name') || id
+          const goal = api.t('bdg' + stem[0].toUpperCase() + stem.slice(1) + 'Goal') || ''
+          const count = prog.done ? api.t('bdgDone') : prog.n + ' / ' + prog.m
+          const shape = document.createElement('span')
+          shape.className = 'bdg-shape'
+          shape.dataset.kind = id === 'berryRound' ? 'alias' : id === 'lanternWalk' ? 'stamp' : 'trophy'
+          shape.setAttribute('aria-hidden', 'true')
+          const copy = document.createElement('div')
+          copy.className = 'bdg-copy'
+          const title = document.createElement('span')
+          title.className = 'bdg-name'
+          title.textContent = name
+          title.title = name
+          const num = document.createElement('span')
+          num.className = 'bdg-count'
+          num.textContent = count
+          copy.append(title, num)
+          row.append(shape, copy)
+          row.setAttribute('role', 'group')
+          row.setAttribute('aria-label', name + '. ' + kind + '. ' + goal + '. ' + count)
           g.append(row)
         }
       }),

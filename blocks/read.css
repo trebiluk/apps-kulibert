@@ -2546,4 +2546,57 @@ html body #keys-pop[hidden] { display: none !important; }
   }
 }
 
+/* 2.5.504: badge row is a one-line name and a count under it. */
+html body #sheet[data-panel="badges"] .bdg-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  min-height: 44px;
+  border-bottom: 1px solid #333;
+  overflow: visible;
+}
+html body #sheet[data-panel="badges"] .bdg-shape {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background: #0d9488;
+  display: block;
+}
+html body #sheet[data-panel="badges"] .bdg-shape[data-kind="alias"] { border-radius: 50%; }
+html body #sheet[data-panel="badges"] .bdg-shape[data-kind="stamp"] { border-radius: 2px; }
+html body #sheet[data-panel="badges"] .bdg-shape[data-kind="trophy"] {
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.78);
+}
+html body #sheet[data-panel="badges"] .bdg-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+html body #sheet[data-panel="badges"] .bdg-name,
+html body #sheet[data-panel="badges"] .bdg-count {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+  font-weight: 700;
+}
+html body #sheet[data-panel="badges"] .bdg-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html body #sheet[data-panel="badges"] .bdg-count {
+  font-size: 14px !important;
+  white-space: nowrap;
+}
+
+
 

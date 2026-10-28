@@ -3512,3 +3512,20 @@ for (const [lang, row] of Object.entries(PILL501)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.504: word cleanup. rw, ti, and Dari (fa-AF) are machine drafts.
+const WORDS504 = {
+  en: { whatsNewBody: '2.5.504 — Fixed some words in the game and on the badges tile.' },
+  simple: { whatsNewBody: '2.5.504 — Fixed some words in the game and on the badges tile.' },
+  uk: { whatsNewBody: '2.5.504 — Виправлено деякі слова в грі та на плитці значків.' },
+  ru: { whatsNewBody: '2.5.504 — Исправлены некоторые слова в игре и на плитке значков.' },
+  es: { whatsNewBody: '2.5.504 — Se arreglaron algunas palabras del juego y en la ficha de insignias.' },
+  ar: { whatsNewBody: '2.5.504 — أُصلحت بعض الكلمات في اللعبة وعلى بطاقة الشارات.' },
+  'fa-AF': { whatsNewBody: '2.5.504 — چند واژه در بازی و روی خانهٔ نشان‌ها درست شد.' },
+  rw: { whatsNewBody: '2.5.504 — Amagambo amwe mu mukino no ku kimenyetso byakosowe.' },
+  ti: { whatsNewBody: '2.5.504 — ዝተወሰኑ ቃላት ኣብ ጸወታን ኣብ ሰሌዳ ምልክታትን ተኣሪሙ።' },
+}
+for (const [lang, row] of Object.entries(WORDS504)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

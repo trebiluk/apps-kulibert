@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.504', date: '2026-10-28', lines: {
+    en: ["2.5.504 — Fixed some words in the game and on the badges tile."],
+    simple: ["2.5.504 — Fixed some words in the game and on the badges tile."],
+    uk: ["2.5.504 — Виправлено деякі слова в грі та на плитці значків."],
+    ru: ["2.5.504 — Исправлены некоторые слова в игре и на плитке значков."],
+    es: ["2.5.504 — Se arreglaron algunas palabras del juego y en la ficha de insignias."],
+    ar: ["2.5.504 — أُصلحت بعض الكلمات في اللعبة وعلى بطاقة الشارات."],
+    'fa-AF': ["2.5.504 — چند واژه در بازی و روی خانهٔ نشان‌ها درست شد."],
+    rw: ["2.5.504 — Amagambo amwe mu mukino no ku kimenyetso byakosowe."],
+    ti: ["2.5.504 — ዝተወሰኑ ቃላት ኣብ ጸወታን ኣብ ሰሌዳ ምልክታትን ተኣሪሙ።"],
+  }},
+
   { v: '2.5.502', date: '2026-10-28', lines: {
     en: ["2.5.502 — Cogs know their metal."],
     simple: ["2.5.502 — Cogs know their metal."],
@@ -48,15 +60,15 @@ export const CHANGELOG = [
   }},
 
   { v: '2.5.497', date: '2026-10-27', lines: {
-    en: ["2.5.497 — The class server switch stays off."],
-    simple: ["2.5.497 — The class server switch stays off."],
-    uk: ["2.5.497 — Вимикач сервера класу лишається вимкненим."],
-    ru: ["2.5.497 — Выключатель сервера класса остаётся выключенным."],
-    es: ["2.5.497 — El interruptor del servidor de la clase sigue apagado."],
-    ar: ["2.5.497 — مفتاح خادم الصف يبقى مغلقاً."],
-    'fa-AF': ["2.5.497 — کلید سرور صنف خاموش می‌ماند."],
-    rw: ["2.5.497 — Igikoresho cya seriveri y'ishuri kiracyazimye."],
-    ti: ["2.5.497 — መብራህቲ ናይ ክፍሊ ሰርቨር ዕጹው ጸኒሑ።"],
+    en: ["2.5.497 — Behind-the-scenes work to get ready for class worlds."],
+    simple: ["2.5.497 — Work behind the scenes so class worlds can start."],
+    uk: ["2.5.497 — Робота за лаштунками, щоб підготувати світи для класу."],
+    ru: ["2.5.497 — Работа за кадром, чтобы подготовить миры для класса."],
+    es: ["2.5.497 — Trabajo entre bastidores para preparar los mundos de la clase."],
+    ar: ["2.5.497 — عمل خلف الكواليس لتجهيز عوالم الصف."],
+    'fa-AF': ["2.5.497 — کار پشت صحنه برای آماده کردن جهان‌های صنف."],
+    rw: ["2.5.497 — Akazi k'inyuma kugira ngo isi z'ishuri zitegurwe."],
+    ti: ["2.5.497 — ድሕሪ መድረኽ ዝግበር ስራሕ፡ ናይ ክፍሊ ዓለማት ንምድላው።"],
   }},
 
   { v: '2.5.498', date: '2026-10-27', lines: {
