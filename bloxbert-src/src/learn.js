@@ -1,6 +1,7 @@
 // Picture tour, Try this goals, accessibility prefs, and the teacher outbox. Local only.
 import { menuIcon } from './icons.js'
 import { holdTip, dropTip } from './tips.js'
+import { RECIPES } from './data/recipes.js'
 const KEY = 'bloxbert-learn'
 const HAMMER = '<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>'
 export function createLearn(api) {
@@ -88,15 +89,44 @@ export function createLearn(api) {
     try { return api.count ? (api.count(id) | 0) : 0 } catch (e) { return 0 }
   }
   const BENCH_PLANKS = 4
+  function goalItem(g) {
+    return (g && g.make) || ''
+  }
+  function goalWhere(g) {
+    const id = goalItem(g)
+    if (!id) return ''
+    const rec = RECIPES.find((r) => r.out && r.out[0] === id)
+    if (!rec || rec.at !== 'bench') return ''
+    return api.t('goalAtBench').replace('{where}', api.t('workbench'))
+  }
+  function fillTitle(title, g) {
+    if (!title) return
+    title.replaceChildren()
+    const name = document.createElement('span')
+    name.className = 'path-name'
+    name.textContent = goalLine(g)
+    title.append(name)
+    const where = goalWhere(g)
+    if (!where) return
+    const sub = document.createElement('span')
+    sub.className = 'path-where'
+    sub.style.display = 'block'
+    sub.textContent = where
+    title.append(sub)
+  }
   function goalLine(g) {
     if (!g) return ''
     const have = plankHave()
     if (g.id === 'pathTree') {
       return api.t('goalPlanks').replace('{have}', String(Math.min(have, BENCH_PLANKS))).replace('{need}', String(BENCH_PLANKS))
     }
-    if (g.id === 'pathBench') {
-      if (have >= BENCH_PLANKS) return api.t('goalBenchReady').replace('{n}', String(have)).replace('{item}', api.t('planks'))
-      return api.t('pathBench') + ' · ' + have + '/' + BENCH_PLANKS + ' ' + api.t('planks')
+    if (g.make) {
+      const head = api.t('goalMakeNamed').replace('{item}', api.t(g.make))
+      if (g.id === 'pathBench') {
+        if (have >= BENCH_PLANKS) return head + ' · ' + api.t('goalBenchReady').replace('{n}', String(have)).replace('{item}', api.t('planks'))
+        return head + ' · ' + have + '/' + BENCH_PLANKS + ' ' + api.t('planks')
+      }
+      return head
     }
     return api.t(g.id)
   }
@@ -110,7 +140,7 @@ export function createLearn(api) {
     }
     if (showing && el && !el.hidden) {
       const title = el.querySelector('.path-title')
-      if (title) title.textContent = goalLine(showing)
+      if (title) fillTitle(title, showing)
     }
     const tree = goals.find((x) => x.id === 'pathTree')
     if (!tree || tree.done) return false
@@ -161,7 +191,7 @@ export function createLearn(api) {
     el.replaceChildren()
     const title = document.createElement('span')
     title.className = 'path-title'
-    title.textContent = goalLine(g)
+    fillTitle(title, g)
     el.append(title)
     pathShown = true
     if (api.claimHint) api.claimHint("path")

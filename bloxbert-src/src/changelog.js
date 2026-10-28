@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.522 what's new. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.522', date: '2026-10-28', lines: {
+    en: ['2.5.522 — Goals now name the exact thing to make, and where.'],
+    simple: ['2.5.522 — Goals name the exact thing to make, and where.'],
+    uk: ['2.5.522 — Цілі тепер називають саме те, що зробити, і де.'],
+    ru: ['2.5.522 — Цели теперь называют точную вещь и где её сделать.'],
+    es: ['2.5.522 — Las metas ahora nombran la cosa exacta que hay que hacer, y dónde.'],
+    ar: ['2.5.522 — الأهداف الآن تسمّي الشيء المطلوب صنعه، وأين.'],
+    'fa-AF': ['2.5.522 — هدف‌ها حالا همان چیز را برای ساختن، و جا را، نام می‌برند.'],
+    rw: ['2.5.522 — Intego ubu zivuga ikintu nyacyo cyo gukora, naho.'],
+    ti: ['2.5.522 — ዕላማታት ሕጂ ነቲ ብልክዕ ዝስራሕ ነገርን ኣበይን ይሰይሙ።'],
+  }},
+
   // 2.5.519 what's new. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.519', date: '2026-10-28', lines: {
     en: ['2.5.519 — The Bag shows which item you picked and has clearer buttons.'],

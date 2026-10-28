@@ -3599,3 +3599,66 @@ for (const [lang, row] of Object.entries(NOTES516)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.522: the goal uses the item's own name, and a bed says how many blocks it needs.
+// rw, ti, and fa-AF are machine drafts.
+const GOAL522 = {
+  en: {
+    goalMakeNamed: 'Make a {item}',
+    goalAtBench: 'Make it at the {where}',
+    needFree: 'Needs {n} free blocks',
+    whatsNewBody: '2.5.522 — Goals now name the exact thing to make, and where.',
+  },
+  simple: {
+    goalMakeNamed: 'Make {item}',
+    goalAtBench: 'Make it at the {where}',
+    needFree: 'Needs {n} open blocks',
+    whatsNewBody: '2.5.522 — Goals name the exact thing to make, and where.',
+  },
+  uk: {
+    goalMakeNamed: 'Зроби {item}',
+    goalAtBench: 'Зроби це на {where}',
+    needFree: 'Потрібно {n} вільні блоки',
+    whatsNewBody: '2.5.522 — Цілі тепер називають саме те, що зробити, і де.',
+  },
+  ru: {
+    goalMakeNamed: 'Сделай {item}',
+    goalAtBench: 'Сделай это на {where}',
+    needFree: 'Нужно {n} свободных блока',
+    whatsNewBody: '2.5.522 — Цели теперь называют точную вещь и где её сделать.',
+  },
+  es: {
+    goalMakeNamed: 'Haz un {item}',
+    goalAtBench: 'Hazlo en el {where}',
+    needFree: 'Necesita {n} bloques libres',
+    whatsNewBody: '2.5.522 — Las metas ahora nombran la cosa exacta que hay que hacer, y dónde.',
+  },
+  ar: {
+    goalMakeNamed: 'اصنع {item}',
+    goalAtBench: 'اصنعه على {where}',
+    needFree: 'يحتاج {n} مكعبات فارغة',
+    whatsNewBody: '2.5.522 — الأهداف الآن تسمّي الشيء المطلوب صنعه، وأين.',
+  },
+  'fa-AF': {
+    goalMakeNamed: '{item} بساز',
+    goalAtBench: 'آن را در {where} بساز',
+    needFree: '{n} بلاک خالی لازم است',
+    whatsNewBody: '2.5.522 — هدف‌ها حالا همان چیز را برای ساختن، و جا را، نام می‌برند.',
+  },
+  rw: {
+    goalMakeNamed: 'Kora {item}',
+    goalAtBench: 'Bikore ku {where}',
+    needFree: 'Ikeneye bloki {n} zisanzwe',
+    whatsNewBody: '2.5.522 — Intego ubu zivuga ikintu nyacyo cyo gukora, naho.',
+  },
+  ti: {
+    goalMakeNamed: '{item} ግበር',
+    goalAtBench: 'ኣብ {where} ግበሮ',
+    needFree: '{n} ናጻ ብሎካት የድሊ',
+    whatsNewBody: '2.5.522 — ዕላማታት ሕጂ ነቲ ብልክዕ ዝስራሕ ነገርን ኣበይን ይሰይሙ።',
+  },
+}
+for (const [lang, row] of Object.entries(GOAL522)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

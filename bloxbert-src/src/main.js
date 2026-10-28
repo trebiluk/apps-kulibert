@@ -2760,13 +2760,13 @@ function shopBlocked(span) {
 let roomTold = ''
 let roomToldAt = 0
 let roomQuietUntil = 0
-function tellNoRoom(key) {
+function tellNoRoom(key, msg) {
   const now = performance.now()
   if (now < roomQuietUntil) return
   if (roomTold === key && now - roomToldAt < 1200) return
   roomTold = key
   roomToldAt = now
-  toast(t('noRoom'))
+  toast(msg || t('noRoom'))
   const el = $('toast')
   if (el) el.classList.add('fx-pop')
 }
@@ -2963,10 +2963,11 @@ function placeBed(x, y, z) {
   if (!tableMode && overlapsPlayer(x, y, z, p[0], p[1], p[2])) { toast(t('standing')); return false }
   const span = shopSpan(x, y, z)
   const sideFar = !tableMode && !canReach([span.sx, span.sy, span.sz])
+  const bedRoom = t('needFree').replace('{n}', '2')
   if (getVoxel(x, y, z) || shopBlocked(span) || sideFar) {
     ghostBedScale(true)
     syncPlaceGhost()
-    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz, bedRoom)
     return false
   }
   if (session && !session.onPlace(x, y, z, ID.bunk)) return false
@@ -2983,7 +2984,7 @@ function placeBed(x, y, z) {
     if (session && session.meta) { session.meta.delete(bedKey(x, y, z)); session.meta.delete(bedKey(span.sx, span.sy, span.sz)) }
     ghostBedScale(true)
     syncPlaceGhost()
-    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz, t('needFree').replace('{n}', '2'))
     return false
   }
   return true
@@ -11190,7 +11191,7 @@ function syncPlaceGhost() {
     ghostEdge(placeGhost, [0.9, 0.15, 0.15])
     ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
-    paintCue('no', t('noRoom'))
+    paintCue('no', id === ID.bunk ? t('needFree').replace('{n}', '2') : t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat
