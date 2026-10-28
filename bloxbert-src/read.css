@@ -1770,7 +1770,9 @@ html body #chip-lane > :is(#path-chip, #held-chip, #save-chip, #inspect-chip, #s
   width: auto !important;
   max-width: 100% !important;
 }
-html body:has(#sheet:not([hidden])) #chip-lane > #update-chip {
+html body:has(#sheet:not([hidden])) #chip-lane > #update-chip,
+html[data-kb-modal-open] body #chip-lane > #update-chip,
+html body.menu-open #chip-lane > #update-chip {
   position: fixed !important;
   z-index: 45 !important;
   top: auto !important;
@@ -1809,6 +1811,16 @@ body:has(#sheet:not([hidden])) #chip-lane > #update-chip { display: inline-flex 
   #chip-lane > * { transition: none; }
 }
 html[data-kp-motion="less"] #chip-lane > * { transition: none; }
+/* 2.5.501: short screens keep the update note beside the open Menu, Bag, or other top layer. */
+@media (max-height: 520px) {
+  html body:has(#sheet:not([hidden])) #chip-lane > #update-chip,
+  html[data-kb-modal-open] body #chip-lane > #update-chip,
+  html body.menu-open #chip-lane > #update-chip {
+    left: auto !important;
+    right: calc(12px + env(safe-area-inset-right, 0px)) !important;
+    transform: none !important;
+  }
+}
 /* 2.5.426: students see 4 menu groups; only a teacher device has a 5th */
 @media (min-width: 700px) {
   html body #sheet[data-panel="menu"] .kd-groups:not(:has(.kd-teacher)) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }

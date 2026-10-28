@@ -319,6 +319,19 @@ function layoutLane() {
   bump(box('game-menu'))
   bump(box('pause-btn'))
   bump(box('fs-btn'))
+  const play = box('play-chip')
+  if (play) {
+    const band = lane.getBoundingClientRect()
+    const laneTop = band.top
+    const laneBottom = Math.max(band.bottom, laneTop + 44)
+    if (play.bottom > laneTop + 1 && play.top < laneBottom - 1) {
+      const gap = 8
+      const roomRight = (window.innerWidth - right) - (play.right + gap)
+      const roomLeft = (play.left - gap) - left
+      if (roomRight >= 120 || roomRight >= roomLeft) left = Math.max(left, Math.round(play.right) + gap)
+      else right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
+    }
+  }
   lane.style.left = left + 'px'
   lane.style.right = right + 'px'
   capLane()
@@ -5366,6 +5379,7 @@ function showUpdateChip() {
   b.setAttribute('aria-label', t('updateReady'))
   b.hidden = false
   markUpdateSeen()
+  layoutLane()
 }
 async function acceptUpdate() {
   try {
@@ -6476,6 +6490,7 @@ function hidePlayChip() {
     if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
   }
   el.hidden = true
+  layoutLane()
 }
 function showPlayChip() {
   const el = $('play-chip')
@@ -6484,6 +6499,7 @@ function showPlayChip() {
   el.textContent = '▶ ' + t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay')
   el.setAttribute('aria-label', t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay'))
   el.hidden = false
+  layoutLane()
 }
 function startFromChip() {
   if (tableMode || anyCard()) return
@@ -11462,6 +11478,10 @@ document.addEventListener('fullscreenchange', refit)
 document.addEventListener('webkitfullscreenchange', refit)
 if (window.MutationObserver) {
   new MutationObserver(() => layoutLane()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-kb-bar', 'dir'] })
+  const playWatch = document.getElementById('play-chip')
+  if (playWatch) new MutationObserver(() => layoutLane()).observe(playWatch, { attributes: true, attributeFilter: ['hidden'] })
+  const sheetWatch = document.getElementById('sheet')
+  if (sheetWatch) new MutationObserver(() => layoutLane()).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
 }
 laneAdd(document.getElementById('save-chip'), 5)
 laneAdd(document.getElementById('inspect-chip'), 3)

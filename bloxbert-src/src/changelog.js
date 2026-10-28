@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.501', date: '2026-10-28', lines: {
+    en: ["2.5.501 — The update note stays out of your way, even with the menu open."],
+    simple: ["2.5.501 — The update note stays out of the way, even when the menu is open."],
+    uk: ["2.5.501 — Нотатка про оновлення не заважає, навіть коли меню відкрите."],
+    ru: ["2.5.501 — Заметка об обновлении не мешает, даже когда меню открыто."],
+    es: ["2.5.501 — La nota de actualización se aparta, incluso con el menú abierto."],
+    ar: ["2.5.501 — ملاحظة التحديث تبقى بعيدًا عن طريقك، حتى والقائمة مفتوحة."],
+    'fa-AF': ["2.5.501 — یادداشت به‌روزرسانی از سر راهت دور می‌ماند، حتی وقتی فهرست باز است."],
+    rw: ["2.5.501 — Inyandiko y'ivugurura iguma itakubuza, nubwo menu ifunguye."],
+    ti: ["2.5.501 — መዘኻኸሪ ምዕራፍ ካብ መንገድኻ ወጻኢ ይጸንሕ፣ መዝገብ ክኸፍት ከሎ እውን።"],
+  }},
+
   { v: '2.5.500', date: '2026-10-27', lines: {
     en: ["2.5.500 — Game keys like Tab, Space and the arrows stay in the game now. Press Esc any time to get your mouse back."],
     simple: ["2.5.500 — Game keys like Tab, Space and the arrows stay in the game. Press Esc any time to get your mouse back."],

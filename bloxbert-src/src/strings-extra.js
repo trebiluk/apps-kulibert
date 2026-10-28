@@ -3495,3 +3495,20 @@ for (const [lang, row] of Object.entries(KEYS500)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.501: update note stays clear of play and the menu. rw, ti, and Dari are machine drafts.
+const PILL501 = {
+  en: { whatsNewBody: '2.5.501 — The update note stays out of your way, even with the menu open.' },
+  simple: { whatsNewBody: '2.5.501 — The update note stays out of the way, even when the menu is open.' },
+  uk: { whatsNewBody: '2.5.501 — Нотатка про оновлення не заважає, навіть коли меню відкрите.' },
+  ru: { whatsNewBody: '2.5.501 — Заметка об обновлении не мешает, даже когда меню открыто.' },
+  es: { whatsNewBody: '2.5.501 — La nota de actualización se aparta, incluso con el menú abierto.' },
+  ar: { whatsNewBody: '2.5.501 — ملاحظة التحديث تبقى بعيدًا عن طريقك، حتى والقائمة مفتوحة.' },
+  'fa-AF': { whatsNewBody: '2.5.501 — یادداشت به‌روزرسانی از سر راهت دور می‌ماند، حتی وقتی فهرست باز است.' },
+  rw: { whatsNewBody: '2.5.501 — Inyandiko y\'ivugurura iguma itakubuza, nubwo menu ifunguye.' },
+  ti: { whatsNewBody: '2.5.501 — መዘኻኸሪ ምዕራፍ ካብ መንገድኻ ወጻኢ ይጸንሕ፣ መዝገብ ክኸፍት ከሎ እውን።' },
+}
+for (const [lang, row] of Object.entries(PILL501)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
