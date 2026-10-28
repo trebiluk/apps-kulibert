@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Locked 2.5.536. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.536', date: '2026-10-28', lines: {
+    en: ['2.5.536 — Tap your cog chip to see today\'s cogs.'],
+    simple: ['2.5.536 — Tap the cog chip. See today\'s cogs.'],
+    uk: ['2.5.536 — Торкни фішку шестерень, щоб побачити сьогоднішні.'],
+    ru: ['2.5.536 — Нажми фишку шестерён, чтобы увидеть сегодняшние.'],
+    es: ['2.5.536 — Toca la ficha de engranajes para ver los de hoy.'],
+    ar: ['2.5.536 — المس شريحة التروس لترى تروس اليوم.'],
+    'fa-AF': ['2.5.536 — تراشه چرخ‌دنده را بزن تا چرخ‌دنده‌های امروز را ببینی.'],
+    rw: ['2.5.536 — Kanda ikofi y\'amapine ubone aya uyu munsi.'],
+    ti: ['2.5.536 — ናይ ኮግ ቺፕ ጠውቕ ናይ ሎሚ ኮግ ንምርኣይ።'],
+  }},
+
   // Locked 2.5.531 was already below main (2.5.532 Notebook language), so this is 2.5.533.
   // rw, ti, and fa-AF are machine drafts.
   { v: '2.5.533', date: '2026-10-28', lines: {

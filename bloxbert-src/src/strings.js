@@ -482,3 +482,21 @@ for (const [lang, row] of Object.entries(WN533)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.536 cog card. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
+const COG536 = {
+  en: { cogTotal: 'Total {n}', cogEarn: 'Earn them by doing new things.', cogOk: 'OK', whatsNewBody: '2.5.536 — Tap your cog chip to see today\'s cogs.' },
+  simple: { cogTotal: 'You have {n}', cogEarn: 'You earn them by doing new things.', cogOk: 'OK', whatsNewBody: '2.5.536 — Tap the cog chip. See today\'s cogs.' },
+  uk: { cogTotal: 'Разом {n}', cogEarn: 'Заробляй їх, роблячи нове.', cogOk: 'Гаразд', whatsNewBody: '2.5.536 — Торкни фішку шестерень, щоб побачити сьогоднішні.' },
+  ru: { cogTotal: 'Всего {n}', cogEarn: 'Зарабатывай их, делая новое.', cogOk: 'Ладно', whatsNewBody: '2.5.536 — Нажми фишку шестерён, чтобы увидеть сегодняшние.' },
+  es: { cogTotal: 'Llevas {n}', cogEarn: 'Los ganas haciendo cosas nuevas.', cogOk: 'Vale', whatsNewBody: '2.5.536 — Toca la ficha de engranajes para ver los de hoy.' },
+  ar: { cogTotal: 'المجموع {n}', cogEarn: 'اكسبها بفعل أشياء جديدة.', cogOk: 'حسناً', whatsNewBody: '2.5.536 — المس شريحة التروس لترى تروس اليوم.' },
+  'fa-AF': { cogTotal: 'مجموع {n}', cogEarn: 'با کار تازه به دست می‌آیند.', cogOk: 'باشه', whatsNewBody: '2.5.536 — تراشه چرخ‌دنده را بزن تا چرخ‌دنده‌های امروز را ببینی.' },
+  rw: { cogTotal: 'Byose {n}', cogEarn: 'Uyazana ukora ibishya.', cogOk: 'Yego', whatsNewBody: '2.5.536 — Kanda ikofi y\'amapine ubone aya uyu munsi.' },
+  ti: { cogTotal: 'ጠቕላላ {n}', cogEarn: 'ሓድሽ ነገር ብምግባር ትረኽቦም።', cogOk: 'ሕራይ', whatsNewBody: '2.5.536 — ናይ ኮግ ቺፕ ጠውቕ ናይ ሎሚ ኮግ ንምርኣይ።' },
+}
+for (const [lang, row] of Object.entries(COG536)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -25,19 +25,19 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.533 what's new. Locked 2.5.531 was already below 2.5.532. rw, ti, and fa-AF are machine drafts.
-const WN533 = {
-  en: { whatsNewBody: '2.5.533 — Find your goals in the menu, and see where to make each one.' },
-  simple: { whatsNewBody: '2.5.533 — Find your goals in the menu. See where to make each one.' },
-  uk: { whatsNewBody: '2.5.533 — Знайди свої цілі в меню і побач, де зробити кожну.' },
-  ru: { whatsNewBody: '2.5.533 — Найди свои цели в меню и смотри, где сделать каждую.' },
-  es: { whatsNewBody: '2.5.533 — Encuentra tus metas en el menú y mira dónde hacer cada una.' },
-  ar: { whatsNewBody: '2.5.533 — اعثر على أهدافك في القائمة، وانظر أين تصنع كل واحدة.' },
-  'fa-AF': { whatsNewBody: '2.5.533 — هدف‌هایت را در فهرست بیاب، و ببین هر کدام را کجا بسازی.' },
-  rw: { whatsNewBody: '2.5.533 — Shaka intego zawe mu menu, kandi urebe aho ukora buri imwe.' },
-  ti: { whatsNewBody: '2.5.533 — ዕላማታትካ ኣብ መእተዊ ረኸብ፡ ነፍሲ ወከፍ ድማ ኣበይ ከም እትገብሮ ርአ።' },
+// 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
+const WN536 = {
+  en: { whatsNewBody: '2.5.536 — Tap your cog chip to see today\'s cogs.' },
+  simple: { whatsNewBody: '2.5.536 — Tap the cog chip. See today\'s cogs.' },
+  uk: { whatsNewBody: '2.5.536 — Торкни фішку шестерень, щоб побачити сьогоднішні.' },
+  ru: { whatsNewBody: '2.5.536 — Нажми фишку шестерён, чтобы увидеть сегодняшние.' },
+  es: { whatsNewBody: '2.5.536 — Toca la ficha de engranajes para ver los de hoy.' },
+  ar: { whatsNewBody: '2.5.536 — المس شريحة التروس لترى تروس اليوم.' },
+  'fa-AF': { whatsNewBody: '2.5.536 — تراشه چرخ‌دنده را بزن تا چرخ‌دنده‌های امروز را ببینی.' },
+  rw: { whatsNewBody: '2.5.536 — Kanda ikofi y\'amapine ubone aya uyu munsi.' },
+  ti: { whatsNewBody: '2.5.536 — ናይ ኮግ ቺፕ ጠውቕ ናይ ሎሚ ኮግ ንምርኣይ።' },
 }
-for (const [lang, row] of Object.entries(WN533)) {
+for (const [lang, row] of Object.entries(WN536)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -760,28 +760,42 @@ function todayEarned() {
   const row = dayCap(ledger, Date.now(), 'quest')
   return row && typeof row.earned === 'number' ? row.earned : 0
 }
+function bronzeTotal() {
+  if (!walletReady || !session || !session.wallet) return 0
+  const n = session.wallet.balance('bronze')
+  return typeof n === 'number' ? n : 0
+}
 function paintCogCard() {
   const card = document.getElementById('cog-card')
   if (!card) return
   const title = card.querySelector('[data-cog="title"]')
   const hard = card.querySelector('[data-cog="hard"]')
   const today = card.querySelector('[data-cog="today"]')
+  const earn = card.querySelector('[data-cog="earn"]')
+  const total = card.querySelector('[data-cog="total"]')
   const stay = card.querySelector('[data-cog="stay"]')
   const x = card.querySelector('.cog-x')
+  const ok = card.querySelector('.cog-ok')
   if (title) title.textContent = t('cogBronze')
   if (hard) hard.textContent = t('cogHard')
+  if (total) total.textContent = t('cogTotal').replace('{n}', String(bronzeTotal()))
   if (today) today.textContent = t('cogToday').replace('{n}', String(todayEarned()))
+  if (earn) earn.textContent = t('cogEarn')
   if (stay) {
     stay.hidden = !!kidSignedIn()
     stay.textContent = t('cogStay')
   }
   if (x) x.setAttribute('aria-label', t('close'))
+  if (ok) {
+    ok.textContent = t('cogOk')
+    ok.setAttribute('aria-label', t('cogOk'))
+  }
 }
 function ensureCogStyle() {
   if (document.getElementById('cog-card-css')) return
   const s = document.createElement('style')
   s.id = 'cog-card-css'
-  s.textContent = '#cog-card{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:rgba(5,8,20,.55);padding:12px;box-sizing:border-box}#cog-card[hidden]{display:none!important}#cog-card .card{position:relative;width:min(420px,100%);box-sizing:border-box;background:#0E1A22;color:#E6EEF2;border:1px solid #1F8A8A;border-radius:16px;padding:16px 16px 14px}#cog-card h2{margin:0;margin-inline-end:48px;margin-bottom:8px;font-size:1.25rem;font-weight:800}#cog-card p{margin:0 0 8px;font-size:15px;line-height:1.4}#cog-card .cog-x{position:absolute;top:8px;inset-inline-end:8px;min-width:44px;min-height:44px;width:44px;height:44px}#wallet-chip .metal-mini{display:inline-flex;align-items:center;gap:4px;margin-inline-start:6px}#wallet-chip .metal-mini .gic,#wallet-chip > .gic{width:16px;height:16px;display:flex;flex:0 0 16px}html body .kb-bar #wallet-chip{position:relative!important;z-index:4!important}'
+  s.textContent = '#cog-card{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:rgba(5,8,20,.55);padding:12px;box-sizing:border-box}#cog-card[hidden]{display:none!important}#cog-card .card{position:relative;width:min(420px,100%);box-sizing:border-box;background:#0E1A22;color:#E6EEF2;border:1px solid #1F8A8A;border-radius:16px;padding:16px 16px 14px}#cog-card h2{margin:0;margin-inline-end:48px;margin-bottom:8px;font-size:1.25rem;font-weight:800}#cog-card p{margin:0 0 8px;font-size:15px;line-height:1.4}#cog-card .cog-x{position:absolute;top:8px;inset-inline-end:8px;min-width:44px;min-height:44px;width:44px;height:44px}#wallet-chip .metal-mini{display:inline-flex;align-items:center;gap:4px;margin-inline-start:6px}#wallet-chip .metal-mini .gic,#wallet-chip > .gic{width:16px;height:16px;display:flex;flex:0 0 16px}html body .kb-bar #wallet-chip{position:relative!important;z-index:4!important}#cog-card h2{display:flex;align-items:center;gap:8px}#cog-card h2 .gic{width:28px;height:28px;display:flex;flex:0 0 28px}#cog-card .card{max-height:calc(100vh - 24px);overflow:auto}#cog-card .cog-ok{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin-top:4px;padding:0 18px;border-radius:10px;border:1px solid #1F8A8A;background:#145e56;color:#E6EEF2;font:800 16px/1 system-ui,sans-serif}'
   document.head.append(s)
 }
 function metalMini(metal, n) {
@@ -863,6 +877,7 @@ function watchWalletChip() {
 function closeCogCard() {
   const card = document.getElementById('cog-card')
   if (card) card.hidden = true
+  cardClosedAt = performance.now()
   const chip = document.getElementById('wallet-chip')
   if (chip) chip.focus()
 }
@@ -876,10 +891,11 @@ function openCogCard() {
     card.setAttribute('role', 'dialog')
     card.setAttribute('aria-modal', 'true')
     card.setAttribute('aria-labelledby', 'cog-card-title')
-    card.innerHTML = '<div class="card"><button type="button" class="icon-btn cog-x" aria-label="Close"><span class="ti" data-ico="x"></span></button><h2 id="cog-card-title" data-cog="title"></h2><p data-cog="hard"></p><p data-cog="today"></p><p data-cog="stay" hidden></p></div>'
+    card.innerHTML = '<div class="card"><button type="button" class="icon-btn cog-x" aria-label="Close"><span class="ti" data-ico="x"></span></button><h2 id="cog-card-title"><span class="gic" data-ico="cog" aria-hidden="true"></span><span data-cog="title"></span></h2><p data-cog="total"></p><p data-cog="hard"></p><p data-cog="today"></p><p data-cog="earn"></p><p data-cog="stay" hidden></p><button type="button" class="cog-ok"></button></div>'
     document.body.append(card)
     fillIco(card)
     card.querySelector('.cog-x').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeCogCard() })
+    card.querySelector('.cog-ok').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeCogCard() })
     card.addEventListener('click', (e) => { if (e.target === card) closeCogCard() })
   }
   paintCogCard()
@@ -917,6 +933,7 @@ function applyI18n() {
   try { paintSuit() } catch (e) {}
   try { paintUpdateChip() } catch (e) {}
   if (walletReady) dressWalletChip()
+  if (cogOpen()) paintCogCard()
   try { paintMenuLabels() } catch (e) {}
   painting = false
 }
@@ -6871,7 +6888,8 @@ function anyCard() {
   const inspect = $('inspect-card')
   const about = $('about')
   const sheet = $('sheet')
-  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden))
+  const cog = document.getElementById('cog-card')
+  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden) || (cog && !cog.hidden))
 }
 function focusBtn(btn) {
   if (!btn) return
