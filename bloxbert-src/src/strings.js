@@ -590,3 +590,21 @@ for (const [lang, row] of Object.entries(WN541)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.542 what's new. rw, ti, and fa-AF are machine drafts.
+const WN542 = {
+  en: { whatsNewBody: '2.5.542 — Classic and Mystical looks. Small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.542 — Two looks: Classic and Mystical. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.542 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.542 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.542 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.542 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.542 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.542 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.542 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN542)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

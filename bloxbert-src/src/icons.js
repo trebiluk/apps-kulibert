@@ -1,6 +1,7 @@
 // One picture per block. A few items draw their own face so they don't share one wood tile.
 import { getWrap, getBlockWrap } from "./gfx/pixel-art.js";
 import { ITEMS } from './data/items.js'
+import SHEET from '../assets/packs/sheet.json'
 const PNG = { glass: 'assets/glass.png', coreplate: 'assets/tile-coreplate.png', workbench: 'assets/tile-workbench.png', oven: 'assets/tile-oven.png', vend: 'assets/tile-vend.png', store: 'assets/tile-store.png', bunk: 'assets/tile-bunk.png' }
 const READ2D = { willReadFrequently: true }
 function glyph(paint) {
@@ -501,18 +502,21 @@ function atlasSlot(tex, atlas) {
   return i
 }
 function calmFrame(ctx) {
+  const m = (ctx.canvas.width || 48) / 48
   ctx.imageSmoothingEnabled = false
   ctx.strokeStyle = 'rgba(0,0,0,.35)'
-  ctx.lineWidth = 1
-  ctx.strokeRect(8.5, 8.5, 31, 31)
+  ctx.lineWidth = Math.max(1, m)
+  ctx.strokeRect(8.5 * m, 8.5 * m, 31 * m, 31 * m)
   ctx.fillStyle = 'rgba(0,0,0,.35)'
-  ctx.fillRect(8, 38, 32, 2)
+  ctx.fillRect(8 * m, 38 * m, 32 * m, 2 * m)
 }
 function drawTile(c, img, sx, sy, sw, sh) {
   const ctx = c.getContext('2d', READ2D)
+  const side = c.width || 48
+  const m = side / 48
   ctx.imageSmoothingEnabled = false
-  ctx.clearRect(0, 0, 48, 48)
-  ctx.drawImage(img, sx, sy, sw, sh, 8, 8, 32, 32)
+  ctx.clearRect(0, 0, side, side)
+  ctx.drawImage(img, sx, sy, sw, sh, 8 * m, 8 * m, 32 * m, 32 * m)
   calmFrame(ctx)
 }
 function atlasCanvas(block, tex, index) {
@@ -529,9 +533,54 @@ function atlasCanvas(block, tex, index) {
   else img.onload = paint
   return c
 }
+function knownPackMat(name) {
+  if (!name) return false
+  if (SHEET.order.indexOf(name) >= 0) return true
+  return Object.prototype.hasOwnProperty.call(SHEET.alias, name)
+}
+function packMat(block) {
+  if (!block) return ''
+  const mat = block[2]
+  if (typeof mat === 'string' && knownPackMat(mat)) return mat
+  if (Array.isArray(mat)) {
+    const top = mat.length === 6 ? mat[2] : mat[0]
+    if (top && knownPackMat(top)) return top
+  }
+  const tex = iconTex(block)
+  if (tex && knownPackMat(tex)) return tex
+  return ''
+}
+function drawPackIcon(c) {
+  const sheet = globalThis.__bertSheet
+  const mat = c.dataset.packMat
+  if (!sheet || !sheet.img || !mat || sheet.byMat[mat] == null) return
+  const ix = sheet.byMat[mat]
+  const core = sheet.core || 32
+  const layer = sheet.layer || (core + 4)
+  if (!sheet.img.naturalWidth) return
+  drawTile(c, sheet.img, 2, ix * layer + 2, core, core)
+}
+if (typeof window !== 'undefined' && !globalThis.__bertIconHook) {
+  globalThis.__bertIconHook = 1
+  window.addEventListener('bertopia-pack', () => {
+    document.querySelectorAll('canvas[data-pack-mat]').forEach((node) => drawPackIcon(node))
+  })
+}
 export function blockIcon(block, atlas) {
   const name = block && block[1];
   const alias = BLOCK_ALIAS[name] || name
+  const matName = packMat(block)
+  if (matName) {
+    const c = document.createElement('canvas')
+    c.width = 48
+    c.height = 48
+    c.dataset.block = String(block[0])
+    c.dataset.kind = 'pack'
+    c.dataset.packMat = matName
+    c.dataset.tex = matName
+    drawPackIcon(c)
+    return c
+  }
   if (alias === 'workbench' || alias === 'woodshop') {
     const img = document.createElement('img')
     img.src = 'assets/tile-workbench.png'

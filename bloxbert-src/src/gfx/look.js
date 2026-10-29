@@ -187,9 +187,6 @@ export function createLook(opts) {
     const soft = name !== 'lite'
     const lit = flags().lights && lights.size > 0
     const atlas = mesh.getVerticesData('texAtlasIndices')
-    const tex = mesh.material && mesh.material.diffuseTexture
-    const url = (tex && (tex.url || '')) || ''
-    const wrap = url.indexOf('atlas.png') < 0 && url.length > 80
     const n = positions.length / 3
     for (let i = 0; i < n; i++) {
       const nx = normals[i * 3]
@@ -212,9 +209,9 @@ export function createLook(opts) {
       if (atlas) {
         const ix = atlas[i]
         let kind = 0
-        if (!wrap && ix === leaf.oak) kind = 12
-        else if (wrap && ix === leaf.birch) kind = 1201
-        else if (wrap && ix === leaf.pine) kind = 1204
+        if (ix === leaf.oak) kind = 12
+        else if (ix === leaf.birch) kind = 1201
+        else if (ix === leaf.pine) kind = 1204
         const tint = kind ? leafTint(kind, wx, wz) : null
         if (tint) {
           colors[i * 4] *= tint[0]

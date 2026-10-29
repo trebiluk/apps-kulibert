@@ -1,0 +1,391 @@
+{
+  "format": "bertopia-pack",
+  "version": 1,
+  "id": "mystical",
+  "name": "Mystical Topia",
+  "author": "Bertopia",
+  "status": "approved",
+  "size": 64,
+  "blocks": {
+    "grass": {
+      "top": "grass_top.png",
+      "side": "dirt_grass.png",
+      "bottom": "dirt.png"
+    },
+    "dirt": {
+      "all": "dirt.png"
+    },
+    "stone": {
+      "all": "stone.png"
+    },
+    "slate": {
+      "all": "greystone.png",
+      "comment": "legacy"
+    },
+    "coal": {
+      "all": "stone_coal.png"
+    },
+    "sand": {
+      "all": "sand.png"
+    },
+    "gravel": {
+      "all": "gravel_stone.png",
+      "comment": "legacy"
+    },
+    "brickRed": {
+      "all": "brick_red.png",
+      "comment": "legacy"
+    },
+    "brickGrey": {
+      "all": "brick_grey.png",
+      "comment": "legacy"
+    },
+    "planks": {
+      "all": "wood.png"
+    },
+    "log": {
+      "top": "trunk_top.png",
+      "side": "trunk_side.png",
+      "bottom": "trunk_top.png"
+    },
+    "leaves": {
+      "top": "leaves.png",
+      "side": "leaves.png",
+      "bottom": "leavesUnder.png"
+    },
+    "woolBlue": {
+      "all": "cotton_blue.png",
+      "comment": "legacy"
+    },
+    "woolGreen": {
+      "all": "cotton_green.png",
+      "comment": "legacy"
+    },
+    "woolRed": {
+      "all": "cotton_red.png",
+      "comment": "legacy"
+    },
+    "woolTan": {
+      "all": "cotton_tan.png",
+      "comment": "legacy"
+    },
+    "snow": {
+      "all": "snow.png",
+      "comment": "legacy"
+    },
+    "ice": {
+      "all": "ice.png",
+      "comment": "legacy"
+    },
+    "redSand": {
+      "all": "redsand.png",
+      "comment": "legacy"
+    },
+    "glass": {
+      "all": "glass.png",
+      "comment": "legacy"
+    },
+    "coreplate": {
+      "all": "coreplate.png",
+      "comment": "legacy"
+    },
+    "workbench": {
+      "top": "workbench.png",
+      "side": "benchSide.png",
+      "bottom": "wood.png",
+      "comment": "legacy"
+    },
+    "oven": {
+      "all": "ovenBrick.png",
+      "comment": "legacy"
+    },
+    "vend": {
+      "all": "vend.png",
+      "comment": "legacy"
+    },
+    "storeCounter": {
+      "all": "store.png",
+      "comment": "legacy"
+    },
+    "bunk": {
+      "all": "bunk.png",
+      "comment": "legacy"
+    },
+    "box": {
+      "all": "wrap_box.png",
+      "comment": "legacy"
+    },
+    "wheat": {
+      "all": "wrap_wheat.png",
+      "comment": "legacy"
+    },
+    "reed": {
+      "all": "leaves.png",
+      "comment": "legacy"
+    },
+    "door": {
+      "all": "wrap_door.png",
+      "comment": "legacy"
+    },
+    "doorOpen": {
+      "all": "wrap_door.png",
+      "comment": "legacy"
+    },
+    "doorGlass": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorGlassOpen": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorMetal": {
+      "all": "wrap_doorMetal.png",
+      "comment": "legacy"
+    },
+    "doorMetalOpen": {
+      "all": "wrap_doorMetal.png",
+      "comment": "legacy"
+    },
+    "doorSliding": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorSlidingOpen": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "lever": {
+      "all": "wrap_lever.png",
+      "comment": "legacy"
+    },
+    "leverOn": {
+      "all": "wrap_lever.png",
+      "comment": "legacy"
+    },
+    "pushButton": {
+      "all": "wrap_pushButton.png",
+      "comment": "legacy"
+    },
+    "pushButtonOn": {
+      "all": "wrap_pushButton.png",
+      "comment": "legacy"
+    },
+    "smelter": {
+      "all": "wrap_smelter.png",
+      "comment": "legacy"
+    },
+    "fabricator": {
+      "all": "wrap_fabricator.png",
+      "comment": "legacy"
+    },
+    "ironOre": {
+      "all": "wrap_ironOre.png",
+      "comment": "legacy"
+    },
+    "copperOre": {
+      "all": "wrap_copperOre.png",
+      "comment": "legacy"
+    },
+    "zincOre": {
+      "all": "wrap_zincOre.png",
+      "comment": "legacy"
+    },
+    "lantern": {
+      "all": "wrap_lantern.png",
+      "comment": "legacy"
+    },
+    "charger": {
+      "all": "wrap_charger.png",
+      "comment": "legacy"
+    },
+    "farmland": {
+      "all": "dirt.png",
+      "comment": "legacy"
+    },
+    "doorTop": {
+      "all": "wrap_door.png",
+      "comment": "legacy"
+    },
+    "doorTopOpen": {
+      "all": "wrap_door.png",
+      "comment": "legacy"
+    },
+    "doorGlassTop": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorGlassTopOpen": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorMetalTop": {
+      "all": "wrap_doorMetal.png",
+      "comment": "legacy"
+    },
+    "doorMetalTopOpen": {
+      "all": "wrap_doorMetal.png",
+      "comment": "legacy"
+    },
+    "doorSlidingTop": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "doorSlidingTopOpen": {
+      "all": "wrap_doorGlass.png",
+      "comment": "legacy"
+    },
+    "tuft": {
+      "all": "leaves.png",
+      "comment": "legacy"
+    },
+    "cropSprout": {
+      "all": "wrap_cropSprout.png",
+      "comment": "legacy"
+    },
+    "cropLeafy": {
+      "all": "wrap_cropLeafy.png",
+      "comment": "legacy"
+    },
+    "cropTall": {
+      "all": "wrap_cropTall.png",
+      "comment": "legacy"
+    },
+    "cropRipe": {
+      "all": "wrap_cropRipe.png",
+      "comment": "legacy"
+    },
+    "farmlandWet": {
+      "all": "dirt.png",
+      "comment": "legacy"
+    },
+    "water": {
+      "all": "ice.png",
+      "comment": "legacy"
+    },
+    "bushYoung": {
+      "all": "wrap_bushYoung.png",
+      "comment": "legacy"
+    },
+    "bushLeaf": {
+      "all": "wrap_bushLeaf.png",
+      "comment": "legacy"
+    },
+    "bushFull": {
+      "all": "wrap_bushFull.png",
+      "comment": "legacy"
+    },
+    "bushFruit": {
+      "all": "wrap_bushFruit.png",
+      "comment": "legacy"
+    },
+    "woodshop": {
+      "top": "workbench.png",
+      "side": "benchSide.png",
+      "bottom": "wood.png",
+      "comment": "legacy"
+    },
+    "woodshopSide": {
+      "top": "workbench.png",
+      "side": "benchSide.png",
+      "bottom": "wood.png",
+      "comment": "legacy"
+    },
+    "clay": {
+      "all": "wrap_clay.png",
+      "comment": "legacy"
+    },
+    "chair": {
+      "all": "wood.png",
+      "comment": "legacy"
+    },
+    "sewing": {
+      "all": "wood.png",
+      "comment": "legacy"
+    },
+    "conveyor": {
+      "all": "greystone.png",
+      "comment": "legacy"
+    },
+    "sapling": {
+      "all": "leaves.png",
+      "comment": "legacy"
+    },
+    "woodshopBench": {
+      "all": "workbench.png",
+      "comment": "legacy"
+    },
+    "floorLampOff": {
+      "all": "wrap_floorLampOff.png",
+      "comment": "legacy"
+    },
+    "floorLampOn": {
+      "all": "wrap_floorLampOn.png",
+      "comment": "legacy"
+    },
+    "wallLampOff": {
+      "all": "wrap_wallLampOff.png",
+      "comment": "legacy"
+    },
+    "wallLampOn": {
+      "all": "wrap_wallLampOn.png",
+      "comment": "legacy"
+    },
+    "rugAnchor": {
+      "all": "wrap_rugAnchor.png",
+      "comment": "legacy"
+    },
+    "rugPart": {
+      "all": "wrap_rugPart.png",
+      "comment": "legacy"
+    },
+    "techCell": {
+      "all": "wrap_techCell.png",
+      "comment": "legacy"
+    },
+    "techLine": {
+      "all": "wrap_techLine.png",
+      "comment": "legacy"
+    },
+    "techSwitch": {
+      "all": "wrap_techSwitch.png",
+      "comment": "legacy"
+    },
+    "techSwitchOn": {
+      "all": "wrap_techSwitchOn.png",
+      "comment": "legacy"
+    },
+    "techButton": {
+      "all": "wrap_techButton.png",
+      "comment": "legacy"
+    },
+    "techButtonOn": {
+      "all": "wrap_techButtonOn.png",
+      "comment": "legacy"
+    },
+    "birchLog": {
+      "all": "wrap_birchLog.png",
+      "comment": "legacy"
+    },
+    "birchLeaves": {
+      "all": "wrap_birchLeaves.png",
+      "comment": "legacy"
+    },
+    "birchPlanks": {
+      "all": "wrap_birchPlanks.png",
+      "comment": "legacy"
+    },
+    "pineLog": {
+      "all": "wrap_pineLog.png",
+      "comment": "legacy"
+    },
+    "pineNeedles": {
+      "all": "wrap_pineNeedles.png",
+      "comment": "legacy"
+    },
+    "pinePlanks": {
+      "all": "wrap_pinePlanks.png",
+      "comment": "legacy"
+    }
+  }
+}
