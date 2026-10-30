@@ -629,8 +629,51 @@
         var nextLine = whatsLine();
         if (block.getAttribute("data-hub-lang") !== pageLang() || (shown && shown.textContent !== nextLine)) paint(block);
       }
+      quietDupes();
     } finally {
       placing = false;
+    }
+  }
+
+  function hostShown(host) {
+    var node = host;
+    while (node && node.nodeType === 1) {
+      if (node.hidden) return false;
+      var view = getComputedStyle(node);
+      if (view.display === "none" || view.visibility === "hidden") return false;
+      node = node.parentElement;
+    }
+    if (!host || !host.getBoundingClientRect) return false;
+    var rect = host.getBoundingClientRect();
+    return rect.width >= 8 && rect.height >= 8;
+  }
+
+  function quietDupes() {
+    var blocks = document.querySelectorAll(".hub-menu-block");
+    if (blocks.length < 2) {
+      if (blocks[0]) {
+        blocks[0].hidden = false;
+        blocks[0].style.display = "";
+        blocks[0].removeAttribute("aria-hidden");
+      }
+      return;
+    }
+    var keep = null;
+    for (var i = 0; i < blocks.length; i++) {
+      if (!hostShown(blocks[i].parentElement)) continue;
+      if (!keep || blocks[i].closest(".ti-dock")) keep = blocks[i];
+    }
+    if (!keep) keep = blocks[0];
+    for (var j = 0; j < blocks.length; j++) {
+      var on = blocks[j] === keep;
+      blocks[j].hidden = !on;
+      if (on) {
+        blocks[j].style.display = "";
+        blocks[j].removeAttribute("aria-hidden");
+      } else {
+        blocks[j].style.display = "none";
+        blocks[j].setAttribute("aria-hidden", "true");
+      }
     }
   }
 
