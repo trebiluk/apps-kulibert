@@ -117,11 +117,18 @@
     return COPY[pageLang()] || COPY.en;
   }
 
+  function barTag() {
+    var nodes = document.querySelectorAll("script[src*='kulibert-bar']");
+    if (nodes.length) return nodes[nodes.length - 1];
+    return document.querySelector("script[data-menu]") || document.querySelector("script[data-whats-new]");
+  }
+
   function whatsLine() {
+    var script = barTag();
+    var attr = script && script.getAttribute("data-whats-new");
+    if (attr) return attr;
     var line = pack().line;
-    if (line) return line;
-    var script = document.querySelector("script[data-whats-new]");
-    return (script && script.getAttribute("data-whats-new")) || COPY.en.line;
+    return line || COPY.en.line;
   }
 
   function el(tag, className) {
@@ -167,27 +174,77 @@
     else panel.setAttribute("hidden", "");
   }
 
-  function closeAppMenu(block) {
-    var row = block.querySelector(".hub-menu-row");
-    setExpanded(block, false);
-    var dock = block.closest(".ti-dock");
-    if (dock) {
-      var buttons = dock.querySelectorAll("button");
-      for (var i = 0; i < buttons.length; i++) {
-        var cls = buttons[i].className;
-        if (typeof cls === "string" && cls.indexOf("inset-0") !== -1) {
-          buttons[i].click();
-          break;
-        }
+  function menuButtons() {
+    var script = barTag();
+    var sel = script && script.getAttribute("data-menu");
+    if (!sel) return [];
+    try { return document.querySelectorAll(sel); } catch (eSel) { return []; }
+  }
+
+  function controlOpen(btn) {
+    if (!btn) return false;
+    if (btn.getAttribute("aria-expanded") === "true") return true;
+    var id = btn.getAttribute("aria-controls");
+    if (!id) return false;
+    var box = document.getElementById(id);
+    if (!box || box.hidden) return false;
+    var view = getComputedStyle(box);
+    if (view.display === "none" || view.visibility === "hidden") return false;
+    var rect = box.getBoundingClientRect();
+    return rect.width >= 8 && rect.height >= 8;
+  }
+
+  function dockStillOpen() {
+    var dock = document.querySelector(".ti-dock");
+    if (!dock || dock.hidden) return null;
+    var view = getComputedStyle(dock);
+    if (view.display === "none" || view.visibility === "hidden") return null;
+    var rect = dock.getBoundingClientRect();
+    if (rect.width < 8 || rect.height < 8) return null;
+    return dock;
+  }
+
+  function closeDock(dock) {
+    if (!dock) return false;
+    var buttons = dock.querySelectorAll("button");
+    for (var i = 0; i < buttons.length; i++) {
+      var cls = buttons[i].className;
+      if (typeof cls === "string" && cls.indexOf("inset-0") !== -1 && buttons[i].click) {
+        buttons[i].click();
+        return true;
       }
     }
-    var dockOpen = !!dock;
-    if (dockOpen) {
-      var menuBtn = document.querySelector(".kb-bar .kb-menu") || document.querySelector("header.sticky > button[aria-expanded]");
-      if (menuBtn && menuBtn.focus) menuBtn.focus();
-      return;
+    return false;
+  }
+
+  function sendEscape(block) {
+    var target = block.querySelector(".hub-menu-row") || document.body;
+    try {
+      target.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "Escape",
+        code: "Escape",
+        bubbles: true,
+        cancelable: true
+      }));
+    } catch (eEsc) {}
+  }
+
+  function closeAppMenu(block) {
+    setExpanded(block, false);
+    var buttons = menuButtons();
+    var opener = null;
+    for (var i = 0; i < buttons.length; i++) {
+      if (!controlOpen(buttons[i]) || typeof buttons[i].click !== "function") continue;
+      opener = buttons[i];
+      opener.click();
+      break;
     }
-    if (row && row.focus) row.focus();
+    if (opener) {
+      if (opener.focus) opener.focus();
+    } else {
+      sendEscape(block);
+    }
+    closeDock(dockStillOpen());
   }
 
   function openHelp(block) {
@@ -430,7 +487,9 @@
         } else if (host.lastElementChild !== block) {
           host.appendChild(block);
         }
-        if (block.getAttribute("data-hub-lang") !== pageLang()) paint(block);
+        var shown = block.querySelector(".hub-menu-line");
+        var nextLine = whatsLine();
+        if (block.getAttribute("data-hub-lang") !== pageLang() || (shown && shown.textContent !== nextLine)) paint(block);
       }
     } finally {
       placing = false;
