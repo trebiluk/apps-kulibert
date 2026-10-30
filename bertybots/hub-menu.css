@@ -82,7 +82,9 @@
 }
 
 .hub-menu-panel[hidden],
-.hub-menu-langs[hidden] {
+.hub-menu-langs[hidden],
+.hub-menu-block[hidden],
+.hub-menu-block[hidden] .hub-menu-row {
   display: none !important;
 }
 
