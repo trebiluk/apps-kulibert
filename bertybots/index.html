@@ -28,6 +28,8 @@
 
   <link rel="stylesheet" href="css/app.css?v=0.19.41">
 
+  <link rel="stylesheet" href="hub-menu.css?v=0.19.41">
+
 </head>
 
 <body>
@@ -691,6 +693,32 @@
 
             <button class="btn gold" id="crew-close" type="button" data-bb="close">Close</button>
 
+            <button type="button" class="hub-menu-row" id="hub-menu-row" aria-expanded="false" aria-controls="hub-menu-panel">
+              <svg class="hub-menu-row-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                <g fill="currentColor">
+                  <circle cx="5" cy="5" r="1.65"></circle>
+                  <circle cx="12" cy="5" r="1.65"></circle>
+                  <circle cx="19" cy="5" r="1.65"></circle>
+                  <circle cx="5" cy="12" r="1.65"></circle>
+                  <circle cx="12" cy="12" r="1.65"></circle>
+                  <circle cx="19" cy="12" r="1.65"></circle>
+                  <circle cx="5" cy="19" r="1.65"></circle>
+                  <circle cx="12" cy="19" r="1.65"></circle>
+                  <circle cx="19" cy="19" r="1.65"></circle>
+                </g>
+              </svg>
+              <span class="hub-menu-row-label">Hub Menu</span>
+              <span class="hub-menu-row-chev" aria-hidden="true">▸</span>
+            </button>
+            <div class="hub-menu-panel" id="hub-menu-panel" hidden>
+              <button type="button" class="hub-menu-panel-close"><span class="hub-menu-panel-mark" aria-hidden="true">✕</span><span class="hub-menu-panel-label" data-hub-key="close">Close</span></button>
+              <p class="hub-menu-panel-news"><strong class="hub-menu-panel-kicker" data-hub-key="whatsNew">What's new</strong> <span class="hub-menu-panel-line">Your Menu stays the same. Hub Menu at the bottom opens Close, What's new, Home, My settings, and Help.</span></p>
+              <a class="hub-menu-panel-home" href="https://apps.kulibert.net/" target="_top"><span class="hub-menu-panel-mark" aria-hidden="true">⌂</span><span class="hub-menu-panel-label" data-hub-key="home">Home</span></a>
+              <button type="button" class="hub-menu-panel-settings" aria-expanded="false" aria-controls="hub-menu-panel-langs"><span class="hub-menu-panel-label" data-hub-key="mySettings">My settings</span></button>
+              <div class="hub-menu-panel-langs" id="hub-menu-panel-langs" hidden></div>
+              <button type="button" class="hub-menu-panel-help"><span class="hub-menu-panel-label" data-hub-key="help">Help</span></button>
+            </div>
+
           </div>
 
         </div>
@@ -726,6 +754,8 @@
   <script src="js/i18n.js?v=0.19.41"></script>
 
   <script src="js/bundle.js?v=0.19.41"></script>
+
+  <script src="hub-menu.js?v=0.19.41"></script>
 
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bertybots" data-name="Berty's Botz" data-version="BB 0.19.41" data-rtl="1" data-menu="#btn-crew" data-whats-new="Your Menu stays the same. Hub Menu at the bottom opens Close, What's new, Home, My settings, and Help." defer></script>
 
