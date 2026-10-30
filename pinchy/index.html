@@ -48,7 +48,11 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: var(--blue);
+    background: #06122B;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-bottom: 2px solid #3B82F6;
   }
   .brand { margin: 0; font-size: 18px; font-weight: 750; }
   .ver {
@@ -110,7 +114,7 @@
     border-radius: 12px;
   }
   #title-arm { height: 280px; }
-  #view { height: max(280px, 52vh); min-height: 280px; }
+  #view { height: max(320px, 56vh); min-height: 280px; border-radius: 0; }
   .scene-labels {
     position: absolute;
     inset: 0;
@@ -157,16 +161,67 @@
     align-items: start;
   }
   .controls, .side { display: flex; flex-direction: column; gap: 8px; }
+  .panel {
+    border: 2px solid #3B82F6;
+    background: #0B1A40;
+    padding: 8px;
+  }
+  .panel-label {
+    margin: 0 0 8px;
+    color: #B7C4EA;
+    font: 700 13px/1 system-ui, sans-serif;
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .viewport {
+    border: 2px solid #3B82F6;
+    background: #06122B;
+    padding: 4px;
+    min-height: 280px;
+  }
   .palette, .actions { display: grid; gap: 8px; }
-  .palette { grid-template-columns: 1fr 1fr; padding: 8px; background: var(--violet); border-radius: 12px; }
+  .palette { grid-template-columns: 1fr 1fr; }
   .actions { grid-template-columns: 1fr 1fr 1fr; }
   button.block, button.action {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 6px;
-    padding: 4px 8px;
+    min-width: 48px;
+    min-height: 52px;
+    padding: 6px 8px;
     text-align: left;
+    border-radius: 2px;
+    background: #132A5C;
   }
+  #retry {
+    border-color: #C45A4A;
+    background: #2A1830;
+    border-radius: 2px;
+  }
+  .lamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  .lamp {
+    border: 2px solid #B7C4EA;
+    color: #B7C4EA;
+    background: #06122B;
+    padding: 4px 8px;
+    font-weight: 750;
+  }
+  .lamp.is-on { color: #F7F9FF; border-color: #22D3EE; background: #132A5C; }
+  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
+  .readouts p {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border: 2px solid #132A5C;
+    background: #06122B;
+    padding: 6px 8px;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .readouts b { font-variant: normal; letter-spacing: 0; }
   button .name { flex: 1 1 auto; line-height: 1.15; }
   kbd {
     border: 1px solid var(--line);
@@ -244,6 +299,29 @@
     #title-arm { height: 220px; }
     #langs, #levels { min-height: 0; }
   }
+  @media (max-height: 520px) {
+    #goal, .legend, .help, #star-rules, #metrics, #angles, #stars { display: none; }
+    #langs {
+      position: absolute;
+      top: 6px;
+      inset-inline-start: 300px;
+      inset-inline-end: 8px;
+      z-index: 6;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      max-height: 44px;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+    #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: 52px; margin: 4px 0; }
+    #view { height: 280px; min-height: 280px; }
+    .scene-col .panel { padding: 4px; }
+    .lamps, .readouts { margin: 0 0 4px; }
+    .readouts { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .readouts p { padding: 2px 4px; }
+    #status { min-height: 0; max-height: 36px; overflow: hidden; white-space: nowrap; }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation: none !important;
@@ -272,6 +350,7 @@
   <ul>
     <li>Move a robot arm.</li>
     <li>Rough layout: controls on the left, the 3D scene on the right. On a narrow screen the scene is on top.</li>
+    <li>Teach-pendant mock: framed Joints, Base, Program, and Status, with degree readouts.</li>
   </ul>
   <p>Version 1.2.2</p>
   <ul>
@@ -318,20 +397,49 @@
   <p id="goal"></p>
   <div class="stage">
     <div class="controls">
-      <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
-      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
-      <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
-        <p>Program</p>
-        <ol id="program"></ol>
-      </div>
+      <section class="panel">
+        <h2 class="panel-label">Joints</h2>
+        <div class="palette" id="joint-pad" role="group" aria-label="Joints"></div>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label">Base</h2>
+        <div class="palette" id="base-pad" role="group" aria-label="Base turn"></div>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label">Program</h2>
+        <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
+        <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
+          <p>Program</p>
+          <ol id="program"></ol>
+        </div>
+        <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
+      </section>
     </div>
     <div class="scene-col">
-      <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
+      <div class="viewport">
+        <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
+      </div>
+      <section class="panel">
+        <h2 class="panel-label">Status</h2>
+        <div class="lamps" id="lamps">
+          <span class="lamp is-on" data-lamp="ready">● Ready</span>
+          <span class="lamp" data-lamp="running">▲ Running</span>
+          <span class="lamp" data-lamp="fault">■ Fault</span>
+          <span class="lamp" data-lamp="win">★ Win</span>
+        </div>
+        <div class="readouts" id="readouts">
+          <p><span>Base</span><b id="ro-base">0°</b></p>
+          <p><span>Shoulder</span><b id="ro-shoulder">0°</b></p>
+          <p><span>Elbow</span><b id="ro-elbow">0°</b></p>
+          <p><span>Wrist</span><b id="ro-wrist">0°</b></p>
+          <p><span>Claw</span><b id="ro-claw">Open</b></p>
+        </div>
+        <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
+      </section>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
       <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
     </div>
   </div>
-  <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
   <p id="stars" aria-label="No stars yet.">
     <svg class="star" id="star-1" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
     <svg class="star" id="star-2" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
@@ -430,6 +538,12 @@ var renderRun = function () {
   el.classList.remove("is-win", "is-crash");
   if (view.kind === "won") el.classList.add("is-win");
   if (view.kind === "crashed") el.classList.add("is-crash");
+  var lamp = "ready";
+  if (view.kind === "running") lamp = "running";
+  else if (view.kind === "crashed" || view.kind === "failed") lamp = "fault";
+  else if (view.kind === "won") lamp = "win";
+  var lamps = document.querySelectorAll(".lamp");
+  for (i = 0; i < lamps.length; i++) lamps[i].classList.toggle("is-on", lamps[i].dataset.lamp === lamp);
 };
 var setRun = function (state) {
   session.run[session.level] = state;
@@ -565,15 +679,19 @@ var renderLevels = function () {
 };
 
 var setBusy = function (busy) {
-  var nodes = document.querySelectorAll("#palette button, #run, #undo, #levels button");
+  var nodes = document.querySelectorAll(".controls button.block, #run, #undo, #levels button");
   for (var i = 0; i < nodes.length; i++) nodes[i].disabled = busy;
   document.getElementById("retry").disabled = false;
 };
 
 var renderPalette = function () {
-  var palette = document.getElementById("palette");
+  var jointPad = document.getElementById("joint-pad");
+  var basePad = document.getElementById("base-pad");
+  var programPad = document.getElementById("program-pad");
   var ids = PINCHY.blocksFor(PINCHY.LEVELS[session.level]);
-  palette.replaceChildren();
+  jointPad.replaceChildren();
+  basePad.replaceChildren();
+  programPad.replaceChildren();
   if (focusIndex >= ids.length) focusIndex = 0;
   for (var i = 0; i < ids.length; i++) {
     var id = ids[i];
@@ -599,10 +717,13 @@ var renderPalette = function () {
     }
     b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
     b.addEventListener("focus", function () {
-      var nodes = document.querySelectorAll("#palette button.block");
+      var nodes = document.querySelectorAll(".controls button.block");
       for (var n = 0; n < nodes.length; n++) if (nodes[n] === this) focusIndex = n;
     });
-    palette.appendChild(b);
+    var home = jointPad;
+    if (id.indexOf("base-") === 0) home = basePad;
+    else if (id.indexOf("repeat") !== -1 || id.indexOf("if") !== -1 || id === "end-repeat" || id === "end-if") home = programPad;
+    home.appendChild(b);
   }
 };
 var applyLang = function (code) {
@@ -1127,6 +1248,11 @@ var paintView = function (canvas, state, level, opts) {
 var paintGame = function () {
   if (!world) return;
   document.getElementById("angles").textContent = PINCHY.jointReadout(world);
+  document.getElementById("ro-base").textContent = Math.round(world.base) + "\u00b0";
+  document.getElementById("ro-shoulder").textContent = Math.round(world.shoulder) + "\u00b0";
+  document.getElementById("ro-elbow").textContent = Math.round(world.elbow) + "\u00b0";
+  document.getElementById("ro-wrist").textContent = Math.round(world.wrist || 0) + "\u00b0";
+  document.getElementById("ro-claw").textContent = world.open ? "Open" : "Closed";
   paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
@@ -1419,7 +1545,7 @@ var showGame = function () {
   updateMetrics();
   renderRun();
   drawLevel();
-  var first = document.querySelector("#palette button.block");
+  var first = document.querySelector(".controls button.block");
   if (first && first.focus) first.focus({ preventScroll: true });
 };
 
@@ -1481,7 +1607,7 @@ var boot = function () {
   undoBtn.id = "undo";
   undoBtn.setAttribute("aria-keyshortcuts", "Z");
   undoBtn.addEventListener("click", function () { undo(); });
-  var retryBtn = makeButton("action", "retry", "Retry", "");
+  var retryBtn = makeButton("action", "retry", "Reset", "");
   retryBtn.id = "retry";
   retryBtn.addEventListener("keydown", function (e) {
     if (e.key !== "Enter" && e.key !== " ") return;
@@ -1546,7 +1672,7 @@ var boot = function () {
         if (picked && picked.focus) picked.focus();
         return;
       }
-      var buttons = document.querySelectorAll("#palette button.block");
+      var buttons = document.querySelectorAll(".controls button.block");
       if (!buttons.length || playing) return;
       var cols = 2;
       var maxRow = Math.max(0, Math.ceil(buttons.length / cols) - 1);
@@ -1588,7 +1714,7 @@ var boot = function () {
       var target = e.target;
       if (target && target.closest && target.closest("button")) return;
       e.preventDefault();
-      var blocks = document.querySelectorAll("#palette button.block");
+      var blocks = document.querySelectorAll(".controls button.block");
       if (blocks[focusIndex]) blocks[focusIndex].click();
     }
   });

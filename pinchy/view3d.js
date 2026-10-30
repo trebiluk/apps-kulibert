@@ -194,16 +194,16 @@
       if (!rimPts) {
         rimPts = [];
         var i, a;
-        for (i = 0; i < 20; i++) {
-          a = (i / 20) * Math.PI * 2;
-          rimPts.push(new THREE.Vector3(Math.cos(a) * 300, 1, Math.sin(a) * 300));
+        for (i = 0; i < 16; i++) {
+          a = (i / 16) * Math.PI * 2;
+          rimPts.push(new THREE.Vector3(Math.cos(a) * 220, 1, Math.sin(a) * 220));
         }
-        rimPts.push(new THREE.Vector3(0, 320, 40));
-        rimPts.push(new THREE.Vector3(0, 140, 240));
-        rimPts.push(new THREE.Vector3(180, 120, 80));
-        rimPts.push(new THREE.Vector3(-180, 120, 80));
+        rimPts.push(new THREE.Vector3(0, 260, 20));
+        rimPts.push(new THREE.Vector3(0, 90, 210));
+        rimPts.push(new THREE.Vector3(140, 80, 60));
+        rimPts.push(new THREE.Vector3(-140, 80, 60));
       }
-      var target = new THREE.Vector3(0, 24, 16);
+      var target = new THREE.Vector3(0, 80, 30);
       var dir = new THREE.Vector3(0.82, 0.58, 0.9).normalize();
       var lo = 420;
       var hi = 2000;
@@ -290,11 +290,7 @@
         var beside = function (point, side, up) {
           return point.clone().addScaledVector(right, side).add(new THREE.Vector3(0, up, 0));
         };
-        addLabel(parent, "Base " + Math.round(yaw) + "\u00b0", beside(new THREE.Vector3(0, 14, 0), 78, 0));
-        addLabel(parent, "Shoulder " + Math.round(state.shoulder) + "\u00b0", beside(shoulder, 42, 4));
-        addLabel(parent, "Elbow " + Math.round(state.elbow) + "\u00b0", beside(elbow, 46, 6));
-        addLabel(parent, "Wrist " + Math.round(state.wrist || 0) + "\u00b0", beside(wrist, 40, -20));
-        addLabel(parent, "Claw", beside(tip, -22, 28));
+        /* Joint names live in the readout panel, not on the arm. */
       }
     }
 

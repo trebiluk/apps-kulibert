@@ -137,7 +137,7 @@
     if (meta.actions && meta.actions[id]) return meta.actions[id];
     if (id === "run") return "Run";
     if (id === "undo") return "Undo";
-    if (id === "retry") return "Retry";
+    if (id === "retry") return "Reset";
     return id;
   }
 
