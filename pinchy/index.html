@@ -180,7 +180,7 @@
     align-items: center;
     direction: ltr;
   }
-  .chip {
+  .chip, button.chip {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -192,7 +192,7 @@
     font-weight: 650;
     white-space: nowrap;
   }
-  .chip.is-now, .chip.is-stop {
+  .chip.is-fix, .chip.is-now, .chip.is-stop {
     outline: 4px solid var(--ember);
     outline-offset: 2px;
   }
@@ -331,9 +331,12 @@ var ICONS = {
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
   "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
   "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
+  "swap": svg('<path d="M7 8 h10" ' + ST + '/><path d="M14 5 l3 3 l-3 3" ' + ST + '/><path d="M17 16 H7" ' + ST + '/><path d="M10 13 l-3 3 l3 3" ' + ST + '/>'),
   "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
 };
-var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square" };
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square", L6: "swap" };
+var fixAt = 0;
+var swapHistory = [];
 
 var lang = "en";
 var labelOf = function (id) {
@@ -372,8 +375,10 @@ var paintStars = function () {
 };
 
 var updateMetrics = function () {
+  var level = PINCHY.LEVELS[session.level];
   var n = session.programs[session.level].length;
-  document.getElementById("m-blocks").textContent = "Blocks: " + n;
+  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = "Swaps: " + (session.swaps[session.level] || 0);
+  else document.getElementById("m-blocks").textContent = "Blocks: " + n;
   var timeEl = document.getElementById("m-time");
   if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
   else if (lastMs == null) timeEl.textContent = "Time: none yet";
@@ -391,10 +396,21 @@ var renderProgram = function (now, stop) {
     ol.appendChild(empty);
     return;
   }
+  var debug = !!(PINCHY.LEVELS[session.level] && PINCHY.LEVELS[session.level].debug);
   for (var i = 0; i < list.length; i++) {
-    var li = document.createElement("li");
+    var li = document.createElement(debug ? "button" : "li");
+    if (debug) li.type = "button";
     li.className = "chip";
     li.dataset.step = String(i + 1);
+    if (debug) {
+      li.dataset.index = String(i);
+      if (i === fixAt && now < 0 && stop < 0) li.classList.add("is-fix");
+      if (playing) li.disabled = true;
+      li.addEventListener("click", function (ev) {
+        if (ev.detail === 0) return;
+        doSwap(Number(this.dataset.index));
+      });
+    }
     if (i === now) {
       li.classList.add("is-now");
       li.setAttribute("aria-current", "step");
@@ -439,7 +455,11 @@ var renderLevels = function () {
   var legend = document.getElementById("legend");
   if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
   else if (levelNow.kind === "sensor") legend.textContent = "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
+  else if (levelNow.debug) legend.textContent = "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
   else legend.textContent = "Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.";
+  document.getElementById("help").textContent = levelNow.debug
+    ? "Arrow keys pick a step. Enter swaps it with the next step. R runs. Z undoes."
+    : "Arrow keys pick a block. Enter adds it. R runs. Z undoes. Retry keeps the program.";
   paintStars();
 };
 
@@ -488,8 +508,32 @@ var applyLang = function (code) {
   renderPalette();
   renderProgram(-1, -1);
 };
+var doSwap = function (index) {
+  if (playing) return;
+  var level = PINCHY.LEVELS[session.level];
+  if (!level || !level.debug) return;
+  var list = session.programs[session.level];
+  if (index < 0 || index >= list.length - 1) return;
+  if (list[index] === list[index + 1]) {
+    fixAt = index;
+    renderProgram(-1, -1);
+    return;
+  }
+  if (!swapHistory[session.level]) swapHistory[session.level] = [];
+  swapHistory[session.level].push(list.slice());
+  session.programs[session.level] = PINCHY.swapSteps(list, index);
+  session.swaps[session.level] = (session.swaps[session.level] || 0) + 1;
+  fixAt = index;
+  renderProgram(-1, -1);
+  updateMetrics();
+  setStatus("Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + session.swaps[session.level] + ".", "");
+};
 var addBlock = function (id) {
   if (playing) return;
+  if (PINCHY.LEVELS[session.level].debug) {
+    setStatus("Swap two steps. Arrows pick a step. Enter swaps it with the next.", "");
+    return;
+  }
   var list = session.programs[session.level];
   if (list.length >= 24) {
     setStatus("Program is full at 24 blocks.", "");
@@ -501,6 +545,16 @@ var addBlock = function (id) {
 };
 var undo = function () {
   if (playing) return;
+  if (PINCHY.LEVELS[session.level].debug) {
+    var hist = swapHistory[session.level] || [];
+    if (!hist.length) return;
+    session.programs[session.level] = hist.pop();
+    session.swaps[session.level] = Math.max(0, (session.swaps[session.level] || 0) - 1);
+    renderProgram(-1, -1);
+    updateMetrics();
+    setStatus("Swap undone. Swaps: " + session.swaps[session.level] + ".", "");
+    return;
+  }
   var list = session.programs[session.level];
   if (!list.length) return;
   list.pop();
@@ -982,7 +1036,8 @@ var glide = function (ms, token, onFrame) {
 
 var finishWin = function (blocks, ms) {
   var level = PINCHY.LEVELS[session.level];
-  var n = PINCHY.starsFor(true, blocks, ms, level);
+  var score = level.metric === "swaps" ? (session.swaps[session.level] || 0) : blocks;
+  var n = PINCHY.starsFor(true, score, ms, level);
   if (n > session.stars[session.level]) session.stars[session.level] = n;
   var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
   var text = "Done. " + blockWord + ", " + formatMs(ms) + ".";
@@ -991,6 +1046,11 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "spot") text = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "pile") text = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "sensor") text = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "debug") {
+    var swaps = session.swaps[session.level] || 0;
+    var swapWord = swaps === 1 ? "1 swap" : swaps + " swaps";
+    text = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
+  }
   text += " " + PINCHY.starWords(n) + "";
   setStatus(text, "win");
   setStepLive(text);
@@ -1117,6 +1177,7 @@ var selectLevel = function (index) {
   lastMs = null;
   runT0 = 0;
   focusIndex = 0;
+  fixAt = 0;
   renderPalette();
   renderLevels();
   renderProgram(-1, -1);
@@ -1164,6 +1225,12 @@ var boot = function () {
     session.programs.push([]);
     session.stars.push(0);
     session.swaps.push(0);
+    swapHistory.push([]);
+  }
+  for (var seed = 0; seed < PINCHY.LEVELS.length; seed++) {
+    if (PINCHY.LEVELS[seed].broken && !session.programs[seed].length) {
+      session.programs[seed] = PINCHY.LEVELS[seed].broken.slice();
+    }
   }
   document.getElementById("app-version").textContent = PINCHY.APP_VERSION;
   viewCanvas = document.getElementById("view");
@@ -1245,8 +1312,26 @@ var boot = function () {
   window.addEventListener("keydown", function (e) {
     if (document.getElementById("game").hidden) return;
     var key = e.key;
+    if ((key === "Enter") && PINCHY.LEVELS[session.level].debug) {
+      e.preventDefault();
+      doSwap(fixAt);
+      return;
+    }
     if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight") {
       e.preventDefault();
+      if (PINCHY.LEVELS[session.level].debug) {
+        if (playing) return;
+        var steps = session.programs[session.level];
+        var maxAt = Math.max(0, steps.length - 2);
+        if (key === "ArrowLeft" || key === "ArrowUp") fixAt -= 1;
+        if (key === "ArrowRight" || key === "ArrowDown") fixAt += 1;
+        if (fixAt < 0) fixAt = 0;
+        if (fixAt > maxAt) fixAt = maxAt;
+        renderProgram(-1, -1);
+        var picked = document.querySelectorAll("#program button.chip")[fixAt];
+        if (picked && picked.focus) picked.focus();
+        return;
+      }
       var buttons = document.querySelectorAll("#palette button.block");
       if (!buttons.length || playing) return;
       var cols = 2;

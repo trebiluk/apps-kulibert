@@ -306,7 +306,7 @@
       var p = pose(state);
       return spotName(state.base, p.cx) === level.spot && p.cy >= 10 && p.cy <= 52 && !state.holding;
     }
-    if (level.kind === "place") return !!(state.part && state.part.inBin);
+    if (level.kind === "place" || level.kind === "debug") return !!(state.part && state.part.inBin);
     if (level.kind === "pile" || level.kind === "sensor") {
       return (state.sorted || 0) >= (level.need || 1) && !(state.queue && state.queue.length) && !state.holding;
     }
@@ -632,7 +632,24 @@
       spot: "",
       blocks: ["repeat-2", "end-repeat", "if-red-square", "if-blue-circle", "end-if", "wrist-up", "wrist-down"].concat(CORE_BLOCKS)
     };
-    return [l1, l2, l3, l4, l5];
+    var l6 = {
+      id: "L6",
+      name: "Fix the program",
+      goal: "The program is broken. Swap as few steps as you can, then run it. Par is 1 swap.",
+      start: { base: 0, shoulder: 45, elbow: -60 },
+      kind: "debug",
+      debug: true,
+      metric: "swaps",
+      target: null,
+      par: 1,
+      timePar: 9000,
+      part: part,
+      bin: l2.bin,
+      spot: "",
+      broken: ["shoulder-down", "shoulder-down", "elbow-down", "elbow-down", "claw-close", "base-right", "claw-open", "base-right"],
+      blocks: ["wrist-up", "wrist-down"].concat(CORE_BLOCKS)
+    };
+    return [l1, l2, l3, l4, l5, l6];
   }
 
   var LEVELS = buildLevels();
@@ -757,6 +774,15 @@
     return { win: false, crash: "program ran too long", step: 0, state: state, blocks: commands.length };
   }
 
+  function swapSteps(commands, index) {
+    var next = commands.slice();
+    if (index < 0 || index + 1 >= next.length) return next;
+    var tmp = next[index];
+    next[index] = next[index + 1];
+    next[index + 1] = tmp;
+    return next;
+  }
+
   function stepList(commands) {
     var out = [];
     for (var i = 0; i < commands.length; i++) {
@@ -848,6 +874,7 @@
     binsOf: binsOf,
     endReason: endReason,
     stepList: stepList,
+    swapSteps: swapSteps,
     crashLine: crashLine,
     starsFor: starsFor,
     starWords: starWords,

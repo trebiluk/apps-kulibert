@@ -33,8 +33,8 @@ function findWin(level, cap) {
 }
 
 assert.equal(G.APP_VERSION, "1.0.0");
-assert.equal(G.LEVELS.length, 5);
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor"]);
+assert.equal(G.LEVELS.length, 6);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -184,6 +184,20 @@ G.BLOCKS.forEach(function (block) {
   assert.notEqual(block.label, "Blue");
 });
 
+const l6 = G.LEVELS[5];
+assert.equal(l6.debug, true);
+assert.equal(l6.metric, "swaps");
+const l6broken = l6.broken.slice();
+assert.equal(G.runAll(l6, l6broken).win, false);
+const l6fixed = G.swapSteps(l6broken, 6);
+assert.deepEqual(l6broken, l6.broken);
+assert.equal(G.runAll(l6, l6fixed).win, true, "L6 is winnable");
+assert.equal(l6.par, 1);
+assert.equal(G.starsFor(true, 1, 1000, l6), 3);
+assert.equal(G.starsFor(true, 2, 1000, l6), 1);
+assert.ok(l6.blocks.indexOf("wrist-up") !== -1);
+assert.ok(l6.blocks.indexOf("wrist-down") !== -1);
+
 const crashProgram = ["shoulder-down", "shoulder-down", "shoulder-down"];
 const crashCopy = crashProgram.slice();
 const crash = G.runAll(l1, crashProgram);
@@ -228,5 +242,6 @@ console.log("L2", l2win.join(" > "));
 console.log("L3", l3win.join(" > "));
 console.log("L4", l4win.join(" > "));
 console.log("L5", l5win.join(" > "));
+console.log("L6", l6fixed.join(" > "));
 console.log("crash", line);
 console.log("pinchy win-test ok");
