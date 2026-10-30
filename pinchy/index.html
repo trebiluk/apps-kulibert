@@ -1020,6 +1020,18 @@ var paintGame = function () {
     showGrid: true
   });
 };
+var drawLevel = function () {
+  if (!viewCanvas || !world) return;
+  viewCanvas._cssW = 0;
+  fit(viewCanvas);
+  paintGame();
+  requestAnimationFrame(function () {
+    if (!viewCanvas || !world) return;
+    viewCanvas._cssW = 0;
+    fit(viewCanvas);
+    paintGame();
+  });
+};
 
 var titleState = function (shoulder) {
   return {
@@ -1258,7 +1270,7 @@ var selectLevel = function (index) {
   updateMetrics();
   if (!session.run[index]) session.run[index] = PINCHY.settleRun(null, { type: "level" });
   renderRun();
-  paintGame();
+  drawLevel();
 };
 
 var makeButton = function (className, icon, label, keyText) {
@@ -1289,7 +1301,7 @@ var showGame = function () {
   renderProgram(-1, -1);
   updateMetrics();
   renderRun();
-  paintGame();
+  drawLevel();
   var first = document.querySelector("#palette button.block");
   if (first && first.focus) first.focus({ preventScroll: true });
 };
