@@ -2850,6 +2850,15 @@ html body #sheet.menu-fit .ggrid > .gnote[data-help-keys="1"] {
   html body #goals-hud {
     top: calc(var(--top-h, 60px) + 12px) !important;
   }
+  /* The safe-zone note lives in the chip lane. Keep that lane under Goals. */
+  html body {
+    --lane-top: calc(var(--top-h, 60px) + 72px);
+  }
+  html[data-kb-bar]:not(.kb-framed) body,
+  html body:has(.kb-bar),
+  html body:has(.tw-app-bar) {
+    --lane-top: calc(var(--kb-h, 48px) + var(--top-h, 60px) + 72px);
+  }
   html[data-kb-bar]:not(.kb-framed) body #goals-hud,
   html body:has(.kb-bar) #goals-hud,
   html body:has(.tw-app-bar) #goals-hud {
