@@ -3,7 +3,29 @@
 (function () {
   var LINE = "Menus and Settings are readable. Locked jobs show \uD83D\uDD12 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.";
   var LINE25 = "Language, Read aloud, and Larger type in the menu now change the page, and Hub Menu is the last row.";
-  var CHIP = "HI 1.1.25";
+  var LINE26 = "The menu settings scroll with the list. Close and Settings are translated for Spanish, Arabic, and Dari (machine draft).";
+  var CHIP = "HI 1.1.26";
+
+  function entry26() {
+    var li = document.createElement("li");
+    li.setAttribute("data-hi", "1.1.26");
+    var stamp = document.createElement("p");
+    stamp.className = "font-mono text-[11px] uppercase tracking-[0.18em] text-primary";
+    stamp.textContent = "HI 1.1.26 \u00b7 2026-10-30";
+    var title = document.createElement("h2");
+    title.className = "mt-2 text-xl font-medium";
+    title.textContent = "The menu scrolls cleanly";
+    var list = document.createElement("ul");
+    list.className = "mt-3 space-y-2";
+    var item = document.createElement("li");
+    item.className = "text-[15px] leading-relaxed text-muted-foreground";
+    item.textContent = LINE26;
+    list.appendChild(item);
+    li.appendChild(stamp);
+    li.appendChild(title);
+    li.appendChild(list);
+    return li;
+  }
 
   function entry25() {
     var li = document.createElement("li");
@@ -115,8 +137,13 @@ function paintIntro(ol) {
       if (after25) after25.after(entry24());
       else ol.insertBefore(entry24(), ol.firstElementChild);
     }
-    var top = ol.querySelector("li[data-hi='1.1.25']");
-    if (!top) ol.insertBefore(entry25(), ol.firstElementChild);
+    if (!ol.querySelector("li[data-hi='1.1.25']")) {
+      var after26 = ol.querySelector("li[data-hi='1.1.26']");
+      if (after26) after26.after(entry25());
+      else ol.insertBefore(entry25(), ol.firstElementChild);
+    }
+    var top = ol.querySelector("li[data-hi='1.1.26']");
+    if (!top) ol.insertBefore(entry26(), ol.firstElementChild);
     else if (ol.firstElementChild !== top) ol.insertBefore(top, ol.firstElementChild);
     dedupeNews(ol);
     paintIntro(ol);

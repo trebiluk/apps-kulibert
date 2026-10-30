@@ -1,5 +1,9 @@
-**Chip: HI 1.1.25** · 2026-10-30 · channel **live**
+**Chip: HI 1.1.26** · 2026-10-30 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.26 — The menu scrolls cleanly — 2026-10-30
+
+- What’s new: The menu settings scroll with the list. Close and Settings are translated for Spanish, Arabic, and Dari (machine draft).
 
 ## 1.1.25 — The menu settings apply — 2026-10-30
 
