@@ -263,7 +263,7 @@
   </div>
   <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
   <p id="step-live" class="sr-only" aria-live="polite"></p>
-  <p id="stars">
+  <p id="stars" aria-live="polite" aria-atomic="true" aria-label="No stars yet.">
     <span class="star" id="star-1" aria-hidden="true">★</span>
     <span class="star" id="star-2" aria-hidden="true">★</span>
     <span class="star" id="star-3" aria-hidden="true">★</span>
@@ -348,12 +348,18 @@ var setStepLive = function (text) {
 
 var paintStars = function () {
   var n = session.stars[session.level];
+  var words = PINCHY.starWords(n);
   for (var i = 1; i <= 3; i++) {
     var star = document.getElementById("star-" + i);
     star.classList.toggle("is-on", i <= n);
     star.textContent = i <= n ? "\u2605" : "\u2606";
   }
-  document.getElementById("star-words").textContent = PINCHY.starWords(n);
+  document.getElementById("star-words").textContent = words;
+  document.getElementById("stars").setAttribute("aria-label", words);
+};
+var clearStars = function () {
+  session.stars[session.level] = 0;
+  paintStars();
 };
 
 var updateMetrics = function () {
@@ -887,6 +893,7 @@ var finishWin = function (blocks, ms) {
 };
 var finishFail = function (msg, step) {
   var text = "\u2717 " + PINCHY.crashLine(msg, step);
+  clearStars();
   setStatus(text, "crash");
   setStepLive(text);
 };
@@ -986,6 +993,7 @@ var retry = function () {
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
   lastMs = null;
   runT0 = 0;
+  clearStars();
   setStatus("Arm reset. Program kept.", "");
   setStepLive("Arm reset. Program kept.");
   renderProgram(-1, -1);
