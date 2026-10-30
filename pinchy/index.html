@@ -439,7 +439,7 @@ var renderProgram = function (now, stop) {
     name.textContent = labelOf(list[i]);
     if (String(list[i]).indexOf("wrist") === 0) {
       var wristMeta = PINCHY.langMeta(lang);
-      name.lang = lang === "fa-AF" ? "fa" : lang;
+      name.lang = lang;
       name.dir = wristMeta.rtl ? "rtl" : "ltr";
     }
     li.appendChild(name);
@@ -487,7 +487,7 @@ var renderPalette = function () {
     b.tabIndex = i === focusIndex ? 0 : -1;
     if (id.indexOf("wrist") === 0) {
       var meta = PINCHY.langMeta(lang);
-      b.lang = lang === "fa-AF" ? "fa" : lang;
+      b.lang = lang;
       b.dir = meta.rtl ? "rtl" : "ltr";
       if (meta.draft) b.dataset.draft = "true";
     }
@@ -503,7 +503,7 @@ var applyLang = function (code) {
   var meta = PINCHY.langMeta(code);
   lang = meta.id === code ? code : "en";
   meta = PINCHY.langMeta(lang);
-  document.documentElement.lang = lang === "fa-AF" ? "fa" : lang;
+  document.documentElement.lang = lang;
   document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
   var note = document.getElementById("draft-note");
   note.hidden = !meta.draft;
@@ -1298,6 +1298,12 @@ var boot = function () {
   undoBtn.addEventListener("click", function () { undo(); });
   var retryBtn = makeButton("action", "retry", "Retry", "");
   retryBtn.id = "retry";
+  retryBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    retry();
+  });
   retryBtn.addEventListener("click", function () { retry(); });
   actions.appendChild(runBtn);
   actions.appendChild(undoBtn);
@@ -1311,7 +1317,7 @@ var boot = function () {
     b.type = "button";
     b.className = "lang";
     b.dataset.lang = item.id;
-    b.lang = item.id === "fa-AF" ? "fa" : item.id;
+    b.lang = item.id;
     b.dir = item.rtl ? "rtl" : "ltr";
     b.textContent = item.name;
     b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
