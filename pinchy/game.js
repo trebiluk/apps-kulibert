@@ -822,14 +822,42 @@
   function settleRun(prev, event) {
     var type = event && event.type;
     var note = event && event.note;
-    if (type === "start") return { kind: "running", note: note || "Running." };
-    if (type === "crash") return { kind: "crashed", note: note || "" };
-    if (type === "fail") return { kind: "failed", note: note || "" };
-    if (type === "win") return { kind: "won", n: event.n || 0, note: note || "Done." };
-    if (type === "retry") return { kind: "idle", note: note || "Arm reset. Program kept." };
-    if (type === "undo" || type === "edit") return { kind: "idle", note: note || "Add a block, then press Run." };
-    if (type === "level") return { kind: "idle", note: note || "Add blocks, then press Run." };
-    return prev || { kind: "idle", note: "Add a block, then press Run." };
+    var prevSwaps = prev && typeof prev.swaps === "number" ? prev.swaps : 0;
+    var attemptOver = !prev || prev.kind === "won" || prev.kind === "failed" || prev.kind === "crashed" || prev.kind === "running";
+    if (type === "start") {
+      var scored = prev && prev.kind === "running" ? (prev.scoredSwaps || 0) : prevSwaps;
+      return {
+        kind: "running",
+        note: note || "Running.",
+        swaps: 0,
+        steps: event && event.steps ? event.steps : 0,
+        scoredSwaps: scored
+      };
+    }
+    if (type === "edit" || type === "undo") {
+      var base = attemptOver ? 0 : prevSwaps;
+      var delta = event && event.delta != null ? event.delta : (type === "undo" ? 0 : 1);
+      return {
+        kind: "idle",
+        note: note || (type === "undo" ? "Undone." : "Add a block, then press Run."),
+        swaps: Math.max(0, base + delta),
+        steps: 0
+      };
+    }
+    if (type === "retry") return { kind: "idle", note: note || "Arm reset. Program kept.", swaps: 0, steps: 0 };
+    if (type === "level") return { kind: "idle", note: note || "Add blocks, then press Run.", swaps: 0, steps: 0 };
+    if (type === "win") {
+      return {
+        kind: "won",
+        n: event.n || 0,
+        note: note || "Done.",
+        swaps: event && event.swaps != null ? event.swaps : prevSwaps,
+        steps: event && event.steps ? event.steps : 0
+      };
+    }
+    if (type === "crash") return { kind: "crashed", note: note || "", swaps: 0, steps: event && event.steps ? event.steps : 0 };
+    if (type === "fail") return { kind: "failed", note: note || "", swaps: 0, steps: event && event.steps ? event.steps : 0 };
+    return prev || { kind: "idle", note: "Add a block, then press Run.", swaps: 0, steps: 0 };
   }
 
   function runView(state) {

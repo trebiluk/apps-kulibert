@@ -299,7 +299,7 @@
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
 var STEP_MS = 520;
 var SNAP_HOLD = 80;
-var session = { level: 0, programs: [], run: [], swaps: [] };
+var session = { level: 0, programs: [], run: [] };
 var world = null;
 var playback = 0;
 var playing = false;
@@ -385,7 +385,9 @@ var setRun = function (state) {
 var updateMetrics = function () {
   var level = PINCHY.LEVELS[session.level];
   var n = session.programs[session.level].length;
-  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = "Swaps: " + (session.swaps[session.level] || 0);
+  var runNow = session.run[session.level] || {};
+  var shownSwaps = runNow.kind === "running" ? (runNow.scoredSwaps || 0) : (runNow.swaps || 0);
+  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = "Swaps: " + shownSwaps;
   else document.getElementById("m-blocks").textContent = "Blocks: " + n;
   var timeEl = document.getElementById("m-time");
   if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
@@ -535,49 +537,51 @@ var doSwap = function (index) {
   if (!swapHistory[session.level]) swapHistory[session.level] = [];
   swapHistory[session.level].push(list.slice());
   session.programs[session.level] = PINCHY.swapSteps(list, index);
-  session.swaps[session.level] = (session.swaps[session.level] || 0) + 1;
   fixAt = index;
   renderProgram(-1, -1);
+  var swapped = PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 1 });
+  swapped.note = "Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + swapped.swaps + ".";
+  setRun(swapped);
   updateMetrics();
-  setRun(PINCHY.settleRun(null, { type: "edit", note: "Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + session.swaps[session.level] + "." }));
 };
 var addBlock = function (id) {
   if (playing) return;
   if (PINCHY.LEVELS[session.level].debug) {
-    setRun(PINCHY.settleRun(null, { type: "edit", note: "Swap two steps. Arrows pick a step. Enter swaps it with the next." }));
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Swap two steps. Arrows pick a step. Enter swaps it with the next." }));
     return;
   }
   var list = session.programs[session.level];
   if (list.length >= 24) {
-    setRun(PINCHY.settleRun(null, { type: "edit", note: "Program is full at 24 blocks." }));
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Program is full at 24 blocks." }));
     return;
   }
   list.push(id);
   renderProgram(-1, -1);
   updateMetrics();
-  setRun(PINCHY.settleRun(null, { type: "edit", note: "Add a block, then press Run." }));
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
 };
 var undo = function () {
   if (playing) return;
-  var note = "Undone.";
+  var changed = false;
   if (PINCHY.LEVELS[session.level].debug) {
     var hist = swapHistory[session.level] || [];
     if (hist.length) {
       session.programs[session.level] = hist.pop();
-      session.swaps[session.level] = Math.max(0, (session.swaps[session.level] || 0) - 1);
+      changed = true;
       renderProgram(-1, -1);
-      updateMetrics();
-      note = "Swap undone. Swaps: " + session.swaps[session.level] + ".";
     }
   } else {
     var list = session.programs[session.level];
     if (list.length) {
       list.pop();
+      changed = true;
       renderProgram(-1, -1);
-      updateMetrics();
     }
   }
-  setRun(PINCHY.settleRun(null, { type: "undo", note: note }));
+  var undone = PINCHY.settleRun(session.run[session.level], { type: "undo", delta: changed ? -1 : 0 });
+  undone.note = changed && PINCHY.LEVELS[session.level].debug ? "Swap undone. Swaps: " + undone.swaps + "." : "Undone.";
+  setRun(undone);
+  updateMetrics();
 };
 
 var projector = function (w, h, originX, originY) {
@@ -1112,7 +1116,9 @@ var glide = function (ms, token, onFrame) {
 
 var finishWin = function (blocks, ms) {
   var level = PINCHY.LEVELS[session.level];
-  var score = level.metric === "swaps" ? (session.swaps[session.level] || 0) : blocks;
+  var runNow = session.run[session.level] || {};
+  var attemptSwaps = runNow.scoredSwaps != null ? runNow.scoredSwaps : (runNow.swaps || 0);
+  var score = level.metric === "swaps" ? attemptSwaps : blocks;
   var earned = PINCHY.starsFor(true, score, ms, level);
   var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
   var note = "Done. " + blockWord + ", " + formatMs(ms) + ".";
@@ -1122,11 +1128,10 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "pile") note = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "sensor") note = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "debug") {
-    var swaps = session.swaps[session.level] || 0;
-    var swapWord = swaps === 1 ? "1 swap" : swaps + " swaps";
+    var swapWord = attemptSwaps === 1 ? "1 swap" : attemptSwaps + " swaps";
     note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
   }
-  setRun(PINCHY.settleRun(null, { type: "win", n: earned, note: note }));
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "win", n: earned, note: note, swaps: attemptSwaps, steps: blocks }));
 };
 var finishFail = function (msg, step) {
   var text = "\u2717 " + PINCHY.crashLine(msg, step, lang);
@@ -1137,7 +1142,7 @@ var play = async function () {
   if (playing || document.getElementById("game").hidden) return;
   var commands = session.programs[session.level].slice();
   if (!commands.length) {
-    setRun(PINCHY.settleRun(null, { type: "edit", note: "Add a block, then press Run." }));
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
     return;
   }
   var token = ++playback;
@@ -1151,7 +1156,7 @@ var play = async function () {
   renderProgram(-1, -1);
   updateMetrics();
   paintGame();
-  setRun(PINCHY.settleRun(null, { type: "start", note: "Running." }));
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "start", note: "Running.", steps: 0 }));
   var state = world;
   var startHit = PINCHY.collide(state, level);
   if (startHit) {
@@ -1172,7 +1177,7 @@ var play = async function () {
     var stepNo = ev.index + 1;
     activeCmd = ev.cmd;
     renderProgram(ev.index, -1);
-    setRun(PINCHY.settleRun(null, { type: "start", note: "Running step " + stepNo + " of " + commands.length + ": " + labelOf(ev.cmd) + "." }));
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: stepNo, note: "Running step " + stepNo + " of " + commands.length + ": " + labelOf(ev.cmd) + "." }));
     var moved = ev.t > 0 && !ev.structural;
     if (moved && !reduce) {
       var alive = await glide(Math.max(180, STEP_MS * ev.t), token, function (u) {
@@ -1294,7 +1299,6 @@ var boot = function () {
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
-    session.swaps.push(0);
     swapHistory.push([]);
   }
   for (var seed = 0; seed < PINCHY.LEVELS.length; seed++) {
