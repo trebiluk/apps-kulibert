@@ -141,9 +141,11 @@
       var chip = document.getElementById("version-chip");
       var plate = document.querySelector(".kb-bar .kb-plate");
       if (!chip) return;
-      var plateText = plate ? plate.textContent.replace(/\s+/g, " ").trim() : "";
+      var plateText = plate ? (plate.textContent || "").replace(/\s+/g, " ").trim() : "";
       var chipText = (chip.textContent || "").replace(/\s+/g, " ").trim();
-      chip.classList.toggle("hidden", plateText.length > 0 && plateText === chipText);
+      var version = plateText.split("\u00b7").pop().trim();
+      var same = plateText.length > 0 && chipText.length > 0 && version === chipText;
+      if (chip.classList.contains("hidden") !== same) chip.classList.toggle("hidden", same);
     }
     function arm() {
       syncChip();
