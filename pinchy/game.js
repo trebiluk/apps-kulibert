@@ -868,11 +868,12 @@
     return n;
   }
 
-  function starWords(n) {
-    if (n <= 0) return "No stars yet.";
-    if (n === 1) return "One star.";
-    if (n === 2) return "Two stars.";
-    return "Three stars.";
+  function starWords(n, lang) {
+    var en = "Three stars.";
+    if (n <= 0) en = "No stars yet.";
+    else if (n === 1) en = "One star.";
+    else if (n === 2) en = "Two stars.";
+    return uiText(lang, en);
   }
 
   function settleRun(prev, event) {
@@ -916,13 +917,84 @@
     return prev || { kind: "idle", note: "Add a block, then press Run.", swaps: 0, steps: 0 };
   }
 
-  function runView(state) {
+  function runView(state, lang) {
     var kind = state && state.kind ? state.kind : "idle";
     var n = kind === "won" ? (state.n || 0) : 0;
-    var words = starWords(n);
+    var words = starWords(n, lang);
     var note = state && state.note ? state.note : "Add a block, then press Run.";
+    note = uiText(lang, note);
     var status = kind === "won" ? note + " " + words : note;
     return { kind: kind, stars: n, words: words, aria: words, status: status };
+  }
+
+  var UI = {
+    en: {
+      L1: "Move one joint", L2: "Pick and place", L3: "Go to spot", L4: "Sort a pile", L5: "Sensor bins", L6: "Fix the program",
+      Base: "Base", Shoulder: "Shoulder", Elbow: "Elbow", Wrist: "Wrist", Claw: "Claw",
+      Left: "Left", Right: "Right", Down: "Down", Up: "Up", Close: "Close", Open: "Open",
+      Part: "Part", Bin: "Bin", Table: "Table", "Go here": "Go here",
+      "Red square": "Red square", "Blue circle": "Blue circle", Pile: "Pile",
+      "No stars yet.": "No stars yet.", "One star.": "One star.", "Two stars.": "Two stars.", "Three stars.": "Three stars.",
+      "Add a block, then press Run.": "Add a block, then press Run.",
+      "Add blocks, then press Run.": "Add blocks, then press Run.",
+      "Stopped.": "Stopped.", "Undone.": "Undone.", "Running.": "Running.",
+      "Arm reset. Program kept.": "Arm reset. Program kept.",
+      "No blocks yet.": "No blocks yet.",
+      "legend": "The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.",
+      "L1-goal": "Move one joint. Shoulder up matches the mark.",
+      "L2-goal": "Pick up the part and place it in the bin.",
+      "L3-goal": "Go to spot A2 on the A1 to C3 grid.",
+      "L4-goal": "Sort the pile into the bin.",
+      "L5-goal": "Send each part to the matching bin.",
+      "L6-goal": "Fix the program with the fewest swaps."
+    },
+    ar: {
+      L1: "حرّك مفصلاً واحداً", L2: "التقط وضع", L3: "اذهب إلى نقطة", L4: "رتّب كومة", L5: "صناديق الحساس", L6: "أصلح البرنامج",
+      Base: "قاعدة", Shoulder: "كتف", Elbow: "كوع", Wrist: "رسغ", Claw: "مخلب",
+      Left: "يسار", Right: "يمين", Down: "أسفل", Up: "أعلى", Close: "أغلق", Open: "افتح",
+      Part: "قطعة", Bin: "صندوق", Table: "طاولة", "Go here": "اذهب هنا",
+      "Red square": "مربع أحمر", "Blue circle": "دائرة زرقاء", Pile: "كومة",
+      "No stars yet.": "لا نجوم بعد.", "One star.": "نجمة واحدة.", "Two stars.": "نجمتان.", "Three stars.": "ثلاث نجوم.",
+      "Add a block, then press Run.": "أضف بلوكاً، ثم اضغط تشغيل.",
+      "Add blocks, then press Run.": "أضف بلوكات، ثم اضغط تشغيل.",
+      "Stopped.": "توقف.", "Undone.": "تم التراجع.", "Running.": "يعمل.",
+      "Arm reset. Program kept.": "أُعيدت الذراع. بقي البرنامج.",
+      "No blocks yet.": "لا بلوكات بعد.",
+      "legend": "الذراع ثلاثي الأبعاد يدور على قاعدته. النقاط من A1 إلى C3 والصناديق على الطاولة. البلوك هو القطعة. العلامة السميكة تعني اذهب هنا.",
+      "L1-goal": "حرّك مفصلاً واحداً. الكتف للأعلى يطابق العلامة.",
+      "L2-goal": "التقط القطعة وضعها في الصندوق.",
+      "L3-goal": "اذهب إلى النقطة A2 على شبكة A1 إلى C3.",
+      "L4-goal": "استخدم كرر 3 لوضع القطع الثلاث من الكومة في الصندوق.",
+      "L5-goal": "إذا رأى الحساس مربعاً أحمر فضعه في الصندوق A. إذا رأى دائرة زرقاء فضعه في الصندوق B.",
+      "L6-goal": "البرنامج معطوب. بدّل أقل عدد من الخطوات ثم شغّله."
+    },
+    "fa-AF": {
+      L1: "یک بند را حرکت بده", L2: "بردار و بگذار", L3: "به نقطه برو", L4: "کپه را مرتب کن", L5: "سطل‌های حسگر", L6: "برنامه را درست کن",
+      Base: "پایه", Shoulder: "شانه", Elbow: "آرنج", Wrist: "مچ", Claw: "چنگال",
+      Left: "چپ", Right: "راست", Down: "پایین", Up: "بالا", Close: "ببند", Open: "باز",
+      Part: "قطعه", Bin: "سطل", Table: "میز", "Go here": "اینجا برو",
+      "Red square": "مربع سرخ", "Blue circle": "دایره آبی", Pile: "کپه",
+      "No stars yet.": "هنوز ستاره‌ای نیست.", "One star.": "یک ستاره.", "Two stars.": "دو ستاره.", "Three stars.": "سه ستاره.",
+      "Add a block, then press Run.": "یک بلاک اضافه کن، بعد اجرا را بزن.",
+      "Add blocks, then press Run.": "بلاک‌ها را اضافه کن، بعد اجرا را بزن.",
+      "Stopped.": "ایست.", "Undone.": "برگردانده شد.", "Running.": "در حال اجرا.",
+      "Arm reset. Program kept.": "بازو دوباره تنظیم شد. برنامه ماند.",
+      "No blocks yet.": "هنوز بلاکی نیست.",
+      "legend": "بازو سه‌بعدی روی پایه‌اش می‌چرخد. نقطه‌ها از A1 تا C3 و سطل‌ها روی میز اند. بلاک همان قطعه است. نشانه کلفت یعنی اینجا برو.",
+      "L1-goal": "یک بند را حرکت بده. شانه بالا با نشانه یکی می‌شود.",
+      "L2-goal": "قطعه را بردار و در سطل بگذار.",
+      "L3-goal": "به نقطه A2 روی شبکه A1 تا C3 برو.",
+      "L4-goal": "با تکرار ۳ هر سه قطعه کپه را در سطل بگذار.",
+      "L5-goal": "اگر حسگر مربع سرخ دید آن را در سطل A بگذار. اگر دایره آبی دید آن را در سطل B بگذار.",
+      "L6-goal": "برنامه خراب است. کمترین گام را جابه‌جا کن و بعد اجرا کن."
+    }
+  };
+  function uiText(lang, key) {
+    var code = lang && langMeta(lang).id === lang ? lang : "en";
+    var pack = UI[code] || UI.en;
+    if (pack && pack[key]) return pack[key];
+    if (UI.en[key]) return UI.en[key];
+    return key;
   }
 
   function jointReadout(state) {
@@ -989,6 +1061,7 @@
     settleRun: settleRun,
     runView: runView,
     jointReadout: jointReadout,
+    uiText: uiText,
     cloneState: cloneState,
     stateKey: stateKey,
     obstacles: obstacles
