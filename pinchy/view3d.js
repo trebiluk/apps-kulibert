@@ -12,7 +12,7 @@
       color: color,
       metalness: metal,
       roughness: rough,
-      envMapIntensity: 0.5
+      envMapIntensity: 1
     });
     if (opacity != null && opacity < 1) {
       m.transparent = true;
@@ -23,7 +23,7 @@
   }
 
   var MATS = {
-    link: mat(0x2b2824, 0, 0.42),
+    link: mat(0x2b2824, 0, 0.32),
     pocket: mat(0x1a1816, 0, 0.5),
     servo: mat(0x1f2226, 0.15, 0.35),
     horn: mat(0xe8b400, 0.3, 0.38),
@@ -158,7 +158,7 @@
     camera.lookAt(0, 78, 70);
     var hemi = new THREE.HemisphereLight(0xf4f0e6, 0x8c8273, 0.6);
     scene.add(hemi);
-    var key = new THREE.DirectionalLight(0xfff6e8, 1.6);
+    var key = new THREE.DirectionalLight(0xfff6e8, 2.2);
     var keyDir = new THREE.Vector3(-3, 5, 4).normalize();
     key.position.copy(keyDir).multiplyScalar(480);
     key.castShadow = true;
@@ -223,7 +223,7 @@
       var ri;
       for (ri = 0; ri < reflective.length; ri++) {
         reflective[ri].envMap = envTex;
-        reflective[ri].envMapIntensity = 0.5;
+        reflective[ri].envMapIntensity = 1;
       }
       pmrem.dispose();
     } catch (envErr) {}
@@ -520,7 +520,9 @@
       } else ghostRig.root.visible = false;
       poseRig(solidRig, state);
       var darkTheme = document.documentElement.getAttribute("data-theme") === "dark";
-      MATS.link.color.setHex(darkTheme ? 0xe9e4da : 0x2b2824);
+      MATS.link.color.setHex(darkTheme ? 0xe9e4da : 0x2b2824).convertSRGBToLinear();
+      MATS.link.metalness = 0;
+      MATS.link.roughness = 0.32;
       MATS.pocket.color.setHex(darkTheme ? 0xcfc8bb : 0x1a1816);
       MATS.horn.color.setHex(darkTheme ? 0xf2c230 : 0xe8b400);
       MATS.table.color.setHex(darkTheme ? 0x3f4850 : 0xc9d3db);
