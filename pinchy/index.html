@@ -328,13 +328,20 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.2.1</span>
+  <span class="ver" id="app-version">v1.2.2</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.2.2</p>
+  <ul>
+    <li>Move a robot arm.</li>
+    <li>The empty gap above the status line is gone.</li>
+    <li>On a short sideways screen the level names stay whole, and the program stays on screen.</li>
+    <li>Spanish, Arabic, and Dari name the blocks and the help. Those words are a machine draft.</li>
+  </ul>
   <p>Version 1.2.1</p>
   <ul>
     <li>Move a robot arm.</li>
@@ -1479,7 +1486,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.1") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.2") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
