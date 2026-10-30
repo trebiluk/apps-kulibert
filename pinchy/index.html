@@ -620,6 +620,14 @@ var rectsHit = function (a, b, pad) {
 var markArt = function (sx, sy, pad) {
   artBoxes.push({ x: sx - pad, y: sy - pad, w: pad * 2, h: pad * 2 });
 };
+var markBone = function (x1, y1, x2, y2, radius) {
+  var n = 8;
+  var i;
+  for (i = 0; i <= n; i++) {
+    var t = i / n;
+    markArt(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, radius);
+  }
+};
 var paintTags = function (ctx, P, bounds) {
   ctx.font = "600 13px system-ui, sans-serif";
   ctx.textAlign = "left";
@@ -701,6 +709,9 @@ var drawArm = function (ctx, P, state, opts) {
   strokeBone(ctx, P, 0, layout.sy, p.ex, p.ey, "#A8AEB6", wide);
   strokeBone(ctx, P, p.ex, p.ey, p.wx, p.wy, "#8E949C", Math.max(14, P.s * 12));
   strokeBone(ctx, P, p.wx, p.wy, p.gx, p.gy, "#9AA1A8", Math.max(12, P.s * 10));
+  markBone(P.x(0), P.y(layout.sy), P.x(p.ex), P.y(p.ey), wide / 2 + 6);
+  markBone(P.x(p.ex), P.y(p.ey), P.x(p.wx), P.y(p.wy), Math.max(14, P.s * 12) / 2 + 6);
+  markBone(P.x(p.wx), P.y(p.wy), P.x(p.gx), P.y(p.gy), Math.max(12, P.s * 10) / 2 + 6);
   var half = p.gap / 2;
   var thick = 9 / Math.max(P.s, 0.25);
   ctx.fillStyle = "#E85820";
