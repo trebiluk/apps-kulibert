@@ -521,3 +521,22 @@ html[dir="rtl"] .lp-dialog[class*="56rem"] td {
   outline-offset: 2px;
   box-shadow: 0 0 0 2px #f4f1ea;
 }
+
+/* The built script still prints HI 1.1.22. The plate and these stamps show 1.1.23. */
+.hi-menu-bar p.font-mono,
+#hi-drawer p.font-mono {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+.hi-menu-bar p.font-mono::after {
+  content: "HI 1.1.23";
+  font-size: 12px;
+  line-height: 1.4;
+  color: #f3efe6;
+}
+#hi-drawer p.font-mono::after {
+  content: "HI 1.1.23";
+  font-size: 12px;
+  line-height: 1.4;
+  color: #1a120c;
+}
