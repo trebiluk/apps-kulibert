@@ -47,17 +47,29 @@
   }
 }
 
-function paintNews() {
+function paintIntro(ol) {
+    var latest = ol.querySelector(":scope > li[data-hi='1.1.23']");
+    if (!latest) return;
+    var bullet = latest.querySelector("ul > li");
+    var line = bullet ? bullet.textContent.trim() : "";
+    if (!line) return;
+    var root = ol.parentElement;
+    var lead = root ? root.querySelector("header p.mt-3") : null;
+    if (lead && lead.textContent !== line) lead.textContent = line;
+    if (bullet && !bullet.hidden) bullet.hidden = true;
+  }
+
+  function paintNews() {
     var ol = document.querySelector("ol.mt-10");
     if (!ol) return;
     var found = ol.querySelector("li[data-hi='1.1.23']");
     if (found) {
       if (ol.firstElementChild !== found) ol.insertBefore(found, ol.firstElementChild);
-      dedupeNews(ol);
-      return;
+    } else {
+      ol.insertBefore(entry(), ol.firstElementChild);
     }
-    ol.insertBefore(entry(), ol.firstElementChild);
     dedupeNews(ol);
+    paintIntro(ol);
   }
 
   var busy = false;
