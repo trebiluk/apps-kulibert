@@ -413,6 +413,12 @@ var renderProgram = function (now, stop) {
       li.dataset.index = String(i);
       if (i === fixAt && now < 0 && stop < 0) li.classList.add("is-fix");
       if (playing) li.disabled = true;
+      li.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        e.stopPropagation();
+        doSwap(Number(this.dataset.index));
+      });
       li.addEventListener("click", function (ev) {
         if (ev.detail === 0) return;
         doSwap(Number(this.dataset.index));
@@ -1381,7 +1387,12 @@ var boot = function () {
   window.addEventListener("keydown", function (e) {
     if (document.getElementById("game").hidden) return;
     var key = e.key;
-    if ((key === "Enter") && PINCHY.LEVELS[session.level].debug) {
+    if (key === "Enter" && PINCHY.LEVELS[session.level].debug) {
+      var target = e.target;
+      var onButton = target && target.closest && target.closest("button");
+      var inProgram = target && target.closest && target.closest("#program");
+      if (onButton && !inProgram) return;
+      if (inProgram) return;
       e.preventDefault();
       doSwap(fixAt);
       return;
