@@ -809,7 +809,7 @@ var drawScene = function (canvas, state, opts) {
     ctx.arc(dialX, dialY, dialR + 4, 0, Math.PI * 2);
     ctx.stroke();
   }
-  tag("Base " + Math.round(state.base) + "\u00b0", 0, 36, 0, 28);
+  tag("Base " + Math.round(state.base) + "\u00b0", 78, 42, 28, 0);
 
   if (level && level.kind === "match" && level.target) {
     drawArm(ctx, P, {
