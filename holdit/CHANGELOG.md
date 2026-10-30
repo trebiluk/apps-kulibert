@@ -1,5 +1,9 @@
-**Chip: HI 1.1.24** · 2026-10-30 · channel **live**
+**Chip: HI 1.1.25** · 2026-10-30 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.25 — The menu settings apply — 2026-10-30
+
+- What’s new: Language, Read aloud, and Larger type in the menu now change the page, and Hub Menu is the last row.
 
 ## 1.1.24 — Challenge of the Day — 2026-10-30
 
