@@ -6,60 +6,135 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light">
 <script>
-try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+try {
+  if (localStorage.getItem("pinchy-theme") === "dark") {
+    document.documentElement.classList.add("pz-dark");
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+} catch (e) {}
 </script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
 <link rel="icon" href="data:,">
 <title>Pinchy McPinchface</title>
 <style>
   @font-face {
-    font-family: Archivo;
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-sans-600.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans";
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url("archivo-700.woff2") format("woff2");
+    src: url("fonts/plex-sans-700.woff2") format("woff2");
   }
-  :root {
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("fonts/plex-mono-500.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-mono-600.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/plex-mono-700.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Arabic";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-sans-arabic-600.woff2") format("woff2");
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Arabic";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/plex-sans-arabic-700.woff2") format("woff2");
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  }
+  :root, .pz-light {
     color-scheme: light;
-    --bg: #E0E0DC;
-    --panel: #ECECE8;
-    --blue: #ECECE8;
-    --blue-2: #E4E4E0;
-    --violet: #ECECE8;
-    --violet-2: #D8D8D4;
-    --ink: #111111;
-    --muted: #1A1A1A;
-    --line: #111111;
-    --ember: #111111;
-    --yellow: #F5C400;
-    --royal: #111111;
-    --dream: #111111;
-    --arm: #A8AEB6;
-    --arm-2: #8E949C;
-    --arm-3: #7E868E;
-    --joint: #3E4650;
+    --pz-bg: #F4F0E6;
+    --pz-panel: #FBF8F1;
+    --pz-readout: #EFEADD;
+    --pz-ink: #2A2620;
+    --pz-ink-2: #57504A;
+    --pz-line: #8C8273;
+    --pz-yellow: #E8B400;
+    --pz-on-yellow: #2A2620;
+    --pz-estop: #B3261E;
+    --pz-on-estop: #FBF8F1;
+    --pz-focus: #2A2620;
+    --pz-table: #C9D3DB;
+    --pz-table-line: #A9B5BF;
+    --pz-arm: #3A352E;
+    --pz-arm-link: #E8B400;
+    --pz-shadow: #2A262033;
+    --bg: var(--pz-bg);
+    --panel: var(--pz-panel);
+    --blue: var(--pz-panel);
+    --blue-2: var(--pz-readout);
+    --violet: var(--pz-panel);
+    --violet-2: var(--pz-readout);
+    --ink: var(--pz-ink);
+    --muted: var(--pz-ink-2);
+    --line: var(--pz-line);
+    --ember: var(--pz-focus);
+    --yellow: var(--pz-yellow);
   }
-  html[data-theme="dark"] {
+  html.pz-dark {
     color-scheme: dark;
-    --bg: #111111;
-    --panel: #1A1A1A;
-    --blue: #1A1A1A;
-    --blue-2: #161616;
-    --violet: #1A1A1A;
-    --violet-2: #111111;
-    --ink: #EDEDED;
-    --muted: #EDEDED;
-    --line: #F5C400;
-    --ember: #F5C400;
-    --yellow: #F5C400;
+    --pz-bg: #1E1C19;
+    --pz-panel: #2A2723;
+    --pz-readout: #1E1C19;
+    --pz-ink: #EFE9DC;
+    --pz-ink-2: #BDB4A4;
+    --pz-line: #6E665A;
+    --pz-yellow: #F2C230;
+    --pz-on-yellow: #1E1C19;
+    --pz-estop: #B3261E;
+    --pz-on-estop: #FBF8F1;
+    --pz-focus: #F2C230;
+    --pz-table: #3F4850;
+    --pz-table-line: #535D66;
+    --pz-arm: #D9D2C4;
+    --pz-arm-link: #F2C230;
+    --pz-shadow: #00000066;
+    --bg: var(--pz-bg);
+    --panel: var(--pz-panel);
+    --blue: var(--pz-panel);
+    --blue-2: var(--pz-readout);
+    --violet: var(--pz-panel);
+    --violet-2: var(--pz-readout);
+    --ink: var(--pz-ink);
+    --muted: var(--pz-ink-2);
+    --line: var(--pz-line);
+    --ember: var(--pz-focus);
+    --yellow: var(--pz-yellow);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); }
   body {
     min-height: 100vh;
-    font: 16px/1.35 system-ui, sans-serif;
+    font: 600 15px/1.35 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
   }
-  button { font: inherit; color: inherit; background: var(--blue-2); touch-action: manipulation; }
+  button { font: 600 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; color: var(--pz-ink); background: var(--pz-panel); touch-action: manipulation; }
   button, .ver, .chip, canvas { user-select: none; }
   .top {
     display: flex;
@@ -67,13 +142,15 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: var(--bg);
+    background: var(--pz-bg);
     position: sticky;
     top: 0;
     z-index: 5;
-    border-bottom: 2px solid var(--line);
+    border-bottom: 3px solid var(--pz-yellow);
+    min-height: 56px;
   }
-  .brand { margin: 0; font-size: 18px; font-weight: 750; }
+  .brand { margin: 0; font: 700 24px/1 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; letter-spacing: 0.5px; }
+  .brand small { display: block; font: 500 11px/1.2 "IBM Plex Mono", ui-monospace, monospace; color: var(--pz-ink-2); letter-spacing: 0; }
   .ver {
     display: inline-flex;
     align-items: center;
@@ -88,9 +165,9 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   button.tool, button.block, button.action, button.level, button.lang, #play {
     min-width: 48px;
     min-height: 48px;
-    border: 2px solid var(--line);
-    border-radius: 10px;
-    font-weight: 650;
+    border: 2px solid var(--pz-line);
+    border-radius: 4px;
+    font-weight: 600;
   }
   button.tool, #play {
     display: inline-flex;
@@ -103,11 +180,10 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     padding: 12px;
     background: var(--violet);
     border: 2px solid var(--line);
-    border-radius: 12px;
-    box-shadow: 6px 6px 0 #030914;
+    border-radius: 4px;
     max-width: 40rem;
   }
-  #whats-new h2 { margin: 0 0 8px; font-size: 20px; color: var(--ink); }
+  #whats-new h2 { margin: 0 0 8px; font: 700 13px/1.2 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--pz-ink); }
   #whats-new p, #whats-new li { margin: 0 0 8px; }
   #title-screen, #game { padding: 8px; }
   #hero {
@@ -115,7 +191,7 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     height: 1.05em;
     overflow: hidden;
     white-space: nowrap;
-    font-family: Archivo, sans-serif;
+    font-family: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
     font-weight: 700;
     font-size: clamp(32px, 7vw, 72px);
     line-height: 1.05;
@@ -130,7 +206,7 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     display: block;
     background: var(--bg);
     border: 2px solid var(--line);
-    border-radius: 12px;
+    border-radius: 4px;
   }
   #title-arm { height: 280px; }
   #view { height: max(320px, 56vh); min-height: 280px; border-radius: 0; }
@@ -143,7 +219,7 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   .scene-labels span {
     position: absolute;
     transform: translate(-50%, -50%);
-    font: 600 14px/1.2 system-ui, sans-serif;
+    font: 600 14px/1.2 "IBM Plex Mono", ui-monospace, monospace;
     color: var(--ink);
     background: var(--panel);
     border: 1px solid var(--line);
@@ -163,10 +239,9 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     text-align: left;
     flex: 1 1 160px;
   }
-  button.level[aria-pressed="true"] { border-width: 3px; border-color: #111111; background: var(--blue-2); color: var(--ink); }
-  html[data-theme="dark"] button.level[aria-pressed="true"] { border-color: #F5C400; }
+  button.level[aria-pressed="true"] { border-color: var(--pz-ink); background: var(--pz-readout); color: var(--pz-ink); }
   button:focus-visible, .chip:focus-visible {
-    outline: 3px solid var(--ember);
+    outline: 3px solid var(--pz-focus);
     outline-offset: 2px;
   }
   button:active { background: var(--violet-2); }
@@ -176,31 +251,38 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   #goal { min-height: 1.4em; }
   .stage {
     display: grid;
-    grid-template-columns: minmax(240px, 380px) minmax(280px, 1fr);
+    grid-template-columns: 440px minmax(280px, 1fr);
     gap: 8px;
     align-items: start;
   }
   .controls, .side { display: flex; flex-direction: column; gap: 8px; }
   .panel {
-    border: 3px solid #111111;
-    background: var(--panel);
-    padding: 8px;
-    border-image: repeating-linear-gradient(90deg, #111111 0 8px, #F5C400 8px 16px) 1;
+    border: 2px solid var(--pz-line);
+    background: var(--pz-panel);
+    padding: 0;
+    border-radius: 4px;
+    overflow: hidden;
   }
   .panel-label {
-    margin: 0 0 8px;
-    color: var(--ink);
-    font: 700 13px/1 system-ui, sans-serif;
-    font-variant: small-caps;
-    letter-spacing: 0.12em;
+    margin: 0;
+    background: var(--pz-yellow);
+    color: var(--pz-on-yellow);
+    font: 700 13px/1 "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
+    padding: 4px 10px;
+    display: flex;
+    justify-content: space-between;
   }
+  .panel .body, .panel-body { padding: 8px; display: grid; gap: 6px; }
   .viewport {
     position: relative;
-    border: 3px solid #111111;
-    background: var(--bg);
-    padding: 4px;
+    border: 2px solid var(--pz-line);
+    background: var(--pz-panel);
+    padding: 0;
     min-height: 280px;
+    border-radius: 4px;
+    overflow: hidden;
   }
   .gizmo {
     position: absolute;
@@ -218,66 +300,61 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   button.block, button.action {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 6px;
     min-width: 48px;
-    min-height: 52px;
-    padding: 6px 8px;
-    text-align: left;
-    border-radius: 2px;
-    background: var(--panel);
-    border-radius: 2px;
+    min-height: 48px;
+    padding: 0 8px;
+    text-align: center;
+    border-radius: 4px;
+    background: var(--pz-panel);
+    color: var(--pz-ink);
+    border: 2px solid var(--pz-line);
+    font-size: 13px;
   }
-  button.block:focus, button.action:focus {
-    background: #F5C400;
-    color: #111111;
-    border-color: #111111;
+  .joint {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 78px 92px 78px;
+    gap: 6px;
+    align-items: center;
   }
-  #retry {
-    width: 92px;
-    height: 92px;
-    min-width: 92px;
-    min-height: 92px;
-    margin: 4px auto;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    color: #111111;
-    background: repeating-linear-gradient(-45deg, #111111 0 6px, #F5C400 6px 12px);
-    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
-    flex-direction: column;
+  .joint b { font-weight: 600; }
+  .ro {
+    font: 600 18px/1 "IBM Plex Mono", ui-monospace, monospace;
+    background: var(--pz-readout);
+    border: 2px solid var(--pz-line);
+    border-radius: 4px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 8px;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  .haz { height: 8px; background: repeating-linear-gradient(-45deg, var(--pz-yellow) 0 10px, var(--pz-on-yellow) 10px 20px); }
+  .estop-row { display: grid; grid-template-columns: 1fr 130px; gap: 8px; padding: 8px; border-top: 2px solid var(--pz-line); }
+  #estop {
+    background: var(--pz-estop);
+    color: var(--pz-on-estop);
+    border-color: var(--pz-estop);
+    font-size: 18px;
+    min-height: 56px;
     justify-content: center;
+    box-shadow: 3px 3px 0 var(--pz-shadow);
   }
-  #retry .name {
-    background: #F5C400;
-    color: #111111;
-    padding: 6px 4px;
-    font-weight: 800;
-  }
+  #retry { min-height: 56px; justify-content: center; }
   .lamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
   .lamp {
-    border: 2px solid #111111;
-    color: #111111;
-    background: var(--panel);
-    padding: 4px 8px;
-    font-weight: 750;
-  }
-  html[data-theme="dark"] .lamp { color: #EDEDED; border-color: #EDEDED; }
-  .lamp.is-on { color: #111111; border-color: #111111; background: #F5C400; }
-  .readouts, .mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
-  .readouts p, .mode-row p {
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    border: 2px solid #111111;
-    background: var(--bg);
-    color: var(--ink);
+    border: 2px solid var(--pz-ink-2);
+    color: var(--pz-ink-2);
+    background: transparent;
     padding: 6px 8px;
-    font-family: ui-monospace, monospace;
-    letter-spacing: 0.04em;
+    font: 600 13px/1.2 "IBM Plex Mono", ui-monospace, monospace;
+    border-radius: 4px;
   }
-  .unit { font-size: 12px; }
+  .lamp.is-on { color: var(--pz-bg); border-color: var(--pz-ink); background: var(--pz-ink); }
+  .readouts, .mode-row { display: none; }
   button .name { flex: 1 1 auto; line-height: 1.15; }
   kbd {
     border: 1px solid var(--line);
@@ -291,9 +368,11 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     min-height: 72px;
     padding: 8px 10px;
     border: 2px solid var(--line);
-    border-radius: 10px;
-    background: var(--blue-2);
-    font-weight: 700;
+    border-radius: 4px;
+    background: var(--pz-readout);
+    font-weight: 600;
+    white-space: normal;
+    overflow: visible;
   }
   #status.is-win { border-width: 3px; }
   #status.is-crash { background: var(--violet-2); }
@@ -303,10 +382,10 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   #program-wrap {
     background: var(--blue);
     border: 2px solid var(--line);
-    border-radius: 12px;
+    border-radius: 4px;
     padding: 8px;
-    height: 104px;
-    overflow: hidden;
+    min-height: 56px;
+    overflow: visible;
   }
   #program-wrap p { margin: 0 0 6px; font-weight: 750; }
   #program {
@@ -327,15 +406,17 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     min-height: 48px;
     padding: 4px 8px;
     border: 2px solid var(--line);
-    border-radius: 10px;
-    background: var(--violet);
-    font-weight: 650;
+    border-radius: 4px;
+    background: var(--pz-panel);
+    font: 600 13px/1.2 "IBM Plex Mono", ui-monospace, monospace;
     white-space: nowrap;
+    border-inline-start: 6px solid var(--pz-yellow);
   }
-  .chip.is-fix, .chip.is-now, .chip.is-stop {
-    outline: 4px solid var(--ember);
-    outline-offset: 2px;
+  .chip.is-now, .chip.is-stop {
+    border-color: var(--pz-ink);
+    border-inline-start-color: var(--pz-ink);
   }
+  .chip.is-fix { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
   .chip .mark { font-weight: 750; }
   .sr-only {
     position: absolute;
@@ -348,21 +429,29 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     white-space: nowrap;
     border: 0;
   }
-  @media (max-width: 700px) {
+  #pz-menu { display: none; position: absolute; z-index: 6; top: 60px; inset-inline-end: 8px; width: min(360px, calc(100vw - 16px)); max-height: calc(100vh - 72px); overflow: auto; background: var(--pz-panel); border: 2px solid var(--pz-line); border-radius: 4px; padding: 8px; }
+  #pz-menu.is-open { display: grid; gap: 8px; }
+  #pz-menu .levels { margin: 0; }
+  .help { white-space: normal; overflow: visible; }
+  .hub-line { margin: 0; font: 600 13px/1.35 "IBM Plex Mono", ui-monospace, monospace; }
+  @media (max-width: 600px) {
     .stage { grid-template-columns: 1fr; }
     .scene-col { order: -1; }
     #view { height: 280px; min-height: 280px; }
     #title-arm { height: 220px; }
     #langs, #levels { min-height: 0; }
+    .top .pz-wide { display: none; }
+    .joint { grid-template-columns: minmax(0, 1fr) 70px 84px 70px; }
+  }
+  @media (min-width: 601px) {
+    #pz-menu .pz-narrow { display: none; }
   }
   @media (max-height: 520px) {
-    #goal, .legend, .help, #star-rules, #metrics, #angles, #stars { display: none; }
+    #goal, .legend, #star-rules, #metrics, #stars { display: none; }
+    #help { display: block; white-space: normal; overflow: visible; }
     #langs, #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: none; margin: 4px 0; position: static; }
-    #view { height: 280px; min-height: 280px; }
-    .scene-col .panel { padding: 4px; }
-    .lamps, .readouts { margin: 0 0 4px; }
-    .readouts, .mode-row, .lamps { direction: ltr; }
-    #status { min-height: 0; max-height: 36px; overflow: hidden; white-space: nowrap; }
+    #view { height: 220px; min-height: 180px; }
+    #status { min-height: 0; max-height: none; overflow: visible; white-space: normal; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -378,22 +467,24 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   }
 </style>
 </head>
-<body>
+<body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.3.0</span>
-  <button type="button" class="tool" id="theme-btn" aria-pressed="false">Dark mode</button>
-  <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
+  <p class="brand" translate="no">PINCHY<small>Pinchy McPinchface · <span id="app-version">v1.3.0</span></small></p>
+  <span class="sp" style="flex:1"></span>
+  <span id="chrome-slot" class="pz-wide"></span>
+  <button type="button" class="tool" id="levels-btn" aria-expanded="false" aria-controls="pz-menu">☰ Levels</button>
 </header>
-<nav class="langs" id="langs" aria-label="Language"></nav>
-<p id="draft-note" hidden>Machine draft.</p>
+<div id="pz-menu" aria-label="Levels">
+  <div id="chrome-narrow" class="pz-narrow"></div>
+  <div class="levels" id="levels" role="group" aria-label="Levels"></div>
+  <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
   <p>Version 1.3.0</p>
   <ul>
     <li>Move a robot arm.</li>
-    <li>Rough layout: controls on the left, the 3D scene on the right. On a narrow screen the scene is on top.</li>
-    <li>Teach-pendant mock: framed Joints, Base, Program, and Status, with degree readouts.</li>
+    <li>Paper pendant: warm paper, charcoal ink, and mustard only on the header bars, the arm, and the E-STOP band.</li>
+    <li>One Menu button in every app. It opens that app's menu.</li>
   </ul>
   <p>Version 1.2.2</p>
   <ul>
@@ -430,47 +521,45 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
   </ul>
   <button type="button" class="tool" id="whats-close">Close</button>
 </section>
+  <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
+  <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
+  <p class="hub-line">One Menu button in every app. It opens that app's menu.</p>
+  <button type="button" id="kb-menu" class="kb-menu" aria-expanded="false" aria-controls="hub-drawer"><span aria-hidden="true">☰ </span><span data-i18n="menu">Menu</span></button>
+</div>
+<button type="button" class="tool" id="theme-btn" aria-pressed="false">◐ Dark</button>
+<nav class="langs" id="langs" aria-label="Language"></nav>
 <section id="title-screen">
   <h1 id="hero" translate="no">Pinchy McPinchface</h1>
   <div class="scene"><canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas></div>
   <p><button type="button" id="play">Play</button></p>
 </section>
 <main id="game" hidden>
-  <div class="levels" id="levels" role="group" aria-label="Levels"></div>
-  <p id="goal"></p>
   <div class="stage">
     <div class="controls">
       <section class="panel">
-        <h2 class="panel-label">Status <span class="pid">S-01</span></h2>
-        <div class="mode-row">
-          <p><span>MODE</span><b id="mode-read">JOG</b></p>
-          <p><span>STEP</span><b id="step-read">00</b></p>
+        <h2 class="panel-label"><span>STATUS</span><span>S-01</span></h2>
+        <div class="body">
+          <div class="lamps" id="lamps">
+            <span class="lamp is-on" data-lamp="ready">● READY</span>
+            <span class="lamp" data-lamp="moving">▲ MOVING</span>
+            <span class="lamp" data-lamp="stopped">■ STOPPED</span>
+            <span class="lamp" data-lamp="crash">◆ CRASH</span>
+          </div>
+          <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
         </div>
-        <div class="lamps" id="lamps">
-          <span class="lamp is-on" data-lamp="ready">● Ready</span>
-          <span class="lamp" data-lamp="running">▲ Running</span>
-          <span class="lamp" data-lamp="fault">■ Fault</span>
-          <span class="lamp" data-lamp="win">★ Win</span>
+        <div class="haz"></div>
+        <div class="estop-row">
+          <button type="button" id="estop">■ E-STOP</button>
+          <span id="reset-slot"></span>
         </div>
-        <div class="readouts" id="readouts">
-          <p><span>J1</span><b id="ro-base">000.0°</b><span class="unit">deg</span></p>
-          <p><span>J2</span><b id="ro-shoulder">000.0°</b><span class="unit">deg</span></p>
-          <p><span>J3</span><b id="ro-elbow">000.0°</b><span class="unit">deg</span></p>
-          <p><span>J4</span><b id="ro-wrist">000.0°</b><span class="unit">deg</span></p>
-          <p><span>CL</span><b id="ro-claw">OPEN</b><span class="unit">state</span></p>
-        </div>
-        <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
       </section>
       <section class="panel">
-        <h2 class="panel-label">Joints <span class="pid">J-01</span></h2>
-        <div class="palette" id="joint-pad" role="group" aria-label="Joints"></div>
+        <h2 class="panel-label"><span>JOINTS</span><span>J-01</span></h2>
+        <div class="body" id="joint-pad" role="group" aria-label="Joints"></div>
+        <div id="base-pad" hidden></div>
       </section>
       <section class="panel">
-        <h2 class="panel-label">Base <span class="pid">B-01</span></h2>
-        <div class="palette" id="base-pad" role="group" aria-label="Base turn"></div>
-      </section>
-      <section class="panel">
-        <h2 class="panel-label">Program <span class="pid">P-01</span></h2>
+        <h2 class="panel-label"><span>PROGRAM</span><span>P-01</span></h2>
         <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
         <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
           <p>Program</p>
@@ -481,16 +570,10 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     </div>
     <div class="scene-col">
       <div class="viewport">
+        <h2 class="panel-label">VIEW · CELL 01</h2>
         <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
-        <svg class="gizmo" viewBox="0 0 64 64" aria-hidden="true">
-          <line x1="18" y1="46" x2="46" y2="46" stroke="currentColor" stroke-width="2"/>
-          <line x1="18" y1="46" x2="18" y2="16" stroke="currentColor" stroke-width="2"/>
-          <line x1="18" y1="46" x2="34" y2="58" stroke="#F5C400" stroke-width="2"/>
-          <text x="48" y="50" fill="currentColor" font-size="10">X</text>
-          <text x="8" y="14" fill="currentColor" font-size="10">Y</text>
-          <text x="36" y="62" fill="currentColor" font-size="10">Z</text>
-        </svg>
       </div>
+      <p id="goal"></p>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
       <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
     </div>
@@ -506,12 +589,12 @@ try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElem
     <span id="m-blocks">Blocks: 0</span>
     <span id="m-time">Time: none yet</span>
   </p>
-  <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
 </main>
 <noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Pinchy" data-version="1.3.0" data-rtl="1" data-menu="#levels-btn" data-whats-new="One Menu button in every app. It opens that app's menu." defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="game.js"></script>
-<script src="view3d.js"></script>
+<script src="game.js?v=1.3.0"></script>
+<script src="view3d.js?v=1.3.0"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -564,6 +647,21 @@ var fixAt = 0;
 var swapHistory = [];
 
 var lang = "en";
+var estopped = false;
+var markDraft = function (el) {
+  if (!el) return;
+  var olds = el.querySelectorAll(".sr-only");
+  for (var d = 0; d < olds.length; d++) {
+    if (olds[d].textContent === "Machine draft.") olds[d].remove();
+  }
+  if (lang === "ar" || lang === "fa-AF") {
+    el.dataset.draft = "true";
+    var note = document.createElement("span");
+    note.className = "sr-only";
+    note.textContent = "Machine draft.";
+    el.appendChild(note);
+  } else el.removeAttribute("data-draft");
+};
 var labelOf = function (id) {
   return PINCHY.labelFor(id, lang);
 };
@@ -580,7 +678,7 @@ var formatMs = function (ms) {
 
 var renderRun = function () {
   var state = session.run[session.level] || PINCHY.settleRun(null, { type: "level" });
-  var view = PINCHY.runView(state);
+  var view = PINCHY.runView(state, lang);
   var i;
   for (i = 1; i <= 3; i++) {
     var star = document.getElementById("star-" + i);
@@ -588,30 +686,19 @@ var renderRun = function () {
   }
   document.getElementById("star-words").textContent = view.words;
   document.getElementById("stars").setAttribute("aria-label", view.aria);
+  markDraft(document.getElementById("star-words"));
   var el = document.getElementById("status");
   el.textContent = view.status;
   el.classList.remove("is-win", "is-crash");
   if (view.kind === "won") el.classList.add("is-win");
   if (view.kind === "crashed") el.classList.add("is-crash");
+  markDraft(el);
   var lamp = "ready";
-  if (view.kind === "running") lamp = "running";
-  else if (view.kind === "crashed" || view.kind === "failed") lamp = "fault";
-  else if (view.kind === "won") lamp = "win";
+  if (view.kind === "running") lamp = "moving";
+  else if (view.kind === "crashed") lamp = "crash";
+  else if (estopped || view.kind === "failed") lamp = "stopped";
   var lamps = document.querySelectorAll(".lamp");
   for (i = 0; i < lamps.length; i++) lamps[i].classList.toggle("is-on", lamps[i].dataset.lamp === lamp);
-  var mode = "JOG";
-  if (view.kind === "running") mode = "RUN";
-  else if (view.kind === "won") mode = "WIN";
-  else if (view.kind === "crashed" || view.kind === "failed") mode = "FAULT";
-  var modeEl = document.getElementById("mode-read");
-  var stepEl = document.getElementById("step-read");
-  if (modeEl) modeEl.textContent = mode;
-  if (stepEl) {
-    var stepN = state.steps || 0;
-    var stepText = String(stepN);
-    while (stepText.length < 2) stepText = "0" + stepText;
-    stepEl.textContent = stepText;
-  }
 };
 var setRun = function (state) {
   session.run[session.level] = state;
@@ -638,7 +725,7 @@ var renderProgram = function (now, stop) {
   ol.replaceChildren();
   if (!list.length) {
     var empty = document.createElement("li");
-    empty.textContent = "No blocks yet.";
+    empty.textContent = PINCHY.uiText ? PINCHY.uiText(lang, "No blocks yet.") : "No blocks yet.";
     ol.appendChild(empty);
     return;
   }
@@ -701,15 +788,20 @@ var renderLevels = function () {
   var buttons = document.querySelectorAll("#levels button");
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
+    var nameEl = buttons[i].querySelector(".name");
+    if (nameEl && PINCHY.uiText) nameEl.textContent = (i + 1) + " " + PINCHY.uiText(lang, PINCHY.LEVELS[i].id);
+    markDraft(buttons[i]);
   }
   var levelNow = PINCHY.LEVELS[session.level];
-  document.getElementById("goal").textContent = levelNow.goal;
+  document.getElementById("goal").textContent = (lang === "ar" || lang === "fa-AF") && PINCHY.uiText(lang, levelNow.id + "-goal") !== levelNow.id + "-goal"
+    ? PINCHY.uiText(lang, levelNow.id + "-goal")
+    : levelNow.goal;
   var legend = document.getElementById("legend");
   var turn3d = "The 3D arm turns on its base. ";
   if (levelNow.kind === "pile") legend.textContent = turn3d + "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
   else if (levelNow.kind === "sensor") legend.textContent = turn3d + "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
   else if (levelNow.debug) legend.textContent = turn3d + "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
-  else legend.textContent = turn3d + "Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.";
+  else legend.textContent = (lang === "ar" || lang === "fa-AF") ? PINCHY.uiText(lang, "legend") : turn3d + "Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.";
   var helpEl = document.getElementById("help");
   var helpText = PINCHY.helpFor(lang, !!levelNow.debug);
   var helpMeta = PINCHY.langMeta(lang);
@@ -752,47 +844,84 @@ var setBusy = function (busy) {
   document.getElementById("retry").disabled = false;
 };
 
+var JOINT_ROWS = [
+  { key: "Base", glyph: "\u27F3", lo: "base-left", hi: "base-right", loWord: "Left", hiWord: "Right", read: "ro-base", arrows: true },
+  { key: "Shoulder", glyph: "\u2934", lo: "shoulder-down", hi: "shoulder-up", loWord: "Down", hiWord: "Up", read: "ro-shoulder" },
+  { key: "Elbow", glyph: "\u2197", lo: "elbow-down", hi: "elbow-up", loWord: "Down", hiWord: "Up", read: "ro-elbow" },
+  { key: "Wrist", glyph: "\u21BB", lo: "wrist-down", hi: "wrist-up", loWord: "Down", hiWord: "Up", read: "ro-wrist" },
+  { key: "Claw", glyph: "\u270B", lo: "claw-close", hi: "claw-open", loWord: "Close", hiWord: "Open", read: "ro-claw", claw: true }
+];
+var glyphWord = function (side, word) {
+  var rtl = document.documentElement.dir === "rtl";
+  var left = side === "lo";
+  if (left) return rtl ? word + " \u25C0" : "\u25C0 " + word;
+  return rtl ? "\u25B6 " + word : word + " \u25B6";
+};
+var vertWord = function (down, word) {
+  var rtl = document.documentElement.dir === "rtl";
+  if (down) return rtl ? word + " \u25BC" : "\u25BC " + word;
+  return rtl ? "\u25B2 " + word : word + " \u25B2";
+};
 var renderPalette = function () {
   var jointPad = document.getElementById("joint-pad");
-  var basePad = document.getElementById("base-pad");
   var programPad = document.getElementById("program-pad");
   var ids = PINCHY.blocksFor(PINCHY.LEVELS[session.level]);
+  var allowed = {};
+  var i;
+  for (i = 0; i < ids.length; i++) allowed[ids[i]] = true;
   jointPad.replaceChildren();
-  basePad.replaceChildren();
   programPad.replaceChildren();
-  if (focusIndex >= ids.length) focusIndex = 0;
-  for (var i = 0; i < ids.length; i++) {
-    var id = ids[i];
-    var yawKeys = !PINCHY.LEVELS[session.level].debug;
-    var keyHint = yawKeys && id === "base-left" ? "Q" : (yawKeys && id === "base-right" ? "E" : "");
-    var b = makeButton("block", id, PINCHY.labelFor(id, lang), keyHint);
-    b.dataset.cmd = id;
-    if (keyHint) b.setAttribute("aria-keyshortcuts", keyHint);
-    b.tabIndex = i === focusIndex ? 0 : -1;
-    if (id.indexOf("wrist") === 0 || (PINCHY.langMeta(lang).blocks && PINCHY.langMeta(lang).blocks[id])) {
-      var meta = PINCHY.langMeta(lang);
-      b.lang = lang;
-      b.dir = meta.rtl ? "rtl" : "ltr";
-      var drafted = meta.draft || (meta.blocksDraft && meta.blocks && meta.blocks[id]);
-      if (id.indexOf("wrist") === 0 && !meta.draft) drafted = false;
-      if (drafted) {
-        b.dataset.draft = "true";
-        var draftMark = document.createElement("span");
-        draftMark.className = "sr-only";
-        draftMark.textContent = "Machine draft.";
-        b.appendChild(draftMark);
-      }
-    }
-    b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
+  var focusButtons = [];
+  var addFocus = function (b) {
     b.addEventListener("focus", function () {
       var nodes = document.querySelectorAll(".controls button.block");
       for (var n = 0; n < nodes.length; n++) if (nodes[n] === this) focusIndex = n;
     });
-    var home = jointPad;
-    if (id.indexOf("base-") === 0) home = basePad;
-    else if (id.indexOf("repeat") !== -1 || id.indexOf("if") !== -1 || id === "end-repeat" || id === "end-if") home = programPad;
-    home.appendChild(b);
+    focusButtons.push(b);
+  };
+  for (i = 0; i < JOINT_ROWS.length; i++) {
+    var row = JOINT_ROWS[i];
+    var line = document.createElement("div");
+    line.className = "joint";
+    var name = document.createElement("b");
+    name.textContent = row.glyph + " " + (PINCHY.uiText ? PINCHY.uiText(lang, row.key) : row.key);
+    line.appendChild(name);
+    var makeSide = function (id, word, down) {
+      var label = row.arrows ? glyphWord(down ? "lo" : "hi", PINCHY.uiText ? PINCHY.uiText(lang, word) : word) : vertWord(down, PINCHY.uiText ? PINCHY.uiText(lang, word) : word);
+      if (row.claw) label = (down ? "\u270A " : "\u270B ") + (PINCHY.uiText ? PINCHY.uiText(lang, word) : word);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "block";
+      b.dataset.cmd = id;
+      b.textContent = label;
+      b.disabled = !allowed[id];
+      if (id === "base-left") b.setAttribute("aria-keyshortcuts", "Q");
+      if (id === "base-right") b.setAttribute("aria-keyshortcuts", "E");
+      b.addEventListener("click", function () { if (!this.disabled) addBlock(this.dataset.cmd); });
+      addFocus(b);
+      return b;
+    };
+    line.appendChild(makeSide(row.lo, row.loWord, true));
+    var ro = document.createElement("div");
+    ro.className = "ro";
+    ro.id = row.read;
+    ro.textContent = row.claw ? "OPEN" : "000.0\u00b0";
+    line.appendChild(ro);
+    line.appendChild(makeSide(row.hi, row.hiWord, false));
+    jointPad.appendChild(line);
   }
+  for (i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    if (id.indexOf("repeat") === -1 && id.indexOf("if") === -1 && id !== "end-repeat" && id !== "end-if") continue;
+    var b = makeButton("block", id, PINCHY.labelFor(id, lang), "");
+    b.dataset.cmd = id;
+    b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
+    addFocus(b);
+    programPad.appendChild(b);
+  }
+  if (focusIndex >= focusButtons.length) focusIndex = 0;
+  var blocks = jointPad.querySelectorAll("button.block");
+  for (i = 0; i < blocks.length; i++) blocks[i].tabIndex = i === focusIndex ? 0 : -1;
 };
 var applyLang = function (code) {
   var meta = PINCHY.langMeta(code);
@@ -801,7 +930,7 @@ var applyLang = function (code) {
   document.documentElement.lang = lang;
   document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
   var note = document.getElementById("draft-note");
-  note.hidden = !meta.draft;
+  note.hidden = !(meta.draft || lang === "ar");
   var buttons = document.querySelectorAll("#langs button");
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].setAttribute("aria-pressed", buttons[i].dataset.lang === lang ? "true" : "false");
@@ -1315,7 +1444,13 @@ var paintView = function (canvas, state, level, opts) {
 };
 var paintGame = function () {
   if (!world) return;
-  document.getElementById("angles").textContent = PINCHY.jointReadout(world);
+  var angleLine = PINCHY.jointReadout(world);
+  if ((lang === "ar" || lang === "fa-AF") && PINCHY.uiText) {
+    var tWord = function (key) { return PINCHY.uiText(lang, key); };
+    var clawWord = world.open ? tWord("Open") : tWord("Close");
+    angleLine = tWord("Base") + " " + Math.round(world.base) + "\u00b0 \u00b7 " + tWord("Shoulder") + " " + Math.round(world.shoulder) + "\u00b0 \u00b7 " + tWord("Elbow") + " " + Math.round(world.elbow) + "\u00b0 \u00b7 " + tWord("Wrist") + " " + Math.round(world.wrist || 0) + "\u00b0 \u00b7 " + tWord("Claw") + " " + clawWord;
+  }
+  document.getElementById("angles").textContent = angleLine;
   var fmtDeg = function (n) {
     var neg = n < 0;
     var fixed = Math.abs(n).toFixed(1).split(".");
@@ -1476,6 +1611,7 @@ var play = async function () {
   }
   var token = ++playback;
   playing = true;
+  estopped = false;
   setBusy(true);
   var level = PINCHY.LEVELS[session.level];
   world = PINCHY.initialState(level);
@@ -1560,8 +1696,25 @@ var stopPlay = function () {
   activeCmd = "";
   setBusy(false);
 };
+var estop = function () {
+  stopPlay();
+  estopped = true;
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Stopped." }));
+  renderProgram(-1, -1);
+  paintGame();
+};
+var clearProgram = function () {
+  if (playing) stopPlay();
+  estopped = false;
+  session.programs[session.level] = [];
+  renderProgram(-1, -1);
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+  updateMetrics();
+  paintGame();
+};
 var retry = function () {
   var kept = session.programs[session.level].slice();
+  estopped = false;
   stopPlay();
   session.programs[session.level] = kept;
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
@@ -1576,6 +1729,7 @@ var selectLevel = function (index) {
   if (index === session.level && !playing) return;
   stopPlay();
   session.level = index;
+  estopped = false;
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;
   runT0 = 0;
@@ -1639,10 +1793,13 @@ var boot = function () {
   var themeBtn = document.getElementById("theme-btn");
   var applyTheme = function (theme) {
     var dark = theme === "dark";
+    document.documentElement.classList.toggle("pz-dark", dark);
+    document.body.classList.toggle("pz-dark", dark);
+    document.body.classList.toggle("pz-light", !dark);
     if (dark) document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
     try { localStorage.setItem("pinchy-theme", dark ? "dark" : "light"); } catch (err) {}
-    themeBtn.textContent = dark ? "Light mode" : "Dark mode";
+    themeBtn.textContent = dark ? "\u25D0 Light" : "\u25D0 Dark";
     themeBtn.setAttribute("aria-pressed", dark ? "true" : "false");
     if (viewCanvas) viewCanvas._glW = 0;
     if (titleCanvas) titleCanvas._glW = 0;
@@ -1650,11 +1807,48 @@ var boot = function () {
     else if (titleOn) paintTitle(32);
   };
   themeBtn.addEventListener("click", function () {
-    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    applyTheme(document.documentElement.classList.contains("pz-dark") ? "light" : "dark");
   });
   viewCanvas = document.getElementById("view");
   titleCanvas = document.getElementById("title-arm");
-  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+  applyTheme(document.documentElement.classList.contains("pz-dark") ? "dark" : "light");
+  var placeChrome = function () {
+    var narrow = window.matchMedia("(max-width: 600px)").matches;
+    var slot = document.getElementById(narrow ? "chrome-narrow" : "chrome-slot");
+    if (!slot) return;
+    if (themeBtn.parentNode !== slot) slot.appendChild(themeBtn);
+    var langNav = document.getElementById("langs");
+    if (langNav && langNav.parentNode !== slot) slot.appendChild(langNav);
+  };
+  placeChrome();
+  var levelsBtn = document.getElementById("levels-btn");
+  var menu = document.getElementById("pz-menu");
+  levelsBtn.addEventListener("click", function () {
+    var open = !menu.classList.contains("is-open");
+    menu.classList.toggle("is-open", open);
+    levelsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  levelsBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    levelsBtn.click();
+  });
+  document.getElementById("kb-menu").addEventListener("click", function () {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "kb-menu" }, "*");
+        return;
+      }
+    } catch (err) {}
+    window.location.href = "/";
+  });
+  document.getElementById("estop").addEventListener("click", estop);
+  document.getElementById("estop").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    estop();
+  });
   var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
   reduce = !!(mq && mq.matches);
   var onMotion = function () {
@@ -1681,7 +1875,7 @@ var boot = function () {
 
   var nav = document.getElementById("levels");
   PINCHY.LEVELS.forEach(function (level, index) {
-    var b = makeButton("level", LEVEL_ICON[level.id] || "spot", (index + 1) + " " + level.name, "");
+    var b = makeButton("level", LEVEL_ICON[level.id] || "spot", (index + 1) + " " + (PINCHY.uiText ? PINCHY.uiText(lang, level.id) : level.name), "");
     b.setAttribute("aria-pressed", index === 0 ? "true" : "false");
     b.addEventListener("click", function () { selectLevel(index); });
     nav.appendChild(b);
@@ -1709,7 +1903,21 @@ var boot = function () {
   retryBtn.addEventListener("click", function () { retry(); });
   actions.appendChild(runBtn);
   actions.appendChild(undoBtn);
-  actions.appendChild(retryBtn);
+  var clearBtn = document.createElement("button");
+  clearBtn.type = "button";
+  clearBtn.className = "action";
+  clearBtn.id = "clear";
+  clearBtn.textContent = "\u2715 Clear";
+  clearBtn.addEventListener("click", clearProgram);
+  clearBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    clearProgram();
+  });
+  actions.appendChild(clearBtn);
+  document.getElementById("reset-slot").appendChild(retryBtn);
+  retryBtn.querySelector(".name").textContent = "\u21BA Reset";
 
   document.getElementById("play").addEventListener("click", showGame);
 
@@ -1820,6 +2028,7 @@ var boot = function () {
         if (titleCanvas) titleCanvas._glW = 0;
         paintTitle(32);
       }
+      placeChrome();
       if (!document.getElementById("game").hidden) {
         if (viewCanvas) viewCanvas._glW = 0;
         paintGame();
