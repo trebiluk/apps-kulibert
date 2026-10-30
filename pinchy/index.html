@@ -19,14 +19,16 @@
   :root {
     color-scheme: dark;
     --bg: #06122B;
-    --blue: #16325C;
-    --blue-2: #1C406E;
-    --violet: #3A2A66;
-    --violet-2: #2A1F4E;
-    --ink: #F3EEE4;
-    --muted: #C9D2E2;
-    --line: #8EA0BE;
-    --ember: #E85820;
+    --blue: #0B1A40;
+    --blue-2: #132A5C;
+    --violet: #132A5C;
+    --violet-2: #0B1A40;
+    --ink: #F7F9FF;
+    --muted: #B7C4EA;
+    --line: #B7C4EA;
+    --ember: #22D3EE;
+    --royal: #3B82F6;
+    --dream: #A855F7;
     --arm: #A8AEB6;
     --arm-2: #8E949C;
     --arm-3: #7E868E;
@@ -82,7 +84,7 @@
     box-shadow: 6px 6px 0 #030914;
     max-width: 40rem;
   }
-  #whats-new h2 { margin: 0 0 8px; font-size: 20px; }
+  #whats-new h2 { margin: 0 0 8px; font-size: 20px; color: #A855F7; }
   #whats-new p, #whats-new li { margin: 0 0 8px; }
   #title-screen, #game { padding: 8px; }
   #hero {
@@ -114,7 +116,7 @@
     text-align: left;
     flex: 1 1 160px;
   }
-  button.level[aria-pressed="true"] { border-width: 3px; background: var(--violet); }
+  button.level[aria-pressed="true"] { border-width: 3px; border-color: #3B82F6; background: var(--blue-2); }
   button:focus-visible, .chip:focus-visible {
     outline: 3px solid var(--ember);
     outline-offset: 2px;
@@ -233,13 +235,19 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.1.0</span>
+  <span class="ver" id="app-version">v1.2.0</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.2.0</p>
+  <ul>
+    <li>Move a robot arm.</li>
+    <li>The arm is drawn in 3D from a fixed camera, so the base can turn.</li>
+    <li>Levels 1 to 6 are unchanged. Stars stay on this screen only.</li>
+  </ul>
   <p>Version 1.1.0</p>
   <ul>
     <li>Move a robot arm.</li>
@@ -293,7 +301,9 @@
   <p class="help" id="help">Arrow keys pick a block. Enter adds it. R runs. Z undoes. Retry keeps the program.</p>
 </main>
 <noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
+<script src="vendor/three.min.js"></script>
 <script src="game.js"></script>
+<script src="view3d.js"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -714,7 +724,7 @@ var drawArm = function (ctx, P, state, opts) {
   markBone(P.x(p.wx), P.y(p.wy), P.x(p.gx), P.y(p.gy), Math.max(12, P.s * 10) / 2 + 6);
   var half = p.gap / 2;
   var thick = 9 / Math.max(P.s, 0.25);
-  ctx.fillStyle = "#E85820";
+  ctx.fillStyle = "#22D3EE";
   for (var sign = -1; sign <= 1; sign += 2) {
     var x1 = p.gx + p.nx * sign * half;
     var y1 = p.gy + p.ny * sign * half;
@@ -884,7 +894,7 @@ var drawScene = function (canvas, state, opts) {
     } else {
       ctx.fillStyle = "#C5CEDA";
       ctx.fillRect(px, py, pw, ph);
-      ctx.strokeStyle = part.color === "red" ? "#E85820" : "#3E4650";
+      ctx.strokeStyle = part.color === "red" ? "#C45A4A" : "#3E4650";
       ctx.lineWidth = part.shape === "square" ? 3 : 2;
       ctx.strokeRect(px, py, pw, ph);
       if (part.shape === "square") {
@@ -944,7 +954,7 @@ var drawScene = function (canvas, state, opts) {
       ctx.fillStyle = "#24386A";
       ctx.fillRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
       ctx.lineWidth = name === here ? 3 : 1;
-      ctx.strokeStyle = name === here ? "#E85820" : "#8EA0BE";
+      ctx.strokeStyle = name === here ? "#22D3EE" : "#B7C4EA";
       ctx.strokeRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
       ctx.fillStyle = "#F3EEE4";
       var midX = cellX + cellW / 2;
@@ -1021,25 +1031,30 @@ var fit = function (canvas) {
   canvas.height = Math.max(1, Math.round(cssH * dpr));
 };
 
+var paintView = function (canvas, state, level, opts) {
+  if (window.PINCHY_VIEW && PINCHY_VIEW.frame(canvas, state, level, opts)) return;
+  fit(canvas);
+  drawScene(canvas, state, opts);
+};
 var paintGame = function () {
   if (!world) return;
-  fit(viewCanvas);
   document.getElementById("angles").textContent = PINCHY.jointReadout(world);
-  drawScene(viewCanvas, world, {
+  paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
-    showGrid: true
+    showGrid: true,
+    world: false
   });
 };
 var drawLevel = function () {
   if (!viewCanvas || !world) return;
   viewCanvas._cssW = 0;
-  fit(viewCanvas);
+  viewCanvas._glW = 0;
   paintGame();
   requestAnimationFrame(function () {
     if (!viewCanvas || !world) return;
     viewCanvas._cssW = 0;
-    fit(viewCanvas);
+    viewCanvas._glW = 0;
     paintGame();
   });
 };
@@ -1056,12 +1071,11 @@ var titleState = function (shoulder) {
   };
 };
 var paintTitle = function (shoulder) {
-  fit(titleCanvas);
-  drawScene(titleCanvas, titleState(shoulder), { showGrid: false, level: null, cmd: "" });
+  paintView(titleCanvas, titleState(shoulder), null, { showGrid: false, level: null, cmd: "", world: false });
 };
 var startWave = function () {
   var gen = ++waveGen;
-  fit(titleCanvas);
+  if (titleCanvas) titleCanvas._glW = 0;
   if (!titleOn) return;
   if (reduce) {
     paintTitle(32);
@@ -1307,7 +1321,7 @@ var showGame = function () {
   document.getElementById("title-screen").hidden = true;
   document.getElementById("game").hidden = false;
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
-  fit(viewCanvas);
+  if (viewCanvas) viewCanvas._glW = 0;
   renderLevels();
   renderProgram(-1, -1);
   updateMetrics();
@@ -1318,7 +1332,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.1.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
@@ -1483,9 +1497,12 @@ var boot = function () {
     queued = true;
     requestAnimationFrame(function () {
       queued = false;
-      if (titleOn) fit(titleCanvas);
+      if (titleOn) {
+        if (titleCanvas) titleCanvas._glW = 0;
+        paintTitle(32);
+      }
       if (!document.getElementById("game").hidden) {
-        fit(viewCanvas);
+        if (viewCanvas) viewCanvas._glW = 0;
         paintGame();
         var current = document.querySelector("#program .is-now, #program .is-stop");
         if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });

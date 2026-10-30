@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.1.0");
+assert.equal(G.APP_VERSION, "1.2.0");
 assert.equal(G.LEVELS.length, 6);
 assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
@@ -215,9 +215,20 @@ assert.match(page, /Pinchy McPinchface/);
 assert.match(page, /translate="no"/);
 assert.match(page, /Archivo/);
 assert.match(page, /#06122B/);
-assert.match(page, /#E85820/);
-assert.match(page, /v1\.1\.0/);
-assert.match(page, /Version 1\.1\.0/);
+assert.match(page, /#22D3EE/);
+assert.match(page, /#0B1A40/);
+assert.match(page, /#132A5C/);
+assert.match(page, /#F7F9FF/);
+assert.match(page, /#B7C4EA/);
+assert.match(page, /#3B82F6/);
+assert.match(page, /#A855F7/);
+assert.match(page, /v1\.2\.0/);
+assert.match(page, /Version 1\.2\.0/);
+assert.match(page, /Move a robot arm\./);
+assert.match(page, /vendor\/three\.min\.js/);
+assert.match(page, /view3d\.js/);
+assert.doesNotMatch(page, /https?:\/\//);
+assert.doesNotMatch(page, /unpkg|jsdelivr|cdn\./);
 assert.match(page, /1\.0\.0/);
 assert.match(page, /What's new/);
 assert.match(page, /id="langs"/);

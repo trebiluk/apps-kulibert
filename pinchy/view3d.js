@@ -1,0 +1,331 @@
+/* Pinchy 3D view. Three.js r149 is vendored in vendor/three.min.js. No network. */
+(function (root) {
+  "use strict";
+  if (!root.THREE) return;
+  var THREE = root.THREE;
+  var CLEAR = 0x06122b;
+  var views = {};
+
+  function mat(color, opacity) {
+    var m = new THREE.MeshStandardMaterial({
+      color: color,
+      roughness: 0.62,
+      metalness: 0.08
+    });
+    if (opacity != null && opacity < 1) {
+      m.transparent = true;
+      m.opacity = opacity;
+      m.depthWrite = false;
+    }
+    return m;
+  }
+
+  var MATS = {
+    post: mat(0x7e868e),
+    upper: mat(0xa8aeb6),
+    fore: mat(0x8e949c),
+    wrist: mat(0x9aa1a8),
+    joint: mat(0x3e4650),
+    hot: mat(0x22d3ee),
+    claw: mat(0x22d3ee),
+    table: mat(0x0b1a40),
+    ghost: mat(0xc5ceda, 0.35),
+    grid: mat(0x132a5c),
+    gridOn: mat(0x22d3ee),
+    red: mat(0xc45a4a),
+    blue: mat(0x3b82f6),
+    part: mat(0xc5ceda)
+  };
+
+  function vec(reach, height, yawDeg) {
+    var a = (yawDeg || 0) * Math.PI / 180;
+    return new THREE.Vector3(Math.sin(a) * reach, height, Math.cos(a) * reach);
+  }
+
+  function addBone(parent, a, b, radius, material) {
+    var dir = new THREE.Vector3().subVectors(b, a);
+    var len = Math.max(0.2, dir.length());
+    var mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.9, len, 10), material);
+    mesh.position.copy(a).lerp(b, 0.5);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+    parent.add(mesh);
+    return mesh;
+  }
+
+  function addJoint(parent, p, radius, hot) {
+    var mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 14, 12), hot ? MATS.hot : MATS.joint);
+    mesh.position.copy(p);
+    parent.add(mesh);
+  }
+
+  var sprites = {};
+  function labelSprite(text) {
+    if (sprites[text]) return sprites[text].clone();
+    var canvas = document.createElement("canvas");
+    canvas.width = 384;
+    canvas.height = 80;
+    var g = canvas.getContext("2d");
+    g.fillStyle = "#132A5C";
+    g.fillRect(0, 0, 384, 80);
+    g.strokeStyle = "#22D3EE";
+    g.lineWidth = 4;
+    g.strokeRect(3, 3, 378, 74);
+    g.fillStyle = "#F7F9FF";
+    g.font = "600 36px sans-serif";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText(text, 192, 42);
+    var texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    var sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false }));
+    sprite.scale.set(46, 10, 1);
+    sprites[text] = sprite;
+    return sprite.clone();
+  }
+
+  function addLabel(parent, text, position) {
+    var sprite = labelSprite(text);
+    sprite.position.copy(position);
+    parent.add(sprite);
+  }
+
+  function create(canvas) {
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: false,
+        powerPreference: "low-power",
+        preserveDrawingBuffer: true
+      });
+    } catch (err) {
+      return { render: function () {}, resize: function () {}, failed: true };
+    }
+    renderer.setClearColor(CLEAR, 1);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    canvas.style.width = "";
+    canvas.style.height = "";
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(CLEAR);
+    var camera = new THREE.PerspectiveCamera(36, 1, 1, 4000);
+    camera.position.set(280, 200, 360);
+    camera.lookAt(0, 64, 40);
+    scene.add(new THREE.AmbientLight(0xb7c4ea, 0.62));
+    var key = new THREE.DirectionalLight(0xf7f9ff, 0.78);
+    key.position.set(120, 260, 160);
+    scene.add(key);
+    var rim = new THREE.DirectionalLight(0x22d3ee, 0.28);
+    rim.position.set(-180, 90, -80);
+    scene.add(rim);
+    var table = new THREE.Mesh(new THREE.CircleGeometry(300, 48), MATS.table);
+    table.rotation.x = -Math.PI / 2;
+    table.position.y = 0;
+    scene.add(table);
+    var ring = new THREE.Mesh(
+      new THREE.RingGeometry(26, 34, 40),
+      new THREE.MeshBasicMaterial({ color: 0x22d3ee, side: THREE.DoubleSide })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 1.2;
+    scene.add(ring);
+    var dyn = new THREE.Group();
+    scene.add(dyn);
+
+    function disposeTree(node) {
+      if (node.geometry) node.geometry.dispose();
+      var kids = node.children;
+      if (!kids) return;
+      for (var k = kids.length - 1; k >= 0; k--) disposeTree(kids[k]);
+    }
+
+    function clearDyn() {
+      var i, child;
+      for (i = dyn.children.length - 1; i >= 0; i--) {
+        child = dyn.children[i];
+        disposeTree(child);
+        dyn.remove(child);
+      }
+    }
+
+    function resize() {
+      var w = canvas.clientWidth || canvas._cssW || 1;
+      var h = canvas.clientHeight || canvas._cssH || 1;
+      if (w < 2 || h < 2) return;
+      if (canvas._glW === w && canvas._glH === h) return;
+      canvas._glW = w;
+      canvas._glH = h;
+      renderer.setPixelRatio(Math.min(root.devicePixelRatio || 1, 1.5));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+
+    function arm(parent, state, ghost) {
+      var layout = root.PINCHY.LAYOUT;
+      var pose = root.PINCHY.pose(state);
+      var yaw = state.base || 0;
+      var upperMat = ghost ? MATS.ghost : MATS.upper;
+      var foreMat = ghost ? MATS.ghost : MATS.fore;
+      var wristMat = ghost ? MATS.ghost : MATS.wrist;
+      var shoulder = vec(0, layout.sy, yaw);
+      var elbow = vec(pose.ex, pose.ey, yaw);
+      var wrist = vec(pose.wx, pose.wy, yaw);
+      var grip = vec(pose.gx, pose.gy, yaw);
+      var tip = vec(pose.cx, pose.cy, yaw);
+      if (!ghost) {
+        var post = new THREE.Mesh(new THREE.CylinderGeometry(16, 22, layout.sy, 16), MATS.post);
+        post.position.y = layout.sy / 2;
+        parent.add(post);
+        var nub = new THREE.Mesh(new THREE.BoxGeometry(8, 4, 22), MATS.hot);
+        var ang = yaw * Math.PI / 180;
+        nub.position.set(Math.sin(ang) * 28, 2.4, Math.cos(ang) * 28);
+        nub.rotation.y = ang;
+        parent.add(nub);
+      }
+      addBone(parent, shoulder, elbow, ghost ? 5 : 8, upperMat);
+      addBone(parent, elbow, wrist, ghost ? 4 : 6.2, foreMat);
+      addBone(parent, wrist, grip, ghost ? 3 : 4.6, wristMat);
+      addJoint(parent, shoulder, ghost ? 4 : 7.5, !ghost && (optsHot(state, "shoulder")));
+      addJoint(parent, elbow, ghost ? 3.5 : 6.2, !ghost && optsHot(state, "elbow"));
+      addJoint(parent, wrist, ghost ? 3 : 5.2, !ghost && optsHot(state, "wrist"));
+      addJoint(parent, grip, ghost ? 2.6 : 4.4, !ghost && optsHot(state, "claw"));
+      var half = pose.gap / 2;
+      var sign, x1, y1, x2, y2;
+      for (sign = -1; sign <= 1; sign += 2) {
+        x1 = pose.gx + pose.nx * sign * half;
+        y1 = pose.gy + pose.ny * sign * half;
+        x2 = x1 + pose.px * layout.jaw;
+        y2 = y1 + pose.py * layout.jaw;
+        addBone(parent, vec(x1, y1, yaw), vec(x2, y2, yaw), ghost ? 1.6 : 2.8, ghost ? MATS.ghost : MATS.claw);
+      }
+      if (!ghost) {
+        var side = yaw * Math.PI / 180;
+        addLabel(parent, "Base " + Math.round(yaw) + "\u00b0", new THREE.Vector3(Math.cos(side) * 48, 46, -Math.sin(side) * 48));
+        addLabel(parent, "Shoulder " + Math.round(state.shoulder) + "\u00b0", shoulder.clone().add(new THREE.Vector3(0, 18, 0)));
+        addLabel(parent, "Elbow " + Math.round(state.elbow) + "\u00b0", elbow.clone().add(new THREE.Vector3(0, 16, 0)));
+        addLabel(parent, "Wrist " + Math.round(state.wrist || 0) + "\u00b0", wrist.clone().add(new THREE.Vector3(0, 14, 0)));
+        addLabel(parent, "Claw", tip.clone().add(new THREE.Vector3(0, 18, 0)));
+      }
+    }
+
+    function optsHot(state, name) {
+      return false;
+    }
+
+    function render(state, level, opts) {
+      if (!state || !root.PINCHY) return;
+      resize();
+      clearDyn();
+      var cmd = (opts && opts.cmd) || "";
+      optsHot = function (s, name) { return cmd.indexOf(name) === 0; };
+      if (level && level.kind === "match" && level.target) {
+        arm(dyn, {
+          base: level.target.base,
+          shoulder: level.target.shoulder,
+          elbow: level.target.elbow,
+          wrist: 0,
+          open: true,
+          gap: root.PINCHY.LAYOUT.gapOpen
+        }, true);
+      }
+      arm(dyn, state, false);
+      if (opts && opts.world) buildWorld(dyn, state, level);
+      renderer.render(scene, camera);
+    }
+
+    return { render: render, resize: resize };
+  }
+
+  function buildWorld(parent, state, level) {
+    var G = root.PINCHY;
+    if (!G || !level) return;
+    var cols = G.COLS;
+    var rows = G.ROWS;
+    var c, r, spot, mesh, name, here, marked;
+    here = level.kind === "spot" ? level.spot : "";
+    for (c = 0; c < cols.length; c++) {
+      for (r = 0; r < rows.length; r++) {
+        name = cols[c][0] + rows[r][0];
+        spot = vec(rows[r][1], 1.4, cols[c][1]);
+        marked = name === here;
+        mesh = new THREE.Mesh(
+          new THREE.BoxGeometry(22, 0.8, 18),
+          marked ? MATS.gridOn : MATS.grid
+        );
+        mesh.position.copy(spot);
+        parent.add(mesh);
+        addLabel(parent, name, spot.clone().setY(8));
+      }
+    }
+    var bins = G.binsOf(level);
+    var i, bin, group, wall, yaw, hx, hz;
+    for (i = 0; i < bins.length; i++) {
+      bin = bins[i];
+      yaw = bin.base * Math.PI / 180;
+      hx = Math.sin(yaw) * bin.r;
+      hz = Math.cos(yaw) * bin.r;
+      group = new THREE.Group();
+      group.position.set(hx, 0, hz);
+      group.rotation.y = yaw;
+      wall = new THREE.Mesh(new THREE.BoxGeometry(4, bin.h, bin.half), MATS.joint);
+      wall.position.set(-bin.half, bin.h / 2, 0);
+      group.add(wall);
+      wall = new THREE.Mesh(new THREE.BoxGeometry(4, bin.h, bin.half), MATS.joint);
+      wall.position.set(bin.half, bin.h / 2, 0);
+      group.add(wall);
+      wall = new THREE.Mesh(new THREE.BoxGeometry(bin.half * 2, bin.h, 4), MATS.joint);
+      wall.position.set(0, bin.h / 2, bin.half * 0.35);
+      group.add(wall);
+      parent.add(group);
+      addLabel(parent, bin.id ? "Bin " + bin.id + (bin.mark ? " " + bin.mark : "") : "Bin", new THREE.Vector3(hx, bin.h + 12, hz));
+    }
+    function addPart(part) {
+      if (!part) return;
+      var y = part.inBin ? part.hh : part.y;
+      var pos = vec(part.r, y, part.base);
+      var colorMat = part.color === "red" ? MATS.red : (part.color === "blue" ? MATS.blue : MATS.part);
+      var mesh;
+      if (part.shape === "circle") {
+        mesh = new THREE.Mesh(new THREE.CylinderGeometry(part.hw, part.hw, part.hh * 2, 16), colorMat);
+      } else {
+        mesh = new THREE.Mesh(new THREE.BoxGeometry(part.hw * 2, part.hh * 2, part.hw * 2), colorMat);
+      }
+      mesh.position.copy(pos);
+      parent.add(mesh);
+      if (part.shape === "square" && part.color === "red") addLabel(parent, "Red square \u25a0", pos.clone().setY(pos.y + 14));
+      else if (part.shape === "circle" && part.color === "blue") addLabel(parent, "Blue circle \u25cf", pos.clone().setY(pos.y + 14));
+      else addLabel(parent, "Part", pos.clone().setY(pos.y + 14));
+    }
+    addPart(state.part);
+    var q = state.queue || [];
+    for (i = 0; i < q.length; i++) {
+      var extra = q[i];
+      if (!extra) continue;
+      var ghost = {
+        base: extra.base, r: extra.r + 10 + i * 6, y: extra.hh, hw: extra.hw, hh: extra.hh,
+        shape: extra.shape, color: extra.color, inBin: false
+      };
+      addPart(ghost);
+    }
+    var done = state.binned || [];
+    for (i = 0; i < done.length; i++) addPart(done[i]);
+  }
+
+  function mount(canvas) {
+    if (!canvas) return null;
+    var id = canvas.id || "view";
+    if (!views[id]) views[id] = create(canvas);
+    return views[id];
+  }
+
+  root.PINCHY_VIEW = {
+    mount: mount,
+    frame: function (canvas, state, level, opts) {
+      var view = mount(canvas);
+      if (!view || view.failed) return false;
+      view.render(state, level, opts || {});
+      return true;
+    }
+  };
+})(typeof window !== "undefined" ? window : this);
