@@ -2837,4 +2837,56 @@ html body #sheet.menu-fit .ggrid > .gnote[data-help-keys="1"] {
   }
 }
 
+/* 2.5.543: at 412 the Goals chip overlapped Save, and Settings was cut off at the top. */
+@media (max-width: 520px) {
+  html body header.top {
+    top: 0 !important;
+  }
+  html[data-kb-bar]:not(.kb-framed) body header.top,
+  html body:has(.kb-bar) header.top,
+  html body:has(.tw-app-bar) header.top {
+    top: var(--kb-h, 48px) !important;
+  }
+  html body #goals-hud {
+    top: calc(var(--top-h, 60px) + 12px) !important;
+  }
+  html[data-kb-bar]:not(.kb-framed) body #goals-hud,
+  html body:has(.kb-bar) #goals-hud,
+  html body:has(.tw-app-bar) #goals-hud {
+    top: calc(var(--kb-h, 48px) + var(--top-h, 60px) + 12px) !important;
+  }
+  html body:has(#sheet[data-panel="settings"]:not([hidden])) #sheet {
+    top: calc(var(--top-h, 60px) + 8px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+  }
+  html[data-kb-bar]:not(.kb-framed) body:has(#sheet[data-panel="settings"]:not([hidden])) #sheet,
+  html body:has(.kb-bar):has(#sheet[data-panel="settings"]:not([hidden])) #sheet,
+  html body:has(.tw-app-bar):has(#sheet[data-panel="settings"]:not([hidden])) #sheet {
+    top: calc(var(--kb-h, 48px) + var(--top-h, 60px) + 8px) !important;
+  }
+  html body #sheet.menu-fit[data-panel="settings"] .sheet-bar {
+    flex: 0 0 auto !important;
+    position: relative !important;
+  }
+  html body #sheet.menu-fit[data-panel="settings"] #sheet-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  html body #tex-auto-hint {
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+}
+
 
