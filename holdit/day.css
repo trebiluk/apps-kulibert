@@ -1,0 +1,145 @@
+/* HI 1.1.24 — Challenge of the Day. Dream navy, one hard shadow, no truck. */
+body.hi-day {
+  background: #06122b;
+}
+body.hi-day .shop:not(.shop-editor) {
+  background: #06122b !important;
+  background-image: none !important;
+  color: #eaf0ff;
+}
+body.hi-day .shop:not(.shop-editor) > .mx-auto {
+  display: none !important;
+}
+body.hi-day .hi-menu-bar {
+  background: transparent !important;
+}
+
+.hi-day {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  color: #eaf0ff;
+  font-family: Archivo, "Arial Black", "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", sans-serif;
+}
+.hi-day-card {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: center;
+  background: #2a2470;
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 8px 8px 0 #030a1c;
+}
+.hi-day-kicker {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #afc0ea;
+}
+.hi-day-goal {
+  margin: 8px 0 0;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: #eaf0ff;
+}
+.hi-day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+.hi-day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #142b66;
+  color: #eaf0ff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.hi-day-chip svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.hi-day-best {
+  margin: 0;
+  font-size: 18px;
+  color: #eaf0ff;
+}
+.hi-day-best strong {
+  font-weight: 900;
+}
+.hi-day-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 72px;
+  margin-top: 16px;
+  padding: 0 40px;
+  border: 0;
+  border-radius: 16px;
+  background: #e85820;
+  color: #06122b;
+  font: 900 30px/1 Archivo, "Arial Black", "Noto Sans", "Noto Sans Arabic", sans-serif;
+  box-shadow: 0 6px 0 #8a2f0c;
+  cursor: pointer;
+}
+.hi-day-art {
+  width: 100%;
+  height: auto;
+}
+.hi-day-stars {
+  font-size: 28px;
+  letter-spacing: 0.2em;
+  color: #eaf0ff;
+}
+.hi-day-stars span {
+  display: inline-block;
+  opacity: 0.35;
+}
+.hi-day-stars span.is-on {
+  opacity: 0;
+  animation: hi-day-star 0.35s ease forwards;
+}
+.hi-day-stars span.is-on:nth-child(2) { animation-delay: 0.18s; }
+.hi-day-stars span.is-on:nth-child(3) { animation-delay: 0.36s; }
+@keyframes hi-day-star {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hi-day-stars span.is-on {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+.hi-day :focus-visible {
+  outline: 3px solid #eaf0ff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .hi-day { padding: 12px; gap: 12px; }
+  .hi-day-card {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .hi-day-goal { font-size: 28px; }
+  .hi-day-play {
+    width: 100%;
+    font-size: 24px;
+    padding: 0 16px;
+  }
+}
