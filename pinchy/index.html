@@ -60,7 +60,7 @@
     background: var(--blue);
     font-weight: 750;
   }
-  button.tool, button.block, button.action, button.level, #play {
+  button.tool, button.block, button.action, button.level, button.lang, #play {
     min-width: 48px;
     min-height: 48px;
     border: 2px solid var(--line);
@@ -102,6 +102,9 @@
   }
   #title-arm { height: 280px; }
   #view { height: 380px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; }
+  button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
+  #draft-note { margin: 0 8px 8px; font-weight: 750; }
   .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
   button.level {
     display: flex;
@@ -175,6 +178,7 @@
     list-style: none;
     min-height: 56px;
     align-items: center;
+    direction: ltr;
   }
   .chip {
     display: flex;
@@ -232,6 +236,8 @@
   <span class="ver" id="app-version">1.0.0</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
+<nav class="langs" id="langs" aria-label="Language"></nav>
+<p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
   <p>Version 1.0.0</p>
@@ -311,6 +317,8 @@ var ICONS = {
   "shoulder-down": svg('<circle cx="6" cy="6" r="1.6" ' + ST + '/><path d="M8 8 L15 17" ' + ST + '/><path d="M11 17 h5 v-5" ' + ST + '/>'),
   "elbow-up": svg('<path d="M3 17 H10 L17 8" ' + ST + '/><path d="M13 8 h5 v5" ' + ST + '/>'),
   "elbow-down": svg('<path d="M3 7 H10 L17 16" ' + ST + '/><path d="M13 16 h5 v-5" ' + ST + '/>'),
+  "wrist-up": svg('<circle cx="7" cy="17" r="2" ' + ST + '/><path d="M9 15 L16 8" ' + ST + '/><path d="M12 8 h6 v6" ' + ST + '/>'),
+  "wrist-down": svg('<circle cx="7" cy="7" r="2" ' + ST + '/><path d="M9 9 L16 16" ' + ST + '/><path d="M12 16 h6 v-6" ' + ST + '/>'),
   "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
   "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
   "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
@@ -321,9 +329,9 @@ var ICONS = {
 };
 var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot" };
 
+var lang = "en";
 var labelOf = function (id) {
-  var block = PINCHY.blockById(id);
-  return block ? block.label : id;
+  return PINCHY.labelFor(id, lang);
 };
 var angleText = function (id) {
   var block = PINCHY.blockById(id);
@@ -399,6 +407,11 @@ var renderProgram = function (now, stop) {
     if (holder.firstChild) li.appendChild(holder.firstChild);
     var name = document.createElement("span");
     name.textContent = labelOf(list[i]);
+    if (String(list[i]).indexOf("wrist") === 0) {
+      var wristMeta = PINCHY.langMeta(lang);
+      name.lang = lang === "fa-AF" ? "fa" : lang;
+      name.dir = wristMeta.rtl ? "rtl" : "ltr";
+    }
     li.appendChild(name);
     var deg = document.createElement("span");
     deg.textContent = angleText(list[i]);
@@ -424,6 +437,45 @@ var setBusy = function (busy) {
   document.getElementById("retry").disabled = false;
 };
 
+var renderPalette = function () {
+  var palette = document.getElementById("palette");
+  var ids = PINCHY.blocksFor(PINCHY.LEVELS[session.level]);
+  palette.replaceChildren();
+  if (focusIndex >= ids.length) focusIndex = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    var b = makeButton("block", id, PINCHY.labelFor(id, lang), "");
+    b.dataset.cmd = id;
+    b.tabIndex = i === focusIndex ? 0 : -1;
+    if (id.indexOf("wrist") === 0) {
+      var meta = PINCHY.langMeta(lang);
+      b.lang = lang === "fa-AF" ? "fa" : lang;
+      b.dir = meta.rtl ? "rtl" : "ltr";
+      if (meta.draft) b.dataset.draft = "true";
+    }
+    b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
+    b.addEventListener("focus", function () {
+      var nodes = document.querySelectorAll("#palette button.block");
+      for (var n = 0; n < nodes.length; n++) if (nodes[n] === this) focusIndex = n;
+    });
+    palette.appendChild(b);
+  }
+};
+var applyLang = function (code) {
+  var meta = PINCHY.langMeta(code);
+  lang = meta.id === code ? code : "en";
+  meta = PINCHY.langMeta(lang);
+  document.documentElement.lang = lang === "fa-AF" ? "fa" : lang;
+  document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
+  var note = document.getElementById("draft-note");
+  note.hidden = !meta.draft;
+  var buttons = document.querySelectorAll("#langs button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", buttons[i].dataset.lang === lang ? "true" : "false");
+  }
+  renderPalette();
+  renderProgram(-1, -1);
+};
 var addBlock = function (id) {
   if (playing) return;
   var list = session.programs[session.level];
@@ -585,11 +637,11 @@ var drawArm = function (ctx, P, state, opts) {
   var cmd = opts.cmd || "";
   joint(0, layout.sy, cmd.indexOf("shoulder") === 0);
   joint(p.ex, p.ey, cmd.indexOf("elbow") === 0);
-  joint(p.wx, p.wy, false);
+  joint(p.wx, p.wy, cmd.indexOf("wrist") === 0);
   joint(p.gx, p.gy, cmd.indexOf("claw") === 0);
   tag("Shoulder " + Math.round(state.shoulder) + "\u00b0", 0, layout.sy, -78, -6);
   tag("Elbow " + Math.round(state.elbow) + "\u00b0", p.ex, p.ey, -86, -26);
-  tag("Wrist 0\u00b0", p.wx, p.wy, 8, -30);
+  tag("Wrist " + Math.round(state.wrist || 0) + "\u00b0", p.wx, p.wy, 8, -30);
   tag("Claw", p.gx, p.gy, 36, 10);
 };
 
@@ -818,6 +870,7 @@ var blend = function (start, result, f) {
     base: start.base + (result.state.base - start.base) * f,
     shoulder: start.shoulder + (result.state.shoulder - start.shoulder) * f,
     elbow: start.elbow + (result.state.elbow - start.elbow) * f,
+    wrist: (start.wrist || 0) + ((result.state.wrist || 0) - (start.wrist || 0)) * f,
     gap: start.gap + (gap1 - start.gap) * f,
     open: false,
     holding: !!(start.holding || (result.state.holding && f > 0.92)),
@@ -886,7 +939,7 @@ var finishWin = function (blocks, ms) {
   paintStars();
 };
 var finishFail = function (msg, step) {
-  var text = "\u2717 " + PINCHY.crashLine(msg, step);
+  var text = "\u2717 " + PINCHY.crashLine(msg, step, lang);
   setStatus(text, "crash");
   setStepLive(text);
 };
@@ -999,6 +1052,8 @@ var selectLevel = function (index) {
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;
   runT0 = 0;
+  focusIndex = 0;
+  renderPalette();
   renderLevels();
   renderProgram(-1, -1);
   updateMetrics();
@@ -1076,15 +1131,7 @@ var boot = function () {
     nav.appendChild(b);
   });
 
-  var palette = document.getElementById("palette");
-  PINCHY.BLOCKS.forEach(function (block, index) {
-    var b = makeButton("block", block.id, block.label, "");
-    b.dataset.cmd = block.id;
-    b.tabIndex = index === 0 ? 0 : -1;
-    b.addEventListener("click", function () { addBlock(block.id); });
-    b.addEventListener("focus", function () { focusIndex = index; });
-    palette.appendChild(b);
-  });
+  renderPalette();
 
   var actions = document.getElementById("actions");
   var runBtn = makeButton("action", "run", "Run", "R");
@@ -1104,6 +1151,28 @@ var boot = function () {
 
   document.getElementById("play").addEventListener("click", showGame);
 
+  var langNav = document.getElementById("langs");
+  PINCHY.LANGS.forEach(function (item) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lang";
+    b.dataset.lang = item.id;
+    b.lang = item.id === "fa-AF" ? "fa" : item.id;
+    b.dir = item.rtl ? "rtl" : "ltr";
+    b.textContent = item.name;
+    b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
+    b.setAttribute("aria-label", item.draft ? item.name + ". Machine draft." : item.name);
+    if (item.draft) b.dataset.draft = "true";
+    b.addEventListener("click", function () { applyLang(item.id); });
+    langNav.appendChild(b);
+  });
+  var startLang = "en";
+  try {
+    var asked = new URLSearchParams(window.location.search).get("lang");
+    if (asked && PINCHY.langMeta(asked).id === asked) startLang = asked;
+  } catch (err) {}
+  if (startLang !== "en") applyLang(startLang);
+
   window.addEventListener("keydown", function (e) {
     if (document.getElementById("game").hidden) return;
     var key = e.key;
@@ -1111,15 +1180,17 @@ var boot = function () {
       e.preventDefault();
       var buttons = document.querySelectorAll("#palette button.block");
       if (!buttons.length || playing) return;
-      var row = Math.floor(focusIndex / 2);
-      var col = focusIndex % 2;
+      var cols = 2;
+      var maxRow = Math.max(0, Math.ceil(buttons.length / cols) - 1);
+      var row = Math.floor(focusIndex / cols);
+      var col = focusIndex % cols;
       if (key === "ArrowUp") row -= 1;
       if (key === "ArrowDown") row += 1;
       if (key === "ArrowLeft") col -= 1;
       if (key === "ArrowRight") col += 1;
-      row = Math.max(0, Math.min(3, row));
-      col = Math.max(0, Math.min(1, col));
-      focusIndex = row * 2 + col;
+      row = Math.max(0, Math.min(maxRow, row));
+      col = Math.max(0, Math.min(cols - 1, col));
+      focusIndex = Math.min(buttons.length - 1, row * cols + col);
       buttons[focusIndex].focus();
       return;
     }

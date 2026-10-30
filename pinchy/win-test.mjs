@@ -5,9 +5,8 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const G = require("./game.js");
 
-const ids = G.BLOCKS.map(function (block) { return block.id; });
-
 function findWin(level, cap) {
+  const ids = G.blocksFor(level);
   const start = G.initialState(level);
   const startHit = G.collide(start, level);
   assert.equal(startHit, "", level.id + " start is clear");
@@ -43,6 +42,87 @@ assert.equal(G.starWords(0), "No stars yet.");
 assert.equal(G.starWords(1), "One star.");
 assert.equal(G.starWords(2), "Two stars.");
 assert.equal(G.starWords(3), "Three stars.");
+
+const langs = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
+const wristUp = {
+  en: "Wrist up",
+  uk: "Зап'ястя вгору",
+  ru: "Запястье вверх",
+  es: "Muñeca arriba",
+  ar: "الرسغ لأعلى",
+  "fa-AF": "مچ بالا",
+  rw: "Ikiganza hejuru",
+  ti: "ሰለፍ ናብ ላዕሊ"
+};
+const wristDown = {
+  en: "Wrist down",
+  uk: "Зап'ястя вниз",
+  ru: "Запястье вниз",
+  es: "Muñeca abajo",
+  ar: "الرسغ لأسفل",
+  "fa-AF": "مچ پایین",
+  rw: "Ikiganza hasi",
+  ti: "ሰለፍ ናብ ታሕቲ"
+};
+const wristPart = {
+  en: "wrist",
+  uk: "зап'ястя",
+  ru: "запястье",
+  es: "muñeca",
+  ar: "الرسغ",
+  "fa-AF": "مچ",
+  rw: "ikiganza",
+  ti: "ሰለፍ"
+};
+assert.deepEqual(G.LANGS.map(function (item) { return item.id; }), langs);
+for (let i = 0; i < langs.length; i++) {
+  const code = langs[i];
+  const meta = G.langMeta(code);
+  assert.equal(meta.up, wristUp[code], code + " wrist up");
+  assert.equal(meta.down, wristDown[code], code + " wrist down");
+  assert.equal(meta.part, wristPart[code], code + " wrist part");
+  assert.equal(G.labelFor("wrist-up", code), wristUp[code]);
+  assert.equal(G.labelFor("wrist-down", code), wristDown[code]);
+}
+assert.equal(G.langMeta("fa-AF").draft, true);
+assert.equal(G.langMeta("rw").draft, true);
+assert.equal(G.langMeta("ti").draft, true);
+assert.equal(G.langMeta("ar").draft, false);
+assert.equal(G.langMeta("en").draft, false);
+assert.equal(G.langMeta("uk").draft, false);
+assert.equal(G.langMeta("ar").rtl, true);
+assert.equal(G.langMeta("fa-AF").rtl, true);
+assert.equal(G.langMeta("en").rtl, false);
+assert.equal(G.langMeta("es").rtl, false);
+assert.deepEqual(G.blocksFor(G.LEVELS[0]), ["base-left", "base-right", "shoulder-up", "shoulder-down", "elbow-up", "elbow-down", "claw-open", "claw-close"]);
+
+const flat = { base: 0, shoulder: 15, elbow: -90, wrist: 0, open: true, gap: 34, holding: false, part: null };
+const bent = { base: 0, shoulder: 15, elbow: -90, wrist: 15, open: true, gap: 34, holding: false, part: null };
+const flatPose = G.pose(flat);
+const bentPose = G.pose(bent);
+assert.ok(Math.abs(flatPose.cx - 134.08417942600929) < 1e-9);
+assert.notEqual(bentPose.gy, flatPose.gy);
+const lifted = G.applyCommand(flat, "wrist-up", G.LEVELS[0]);
+assert.equal(lifted.ok, true);
+assert.equal(lifted.state.wrist, 15);
+const clearWrist = {
+  base: 0, shoulder: 0, elbow: -60, wrist: 60,
+  open: true, gap: 34, holding: false, part: G.LEVELS[1].part
+};
+assert.equal(G.collide(clearWrist, G.LEVELS[1]), "");
+const wristHit = G.applyCommand(clearWrist, "elbow-down", G.LEVELS[1]);
+assert.equal(wristHit.ok, false);
+assert.match(wristHit.msg, /wrist hit/);
+const enLine = G.crashLine(wristHit.msg, 2, "en");
+assert.match(enLine, /Wrist/);
+assert.match(enLine, /at step 2/);
+for (let i = 0; i < langs.length; i++) {
+  const code = langs[i];
+  const line = G.crashLine(wristHit.msg, 4, code);
+  if (code === "en") assert.match(line, /Wrist/);
+  else assert.ok(line.indexOf(wristPart[code]) !== -1, code + " crash names the wrist");
+  assert.match(line, /at step 4/);
+}
 
 const l1 = G.LEVELS[0];
 const l1win = findWin(l1, 4);
@@ -90,6 +170,12 @@ assert.match(page, /#06122B/);
 assert.match(page, /#E85820/);
 assert.match(page, /1\.0\.0/);
 assert.match(page, /What's new/);
+assert.match(page, /id="langs"/);
+assert.match(page, /Machine draft/);
+assert.match(page, /id="draft-note"/);
+assert.match(page, /labelFor/);
+assert.doesNotMatch(page, /localStorage|sessionStorage|indexedDB/);
+assert.doesNotMatch(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8"), /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /prefers-reduced-motion/);
 assert.match(page, /min-height:\s*48px/);
 assert.match(page, /outline:\s*3px solid/);

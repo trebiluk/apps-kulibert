@@ -20,6 +20,20 @@
   var SH_MAX = 120;
   var EL_MIN = -120;
   var EL_MAX = 105;
+  var WR_MIN = -75;
+  var WR_MAX = 75;
+
+  // fa-AF, rw, and ti are machine drafts (Curriculum Bot, Oct 30). ar and fa-AF are RTL.
+  var LANGS = [
+    { id: "en", name: "English", draft: false, rtl: false, up: "Wrist up", down: "Wrist down", part: "wrist" },
+    { id: "uk", name: "Українська", draft: false, rtl: false, up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя" },
+    { id: "ru", name: "Русский", draft: false, rtl: false, up: "Запястье вверх", down: "Запястье вниз", part: "запястье" },
+    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca" },
+    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ" },
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ" },
+    { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza" },
+    { id: "ti", name: "ትግርኛ", draft: true, rtl: false, up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ" }
+  ];
 
   var COLS = [["A", -30], ["B", 0], ["C", 30]];
   var ROWS = [["1", 96], ["2", 128], ["3", 162]];
@@ -33,8 +47,15 @@
     { id: "shoulder-down", joint: "shoulder", delta: -15, label: "Shoulder down" },
     { id: "elbow-up", joint: "elbow", delta: 15, label: "Elbow up" },
     { id: "elbow-down", joint: "elbow", delta: -15, label: "Elbow down" },
+    { id: "wrist-up", joint: "wrist", delta: 15, label: "Wrist up" },
+    { id: "wrist-down", joint: "wrist", delta: -15, label: "Wrist down" },
     { id: "claw-open", joint: "claw", angle: GAP_OPEN, label: "Open claw" },
     { id: "claw-close", joint: "claw", angle: GAP_CLOSED, label: "Close claw" }
+  ];
+
+  var CORE_BLOCKS = [
+    "base-left", "base-right", "shoulder-up", "shoulder-down",
+    "elbow-up", "elbow-down", "claw-open", "claw-close"
   ];
 
   var JOINTS = {
@@ -43,12 +64,32 @@
     "shoulder-up": ["shoulder", 15],
     "shoulder-down": ["shoulder", -15],
     "elbow-up": ["elbow", 15],
-    "elbow-down": ["elbow", -15]
+    "elbow-down": ["elbow", -15],
+    "wrist-up": ["wrist", 15],
+    "wrist-down": ["wrist", -15]
   };
 
   function blockById(id) {
     for (var i = 0; i < BLOCKS.length; i++) if (BLOCKS[i].id === id) return BLOCKS[i];
     return null;
+  }
+
+  function langMeta(code) {
+    for (var i = 0; i < LANGS.length; i++) if (LANGS[i].id === code) return LANGS[i];
+    return LANGS[0];
+  }
+
+  function labelFor(id, lang) {
+    var meta = langMeta(lang || "en");
+    if (id === "wrist-up") return meta.up;
+    if (id === "wrist-down") return meta.down;
+    var block = blockById(id);
+    return block ? block.label : id;
+  }
+
+  function blocksFor(level) {
+    if (level && level.blocks && level.blocks.length) return level.blocks.slice();
+    return CORE_BLOCKS.slice();
   }
 
   function copyPart(part) {
@@ -64,6 +105,7 @@
       base: state.base,
       shoulder: state.shoulder,
       elbow: state.elbow,
+      wrist: state.wrist || 0,
       open: !!state.open,
       gap: state.gap,
       holding: !!state.holding,
@@ -74,15 +116,19 @@
   function pose(state) {
     var sd = state.shoulder;
     var ed = state.elbow;
+    var wd = state.wrist || 0;
     var gap = state.gap == null ? (state.open ? GAP_OPEN : GAP_CLOSED) : state.gap;
     var s = sd * Math.PI / 180;
     var fore = (sd + ed) * Math.PI / 180;
+    var hand = (sd + ed + wd) * Math.PI / 180;
     var ex = UPPER * Math.cos(s);
     var ey = SY + UPPER * Math.sin(s);
-    var px = Math.cos(fore);
-    var py = Math.sin(fore);
-    var wx = ex + FORE * px;
-    var wy = ey + FORE * py;
+    var fx = Math.cos(fore);
+    var fy = Math.sin(fore);
+    var px = Math.cos(hand);
+    var py = Math.sin(hand);
+    var wx = ex + FORE * fx;
+    var wy = ey + FORE * fy;
     var gx = wx + WRIST * px;
     var gy = wy + WRIST * py;
     var nx = -py;
@@ -252,9 +298,11 @@
       nBase = state.base;
       nSh = state.shoulder;
       nEl = state.elbow;
+      var nWr = state.wrist || 0;
       if (spec[0] === "base") nBase += spec[1];
       if (spec[0] === "shoulder") nSh += spec[1];
       if (spec[0] === "elbow") nEl += spec[1];
+      if (spec[0] === "wrist") nWr += spec[1];
       if (nBase > BASE_MAX || nBase < BASE_MIN) {
         return { ok: false, msg: limitMessage("base", nBase > BASE_MAX ? BASE_MAX : BASE_MIN), t: 0, state: state };
       }
@@ -264,13 +312,17 @@
       if (nEl > EL_MAX || nEl < EL_MIN) {
         return { ok: false, msg: limitMessage("elbow", nEl > EL_MAX ? EL_MAX : EL_MIN), t: 0, state: state };
       }
+      if (nWr > WR_MAX || nWr < WR_MIN) {
+        return { ok: false, msg: limitMessage("wrist", nWr > WR_MAX ? WR_MAX : WR_MIN), t: 0, state: state };
+      }
       for (i = 1; i <= 6; i++) {
         t = i / 6;
         base = state.base + (nBase - state.base) * t;
         sd = state.shoulder + (nSh - state.shoulder) * t;
         ed = state.elbow + (nEl - state.elbow) * t;
+        var wr = (state.wrist || 0) + (nWr - (state.wrist || 0)) * t;
         trial = {
-          base: base, shoulder: sd, elbow: ed, open: state.open, gap: state.gap,
+          base: base, shoulder: sd, elbow: ed, wrist: wr, open: state.open, gap: state.gap,
           holding: state.holding, part: state.holding ? copyPart(state.part) : state.part
         };
         if (state.holding) trial.part = withPartAtClaw(trial, pose(trial));
@@ -278,7 +330,7 @@
         if (hit) return { ok: false, msg: hit, t: t, state: trial };
       }
       trial = {
-        base: nBase, shoulder: nSh, elbow: nEl, open: state.open, gap: state.gap,
+        base: nBase, shoulder: nSh, elbow: nEl, wrist: nWr, open: state.open, gap: state.gap,
         holding: state.holding, part: state.holding ? copyPart(state.part) : state.part
       };
       if (state.holding) trial.part = withPartAtClaw(trial, pose(trial));
@@ -289,7 +341,7 @@
         return {
           ok: true, t: 1,
           state: {
-            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
             open: false, gap: GAP_CLOSED, holding: state.holding, part: copyPart(state.part)
           }
         };
@@ -297,7 +349,7 @@
       p = pose(state);
       if (contains(p, state)) {
         var held = {
-          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
           open: false, gap: GAP_CLOSED, holding: true, part: copyPart(state.part)
         };
         held.part = withPartAtClaw(held, pose(held));
@@ -307,7 +359,7 @@
         t = i / 4;
         gap = GAP_OPEN + (GAP_CLOSED - GAP_OPEN) * t;
         trial = {
-          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
           open: gap > 22, gap: gap, holding: false, part: state.part
         };
         hit = collide(trial, level);
@@ -316,7 +368,7 @@
       return {
         ok: true, t: 1,
         state: {
-          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
           open: false, gap: GAP_CLOSED, holding: false, part: copyPart(state.part)
         }
       };
@@ -326,7 +378,7 @@
         return {
           ok: true, t: 1,
           state: {
-            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
             open: true, gap: GAP_OPEN, holding: false, part: copyPart(state.part)
           }
         };
@@ -335,7 +387,7 @@
         t = i / 4;
         gap = GAP_CLOSED + (GAP_OPEN - GAP_CLOSED) * t;
         trial = {
-          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
           open: gap > 22, gap: gap, holding: true, part: copyPart(state.part)
         };
         trial.part = withPartAtClaw(trial, pose(trial));
@@ -343,14 +395,14 @@
         if (hit) return { ok: false, msg: hit, t: t, state: trial };
       }
       p = pose({
-        base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+        base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
         open: true, gap: GAP_OPEN, holding: false, part: state.part
       });
       if (overBin(p, state.base, level)) {
         return {
           ok: true, win: true, t: 1,
           state: {
-            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
             open: true, gap: GAP_OPEN, holding: false,
             part: {
               base: state.base, r: p.cx, y: state.part.hh, hw: state.part.hw, hh: state.part.hh,
@@ -362,7 +414,7 @@
       return {
         ok: false, miss: true, t: 1, msg: "part missed the bin",
         state: {
-          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
           open: true, gap: GAP_OPEN, holding: false,
           part: {
             base: state.base, r: p.cx, y: state.part.hh, hw: state.part.hw, hh: state.part.hh,
@@ -385,7 +437,7 @@
 
   function emptyArm(base, shoulder, elbow) {
     return {
-      base: base, shoulder: shoulder, elbow: elbow,
+      base: base, shoulder: shoulder, elbow: elbow, wrist: 0,
       open: true, gap: GAP_OPEN, holding: false, part: null
     };
   }
@@ -405,7 +457,8 @@
       timePar: 2500,
       part: null,
       bin: null,
-      spot: ""
+      spot: "",
+      blocks: CORE_BLOCKS.slice()
     };
     var l2 = {
       id: "L2",
@@ -418,7 +471,8 @@
       timePar: 9000,
       part: part,
       bin: { base: 30, r: gp.cx, half: 36, h: 22 },
-      spot: ""
+      spot: "",
+      blocks: CORE_BLOCKS.slice()
     };
     var l3 = {
       id: "L3",
@@ -431,7 +485,8 @@
       timePar: 6500,
       part: null,
       bin: null,
-      spot: "A2"
+      spot: "A2",
+      blocks: CORE_BLOCKS.slice()
     };
     return [l1, l2, l3];
   }
@@ -443,6 +498,7 @@
       base: level.start.base,
       shoulder: level.start.shoulder,
       elbow: level.start.elbow,
+      wrist: level.start.wrist || 0,
       open: true,
       gap: GAP_OPEN,
       holding: false,
@@ -484,11 +540,14 @@
     return out;
   }
 
-  function crashLine(msg, step) {
-    var line = msg.charAt(0).toUpperCase() + msg.slice(1);
-    if (line.charAt(line.length - 1) !== ".") line += ".";
-    if (step > 0) line = line.slice(0, -1) + " at step " + step + ".";
-    return line;
+  function crashLine(msg, step, lang) {
+    var code = lang && langMeta(lang).id === lang ? lang : "en";
+    var text = String(msg);
+    if (code === "en") text = text.charAt(0).toUpperCase() + text.slice(1);
+    else text = text.replace(/\bwrist\b/gi, langMeta(code).part);
+    if (text.charAt(text.length - 1) !== ".") text += ".";
+    if (step > 0) text = text.slice(0, -1) + " at step " + step + ".";
+    return text;
   }
 
   function starsFor(win, blocks, ms, level) {
@@ -509,7 +568,8 @@
   function jointReadout(state) {
     var claw = state.open ? "open" : "closed";
     return "Base " + Math.round(state.base) + " degrees. Shoulder " + Math.round(state.shoulder) +
-      " degrees. Elbow " + Math.round(state.elbow) + " degrees. Wrist 0 degrees. Claw " + claw + ".";
+      " degrees. Elbow " + Math.round(state.elbow) + " degrees. Wrist " + Math.round(state.wrist || 0) +
+      " degrees. Claw " + claw + ".";
   }
 
   function stateKey(state) {
@@ -522,7 +582,7 @@
       ].join(":");
     }
     return [
-      state.base, state.shoulder, state.elbow, state.open ? 1 : 0, state.holding ? 1 : 0, p
+      state.base, state.shoulder, state.elbow, state.wrist || 0, state.open ? 1 : 0, state.holding ? 1 : 0, p
     ].join(",");
   }
 
@@ -533,13 +593,18 @@
       gapOpen: GAP_OPEN, gapClosed: GAP_CLOSED, thick: THICK,
       baseMin: BASE_MIN, baseMax: BASE_MAX,
       shoulderMin: SH_MIN, shoulderMax: SH_MAX,
-      elbowMin: EL_MIN, elbowMax: EL_MAX
+      elbowMin: EL_MIN, elbowMax: EL_MAX,
+      wristMin: WR_MIN, wristMax: WR_MAX
     },
+    LANGS: LANGS,
     COLS: COLS,
     ROWS: ROWS,
     BLOCKS: BLOCKS,
     LEVELS: LEVELS,
     blockById: blockById,
+    blocksFor: blocksFor,
+    langMeta: langMeta,
+    labelFor: labelFor,
     pose: pose,
     collide: collide,
     contains: contains,
