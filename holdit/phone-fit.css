@@ -395,3 +395,99 @@ html[lang="uk"] .shop ol.bg-card > li.relative > .opacity-50::after { content: "
 html[lang="ru"] .shop ol.bg-card > li.relative > .opacity-50::after { content: "\1F512  Закрыто"; }
 html[lang="rw"] .shop ol.bg-card > li.relative > .opacity-50::after { content: "\1F512  Bifunze"; }
 html[lang="ti"] .shop ol.bg-card > li.relative > .opacity-50::after { content: "\1F512  ተዓጽዩ"; }
+
+/* HI 1.1.23 — Member report. Measured on 1.1.22 before this block:
+   overlay alpha 0.80, table 11px on the wood panel, headers #5c4330
+   on #c99655 = 3.47:1, and a hovered row uses bg-secondary #3a342c
+   under #24180f text (1.41:1). */
+:has(> .lp-dialog[class*="56rem"]) > .lp-overlay,
+body:has(.lp-dialog[class*="56rem"]) .lp-overlay {
+  background-color: rgba(10, 14, 18, 0.92) !important;
+  background-image: none !important;
+}
+body:has(.lp-dialog[class*="56rem"]) .hi-studio,
+body:has(.lp-dialog[class*="56rem"]) .hi-plan {
+  display: none !important;
+}
+.lp-dialog[class*="56rem"] {
+  background-color: #f7f4ee !important;
+  background-image: none !important;
+  color: #1a120c !important;
+  --color-foreground: #1a120c;
+  --color-muted-foreground: #3a2a1c;
+  --color-card-foreground: #1a120c;
+  --color-card: #f7f4ee;
+  --color-border: #8a7560;
+  --color-primary: #0b5c63;
+  --color-tension: #0b5c63;
+  --color-compression: #8d2f22;
+  --color-destructive: #8a2418;
+  width: min(96vw, 56rem) !important;
+  max-width: calc(100vw - 16px) !important;
+  overflow: hidden !important;
+}
+.lp-dialog[class*="56rem"] .text-muted-foreground,
+.lp-dialog[class*="56rem"] h2,
+.lp-dialog[class*="56rem"] p {
+  color: #1a120c !important;
+}
+.lp-dialog[class*="56rem"] .overflow-auto {
+  overflow: auto !important;
+  max-width: 100%;
+}
+.lp-dialog[class*="56rem"] table {
+  font-size: 14px !important;
+  background-color: #f7f4ee;
+  color: #1a120c;
+}
+.lp-dialog[class*="56rem"] thead,
+.lp-dialog[class*="56rem"] thead tr,
+.lp-dialog[class*="56rem"] th {
+  background-color: #efe8dc !important;
+  background-image: none !important;
+  color: #1a120c !important;
+}
+.lp-dialog[class*="56rem"] th,
+.lp-dialog[class*="56rem"] td,
+.lp-dialog[class*="56rem"] th button {
+  font-size: 14px !important;
+  color: #1a120c !important;
+}
+.lp-dialog[class*="56rem"] .text-tension { color: #0b5c63 !important; }
+.lp-dialog[class*="56rem"] .text-compression { color: #8d2f22 !important; }
+.lp-dialog[class*="56rem"] .text-destructive { color: #8a2418 !important; }
+.lp-dialog[class*="56rem"] tbody tr:hover,
+.lp-dialog[class*="56rem"] tbody tr:active {
+  background-color: #fff6df !important;
+  background-image: none !important;
+  color: #1a120c !important;
+  font-weight: 700;
+}
+.lp-dialog[class*="56rem"] tbody tr:hover td,
+.lp-dialog[class*="56rem"] tbody tr:active td {
+  font-weight: 700;
+  color: #1a120c !important;
+}
+.lp-dialog[class*="56rem"] tbody tr:hover .text-tension,
+.lp-dialog[class*="56rem"] tbody tr:active .text-tension { color: #0b5c63 !important; }
+.lp-dialog[class*="56rem"] tbody tr:hover .text-compression,
+.lp-dialog[class*="56rem"] tbody tr:active .text-compression { color: #8d2f22 !important; }
+.lp-dialog[class*="56rem"] button:focus-visible,
+.lp-dialog[class*="56rem"] tr:focus-visible {
+  outline: 3px solid #1a120c;
+  outline-offset: 2px;
+}
+html:has(.lp-dialog[class*="56rem"]),
+body:has(.lp-dialog[class*="56rem"]) {
+  overflow-x: hidden !important;
+}
+html[dir="rtl"] .lp-dialog[class*="56rem"] {
+  direction: rtl;
+}
+html[dir="rtl"] .lp-dialog[class*="56rem"] table {
+  direction: rtl;
+}
+html[dir="rtl"] .lp-dialog[class*="56rem"] th,
+html[dir="rtl"] .lp-dialog[class*="56rem"] td {
+  text-align: right !important;
+}
