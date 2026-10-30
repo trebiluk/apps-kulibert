@@ -5956,3 +5956,196 @@ body.mu237.tab-songs #library {
 
 
 
+
+/* MU 2.36.61 — DJ Berty Studio Deck, slice 1: Tap tab = 8 picture pads + one 16-step lane.
+   Tokens only (--text, --muted, --accent, --panel, --border). No glow, no flash. Pressed = sink 2px + thick outline.
+   Reduced motion = state only (outline stays, nothing moves). */
+html body.mu237.tab-tap .tap-pads {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 190px));
+  grid-auto-rows: 130px;
+  gap: 8px;
+  margin: 8px 0;
+  justify-content: start;
+  flex: 0 0 auto;
+}
+html body.mu237.tab-tap .tap-pads .pad {
+  position: relative;
+  box-sizing: border-box;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex: none !important;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--panel) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  border: 3px solid var(--muted);
+  border-color: var(--muted) !important;
+  border-radius: 14px;
+  box-shadow: none;
+  filter: none !important;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  transition: none !important;
+  animation: none !important;
+  touch-action: manipulation;
+}
+html body.mu237.tab-tap .tap-pads .pad .pad-ico { width: 48px; height: 48px; flex: none; }
+html body.mu237.tab-tap .tap-pads .pad .pad-word { display: block; max-width: 100%; padding: 0 4px; overflow-wrap: anywhere; text-align: center; }
+html body.mu237.tab-tap .tap-pads .key-hint {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 8px;
+  display: block;
+  font: 800 14px/1 inherit;
+  color: var(--muted);
+  opacity: 1;
+}
+html body.mu237.tab-tap .tap-pads .pad.sel { border-color: var(--text) !important; border-bottom-width: 10px !important; }
+html body.mu237.tab-tap .tap-pads .pad.guide { outline: 3px solid var(--accent); outline-offset: 2px; }
+html body.mu237.tab-tap .tap-pads .pad.lit,
+html body.mu237.tab-tap .tap-pads .pad:active {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--text) !important;
+  outline: 5px solid var(--text) !important;
+  outline-offset: -8px !important;
+  transform: translateY(2px);
+}
+html body.mu237.tab-tap .tap-pads .pad:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+
+html body.mu237.tab-tap .tap-strip {
+  display: block;
+  direction: ltr;
+  margin: 8px 0;
+  max-height: none !important;
+  overflow: visible !important;
+  flex: 0 0 auto;
+}
+.lane-head { display: flex; flex-direction: column; height: 44px; box-sizing: border-box; }
+.lane-name { display: flex; align-items: center; gap: 6px; height: 22px; font-size: 16px; font-weight: 800; color: var(--text); }
+.lane-name svg { width: 20px; height: 20px; flex: none; }
+.lane-track { display: grid; grid-template-columns: repeat(16, 44px); gap: 2px; height: 22px; }
+.lane-mark { display: block; width: 44px; height: 22px; line-height: 22px; text-align: center; font-style: normal; font-size: 16px; color: var(--text); visibility: hidden; }
+.lane-mark.here { visibility: visible; }
+.lane-cells { display: grid; grid-template-columns: repeat(16, 44px); gap: 2px; }
+.lane-cell {
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid var(--muted);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--panel);
+  font: 800 20px/1 inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  touch-action: manipulation;
+}
+.lane-cell.on { background: var(--text); border-color: var(--text); color: var(--panel); }
+.lane-cell.now { outline: 4px solid var(--text); outline-offset: 2px; z-index: 1; }
+.lane-cell:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; z-index: 2; }
+.lane-cell.now:focus-visible { outline-offset: 3px; }
+.tap-strip.is-narrow .lane-track,
+.tap-strip.is-narrow .lane-cells { grid-template-columns: repeat(8, 46px); }
+.tap-strip.is-narrow .lane-mark { width: 46px; }
+.tap-strip.is-narrow .lane-cell { width: 46px; height: 46px; }
+
+@media (max-width: 699px) and (orientation: portrait) {
+  html body.mu237.tab-tap .tap-pads { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: clamp(96px, calc((100dvh - 612px) / 2), 166px); gap: 8px; margin: 6px 0; }
+  html body.mu237.tab-tap .tap-pads .pad { font-size: 15px; gap: 8px; }
+  html body.mu237.tab-tap .tap-pads .pad .pad-ico { width: 38px; height: 38px; }
+  html body.mu237.tab-tap .tap-pads .key-hint { top: 5px; inset-inline-end: 6px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  html body.mu237.tab-tap .tap-pads { grid-template-columns: repeat(4, 92px); grid-auto-rows: 104px; gap: 6px; margin: 0; }
+  html body.mu237.tab-tap .tap-pads .pad { font-size: 15px; gap: 4px; }
+  html body.mu237.tab-tap .tap-pads .pad .pad-ico { width: 34px; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body.mu237.tab-tap .tap-pads .pad.lit,
+  html body.mu237.tab-tap .tap-pads .pad:active { transform: none; }
+}
+html[data-kp-motion="less"] body.mu237.tab-tap .tap-pads .pad.lit,
+html[data-kp-motion="less"] body.mu237.tab-tap .tap-pads .pad:active,
+body.pref-less-motion.tab-tap .tap-pads .pad.lit,
+body.pref-less-motion.tab-tap .tap-pads .pad:active { transform: none; }
+
+/* MU 2.36.61 layout. Order puts the pads and the lane first; hints and extras follow and may scroll. */
+html body.mu237.tab-tap #drums-pane { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior: contain; }
+html body.mu237.tab-tap .tap-write { height: 44px; min-height: 44px; margin: 0; flex: 0 0 auto; }
+html body.mu237.tab-tap .tap-pads { order: 1; }
+html body.mu237.tab-tap #tap-strip { order: 2; }
+html body.mu237.tab-tap #guide-line { order: 3; margin: 4px 0 0; }
+html body.mu237.tab-tap #playhead-read { order: 4; }
+html body.mu237.tab-tap .tap-actions { order: 5; }
+html body.mu237.tab-tap .tap-tiles { order: 6; }
+
+/* Wide and tall (1366x768): pads on the left, actions on the right, the 16-step lane under both. */
+@media (min-width: 1200px) and (min-height: 640px) {
+  html body.mu237.tab-tap #drums-pane {
+    display: grid !important;
+    grid-template-columns: 784px minmax(0, 1fr);
+    grid-auto-rows: auto;
+    column-gap: 16px;
+    row-gap: 6px;
+    align-content: start;
+    flex-direction: row;
+    padding: 0 !important;
+  }
+  html body.mu237.tab-tap #drums-pane > * { min-width: 0; }
+  html body.mu237.tab-tap .tap-write { grid-column: 1 / -1; grid-row: 1; }
+  html body.mu237.tab-tap #count-in { grid-column: 2; grid-row: 2; }
+  html body.mu237.tab-tap .tap-pads { grid-column: 1; grid-row: 2 / span 5; margin: 0; }
+  html body.mu237.tab-tap #guide-line { grid-column: 2; grid-row: 2; margin: 0; align-self: start; }
+  html body.mu237.tab-tap #playhead-read { grid-column: 2; grid-row: 3; align-self: start; }
+  html body.mu237.tab-tap .tap-actions { grid-column: 2; grid-row: 4; align-self: start; }
+  html body.mu237.tab-tap .tap-tiles { grid-column: 2; grid-row: 5; align-self: start; height: auto !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
+  html body.mu237.tab-tap #tap-strip { grid-column: 1 / -1; grid-row: 7; margin: 4px 0 0; }
+}
+
+/* Phone upright: the picture box steps aside (Picture button brings it back) so 8 pads and the whole lane fit. */
+@media (max-width: 699px) and (orientation: portrait) {
+  html body.mu237.tab-tap:not(.stage-on):not(.show) .out { display: none !important; }
+  html body.mu237.tab-tap #stage-toggle { display: inline-flex !important; }
+  html body.mu237.tab-tap #drums-pane { padding: 0 !important; gap: 4px; }
+  html body.mu237.tab-tap .tap-pads { margin: 0; gap: 6px; }
+  html body.mu237.tab-tap #tap-strip { margin: 0; }
+  html body.mu237.tab-tap .lane-head { margin-bottom: 0; }
+}
+
+/* Phone sideways: pads on the left, the lane (two rows of 8) on the right. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body.mu237.tab-tap:not(.stage-on):not(.show) .out { display: none !important; }
+  html body.mu237.tab-tap #drums-pane {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 44px auto auto;
+    column-gap: 10px;
+    row-gap: 4px;
+    align-content: start;
+    flex-direction: row;
+    padding: 4px !important;
+  }
+  html body.mu237.tab-tap .tap-write { grid-column: 1 / -1; grid-row: 1; }
+  html body.mu237.tab-tap .tap-pads { grid-column: 1; grid-row: 2; grid-template-columns: repeat(4, 78px); grid-auto-rows: 100px; gap: 6px; }
+  html body.mu237.tab-tap #tap-strip { grid-column: 2; grid-row: 2; margin: 22px 0 0; }
+  html body.mu237.tab-tap #guide-line { grid-column: 1 / -1; grid-row: 3; margin: 0; }
+  html body.mu237.tab-tap .tap-pads .pad { font-size: 14px; }
+  html body.mu237.tab-tap .tap-pads .pad .pad-ico { width: 30px; height: 30px; }
+  .tap-strip.is-narrow .lane-track,
+  .tap-strip.is-narrow .lane-cells { grid-template-columns: repeat(8, 44px); }
+  .tap-strip.is-narrow .lane-mark { width: 44px; }
+  .tap-strip.is-narrow .lane-cell { width: 44px; height: 44px; }
+}

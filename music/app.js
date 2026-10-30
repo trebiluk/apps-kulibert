@@ -154,6 +154,11 @@
   }
 
   const GRID = 16;
+  // MU 2.36.61: Tap pad keys and the selected lane (declared early: renderDrums can run before the Tap code).
+  const PAD_KEYS = { KeyA: "kick", KeyS: "snare", KeyD: "hat", KeyF: "clap", KeyG: "tom", KeyH: "shaker", KeyJ: "rim", KeyK: "bell" };
+  let laneSel = "kick";
+  let laneNarrow = null;
+  let laneNow = -2;
   function to16(arr) {
     const src = Array.isArray(arr) ? arr : [];
     const out = Array(GRID).fill(false);
@@ -913,6 +918,7 @@
         box.appendChild(row);
       });
     });
+    if (typeof paintTapStrip === "function" && $("tap-strip")) paintTapStrip();
   }
 
   function paintLooks() {
@@ -4285,6 +4291,8 @@
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
+      // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip")) return;
       e.preventDefault();
       $("play-btn").click();
     }
@@ -5086,30 +5094,113 @@
     }
     document.querySelectorAll("#tap-pads .pad").forEach((btn) => btn.classList.toggle("guide", btn.dataset.pad === next));
   }
+  // MU 2.36.61: one 16-step lane for the selected pad. It reads and writes state.drums, so a saved song is unchanged.
+  // Two rows of 8 on a phone upright and on a phone sideways; one row of 16 elsewhere.
+  function laneIsNarrow() { return window.matchMedia("(max-width: 499px), (orientation: landscape) and (max-height: 500px)").matches; }
+  function laneWord(id) { return mu("drum_" + id) || id.charAt(0).toUpperCase() + id.slice(1); }
+  function paintPadSel() {
+    document.querySelectorAll("#tap-pads .pad").forEach((btn) => {
+      const on = btn.dataset.pad === laneSel;
+      btn.classList.toggle("sel", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  function buildLane(strip, narrow) {
+    strip.innerHTML = "";
+    strip.classList.toggle("is-narrow", narrow);
+    const per = narrow ? 8 : GRID;
+    const head = document.createElement("div");
+    head.className = "lane-head";
+    const name = document.createElement("span");
+    name.className = "lane-name";
+    head.appendChild(name);
+    const track = document.createElement("span");
+    track.className = "lane-track";
+    track.setAttribute("aria-hidden", "true");
+    for (let k = 0; k < per; k++) {
+      const m = document.createElement("i");
+      m.className = "lane-mark";
+      m.dataset.slot = String(k);
+      m.textContent = "\u25B6";
+      track.appendChild(m);
+    }
+    head.appendChild(track);
+    strip.appendChild(head);
+    const cells = document.createElement("div");
+    cells.className = "lane-cells";
+    for (let i = 0; i < GRID; i++) {
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "lane-cell";
+      cell.dataset.step = String(i);
+      cell.addEventListener("click", () => {
+        const row = state.drums[laneSel] || (state.drums[laneSel] = []);
+        row[i] = !row[i];
+        state.touched = true;
+        if (row[i]) { arm(); hitSound(laneSel); }
+        keep();
+        renderDrums();
+      });
+      cells.appendChild(cell);
+    }
+    strip.appendChild(cells);
+    laneNarrow = narrow;
+    laneNow = -2;
+  }
   function paintTapStrip() {
     const strip = $("tap-strip");
     if (!strip) return;
-    strip.innerHTML = "";
-    ["kick", "snare", "hat", "clap"].forEach((id) => {
-      const row = document.createElement("div");
-      row.className = "tap-row";
-      for (let i = 0; i < GRID; i++) {
-        const dot = document.createElement("i");
-        dot.className = "tap-dot" + (state.drums[id] && state.drums[id][i] ? " on" : "") + (state.grid === i ? " now" : "");
-        dot.dataset.step = String(i);
-        row.appendChild(dot);
-      }
-      strip.appendChild(row);
+    const narrow = laneIsNarrow();
+    if (laneNarrow !== narrow || !strip.querySelector(".lane-cell")) buildLane(strip, narrow);
+    const word = laneWord(laneSel);
+    const row = state.drums[laneSel] || [];
+    strip.setAttribute("aria-label", (mu("laneFor", { drum: word }) || (word + ": 16 steps")));
+    const name = strip.querySelector(".lane-name");
+    const pad = document.querySelector("#tap-pads .pad[data-pad='" + laneSel + "']");
+    const ico = pad && pad.querySelector("svg");
+    if (name) {
+      name.innerHTML = "";
+      if (ico) name.appendChild(ico.cloneNode(true));
+      const b = document.createElement("b");
+      b.textContent = word;
+      name.appendChild(b);
+    }
+    strip.querySelectorAll(".lane-cell").forEach((cell) => {
+      const i = Number(cell.dataset.step);
+      const on = !!row[i];
+      cell.classList.toggle("on", on);
+      cell.textContent = on ? "\u25CF" : "";
+      cell.setAttribute("aria-pressed", on ? "true" : "false");
+      cell.setAttribute("aria-label", word + ", " + (mu("beatN") || "Beat {n}").replace("{n}", String(i + 1)) + ", " + (on ? (mu("onWord") || "on") : (mu("offWord") || "off")));
     });
+    paintPadSel();
+    paintLaneNow(laneNow, true);
     const read = $("playhead-read");
     if (read) {
-      const word = (mu("beatN") || "Beat {n}").replace("{n}", String((state.grid % 8) + 1));
-      read.textContent = word;
-      read.setAttribute("aria-label", word);
+      const w = (mu("beatN") || "Beat {n}").replace("{n}", String((Math.max(0, state.grid) % 8) + 1));
+      read.textContent = w;
+      read.setAttribute("aria-label", w);
     }
   }
+  function paintLaneNow(step, force) {
+    const strip = $("tap-strip");
+    if (!strip || (step === laneNow && !force)) return;
+    laneNow = step;
+    const narrow = strip.classList.contains("is-narrow");
+    const slot = step < 0 ? -1 : (narrow ? step % 8 : step);
+    strip.querySelectorAll(".lane-mark").forEach((m) => m.classList.toggle("here", Number(m.dataset.slot) === slot));
+    strip.querySelectorAll(".lane-cell").forEach((c) => c.classList.toggle("now", Number(c.dataset.step) === step));
+  }
+  function laneTick() {
+    if (!document.hidden && document.body.classList.contains("tab-tap")) {
+      paintLaneNow(state.playing || tapOn ? Math.max(0, state.grid) : -1);
+    }
+    window.setTimeout(laneTick, 70);
+  }
+  window.addEventListener("resize", () => { if ($("tap-strip") && laneNarrow !== laneIsNarrow()) paintTapStrip(); });
   function hitPad(id, btn) {
     state.touched = true;
+    laneSel = id;
     if (btn) {
       btn.classList.add("lit");
       window.setTimeout(() => btn.classList.remove("lit"), 160);
@@ -5123,8 +5214,8 @@
       state.drums[id][step] = true;
       keep();
       renderDrums();
-      paintTapStrip();
     }
+    paintTapStrip();
     paintGuide();
   }
   function stopTapWrite() {
@@ -5220,7 +5311,12 @@
         e.preventDefault();
         hitPad(btn.dataset.pad, btn);
       });
+      // Space or Enter on a focused pad: pointer taps already played on pointerdown (detail > 0).
+      btn.addEventListener("click", (e) => {
+        if (e.detail === 0) hitPad(btn.dataset.pad, btn);
+      });
     });
+    laneTick();
     if (!window.__djTapKeys) {
       window.__djTapKeys = 1;
       window.addEventListener("keydown", (e) => {
@@ -5228,7 +5324,7 @@
         const tag = e.target && e.target.tagName;
         if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
         if (!document.body.classList.contains("tab-tap")) return;
-        const map = { KeyA: "kick", KeyS: "snare", KeyD: "hat", KeyF: "clap" };
+        const map = PAD_KEYS;
         if (!map[e.code]) return;
         e.preventDefault();
         hitPad(map[e.code], pads.querySelector("[data-pad='" + map[e.code] + "']"));

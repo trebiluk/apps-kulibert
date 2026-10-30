@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.61** · 2026-10-30 · channel **draft PR**
+
+MU 2.36.61 — Tap has 8 big pads and one 16-step lane to build a beat.
+
+DJ Berty 3.0 Studio Deck, slice 1 (the Tap tab). Eight picture pads in a 4 by 2 deck (A S D F / G H J K). Tapping a pad plays it and picks it for the lane. The lane shows all 16 steps for that pad: a step that is on is filled and has a dot. During Play a triangle marker moves along the head row. Saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.60** · 2026-10-26 · channel **live**
 
 MU 2.36.60 — Your click comes back. A record click turns off.

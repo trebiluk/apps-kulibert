@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] studio-deck-1: Tap has 8 big picture pads (A S D F G H J K) and one 16-step lane for the picked pad. A step that is on is filled with a dot, and a triangle moves along the lane during Play. Saved songs are unchanged. MU 2.36.61 (sha in the draft PR).
 - [x] click-restore: A click you turned on comes back. A click that record turned on turns off. MU 2.36.60.
 - [x] score-pen-sideways: On a sideways phone the Score note-length row sits above the player. MU 2.36.58.
 - [x] songs-last-cards: Change the picture and Band can be tapped. They no longer sit under the player. MU 2.36.58.
