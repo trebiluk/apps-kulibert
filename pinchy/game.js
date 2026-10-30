@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var APP_VERSION = "1.1.0";
+  var APP_VERSION = "1.3.1";
   var UPPER = 108;
   var FORE = 78;
   var WRIST = 24;
@@ -28,9 +28,45 @@
     { id: "en", name: "English", draft: false, rtl: false, up: "Wrist up", down: "Wrist down", part: "wrist" },
     { id: "uk", name: "Українська", draft: false, rtl: false, up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя" },
     { id: "ru", name: "Русский", draft: false, rtl: false, up: "Запястье вверх", down: "Запястье вниз", part: "запястье" },
-    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca" },
-    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ" },
-    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ" },
+    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "Base izquierda", "base-right": "Base derecha",
+        "shoulder-up": "Hombro arriba", "shoulder-down": "Hombro abajo",
+        "elbow-up": "Codo arriba", "elbow-down": "Codo abajo",
+        "claw-open": "Abrir pinza", "claw-close": "Cerrar pinza",
+        "repeat-3": "Repetir 3", "repeat-2": "Repetir 2", "end-repeat": "Fin repetir",
+        "if-red-square": "Si rojo \u25a0", "if-blue-circle": "Si azul \u25cf", "end-if": "Fin si"
+      },
+      actions: { run: "Ejecutar", undo: "Deshacer", retry: "Reintentar" },
+      help: "Las flechas eligen un bloque. Enter lo agrega. Q gira la base a la izquierda en 3D. E gira la base a la derecha en 3D. R ejecuta. Z deshace. Reintentar conserva el programa.",
+      helpDebug: "Las flechas eligen un paso. Enter lo cambia con el siguiente. El brazo 3D gira sobre su base al ejecutar. R ejecuta. Z deshace."
+    },
+    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "القاعدة يسار", "base-right": "القاعدة يمين",
+        "shoulder-up": "كتف أعلى", "shoulder-down": "كتف أسفل",
+        "elbow-up": "كوع أعلى", "elbow-down": "كوع أسفل",
+        "claw-open": "افتح المخلب", "claw-close": "أغلق المخلب",
+        "repeat-3": "كرر 3", "repeat-2": "كرر 2", "end-repeat": "نهاية التكرار",
+        "if-red-square": "إذا أحمر \u25a0", "if-blue-circle": "إذا أزرق \u25cf", "end-if": "نهاية الشرط"
+      },
+      actions: { run: "تشغيل", undo: "تراجع", retry: "إعادة" },
+      help: "الأسهم تختار بلوكًا. Enter يضيفه. Q تدير القاعدة يسارًا في 3D. E تدير القاعدة يمينًا في 3D. R يشغّل. Z يتراجع. إعادة المحاولة تبقي البرنامج.",
+      helpDebug: "الأسهم تختار خطوة. Enter تبدلها مع التالية. الذراع 3D يدور على قاعدته عند التشغيل. R يشغّل. Z يتراجع."
+    },
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "پایه چپ", "base-right": "پایه راست",
+        "shoulder-up": "شانه بالا", "shoulder-down": "شانه پایین",
+        "elbow-up": "آرنج بالا", "elbow-down": "آرنج پایین",
+        "claw-open": "چنگال باز", "claw-close": "چنگال بسته",
+        "repeat-3": "تکرار ۳", "repeat-2": "تکرار ۲", "end-repeat": "پایان تکرار",
+        "if-red-square": "اگر سرخ \u25a0", "if-blue-circle": "اگر آبی \u25cf", "end-if": "پایان اگر"
+      },
+      actions: { run: "اجرا", undo: "برگردان", retry: "تلاش دوباره" },
+      help: "تیرها یک بلاک را انتخاب می‌کنند. Enter آن را اضافه می‌کند. Q پایه را در 3D به چپ می‌چرخاند. E پایه را در 3D به راست می‌چرخاند. R اجرا می‌کند. Z برمی‌گرداند. تلاش دوباره برنامه را نگه می‌دارد.",
+      helpDebug: "تیرها یک گام را انتخاب می‌کنند. Enter آن را با گام بعدی عوض می‌کند. بازوی 3D هنگام اجرا روی پایه می‌چرخد. R اجرا می‌کند. Z برمی‌گرداند."
+    },
     { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza" },
     { id: "ti", name: "ትግርኛ", draft: true, rtl: false, up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ" }
   ];
@@ -89,8 +125,28 @@
     var meta = langMeta(lang || "en");
     if (id === "wrist-up") return meta.up;
     if (id === "wrist-down") return meta.down;
+    if (meta.blocks && meta.blocks[id]) return meta.blocks[id];
+    if (id === "base-left" && meta.baseLeft) return meta.baseLeft;
+    if (id === "base-right" && meta.baseRight) return meta.baseRight;
     var block = blockById(id);
     return block ? block.label : id;
+  }
+
+  function actionLabel(id, lang) {
+    var meta = langMeta(lang || "en");
+    if (meta.actions && meta.actions[id]) return meta.actions[id];
+    if (id === "run") return "Run";
+    if (id === "undo") return "Undo";
+    if (id === "retry") return "Reset";
+    return id;
+  }
+
+  function helpFor(lang, debug) {
+    var meta = langMeta(lang || "en");
+    if (debug && meta.helpDebug) return meta.helpDebug;
+    if (!debug && meta.help) return meta.help;
+    if (debug) return "Arrow keys pick a step. Enter swaps it with the next step. The 3D arm turns on its base when the program runs. R runs. Z undoes.";
+    return "Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.";
   }
 
   function blocksFor(level) {
@@ -812,11 +868,12 @@
     return n;
   }
 
-  function starWords(n) {
-    if (n <= 0) return "No stars yet.";
-    if (n === 1) return "One star.";
-    if (n === 2) return "Two stars.";
-    return "Three stars.";
+  function starWords(n, lang) {
+    var en = "Three stars.";
+    if (n <= 0) en = "No stars yet.";
+    else if (n === 1) en = "One star.";
+    else if (n === 2) en = "Two stars.";
+    return uiText(lang, en);
   }
 
   function settleRun(prev, event) {
@@ -860,20 +917,236 @@
     return prev || { kind: "idle", note: "Add a block, then press Run.", swaps: 0, steps: 0 };
   }
 
-  function runView(state) {
+  function runView(state, lang) {
     var kind = state && state.kind ? state.kind : "idle";
     var n = kind === "won" ? (state.n || 0) : 0;
-    var words = starWords(n);
+    var words = starWords(n, lang);
     var note = state && state.note ? state.note : "Add a block, then press Run.";
+    note = uiText(lang, note);
     var status = kind === "won" ? note + " " + words : note;
     return { kind: kind, stars: n, words: words, aria: words, status: status };
   }
 
-  function jointReadout(state) {
-    var claw = state.open ? "open" : "closed";
-    return "Base " + Math.round(state.base) + " degrees. Shoulder " + Math.round(state.shoulder) +
-      " degrees. Elbow " + Math.round(state.elbow) + " degrees. Wrist " + Math.round(state.wrist || 0) +
-      " degrees. Claw " + claw + ".";
+  var UI = {
+    en: {
+      L1: "Move one joint", L2: "Pick and place", L3: "Go to spot", L4: "Sort a pile", L5: "Sensor bins", L6: "Fix the program",
+      Base: "Base", Shoulder: "Shoulder", Elbow: "Elbow", Wrist: "Wrist", Claw: "Claw",
+      Left: "Left", Right: "Right", Down: "Down", Up: "Up", Close: "Close", Open: "Open",
+      Part: "Part", Bin: "Bin", Table: "Table", "Go here": "Go here",
+      "Red square": "Red square", "Blue circle": "Blue circle", Pile: "Pile",
+      "No stars yet.": "No stars yet.", "One star.": "One star.", "Two stars.": "Two stars.", "Three stars.": "Three stars.",
+      "Add a block, then press Run.": "Add a block, then press Run.",
+      "Add blocks, then press Run.": "Add blocks, then press Run.",
+      "Stopped.": "Stopped.", "Undone.": "Undone.", "Running.": "Running.",
+      "Arm reset. Program kept.": "Arm reset. Program kept.",
+      "No blocks yet.": "No blocks yet.",
+      "legend": "The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.",
+      "legendPile": "The 3D arm turns on its base. Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.",
+      "legendSensor": "The 3D arm turns on its base. A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.",
+      "legendDebug": "The 3D arm turns on its base. The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.",
+      "L1-goal": "Move one joint. Shoulder up matches the mark.",
+      "L2-goal": "Pick up the part and place it in the bin.",
+      "L3-goal": "Go to spot A2 on the A1 to C3 grid.",
+      "L4-goal": "Sort the pile into the bin.",
+      "L5-goal": "Send each part to the matching bin.",
+      "L6-goal": "Fix the program with the fewest swaps.",
+      READY: "READY", MOVING: "MOVING", STOPPED: "STOPPED", CRASH: "CRASH",
+      STATUS: "STATUS", JOINTS: "JOINTS", PROGRAM: "PROGRAM", VIEW: "VIEW", CELL: "CELL",
+      Levels: "Levels", Program: "Program", OPEN: "OPEN", SHUT: "SHUT",
+      degrees: "degrees", clawOpen: "open", clawShut: "closed",
+      estop: "\u25A0 E-STOP", clear: "\u2715 Clear",
+      themeDark: "\u25D0 Dark", themeLight: "\u25D0 Light",
+      starRules: "Stars: done, under the block par, under the time par. They stay on this screen only.",
+      blocksLine: "Blocks: {n}", swapsLine: "Swaps: {n}", timeNone: "Time: none yet", timeLine: "Time: {n}",
+      draftBadge: "Machine draft.", Target: "Target",
+      whatsTitle: "What's new", whatsClose: "Close", play: "Play",
+      hubLine: "One Menu button in every app. It opens that app's menu.",
+      programAria: "Program. Enter adds the picked block.",
+      jointsAria: "Joints", actionsAria: "Program controls",
+      v131: "Version 1.3.1",
+      w131a: "The arm is printed links, six servos, and a two-jaw gripper.",
+      w131b: "One Menu button in every app. It opens that app's menu.",
+      v130: "Version 1.3.0",
+      w130a: "Move a robot arm.",
+      w130b: "Paper pendant: warm paper, charcoal ink, and mustard only on the header bars, the arm, and the E-STOP band.",
+      w130c: "One Menu button in every app. It opens that app's menu.",
+      v122: "Version 1.2.2",
+      w122a: "Move a robot arm.",
+      w122b: "The empty gap above the status line is gone.",
+      w122c: "On a short sideways screen the level names stay whole, and the program stays on screen.",
+      w122d: "Spanish, Arabic, and Dari name the blocks and the help. Those words are a machine draft.",
+      v121: "Version 1.2.1",
+      w121a: "Move a robot arm.",
+      w121b: "The 3D scene fills the width, and the labels on it are large enough to read.",
+      w121c: "Base left and Base right have Spanish, Arabic, and Dari names. Those names are a machine draft.",
+      w121d: "Retry clears the stars on the row and in the words.",
+      v120: "Version 1.2.0",
+      w120a: "Move a robot arm.",
+      w120b: "The arm is drawn in 3D from a fixed camera, so the base can turn.",
+      w120c: "Levels 1 to 6 are unchanged. Stars stay on this screen only.",
+      v110: "Version 1.1.0",
+      w110a: "Move a robot arm.",
+      w110b: "Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.",
+      w110c: "Wrist up and Wrist down are in the later levels. A crash names the wrist.",
+      w110d: "Stars mean done, under the block par, and under the time par. They stay on this screen only.",
+      v100: "Version 1.0.0",
+      w100a: "Pinchy McPinchface is the arm game.",
+      w100b: "Level 1 moves one joint. Level 2 picks up a part and places it. Level 3 goes to a spot from A1 to C3.",
+      w100c: "If the arm hits something, the note names the part and the step stays outlined. Retry keeps your program."
+    },
+    es: {
+      READY: "LISTO", MOVING: "MOVIENDO", STOPPED: "PARADO", CRASH: "CHOQUE",
+      STATUS: "ESTADO", JOINTS: "EJES", PROGRAM: "PROGRAMA", VIEW: "VISTA", CELL: "CELDA"
+    },
+    ar: {
+      L1: "حرّك مفصلاً واحداً", L2: "التقط وضع", L3: "اذهب إلى نقطة", L4: "رتّب كومة", L5: "صناديق الحساس", L6: "أصلح البرنامج",
+      Base: "قاعدة", Shoulder: "كتف", Elbow: "كوع", Wrist: "رسغ", Claw: "مخلب",
+      Left: "يسار", Right: "يمين", Down: "أسفل", Up: "أعلى", Close: "أغلق", Open: "افتح",
+      Part: "قطعة", Bin: "صندوق", Table: "طاولة", "Go here": "اذهب هنا",
+      "Red square": "مربع أحمر", "Blue circle": "دائرة زرقاء", Pile: "كومة",
+      "No stars yet.": "لا نجوم بعد.", "One star.": "نجمة واحدة.", "Two stars.": "نجمتان.", "Three stars.": "ثلاث نجوم.",
+      "Add a block, then press Run.": "أضف بلوكاً، ثم اضغط تشغيل.",
+      "Add blocks, then press Run.": "أضف بلوكات، ثم اضغط تشغيل.",
+      "Stopped.": "توقف.", "Undone.": "تم التراجع.", "Running.": "يعمل.",
+      "Arm reset. Program kept.": "أُعيدت الذراع. بقي البرنامج.",
+      "No blocks yet.": "لا بلوكات بعد.",
+      "legend": "الذراع ثلاثي الأبعاد يدور على قاعدته. النقاط من A1 إلى C3 والصناديق على الطاولة. البلوك هو القطعة. العلامة السميكة تعني اذهب هنا.",
+      "legendPile": "الذراع ثلاثي الأبعاد يدور على قاعدته. كرر 3 يشغّل البلوكات حتى نهاية التكرار ثلاث مرات. في الكومة 3 قطع. الرسغ لأعلى والرسغ لأسفل هنا أيضًا.",
+      "legendSensor": "الذراع ثلاثي الأبعاد يدور على قاعدته. المربع الأحمر يذهب إلى الصندوق A. الدائرة الزرقاء تذهب إلى الصندوق B. الكلمة والشكل متطابقان. اللون ليس الإشارة الوحيدة.",
+      "legendDebug": "الذراع ثلاثي الأبعاد يدور على قاعدته. الخطوة المحددة تتبدل مع التالية. تبديلات أقل أفضل. الرسغ لأعلى والرسغ لأسفل في قائمة البلوكات.",
+      "L1-goal": "حرّك مفصلاً واحداً. الكتف للأعلى يطابق العلامة.",
+      "L2-goal": "التقط القطعة وضعها في الصندوق.",
+      "L3-goal": "اذهب إلى النقطة A2 على شبكة A1 إلى C3.",
+      "L4-goal": "استخدم كرر 3 لوضع القطع الثلاث من الكومة في الصندوق.",
+      "L5-goal": "إذا رأى الحساس مربعاً أحمر فضعه في الصندوق A. إذا رأى دائرة زرقاء فضعه في الصندوق B.",
+      "L6-goal": "البرنامج معطوب. بدّل أقل عدد من الخطوات ثم شغّله.",
+      READY: "جاهز", MOVING: "يتحرك", STOPPED: "متوقف", CRASH: "اصطدام",
+      STATUS: "الحالة", JOINTS: "المفاصل", PROGRAM: "البرنامج", VIEW: "العرض", CELL: "خلية",
+      Levels: "المستويات", Program: "البرنامج", OPEN: "مفتوح", SHUT: "مغلق",
+      degrees: "درجة", clawOpen: "مفتوح", clawShut: "مغلق",
+      estop: "\u25A0 إيقاف طارئ", clear: "\u2715 مسح",
+      themeDark: "\u25D0 داكن", themeLight: "\u25D0 فاتح",
+      starRules: "النجوم: تم، تحت حد البلوكات، تحت حد الوقت. تبقى على هذه الشاشة فقط.",
+      blocksLine: "البلوكات: {n}", swapsLine: "التبديلات: {n}", timeNone: "الوقت: لا شيء بعد", timeLine: "الوقت: {n}",
+      draftBadge: "مسودة آلية.", Target: "الهدف",
+      whatsTitle: "ما الجديد", whatsClose: "إغلاق", play: "العب",
+      hubLine: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
+      programAria: "البرنامج. Enter يضيف البلوك المختار.",
+      jointsAria: "المفاصل", actionsAria: "أزرار البرنامج",
+      v131: "الإصدار 1.3.1",
+      w131a: "الذراع وصلات مطبوعة، وستة محركات، ومقبض بفكّين.",
+      w131b: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
+      v130: "الإصدار 1.3.0",
+      w130a: "حرّك ذراع روبوت.",
+      w130b: "قلادة ورقية: ورق دافئ، وحبر فحمي، وخردل فقط على أشرطة الرأس والذراع وشريط الإيقاف.",
+      w130c: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
+      v122: "الإصدار 1.2.2",
+      w122a: "حرّك ذراع روبوت.",
+      w122b: "الفراغ فوق سطر الحالة اختفى.",
+      w122c: "على شاشة جانبية قصيرة تبقى أسماء المستويات كاملة، ويبقى البرنامج على الشاشة.",
+      w122d: "الإسبانية والعربية والدرية تسمّي البلوكات والمساعدة. هذه الكلمات مسودة آلية.",
+      v121: "الإصدار 1.2.1",
+      w121a: "حرّك ذراع روبوت.",
+      w121b: "المشهد ثلاثي الأبعاد يملأ العرض، والكلمات عليه كبيرة بما يكفي للقراءة.",
+      w121c: "القاعدة يسار والقاعدة يمين لهما أسماء بالإسبانية والعربية والدرية. هذه الأسماء مسودة آلية.",
+      w121d: "إعادة المحاولة تمسح النجوم في الصف وفي الكلمات.",
+      v120: "الإصدار 1.2.0",
+      w120a: "حرّك ذراع روبوت.",
+      w120b: "الذراع مرسومة بثلاثة أبعاد من كاميرا ثابتة، فيمكن للقاعدة أن تدور.",
+      w120c: "المستويات من 1 إلى 6 لم تتغير. النجوم تبقى على هذه الشاشة فقط.",
+      v110: "الإصدار 1.1.0",
+      w110a: "حرّك ذراع روبوت.",
+      w110b: "المستوى 4 يرتّب كومة بالتكرار. المستوى 5 يرسل مربعًا أحمر إلى الصندوق A ودائرة زرقاء إلى الصندوق B. المستوى 6 يصلح برنامجًا معطوبًا بالتبديل.",
+      w110c: "الرسغ لأعلى والرسغ لأسفل في المستويات اللاحقة. الاصطدام يسمّي الرسغ.",
+      w110d: "النجوم تعني تم، وتحت حد البلوكات، وتحت حد الوقت. تبقى على هذه الشاشة فقط.",
+      v100: "الإصدار 1.0.0",
+      w100a: "Pinchy McPinchface هي لعبة الذراع.",
+      w100b: "المستوى 1 يحرّك مفصلاً واحدًا. المستوى 2 يلتقط قطعة ويضعها. المستوى 3 يذهب إلى نقطة من A1 إلى C3.",
+      w100c: "إذا اصطدمت الذراع بشيء، تذكر الملاحظة القطعة وتبقى الخطوة محددة. إعادة المحاولة تبقي برنامجك."
+    },
+    "fa-AF": {
+      L1: "یک بند را حرکت بده", L2: "بردار و بگذار", L3: "به نقطه برو", L4: "کپه را مرتب کن", L5: "سطل‌های حسگر", L6: "برنامه را درست کن",
+      Base: "پایه", Shoulder: "شانه", Elbow: "آرنج", Wrist: "مچ", Claw: "چنگال",
+      Left: "چپ", Right: "راست", Down: "پایین", Up: "بالا", Close: "ببند", Open: "باز",
+      Part: "قطعه", Bin: "سطل", Table: "میز", "Go here": "اینجا برو",
+      "Red square": "مربع سرخ", "Blue circle": "دایره آبی", Pile: "کپه",
+      "No stars yet.": "هنوز ستاره‌ای نیست.", "One star.": "یک ستاره.", "Two stars.": "دو ستاره.", "Three stars.": "سه ستاره.",
+      "Add a block, then press Run.": "یک بلاک اضافه کن، بعد اجرا را بزن.",
+      "Add blocks, then press Run.": "بلاک‌ها را اضافه کن، بعد اجرا را بزن.",
+      "Stopped.": "ایست.", "Undone.": "برگردانده شد.", "Running.": "در حال اجرا.",
+      "Arm reset. Program kept.": "بازو دوباره تنظیم شد. برنامه ماند.",
+      "No blocks yet.": "هنوز بلاکی نیست.",
+      "legend": "بازو سه‌بعدی روی پایه‌اش می‌چرخد. نقطه‌ها از A1 تا C3 و سطل‌ها روی میز اند. بلاک همان قطعه است. نشانه کلفت یعنی اینجا برو.",
+      "legendPile": "بازو سه‌بعدی روی پایه‌اش می‌چرخد. تکرار ۳ بلاک‌ها را تا پایان تکرار سه بار اجرا می‌کند. کپه ۳ قطعه دارد. مچ بالا و مچ پایین هم اینجاست.",
+      "legendSensor": "بازو سه‌بعدی روی پایه‌اش می‌چرخد. مربع سرخ به سطل A می‌رود. دایره آبی به سطل B می‌رود. واژه و شکل یکی است. رنگ تنها نشانه نیست.",
+      "legendDebug": "بازو سه‌بعدی روی پایه‌اش می‌چرخد. گام خط‌کشی‌شده با گام بعدی جابه‌جا می‌شود. جابه‌جایی کمتر بهتر است. مچ بالا و مچ پایین در فهرست بلاک‌هاست.",
+      "L1-goal": "یک بند را حرکت بده. شانه بالا با نشانه یکی می‌شود.",
+      "L2-goal": "قطعه را بردار و در سطل بگذار.",
+      "L3-goal": "به نقطه A2 روی شبکه A1 تا C3 برو.",
+      "L4-goal": "با تکرار ۳ هر سه قطعه کپه را در سطل بگذار.",
+      "L5-goal": "اگر حسگر مربع سرخ دید آن را در سطل A بگذار. اگر دایره آبی دید آن را در سطل B بگذار.",
+      "L6-goal": "برنامه خراب است. کمترین گام را جابه‌جا کن و بعد اجرا کن.",
+      READY: "آماده", MOVING: "در حرکت", STOPPED: "ایست", CRASH: "برخورد",
+      STATUS: "وضعیت", JOINTS: "بندها", PROGRAM: "برنامه", VIEW: "نما", CELL: "خانه",
+      Levels: "مرحله‌ها", Program: "برنامه", OPEN: "باز", SHUT: "بسته",
+      degrees: "درجه", clawOpen: "باز", clawShut: "بسته",
+      estop: "\u25A0 ایست اضطراری", clear: "\u2715 پاک کردن",
+      themeDark: "\u25D0 تاریک", themeLight: "\u25D0 روشن",
+      starRules: "ستاره‌ها: انجام شد، کمتر از حد بلاک، کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
+      blocksLine: "بلاک‌ها: {n}", swapsLine: "جابه‌جایی‌ها: {n}", timeNone: "زمان: هنوز هیچ", timeLine: "زمان: {n}",
+      draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
+      whatsTitle: "تازه‌ها", whatsClose: "بستن", play: "بازی",
+      hubLine: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
+      programAria: "برنامه. Enter بلاک انتخاب‌شده را اضافه می‌کند.",
+      jointsAria: "بندها", actionsAria: "دکمه‌های برنامه",
+      v131: "نسخه 1.3.1",
+      w131a: "بازو بندهای چاپ‌شده، شش موتور، و یک گیره با دو فک است.",
+      w131b: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
+      v130: "نسخه 1.3.0",
+      w130a: "یک بازوی ربات را حرکت بده.",
+      w130b: "آویز کاغذی: کاغذ گرم، جوهر زغالی، و خردل فقط روی نوار سر، بازو، و نوار ایست.",
+      w130c: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
+      v122: "نسخه 1.2.2",
+      w122a: "یک بازوی ربات را حرکت بده.",
+      w122b: "جای خالی بالای خط وضعیت رفت.",
+      w122c: "روی صفحه کوتاه افقی نام مرحله‌ها کامل می‌ماند و برنامه روی صفحه می‌ماند.",
+      w122d: "اسپانیایی، عربی و دری به بلاک‌ها و راهنما نام می‌دهند. این واژه‌ها پیش‌نویس ماشینی اند.",
+      v121: "نسخه 1.2.1",
+      w121a: "یک بازوی ربات را حرکت بده.",
+      w121b: "صحنه سه‌بعدی همه عرض را می‌گیرد و نوشته‌هایش برای خواندن بزرگ اند.",
+      w121c: "پایه چپ و پایه راست نام اسپانیایی، عربی و دری دارند. این نام‌ها پیش‌نویس ماشینی اند.",
+      w121d: "تلاش دوباره ستاره‌ها را در ردیف و در واژه‌ها پاک می‌کند.",
+      v120: "نسخه 1.2.0",
+      w120a: "یک بازوی ربات را حرکت بده.",
+      w120b: "بازو با دوربین ثابت سه‌بعدی کشیده شده تا پایه بچرخد.",
+      w120c: "مرحله‌های 1 تا 6 همان است. ستاره‌ها فقط روی همین صفحه می‌مانند.",
+      v110: "نسخه 1.1.0",
+      w110a: "یک بازوی ربات را حرکت بده.",
+      w110b: "مرحله 4 کپه را با تکرار مرتب می‌کند. مرحله 5 مربع سرخ را به سطل A و دایره آبی را به سطل B می‌فرستد. مرحله 6 برنامه خراب را با جابه‌جایی درست می‌کند.",
+      w110c: "مچ بالا و مچ پایین در مرحله‌های بعدی است. برخورد نام مچ را می‌گوید.",
+      w110d: "ستاره‌ها یعنی انجام شد، کمتر از حد بلاک، و کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
+      v100: "نسخه 1.0.0",
+      w100a: "Pinchy McPinchface بازی بازو است.",
+      w100b: "مرحله 1 یک بند را حرکت می‌دهد. مرحله 2 یک قطعه را برمی‌دارد و می‌گذارد. مرحله 3 به نقطه‌ای از A1 تا C3 می‌رود.",
+      w100c: "اگر بازو به چیزی بخورد، یادداشت نام قطعه را می‌گوید و گام خط‌کشی می‌ماند. تلاش دوباره برنامه را نگه می‌دارد."
+    }
+  };
+  function uiText(lang, key) {
+    var code = lang && langMeta(lang).id === lang ? lang : "en";
+    var pack = UI[code] || UI.en;
+    if (pack && pack[key]) return pack[key];
+    if (UI.en[key]) return UI.en[key];
+    return key;
+  }
+
+  function jointReadout(state, lang) {
+    var claw = state.open ? uiText(lang, "clawOpen") : uiText(lang, "clawShut");
+    var deg = uiText(lang, "degrees");
+    return uiText(lang, "Base") + " " + Math.round(state.base) + " " + deg + ". " +
+      uiText(lang, "Shoulder") + " " + Math.round(state.shoulder) + " " + deg + ". " +
+      uiText(lang, "Elbow") + " " + Math.round(state.elbow) + " " + deg + ". " +
+      uiText(lang, "Wrist") + " " + Math.round(state.wrist || 0) + " " + deg + ". " +
+      uiText(lang, "Claw") + " " + claw + ".";
   }
 
   function stateKey(state) {
@@ -910,6 +1183,8 @@
     blocksFor: blocksFor,
     langMeta: langMeta,
     labelFor: labelFor,
+    actionLabel: actionLabel,
+    helpFor: helpFor,
     pose: pose,
     collide: collide,
     contains: contains,
@@ -931,6 +1206,7 @@
     settleRun: settleRun,
     runView: runView,
     jointReadout: jointReadout,
+    uiText: uiText,
     cloneState: cloneState,
     stateKey: stateKey,
     obstacles: obstacles
