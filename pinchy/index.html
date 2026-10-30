@@ -60,7 +60,7 @@
     background: var(--blue);
     font-weight: 750;
   }
-  button.tool, button.block, button.action, button.level, #play {
+  button.tool, button.block, button.action, button.level, button.lang, #play {
     min-width: 48px;
     min-height: 48px;
     border: 2px solid var(--line);
@@ -102,6 +102,9 @@
   }
   #title-arm { height: 280px; }
   #view { height: 380px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; }
+  button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
+  #draft-note { margin: 0 8px 8px; font-weight: 750; }
   .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
   button.level {
     display: flex;
@@ -175,8 +178,9 @@
     list-style: none;
     min-height: 56px;
     align-items: center;
+    direction: ltr;
   }
-  .chip {
+  .chip, button.chip {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -188,7 +192,7 @@
     font-weight: 650;
     white-space: nowrap;
   }
-  .chip.is-now, .chip.is-stop {
+  .chip.is-fix, .chip.is-now, .chip.is-stop {
     outline: 4px solid var(--ember);
     outline-offset: 2px;
   }
@@ -229,11 +233,20 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.0.0</span>
+  <span class="ver" id="app-version">v1.1.0</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
+<nav class="langs" id="langs" aria-label="Language"></nav>
+<p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.1.0</p>
+  <ul>
+    <li>Move a robot arm.</li>
+    <li>Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.</li>
+    <li>Wrist up and Wrist down are in the later levels. A crash names the wrist.</li>
+    <li>Stars mean done, under the block par, and under the time par. They stay on this screen only.</li>
+  </ul>
   <p>Version 1.0.0</p>
   <ul>
     <li>Pinchy McPinchface is the arm game.</li>
@@ -262,13 +275,13 @@
     </div>
   </div>
   <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
-  <p id="step-live" class="sr-only" aria-live="polite"></p>
-  <p id="stars" aria-live="polite" aria-atomic="true" aria-label="No stars yet.">
+  <p id="stars" aria-label="No stars yet.">
     <span class="star" id="star-1" aria-hidden="true">★</span>
     <span class="star" id="star-2" aria-hidden="true">★</span>
     <span class="star" id="star-3" aria-hidden="true">★</span>
     <span id="star-words">No stars yet.</span>
   </p>
+  <p id="star-rules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
   <p id="metrics">
     <span id="m-blocks">Blocks: 0</span>
     <span id="m-time">Time: none yet</span>
@@ -286,7 +299,7 @@
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
 var STEP_MS = 520;
 var SNAP_HOLD = 80;
-var session = { level: 0, programs: [[], [], []], stars: [0, 0, 0] };
+var session = { level: 0, programs: [], run: [] };
 var world = null;
 var playback = 0;
 var playing = false;
@@ -311,60 +324,71 @@ var ICONS = {
   "shoulder-down": svg('<circle cx="6" cy="6" r="1.6" ' + ST + '/><path d="M8 8 L15 17" ' + ST + '/><path d="M11 17 h5 v-5" ' + ST + '/>'),
   "elbow-up": svg('<path d="M3 17 H10 L17 8" ' + ST + '/><path d="M13 8 h5 v5" ' + ST + '/>'),
   "elbow-down": svg('<path d="M3 7 H10 L17 16" ' + ST + '/><path d="M13 16 h5 v-5" ' + ST + '/>'),
+  "wrist-up": svg('<circle cx="7" cy="17" r="2" ' + ST + '/><path d="M9 15 L16 8" ' + ST + '/><path d="M12 8 h6 v6" ' + ST + '/>'),
+  "wrist-down": svg('<circle cx="7" cy="7" r="2" ' + ST + '/><path d="M9 9 L16 16" ' + ST + '/><path d="M12 16 h6 v-6" ' + ST + '/>'),
   "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
   "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
+  "repeat-3": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "repeat-2": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "end-repeat": svg('<path d="M5 7 h14 M5 12 h14 M5 17 h10" ' + ST + '/>'),
+  "if-red-square": svg('<rect x="4" y="4" width="16" height="16" ' + ST + '/><path d="M7 12 h10" ' + ST + '/>'),
+  "if-blue-circle": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><circle cx="12" cy="12" r="2" fill="currentColor"/>'),
+  "end-if": svg('<path d="M6 7 h12 M6 12 h8 M6 17 h12" ' + ST + '/>'),
   "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
   "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
   "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
+  "swap": svg('<path d="M7 8 h10" ' + ST + '/><path d="M14 5 l3 3 l-3 3" ' + ST + '/><path d="M17 16 H7" ' + ST + '/><path d="M10 13 l-3 3 l3 3" ' + ST + '/>'),
   "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
 };
-var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot" };
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square", L6: "swap" };
+var fixAt = 0;
+var swapHistory = [];
 
+var lang = "en";
 var labelOf = function (id) {
-  var block = PINCHY.blockById(id);
-  return block ? block.label : id;
+  return PINCHY.labelFor(id, lang);
 };
 var angleText = function (id) {
   var block = PINCHY.blockById(id);
   if (!block) return "";
   if (block.joint === "claw") return block.angle + "\u00b0";
+  if (block.delta == null) return "";
   return (block.delta > 0 ? "+" : "") + block.delta + "\u00b0";
 };
 var formatMs = function (ms) {
   return (Math.max(0, ms) / 1000).toFixed(1) + " s";
 };
 
-var setStatus = function (text, kind) {
-  var el = document.getElementById("status");
-  el.textContent = text;
-  el.classList.remove("is-win", "is-crash");
-  if (kind === "win") el.classList.add("is-win");
-  if (kind === "crash") el.classList.add("is-crash");
-};
-var setStepLive = function (text) {
-  document.getElementById("step-live").textContent = text;
-};
-
-var paintStars = function () {
-  var n = session.stars[session.level];
-  var words = PINCHY.starWords(n);
-  for (var i = 1; i <= 3; i++) {
+var renderRun = function () {
+  var state = session.run[session.level] || PINCHY.settleRun(null, { type: "level" });
+  var view = PINCHY.runView(state);
+  var i;
+  for (i = 1; i <= 3; i++) {
     var star = document.getElementById("star-" + i);
-    star.classList.toggle("is-on", i <= n);
-    star.textContent = i <= n ? "\u2605" : "\u2606";
+    star.classList.toggle("is-on", i <= view.stars);
+    star.textContent = i <= view.stars ? "\u2605" : "\u2606";
   }
-  document.getElementById("star-words").textContent = words;
-  document.getElementById("stars").setAttribute("aria-label", words);
+  document.getElementById("star-words").textContent = view.words;
+  document.getElementById("stars").setAttribute("aria-label", view.aria);
+  var el = document.getElementById("status");
+  el.textContent = view.status;
+  el.classList.remove("is-win", "is-crash");
+  if (view.kind === "won") el.classList.add("is-win");
+  if (view.kind === "crashed") el.classList.add("is-crash");
 };
-var clearStars = function () {
-  session.stars[session.level] = 0;
-  paintStars();
+var setRun = function (state) {
+  session.run[session.level] = state;
+  renderRun();
 };
 
 var updateMetrics = function () {
+  var level = PINCHY.LEVELS[session.level];
   var n = session.programs[session.level].length;
-  document.getElementById("m-blocks").textContent = "Blocks: " + n;
+  var runNow = session.run[session.level] || {};
+  var shownSwaps = runNow.kind === "running" ? (runNow.scoredSwaps || 0) : (runNow.swaps || 0);
+  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = "Swaps: " + shownSwaps;
+  else document.getElementById("m-blocks").textContent = "Blocks: " + n;
   var timeEl = document.getElementById("m-time");
   if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
   else if (lastMs == null) timeEl.textContent = "Time: none yet";
@@ -382,10 +406,27 @@ var renderProgram = function (now, stop) {
     ol.appendChild(empty);
     return;
   }
+  var debug = !!(PINCHY.LEVELS[session.level] && PINCHY.LEVELS[session.level].debug);
   for (var i = 0; i < list.length; i++) {
-    var li = document.createElement("li");
+    var li = document.createElement(debug ? "button" : "li");
+    if (debug) li.type = "button";
     li.className = "chip";
     li.dataset.step = String(i + 1);
+    if (debug) {
+      li.dataset.index = String(i);
+      if (i === fixAt && now < 0 && stop < 0) li.classList.add("is-fix");
+      if (playing) li.disabled = true;
+      li.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        e.stopPropagation();
+        doSwap(Number(this.dataset.index));
+      });
+      li.addEventListener("click", function (ev) {
+        if (ev.detail === 0) return;
+        doSwap(Number(this.dataset.index));
+      });
+    }
     if (i === now) {
       li.classList.add("is-now");
       li.setAttribute("aria-current", "step");
@@ -405,6 +446,11 @@ var renderProgram = function (now, stop) {
     if (holder.firstChild) li.appendChild(holder.firstChild);
     var name = document.createElement("span");
     name.textContent = labelOf(list[i]);
+    if (String(list[i]).indexOf("wrist") === 0) {
+      var wristMeta = PINCHY.langMeta(lang);
+      name.lang = lang;
+      name.dir = wristMeta.rtl ? "rtl" : "ltr";
+    }
     li.appendChild(name);
     var deg = document.createElement("span");
     deg.textContent = angleText(list[i]);
@@ -420,8 +466,16 @@ var renderLevels = function () {
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
   }
-  document.getElementById("goal").textContent = PINCHY.LEVELS[session.level].goal;
-  paintStars();
+  var levelNow = PINCHY.LEVELS[session.level];
+  document.getElementById("goal").textContent = levelNow.goal;
+  var legend = document.getElementById("legend");
+  if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
+  else if (levelNow.kind === "sensor") legend.textContent = "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
+  else if (levelNow.debug) legend.textContent = "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
+  else legend.textContent = "Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.";
+  document.getElementById("help").textContent = levelNow.debug
+    ? "Arrow keys pick a step. Enter swaps it with the next step. R runs. Z undoes."
+    : "Arrow keys pick a block. Enter adds it. R runs. Z undoes. Retry keeps the program.";
 };
 
 var setBusy = function (busy) {
@@ -430,23 +484,103 @@ var setBusy = function (busy) {
   document.getElementById("retry").disabled = false;
 };
 
+var renderPalette = function () {
+  var palette = document.getElementById("palette");
+  var ids = PINCHY.blocksFor(PINCHY.LEVELS[session.level]);
+  palette.replaceChildren();
+  if (focusIndex >= ids.length) focusIndex = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    var b = makeButton("block", id, PINCHY.labelFor(id, lang), "");
+    b.dataset.cmd = id;
+    b.tabIndex = i === focusIndex ? 0 : -1;
+    if (id.indexOf("wrist") === 0) {
+      var meta = PINCHY.langMeta(lang);
+      b.lang = lang;
+      b.dir = meta.rtl ? "rtl" : "ltr";
+      if (meta.draft) b.dataset.draft = "true";
+    }
+    b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
+    b.addEventListener("focus", function () {
+      var nodes = document.querySelectorAll("#palette button.block");
+      for (var n = 0; n < nodes.length; n++) if (nodes[n] === this) focusIndex = n;
+    });
+    palette.appendChild(b);
+  }
+};
+var applyLang = function (code) {
+  var meta = PINCHY.langMeta(code);
+  lang = meta.id === code ? code : "en";
+  meta = PINCHY.langMeta(lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
+  var note = document.getElementById("draft-note");
+  note.hidden = !meta.draft;
+  var buttons = document.querySelectorAll("#langs button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", buttons[i].dataset.lang === lang ? "true" : "false");
+  }
+  renderPalette();
+  renderProgram(-1, -1);
+};
+var doSwap = function (index) {
+  if (playing) return;
+  var level = PINCHY.LEVELS[session.level];
+  if (!level || !level.debug) return;
+  var list = session.programs[session.level];
+  if (index < 0 || index >= list.length - 1) return;
+  if (list[index] === list[index + 1]) {
+    fixAt = index;
+    renderProgram(-1, -1);
+    return;
+  }
+  if (!swapHistory[session.level]) swapHistory[session.level] = [];
+  swapHistory[session.level].push(list.slice());
+  session.programs[session.level] = PINCHY.swapSteps(list, index);
+  fixAt = index;
+  renderProgram(-1, -1);
+  var swapped = PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 1 });
+  swapped.note = "Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + swapped.swaps + ".";
+  setRun(swapped);
+  updateMetrics();
+};
 var addBlock = function (id) {
   if (playing) return;
+  if (PINCHY.LEVELS[session.level].debug) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Swap two steps. Arrows pick a step. Enter swaps it with the next." }));
+    return;
+  }
   var list = session.programs[session.level];
   if (list.length >= 24) {
-    setStatus("Program is full at 24 blocks.", "");
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Program is full at 24 blocks." }));
     return;
   }
   list.push(id);
   renderProgram(-1, -1);
   updateMetrics();
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
 };
 var undo = function () {
   if (playing) return;
-  var list = session.programs[session.level];
-  if (!list.length) return;
-  list.pop();
-  renderProgram(-1, -1);
+  var changed = false;
+  if (PINCHY.LEVELS[session.level].debug) {
+    var hist = swapHistory[session.level] || [];
+    if (hist.length) {
+      session.programs[session.level] = hist.pop();
+      changed = true;
+      renderProgram(-1, -1);
+    }
+  } else {
+    var list = session.programs[session.level];
+    if (list.length) {
+      list.pop();
+      changed = true;
+      renderProgram(-1, -1);
+    }
+  }
+  var undone = PINCHY.settleRun(session.run[session.level], { type: "undo", delta: changed ? -1 : 0 });
+  undone.note = changed && PINCHY.LEVELS[session.level].debug ? "Swap undone. Swaps: " + undone.swaps + "." : "Undone.";
+  setRun(undone);
   updateMetrics();
 };
 
@@ -475,49 +609,71 @@ var roundRect = function (c, x, y, w, h, r) {
 };
 
 var labelQueue = [];
-var tag = function (text, wx, wy, dx, dy) {
-  labelQueue.push({ text: text, wx: wx, wy: wy, dx: dx || 0, dy: dy || 0 });
+var artBoxes = [];
+var tag = function (text, wx, wy) {
+  labelQueue.push({ text: text, wx: wx, wy: wy });
+};
+var rectsHit = function (a, b, pad) {
+  var p = pad || 0;
+  return a.x < b.x + b.w + p && a.x + a.w + p > b.x && a.y < b.y + b.h + p && a.y + a.h + p > b.y;
+};
+var markArt = function (sx, sy, pad) {
+  artBoxes.push({ x: sx - pad, y: sy - pad, w: pad * 2, h: pad * 2 });
+};
+var markBone = function (x1, y1, x2, y2, radius) {
+  var n = 8;
+  var i;
+  for (i = 0; i <= n; i++) {
+    var t = i / n;
+    markArt(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, radius);
+  }
 };
 var paintTags = function (ctx, P, bounds) {
   ctx.font = "600 13px system-ui, sans-serif";
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   var placed = [];
-  for (var i = 0; i < labelQueue.length; i++) {
-    var item = labelQueue[i];
-    var tw = ctx.measureText(item.text).width;
-    var pad = 4;
-    var w = tw + pad * 2;
-    var h = 18;
-    var x = P.x(item.wx) + item.dx - w / 2;
-    var y = P.y(item.wy) + item.dy - h / 2;
-    var tries = 0;
-    var hit = true;
-    while (hit && tries < 8) {
-      hit = false;
-      for (var j = 0; j < placed.length; j++) {
-        var box = placed[j];
-        if (x < box.x + box.w && x + w > box.x && y < box.y + box.h && y + h > box.y) {
-          hit = true;
-          y += h + 2;
-          break;
-        }
+  var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
+  var i, item, tw, pad, w, h, ax, ay, step, d, x, y, rect, bad, j, found;
+  for (i = 0; i < labelQueue.length; i++) {
+    item = labelQueue[i];
+    tw = ctx.measureText(item.text).width;
+    pad = 4;
+    w = tw + pad * 2;
+    h = 18;
+    ax = P.x(item.wx);
+    ay = P.y(item.wy);
+    found = null;
+    for (step = 0; step <= 160 && !found; step += 16) {
+      var ring = step === 0 ? [[0, 0]] : dirs;
+      for (d = 0; d < ring.length && !found; d++) {
+        x = ax + ring[d][0] * step - w / 2;
+        y = ay + ring[d][1] * step - h / 2;
+        if (x < bounds.x + 2 || y < bounds.y + 2 || x + w > bounds.x + bounds.w - 2 || y + h > bounds.y + bounds.h - 2) continue;
+        rect = { x: x, y: y, w: w, h: h };
+        bad = false;
+        for (j = 0; j < artBoxes.length; j++) if (rectsHit(rect, artBoxes[j], 4)) bad = true;
+        for (j = 0; j < placed.length; j++) if (rectsHit(rect, placed[j], 4)) bad = true;
+        if (!bad) found = rect;
       }
-      tries += 1;
     }
-    x = Math.max(bounds.x + 2, Math.min(x, bounds.x + bounds.w - w - 2));
-    y = Math.max(bounds.y + 2, Math.min(y, bounds.y + bounds.h - h - 2));
-    placed.push({ x: x, y: y, w: w, h: h });
+    if (!found) {
+      x = Math.max(bounds.x + 2, Math.min(ax - w / 2, bounds.x + bounds.w - w - 2));
+      y = Math.max(bounds.y + 2, Math.min(ay - h / 2, bounds.y + bounds.h - h - 2));
+      found = { x: x, y: y, w: w, h: h };
+    }
+    placed.push(found);
     ctx.fillStyle = "#16325C";
-    roundRect(ctx, x, y, w, h, 4);
+    roundRect(ctx, found.x, found.y, found.w, found.h, 4);
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#8EA0BE";
     ctx.stroke();
     ctx.fillStyle = "#F3EEE4";
-    ctx.fillText(item.text, x + pad, y + 13);
+    ctx.fillText(item.text, found.x + pad, found.y + 13);
   }
   labelQueue = [];
+  artBoxes = [];
 };
 
 var strokeBone = function (ctx, P, x1, y1, x2, y2, color, width) {
@@ -547,12 +703,15 @@ var drawArm = function (ctx, P, state, opts) {
     ctx.lineTo(P.x(p.gx), P.y(p.gy));
     ctx.stroke();
     ctx.restore();
-    tag("Mark", p.cx, p.cy, 0, -28);
+    tag("Mark", p.cx, p.cy);
     return;
   }
   strokeBone(ctx, P, 0, layout.sy, p.ex, p.ey, "#A8AEB6", wide);
   strokeBone(ctx, P, p.ex, p.ey, p.wx, p.wy, "#8E949C", Math.max(14, P.s * 12));
   strokeBone(ctx, P, p.wx, p.wy, p.gx, p.gy, "#9AA1A8", Math.max(12, P.s * 10));
+  markBone(P.x(0), P.y(layout.sy), P.x(p.ex), P.y(p.ey), wide / 2 + 6);
+  markBone(P.x(p.ex), P.y(p.ey), P.x(p.wx), P.y(p.wy), Math.max(14, P.s * 12) / 2 + 6);
+  markBone(P.x(p.wx), P.y(p.wy), P.x(p.gx), P.y(p.gy), Math.max(12, P.s * 10) / 2 + 6);
   var half = p.gap / 2;
   var thick = 9 / Math.max(P.s, 0.25);
   ctx.fillStyle = "#E85820";
@@ -591,12 +750,21 @@ var drawArm = function (ctx, P, state, opts) {
   var cmd = opts.cmd || "";
   joint(0, layout.sy, cmd.indexOf("shoulder") === 0);
   joint(p.ex, p.ey, cmd.indexOf("elbow") === 0);
-  joint(p.wx, p.wy, false);
+  joint(p.wx, p.wy, cmd.indexOf("wrist") === 0);
   joint(p.gx, p.gy, cmd.indexOf("claw") === 0);
-  tag("Shoulder " + Math.round(state.shoulder) + "\u00b0", 0, layout.sy, -78, -6);
-  tag("Elbow " + Math.round(state.elbow) + "\u00b0", p.ex, p.ey, -86, -26);
-  tag("Wrist 0\u00b0", p.wx, p.wy, 8, -30);
-  tag("Claw", p.gx, p.gy, 36, 10);
+  markArt(P.x(p.gx), P.y(p.gy), Math.max(16, P.s * 12));
+  markArt(P.x(p.cx), P.y(p.cy), Math.max(14, P.s * 10));
+  for (sign = -1; sign <= 1; sign += 2) {
+    var jx = p.gx + p.nx * sign * half + p.px * layout.jaw;
+    var jy = p.gy + p.ny * sign * half + p.py * layout.jaw;
+    markArt(P.x(jx), P.y(jy), Math.max(12, P.s * 8));
+    markArt(P.x((p.gx + jx) / 2), P.y((p.gy + jy) / 2), Math.max(10, P.s * 7));
+  }
+  markArt(P.x((p.wx + p.gx) / 2), P.y((p.wy + p.gy) / 2), Math.max(12, P.s * 8));
+  tag("Shoulder " + Math.round(state.shoulder) + "\u00b0", 0, layout.sy);
+  tag("Elbow " + Math.round(state.elbow) + "\u00b0", p.ex, p.ey);
+  tag("Wrist " + Math.round(state.wrist || 0) + "\u00b0", p.wx, p.wy);
+  tag("Claw", p.gx, p.gy);
 };
 
 var drawScene = function (canvas, state, opts) {
@@ -611,6 +779,7 @@ var drawScene = function (canvas, state, opts) {
   ctx.fillStyle = "#06122B";
   ctx.fillRect(0, 0, w, h);
   labelQueue = [];
+  artBoxes = [];
   var showGrid = opts.showGrid !== false;
   var gridH = 0;
   if (showGrid) {
@@ -629,11 +798,13 @@ var drawScene = function (canvas, state, opts) {
   ctx.moveTo(0, tableY);
   ctx.lineTo(w, tableY);
   ctx.stroke();
-  tag("Table", VIEW.x0 + 28, -8, 0, 16);
+  tag("Table", VIEW.x0 + 28, -8);
 
   var level = opts.level || null;
-  if (level && level.bin && Math.abs(state.base - level.bin.base) <= 7) {
-    var bin = level.bin;
+  var bins = level ? PINCHY.binsOf(level) : [];
+  for (var bi = 0; bi < bins.length; bi++) {
+    var bin = bins[bi];
+    if (!(level.bins && level.bins.length > 1) && Math.abs(state.base - bin.base) > 7) continue;
     var xL = P.x(bin.r - bin.half);
     var xR = P.x(bin.r + bin.half);
     var y0 = P.y(0);
@@ -646,7 +817,9 @@ var drawScene = function (canvas, state, opts) {
     ctx.lineTo(xR, y0);
     ctx.lineTo(xR, yH);
     ctx.stroke();
-    tag("Bin", bin.r, bin.h, 0, -22);
+    var binName = bin.id ? "Bin " + bin.id : "Bin";
+    if (bin.mark) binName += " " + bin.mark;
+    tag(binName, bin.r, bin.h);
   }
 
   var bx = P.x(-26);
@@ -676,7 +849,9 @@ var drawScene = function (canvas, state, opts) {
     ctx.arc(dialX, dialY, dialR + 4, 0, Math.PI * 2);
     ctx.stroke();
   }
-  tag("Base " + Math.round(state.base) + "\u00b0", 0, 36, 0, 28);
+  artBoxes.push({ x: bx - 3, y: by - 3, w: bw + 6, h: bh + 6 });
+  artBoxes.push({ x: dialX - dialR - 8, y: dialY - dialR - 8, w: (dialR + 8) * 2, h: (dialR + 8) * 2 });
+  tag("Base " + Math.round(state.base) + "\u00b0", 0, 28);
 
   if (level && level.kind === "match" && level.target) {
     drawArm(ctx, P, {
@@ -694,12 +869,43 @@ var drawScene = function (canvas, state, opts) {
     var py = P.y(part.y + part.hh);
     var pw = P.x(part.r + part.hw) - px;
     var ph = P.y(part.y - part.hh) - py;
-    ctx.fillStyle = "#C5CEDA";
-    ctx.fillRect(px, py, pw, ph);
-    ctx.strokeStyle = "#3E4650";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(px, py, pw, ph);
-    tag("Part", part.r, part.y, 0, 26);
+    if (part.shape === "circle") {
+      ctx.beginPath();
+      ctx.fillStyle = "#8EA0BE";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(4, Math.abs(pw) / 2), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#F3EEE4";
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.fillStyle = "#06122B";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(2, Math.abs(pw) / 5), 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = "#C5CEDA";
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = part.color === "red" ? "#E85820" : "#3E4650";
+      ctx.lineWidth = part.shape === "square" ? 3 : 2;
+      ctx.strokeRect(px, py, pw, ph);
+      if (part.shape === "square") {
+        ctx.beginPath();
+        ctx.moveTo(px + 3, py + 3);
+        ctx.lineTo(px + pw - 3, py + ph - 3);
+        ctx.moveTo(px + pw - 3, py + 3);
+        ctx.lineTo(px + 3, py + ph - 3);
+        ctx.stroke();
+      }
+    }
+    var pileN = 1 + ((state.queue || []).length);
+    if (pileN > 1) {
+      ctx.fillStyle = "#8EA0BE";
+      ctx.fillRect(px + 8, py - 8, pw, ph);
+      ctx.strokeStyle = "#3E4650";
+      ctx.strokeRect(px + 8, py - 8, pw, ph);
+      tag("Pile " + pileN, part.r, part.y);
+    } else if (part.shape === "square" && part.color === "red") tag("Red square \u25a0", part.r, part.y);
+    else if (part.shape === "circle" && part.color === "blue") tag("Blue circle \u25cf", part.r, part.y);
+    else tag("Part", part.r, part.y);
   } else if (part && part.inBin && level && level.bin) {
     var ix = P.x(part.r - part.hw);
     var iy = P.y(part.hh * 2);
@@ -710,7 +916,7 @@ var drawScene = function (canvas, state, opts) {
     ctx.strokeStyle = "#3E4650";
     ctx.lineWidth = 2;
     ctx.strokeRect(ix, iy, iw, ih);
-    tag("Part", part.r, part.hh, 0, 22);
+    tag("Part", part.r, part.hh);
   }
 
   drawArm(ctx, P, state, { cmd: opts.cmd || "" });
@@ -745,6 +951,31 @@ var drawScene = function (canvas, state, opts) {
       var extra = "";
       if (part && !part.inBin && PINCHY.spotName(part.base, part.r) === name) extra = "Part";
       if (level && level.bin && PINCHY.spotName(level.bin.base, level.bin.r) === name) extra = extra ? extra + " / Bin" : "Bin";
+      if (level && level.bins) {
+        for (var bn = 0; bn < level.bins.length; bn++) {
+          var gridBin = level.bins[bn];
+          var colI = 0;
+          var colD = Infinity;
+          var ci;
+          for (ci = 0; ci < cols.length; ci++) {
+            var dist = Math.abs(gridBin.base - cols[ci][1]);
+            if (dist < colD - 0.5 || (Math.abs(dist - colD) <= 0.5 && Math.abs(cols[ci][1]) > Math.abs(cols[colI][1]))) {
+              colI = ci;
+              colD = dist;
+            }
+          }
+          var rowI = 0;
+          var rowD = Infinity;
+          for (ci = 0; ci < rows.length; ci++) {
+            var rd = Math.abs(gridBin.r - rows[ci][1]);
+            if (rd < rowD) { rowI = ci; rowD = rd; }
+          }
+          if (cols[colI][0] + rows[rowI][0] === name) {
+            var gridWord = "Bin " + gridBin.id + (gridBin.mark ? " " + gridBin.mark : "");
+            extra = extra ? extra + " / " + gridWord : gridWord;
+          }
+        }
+      }
       if (name === here) extra = extra ? extra + " / Go here" : "Go here";
       ctx.save();
       ctx.beginPath();
@@ -800,6 +1031,18 @@ var paintGame = function () {
     showGrid: true
   });
 };
+var drawLevel = function () {
+  if (!viewCanvas || !world) return;
+  viewCanvas._cssW = 0;
+  fit(viewCanvas);
+  paintGame();
+  requestAnimationFrame(function () {
+    if (!viewCanvas || !world) return;
+    viewCanvas._cssW = 0;
+    fit(viewCanvas);
+    paintGame();
+  });
+};
 
 var titleState = function (shoulder) {
   return {
@@ -840,6 +1083,7 @@ var blend = function (start, result, f) {
     base: start.base + (result.state.base - start.base) * f,
     shoulder: start.shoulder + (result.state.shoulder - start.shoulder) * f,
     elbow: start.elbow + (result.state.elbow - start.elbow) * f,
+    wrist: (start.wrist || 0) + ((result.state.wrist || 0) - (start.wrist || 0)) * f,
     gap: start.gap + (gap1 - start.gap) * f,
     open: false,
     holding: !!(start.holding || (result.state.holding && f > 0.92)),
@@ -895,30 +1139,33 @@ var glide = function (ms, token, onFrame) {
 
 var finishWin = function (blocks, ms) {
   var level = PINCHY.LEVELS[session.level];
-  var n = PINCHY.starsFor(true, blocks, ms, level);
-  if (n > session.stars[session.level]) session.stars[session.level] = n;
+  var runNow = session.run[session.level] || {};
+  var attemptSwaps = runNow.scoredSwaps != null ? runNow.scoredSwaps : (runNow.swaps || 0);
+  var score = level.metric === "swaps" ? attemptSwaps : blocks;
+  var earned = PINCHY.starsFor(true, score, ms, level);
   var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
-  var text = "Done. " + blockWord + ", " + formatMs(ms) + ".";
-  if (level.kind === "place") text = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
-  if (level.kind === "match") text = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
-  if (level.kind === "spot") text = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
-  text += " " + PINCHY.starWords(n) + "";
-  setStatus(text, "win");
-  setStepLive(text);
-  paintStars();
+  var note = "Done. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "place") note = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "match") note = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "spot") note = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "pile") note = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "sensor") note = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "debug") {
+    var swapWord = attemptSwaps === 1 ? "1 swap" : attemptSwaps + " swaps";
+    note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
+  }
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "win", n: earned, note: note, swaps: attemptSwaps, steps: blocks }));
 };
 var finishFail = function (msg, step) {
-  var text = "\u2717 " + PINCHY.crashLine(msg, step);
-  clearStars();
-  setStatus(text, "crash");
-  setStepLive(text);
+  var text = "\u2717 " + PINCHY.crashLine(msg, step, lang);
+  setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
 };
 
 var play = async function () {
   if (playing || document.getElementById("game").hidden) return;
   var commands = session.programs[session.level].slice();
   if (!commands.length) {
-    setStatus("Add a block, then press Run.", "");
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
     return;
   }
   var token = ++playback;
@@ -932,7 +1179,7 @@ var play = async function () {
   renderProgram(-1, -1);
   updateMetrics();
   paintGame();
-  setStatus("Running.", "");
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "start", note: "Running.", steps: 0 }));
   var state = world;
   var startHit = PINCHY.collide(state, level);
   if (startHit) {
@@ -943,40 +1190,45 @@ var play = async function () {
     updateMetrics();
     return;
   }
-  for (var i = 0; i < commands.length; i++) {
+  var run = PINCHY.beginRun(commands);
+  var guard = 0;
+  while (guard < 500) {
+    guard += 1;
     if (token !== playback) return;
-    activeCmd = commands[i];
-    renderProgram(i, -1);
-    setStepLive("Step " + (i + 1) + " of " + commands.length + ". " + labelOf(commands[i]) + ".");
-    setStatus("Running step " + (i + 1) + " of " + commands.length + ": " + labelOf(commands[i]) + ".", "");
-    var result = PINCHY.applyCommand(state, commands[i], level);
-    var moved = result.t > 0;
+    var ev = PINCHY.advance(run, state, level);
+    if (ev.done && !ev.cmd) break;
+    var stepNo = ev.index + 1;
+    activeCmd = ev.cmd;
+    renderProgram(ev.index, -1);
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: stepNo, note: "Running step " + stepNo + " of " + commands.length + ": " + labelOf(ev.cmd) + "." }));
+    var moved = ev.t > 0 && !ev.structural;
     if (moved && !reduce) {
-      var alive = await glide(Math.max(180, STEP_MS * result.t), token, function (u) {
-        world = blend(state, result, u);
+      var alive = await glide(Math.max(180, STEP_MS * ev.t), token, function (u) {
+        world = blend(state, { state: ev.state }, u);
         paintGame();
       });
       if (!alive || token !== playback) return;
     } else {
-      world = PINCHY.cloneState(result.state);
+      world = PINCHY.cloneState(ev.state);
       paintGame();
-      var held = await until(reduce ? SNAP_HOLD : 0, token);
+      var hold = ev.structural ? (reduce ? SNAP_HOLD : 180) : (reduce ? SNAP_HOLD : 0);
+      var held = await until(hold, token);
       if (!held || token !== playback) return;
     }
-    state = result.state;
+    state = ev.state;
     world = PINCHY.cloneState(state);
     activeCmd = "";
     paintGame();
-    if (!result.ok || result.win || PINCHY.goalMet(state, level)) {
+    if (!ev.ok || ev.win || (!ev.structural && PINCHY.goalMet(state, level))) {
       lastMs = performance.now() - runT0;
       playing = false;
       setBusy(false);
-      if (result.win || PINCHY.goalMet(state, level)) {
-        renderProgram(i, -1);
+      if (ev.ok && (ev.win || PINCHY.goalMet(state, level))) {
+        renderProgram(ev.index, -1);
         finishWin(commands.length, lastMs);
       } else {
-        renderProgram(-1, i);
-        finishFail(result.msg, i + 1);
+        renderProgram(-1, ev.index);
+        finishFail(ev.msg, stepNo);
       }
       updateMetrics();
       paintGame();
@@ -990,8 +1242,8 @@ var play = async function () {
   setBusy(false);
   renderProgram(-1, -1);
   var why = PINCHY.endReason(state, level);
-  setStatus(why, "");
-  setStepLive(why);
+  if (PINCHY.goalMet(state, level)) finishWin(commands.length, lastMs);
+  else setRun(PINCHY.settleRun(null, { type: "fail", note: why }));
   updateMetrics();
   paintGame();
 };
@@ -1009,9 +1261,7 @@ var retry = function () {
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
   lastMs = null;
   runT0 = 0;
-  clearStars();
-  setStatus("Arm reset. Program kept.", "");
-  setStepLive("Arm reset. Program kept.");
+  setRun(PINCHY.settleRun(null, { type: "retry" }));
   renderProgram(-1, -1);
   updateMetrics();
   paintGame();
@@ -1023,12 +1273,15 @@ var selectLevel = function (index) {
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;
   runT0 = 0;
+  focusIndex = 0;
+  fixAt = 0;
+  renderPalette();
   renderLevels();
   renderProgram(-1, -1);
   updateMetrics();
-  setStatus("Add blocks, then press Run.", "");
-  setStepLive("");
-  paintGame();
+  session.run[index] = PINCHY.settleRun(null, { type: "level" });
+  renderRun();
+  drawLevel();
 };
 
 var makeButton = function (className, icon, label, keyText) {
@@ -1058,13 +1311,24 @@ var showGame = function () {
   renderLevels();
   renderProgram(-1, -1);
   updateMetrics();
-  paintGame();
+  renderRun();
+  drawLevel();
   var first = document.querySelector("#palette button.block");
   if (first && first.focus) first.focus({ preventScroll: true });
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.0.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.1.0") return;
+  while (session.programs.length < PINCHY.LEVELS.length) {
+    session.programs.push([]);
+    session.run.push(PINCHY.settleRun(null, { type: "level" }));
+    swapHistory.push([]);
+  }
+  for (var seed = 0; seed < PINCHY.LEVELS.length; seed++) {
+    if (PINCHY.LEVELS[seed].broken && !session.programs[seed].length) {
+      session.programs[seed] = PINCHY.LEVELS[seed].broken.slice();
+    }
+  }
   document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
   viewCanvas = document.getElementById("view");
   titleCanvas = document.getElementById("title-arm");
@@ -1100,15 +1364,7 @@ var boot = function () {
     nav.appendChild(b);
   });
 
-  var palette = document.getElementById("palette");
-  PINCHY.BLOCKS.forEach(function (block, index) {
-    var b = makeButton("block", block.id, block.label, "");
-    b.dataset.cmd = block.id;
-    b.tabIndex = index === 0 ? 0 : -1;
-    b.addEventListener("click", function () { addBlock(block.id); });
-    b.addEventListener("focus", function () { focusIndex = index; });
-    palette.appendChild(b);
-  });
+  renderPalette();
 
   var actions = document.getElementById("actions");
   var runBtn = makeButton("action", "run", "Run", "R");
@@ -1121,6 +1377,12 @@ var boot = function () {
   undoBtn.addEventListener("click", function () { undo(); });
   var retryBtn = makeButton("action", "retry", "Retry", "");
   retryBtn.id = "retry";
+  retryBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    retry();
+  });
   retryBtn.addEventListener("click", function () { retry(); });
   actions.appendChild(runBtn);
   actions.appendChild(undoBtn);
@@ -1128,22 +1390,69 @@ var boot = function () {
 
   document.getElementById("play").addEventListener("click", showGame);
 
+  var langNav = document.getElementById("langs");
+  PINCHY.LANGS.forEach(function (item) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lang";
+    b.dataset.lang = item.id;
+    b.lang = item.id;
+    b.dir = item.rtl ? "rtl" : "ltr";
+    b.textContent = item.name;
+    b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
+    b.setAttribute("aria-label", item.draft ? item.name + ". Machine draft." : item.name);
+    if (item.draft) b.dataset.draft = "true";
+    b.addEventListener("click", function () { applyLang(item.id); });
+    langNav.appendChild(b);
+  });
+  var startLang = "en";
+  try {
+    var asked = new URLSearchParams(window.location.search).get("lang");
+    if (asked && PINCHY.langMeta(asked).id === asked) startLang = asked;
+  } catch (err) {}
+  if (startLang !== "en") applyLang(startLang);
+
   window.addEventListener("keydown", function (e) {
     if (document.getElementById("game").hidden) return;
     var key = e.key;
+    if (key === "Enter" && PINCHY.LEVELS[session.level].debug) {
+      var target = e.target;
+      var onButton = target && target.closest && target.closest("button");
+      var inProgram = target && target.closest && target.closest("#program");
+      if (onButton && !inProgram) return;
+      if (inProgram) return;
+      e.preventDefault();
+      doSwap(fixAt);
+      return;
+    }
     if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight") {
       e.preventDefault();
+      if (PINCHY.LEVELS[session.level].debug) {
+        if (playing) return;
+        var steps = session.programs[session.level];
+        var maxAt = Math.max(0, steps.length - 2);
+        if (key === "ArrowLeft" || key === "ArrowUp") fixAt -= 1;
+        if (key === "ArrowRight" || key === "ArrowDown") fixAt += 1;
+        if (fixAt < 0) fixAt = 0;
+        if (fixAt > maxAt) fixAt = maxAt;
+        renderProgram(-1, -1);
+        var picked = document.querySelectorAll("#program button.chip")[fixAt];
+        if (picked && picked.focus) picked.focus();
+        return;
+      }
       var buttons = document.querySelectorAll("#palette button.block");
       if (!buttons.length || playing) return;
-      var row = Math.floor(focusIndex / 2);
-      var col = focusIndex % 2;
+      var cols = 2;
+      var maxRow = Math.max(0, Math.ceil(buttons.length / cols) - 1);
+      var row = Math.floor(focusIndex / cols);
+      var col = focusIndex % cols;
       if (key === "ArrowUp") row -= 1;
       if (key === "ArrowDown") row += 1;
       if (key === "ArrowLeft") col -= 1;
       if (key === "ArrowRight") col += 1;
-      row = Math.max(0, Math.min(3, row));
-      col = Math.max(0, Math.min(1, col));
-      focusIndex = row * 2 + col;
+      row = Math.max(0, Math.min(maxRow, row));
+      col = Math.max(0, Math.min(cols - 1, col));
+      focusIndex = Math.min(buttons.length - 1, row * cols + col);
       buttons[focusIndex].focus();
       return;
     }

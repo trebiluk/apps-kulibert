@@ -5,9 +5,8 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const G = require("./game.js");
 
-const ids = G.BLOCKS.map(function (block) { return block.id; });
-
 function findWin(level, cap) {
+  const ids = G.blocksFor(level);
   const start = G.initialState(level);
   const startHit = G.collide(start, level);
   assert.equal(startHit, "", level.id + " start is clear");
@@ -33,9 +32,9 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.0.0");
-assert.equal(G.LEVELS.length, 3);
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot"]);
+assert.equal(G.APP_VERSION, "1.1.0");
+assert.equal(G.LEVELS.length, 6);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -43,6 +42,87 @@ assert.equal(G.starWords(0), "No stars yet.");
 assert.equal(G.starWords(1), "One star.");
 assert.equal(G.starWords(2), "Two stars.");
 assert.equal(G.starWords(3), "Three stars.");
+
+const langs = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
+const wristUp = {
+  en: "Wrist up",
+  uk: "Зап'ястя вгору",
+  ru: "Запястье вверх",
+  es: "Muñeca arriba",
+  ar: "الرسغ لأعلى",
+  "fa-AF": "مچ بالا",
+  rw: "Ikiganza hejuru",
+  ti: "ሰለፍ ናብ ላዕሊ"
+};
+const wristDown = {
+  en: "Wrist down",
+  uk: "Зап'ястя вниз",
+  ru: "Запястье вниз",
+  es: "Muñeca abajo",
+  ar: "الرسغ لأسفل",
+  "fa-AF": "مچ پایین",
+  rw: "Ikiganza hasi",
+  ti: "ሰለፍ ናብ ታሕቲ"
+};
+const wristPart = {
+  en: "wrist",
+  uk: "зап'ястя",
+  ru: "запястье",
+  es: "muñeca",
+  ar: "الرسغ",
+  "fa-AF": "مچ",
+  rw: "ikiganza",
+  ti: "ሰለፍ"
+};
+assert.deepEqual(G.LANGS.map(function (item) { return item.id; }), langs);
+for (let i = 0; i < langs.length; i++) {
+  const code = langs[i];
+  const meta = G.langMeta(code);
+  assert.equal(meta.up, wristUp[code], code + " wrist up");
+  assert.equal(meta.down, wristDown[code], code + " wrist down");
+  assert.equal(meta.part, wristPart[code], code + " wrist part");
+  assert.equal(G.labelFor("wrist-up", code), wristUp[code]);
+  assert.equal(G.labelFor("wrist-down", code), wristDown[code]);
+}
+assert.equal(G.langMeta("fa-AF").draft, true);
+assert.equal(G.langMeta("rw").draft, true);
+assert.equal(G.langMeta("ti").draft, true);
+assert.equal(G.langMeta("ar").draft, false);
+assert.equal(G.langMeta("en").draft, false);
+assert.equal(G.langMeta("uk").draft, false);
+assert.equal(G.langMeta("ar").rtl, true);
+assert.equal(G.langMeta("fa-AF").rtl, true);
+assert.equal(G.langMeta("en").rtl, false);
+assert.equal(G.langMeta("es").rtl, false);
+assert.deepEqual(G.blocksFor(G.LEVELS[0]), ["base-left", "base-right", "shoulder-up", "shoulder-down", "elbow-up", "elbow-down", "claw-open", "claw-close"]);
+
+const flat = { base: 0, shoulder: 15, elbow: -90, wrist: 0, open: true, gap: 34, holding: false, part: null };
+const bent = { base: 0, shoulder: 15, elbow: -90, wrist: 15, open: true, gap: 34, holding: false, part: null };
+const flatPose = G.pose(flat);
+const bentPose = G.pose(bent);
+assert.ok(Math.abs(flatPose.cx - 134.08417942600929) < 1e-9);
+assert.notEqual(bentPose.gy, flatPose.gy);
+const lifted = G.applyCommand(flat, "wrist-up", G.LEVELS[0]);
+assert.equal(lifted.ok, true);
+assert.equal(lifted.state.wrist, 15);
+const clearWrist = {
+  base: 0, shoulder: 0, elbow: -60, wrist: 60,
+  open: true, gap: 34, holding: false, part: G.LEVELS[1].part
+};
+assert.equal(G.collide(clearWrist, G.LEVELS[1]), "");
+const wristHit = G.applyCommand(clearWrist, "elbow-down", G.LEVELS[1]);
+assert.equal(wristHit.ok, false);
+assert.match(wristHit.msg, /wrist hit/);
+const enLine = G.crashLine(wristHit.msg, 2, "en");
+assert.match(enLine, /Wrist/);
+assert.match(enLine, /at step 2/);
+for (let i = 0; i < langs.length; i++) {
+  const code = langs[i];
+  const line = G.crashLine(wristHit.msg, 4, code);
+  if (code === "en") assert.match(line, /Wrist/);
+  else assert.ok(line.indexOf(wristPart[code]) !== -1, code + " crash names the wrist");
+  assert.match(line, /at step 4/);
+}
 
 const l1 = G.LEVELS[0];
 const l1win = findWin(l1, 4);
@@ -70,6 +150,54 @@ assert.equal(G.spotName(l3result.state.base, G.pose(l3result.state).cx), l3.spot
 assert.ok(l3win.length <= l3.par);
 assert.equal(l3.spot, "A2");
 
+const l4 = G.LEVELS[3];
+const l4win = ["repeat-3", "claw-close", "base-right", "base-right", "claw-open", "base-left", "base-left", "end-repeat"];
+const l4result = G.runAll(l4, l4win);
+assert.equal(l4result.win, true, "L4 is winnable");
+assert.equal(l4result.state.sorted, 3);
+assert.ok(l4win.indexOf("repeat-3") !== -1);
+assert.ok(l4win.indexOf("end-repeat") !== -1);
+assert.ok(l4win.length <= l4.par);
+assert.equal(G.runAll(l4, ["claw-close", "base-right", "base-right", "claw-open", "base-left", "base-left"]).win, false);
+assert.equal(G.starsFor(true, l4win.length, 1000, l4), 3);
+assert.equal(G.starsFor(true, l4win.length + 1, 1000, l4), 1);
+assert.equal(G.starsFor(false, 1, 1, l4), 0);
+
+const l5 = G.LEVELS[4];
+const l5win = ["repeat-2", "claw-close", "if-red-square", "base-right", "claw-open", "base-left", "end-if", "if-blue-circle", "base-left", "claw-open", "base-right", "end-if", "end-repeat"];
+const l5result = G.runAll(l5, l5win);
+assert.equal(l5result.win, true, "L5 is winnable");
+assert.equal(l5result.state.sorted, 2);
+assert.ok(l5win.length <= l5.par);
+assert.equal(G.labelFor("if-red-square", "en"), "If red \u25a0");
+assert.equal(G.labelFor("if-blue-circle", "en"), "If blue \u25cf");
+assert.equal(G.sensorMatch({ holding: true, part: { color: "red", shape: "circle" } }, "if-red-square"), false);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "blue", shape: "square" } }, "if-blue-circle"), false);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "red", shape: "square" } }, "if-red-square"), true);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "blue", shape: "circle" } }, "if-blue-circle"), true);
+assert.equal(G.sensorMatch({ holding: false, part: { color: "red", shape: "square" } }, "if-red-square"), false);
+const l5wrong = G.runAll(l5, ["claw-close", "base-left", "claw-open"]);
+assert.equal(l5wrong.win, false);
+assert.match(l5wrong.crash, /wrong bin/);
+G.BLOCKS.forEach(function (block) {
+  assert.notEqual(block.label, "Red");
+  assert.notEqual(block.label, "Blue");
+});
+
+const l6 = G.LEVELS[5];
+assert.equal(l6.debug, true);
+assert.equal(l6.metric, "swaps");
+const l6broken = l6.broken.slice();
+assert.equal(G.runAll(l6, l6broken).win, false);
+const l6fixed = G.swapSteps(l6broken, 6);
+assert.deepEqual(l6broken, l6.broken);
+assert.equal(G.runAll(l6, l6fixed).win, true, "L6 is winnable");
+assert.equal(l6.par, 1);
+assert.equal(G.starsFor(true, 1, 1000, l6), 3);
+assert.equal(G.starsFor(true, 2, 1000, l6), 1);
+assert.ok(l6.blocks.indexOf("wrist-up") !== -1);
+assert.ok(l6.blocks.indexOf("wrist-down") !== -1);
+
 const crashProgram = ["shoulder-down", "shoulder-down", "shoulder-down"];
 const crashCopy = crashProgram.slice();
 const crash = G.runAll(l1, crashProgram);
@@ -88,8 +216,68 @@ assert.match(page, /translate="no"/);
 assert.match(page, /Archivo/);
 assert.match(page, /#06122B/);
 assert.match(page, /#E85820/);
+assert.match(page, /v1\.1\.0/);
+assert.match(page, /Version 1\.1\.0/);
 assert.match(page, /1\.0\.0/);
 assert.match(page, /What's new/);
+assert.match(page, /id="langs"/);
+assert.match(page, /Machine draft/);
+assert.match(page, /id="draft-note"/);
+assert.match(page, /labelFor/);
+assert.match(page, /Stars: done, under the block par, under the time par/);
+assert.match(page, /They stay on this screen only/);
+assert.match(page, /function renderRun|var renderRun/);
+assert.equal((page.match(/role="status"/g) || []).length, 1);
+assert.doesNotMatch(page, /id="step-live"/);
+assert.doesNotMatch(page, /star-words"\)\.textContent = (?!view\.words)/);
+const won = { kind: "won", n: 3, note: "The program works. 1 swap, 4.0 s." };
+const l6fail = G.settleRun(won, { type: "fail", note: "The claw never closed on the part." });
+assert.equal(l6fail.kind, "failed");
+assert.equal(G.runView(l6fail).words, "No stars yet.");
+assert.equal(G.runView(l6fail).aria, "No stars yet.");
+assert.equal(G.runView(l6fail).stars, 0);
+assert.equal(G.runView(l6fail).status, "The claw never closed on the part.");
+const undone = G.settleRun(won, { type: "undo", note: "Undone." });
+assert.equal(G.runView(undone).words, "No stars yet.");
+assert.equal(G.runView(undone).status, "Undone.");
+assert.doesNotMatch(G.runView(undone).status, /program works|Three stars/);
+const rerun = G.settleRun(won, { type: "start", note: "Running step 2 of 12." });
+assert.equal(rerun.kind, "running");
+assert.equal(G.runView(rerun).words, "No stars yet.");
+assert.equal(G.runView(rerun).stars, 0);
+assert.equal(G.runView(rerun).status, "Running step 2 of 12.");
+assert.equal(G.runView(won).words, G.runView(won).aria);
+assert.match(G.runView(won).status, /Three stars\.$/);
+let attempt = G.settleRun(null, { type: "level" });
+attempt = G.settleRun(attempt, { type: "edit", delta: 1, note: "Swapped." });
+assert.equal(attempt.swaps, 1);
+attempt = G.settleRun(attempt, { type: "start", note: "Running." });
+assert.equal(attempt.swaps, 0);
+assert.equal(attempt.steps, 0);
+assert.equal(attempt.scoredSwaps, 1);
+assert.equal(G.starsFor(true, attempt.scoredSwaps, 1000, l6), 3);
+attempt = G.settleRun(attempt, { type: "win", n: 3, swaps: attempt.scoredSwaps, note: "The program works. 1 swap, 1.0 s." });
+assert.equal(G.runView(attempt).words, "Three stars.");
+attempt = G.settleRun(attempt, { type: "retry" });
+assert.equal(attempt.kind, "idle");
+assert.equal(attempt.swaps, 0);
+attempt = G.settleRun(attempt, { type: "edit", delta: 1 });
+attempt = G.settleRun(attempt, { type: "start" });
+assert.equal(attempt.scoredSwaps, 1);
+assert.equal(G.starsFor(true, attempt.scoredSwaps, 1000, l6), 3);
+attempt = G.settleRun(attempt, { type: "win", n: 3, swaps: attempt.scoredSwaps, note: "The program works. 1 swap, 1.0 s." });
+assert.equal(G.runView(attempt).words, "Three stars.");
+const afterThree = G.settleRun(attempt, { type: "fail", note: "The claw never closed on the part." });
+assert.equal(G.runView(afterThree).words, "No stars yet.");
+assert.equal(G.runView(afterThree).stars, 0);
+assert.equal(G.runView(afterThree).status, "The claw never closed on the part.");
+assert.match(page, /session\.programs\.length < PINCHY\.LEVELS\.length/);
+assert.match(page, /document\.documentElement\.lang = lang/);
+assert.doesNotMatch(page, /fa-AF" \? "fa"/);
+assert.match(page, /e\.stopPropagation\(\)/);
+assert.match(page, /e\.key !== "Enter" && e\.key !== " "/);
+assert.doesNotMatch(page, /localStorage|sessionStorage|indexedDB/);
+assert.doesNotMatch(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8"), /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /prefers-reduced-motion/);
 assert.match(page, /min-height:\s*48px/);
 assert.match(page, /outline:\s*3px solid/);
@@ -106,5 +294,8 @@ assert.match(hub, /translate="no">Pinchy<\/span>/);
 console.log("L1", l1win.join(" > "));
 console.log("L2", l2win.join(" > "));
 console.log("L3", l3win.join(" > "));
+console.log("L4", l4win.join(" > "));
+console.log("L5", l5win.join(" > "));
+console.log("L6", l6fixed.join(" > "));
 console.log("crash", line);
 console.log("pinchy win-test ok");
