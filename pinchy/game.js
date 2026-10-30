@@ -948,7 +948,8 @@
       "L5-goal": "Send each part to the matching bin.",
       "L6-goal": "Fix the program with the fewest swaps.",
       READY: "READY", MOVING: "MOVING", STOPPED: "STOPPED", CRASH: "CRASH",
-      STATUS: "STATUS", JOINTS: "JOINTS", PROGRAM: "PROGRAM", VIEW: "VIEW", CELL: "CELL"
+      STATUS: "STATUS", JOINTS: "JOINTS", PROGRAM: "PROGRAM", VIEW: "VIEW", CELL: "CELL",
+      Levels: "Levels", Program: "Program", OPEN: "OPEN"
     },
     es: {
       READY: "LISTO", MOVING: "MOVIENDO", STOPPED: "PARADO", CRASH: "CHOQUE",
@@ -974,7 +975,8 @@
       "L5-goal": "إذا رأى الحساس مربعاً أحمر فضعه في الصندوق A. إذا رأى دائرة زرقاء فضعه في الصندوق B.",
       "L6-goal": "البرنامج معطوب. بدّل أقل عدد من الخطوات ثم شغّله.",
       READY: "جاهز", MOVING: "يتحرك", STOPPED: "متوقف", CRASH: "اصطدام",
-      STATUS: "الحالة", JOINTS: "المفاصل", PROGRAM: "البرنامج", VIEW: "العرض", CELL: "خلية"
+      STATUS: "الحالة", JOINTS: "المفاصل", PROGRAM: "البرنامج", VIEW: "العرض", CELL: "خلية",
+      Levels: "المستويات", Program: "البرنامج", OPEN: "مفتوح"
     },
     "fa-AF": {
       L1: "یک بند را حرکت بده", L2: "بردار و بگذار", L3: "به نقطه برو", L4: "کپه را مرتب کن", L5: "سطل‌های حسگر", L6: "برنامه را درست کن",
@@ -996,7 +998,8 @@
       "L5-goal": "اگر حسگر مربع سرخ دید آن را در سطل A بگذار. اگر دایره آبی دید آن را در سطل B بگذار.",
       "L6-goal": "برنامه خراب است. کمترین گام را جابه‌جا کن و بعد اجرا کن.",
       READY: "آماده", MOVING: "در حرکت", STOPPED: "ایست", CRASH: "برخورد",
-      STATUS: "وضعیت", JOINTS: "بندها", PROGRAM: "برنامه", VIEW: "نما", CELL: "خانه"
+      STATUS: "وضعیت", JOINTS: "بندها", PROGRAM: "برنامه", VIEW: "نما", CELL: "خانه",
+      Levels: "مرحله‌ها", Program: "برنامه", OPEN: "باز"
     }
   };
   function uiText(lang, key) {

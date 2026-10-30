@@ -604,7 +604,7 @@ try {
         <h2 class="panel-label"><span data-ui="PROGRAM">PROGRAM</span><span>P-01</span></h2>
         <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
         <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
-          <p>Program</p>
+          <p id="program-title">Program</p>
           <ol id="program"></ol>
         </div>
         <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
@@ -984,6 +984,17 @@ var paintChrome = function () {
     el.textContent = (LAMP_MARK[el.dataset.lamp] || "") + PINCHY.uiText(lang, key);
     if (lang === "ar" || lang === "fa-AF") markDraft(el);
     else el.removeAttribute("data-draft");
+  }
+  var levelsBtn = document.getElementById("levels-btn");
+  if (levelsBtn) levelsBtn.textContent = "\u2630 " + PINCHY.uiText(lang, "Levels");
+  var programTitle = document.getElementById("program-title");
+  if (programTitle) programTitle.textContent = PINCHY.uiText(lang, "Program");
+  if (lang === "ar" || lang === "fa-AF") {
+    markDraft(levelsBtn);
+    markDraft(programTitle);
+  } else {
+    if (levelsBtn) levelsBtn.removeAttribute("data-draft");
+    if (programTitle) programTitle.removeAttribute("data-draft");
   }
 };
 var applyLang = function (code) {
@@ -1525,7 +1536,8 @@ var paintGame = function () {
   document.getElementById("ro-shoulder").textContent = fmtDeg(world.shoulder);
   document.getElementById("ro-elbow").textContent = fmtDeg(world.elbow);
   document.getElementById("ro-wrist").textContent = fmtDeg(world.wrist || 0);
-  document.getElementById("ro-claw").textContent = world.open ? "OPEN" : "SHUT";
+  document.getElementById("ro-claw").textContent = world.open ? PINCHY.uiText(lang, "OPEN") : "SHUT";
+  if (world.open && (lang === "ar" || lang === "fa-AF")) markDraft(document.getElementById("ro-claw"));
   paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
