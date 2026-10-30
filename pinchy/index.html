@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:,">
+<title>Pinchy McPinchface</title>
+<style>
+  @font-face {
+    font-family: Archivo;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("archivo-700.woff2") format("woff2");
+  }
+  :root {
+    color-scheme: dark;
+    --bg: #06122B;
+    --blue: #16325C;
+    --blue-2: #1C406E;
+    --violet: #3A2A66;
+    --violet-2: #2A1F4E;
+    --ink: #F3EEE4;
+    --muted: #C9D2E2;
+    --line: #8EA0BE;
+    --ember: #E85820;
+    --arm: #A8AEB6;
+    --arm-2: #8E949C;
+    --arm-3: #7E868E;
+    --joint: #3E4650;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    min-height: 100vh;
+    font: 16px/1.35 system-ui, sans-serif;
+  }
+  button { font: inherit; color: inherit; background: var(--blue-2); touch-action: manipulation; }
+  button, .ver, .chip, canvas { user-select: none; }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--blue);
+  }
+  .brand { margin: 0; font-size: 18px; font-weight: 750; }
+  .ver {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0 12px;
+    border: 2px solid var(--ember);
+    background: var(--blue);
+    font-weight: 750;
+  }
+  button.tool, button.block, button.action, button.level, #play {
+    min-width: 48px;
+    min-height: 48px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-weight: 650;
+  }
+  button.tool, #play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+  }
+  #whats-new {
+    margin: 8px;
+    padding: 12px;
+    background: var(--violet);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 #030914;
+    max-width: 40rem;
+  }
+  #whats-new h2 { margin: 0 0 8px; font-size: 20px; }
+  #whats-new p, #whats-new li { margin: 0 0 8px; }
+  #title-screen, #game { padding: 8px; }
+  #hero {
+    margin: 8px 0 12px;
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 7vw, 72px);
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+  #title-arm, #view {
+    width: 100%;
+    display: block;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+  }
+  #title-arm { height: 280px; }
+  #view { height: 380px; }
+  .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  button.level {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    text-align: left;
+    flex: 1 1 160px;
+  }
+  button.level[aria-pressed="true"] { border-width: 3px; background: var(--violet); }
+  button:focus-visible, .chip:focus-visible {
+    outline: 3px solid var(--ember);
+    outline-offset: 2px;
+  }
+  button:active { background: var(--violet-2); }
+  button:disabled { opacity: 0.55; }
+  button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
+  #goal, .legend, .help, #angles, #metrics { margin: 8px 0; font-weight: 650; }
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+    gap: 8px;
+    align-items: start;
+  }
+  .side { display: flex; flex-direction: column; gap: 8px; }
+  .palette, .actions { display: grid; gap: 8px; }
+  .palette { grid-template-columns: 1fr 1fr; padding: 8px; background: var(--violet); border-radius: 12px; }
+  .actions { grid-template-columns: 1fr 1fr 1fr; }
+  button.block, button.action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  button .name { flex: 1 1 auto; line-height: 1.15; }
+  kbd {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px 5px;
+    background: var(--violet-2);
+    font: 700 12px/1.2 system-ui, sans-serif;
+  }
+  #status {
+    margin: 8px 0;
+    min-height: 48px;
+    padding: 8px 10px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--blue-2);
+    font-weight: 700;
+  }
+  #status.is-win { border-width: 3px; }
+  #status.is-crash { background: var(--violet-2); }
+  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; font-weight: 750; }
+  .star { font-size: 28px; line-height: 1; color: transparent; -webkit-text-stroke: 2px var(--ink); }
+  .star.is-on { color: var(--ember); -webkit-text-stroke: 0; }
+  #program-wrap {
+    background: var(--blue);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+  }
+  #program-wrap p { margin: 0 0 6px; font-weight: 750; }
+  #program {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0;
+    padding: 4px 2px 8px;
+    list-style: none;
+    min-height: 56px;
+    align-items: center;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 4px 8px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--violet);
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  .chip.is-now, .chip.is-stop {
+    outline: 4px solid var(--ember);
+    outline-offset: 2px;
+  }
+  .chip .mark { font-weight: 750; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (max-width: 900px) {
+    .stage { grid-template-columns: 1fr; }
+    #view { height: 320px; }
+    #title-arm { height: 220px; }
+  }
+  @media (max-height: 520px) {
+    #hero { font-size: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  @media (forced-colors: active) {
+    button, .chip, .ver, #view, #title-arm, #status, #program-wrap, #whats-new {
+      border: 2px solid ButtonText;
+    }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <p class="brand" translate="no">Pinchy</p>
+  <span class="ver" id="app-version">v1.0.0</span>
+  <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
+</header>
+<section id="whats-new" hidden>
+  <h2>What's new</h2>
+  <p>Version 1.0.0</p>
+  <ul>
+    <li>Pinchy McPinchface is the arm game.</li>
+    <li>Level 1 moves one joint. Level 2 picks up a part and places it. Level 3 goes to a spot from A1 to C3.</li>
+    <li>If the arm hits something, the note names the part and the step stays outlined. Retry keeps your program.</li>
+  </ul>
+  <button type="button" class="tool" id="whats-close">Close</button>
+</section>
+<section id="title-screen">
+  <h1 id="hero" translate="no">Pinchy McPinchface</h1>
+  <canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas>
+  <p><button type="button" id="play">Play</button></p>
+</section>
+<main id="game" hidden>
+  <div class="levels" id="levels" role="group" aria-label="Levels"></div>
+  <p id="goal"></p>
+  <div class="stage">
+    <div>
+      <canvas id="view" width="800" height="300" aria-hidden="true"></canvas>
+      <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
+      <p class="legend" id="legend">Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.</p>
+    </div>
+    <div class="side">
+      <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
+      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
+    </div>
+  </div>
+  <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
+  <p id="step-live" class="sr-only" aria-live="polite"></p>
+  <p id="stars" aria-live="polite" aria-atomic="true" aria-label="No stars yet.">
+    <span class="star" id="star-1" aria-hidden="true">★</span>
+    <span class="star" id="star-2" aria-hidden="true">★</span>
+    <span class="star" id="star-3" aria-hidden="true">★</span>
+    <span id="star-words">No stars yet.</span>
+  </p>
+  <p id="metrics">
+    <span id="m-blocks">Blocks: 0</span>
+    <span id="m-time">Time: none yet</span>
+  </p>
+  <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
+    <p>Program</p>
+    <ol id="program"></ol>
+  </div>
+  <p class="help" id="help">Arrow keys pick a block. Enter adds it. R runs. Z undoes. Retry keeps the program.</p>
+</main>
+<noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
+<script src="game.js"></script>
+<script>
+"use strict";
+var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
+var STEP_MS = 520;
+var SNAP_HOLD = 80;
+var session = { level: 0, programs: [[], [], []], stars: [0, 0, 0] };
+var world = null;
+var playback = 0;
+var playing = false;
+var reduce = false;
+var focusIndex = 0;
+var activeCmd = "";
+var runT0 = 0;
+var lastMs = null;
+var titleOn = true;
+var waveGen = 0;
+var viewCanvas = null;
+var titleCanvas = null;
+
+var svg = function (body) {
+  return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">' + body + "</svg>";
+};
+var ST = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+var ICONS = {
+  "base-left": svg('<path d="M16 12 a6 6 0 1 0 -2 4" ' + ST + '/><path d="M8 10 H4 v4" ' + ST + '/>'),
+  "base-right": svg('<path d="M8 12 a6 6 0 1 1 2 4" ' + ST + '/><path d="M16 10 h4 v4" ' + ST + '/>'),
+  "shoulder-up": svg('<circle cx="6" cy="18" r="1.6" ' + ST + '/><path d="M8 16 L15 7" ' + ST + '/><path d="M11 7 h5 v5" ' + ST + '/>'),
+  "shoulder-down": svg('<circle cx="6" cy="6" r="1.6" ' + ST + '/><path d="M8 8 L15 17" ' + ST + '/><path d="M11 17 h5 v-5" ' + ST + '/>'),
+  "elbow-up": svg('<path d="M3 17 H10 L17 8" ' + ST + '/><path d="M13 8 h5 v5" ' + ST + '/>'),
+  "elbow-down": svg('<path d="M3 7 H10 L17 16" ' + ST + '/><path d="M13 16 h5 v-5" ' + ST + '/>'),
+  "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
+  "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
+  "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
+  "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
+  "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
+  "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
+  "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
+};
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot" };
+
+var labelOf = function (id) {
+  var block = PINCHY.blockById(id);
+  return block ? block.label : id;
+};
+var angleText = function (id) {
+  var block = PINCHY.blockById(id);
+  if (!block) return "";
+  if (block.joint === "claw") return block.angle + "\u00b0";
+  return (block.delta > 0 ? "+" : "") + block.delta + "\u00b0";
+};
+var formatMs = function (ms) {
+  return (Math.max(0, ms) / 1000).toFixed(1) + " s";
+};
+
+var setStatus = function (text, kind) {
+  var el = document.getElementById("status");
+  el.textContent = text;
+  el.classList.remove("is-win", "is-crash");
+  if (kind === "win") el.classList.add("is-win");
+  if (kind === "crash") el.classList.add("is-crash");
+};
+var setStepLive = function (text) {
+  document.getElementById("step-live").textContent = text;
+};
+
+var paintStars = function () {
+  var n = session.stars[session.level];
+  var words = PINCHY.starWords(n);
+  for (var i = 1; i <= 3; i++) {
+    var star = document.getElementById("star-" + i);
+    star.classList.toggle("is-on", i <= n);
+    star.textContent = i <= n ? "\u2605" : "\u2606";
+  }
+  document.getElementById("star-words").textContent = words;
+  document.getElementById("stars").setAttribute("aria-label", words);
+};
+var clearStars = function () {
+  session.stars[session.level] = 0;
+  paintStars();
+};
+
+var updateMetrics = function () {
+  var n = session.programs[session.level].length;
+  document.getElementById("m-blocks").textContent = "Blocks: " + n;
+  var timeEl = document.getElementById("m-time");
+  if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
+  else if (lastMs == null) timeEl.textContent = "Time: none yet";
+  else timeEl.textContent = "Time: " + formatMs(lastMs);
+};
+
+var renderProgram = function (now, stop) {
+  var ol = document.getElementById("program");
+  var list = session.programs[session.level];
+  ol.dataset.steps = JSON.stringify(PINCHY.stepList(list));
+  ol.replaceChildren();
+  if (!list.length) {
+    var empty = document.createElement("li");
+    empty.textContent = "No blocks yet.";
+    ol.appendChild(empty);
+    return;
+  }
+  for (var i = 0; i < list.length; i++) {
+    var li = document.createElement("li");
+    li.className = "chip";
+    li.dataset.step = String(i + 1);
+    if (i === now) {
+      li.classList.add("is-now");
+      li.setAttribute("aria-current", "step");
+    }
+    if (i === stop) li.classList.add("is-stop");
+    if (i === now || i === stop) {
+      var mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = i === stop ? "\u2717" : "\u25B6";
+      li.appendChild(mark);
+    }
+    var idx = document.createElement("span");
+    idx.textContent = String(i + 1);
+    li.appendChild(idx);
+    var holder = document.createElement("span");
+    holder.innerHTML = ICONS[list[i]] || "";
+    if (holder.firstChild) li.appendChild(holder.firstChild);
+    var name = document.createElement("span");
+    name.textContent = labelOf(list[i]);
+    li.appendChild(name);
+    var deg = document.createElement("span");
+    deg.textContent = angleText(list[i]);
+    li.appendChild(deg);
+    ol.appendChild(li);
+  }
+  var current = ol.querySelector(".is-now, .is-stop");
+  if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+};
+
+var renderLevels = function () {
+  var buttons = document.querySelectorAll("#levels button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
+  }
+  document.getElementById("goal").textContent = PINCHY.LEVELS[session.level].goal;
+  paintStars();
+};
+
+var setBusy = function (busy) {
+  var nodes = document.querySelectorAll("#palette button, #run, #undo, #levels button");
+  for (var i = 0; i < nodes.length; i++) nodes[i].disabled = busy;
+  document.getElementById("retry").disabled = false;
+};
+
+var addBlock = function (id) {
+  if (playing) return;
+  var list = session.programs[session.level];
+  if (list.length >= 24) {
+    setStatus("Program is full at 24 blocks.", "");
+    return;
+  }
+  list.push(id);
+  renderProgram(-1, -1);
+  updateMetrics();
+};
+var undo = function () {
+  if (playing) return;
+  var list = session.programs[session.level];
+  if (!list.length) return;
+  list.pop();
+  renderProgram(-1, -1);
+  updateMetrics();
+};
+
+var projector = function (w, h, originX, originY) {
+  var worldW = VIEW.x1 - VIEW.x0;
+  var worldH = VIEW.y1 - VIEW.y0;
+  var s = Math.min(w / worldW, h / worldH);
+  var ox = originX + (w - worldW * s) / 2;
+  var oy = originY + (h - worldH * s) / 2;
+  return {
+    s: s,
+    x: function (wx) { return ox + (wx - VIEW.x0) * s; },
+    y: function (wy) { return oy + (VIEW.y1 - wy) * s; }
+  };
+};
+
+var roundRect = function (c, x, y, w, h, r) {
+  var rr = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  c.beginPath();
+  c.moveTo(x + rr, y);
+  c.arcTo(x + w, y, x + w, y + h, rr);
+  c.arcTo(x + w, y + h, x, y + h, rr);
+  c.arcTo(x, y + h, x, y, rr);
+  c.arcTo(x, y, x + w, y, rr);
+  c.closePath();
+};
+
+var labelQueue = [];
+var tag = function (text, wx, wy, dx, dy) {
+  labelQueue.push({ text: text, wx: wx, wy: wy, dx: dx || 0, dy: dy || 0 });
+};
+var paintTags = function (ctx, P, bounds) {
+  ctx.font = "600 13px system-ui, sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  var placed = [];
+  for (var i = 0; i < labelQueue.length; i++) {
+    var item = labelQueue[i];
+    var tw = ctx.measureText(item.text).width;
+    var pad = 4;
+    var w = tw + pad * 2;
+    var h = 18;
+    var x = P.x(item.wx) + item.dx - w / 2;
+    var y = P.y(item.wy) + item.dy - h / 2;
+    var tries = 0;
+    var hit = true;
+    while (hit && tries < 8) {
+      hit = false;
+      for (var j = 0; j < placed.length; j++) {
+        var box = placed[j];
+        if (x < box.x + box.w && x + w > box.x && y < box.y + box.h && y + h > box.y) {
+          hit = true;
+          y += h + 2;
+          break;
+        }
+      }
+      tries += 1;
+    }
+    x = Math.max(bounds.x + 2, Math.min(x, bounds.x + bounds.w - w - 2));
+    y = Math.max(bounds.y + 2, Math.min(y, bounds.y + bounds.h - h - 2));
+    placed.push({ x: x, y: y, w: w, h: h });
+    ctx.fillStyle = "#16325C";
+    roundRect(ctx, x, y, w, h, 4);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#8EA0BE";
+    ctx.stroke();
+    ctx.fillStyle = "#F3EEE4";
+    ctx.fillText(item.text, x + pad, y + 13);
+  }
+  labelQueue = [];
+};
+
+var strokeBone = function (ctx, P, x1, y1, x2, y2, color, width) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(P.x(x1), P.y(y1));
+  ctx.lineTo(P.x(x2), P.y(y2));
+  ctx.stroke();
+};
+
+var drawArm = function (ctx, P, state, opts) {
+  var layout = PINCHY.LAYOUT;
+  var p = PINCHY.pose(state);
+  var wide = Math.max(18, P.s * 16);
+  if (opts.ghost) {
+    ctx.save();
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#C5CEDA";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(P.x(0), P.y(layout.sy));
+    ctx.lineTo(P.x(p.ex), P.y(p.ey));
+    ctx.lineTo(P.x(p.wx), P.y(p.wy));
+    ctx.lineTo(P.x(p.gx), P.y(p.gy));
+    ctx.stroke();
+    ctx.restore();
+    tag("Mark", p.cx, p.cy, 0, -28);
+    return;
+  }
+  strokeBone(ctx, P, 0, layout.sy, p.ex, p.ey, "#A8AEB6", wide);
+  strokeBone(ctx, P, p.ex, p.ey, p.wx, p.wy, "#8E949C", Math.max(14, P.s * 12));
+  strokeBone(ctx, P, p.wx, p.wy, p.gx, p.gy, "#9AA1A8", Math.max(12, P.s * 10));
+  var half = p.gap / 2;
+  var thick = 9 / Math.max(P.s, 0.25);
+  ctx.fillStyle = "#E85820";
+  for (var sign = -1; sign <= 1; sign += 2) {
+    var x1 = p.gx + p.nx * sign * half;
+    var y1 = p.gy + p.ny * sign * half;
+    var x2 = x1 + p.px * layout.jaw;
+    var y2 = y1 + p.py * layout.jaw;
+    var tx = p.nx * thick;
+    var ty = p.ny * thick;
+    ctx.beginPath();
+    ctx.moveTo(P.x(x1), P.y(y1));
+    ctx.lineTo(P.x(x2), P.y(y2));
+    ctx.lineTo(P.x(x2 + tx), P.y(y2 + ty));
+    ctx.lineTo(P.x(x1 + tx), P.y(y1 + ty));
+    ctx.closePath();
+    ctx.fill();
+  }
+  var joint = function (wx, wy, hot) {
+    ctx.beginPath();
+    ctx.fillStyle = "#3E4650";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(6, P.s * 7), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#D5D8DC";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(2.4, P.s * 2.5), 0, Math.PI * 2);
+    ctx.fill();
+    if (hot) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#F3EEE4";
+      ctx.lineWidth = 2;
+      ctx.arc(P.x(wx), P.y(wy), Math.max(10, P.s * 11), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  };
+  var cmd = opts.cmd || "";
+  joint(0, layout.sy, cmd.indexOf("shoulder") === 0);
+  joint(p.ex, p.ey, cmd.indexOf("elbow") === 0);
+  joint(p.wx, p.wy, false);
+  joint(p.gx, p.gy, cmd.indexOf("claw") === 0);
+  tag("Shoulder " + Math.round(state.shoulder) + "\u00b0", 0, layout.sy, -78, -6);
+  tag("Elbow " + Math.round(state.elbow) + "\u00b0", p.ex, p.ey, -86, -26);
+  tag("Wrist 0\u00b0", p.wx, p.wy, 8, -30);
+  tag("Claw", p.gx, p.gy, 36, 10);
+};
+
+var drawScene = function (canvas, state, opts) {
+  if (!canvas || !state) return;
+  var w = canvas._cssW;
+  var h = canvas._cssH;
+  var dpr = canvas._dpr || 1;
+  if (!w || !h) return;
+  var ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#06122B";
+  ctx.fillRect(0, 0, w, h);
+  labelQueue = [];
+  var showGrid = opts.showGrid !== false;
+  var gridH = 0;
+  if (showGrid) {
+    gridH = Math.max(154, Math.min(168, Math.round(h * 0.42)));
+    if (h < 260) gridH = Math.max(120, h - 96);
+  }
+  var sideH = h - gridH;
+  var P = projector(w, sideH, 0, 0);
+  var layout = PINCHY.LAYOUT;
+  var tableY = P.y(0);
+  ctx.fillStyle = "#10243F";
+  ctx.fillRect(0, tableY, w, Math.max(0, sideH - tableY));
+  ctx.strokeStyle = "#8EA0BE";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, tableY);
+  ctx.lineTo(w, tableY);
+  ctx.stroke();
+  tag("Table", VIEW.x0 + 28, -8, 0, 16);
+
+  var level = opts.level || null;
+  if (level && level.bin && Math.abs(state.base - level.bin.base) <= 7) {
+    var bin = level.bin;
+    var xL = P.x(bin.r - bin.half);
+    var xR = P.x(bin.r + bin.half);
+    var y0 = P.y(0);
+    var yH = P.y(bin.h);
+    ctx.strokeStyle = "#C9D2E2";
+    ctx.lineWidth = Math.max(3, P.s * layout.thick * 0.7);
+    ctx.beginPath();
+    ctx.moveTo(xL, yH);
+    ctx.lineTo(xL, y0);
+    ctx.lineTo(xR, y0);
+    ctx.lineTo(xR, yH);
+    ctx.stroke();
+    tag("Bin", bin.r, bin.h, 0, -22);
+  }
+
+  var bx = P.x(-26);
+  var by = P.y(layout.sy);
+  var bw = P.x(26) - bx;
+  var bh = P.y(0) - by;
+  ctx.fillStyle = "#7E868E";
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = "#3E4650";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(bx, by, bw, bh);
+  var dialX = P.x(0);
+  var dialY = P.y(28);
+  var dialR = Math.max(8, P.s * 12);
+  ctx.beginPath();
+  ctx.arc(dialX, dialY, dialR, 0, Math.PI * 2);
+  ctx.stroke();
+  var dial = state.base * Math.PI / 180;
+  ctx.beginPath();
+  ctx.moveTo(dialX, dialY);
+  ctx.lineTo(dialX + Math.sin(dial) * dialR, dialY - Math.cos(dial) * dialR);
+  ctx.stroke();
+  if ((opts.cmd || "").indexOf("base") === 0) {
+    ctx.beginPath();
+    ctx.strokeStyle = "#F3EEE4";
+    ctx.lineWidth = 2;
+    ctx.arc(dialX, dialY, dialR + 4, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  tag("Base " + Math.round(state.base) + "\u00b0", 0, 36, 0, 28);
+
+  if (level && level.kind === "match" && level.target) {
+    drawArm(ctx, P, {
+      base: level.target.base,
+      shoulder: level.target.shoulder,
+      elbow: level.target.elbow,
+      open: true,
+      gap: layout.gapOpen
+    }, { ghost: true });
+  }
+
+  var part = state.part;
+  if (part && !part.inBin && (state.holding || Math.abs(state.base - part.base) <= 7)) {
+    var px = P.x(part.r - part.hw);
+    var py = P.y(part.y + part.hh);
+    var pw = P.x(part.r + part.hw) - px;
+    var ph = P.y(part.y - part.hh) - py;
+    ctx.fillStyle = "#C5CEDA";
+    ctx.fillRect(px, py, pw, ph);
+    ctx.strokeStyle = "#3E4650";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px, py, pw, ph);
+    tag("Part", part.r, part.y, 0, 26);
+  } else if (part && part.inBin && level && level.bin) {
+    var ix = P.x(part.r - part.hw);
+    var iy = P.y(part.hh * 2);
+    var iw = P.x(part.r + part.hw) - ix;
+    var ih = P.y(0) - iy;
+    ctx.fillStyle = "#C5CEDA";
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.strokeStyle = "#3E4650";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ix, iy, iw, ih);
+    tag("Part", part.r, part.hh, 0, 22);
+  }
+
+  drawArm(ctx, P, state, { cmd: opts.cmd || "" });
+  paintTags(ctx, P, { x: 0, y: 0, w: w, h: Math.max(0, sideH - 6) });
+
+  if (!showGrid) return;
+  var box = { x: 8, y: sideH + 8, w: w - 16, h: gridH - 16 };
+  ctx.fillStyle = "#1A3058";
+  ctx.fillRect(box.x, box.y, box.w, box.h);
+  var cols = PINCHY.COLS;
+  var rows = PINCHY.ROWS;
+  var poseNow = PINCHY.pose(state);
+  var here = level && level.kind === "spot" ? level.spot : "";
+  ctx.font = "600 12px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  var c, r;
+  for (c = 0; c < cols.length; c++) {
+    for (r = 0; r < rows.length; r++) {
+      var cellX = box.x + (c * box.w) / 3;
+      var cellY = box.y + ((2 - r) * box.h) / 3;
+      var cellW = box.w / 3;
+      var cellH = box.h / 3;
+      var name = cols[c][0] + rows[r][0];
+      ctx.fillStyle = "#24386A";
+      ctx.fillRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
+      ctx.lineWidth = name === here ? 3 : 1;
+      ctx.strokeStyle = name === here ? "#E85820" : "#8EA0BE";
+      ctx.strokeRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
+      ctx.fillStyle = "#F3EEE4";
+      var midX = cellX + cellW / 2;
+      var extra = "";
+      if (part && !part.inBin && PINCHY.spotName(part.base, part.r) === name) extra = "Part";
+      if (level && level.bin && PINCHY.spotName(level.bin.base, level.bin.r) === name) extra = extra ? extra + " / Bin" : "Bin";
+      if (name === here) extra = extra ? extra + " / Go here" : "Go here";
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(cellX + 3, cellY + 3, cellW - 6, cellH - 6);
+      ctx.clip();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (extra && cellH >= 40) {
+        ctx.fillText(name, midX, cellY + cellH * 0.32);
+        ctx.fillText(extra, midX, cellY + cellH * 0.72);
+      } else if (extra) {
+        ctx.fillText(name + " " + extra, midX, cellY + cellH / 2);
+      } else {
+        ctx.fillText(name, midX, cellY + cellH / 2);
+      }
+      ctx.restore();
+    }
+  }
+  var u = Math.max(0.04, Math.min(0.96, (state.base + 45) / 90));
+  var v = Math.max(0.06, Math.min(0.94, (poseNow.cx - 80) / 96));
+  var dotX = box.x + u * box.w;
+  var dotY = box.y + box.h - v * box.h;
+  ctx.fillStyle = "#F3EEE4";
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#3E4650";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+};
+
+var fit = function (canvas) {
+  if (!canvas) return;
+  var rect = canvas.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var cssW = Math.max(1, Math.round(rect.width));
+  var cssH = Math.max(1, Math.round(rect.height));
+  if (canvas._cssW === cssW && canvas._cssH === cssH && canvas._dpr === dpr) return;
+  canvas._cssW = cssW;
+  canvas._cssH = cssH;
+  canvas._dpr = dpr;
+  canvas.width = Math.max(1, Math.round(cssW * dpr));
+  canvas.height = Math.max(1, Math.round(cssH * dpr));
+};
+
+var paintGame = function () {
+  if (!world) return;
+  fit(viewCanvas);
+  document.getElementById("angles").textContent = PINCHY.jointReadout(world);
+  drawScene(viewCanvas, world, {
+    level: PINCHY.LEVELS[session.level],
+    cmd: activeCmd,
+    showGrid: true
+  });
+};
+
+var titleState = function (shoulder) {
+  return {
+    base: 0,
+    shoulder: shoulder,
+    elbow: -40,
+    open: true,
+    gap: PINCHY.LAYOUT.gapOpen,
+    holding: false,
+    part: null
+  };
+};
+var paintTitle = function (shoulder) {
+  fit(titleCanvas);
+  drawScene(titleCanvas, titleState(shoulder), { showGrid: false, level: null, cmd: "" });
+};
+var startWave = function () {
+  var gen = ++waveGen;
+  fit(titleCanvas);
+  if (!titleOn) return;
+  if (reduce) {
+    paintTitle(32);
+    return;
+  }
+  var t0 = performance.now();
+  var frame = function (now) {
+    if (gen !== waveGen || !titleOn) return;
+    paintTitle(32 + Math.sin((now - t0) / 700) * 14);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+};
+
+var blend = function (start, result, f) {
+  if (f >= 1) return PINCHY.cloneState(result.state);
+  var gap1 = result.state.gap == null ? start.gap : result.state.gap;
+  var vis = {
+    base: start.base + (result.state.base - start.base) * f,
+    shoulder: start.shoulder + (result.state.shoulder - start.shoulder) * f,
+    elbow: start.elbow + (result.state.elbow - start.elbow) * f,
+    gap: start.gap + (gap1 - start.gap) * f,
+    open: false,
+    holding: !!(start.holding || (result.state.holding && f > 0.92)),
+    part: null
+  };
+  vis.open = vis.gap > 22;
+  var source = start.part || (result.state.holding ? result.state.part : null);
+  if (source) {
+    vis.part = {
+      base: source.base, r: source.r, y: source.y, hw: source.hw, hh: source.hh,
+      inBin: false, dropped: false
+    };
+    if (vis.holding) {
+      var p = PINCHY.pose(vis);
+      vis.part.base = vis.base;
+      vis.part.r = p.cx;
+      vis.part.y = p.cy;
+    }
+  }
+  return vis;
+};
+
+var until = function (ms, token) {
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      if (playing && runT0) updateMetrics();
+      if (now - t0 >= ms) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+var glide = function (ms, token, onFrame) {
+  if (reduce || ms <= 0) {
+    onFrame(1);
+    return until(SNAP_HOLD, token);
+  }
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      var t = Math.min(1, (now - t0) / ms);
+      onFrame(t);
+      if (playing && runT0) updateMetrics();
+      if (t >= 1) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+
+var finishWin = function (blocks, ms) {
+  var level = PINCHY.LEVELS[session.level];
+  var n = PINCHY.starsFor(true, blocks, ms, level);
+  if (n > session.stars[session.level]) session.stars[session.level] = n;
+  var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
+  var text = "Done. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "place") text = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "match") text = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "spot") text = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
+  text += " " + PINCHY.starWords(n) + "";
+  setStatus(text, "win");
+  setStepLive(text);
+  paintStars();
+};
+var finishFail = function (msg, step) {
+  var text = "\u2717 " + PINCHY.crashLine(msg, step);
+  clearStars();
+  setStatus(text, "crash");
+  setStepLive(text);
+};
+
+var play = async function () {
+  if (playing || document.getElementById("game").hidden) return;
+  var commands = session.programs[session.level].slice();
+  if (!commands.length) {
+    setStatus("Add a block, then press Run.", "");
+    return;
+  }
+  var token = ++playback;
+  playing = true;
+  setBusy(true);
+  var level = PINCHY.LEVELS[session.level];
+  world = PINCHY.initialState(level);
+  runT0 = performance.now();
+  lastMs = null;
+  activeCmd = "";
+  renderProgram(-1, -1);
+  updateMetrics();
+  paintGame();
+  setStatus("Running.", "");
+  var state = world;
+  var startHit = PINCHY.collide(state, level);
+  if (startHit) {
+    playing = false;
+    setBusy(false);
+    lastMs = performance.now() - runT0;
+    finishFail(startHit, 0);
+    updateMetrics();
+    return;
+  }
+  for (var i = 0; i < commands.length; i++) {
+    if (token !== playback) return;
+    activeCmd = commands[i];
+    renderProgram(i, -1);
+    setStepLive("Step " + (i + 1) + " of " + commands.length + ". " + labelOf(commands[i]) + ".");
+    setStatus("Running step " + (i + 1) + " of " + commands.length + ": " + labelOf(commands[i]) + ".", "");
+    var result = PINCHY.applyCommand(state, commands[i], level);
+    var moved = result.t > 0;
+    if (moved && !reduce) {
+      var alive = await glide(Math.max(180, STEP_MS * result.t), token, function (u) {
+        world = blend(state, result, u);
+        paintGame();
+      });
+      if (!alive || token !== playback) return;
+    } else {
+      world = PINCHY.cloneState(result.state);
+      paintGame();
+      var held = await until(reduce ? SNAP_HOLD : 0, token);
+      if (!held || token !== playback) return;
+    }
+    state = result.state;
+    world = PINCHY.cloneState(state);
+    activeCmd = "";
+    paintGame();
+    if (!result.ok || result.win || PINCHY.goalMet(state, level)) {
+      lastMs = performance.now() - runT0;
+      playing = false;
+      setBusy(false);
+      if (result.win || PINCHY.goalMet(state, level)) {
+        renderProgram(i, -1);
+        finishWin(commands.length, lastMs);
+      } else {
+        renderProgram(-1, i);
+        finishFail(result.msg, i + 1);
+      }
+      updateMetrics();
+      paintGame();
+      return;
+    }
+  }
+  if (token !== playback) return;
+  lastMs = performance.now() - runT0;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+  renderProgram(-1, -1);
+  var why = PINCHY.endReason(state, level);
+  setStatus(why, "");
+  setStepLive(why);
+  updateMetrics();
+  paintGame();
+};
+
+var stopPlay = function () {
+  playback += 1;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+};
+var retry = function () {
+  var kept = session.programs[session.level].slice();
+  stopPlay();
+  session.programs[session.level] = kept;
+  world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
+  lastMs = null;
+  runT0 = 0;
+  clearStars();
+  setStatus("Arm reset. Program kept.", "");
+  setStepLive("Arm reset. Program kept.");
+  renderProgram(-1, -1);
+  updateMetrics();
+  paintGame();
+};
+var selectLevel = function (index) {
+  if (index === session.level && !playing) return;
+  stopPlay();
+  session.level = index;
+  world = PINCHY.initialState(PINCHY.LEVELS[index]);
+  lastMs = null;
+  runT0 = 0;
+  renderLevels();
+  renderProgram(-1, -1);
+  updateMetrics();
+  setStatus("Add blocks, then press Run.", "");
+  setStepLive("");
+  paintGame();
+};
+
+var makeButton = function (className, icon, label, keyText) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = className;
+  b.innerHTML = ICONS[icon] || "";
+  var name = document.createElement("span");
+  name.className = "name";
+  name.textContent = label;
+  b.appendChild(name);
+  if (keyText) {
+    var k = document.createElement("kbd");
+    k.textContent = keyText;
+    b.appendChild(k);
+  }
+  return b;
+};
+
+var showGame = function () {
+  titleOn = false;
+  waveGen += 1;
+  document.getElementById("title-screen").hidden = true;
+  document.getElementById("game").hidden = false;
+  world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
+  fit(viewCanvas);
+  renderLevels();
+  renderProgram(-1, -1);
+  updateMetrics();
+  paintGame();
+  var first = document.querySelector("#palette button.block");
+  if (first && first.focus) first.focus({ preventScroll: true });
+};
+
+var boot = function () {
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.0.0") return;
+  document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
+  viewCanvas = document.getElementById("view");
+  titleCanvas = document.getElementById("title-arm");
+  var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  reduce = !!(mq && mq.matches);
+  var onMotion = function () {
+    reduce = !!(mq && mq.matches);
+    if (titleOn) startWave();
+  };
+  if (mq && mq.addEventListener) mq.addEventListener("change", onMotion);
+  else if (mq && mq.addListener) mq.addListener(onMotion);
+
+  var news = document.getElementById("whats-new");
+  var newsBtn = document.getElementById("whats-btn");
+  newsBtn.innerHTML = ICONS.note + '<span class="name">What\'s new</span>';
+  document.getElementById("play").innerHTML = ICONS.run + '<span class="name">Play</span>';
+  document.getElementById("whats-close").innerHTML = '<span class="name">Close</span>';
+  var toggleNews = function (open) {
+    news.hidden = !open;
+    newsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  newsBtn.addEventListener("click", function () { toggleNews(news.hidden); });
+  document.getElementById("whats-close").addEventListener("click", function () {
+    toggleNews(false);
+    newsBtn.focus();
+  });
+
+  var nav = document.getElementById("levels");
+  PINCHY.LEVELS.forEach(function (level, index) {
+    var b = makeButton("level", LEVEL_ICON[level.id] || "spot", (index + 1) + " " + level.name, "");
+    b.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+    b.addEventListener("click", function () { selectLevel(index); });
+    nav.appendChild(b);
+  });
+
+  var palette = document.getElementById("palette");
+  PINCHY.BLOCKS.forEach(function (block, index) {
+    var b = makeButton("block", block.id, block.label, "");
+    b.dataset.cmd = block.id;
+    b.tabIndex = index === 0 ? 0 : -1;
+    b.addEventListener("click", function () { addBlock(block.id); });
+    b.addEventListener("focus", function () { focusIndex = index; });
+    palette.appendChild(b);
+  });
+
+  var actions = document.getElementById("actions");
+  var runBtn = makeButton("action", "run", "Run", "R");
+  runBtn.id = "run";
+  runBtn.setAttribute("aria-keyshortcuts", "R");
+  runBtn.addEventListener("click", function () { play(); });
+  var undoBtn = makeButton("action", "undo", "Undo", "Z");
+  undoBtn.id = "undo";
+  undoBtn.setAttribute("aria-keyshortcuts", "Z");
+  undoBtn.addEventListener("click", function () { undo(); });
+  var retryBtn = makeButton("action", "retry", "Retry", "");
+  retryBtn.id = "retry";
+  retryBtn.addEventListener("click", function () { retry(); });
+  actions.appendChild(runBtn);
+  actions.appendChild(undoBtn);
+  actions.appendChild(retryBtn);
+
+  document.getElementById("play").addEventListener("click", showGame);
+
+  window.addEventListener("keydown", function (e) {
+    if (document.getElementById("game").hidden) return;
+    var key = e.key;
+    if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight") {
+      e.preventDefault();
+      var buttons = document.querySelectorAll("#palette button.block");
+      if (!buttons.length || playing) return;
+      var row = Math.floor(focusIndex / 2);
+      var col = focusIndex % 2;
+      if (key === "ArrowUp") row -= 1;
+      if (key === "ArrowDown") row += 1;
+      if (key === "ArrowLeft") col -= 1;
+      if (key === "ArrowRight") col += 1;
+      row = Math.max(0, Math.min(3, row));
+      col = Math.max(0, Math.min(1, col));
+      focusIndex = row * 2 + col;
+      buttons[focusIndex].focus();
+      return;
+    }
+    if (key === "z" || key === "Z") {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      undo();
+      return;
+    }
+    if (key === "r" || key === "R") {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      play();
+      return;
+    }
+    if (key === "Enter") {
+      var target = e.target;
+      if (target && target.closest && target.closest("button")) return;
+      e.preventDefault();
+      var blocks = document.querySelectorAll("#palette button.block");
+      if (blocks[focusIndex]) blocks[focusIndex].click();
+    }
+  });
+
+  var queued = false;
+  window.addEventListener("resize", function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () {
+      queued = false;
+      if (titleOn) fit(titleCanvas);
+      if (!document.getElementById("game").hidden) {
+        fit(viewCanvas);
+        paintGame();
+        var current = document.querySelector("#program .is-now, #program .is-stop");
+        if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+      }
+    });
+  });
+
+  world = PINCHY.initialState(PINCHY.LEVELS[0]);
+  startWave();
+  var playBtn = document.getElementById("play");
+  if (playBtn && playBtn.focus) playBtn.focus({ preventScroll: true });
+};
+
+if (typeof document !== "undefined") boot();
+</script>
+</body>
+</html>

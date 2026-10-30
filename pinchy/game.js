@@ -1,0 +1,561 @@
+(function (root, factory) {
+  var api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  else root.PINCHY = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  var APP_VERSION = "1.0.0";
+  var UPPER = 108;
+  var FORE = 78;
+  var WRIST = 24;
+  var SY = 108;
+  var JAW = 26;
+  var GAP_OPEN = 34;
+  var GAP_CLOSED = 12;
+  var THICK = 8;
+  var BASE_MIN = -45;
+  var BASE_MAX = 45;
+  var SH_MIN = -15;
+  var SH_MAX = 120;
+  var EL_MIN = -120;
+  var EL_MAX = 105;
+
+  var COLS = [["A", -30], ["B", 0], ["C", 30]];
+  var ROWS = [["1", 96], ["2", 128], ["3", 162]];
+  var COL_TOL = 7;
+  var ROW_TOL = 15;
+
+  var BLOCKS = [
+    { id: "base-left", joint: "base", delta: -15, label: "Base left" },
+    { id: "base-right", joint: "base", delta: 15, label: "Base right" },
+    { id: "shoulder-up", joint: "shoulder", delta: 15, label: "Shoulder up" },
+    { id: "shoulder-down", joint: "shoulder", delta: -15, label: "Shoulder down" },
+    { id: "elbow-up", joint: "elbow", delta: 15, label: "Elbow up" },
+    { id: "elbow-down", joint: "elbow", delta: -15, label: "Elbow down" },
+    { id: "claw-open", joint: "claw", angle: GAP_OPEN, label: "Open claw" },
+    { id: "claw-close", joint: "claw", angle: GAP_CLOSED, label: "Close claw" }
+  ];
+
+  var JOINTS = {
+    "base-left": ["base", -15],
+    "base-right": ["base", 15],
+    "shoulder-up": ["shoulder", 15],
+    "shoulder-down": ["shoulder", -15],
+    "elbow-up": ["elbow", 15],
+    "elbow-down": ["elbow", -15]
+  };
+
+  function blockById(id) {
+    for (var i = 0; i < BLOCKS.length; i++) if (BLOCKS[i].id === id) return BLOCKS[i];
+    return null;
+  }
+
+  function copyPart(part) {
+    if (!part) return null;
+    return {
+      base: part.base, r: part.r, y: part.y, hw: part.hw, hh: part.hh,
+      inBin: !!part.inBin, dropped: !!part.dropped
+    };
+  }
+
+  function cloneState(state) {
+    return {
+      base: state.base,
+      shoulder: state.shoulder,
+      elbow: state.elbow,
+      open: !!state.open,
+      gap: state.gap,
+      holding: !!state.holding,
+      part: copyPart(state.part)
+    };
+  }
+
+  function pose(state) {
+    var sd = state.shoulder;
+    var ed = state.elbow;
+    var gap = state.gap == null ? (state.open ? GAP_OPEN : GAP_CLOSED) : state.gap;
+    var s = sd * Math.PI / 180;
+    var fore = (sd + ed) * Math.PI / 180;
+    var ex = UPPER * Math.cos(s);
+    var ey = SY + UPPER * Math.sin(s);
+    var px = Math.cos(fore);
+    var py = Math.sin(fore);
+    var wx = ex + FORE * px;
+    var wy = ey + FORE * py;
+    var gx = wx + WRIST * px;
+    var gy = wy + WRIST * py;
+    var nx = -py;
+    var ny = px;
+    var along = JAW * 0.5;
+    return {
+      ex: ex, ey: ey, wx: wx, wy: wy, gx: gx, gy: gy,
+      px: px, py: py, nx: nx, ny: ny, gap: gap,
+      cx: gx + px * along, cy: gy + py * along,
+      open: gap > 22, sd: sd, ed: ed
+    };
+  }
+
+  function samples(x1, y1, x2, y2, n) {
+    var pts = [];
+    for (var i = 0; i <= n; i++) {
+      var t = i / n;
+      pts.push([x1 + (x2 - x1) * t, y1 + (y2 - y1) * t]);
+    }
+    return pts;
+  }
+
+  function inBase(x, y) {
+    return Math.abs(x) <= 34 && y >= -4 && y <= SY + 8;
+  }
+
+  function obstacles(level, base) {
+    var obs = [];
+    var bin = level.bin;
+    if (bin && Math.abs(base - bin.base) <= COL_TOL) {
+      var mouthL = bin.r - bin.half;
+      var mouthR = bin.r + bin.half;
+      obs.push({ l: mouthL - THICK, r: mouthL, h: bin.h, name: "bin" });
+      obs.push({ l: mouthR, r: mouthR + THICK, h: bin.h, name: "bin" });
+    }
+    return obs;
+  }
+
+  function pointHit(x, y, who, level, state, canPart) {
+    if (y < 3 && !inBase(x, y)) return who + " hit the table";
+    var obs = obstacles(level, state.base);
+    for (var i = 0; i < obs.length; i++) {
+      var o = obs[i];
+      if (x >= o.l && x <= o.r && y >= -2 && y <= o.h) return who + " hit the " + o.name;
+    }
+    var part = state.part;
+    if (canPart && part && !part.inBin && !state.holding && Math.abs(state.base - part.base) <= COL_TOL) {
+      if (Math.abs(x - part.r) <= part.hw && Math.abs(y - part.y) <= part.hh) return who + " hit the part";
+    }
+    return "";
+  }
+
+  function overBin(p, base, level) {
+    var bin = level.bin;
+    if (!bin) return false;
+    if (Math.abs(base - bin.base) > COL_TOL) return false;
+    return p.cx > bin.r - bin.half && p.cx < bin.r + bin.half && p.cy > 6 && p.cy < 240;
+  }
+
+  function contains(p, state) {
+    var part = state.part;
+    if (!part || part.inBin) return false;
+    if (Math.abs(state.base - part.base) > COL_TOL) return false;
+    var dx = part.r - p.gx;
+    var dy = part.y - p.gy;
+    var along = dx * p.px + dy * p.py;
+    var across = dx * p.nx + dy * p.ny;
+    return along >= 1 && along <= JAW + 2 && Math.abs(across) <= (p.gap / 2) + 3;
+  }
+
+  function collide(state, level) {
+    var p = pose(state);
+    var part = state.part;
+    var hitPart = !state.holding && part && !part.inBin;
+    var lists = [
+      [samples(0, SY, p.ex, p.ey, 8), "shoulder", false],
+      [samples(p.ex, p.ey, p.wx, p.wy, 8), "elbow", hitPart],
+      [samples(p.wx, p.wy, p.gx, p.gy, 4), "wrist", hitPart]
+    ];
+    var i, j, hit, pts;
+    for (i = 0; i < lists.length; i++) {
+      pts = lists[i][0];
+      for (j = 0; j < pts.length; j++) {
+        hit = pointHit(pts[j][0], pts[j][1], lists[i][1], level, state, lists[i][2]);
+        if (hit) return hit;
+      }
+    }
+    var half = p.gap / 2;
+    var sign;
+    for (sign = -1; sign <= 1; sign += 2) {
+      var x1 = p.gx + p.nx * sign * half;
+      var y1 = p.gy + p.ny * sign * half;
+      var x2 = x1 + p.px * JAW;
+      var y2 = y1 + p.py * JAW;
+      pts = samples(x1, y1, x2, y2, 5);
+      for (j = 0; j < pts.length; j++) {
+        var can = hitPart && !state.open;
+        hit = pointHit(pts[j][0], pts[j][1], "claw", level, state, can);
+        if (hit) return hit;
+      }
+      var ax = x2;
+      var ay = y2;
+      var dx = p.ex - 0;
+      var dy = p.ey - SY;
+      var len2 = dx * dx + dy * dy;
+      if (len2 > 1) {
+        var t = ((ax - 0) * dx + (ay - SY) * dy) / len2;
+        if (t > 0.08 && t < 0.86) {
+          var qx = 0 + t * dx;
+          var qy = SY + t * dy;
+          if (Math.hypot(ax - qx, ay - qy) < 8) return "claw hit the arm";
+        }
+      }
+    }
+    if (state.holding && part) {
+      if (p.cy < part.hh && !overBin(p, state.base, level)) return "part hit the table";
+      var obs = obstacles(level, state.base);
+      for (i = 0; i < obs.length; i++) {
+        var o = obs[i];
+        if (p.cx >= o.l && p.cx <= o.r && p.cy >= -2 && p.cy <= o.h) return "part hit the " + o.name;
+      }
+    }
+    return "";
+  }
+
+  function spotName(base, r) {
+    var col = "";
+    var row = "";
+    var i;
+    for (i = 0; i < COLS.length; i++) if (Math.abs(base - COLS[i][1]) <= COL_TOL) col = COLS[i][0];
+    for (i = 0; i < ROWS.length; i++) if (Math.abs(r - ROWS[i][1]) <= ROW_TOL) row = ROWS[i][0];
+    if (!col || !row) return "";
+    return col + row;
+  }
+
+  function goalMet(state, level) {
+    if (level.kind === "match") {
+      var t = level.target;
+      return state.base === t.base && state.shoulder === t.shoulder && state.elbow === t.elbow && !!state.open === !!t.open && !state.holding;
+    }
+    if (level.kind === "spot") {
+      var p = pose(state);
+      return spotName(state.base, p.cx) === level.spot && p.cy >= 10 && p.cy <= 52 && !state.holding;
+    }
+    if (level.kind === "place") return !!(state.part && state.part.inBin);
+    return false;
+  }
+
+  function limitMessage(joint, value) {
+    return joint + " stopped at " + value + " degrees";
+  }
+
+  function withPartAtClaw(state, p) {
+    var part = copyPart(state.part);
+    part.base = state.base;
+    part.r = p.cx;
+    part.y = p.cy;
+    part.inBin = false;
+    part.dropped = false;
+    return part;
+  }
+
+  function applyCommand(state, cmd, level) {
+    var spec = JOINTS[cmd];
+    var i, t, trial, hit, p, nBase, nSh, nEl, sd, ed, base, gap;
+    if (spec) {
+      nBase = state.base;
+      nSh = state.shoulder;
+      nEl = state.elbow;
+      if (spec[0] === "base") nBase += spec[1];
+      if (spec[0] === "shoulder") nSh += spec[1];
+      if (spec[0] === "elbow") nEl += spec[1];
+      if (nBase > BASE_MAX || nBase < BASE_MIN) {
+        return { ok: false, msg: limitMessage("base", nBase > BASE_MAX ? BASE_MAX : BASE_MIN), t: 0, state: state };
+      }
+      if (nSh > SH_MAX || nSh < SH_MIN) {
+        return { ok: false, msg: limitMessage("shoulder", nSh > SH_MAX ? SH_MAX : SH_MIN), t: 0, state: state };
+      }
+      if (nEl > EL_MAX || nEl < EL_MIN) {
+        return { ok: false, msg: limitMessage("elbow", nEl > EL_MAX ? EL_MAX : EL_MIN), t: 0, state: state };
+      }
+      for (i = 1; i <= 6; i++) {
+        t = i / 6;
+        base = state.base + (nBase - state.base) * t;
+        sd = state.shoulder + (nSh - state.shoulder) * t;
+        ed = state.elbow + (nEl - state.elbow) * t;
+        trial = {
+          base: base, shoulder: sd, elbow: ed, open: state.open, gap: state.gap,
+          holding: state.holding, part: state.holding ? copyPart(state.part) : state.part
+        };
+        if (state.holding) trial.part = withPartAtClaw(trial, pose(trial));
+        hit = collide(trial, level);
+        if (hit) return { ok: false, msg: hit, t: t, state: trial };
+      }
+      trial = {
+        base: nBase, shoulder: nSh, elbow: nEl, open: state.open, gap: state.gap,
+        holding: state.holding, part: state.holding ? copyPart(state.part) : state.part
+      };
+      if (state.holding) trial.part = withPartAtClaw(trial, pose(trial));
+      return { ok: true, t: 1, state: trial };
+    }
+    if (cmd === "claw-close") {
+      if (state.holding || !state.open) {
+        return {
+          ok: true, t: 1,
+          state: {
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            open: false, gap: GAP_CLOSED, holding: state.holding, part: copyPart(state.part)
+          }
+        };
+      }
+      p = pose(state);
+      if (contains(p, state)) {
+        var held = {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          open: false, gap: GAP_CLOSED, holding: true, part: copyPart(state.part)
+        };
+        held.part = withPartAtClaw(held, pose(held));
+        return { ok: true, t: 1, state: held };
+      }
+      for (i = 1; i <= 4; i++) {
+        t = i / 4;
+        gap = GAP_OPEN + (GAP_CLOSED - GAP_OPEN) * t;
+        trial = {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          open: gap > 22, gap: gap, holding: false, part: state.part
+        };
+        hit = collide(trial, level);
+        if (hit) return { ok: false, msg: hit, t: t, state: trial };
+      }
+      return {
+        ok: true, t: 1,
+        state: {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          open: false, gap: GAP_CLOSED, holding: false, part: copyPart(state.part)
+        }
+      };
+    }
+    if (cmd === "claw-open") {
+      if (!state.holding) {
+        return {
+          ok: true, t: 1,
+          state: {
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            open: true, gap: GAP_OPEN, holding: false, part: copyPart(state.part)
+          }
+        };
+      }
+      for (i = 1; i <= 4; i++) {
+        t = i / 4;
+        gap = GAP_CLOSED + (GAP_OPEN - GAP_CLOSED) * t;
+        trial = {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          open: gap > 22, gap: gap, holding: true, part: copyPart(state.part)
+        };
+        trial.part = withPartAtClaw(trial, pose(trial));
+        hit = collide(trial, level);
+        if (hit) return { ok: false, msg: hit, t: t, state: trial };
+      }
+      p = pose({
+        base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+        open: true, gap: GAP_OPEN, holding: false, part: state.part
+      });
+      if (overBin(p, state.base, level)) {
+        return {
+          ok: true, win: true, t: 1,
+          state: {
+            base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+            open: true, gap: GAP_OPEN, holding: false,
+            part: {
+              base: state.base, r: p.cx, y: state.part.hh, hw: state.part.hw, hh: state.part.hh,
+              inBin: true, dropped: false
+            }
+          }
+        };
+      }
+      return {
+        ok: false, miss: true, t: 1, msg: "part missed the bin",
+        state: {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow,
+          open: true, gap: GAP_OPEN, holding: false,
+          part: {
+            base: state.base, r: p.cx, y: state.part.hh, hw: state.part.hw, hh: state.part.hh,
+            inBin: false, dropped: true
+          }
+        }
+      };
+    }
+    return { ok: false, msg: "unknown block", t: 0, state: state };
+  }
+
+  function endReason(state, level) {
+    if (goalMet(state, level)) return "";
+    if (level.kind === "match") return "The arm does not match the mark yet.";
+    if (level.kind === "spot") return "The claw is not on spot " + level.spot + " yet.";
+    if (state.holding) return "The part is still held. Open the claw over the bin.";
+    if (state.part && state.part.dropped) return "The part missed the bin.";
+    return "The claw never closed on the part.";
+  }
+
+  function emptyArm(base, shoulder, elbow) {
+    return {
+      base: base, shoulder: shoulder, elbow: elbow,
+      open: true, gap: GAP_OPEN, holding: false, part: null
+    };
+  }
+
+  function buildLevels() {
+    var grab = emptyArm(0, 15, -90);
+    var gp = pose(grab);
+    var part = { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false };
+    var l1 = {
+      id: "L1",
+      name: "Move one joint",
+      goal: "Move one joint. Shoulder up matches the mark.",
+      start: { base: 0, shoulder: 30, elbow: -30 },
+      kind: "match",
+      target: { base: 0, shoulder: 45, elbow: -30, open: true },
+      par: 1,
+      timePar: 2500,
+      part: null,
+      bin: null,
+      spot: ""
+    };
+    var l2 = {
+      id: "L2",
+      name: "Pick and place",
+      goal: "Pick up the part and place it in the bin.",
+      start: { base: 0, shoulder: 45, elbow: -60 },
+      kind: "place",
+      target: null,
+      par: 8,
+      timePar: 9000,
+      part: part,
+      bin: { base: 30, r: gp.cx, half: 36, h: 22 },
+      spot: ""
+    };
+    var l3 = {
+      id: "L3",
+      name: "Go to spot",
+      goal: "Go to spot A2 on the A1 to C3 grid.",
+      start: { base: 0, shoulder: 45, elbow: -45 },
+      kind: "spot",
+      target: null,
+      par: 7,
+      timePar: 6500,
+      part: null,
+      bin: null,
+      spot: "A2"
+    };
+    return [l1, l2, l3];
+  }
+
+  var LEVELS = buildLevels();
+
+  function initialState(level) {
+    return {
+      base: level.start.base,
+      shoulder: level.start.shoulder,
+      elbow: level.start.elbow,
+      open: true,
+      gap: GAP_OPEN,
+      holding: false,
+      part: copyPart(level.part)
+    };
+  }
+
+  function runAll(level, commands) {
+    var state = initialState(level);
+    var startHit = collide(state, level);
+    if (startHit) return { win: false, crash: startHit, step: 0, state: state, blocks: commands.length };
+    for (var i = 0; i < commands.length; i++) {
+      var result = applyCommand(state, commands[i], level);
+      if (!result.ok) {
+        return {
+          win: false, crash: result.msg, step: i + 1, state: result.state,
+          miss: !!result.miss, blocks: commands.length
+        };
+      }
+      state = result.state;
+      if (result.win || goalMet(state, level)) {
+        return { win: true, crash: "", step: i + 1, blocks: commands.length, state: state };
+      }
+    }
+    return {
+      win: false, crash: "", step: commands.length, blocks: commands.length,
+      state: state, end: endReason(state, level)
+    };
+  }
+
+  function stepList(commands) {
+    var out = [];
+    for (var i = 0; i < commands.length; i++) {
+      var block = blockById(commands[i]);
+      if (!block) out.push({ joint: "unknown", delta: 0 });
+      else if (block.joint === "claw") out.push({ joint: "claw", angle: block.angle });
+      else out.push({ joint: block.joint, delta: block.delta });
+    }
+    return out;
+  }
+
+  function crashLine(msg, step) {
+    var line = msg.charAt(0).toUpperCase() + msg.slice(1);
+    if (line.charAt(line.length - 1) !== ".") line += ".";
+    if (step > 0) line = line.slice(0, -1) + " at step " + step + ".";
+    return line;
+  }
+
+  function starsFor(win, blocks, ms, level) {
+    if (!win) return 0;
+    var n = 1;
+    if (blocks <= level.par) n = 2;
+    if (n === 2 && ms <= level.timePar) n = 3;
+    return n;
+  }
+
+  function starWords(n) {
+    if (n <= 0) return "No stars yet.";
+    if (n === 1) return "One star.";
+    if (n === 2) return "Two stars.";
+    return "Three stars.";
+  }
+
+  function jointReadout(state) {
+    var claw = state.open ? "open" : "closed";
+    return "Base " + Math.round(state.base) + " degrees. Shoulder " + Math.round(state.shoulder) +
+      " degrees. Elbow " + Math.round(state.elbow) + " degrees. Wrist 0 degrees. Claw " + claw + ".";
+  }
+
+  function stateKey(state) {
+    var part = state.part;
+    var p = "none";
+    if (part) {
+      p = [
+        Math.round(part.base), Math.round(part.r), Math.round(part.y),
+        part.inBin ? 1 : 0, part.dropped ? 1 : 0
+      ].join(":");
+    }
+    return [
+      state.base, state.shoulder, state.elbow, state.open ? 1 : 0, state.holding ? 1 : 0, p
+    ].join(",");
+  }
+
+  return {
+    APP_VERSION: APP_VERSION,
+    LAYOUT: {
+      upper: UPPER, fore: FORE, wrist: WRIST, sy: SY, jaw: JAW,
+      gapOpen: GAP_OPEN, gapClosed: GAP_CLOSED, thick: THICK,
+      baseMin: BASE_MIN, baseMax: BASE_MAX,
+      shoulderMin: SH_MIN, shoulderMax: SH_MAX,
+      elbowMin: EL_MIN, elbowMax: EL_MAX
+    },
+    COLS: COLS,
+    ROWS: ROWS,
+    BLOCKS: BLOCKS,
+    LEVELS: LEVELS,
+    blockById: blockById,
+    pose: pose,
+    collide: collide,
+    contains: contains,
+    spotName: spotName,
+    goalMet: goalMet,
+    initialState: initialState,
+    applyCommand: applyCommand,
+    runAll: runAll,
+    endReason: endReason,
+    stepList: stepList,
+    crashLine: crashLine,
+    starsFor: starsFor,
+    starWords: starWords,
+    jointReadout: jointReadout,
+    cloneState: cloneState,
+    stateKey: stateKey,
+    obstacles: obstacles
+  };
+});
