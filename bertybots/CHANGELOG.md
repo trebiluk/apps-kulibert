@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.41 — Hub Menu row — 2026-10-30
+
+- The gold Menu still opens your Botz tools. The bar keeps data-menu on that button.
+- The last row of that menu is Hub Menu. It starts closed. Open it for Close, What's new, Home, My settings, and Help.
+- What's new: Your Menu stays the same. Hub Menu at the bottom opens Close, What's new, Home, My settings, and Help.
+
 ## 0.19.40 — Win sound and burst — 2026-10-24
 
 - Parking the crate plays one short win sound (three quiet blips) and a burst of orange and yellow sparks at the Drop Zone.
