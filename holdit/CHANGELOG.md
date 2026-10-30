@@ -3,7 +3,7 @@ Door: https://apps.kulibert.net/holdit/
 
 ## 1.1.23 — You can read the menu and the report — 2026-10-30
 
-- What’s new: The menu, Settings, and locked jobs are dark type on paper, with a lock and the word Locked. The Member report sits on a light table. Every build button is big enough to tap.
+- What’s new: Menus and Settings are readable. Locked jobs show 🔒 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.
 
 ## 1.1.22 — The language stays — 2026-10-10
 
