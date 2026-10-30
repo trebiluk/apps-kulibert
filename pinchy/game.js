@@ -946,7 +946,13 @@
       "L3-goal": "Go to spot A2 on the A1 to C3 grid.",
       "L4-goal": "Sort the pile into the bin.",
       "L5-goal": "Send each part to the matching bin.",
-      "L6-goal": "Fix the program with the fewest swaps."
+      "L6-goal": "Fix the program with the fewest swaps.",
+      READY: "READY", MOVING: "MOVING", STOPPED: "STOPPED", CRASH: "CRASH",
+      STATUS: "STATUS", JOINTS: "JOINTS", PROGRAM: "PROGRAM", VIEW: "VIEW", CELL: "CELL"
+    },
+    es: {
+      READY: "LISTO", MOVING: "MOVIENDO", STOPPED: "PARADO", CRASH: "CHOQUE",
+      STATUS: "ESTADO", JOINTS: "EJES", PROGRAM: "PROGRAMA", VIEW: "VISTA", CELL: "CELDA"
     },
     ar: {
       L1: "حرّك مفصلاً واحداً", L2: "التقط وضع", L3: "اذهب إلى نقطة", L4: "رتّب كومة", L5: "صناديق الحساس", L6: "أصلح البرنامج",
@@ -966,7 +972,9 @@
       "L3-goal": "اذهب إلى النقطة A2 على شبكة A1 إلى C3.",
       "L4-goal": "استخدم كرر 3 لوضع القطع الثلاث من الكومة في الصندوق.",
       "L5-goal": "إذا رأى الحساس مربعاً أحمر فضعه في الصندوق A. إذا رأى دائرة زرقاء فضعه في الصندوق B.",
-      "L6-goal": "البرنامج معطوب. بدّل أقل عدد من الخطوات ثم شغّله."
+      "L6-goal": "البرنامج معطوب. بدّل أقل عدد من الخطوات ثم شغّله.",
+      READY: "جاهز", MOVING: "يتحرك", STOPPED: "متوقف", CRASH: "اصطدام",
+      STATUS: "الحالة", JOINTS: "المفاصل", PROGRAM: "البرنامج", VIEW: "العرض", CELL: "خلية"
     },
     "fa-AF": {
       L1: "یک بند را حرکت بده", L2: "بردار و بگذار", L3: "به نقطه برو", L4: "کپه را مرتب کن", L5: "سطل‌های حسگر", L6: "برنامه را درست کن",
@@ -986,7 +994,9 @@
       "L3-goal": "به نقطه A2 روی شبکه A1 تا C3 برو.",
       "L4-goal": "با تکرار ۳ هر سه قطعه کپه را در سطل بگذار.",
       "L5-goal": "اگر حسگر مربع سرخ دید آن را در سطل A بگذار. اگر دایره آبی دید آن را در سطل B بگذار.",
-      "L6-goal": "برنامه خراب است. کمترین گام را جابه‌جا کن و بعد اجرا کن."
+      "L6-goal": "برنامه خراب است. کمترین گام را جابه‌جا کن و بعد اجرا کن.",
+      READY: "آماده", MOVING: "در حرکت", STOPPED: "ایست", CRASH: "برخورد",
+      STATUS: "وضعیت", JOINTS: "بندها", PROGRAM: "برنامه", VIEW: "نما", CELL: "خانه"
     }
   };
   function uiText(lang, key) {

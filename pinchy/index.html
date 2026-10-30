@@ -537,7 +537,7 @@ try {
   <div class="stage">
     <div class="controls">
       <section class="panel">
-        <h2 class="panel-label"><span>STATUS</span><span>S-01</span></h2>
+        <h2 class="panel-label"><span data-ui="STATUS">STATUS</span><span>S-01</span></h2>
         <div class="body">
           <div class="lamps" id="lamps">
             <span class="lamp is-on" data-lamp="ready">● READY</span>
@@ -554,12 +554,12 @@ try {
         </div>
       </section>
       <section class="panel">
-        <h2 class="panel-label"><span>JOINTS</span><span>J-01</span></h2>
+        <h2 class="panel-label"><span data-ui="JOINTS">JOINTS</span><span>J-01</span></h2>
         <div class="body" id="joint-pad" role="group" aria-label="Joints"></div>
         <div id="base-pad" hidden></div>
       </section>
       <section class="panel">
-        <h2 class="panel-label"><span>PROGRAM</span><span>P-01</span></h2>
+        <h2 class="panel-label"><span data-ui="PROGRAM">PROGRAM</span><span>P-01</span></h2>
         <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
         <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
           <p>Program</p>
@@ -570,7 +570,7 @@ try {
     </div>
     <div class="scene-col">
       <div class="viewport">
-        <h2 class="panel-label">VIEW · CELL 01</h2>
+        <h2 class="panel-label"><span data-ui="VIEW">VIEW</span> · <span data-ui="CELL">CELL</span> 01</h2>
         <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
       </div>
       <p id="goal"></p>
@@ -923,6 +923,27 @@ var renderPalette = function () {
   var blocks = jointPad.querySelectorAll("button.block");
   for (i = 0; i < blocks.length; i++) blocks[i].tabIndex = i === focusIndex ? 0 : -1;
 };
+var LAMP_MARK = { ready: "\u25CF ", moving: "\u25B2 ", stopped: "\u25A0 ", crash: "\u25C6 " };
+var LAMP_KEY = { ready: "READY", moving: "MOVING", stopped: "STOPPED", crash: "CRASH" };
+var paintChrome = function () {
+  var nodes = document.querySelectorAll("[data-ui]");
+  var i, el, key;
+  for (i = 0; i < nodes.length; i++) {
+    el = nodes[i];
+    key = el.getAttribute("data-ui");
+    el.textContent = PINCHY.uiText(lang, key);
+    if (lang === "ar" || lang === "fa-AF") markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+  var lamps = document.querySelectorAll(".lamp");
+  for (i = 0; i < lamps.length; i++) {
+    el = lamps[i];
+    key = LAMP_KEY[el.dataset.lamp];
+    el.textContent = (LAMP_MARK[el.dataset.lamp] || "") + PINCHY.uiText(lang, key);
+    if (lang === "ar" || lang === "fa-AF") markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+};
 var applyLang = function (code) {
   var meta = PINCHY.langMeta(code);
   lang = meta.id === code ? code : "en";
@@ -937,6 +958,7 @@ var applyLang = function (code) {
   }
   renderPalette();
   renderProgram(-1, -1);
+  paintChrome();
   if (document.getElementById("levels").children.length) renderLevels();
 };
 var doSwap = function (index) {
@@ -2039,6 +2061,7 @@ var boot = function () {
   });
 
   world = PINCHY.initialState(PINCHY.LEVELS[0]);
+  paintChrome();
   startWave();
   var playBtn = document.getElementById("play");
   if (playBtn && playBtn.focus) playBtn.focus({ preventScroll: true });
