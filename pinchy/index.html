@@ -381,10 +381,14 @@ var paintStars = function () {
   }
   document.getElementById("star-words").textContent = words;
   document.getElementById("stars").setAttribute("aria-label", words);
+  return words;
+};
+var setStars = function (n) {
+  session.stars[session.level] = n;
+  return paintStars();
 };
 var clearStars = function () {
-  session.stars[session.level] = 0;
-  paintStars();
+  return setStars(0);
 };
 
 var updateMetrics = function () {
@@ -1066,8 +1070,9 @@ var glide = function (ms, token, onFrame) {
 var finishWin = function (blocks, ms) {
   var level = PINCHY.LEVELS[session.level];
   var score = level.metric === "swaps" ? (session.swaps[session.level] || 0) : blocks;
-  var n = PINCHY.starsFor(true, score, ms, level);
-  if (n > session.stars[session.level]) session.stars[session.level] = n;
+  var earned = PINCHY.starsFor(true, score, ms, level);
+  var kept = Math.max(session.stars[session.level] || 0, earned);
+  var words = setStars(kept);
   var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
   var text = "Done. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "place") text = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
@@ -1080,7 +1085,7 @@ var finishWin = function (blocks, ms) {
     var swapWord = swaps === 1 ? "1 swap" : swaps + " swaps";
     text = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
   }
-  text += " " + PINCHY.starWords(n) + "";
+  text += " " + words;
   setStatus(text, "win");
   setStepLive(text);
   paintStars();
