@@ -431,6 +431,10 @@ body:has(.lp-dialog[class*="56rem"]) .hi-plan {
 .lp-dialog[class*="56rem"] p {
   color: #1a120c !important;
 }
+/* The empty report prints the same sentence in the header and again below it. */
+.lp-dialog[class*="56rem"] > p.text-sm {
+  display: none !important;
+}
 .lp-dialog[class*="56rem"] .overflow-auto {
   overflow: auto !important;
   max-width: 100%;

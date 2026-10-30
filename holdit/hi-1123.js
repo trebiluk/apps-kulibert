@@ -34,15 +34,30 @@
     }
   }
 
-  function paintNews() {
+  function dedupeNews(ol) {
+  var items = ol.querySelectorAll(":scope > li");
+  for (var i = 0; i < items.length; i++) {
+    var li = items[i];
+    if (li.getAttribute("data-hi") === "1.1.23") continue;
+    var heading = li.querySelector("h2");
+    var bullets = li.querySelectorAll("ul > li");
+    if (!heading || bullets.length !== 1) continue;
+    if (bullets[0].textContent.trim() !== heading.textContent.trim()) continue;
+    if (!bullets[0].hidden) bullets[0].hidden = true;
+  }
+}
+
+function paintNews() {
     var ol = document.querySelector("ol.mt-10");
     if (!ol) return;
     var found = ol.querySelector("li[data-hi='1.1.23']");
     if (found) {
       if (ol.firstElementChild !== found) ol.insertBefore(found, ol.firstElementChild);
+      dedupeNews(ol);
       return;
     }
     ol.insertBefore(entry(), ol.firstElementChild);
+    dedupeNews(ol);
   }
 
   var busy = false;

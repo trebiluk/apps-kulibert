@@ -299,6 +299,13 @@
       var top = c.top - p.top + 8;
       cards[i].style.setProperty("top", Math.round(top) + "px", "important");
       var max = Math.max(72, Math.min(c.height * 0.42, 120));
+      /* Keep Fill and Next inside the card. The 120px cap was cutting them off. */
+      var row = cards[i].querySelector(".mt-2");
+      if (row) {
+        var need = row.offsetTop + row.offsetHeight + 10;
+        var room = Math.max(88, window.innerHeight - c.top - 16);
+        if (need > max) max = Math.min(need, room);
+      }
       cards[i].style.setProperty("max-height", Math.round(max) + "px", "important");
       cards[i].style.setProperty("overflow", "auto", "important");
     }
