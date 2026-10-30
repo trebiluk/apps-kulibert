@@ -2133,6 +2133,11 @@
         <button type="button" class="drawer" aria-expanded="false"><span data-i18n="groupPlay">Play</span> <span class="drawer-count"></span></button>
         <div class="drawer-panel">
         <nav class="board">
+          <a class="tile" data-id="pinchy" data-keywords="pinchy arm robot joints play" href="/pinchy/">
+            <img class="mark" src="/pinchy/icon.svg" alt="" width="72" height="72"/>
+            <span class="label" translate="no">Pinchy</span>
+            <span class="blurb">Move a robot arm</span>
+          </a>
           <a class="tile" data-id="bertybots" data-keywords="bertybots bots botz play" href="/bertybots/">
             <img class="mark" src="/icons/icon-bertybots.svg" alt="" width="72" height="72"/>
             <span class="label">Berty's Botz</span>
@@ -4177,7 +4182,12 @@
           if (!hubClassic && tile.getAttribute("data-staff") === "1") return;
           var label = tile.querySelector(".label");
           var img = tile.querySelector("img.mark");
-          add(tile.getAttribute("href"), label ? label.textContent.replace(/\s+/g, " ").trim() : "", img ? img.getAttribute("src") : "", tile.getAttribute("target") || "");
+          var tileName = label ? label.textContent.replace(/\s+/g, " ").trim() : "";
+          var dockCount = dock.childElementCount;
+          add(tile.getAttribute("href"), tileName, img ? img.getAttribute("src") : "", tile.getAttribute("target") || "");
+          if (label && label.getAttribute("translate") === "no" && dock.childElementCount > dockCount) {
+            dock.lastElementChild.setAttribute("translate", "no");
+          }
         });
         if (typeof schoolRows !== "undefined" && schoolRows && schoolRows.forEach) {
           schoolRows.forEach(function (row) { add(row.href, row.name, "", ""); });
