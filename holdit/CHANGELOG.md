@@ -1,5 +1,9 @@
-**Chip: HI 1.1.23** · 2026-10-30 · channel **live**
+**Chip: HI 1.1.24** · 2026-10-30 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.24 — Challenge of the Day — 2026-10-30
+
+- What’s new: The home page is one Challenge of the Day. Span and Spire are the doors. Language, Read aloud, and Larger type are in the menu.
 
 ## 1.1.23 — You can read the menu and the report — 2026-10-30
 

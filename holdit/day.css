@@ -13,6 +13,12 @@ body.hi-day .shop:not(.shop-editor) > .mx-auto {
 body.hi-day .hi-menu-bar {
   background: transparent !important;
 }
+body.hi-day .kb-bar button,
+body.hi-day .kb-bar a {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  height: auto !important;
+}
 
 .hi-day {
   max-width: 1100px;
@@ -79,6 +85,64 @@ body.hi-day .hi-menu-bar {
 .hi-day-best strong {
   font-weight: 900;
 }
+.hi-day-save {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hi-day-save button,
+.hi-day-save a {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 2px solid #eaf0ff !important;
+  background: #142b66 !important;
+  background-image: none !important;
+  color: #eaf0ff !important;
+  font-weight: 700;
+}
+.hi-day-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.hi-day-settings button,
+.hi-day-settings select,
+#hi-day-settings span {
+  min-height: 48px;
+  min-width: 48px;
+}
+#hi-settings-panel label[for="hi-menu-lang"],
+#hi-menu-lang {
+  display: none !important;
+}
+#hi-drawer a,
+#hi-drawer button,
+#hi-drawer select {
+  min-height: 48px;
+}
+#hi-drawer > button {
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+}
+.hi-hub-menu {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0 0 8px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 2px solid #1a120c;
+  background: #f7f4ee;
+  color: #1a120c;
+  font-weight: 800;
+  text-decoration: none;
+}
 .hi-day-play {
   display: inline-flex;
   align-items: center;
@@ -116,9 +180,11 @@ body.hi-day .hi-menu-bar {
   min-height: 64px;
   padding: 10px 18px;
   border-radius: 14px;
-  background: #142b66;
-  border: 3px solid #2c4a9a;
-  color: #eaf0ff;
+  background: #142b66 !important;
+  background-image: none !important;
+  border: 3px solid #2c4a9a !important;
+  color: #eaf0ff !important;
+  box-shadow: none !important;
   font: 800 20px/1.2 Archivo, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", sans-serif;
   text-align: start;
   cursor: pointer;
@@ -134,9 +200,19 @@ body.hi-day .hi-menu-bar {
   font-size: 14px;
   color: #c9d5f5;
 }
-.hi-day-door.is-sel {
-  border-color: #e85820;
-  background: #1d2f78;
+.shop:not(.shop-editor) button.hi-day-door[aria-pressed],
+body.hi-day button.hi-day-door {
+  background-color: #142b66 !important;
+  background-image: none !important;
+  border: 3px solid #2c4a9a !important;
+  color: #eaf0ff !important;
+  box-shadow: none !important;
+}
+.shop:not(.shop-editor) button.hi-day-door[aria-pressed="true"],
+body.hi-day button.hi-day-door.is-sel {
+  background-color: #1d2f78 !important;
+  border-color: #e85820 !important;
+  color: #eaf0ff !important;
 }
 .hi-day-check {
   margin-inline-start: auto;

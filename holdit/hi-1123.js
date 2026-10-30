@@ -2,7 +2,28 @@
    and its home chip still says HI 1.1.22. */
 (function () {
   var LINE = "Menus and Settings are readable. Locked jobs show \uD83D\uDD12 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.";
-  var CHIP = "HI 1.1.23";
+  var CHIP = "HI 1.1.24";
+
+  function entry24() {
+    var li = document.createElement("li");
+    li.setAttribute("data-hi", "1.1.24");
+    var stamp = document.createElement("p");
+    stamp.className = "font-mono text-[11px] uppercase tracking-[0.18em] text-primary";
+    stamp.textContent = "HI 1.1.24 \u00b7 2026-10-30";
+    var title = document.createElement("h2");
+    title.className = "mt-2 text-xl font-medium";
+    title.textContent = "Challenge of the Day";
+    var list = document.createElement("ul");
+    list.className = "mt-3 space-y-2";
+    var item = document.createElement("li");
+    item.className = "text-[15px] leading-relaxed text-muted-foreground";
+    item.textContent = "The home page is one Challenge of the Day. Span and Spire are the doors. Language, Read aloud, and Larger type are in the menu.";
+    list.appendChild(item);
+    li.appendChild(stamp);
+    li.appendChild(title);
+    li.appendChild(list);
+    return li;
+  }
 
   function entry() {
     var li = document.createElement("li");
@@ -48,7 +69,7 @@
 }
 
 function paintIntro(ol) {
-    var latest = ol.querySelector(":scope > li[data-hi='1.1.23']");
+    var latest = ol.querySelector(":scope > li");
     if (!latest) return;
     var bullet = latest.querySelector("ul > li");
     var line = bullet ? bullet.textContent.trim() : "";
@@ -62,11 +83,13 @@ function paintIntro(ol) {
   function paintNews() {
     var ol = document.querySelector("ol.mt-10");
     if (!ol) return;
-    var found = ol.querySelector("li[data-hi='1.1.23']");
-    if (found) {
-      if (ol.firstElementChild !== found) ol.insertBefore(found, ol.firstElementChild);
-    } else {
-      ol.insertBefore(entry(), ol.firstElementChild);
+    if (!ol.querySelector("li[data-hi='1.1.23']")) ol.insertBefore(entry(), ol.firstElementChild);
+    var newer = ol.querySelector("li[data-hi='1.1.24']");
+    if (!newer) {
+      newer = entry24();
+      ol.insertBefore(newer, ol.firstElementChild);
+    } else if (ol.firstElementChild !== newer) {
+      ol.insertBefore(newer, ol.firstElementChild);
     }
     dedupeNews(ol);
     paintIntro(ol);

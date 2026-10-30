@@ -17,14 +17,14 @@
     { id: "aftershock", title: "Aftershock", hold: "30 kN", goal: "Keep the tower up after the shake." }
   ];
   var COPY = {
-    en: { kicker: "Challenge of the day", best: "Class best today", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", spanSub: "Bridges · jobs + Free build", spireSub: "Towers · jobs + Free build", or: "Or pick a game:", min: "~5 min", hold: "Hold" },
-    es: { kicker: "Reto del día", best: "Mejor de la clase hoy", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", spanSub: "Puentes · trabajos y libre", spireSub: "Torres · trabajos y libre", or: "O elige un juego:", min: "~5 min", hold: "Aguanta" },
-    ar: { kicker: "تحدي اليوم", best: "أفضل الصف اليوم", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", spanSub: "جسور · أعمال وبناء حر", spireSub: "أبراج · أعمال وبناء حر", or: "أو اختر لعبة:", min: "~5 د", hold: "احمل" },
-    "fa-AF": { kicker: "چالش امروز", best: "بهترین صنف امروز", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", spanSub: "پل‌ها · کار و ساخت آزاد", spireSub: "برج‌ها · کار و ساخت آزاد", or: "یا یک بازی انتخاب کن:", min: "~۵ دقیقه", hold: "نگه دار" },
-    uk: { kicker: "Виклик дня", best: "Найкраще в класі сьогодні", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", spanSub: "Мости · задачі і вільна гра", spireSub: "Вежі · задачі і вільна гра", or: "Або обери гру:", min: "~5 хв", hold: "Тримай" },
-    ru: { kicker: "Задача дня", best: "Лучшее в классе сегодня", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", spanSub: "Мосты · задачи и свободная игра", spireSub: "Башни · задачи и свободная игра", or: "Или выбери игру:", min: "~5 мин", hold: "Держи" },
-    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Uwabaye neza uyu munsi", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", spanSub: "Amabirige · imirimo n'ubwisanzure", spireSub: "Iminara · imirimo n'ubwisanzure", or: "Cyangwa hitamo umukino:", min: "~5 min", hold: "Fata" },
-    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ናይ ሎሚ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", spanSub: "ድልድላት · ስራሕን ነጻ ህንጻን", spireSub: "ግምብታት · ስራሕን ነጻ ህንጻን", or: "ወይ ጸወታ ምረጽ:", min: "~5 ደቒቕ", hold: "ሓዝ" }
+    en: { kicker: "Challenge of the day", best: "Class best today", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", spanSub: "Bridges · jobs + Free build", spireSub: "Towers · jobs + Free build", or: "Or pick a game:", min: "~5 min", hold: "Hold", hub: "Hub Menu ▸" },
+    es: { kicker: "Reto del día", best: "Mejor de la clase hoy", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", spanSub: "Puentes · trabajos y libre", spireSub: "Torres · trabajos y libre", or: "O elige un juego:", min: "~5 min", hold: "Aguanta", hub: "Menú del Hub ▸" },
+    ar: { kicker: "تحدي اليوم", best: "أفضل الصف اليوم", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", spanSub: "جسور · أعمال وبناء حر", spireSub: "أبراج · أعمال وبناء حر", or: "أو اختر لعبة:", min: "~5 د", hold: "احمل", hub: "قائمة المحور ▸" },
+    "fa-AF": { kicker: "چالش امروز", best: "بهترین صنف امروز", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", spanSub: "پل‌ها · کار و ساخت آزاد", spireSub: "برج‌ها · کار و ساخت آزاد", or: "یا یک بازی انتخاب کن:", min: "~۵ دقیقه", hold: "نگه دار", hub: "فهرست هاب ▸" },
+    uk: { kicker: "Виклик дня", best: "Найкраще в класі сьогодні", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", spanSub: "Мости · задачі і вільна гра", spireSub: "Вежі · задачі і вільна гра", or: "Або обери гру:", min: "~5 хв", hold: "Тримай", hub: "Меню хаба ▸" },
+    ru: { kicker: "Задача дня", best: "Лучшее в классе сегодня", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", spanSub: "Мосты · задачи и свободная игра", spireSub: "Башни · задачи и свободная игра", or: "Или выбери игру:", min: "~5 мин", hold: "Держи", hub: "Меню хаба ▸" },
+    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Uwabaye neza uyu munsi", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", spanSub: "Amabirige · imirimo n'ubwisanzure", spireSub: "Iminara · imirimo n'ubwisanzure", or: "Cyangwa hitamo umukino:", min: "~5 min", hold: "Fata", hub: "Menyu y'ububiko ▸" },
+    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ናይ ሎሚ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", spanSub: "ድልድላት · ስራሕን ነጻ ህንጻን", spireSub: "ግምብታት · ስራሕን ነጻ ህንጻን", or: "ወይ ጸወታ ምረጽ:", min: "~5 ደቒቕ", hold: "ሓዝ", hub: "ዝርዝር ማእኸል ▸" }
   };
   var DAYS = { en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], es: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], ar: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"], "fa-AF": ["یکش", "دوش", "سه‌ش", "چهارش", "پنجش", "جمعه", "شنب"], uk: ["нд", "пн", "вт", "ср", "чт", "пт", "сб"], ru: ["вс", "пн", "вт", "ср", "чт", "пт", "сб"], rw: ["cyum", "mbe", "kab", "gtu", "kan", "gat", "gat"], ti: ["ሰን", "ሰኑ", "ሰሉ", "ረቡ", "ሓሙ", "ዓር", "ቀዳ"] };
 
@@ -203,6 +203,78 @@
     }
   }
   var sig = "";
+  function parkSave() {
+    var save = document.getElementById("hi-day-save");
+    if (!save) return;
+    var park = document.getElementById("hi-day-park");
+    if (!park) {
+      park = el("div", "");
+      park.id = "hi-day-park";
+      park.hidden = true;
+      document.body.appendChild(park);
+    }
+    [].slice.call(save.querySelectorAll("button")).forEach(function (b) { park.appendChild(b); });
+  }
+  function toolsPlaced() {
+    var box = document.getElementById("hi-day-settings");
+    var save = document.getElementById("hi-day-save");
+    return !!(box && box.querySelector("#lp-lang") && document.getElementById("hi-hub-menu") && save && save.querySelector("button"));
+  }
+  function placeTools(playButton) {
+    var nav = document.querySelector("#hi-drawer nav");
+    var lang = document.getElementById("lp-lang");
+    if (nav && lang) {
+      var box = document.getElementById("hi-day-settings");
+      if (!box) {
+        box = el("div", "hi-day-settings");
+        box.id = "hi-day-settings";
+        nav.insertBefore(box, nav.firstChild);
+      }
+      var span = lang.closest("span");
+      var label = document.querySelector("label[for='lp-lang']");
+      if (label && label.parentElement !== box) box.appendChild(label);
+      if (span && span.parentElement !== box) box.appendChild(span);
+      var toolbar = document.querySelector(".shop:not(.shop-editor) .flex.flex-wrap.items-center.gap-1");
+      var pressed = toolbar ? [].slice.call(toolbar.querySelectorAll(":scope > button[aria-pressed]")) : [];
+      var aloud = document.querySelector("[data-hi-role='aloud']") || pressed[0];
+      var larger = document.querySelector("[data-hi-role='larger']") || pressed[1];
+      if (aloud) {
+        aloud.setAttribute("data-hi-role", "aloud");
+        if (aloud.parentElement !== box) box.appendChild(aloud);
+      }
+      if (larger) {
+        larger.setAttribute("data-hi-role", "larger");
+        if (larger.parentElement !== box) box.appendChild(larger);
+      }
+      var hub = document.getElementById("hi-hub-menu");
+      var hubText = t().hub;
+      if (!hub) {
+        hub = el("a", "hi-hub-menu", hubText);
+        hub.id = "hi-hub-menu";
+        var homeLink = document.querySelector(".kb-home");
+        hub.href = homeLink && homeLink.href ? homeLink.href : "https://apps.kulibert.net/";
+        nav.insertBefore(hub, box.nextSibling);
+      } else if (hub.textContent !== hubText) {
+        hub.textContent = hubText;
+      }
+    }
+    var saveHost = document.getElementById("hi-day-save");
+    if (!saveHost && playButton) {
+      saveHost = el("div", "hi-day-save");
+      saveHost.id = "hi-day-save";
+      playButton.insertAdjacentElement("afterend", saveHost);
+    }
+    var pools = [
+      document.querySelector(".shop:not(.shop-editor) .mt-3 .flex"),
+      document.getElementById("hi-day-park")
+    ];
+    pools.forEach(function (row) {
+      if (!row || !saveHost) return;
+      [].slice.call(row.querySelectorAll("button")).forEach(function (b) {
+        if (b.parentElement !== saveHost) saveHost.appendChild(b);
+      });
+    });
+  }
   function render() {
     if (!home()) {
       sig = "";
@@ -215,7 +287,10 @@
     if (!shop) return;
     var current = job();
     var nextSig = lang() + ":" + current.id;
-    if (document.getElementById("hi-day") && sig === nextSig) return;
+    if (document.getElementById("hi-day") && sig === nextSig) {
+      placeTools();
+      return;
+    }
     sig = nextSig;
     document.body.classList.add("hi-day");
     var root = document.getElementById("hi-day");
@@ -224,6 +299,7 @@
       root.id = "hi-day";
       shop.appendChild(root);
     }
+    parkSave();
     var copy = t();
     var code = lang();
     var dayName = (DAYS[code] || DAYS.en)[new Date().getDay()];
@@ -250,6 +326,7 @@
       location.assign("/holdit/play/" + current.id);
     });
     copyCol.appendChild(play);
+    placeTools(play);
     var art = el("div", "hi-day-artwrap");
     var starHost = el("div", "");
     paintStars(starHost, stars(current.id));
