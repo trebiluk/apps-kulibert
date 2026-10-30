@@ -1,7 +1,8 @@
-/* HI 1.1.23 override. The built script's What's new list stops at 1.1.22.
-   This puts a real 1.1.23 entry at the top of that list. */
+/* HI 1.1.23 override. The built script's What's new list stops at 1.1.22,
+   and its home chip still says HI 1.1.22. */
 (function () {
   var LINE = "Menus and Settings are readable. Locked jobs show \uD83D\uDD12 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.";
+  var CHIP = "HI 1.1.23";
 
   function entry() {
     var li = document.createElement("li");
@@ -24,6 +25,15 @@
     return li;
   }
 
+  function paintChips() {
+    var nodes = document.querySelectorAll(".hi-menu-bar p.font-mono, #hi-drawer p.font-mono");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.textContent === CHIP) continue;
+      el.textContent = CHIP;
+    }
+  }
+
   function paintNews() {
     var ol = document.querySelector("ol.mt-10");
     if (!ol) return;
@@ -39,7 +49,7 @@
   function pass() {
     if (busy) return;
     busy = true;
-    try { paintNews(); } finally { busy = false; }
+    try { paintChips(); paintNews(); } finally { busy = false; }
   }
 
   function arm() {
