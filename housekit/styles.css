@@ -184,3 +184,5 @@ html:not(.kb-framed) body.kb-on {
   min-height: 100dvh;
 }
 html:not(.kb-framed) body.kb-on .topbar { top: 48px; }
+html[dir="rtl"] .kb-bar { direction: rtl; }
+html[dir="rtl"] .kb-plate { direction: ltr; unicode-bidi: isolate; }
