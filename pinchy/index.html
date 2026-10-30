@@ -474,7 +474,8 @@ try {
     .brand small { display: none; }
     #game { padding: 4px; }
     .stage { height: calc(100vh - 96px); gap: 6px; align-items: stretch; }
-    .controls { gap: 4px; max-height: 100%; overflow: auto; }
+    .controls { gap: 4px; max-height: none; overflow: visible; }
+    .controls .panel { flex: 0 0 auto; }
     .panel .body { padding: 3px 4px; gap: 2px; }
     .panel-label { padding: 1px 8px; }
     .lamps { gap: 3px; margin: 0; }
