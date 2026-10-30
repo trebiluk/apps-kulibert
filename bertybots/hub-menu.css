@@ -108,6 +108,13 @@
   font-weight: 750;
 }
 
+/* Beat an app rule such as `.sheet-card p { color: #3a342c }` so the line stays light on navy. */
+.hub-menu-block .hub-menu-news,
+.hub-menu-block .hub-menu-kicker,
+.hub-menu-block .hub-menu-line {
+  color: #e8f7ff;
+}
+
 .hub-menu-langs {
   display: flex;
   flex-wrap: wrap;
