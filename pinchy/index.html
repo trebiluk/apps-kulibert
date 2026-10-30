@@ -89,11 +89,18 @@
   #title-screen, #game { padding: 8px; }
   #hero {
     margin: 8px 0 12px;
+    height: 1.05em;
+    overflow: hidden;
+    white-space: nowrap;
     font-family: Archivo, sans-serif;
     font-weight: 700;
     font-size: clamp(32px, 7vw, 72px);
     line-height: 1.05;
     letter-spacing: 0;
+  }
+  .scene {
+    position: relative;
+    width: 100%;
   }
   #title-arm, #view {
     width: 100%;
@@ -104,10 +111,27 @@
   }
   #title-arm { height: 280px; }
   #view { height: 380px; }
-  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; }
+  .scene-labels {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .scene-labels span {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font: 600 14px/1.2 system-ui, sans-serif;
+    color: #F7F9FF;
+    background: #132A5C;
+    border: 1px solid #22D3EE;
+    border-radius: 4px;
+    padding: 1px 4px;
+    white-space: nowrap;
+  }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; min-height: 64px; }
   button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
   #draft-note { margin: 0 8px 8px; font-weight: 750; }
-  .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; min-height: 64px; }
   button.level {
     display: flex;
     align-items: center;
@@ -161,9 +185,9 @@
   }
   #status.is-win { border-width: 3px; }
   #status.is-crash { background: var(--violet-2); }
-  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; font-weight: 750; }
-  .star { font-size: 28px; line-height: 1; color: transparent; -webkit-text-stroke: 2px var(--ink); }
-  .star.is-on { color: var(--ember); -webkit-text-stroke: 0; }
+  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; min-height: 36px; font-weight: 750; }
+  .star { width: 28px; height: 28px; fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  .star.is-on { fill: var(--ember); stroke: var(--ember); }
   #program-wrap {
     background: var(--blue);
     border: 2px solid var(--line);
@@ -212,11 +236,34 @@
   }
   @media (max-width: 900px) {
     .stage { grid-template-columns: 1fr; }
-    #view { height: 320px; }
+    #view { height: 70vw; min-height: 280px; max-height: 420px; }
     #title-arm { height: 220px; }
+    #langs, #levels { min-height: 168px; }
   }
   @media (max-height: 520px) {
     #hero { font-size: 32px; }
+    .top { padding: 2px 8px; }
+    #title-screen, #game { padding: 4px 8px; }
+    #langs, #levels {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      min-height: 48px;
+      max-height: 56px;
+      margin: 0;
+      padding: 2px 0;
+    }
+    button.lang, button.level { flex: 0 0 auto; }
+    #goal {
+      margin: 2px 0;
+      max-height: 24px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    #title-arm { height: 120px; }
+    #view { height: 196px; min-height: 196px; max-height: 196px; }
+    .stage { grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); }
+    #angles, .legend, .help, #metrics { margin: 2px 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -265,7 +312,7 @@
 </section>
 <section id="title-screen">
   <h1 id="hero" translate="no">Pinchy McPinchface</h1>
-  <canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas>
+  <div class="scene"><canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas></div>
   <p><button type="button" id="play">Play</button></p>
 </section>
 <main id="game" hidden>
@@ -273,9 +320,9 @@
   <p id="goal"></p>
   <div class="stage">
     <div>
-      <canvas id="view" width="800" height="300" aria-hidden="true"></canvas>
+      <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
-      <p class="legend" id="legend">Spots A1 to C3 and the bins sit on the table. The arm turns on its base. A block is the part. A thick mark means go here.</p>
+      <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
     </div>
     <div class="side">
       <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
@@ -284,9 +331,9 @@
   </div>
   <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
   <p id="stars" aria-label="No stars yet.">
-    <span class="star" id="star-1" aria-hidden="true">★</span>
-    <span class="star" id="star-2" aria-hidden="true">★</span>
-    <span class="star" id="star-3" aria-hidden="true">★</span>
+    <svg class="star" id="star-1" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
+    <svg class="star" id="star-2" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
+    <svg class="star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
     <span id="star-words">No stars yet.</span>
   </p>
   <p id="star-rules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
@@ -298,7 +345,7 @@
     <p>Program</p>
     <ol id="program"></ol>
   </div>
-  <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left. E turns the base right. R runs. Z undoes. Retry keeps the program.</p>
+  <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
 </main>
 <noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
 <script src="vendor/three.min.js"></script>
@@ -377,7 +424,6 @@ var renderRun = function () {
   for (i = 1; i <= 3; i++) {
     var star = document.getElementById("star-" + i);
     star.classList.toggle("is-on", i <= view.stars);
-    star.textContent = i <= view.stars ? "\u2605" : "\u2606";
   }
   document.getElementById("star-words").textContent = view.words;
   document.getElementById("stars").setAttribute("aria-label", view.aria);
@@ -479,13 +525,14 @@ var renderLevels = function () {
   var levelNow = PINCHY.LEVELS[session.level];
   document.getElementById("goal").textContent = levelNow.goal;
   var legend = document.getElementById("legend");
-  if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
-  else if (levelNow.kind === "sensor") legend.textContent = "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
-  else if (levelNow.debug) legend.textContent = "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
-  else legend.textContent = "Spots A1 to C3 and the bins sit on the table. The arm turns on its base. A block is the part. A thick mark means go here.";
+  var turn3d = "The 3D arm turns on its base. ";
+  if (levelNow.kind === "pile") legend.textContent = turn3d + "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
+  else if (levelNow.kind === "sensor") legend.textContent = turn3d + "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
+  else if (levelNow.debug) legend.textContent = turn3d + "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
+  else legend.textContent = turn3d + "Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.";
   document.getElementById("help").textContent = levelNow.debug
-    ? "Arrow keys pick a step. Enter swaps it with the next step. R runs. Z undoes."
-    : "Arrow keys pick a block. Enter adds it. Q turns the base left. E turns the base right. R runs. Z undoes. Retry keeps the program.";
+    ? "Arrow keys pick a step. Enter swaps it with the next step. The 3D arm turns on its base when the program runs. R runs. Z undoes."
+    : "Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.";
 };
 
 var setBusy = function (busy) {

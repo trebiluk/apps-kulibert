@@ -58,36 +58,65 @@
     parent.add(mesh);
   }
 
-  var sprites = {};
-  function labelSprite(text, sx, sy) {
-    var key = text + "/" + (sx || 40);
-    if (sprites[key]) return sprites[key].clone();
-    var canvas = document.createElement("canvas");
-    canvas.width = 384;
-    canvas.height = 80;
-    var g = canvas.getContext("2d");
-    g.fillStyle = "#132A5C";
-    g.fillRect(0, 0, 384, 80);
-    g.strokeStyle = "#22D3EE";
-    g.lineWidth = 4;
-    g.strokeRect(3, 3, 378, 74);
-    g.fillStyle = "#F7F9FF";
-    g.font = "600 36px sans-serif";
-    g.textAlign = "center";
-    g.textBaseline = "middle";
-    g.fillText(text, 192, 42);
-    var texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    var sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false }));
-    sprite.scale.set(sx || 40, sy || 9, 1);
-    sprites[key] = sprite;
-    return sprite.clone();
+  var labelQueue = [];
+  function addLabel(parent, text, position) {
+    labelQueue.push({ text: text, position: position.clone() });
   }
 
-  function addLabel(parent, text, position, sx, sy) {
-    var sprite = labelSprite(text, sx, sy);
-    sprite.position.copy(position);
-    parent.add(sprite);
+  function labelLayer(canvas) {
+    var layer = canvas._labels;
+    if (layer && layer.isConnected) return layer;
+    var wrap = canvas.parentNode;
+    if (!wrap) return null;
+    layer = document.createElement("div");
+    layer.className = "scene-labels";
+    layer.setAttribute("aria-hidden", "true");
+    wrap.appendChild(layer);
+    canvas._labels = layer;
+    return layer;
+  }
+
+  function placeLabels(canvas, camera) {
+    var layer = labelLayer(canvas);
+    if (!layer) return;
+    var w = canvas.clientWidth || 0;
+    var h = canvas.clientHeight || 0;
+    layer.replaceChildren();
+    if (w < 2 || h < 2) return;
+    var placed = [];
+    var i, item, p, x, y, span, estW, estH, tries, hit, j, o;
+    for (i = 0; i < labelQueue.length; i++) {
+      item = labelQueue[i];
+      p = item.position.clone().project(camera);
+      if (p.z < -1 || p.z > 1) continue;
+      x = (p.x * 0.5 + 0.5) * w;
+      y = (-p.y * 0.5 + 0.5) * h;
+      if (x < -40 || y < -20 || x > w + 40 || y > h + 20) continue;
+      span = document.createElement("span");
+      span.textContent = item.text;
+      layer.appendChild(span);
+      estW = Math.max(36, item.text.length * 8.4 + 12);
+      estH = 22;
+      tries = 0;
+      while (tries < 10) {
+        hit = false;
+        for (j = 0; j < placed.length; j++) {
+          o = placed[j];
+          if (x - estW / 2 < o.x + o.w / 2 && x + estW / 2 > o.x - o.w / 2 && y - estH / 2 < o.y + o.h / 2 && y + estH / 2 > o.y - o.h / 2) {
+            hit = true;
+            break;
+          }
+        }
+        if (!hit) break;
+        y -= 20;
+        tries += 1;
+      }
+      x = Math.max(estW / 2 + 2, Math.min(w - estW / 2 - 2, x));
+      y = Math.max(estH / 2 + 2, Math.min(h - estH / 2 - 2, y));
+      span.style.left = x + "px";
+      span.style.top = y + "px";
+      placed.push({ x: x, y: y, w: estW, h: estH });
+    }
   }
 
   function create(canvas) {
@@ -149,6 +178,46 @@
       }
     }
 
+    var rimPts = null;
+    function frameCamera() {
+      camera.fov = 38;
+      camera.aspect = Math.max(0.2, (canvas.clientWidth || 1) / (canvas.clientHeight || 1));
+      if (!rimPts) {
+        rimPts = [];
+        var i, a;
+        for (i = 0; i < 20; i++) {
+          a = (i / 20) * Math.PI * 2;
+          rimPts.push(new THREE.Vector3(Math.cos(a) * 300, 1, Math.sin(a) * 300));
+        }
+        rimPts.push(new THREE.Vector3(0, 200, 40));
+        rimPts.push(new THREE.Vector3(40, 160, 160));
+      }
+      var target = new THREE.Vector3(0, 24, 16);
+      var dir = new THREE.Vector3(0.82, 0.58, 0.9).normalize();
+      var lo = 420;
+      var hi = 2000;
+      var best = hi;
+      var step, mid, fit, s, projected, ax, ay;
+      for (step = 0; step < 16; step++) {
+        mid = (lo + hi) / 2;
+        camera.position.copy(target).addScaledVector(dir, mid);
+        camera.lookAt(target);
+        camera.updateProjectionMatrix();
+        fit = true;
+        for (s = 0; s < rimPts.length; s++) {
+          projected = rimPts[s].clone().project(camera);
+          ax = Math.abs(projected.x);
+          ay = Math.abs(projected.y);
+          if (ax > 0.94 || ay > 0.94 || projected.z > 1) fit = false;
+        }
+        if (fit) { best = mid; hi = mid; }
+        else lo = mid;
+      }
+      camera.position.copy(target).addScaledVector(dir, best);
+      camera.lookAt(target);
+      camera.updateProjectionMatrix();
+    }
+
     function resize() {
       var w = canvas.clientWidth || canvas._cssW || 1;
       var h = canvas.clientHeight || canvas._cssH || 1;
@@ -158,17 +227,9 @@
       canvas._glH = h;
       renderer.setPixelRatio(Math.min(root.devicePixelRatio || 1, 1.5));
       renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      if (camera.aspect < 1.7) {
-        camera.fov = 48;
-        camera.position.set(460, 300, 430);
-        camera.lookAt(0, 118, 80);
-      } else {
-        camera.fov = 34;
-        camera.position.set(340, 230, 320);
-        camera.lookAt(0, 78, 70);
-      }
-      camera.updateProjectionMatrix();
+      canvas.style.width = "";
+      canvas.style.height = "";
+      frameCamera();
     }
 
     function arm(parent, state, ghost) {
@@ -232,6 +293,7 @@
 
     function render(state, level, opts) {
       if (!state || !root.PINCHY) return;
+      labelQueue = [];
       resize();
       clearDyn();
       var cmd = (opts && opts.cmd) || "";
@@ -248,6 +310,7 @@
       }
       arm(dyn, state, false);
       if (opts && opts.world) buildWorld(dyn, state, level);
+      placeLabels(canvas, camera);
       renderer.render(scene, camera);
     }
 
