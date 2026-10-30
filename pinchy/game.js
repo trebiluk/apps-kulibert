@@ -819,6 +819,28 @@
     return "Three stars.";
   }
 
+  function settleRun(prev, event) {
+    var type = event && event.type;
+    var note = event && event.note;
+    if (type === "start") return { kind: "running", note: note || "Running." };
+    if (type === "crash") return { kind: "crashed", note: note || "" };
+    if (type === "fail") return { kind: "failed", note: note || "" };
+    if (type === "win") return { kind: "won", n: event.n || 0, note: note || "Done." };
+    if (type === "retry") return { kind: "idle", note: note || "Arm reset. Program kept." };
+    if (type === "undo" || type === "edit") return { kind: "idle", note: note || "Add a block, then press Run." };
+    if (type === "level") return { kind: "idle", note: note || "Add blocks, then press Run." };
+    return prev || { kind: "idle", note: "Add a block, then press Run." };
+  }
+
+  function runView(state) {
+    var kind = state && state.kind ? state.kind : "idle";
+    var n = kind === "won" ? (state.n || 0) : 0;
+    var words = starWords(n);
+    var note = state && state.note ? state.note : "Add a block, then press Run.";
+    var status = kind === "won" ? note + " " + words : note;
+    return { kind: kind, stars: n, words: words, aria: words, status: status };
+  }
+
   function jointReadout(state) {
     var claw = state.open ? "open" : "closed";
     return "Base " + Math.round(state.base) + " degrees. Shoulder " + Math.round(state.shoulder) +
@@ -878,6 +900,8 @@
     crashLine: crashLine,
     starsFor: starsFor,
     starWords: starWords,
+    settleRun: settleRun,
+    runView: runView,
     jointReadout: jointReadout,
     cloneState: cloneState,
     stateKey: stateKey,
