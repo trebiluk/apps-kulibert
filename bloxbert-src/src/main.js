@@ -22,7 +22,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import ATLAS from '../assets/atlas.json'
 import { BLOCKS } from './data/blocks-list.js';
-import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures } from './gfx/packs.js'
+import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 // 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
@@ -10330,6 +10330,14 @@ function paintPackLook(g) {
   paintSmall()
   smallBtn.addEventListener('click', () => setSmallTextures(!smallTextures()))
   g.append(lookHead, packRow, smallBtn)
+  if (autoTex32()) {
+    const hint = document.createElement('p')
+    hint.className = 'gnote'
+    hint.id = 'tex-auto-hint'
+    hint.textContent = '32px textures are in use automatically.'
+    smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
+    g.append(hint)
+  }
 }
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')

@@ -57,21 +57,39 @@ function autoSmall() {
   return cores || mem || phone
 }
 
+function savedTex() {
+  try { return localStorage.getItem(SMALL_KEY) || '' } catch (e) { return '' }
+}
+
 export function smallTextures() {
   const q = queryTex()
+  // ?tex=64 and an explicit off both beat Chromebook auto and ?tex=32.
   if (q === '64') return false
-  if (q === '32') return true
-  try {
-    const saved = localStorage.getItem(SMALL_KEY)
-    if (saved === '1') return true
-    if (saved === '0') return false
-  } catch (e) {}
+  const saved = savedTex()
+  if (saved === '0') return false
+  if (saved === '1' || q === '32') return true
   return autoSmall()
 }
 
+// 32px chosen by the device (Chromebook, phone, or ?tex=32), not by the player.
+export function autoTex32() {
+  if (!smallTextures()) return false
+  const saved = savedTex()
+  return saved !== '1' && saved !== '0'
+}
+
+let texBusy = false
 export function setSmallTextures(on) {
+  if (texBusy) return
+  texBusy = true
   try { localStorage.setItem(SMALL_KEY, on ? '1' : '0') } catch (e) {}
-  location.reload()
+  try {
+    const u = new URL(location.href)
+    u.searchParams.set('tex', on ? '32' : '64')
+    location.replace(u.href)
+  } catch (e) {
+    location.reload()
+  }
 }
 
 function coreSize() {
