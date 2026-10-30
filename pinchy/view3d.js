@@ -94,25 +94,37 @@
       y = (-p.y * 0.5 + 0.5) * h;
       span = document.createElement("span");
       span.textContent = item.text;
+      span.style.left = x + "px";
+      span.style.top = y + "px";
       layer.appendChild(span);
+      box = span.getBoundingClientRect();
+      var bw = box.width;
+      var bh = box.height;
       ok = false;
-      for (k = 0; k < 28 && !ok; k++) {
-        rad = k === 0 ? 0 : 6 + k * 11;
+      var cx = x;
+      var cy = y;
+      for (k = 0; k < 16 && !ok; k++) {
+        rad = k === 0 ? 0 : 8 + k * 12;
         ang = k * 2.4;
         dx = Math.cos(ang) * rad;
-        dy = Math.sin(ang) * rad * 0.72;
-        span.style.left = (x + dx) + "px";
-        span.style.top = (y + dy) + "px";
-        box = span.getBoundingClientRect();
-        if (box.left < host.left + 1 || box.right > host.right - 1 || box.top < host.top + 1 || box.bottom > host.bottom - 1) continue;
+        dy = Math.sin(ang) * rad * 0.7;
+        cx = x + dx;
+        cy = y + dy;
+        var left = host.left + cx - bw / 2;
+        var top = host.top + cy - bh / 2;
+        if (left < host.left + 1 || left + bw > host.right - 1 || top < host.top + 1 || top + bh > host.bottom - 1) continue;
         ok = true;
         for (j = 0; j < placed.length; j++) {
           other = placed[j];
-          if (box.left < other.right + 3 && box.right > other.left - 3 && box.top < other.bottom + 3 && box.bottom > other.top - 3) ok = false;
+          if (left < other.right + 3 && left + bw > other.left - 3 && top < other.bottom + 3 && top + bh > other.top - 3) ok = false;
         }
+        if (ok) placed.push({ left: left, right: left + bw, top: top, bottom: top + bh });
       }
       if (!ok) span.remove();
-      else placed.push(span.getBoundingClientRect());
+      else {
+        span.style.left = cx + "px";
+        span.style.top = cy + "px";
+      }
     }
   }
 

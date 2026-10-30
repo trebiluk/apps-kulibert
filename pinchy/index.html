@@ -149,14 +149,14 @@
   button:disabled { opacity: 0.55; }
   button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
   #goal, .legend, .help, #angles, #metrics { margin: 8px 0; font-weight: 650; }
-  #goal { min-height: 3.4em; }
+  #goal { min-height: 1.4em; }
   .stage {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
     gap: 8px;
     align-items: start;
   }
-  .side { display: flex; flex-direction: column; gap: 8px; min-height: 560px; }
+  .side { display: flex; flex-direction: column; gap: 8px; }
   .palette, .actions { display: grid; gap: 8px; }
   .palette { grid-template-columns: 1fr 1fr; padding: 8px; background: var(--violet); border-radius: 12px; }
   .actions { grid-template-columns: 1fr 1fr 1fr; }
@@ -177,7 +177,7 @@
   }
   #status {
     margin: 8px 0;
-    min-height: 96px;
+    min-height: 72px;
     padding: 8px 10px;
     border: 2px solid var(--line);
     border-radius: 10px;
@@ -247,37 +247,69 @@
     #hero { font-size: 32px; }
     .top { padding: 2px 8px; }
     #title-screen, #game { padding: 4px 8px; }
-    #langs, #levels {
+    .top { flex-wrap: nowrap; }
+    #langs {
+      position: absolute;
+      top: 4px;
+      inset-inline-start: 300px;
+      gap: 4px;
+      inset-inline-end: 8px;
+      z-index: 2;
       flex-wrap: nowrap;
-      overflow: hidden;
+      overflow-x: auto;
       min-height: 48px;
       max-height: 56px;
+      margin: 0;
+      padding: 0;
+    }
+    #levels {
+      flex-wrap: wrap;
+      overflow: visible;
+      min-height: 0;
+      max-height: none;
       margin: 0;
       padding: 2px 0;
     }
     button.lang, button.level {
-      flex: 1 1 48px;
+      flex: 0 0 auto;
       min-width: 48px;
-      overflow: hidden;
+      overflow: visible;
     }
-    button.lang, button.level .name {
-      text-overflow: ellipsis;
+    button.lang { padding: 2px 4px; font-size: 15px; }
+    button.level .name {
+      overflow: visible;
+      text-overflow: unset;
       white-space: nowrap;
-      min-width: 0;
     }
-    #goal {
-      margin: 2px 0;
+    #goal { display: none; }
+    #game {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      column-gap: 8px;
+      align-items: start;
+    }
+    #levels { grid-column: 1 / -1; }
+    .stage { display: contents; }
+    .stage > div:first-child { grid-column: 1; grid-row: 2; }
+    .side { grid-column: 2; grid-row: 2; min-height: 0; }
+    #status { grid-column: 1; grid-row: 3; margin: 0; min-height: 48px; }
+    #stars { grid-column: 2; grid-row: 3; margin: 0; align-self: end; }
+    #star-rules, #metrics, #angles, .legend { display: none; }
+    #program-wrap {
+      grid-column: 1;
+      grid-row: 4;
+      height: auto;
       min-height: 0;
-      max-height: 24px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      margin: 0;
+      padding: 2px 8px 2px;
     }
-    .side { min-height: 0; }
-    #title-arm { height: 120px; }
-    #view { height: 196px; min-height: 196px; max-height: 196px; }
-    .stage { grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); }
-    #angles, .legend, .help, #metrics { margin: 2px 0; }
+    #program-wrap p { margin: 0; line-height: 1.1; }
+    #program { min-height: 48px; padding: 0; }
+    .help { grid-column: 1 / -1; margin: 4px 0; }
+    #title-arm { height: 96px; }
+    #view { height: 108px; min-height: 108px; max-height: 108px; }
+    .palette { overflow-x: auto; overflow-y: hidden; display: flex; flex-wrap: nowrap; }
+    .palette button.block { flex: 0 0 auto; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -551,9 +583,40 @@ var renderLevels = function () {
   else if (levelNow.kind === "sensor") legend.textContent = turn3d + "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
   else if (levelNow.debug) legend.textContent = turn3d + "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
   else legend.textContent = turn3d + "Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.";
-  document.getElementById("help").textContent = levelNow.debug
-    ? "Arrow keys pick a step. Enter swaps it with the next step. The 3D arm turns on its base when the program runs. R runs. Z undoes."
-    : "Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.";
+  var helpEl = document.getElementById("help");
+  var helpText = PINCHY.helpFor(lang, !!levelNow.debug);
+  var helpMeta = PINCHY.langMeta(lang);
+  helpEl.replaceChildren(document.createTextNode(helpText));
+  helpEl.lang = lang;
+  helpEl.dir = helpMeta.rtl ? "rtl" : "ltr";
+  if (helpMeta.blocksDraft && (levelNow.debug ? helpMeta.helpDebug : helpMeta.help)) {
+    helpEl.dataset.draft = "true";
+    var helpDraft = document.createElement("span");
+    helpDraft.className = "sr-only";
+    helpDraft.textContent = " Machine draft.";
+    helpEl.appendChild(helpDraft);
+  } else {
+    helpEl.removeAttribute("data-draft");
+  }
+  ["run", "undo", "retry"].forEach(function (actionId) {
+    var actionBtn = document.getElementById(actionId);
+    if (!actionBtn) return;
+    var actionName = actionBtn.querySelector(".name");
+    if (actionName) actionName.textContent = PINCHY.actionLabel(actionId, lang);
+    var oldDraft = actionBtn.querySelector(".sr-only");
+    if (oldDraft) oldDraft.remove();
+    if (helpMeta.blocksDraft && helpMeta.actions && helpMeta.actions[actionId]) {
+      actionBtn.dataset.draft = "true";
+      actionBtn.lang = lang;
+      actionBtn.dir = helpMeta.rtl ? "rtl" : "ltr";
+      var actionDraft = document.createElement("span");
+      actionDraft.className = "sr-only";
+      actionDraft.textContent = "Machine draft.";
+      actionBtn.appendChild(actionDraft);
+    } else {
+      actionBtn.removeAttribute("data-draft");
+    }
+  });
 };
 
 var setBusy = function (busy) {
@@ -575,11 +638,13 @@ var renderPalette = function () {
     b.dataset.cmd = id;
     if (keyHint) b.setAttribute("aria-keyshortcuts", keyHint);
     b.tabIndex = i === focusIndex ? 0 : -1;
-    if (id.indexOf("wrist") === 0 || id.indexOf("base-") === 0) {
+    if (id.indexOf("wrist") === 0 || (PINCHY.langMeta(lang).blocks && PINCHY.langMeta(lang).blocks[id])) {
       var meta = PINCHY.langMeta(lang);
       b.lang = lang;
       b.dir = meta.rtl ? "rtl" : "ltr";
-      if (meta.draft || (id.indexOf("base-") === 0 && meta.baseDraft)) {
+      var drafted = meta.draft || (meta.blocksDraft && meta.blocks && meta.blocks[id]);
+      if (id.indexOf("wrist") === 0 && !meta.draft) drafted = false;
+      if (drafted) {
         b.dataset.draft = "true";
         var draftMark = document.createElement("span");
         draftMark.className = "sr-only";
@@ -609,6 +674,7 @@ var applyLang = function (code) {
   }
   renderPalette();
   renderProgram(-1, -1);
+  if (document.getElementById("levels").children.length) renderLevels();
 };
 var doSwap = function (index) {
   if (playing) return;
