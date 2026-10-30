@@ -17,14 +17,14 @@
     { id: "aftershock", title: "Aftershock", hold: "30 kN", goal: "Keep the tower up after the shake." }
   ];
   var COPY = {
-    en: { kicker: "Challenge of the day", best: "Class best today", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", min: "~5 min", hold: "Hold" },
-    es: { kicker: "Reto del día", best: "Mejor de la clase hoy", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", min: "~5 min", hold: "Aguanta" },
-    ar: { kicker: "تحدي اليوم", best: "أفضل الصف اليوم", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", min: "~5 د", hold: "احمل" },
-    "fa-AF": { kicker: "چالش امروز", best: "بهترین صنف امروز", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", min: "~۵ دقیقه", hold: "نگه دار" },
-    uk: { kicker: "Виклик дня", best: "Найкраще в класі сьогодні", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", min: "~5 хв", hold: "Тримай" },
-    ru: { kicker: "Задача дня", best: "Лучшее в классе сегодня", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", min: "~5 мин", hold: "Держи" },
-    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Uwabaye neza uyu munsi", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", min: "~5 min", hold: "Fata" },
-    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ናይ ሎሚ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", min: "~5 ደቒቕ", hold: "ሓዝ" }
+    en: { kicker: "Challenge of the day", best: "Class best today", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", spanSub: "Bridges · jobs + Free build", spireSub: "Towers · jobs + Free build", or: "Or pick a game:", min: "~5 min", hold: "Hold" },
+    es: { kicker: "Reto del día", best: "Mejor de la clase hoy", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", spanSub: "Puentes · trabajos y libre", spireSub: "Torres · trabajos y libre", or: "O elige un juego:", min: "~5 min", hold: "Aguanta" },
+    ar: { kicker: "تحدي اليوم", best: "أفضل الصف اليوم", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", spanSub: "جسور · أعمال وبناء حر", spireSub: "أبراج · أعمال وبناء حر", or: "أو اختر لعبة:", min: "~5 د", hold: "احمل" },
+    "fa-AF": { kicker: "چالش امروز", best: "بهترین صنف امروز", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", spanSub: "پل‌ها · کار و ساخت آزاد", spireSub: "برج‌ها · کار و ساخت آزاد", or: "یا یک بازی انتخاب کن:", min: "~۵ دقیقه", hold: "نگه دار" },
+    uk: { kicker: "Виклик дня", best: "Найкраще в класі сьогодні", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", spanSub: "Мости · задачі і вільна гра", spireSub: "Вежі · задачі і вільна гра", or: "Або обери гру:", min: "~5 хв", hold: "Тримай" },
+    ru: { kicker: "Задача дня", best: "Лучшее в классе сегодня", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", spanSub: "Мосты · задачи и свободная игра", spireSub: "Башни · задачи и свободная игра", or: "Или выбери игру:", min: "~5 мин", hold: "Держи" },
+    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Uwabaye neza uyu munsi", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", spanSub: "Amabirige · imirimo n'ubwisanzure", spireSub: "Iminara · imirimo n'ubwisanzure", or: "Cyangwa hitamo umukino:", min: "~5 min", hold: "Fata" },
+    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ናይ ሎሚ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", spanSub: "ድልድላት · ስራሕን ነጻ ህንጻን", spireSub: "ግምብታት · ስራሕን ነጻ ህንጻን", or: "ወይ ጸወታ ምረጽ:", min: "~5 ደቒቕ", hold: "ሓዝ" }
   };
   var DAYS = { en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], es: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], ar: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"], "fa-AF": ["یکش", "دوش", "سه‌ش", "چهارش", "پنجش", "جمعه", "شنب"], uk: ["нд", "пн", "вт", "ср", "чт", "пт", "сб"], ru: ["вс", "пн", "вт", "ср", "чт", "пт", "сб"], rw: ["cyum", "mbe", "kab", "gtu", "kan", "gat", "gat"], ti: ["ሰን", "ሰኑ", "ሰሉ", "ረቡ", "ሓሙ", "ዓር", "ቀዳ"] };
 
@@ -67,10 +67,49 @@
     var code = lang();
     return (pack && pack[code]) || item.goal;
   }
+  var picked = "";
+  function camp() {
+    if (picked === "tower" || picked === "bridge") return picked;
+    var mode = "";
+    try { mode = new URLSearchParams(location.search).get("mode") || ""; } catch (e) {}
+    if (mode === "spire" || mode === "tower") return "tower";
+    return "bridge";
+  }
   function job() {
-    var list = SPANS;
+    var list = camp() === "tower" ? SPIRES : SPANS;
     var n = dayNumber();
     return list[((n % list.length) + list.length) % list.length];
+  }
+  function towerArt() {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 340 220");
+    svg.setAttribute("class", "hi-day-art");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = '<rect y="180" width="340" height="40" fill="#1E3470"/><path d="M150 180l20-150 20 150M130 150h80M140 110h60M170 30v-12" stroke="#C9D5F5" stroke-width="6" fill="none"/>';
+    return svg;
+  }
+  function doorBtn(which, name, sub, icon) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "hi-day-door" + (camp() === which ? " is-sel" : "");
+    b.setAttribute("aria-pressed", camp() === which ? "true" : "false");
+    b.appendChild(svgIcon(icon));
+    var label = el("span", "hi-day-door-label");
+    label.appendChild(el("span", "hi-day-door-name", name));
+    label.appendChild(el("small", "", sub));
+    b.appendChild(label);
+    if (camp() === which) b.appendChild(el("span", "hi-day-check", "✓"));
+    b.addEventListener("click", function () {
+      picked = which;
+      sig = "";
+      try {
+        var url = new URL(location.href);
+        url.searchParams.set("mode", which === "tower" ? "spire" : "span");
+        history.replaceState(null, "", url.pathname + url.search + url.hash);
+      } catch (e) {}
+      render();
+    });
+    return b;
   }
   function alias() {
     try {
@@ -215,10 +254,15 @@
     var starHost = el("div", "");
     paintStars(starHost, stars(current.id));
     art.appendChild(starHost);
-    art.appendChild(bridgeArt());
+    art.appendChild(camp() === "tower" ? towerArt() : bridgeArt());
     card.appendChild(copyCol);
     card.appendChild(art);
     root.appendChild(card);
+    root.appendChild(el("p", "hi-day-or", copy.or));
+    var doors = el("div", "hi-day-doors");
+    doors.appendChild(doorBtn("bridge", copy.span, copy.spanSub, "M2 30h40M6 30V18l8 12 8-12 8 12 8-12v12M6 18h32"));
+    doors.appendChild(doorBtn("tower", copy.spire, copy.spireSub, "M10 40h24M14 40l8-34 8 34M16 30h12M18 20h8"));
+    root.appendChild(doors);
     root.appendChild(el("p", "hi-day-note", copy.note));
   }
   var busy = false;
