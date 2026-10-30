@@ -2,7 +2,29 @@
    and its home chip still says HI 1.1.22. */
 (function () {
   var LINE = "Menus and Settings are readable. Locked jobs show \uD83D\uDD12 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.";
-  var CHIP = "HI 1.1.24";
+  var LINE25 = "Language, Read aloud, and Larger type in the menu now change the page, and Hub Menu is the last row.";
+  var CHIP = "HI 1.1.25";
+
+  function entry25() {
+    var li = document.createElement("li");
+    li.setAttribute("data-hi", "1.1.25");
+    var stamp = document.createElement("p");
+    stamp.className = "font-mono text-[11px] uppercase tracking-[0.18em] text-primary";
+    stamp.textContent = "HI 1.1.25 \u00b7 2026-10-30";
+    var title = document.createElement("h2");
+    title.className = "mt-2 text-xl font-medium";
+    title.textContent = "The menu settings apply";
+    var list = document.createElement("ul");
+    list.className = "mt-3 space-y-2";
+    var item = document.createElement("li");
+    item.className = "text-[15px] leading-relaxed text-muted-foreground";
+    item.textContent = LINE25;
+    list.appendChild(item);
+    li.appendChild(stamp);
+    li.appendChild(title);
+    li.appendChild(list);
+    return li;
+  }
 
   function entry24() {
     var li = document.createElement("li");
@@ -83,14 +105,19 @@ function paintIntro(ol) {
   function paintNews() {
     var ol = document.querySelector("ol.mt-10");
     if (!ol) return;
-    if (!ol.querySelector("li[data-hi='1.1.23']")) ol.insertBefore(entry(), ol.firstElementChild);
-    var newer = ol.querySelector("li[data-hi='1.1.24']");
-    if (!newer) {
-      newer = entry24();
-      ol.insertBefore(newer, ol.firstElementChild);
-    } else if (ol.firstElementChild !== newer) {
-      ol.insertBefore(newer, ol.firstElementChild);
+    if (!ol.querySelector("li[data-hi='1.1.23']")) {
+      var after24 = ol.querySelector("li[data-hi='1.1.24']");
+      if (after24) after24.after(entry());
+      else ol.insertBefore(entry(), ol.firstElementChild);
     }
+    if (!ol.querySelector("li[data-hi='1.1.24']")) {
+      var after25 = ol.querySelector("li[data-hi='1.1.25']");
+      if (after25) after25.after(entry24());
+      else ol.insertBefore(entry24(), ol.firstElementChild);
+    }
+    var top = ol.querySelector("li[data-hi='1.1.25']");
+    if (!top) ol.insertBefore(entry25(), ol.firstElementChild);
+    else if (ol.firstElementChild !== top) ol.insertBefore(top, ol.firstElementChild);
     dedupeNews(ol);
     paintIntro(ol);
   }

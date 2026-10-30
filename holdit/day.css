@@ -1,4 +1,4 @@
-/* HI 1.1.24 — Challenge of the Day. Dream navy, one hard shadow, no truck. */
+/* HI 1.1.25 — Challenge of the Day. Dream navy, one hard shadow, no truck. */
 body.hi-day {
   background: #06122b;
 }
@@ -8,7 +8,13 @@ body.hi-day .shop:not(.shop-editor) {
   color: #eaf0ff;
 }
 body.hi-day .shop:not(.shop-editor) > .mx-auto {
-  display: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
 }
 body.hi-day .hi-menu-bar {
   background: transparent !important;
@@ -31,9 +37,11 @@ body.hi-day .kb-bar a {
 }
 .hi-day-card {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 20px;
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
   background: #2a2470;
   border-radius: 22px;
   padding: 24px;
@@ -120,15 +128,52 @@ body.hi-day .kb-bar a {
 #hi-menu-lang {
   display: none !important;
 }
+#hi-drawer[data-state="open"] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#hi-drawer[data-state="open"] nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 #hi-drawer a,
 #hi-drawer button,
 #hi-drawer select {
   min-height: 48px;
 }
 #hi-drawer > button {
+  top: 60px !important;
   min-width: 48px;
-  width: 48px;
+  width: auto;
   height: 48px;
+  padding: 0 12px !important;
+  z-index: 82;
+}
+#hi-drawer > button .sr-only {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  clip: auto !important;
+  clip-path: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+#hi-drawer .hub-menu-block,
+#hi-drawer .hub-menu-block button,
+#hi-drawer .hub-menu-block a,
+#hi-drawer .hub-menu-block p {
+  color: #e8f7ff !important;
+}
+#hi-drawer .hub-menu-block button:hover,
+#hi-drawer .hub-menu-block a:hover,
+#hi-drawer .hub-menu-block button:focus-visible,
+#hi-drawer .hub-menu-block a:focus-visible {
+  background-color: #0b152c !important;
+  color: #e8f7ff !important;
 }
 .hi-hub-menu {
   display: flex;
@@ -143,11 +188,17 @@ body.hi-day .kb-bar a {
   font-weight: 800;
   text-decoration: none;
 }
+.hi-day-copy {
+  min-width: 0;
+  max-width: 100%;
+}
 .hi-day-play {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
+  box-sizing: border-box;
+  max-width: 100%;
   min-height: 72px;
   margin-top: 16px;
   padding: 0 40px;
@@ -158,7 +209,12 @@ body.hi-day .kb-bar a {
   font: 900 30px/1 Archivo, "Arial Black", "Noto Sans", "Noto Sans Arabic", sans-serif;
   box-shadow: 0 6px 0 #8a2f0c;
   cursor: pointer;
+  white-space: nowrap;
 }
+html.large-type .hi-day-goal { font-size: 52px; }
+html.large-type .hi-day-best,
+html.large-type .hi-day-chip,
+html.large-type .hi-day-play { font-size: 34px; }
 .hi-day-art {
   width: 100%;
   height: auto;
@@ -256,17 +312,30 @@ body.hi-day button.hi-day-door.is-sel {
   outline-offset: 3px;
 }
 
-@media (max-width: 700px) {
+@media (max-height: 520px) {
+  .hi-day-card { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+  .hi-day-goal { font-size: 28px; }
+  .hi-day-play {
+    width: auto;
+    max-width: 100%;
+    font-size: 22px;
+    padding: 0 20px;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 980px) {
   .hi-day { padding: 12px; gap: 12px; }
   .hi-day-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding: 16px;
   }
   .hi-day-goal { font-size: 28px; }
   .hi-day-play {
     width: 100%;
-    font-size: 24px;
-    padding: 0 16px;
+    font-size: 20px;
+    padding: 0 12px;
   }
+  html.large-type .hi-day-goal { font-size: 36px; }
+  html.large-type .hi-day-play { font-size: 22px; }
   .hi-day-doors { grid-template-columns: 1fr; }
 }

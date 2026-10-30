@@ -1,4 +1,4 @@
-/* HI 1.1.24 — Challenge of the Day. Existing jobs, date-seeded. No server. */
+/* HI 1.1.25 — Challenge of the Day. Existing jobs, date-seeded. No server. */
 (function () {
   var SPANS = [
     { id: "creek-crossing", title: "Creek Crossing", hold: "24 kN", goal: "Cross the creek with a triangle." },
@@ -17,14 +17,14 @@
     { id: "aftershock", title: "Aftershock", hold: "30 kN", goal: "Keep the tower up after the shake." }
   ];
   var COPY = {
-    en: { kicker: "Challenge of the day", best: "Class best today", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", spanSub: "Bridges · jobs + Free build", spireSub: "Towers · jobs + Free build", or: "Or pick a game:", min: "~5 min", hold: "Hold", hub: "Hub Menu ▸" },
-    es: { kicker: "Reto del día", best: "Mejor de la clase hoy", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", spanSub: "Puentes · trabajos y libre", spireSub: "Torres · trabajos y libre", or: "O elige un juego:", min: "~5 min", hold: "Aguanta", hub: "Menú del Hub ▸" },
-    ar: { kicker: "تحدي اليوم", best: "أفضل الصف اليوم", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", spanSub: "جسور · أعمال وبناء حر", spireSub: "أبراج · أعمال وبناء حر", or: "أو اختر لعبة:", min: "~5 د", hold: "احمل", hub: "قائمة المحور ▸" },
-    "fa-AF": { kicker: "چالش امروز", best: "بهترین صنف امروز", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", spanSub: "پل‌ها · کار و ساخت آزاد", spireSub: "برج‌ها · کار و ساخت آزاد", or: "یا یک بازی انتخاب کن:", min: "~۵ دقیقه", hold: "نگه دار", hub: "فهرست هاب ▸" },
-    uk: { kicker: "Виклик дня", best: "Найкраще в класі сьогодні", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", spanSub: "Мости · задачі і вільна гра", spireSub: "Вежі · задачі і вільна гра", or: "Або обери гру:", min: "~5 хв", hold: "Тримай", hub: "Меню хаба ▸" },
-    ru: { kicker: "Задача дня", best: "Лучшее в классе сегодня", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", spanSub: "Мосты · задачи и свободная игра", spireSub: "Башни · задачи и свободная игра", or: "Или выбери игру:", min: "~5 мин", hold: "Держи", hub: "Меню хаба ▸" },
-    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Uwabaye neza uyu munsi", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", spanSub: "Amabirige · imirimo n'ubwisanzure", spireSub: "Iminara · imirimo n'ubwisanzure", or: "Cyangwa hitamo umukino:", min: "~5 min", hold: "Fata", hub: "Menyu y'ububiko ▸" },
-    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ናይ ሎሚ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", spanSub: "ድልድላት · ስራሕን ነጻ ህንጻን", spireSub: "ግምብታት · ስራሕን ነጻ ህንጻን", or: "ወይ ጸወታ ምረጽ:", min: "~5 ደቒቕ", hold: "ሓዝ", hub: "ዝርዝር ማእኸል ▸" }
+    en: { kicker: "Challenge of the day", best: "Best today on this device", none: "none yet", bars: "bars", play: "Play today's challenge", note: "Records show aliases only. A new challenge every school day.", span: "Span", spire: "Spire", spanSub: "Bridges · jobs + Free build", spireSub: "Towers · jobs + Free build", or: "Or pick a game:", min: "~5 min", hold: "Hold" },
+    es: { kicker: "Reto del día", best: "Mejor hoy en este aparato", none: "aún nadie", bars: "barras", play: "Juega el reto de hoy", note: "Las marcas usan alias. Un reto nuevo cada día de clase.", span: "Span", spire: "Spire", spanSub: "Puentes · trabajos y libre", spireSub: "Torres · trabajos y libre", or: "O elige un juego:", min: "~5 min", hold: "Aguanta" },
+    ar: { kicker: "تحدي اليوم", best: "الأفضل اليوم على هذا الجهاز", none: "لا أحد بعد", bars: "قضبان", play: "العب تحدي اليوم", note: "السجلات بأسماء مستعارة فقط. تحدٍ جديد كل يوم دراسة.", span: "Span", spire: "Spire", spanSub: "جسور · أعمال وبناء حر", spireSub: "أبراج · أعمال وبناء حر", or: "أو اختر لعبة:", min: "~5 د", hold: "احمل" },
+    "fa-AF": { kicker: "چالش امروز", best: "بهترین امروز روی همین دستگاه", none: "هنوز کسی نه", bars: "میله", play: "چالش امروز را بازی کن", note: "رکوردها فقط نام مستعار اند. هر روز مکتب یک چالش نو.", span: "Span", spire: "Spire", spanSub: "پل‌ها · کار و ساخت آزاد", spireSub: "برج‌ها · کار و ساخت آزاد", or: "یا یک بازی انتخاب کن:", min: "~۵ دقیقه", hold: "نگه دار" },
+    uk: { kicker: "Виклик дня", best: "Найкраще сьогодні на цьому пристрої", none: "ще немає", bars: "стрижні", play: "Грати виклик дня", note: "Рекорди лише з псевдонімами. Новий виклик кожного навчального дня.", span: "Span", spire: "Spire", spanSub: "Мости · задачі і вільна гра", spireSub: "Вежі · задачі і вільна гра", or: "Або обери гру:", min: "~5 хв", hold: "Тримай" },
+    ru: { kicker: "Задача дня", best: "Лучшее сегодня на этом устройстве", none: "пока нет", bars: "стержни", play: "Играть задачу дня", note: "Рекорды только с псевдонимами. Новая задача каждый учебный день.", span: "Span", spire: "Spire", spanSub: "Мосты · задачи и свободная игра", spireSub: "Башни · задачи и свободная игра", or: "Или выбери игру:", min: "~5 мин", hold: "Держи" },
+    rw: { kicker: "Ikibazo cy'uyu munsi", best: "Ibyiza uyu munsi kuri iki gikoresho", none: "ntakiriho", bars: "imirongo", play: "Kina ikibazo cy'uyu munsi", note: "Ibyanditswe ni amazina y'ibanga gusa. Ikibazo gishya buri munsi w'ishuri.", span: "Span", spire: "Spire", spanSub: "Amabirige · imirimo n'ubwisanzure", spireSub: "Iminara · imirimo n'ubwisanzure", or: "Cyangwa hitamo umukino:", min: "~5 min", hold: "Fata" },
+    ti: { kicker: "ፈተና ናይ ሎሚ", best: "ዝበለጸ ሎሚ ኣብዚ መሳርሒ", none: "ገና የለን", bars: "ዕንጨይቲ", play: "ፈተና ናይ ሎሚ ተጻወት", note: "መዝገባት ብቅጽል ስም ጥራይ እዮም። ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ ፈተና።", span: "Span", spire: "Spire", spanSub: "ድልድላት · ስራሕን ነጻ ህንጻን", spireSub: "ግምብታት · ስራሕን ነጻ ህንጻን", or: "ወይ ጸወታ ምረጽ:", min: "~5 ደቒቕ", hold: "ሓዝ" }
   };
   var DAYS = { en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], es: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], ar: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"], "fa-AF": ["یکش", "دوش", "سه‌ش", "چهارش", "پنجش", "جمعه", "شنب"], uk: ["нд", "пн", "вт", "ср", "чт", "пт", "сб"], ru: ["вс", "пн", "вт", "ср", "чт", "пт", "сб"], rw: ["cyum", "mbe", "kab", "gtu", "kan", "gat", "gat"], ti: ["ሰን", "ሰኑ", "ሰሉ", "ረቡ", "ሓሙ", "ዓር", "ቀዳ"] };
 
@@ -33,8 +33,12 @@
     try {
       var q = new URLSearchParams(location.search).get("lang");
       if (q) code = q;
-      else if (window.KulibertPrefs && KulibertPrefs.lang) code = KulibertPrefs.lang;
-      else code = document.documentElement.lang || "en";
+      else {
+        var html = document.documentElement.lang || "";
+        if (html === "fa") html = "fa-AF";
+        if (COPY[html]) code = html;
+        else if (window.KulibertPrefs && KulibertPrefs.lang) code = KulibertPrefs.lang;
+      }
     } catch (e) {}
     if (code === "simple") code = "en";
     return COPY[code] ? code : "en";
@@ -203,77 +207,101 @@
     }
   }
   var sig = "";
-  function parkSave() {
-    var save = document.getElementById("hi-day-save");
-    if (!save) return;
-    var park = document.getElementById("hi-day-park");
-    if (!park) {
-      park = el("div", "");
-      park.id = "hi-day-park";
-      park.hidden = true;
-      document.body.appendChild(park);
+  function menuNodes() {
+    var langSel = document.getElementById("lp-lang");
+    if (!langSel || !langSel.closest) return [];
+    var span = langSel.closest("span") || langSel;
+    var wrap = span.parentElement;
+    var pressed = wrap ? [].slice.call(wrap.querySelectorAll(":scope > button[aria-pressed]")) : [];
+    return [span, pressed[0], pressed[1]].filter(Boolean);
+  }
+  function drawerOpen() {
+    var d = document.getElementById("hi-drawer");
+    if (!d || d.getAttribute("data-state") === "closed") return false;
+    var r = d.getBoundingClientRect();
+    return r.width > 40 && r.height > 40;
+  }
+  function clearSlot(el) {
+    el.style.position = "";
+    el.style.zIndex = "";
+    el.style.left = "";
+    el.style.top = "";
+    el.style.width = "";
+    el.style.margin = "";
+    el.style.visibility = "";
+    el.style.pointerEvents = "";
+    el.style.minHeight = "";
+    el.style.boxSizing = "";
+    el.style.display = "";
+    el.style.alignItems = "";
+  }
+  function isMenuControl(node) {
+    if (!node || !node.closest) return false;
+    var nodes = menuNodes();
+    for (var i = 0; i < nodes.length; i++) {
+      if (node === nodes[i] || nodes[i].contains(node)) return true;
     }
-    [].slice.call(save.querySelectorAll("button")).forEach(function (b) { park.appendChild(b); });
+    return false;
   }
-  function toolsPlaced() {
-    var box = document.getElementById("hi-day-settings");
-    var save = document.getElementById("hi-day-save");
-    return !!(box && box.querySelector("#lp-lang") && document.getElementById("hi-hub-menu") && save && save.querySelector("button"));
-  }
-  function placeTools(playButton) {
+  var hubSlotted = false;
+  function slotMenu() {
+    var nodes = menuNodes();
     var nav = document.querySelector("#hi-drawer nav");
-    var lang = document.getElementById("lp-lang");
-    if (nav && lang) {
-      var box = document.getElementById("hi-day-settings");
-      if (!box) {
-        box = el("div", "hi-day-settings");
-        box.id = "hi-day-settings";
-        nav.insertBefore(box, nav.firstChild);
-      }
-      var span = lang.closest("span");
-      var label = document.querySelector("label[for='lp-lang']");
-      if (label && label.parentElement !== box) box.appendChild(label);
-      if (span && span.parentElement !== box) box.appendChild(span);
-      var toolbar = document.querySelector(".shop:not(.shop-editor) .flex.flex-wrap.items-center.gap-1");
-      var pressed = toolbar ? [].slice.call(toolbar.querySelectorAll(":scope > button[aria-pressed]")) : [];
-      var aloud = document.querySelector("[data-hi-role='aloud']") || pressed[0];
-      var larger = document.querySelector("[data-hi-role='larger']") || pressed[1];
-      if (aloud) {
-        aloud.setAttribute("data-hi-role", "aloud");
-        if (aloud.parentElement !== box) box.appendChild(aloud);
-      }
-      if (larger) {
-        larger.setAttribute("data-hi-role", "larger");
-        if (larger.parentElement !== box) box.appendChild(larger);
-      }
-      var hub = document.getElementById("hi-hub-menu");
-      var hubText = t().hub;
-      if (!hub) {
-        hub = el("a", "hi-hub-menu", hubText);
-        hub.id = "hi-hub-menu";
-        var homeLink = document.querySelector(".kb-home");
-        hub.href = homeLink && homeLink.href ? homeLink.href : "https://apps.kulibert.net/";
-        nav.insertBefore(hub, box.nextSibling);
-      } else if (hub.textContent !== hubText) {
-        hub.textContent = hubText;
-      }
+    var open = drawerOpen();
+    var d = document.getElementById("hi-drawer");
+    if (nav) {
+      if (!nav.hasAttribute("data-hub-menu-host")) nav.setAttribute("data-hub-menu-host", "");
+      nav.style.paddingTop = open ? (124 + nodes.length * 56) + "px" : "";
     }
-    var saveHost = document.getElementById("hi-day-save");
-    if (!saveHost && playButton) {
-      saveHost = el("div", "hi-day-save");
-      saveHost.id = "hi-day-save";
-      playButton.insertAdjacentElement("afterend", saveHost);
+    if (!open) hubSlotted = false;
+    else if (!hubSlotted && window.HubMenu && typeof HubMenu.scan === "function") {
+      hubSlotted = true;
+      HubMenu.scan();
     }
-    var pools = [
-      document.querySelector(".shop:not(.shop-editor) .mt-3 .flex"),
-      document.getElementById("hi-day-park")
-    ];
-    pools.forEach(function (row) {
-      if (!row || !saveHost) return;
-      [].slice.call(row.querySelectorAll("button")).forEach(function (b) {
-        if (b.parentElement !== saveHost) saveHost.appendChild(b);
-      });
+    nodes.forEach(function (el, i) {
+      if (!open || !d) {
+        clearSlot(el);
+        return;
+      }
+      var r = d.getBoundingClientRect();
+      el.style.position = "fixed";
+      el.style.zIndex = "80";
+      el.style.margin = "0";
+      el.style.visibility = "visible";
+      el.style.pointerEvents = "auto";
+      el.style.minHeight = "48px";
+      el.style.boxSizing = "border-box";
+      el.style.display = "flex";
+      el.style.alignItems = "center";
+      el.style.left = Math.round(r.left + 16) + "px";
+      el.style.top = Math.round(r.top + 116 + i * 56) + "px";
+      el.style.width = Math.max(48, Math.round(r.width - 32)) + "px";
+      var sel = el.querySelector && el.querySelector("select");
+      if (sel) {
+        sel.style.width = "100%";
+        sel.style.maxWidth = "none";
+        sel.style.minHeight = "48px";
+        sel.style.pointerEvents = "auto";
+      }
     });
+  }
+  function slotSave(play) {
+    var row = document.querySelector(".shop:not(.shop-editor) .mt-3 .flex");
+    if (!row) return;
+    if (!play || play.getBoundingClientRect().width < 8) {
+      clearSlot(row);
+      return;
+    }
+    var pr = play.getBoundingClientRect();
+    row.style.position = "fixed";
+    row.style.zIndex = "30";
+    row.style.margin = "0";
+    row.style.visibility = "visible";
+    row.style.display = "flex";
+    row.style.gap = "8px";
+    row.style.left = Math.round(pr.left) + "px";
+    row.style.top = Math.round(pr.bottom + 8) + "px";
+    row.style.width = Math.round(Math.max(pr.width, 48)) + "px";
   }
   function render() {
     if (!home()) {
@@ -288,7 +316,8 @@
     var current = job();
     var nextSig = lang() + ":" + current.id;
     if (document.getElementById("hi-day") && sig === nextSig) {
-      placeTools();
+      slotMenu();
+      slotSave(document.querySelector(".hi-day-play"));
       return;
     }
     sig = nextSig;
@@ -299,7 +328,6 @@
       root.id = "hi-day";
       shop.appendChild(root);
     }
-    parkSave();
     var copy = t();
     var code = lang();
     var dayName = (DAYS[code] || DAYS.en)[new Date().getDay()];
@@ -313,7 +341,9 @@
     goal.lang = code === "fa-AF" ? "fa" : code;
     copyCol.appendChild(goal);
     var chips = el("div", "hi-day-chips");
-    chips.appendChild(chip("M2 30h40M6 30V18l8 12 8-12 8 12 8-12v12M6 18h32", copy.span));
+    var spanIcon = "M2 30h40M6 30V18l8 12 8-12 8 12 8-12v12M6 18h32";
+    var spireIcon = "M10 40h24M14 40l8-34 8 34M16 30h12M18 20h8";
+    chips.appendChild(chip(camp() === "tower" ? spireIcon : spanIcon, camp() === "tower" ? copy.spire : copy.span));
     chips.appendChild(chip("M22 6a10 10 0 1 0 0.1 0M22 14v8l5 3", copy.hold + " " + current.hold));
     chips.appendChild(chip("M22 8v14M22 8a8 8 0 1 0 0.1 0M16 38h12", copy.min));
     copyCol.appendChild(chips);
@@ -326,7 +356,8 @@
       location.assign("/holdit/play/" + current.id);
     });
     copyCol.appendChild(play);
-    placeTools(play);
+    slotSave(play);
+    slotMenu();
     var art = el("div", "hi-day-artwrap");
     var starHost = el("div", "");
     paintStars(starHost, stars(current.id));
@@ -351,8 +382,33 @@
   function arm() {
     pass();
     new MutationObserver(pass).observe(document.body, { childList: true, subtree: true });
+    new MutationObserver(function () { sig = ""; pass(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang", "dir", "class"] });
   }
+  function guardMenuClicks() {
+    var app = document.getElementById("app");
+    if (!app || app.getAttribute("data-hi-menu-guard") === "1") return;
+    app.setAttribute("data-hi-menu-guard", "1");
+    ["pointerdown", "pointerup", "mousedown", "mouseup"].forEach(function (type) {
+      app.addEventListener(type, function (ev) {
+        if (!drawerOpen() || !isMenuControl(ev.target)) return;
+        ev.stopPropagation();
+      }, false);
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    if (!home()) return;
+    var btn = ev.target && ev.target.closest && ev.target.closest(".kb-bar .kb-menu");
+    if (!btn) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    var menu = document.getElementById("hi-menu");
+    if (!menu) return;
+    window.setTimeout(function () { menu.click(); }, 40);
+  }, true);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", guardMenuClicks);
+  else guardMenuClicks();
   if (document.body) arm();
   else document.addEventListener("DOMContentLoaded", arm);
-  window.addEventListener("kulibert-lang", pass);
+  window.addEventListener("kulibert-lang", function () { sig = ""; pass(); });
+  window.addEventListener("resize", function () { slotMenu(); slotSave(document.querySelector(".hi-day-play")); });
 })();
