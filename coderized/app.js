@@ -366,6 +366,8 @@ $("btn-export").onclick = () => {
 };
 
 document.addEventListener("keydown", e => {
+  const keyTarget = e.target;
+  if (keyTarget && keyTarget.closest && keyTarget.closest("#kb-drawer, .kb-bar")) return;
   if (!session.role) {
     if (e.key === "Enter") { e.preventDefault(); $("btn-student").click(); }
     return;

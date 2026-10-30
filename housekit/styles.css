@@ -178,3 +178,11 @@ ol { margin: 8px 0; padding-left: 20px; }
 .name { font-weight: 650; }
 .meal-kicker { font-size: 0.72em; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
 .meal-name { font-size: 1.12em; font-weight: 750; }
+/* Hub bar is 48px. Keep the sticky header and the page height clear of it so the bottom nav stays on screen. */
+html:not(.kb-framed) body.kb-on {
+  padding-top: 48px;
+  min-height: 100dvh;
+}
+html:not(.kb-framed) body.kb-on .topbar { top: 48px; }
+html[dir="rtl"] .kb-bar { direction: rtl; }
+html[dir="rtl"] .kb-plate { direction: ltr; unicode-bidi: isolate; }

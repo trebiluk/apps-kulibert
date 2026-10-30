@@ -10,6 +10,16 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    html:not(.kb-framed) body.kb-on { padding-top: 48px; }
+    html:not(.kb-framed) body.kb-on .top { top: 48px; }
+    html[dir="rtl"] .kb-bar { direction: rtl; }
+    html[dir="rtl"] .kb-plate,
+    html[dir="rtl"] .brand { direction: ltr; unicode-bidi: isolate; }
+    @media (max-width: 440px) {
+      .kb-bar .kb-alias { margin-inline-start: 8px; }
+    }
+  </style>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
 <body>
@@ -124,8 +134,33 @@
     </div>
   </section>
   <p class="footer-note">Coderized CZ 1.4.0 · Chromebook Chrome · class code + alias · not a district SIS · TechWorks untouched</p>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="coderized" data-name="Coderized" data-version="CZ 1.4.0" data-rtl="1" data-whats-new="Coderized shows its version, and ☰ takes you Home." defer></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="origin.js"></script>
   <script src="app.js"></script>
+  <script defer>
+  (function () {
+    function syncChip() {
+      var chip = document.getElementById("version-chip");
+      var plate = document.querySelector(".kb-bar .kb-plate");
+      if (!chip) return;
+      var plateText = plate ? (plate.textContent || "").replace(/\s+/g, " ").trim() : "";
+      var chipText = (chip.textContent || "").replace(/\s+/g, " ").trim();
+      var version = plateText.split("\u00b7").pop().trim();
+      var same = plateText.length > 0 && chipText.length > 0 && version === chipText;
+      if (chip.classList.contains("hidden") !== same) chip.classList.toggle("hidden", same);
+    }
+    function arm() {
+      syncChip();
+      window.addEventListener("resize", syncChip);
+      var plate = document.querySelector(".kb-bar .kb-plate");
+      if (plate && window.MutationObserver) {
+        new MutationObserver(syncChip).observe(plate, { childList: true, characterData: true, subtree: true });
+      }
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arm);
+    else arm();
+  })();
+  </script>
 </body>
 </html>
