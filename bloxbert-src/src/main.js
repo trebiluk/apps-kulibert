@@ -10336,8 +10336,7 @@ function paintPackLook(g) {
     hint.id = 'tex-auto-hint'
     hint.textContent = '32px textures are in use automatically.'
     smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
-    const host = g.parentElement || g
-    host.insertBefore(hint, g)
+    g.insertBefore(hint, g.firstChild)
   }
 }
 function paintLook(g) {
