@@ -6,6 +6,11 @@
   var CLEAR = 0x06122b;
   var views = {};
 
+  function srgbColor(color, hex) {
+    color.setHex(hex).convertSRGBToLinear();
+    return color;
+  }
+
   function mat(color, metal, rough, opacity) {
     if (rough < 0.3) rough = 0.3;
     var m = new THREE.MeshStandardMaterial({
@@ -232,8 +237,21 @@
     table.rotation.x = -Math.PI / 2;
     table.position.y = 0;
     scene.add(table);
+    function linearGrid(grid) {
+      var attr = grid.geometry.getAttribute("color");
+      if (!attr) return;
+      var c = new THREE.Color();
+      var i;
+      for (i = 0; i < attr.count; i++) {
+        c.setRGB(attr.getX(i), attr.getY(i), attr.getZ(i)).convertSRGBToLinear();
+        attr.setXYZ(i, c.r, c.g, c.b);
+      }
+      attr.needsUpdate = true;
+    }
     var gridLight = new THREE.GridHelper(640, 32, 0x111111, 0x111111);
     var gridDark = new THREE.GridHelper(640, 32, 0x555555, 0x555555);
+    linearGrid(gridLight);
+    linearGrid(gridDark);
     gridLight.position.y = 0.6;
     gridDark.position.y = 0.6;
     scene.add(gridLight);
@@ -523,13 +541,19 @@
       MATS.link.color.setHex(darkTheme ? 0xe9e4da : 0x2b2824).convertSRGBToLinear();
       MATS.link.metalness = 0;
       MATS.link.roughness = 0.32;
-      MATS.pocket.color.setHex(darkTheme ? 0xcfc8bb : 0x1a1816);
-      MATS.horn.color.setHex(darkTheme ? 0xf2c230 : 0xe8b400);
-      MATS.table.color.setHex(darkTheme ? 0x3f4850 : 0xc9d3db);
+      srgbColor(MATS.table.color, darkTheme ? 0x3f4850 : 0xc9d3db);
+      MATS.table.roughness = 0.9;
+      MATS.table.metalness = 0;
+      srgbColor(MATS.ghost.color, 0xc5ceda);
+      srgbColor(MATS.grid.color, 0x132a5c);
+      srgbColor(MATS.gridOn.color, 0x22d3ee);
+      srgbColor(MATS.red.color, 0xc45a4a);
+      srgbColor(MATS.blue.color, 0x3b82f6);
+      srgbColor(MATS.part.color, 0xc5ceda);
       hemi.intensity = darkTheme ? 0.45 : 0.6;
       var clear = darkTheme ? 0x2a2723 : 0xfbf8f1;
-      renderer.setClearColor(clear, 1);
-      scene.background = new THREE.Color(clear);
+      srgbColor(scene.background, clear);
+      renderer.setClearColor(scene.background, 1);
       gridLight.visible = !darkTheme;
       gridDark.visible = darkTheme;
       if (opts && opts.world) buildWorld(dyn, state, level);
