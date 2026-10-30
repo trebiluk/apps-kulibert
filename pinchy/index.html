@@ -737,7 +737,11 @@ var drawScene = function (canvas, state, opts) {
   ctx.fillRect(0, 0, w, h);
   labelQueue = [];
   var showGrid = opts.showGrid !== false;
-  var gridH = showGrid ? Math.max(96, Math.min(128, Math.round(h * 0.3))) : 0;
+  var gridH = 0;
+  if (showGrid) {
+    gridH = Math.max(154, Math.min(168, Math.round(h * 0.42)));
+    if (h < 260) gridH = Math.max(120, h - 96);
+  }
   var sideH = h - gridH;
   var P = projector(w, sideH, 0, 0);
   var layout = PINCHY.LAYOUT;
@@ -870,7 +874,7 @@ var drawScene = function (canvas, state, opts) {
   }
 
   drawArm(ctx, P, state, { cmd: opts.cmd || "" });
-  paintTags(ctx, P, { x: 0, y: 0, w: w, h: sideH });
+  paintTags(ctx, P, { x: 0, y: 0, w: w, h: Math.max(0, sideH - 6) });
 
   if (!showGrid) return;
   var box = { x: 8, y: sideH + 8, w: w - 16, h: gridH - 16 };
@@ -898,8 +902,6 @@ var drawScene = function (canvas, state, opts) {
       ctx.strokeRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
       ctx.fillStyle = "#F3EEE4";
       var midX = cellX + cellW / 2;
-      var midY = cellY + cellH / 2;
-      ctx.fillText(name, midX, midY - 8);
       var extra = "";
       if (part && !part.inBin && PINCHY.spotName(part.base, part.r) === name) extra = "Part";
       if (level && level.bin && PINCHY.spotName(level.bin.base, level.bin.r) === name) extra = extra ? extra + " / Bin" : "Bin";
@@ -913,7 +915,21 @@ var drawScene = function (canvas, state, opts) {
         }
       }
       if (name === here) extra = extra ? extra + " / Go here" : "Go here";
-      if (extra) ctx.fillText(extra, midX, midY + 10);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(cellX + 3, cellY + 3, cellW - 6, cellH - 6);
+      ctx.clip();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (extra && cellH >= 40) {
+        ctx.fillText(name, midX, cellY + cellH * 0.32);
+        ctx.fillText(extra, midX, cellY + cellH * 0.72);
+      } else if (extra) {
+        ctx.fillText(name + " " + extra, midX, cellY + cellH / 2);
+      } else {
+        ctx.fillText(name, midX, cellY + cellH / 2);
+      }
+      ctx.restore();
     }
   }
   var u = Math.max(0.04, Math.min(0.96, (state.base + 45) / 90));
