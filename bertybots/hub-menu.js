@@ -350,6 +350,36 @@
       sendEscape(block);
     }
     closeDock(dockStillOpen());
+    resetHostExpanded();
+    setTimeout(resetHostExpanded, 0);
+    setTimeout(resetHostExpanded, 400);
+  }
+
+  function menuStillOpen() {
+    if (dockStillOpen()) return true;
+    var buttons = menuButtons();
+    for (var i = 0; i < buttons.length; i++) {
+      var id = buttons[i].getAttribute("aria-controls");
+      if (!id) continue;
+      var box = document.getElementById(id);
+      if (!box || box.hidden) continue;
+      var view = getComputedStyle(box);
+      if (view.display === "none" || view.visibility === "hidden") continue;
+      var rect = box.getBoundingClientRect();
+      if (rect.width >= 8 && rect.height >= 8) return true;
+    }
+    return false;
+  }
+
+  function resetHostExpanded() {
+    if (menuStillOpen()) return;
+    var buttons = menuButtons();
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].setAttribute("aria-expanded", "false");
+      if (buttons[i].getAttribute("data-kb-open") === "1") buttons[i].setAttribute("data-kb-open", "0");
+    }
+    var barBtn = document.querySelector(".kb-bar .kb-menu");
+    if (barBtn) barBtn.setAttribute("aria-expanded", "false");
   }
 
   function openHelp(block) {
