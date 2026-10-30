@@ -1,4 +1,4 @@
-/* HI 1.1.25 — Challenge of the Day. Existing jobs, date-seeded. No server. */
+/* HI 1.1.26 — Challenge of the Day. Existing jobs, date-seeded. No server. */
 (function () {
   var SPANS = [
     { id: "creek-crossing", title: "Creek Crossing", hold: "24 kN", goal: "Cross the creek with a triangle." },
@@ -234,6 +234,32 @@
     el.style.boxSizing = "";
     el.style.display = "";
     el.style.alignItems = "";
+    el.style.clipPath = "";
+  }
+  var MENU_WORDS = {
+    es: { close: "Cerrar", settings: "Ajustes" },
+    ar: { close: "\u0625\u063a\u0644\u0627\u0642", settings: "\u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a" },
+    "fa-AF": { close: "\u0628\u0633\u062a\u0646", settings: "\u062a\u0646\u0638\u06cc\u0645\u0627\u062a" }
+  };
+  function paintMenuWords() {
+    var words = MENU_WORDS[lang()] || { close: "Close", settings: "Settings" };
+    var close = document.querySelector("#hi-drawer > button .sr-only");
+    if (close && close.textContent !== words.close) close.textContent = words.close;
+    var settings = document.getElementById("hi-settings");
+    if (settings && settings.textContent !== words.settings) settings.textContent = words.settings;
+  }
+  function fitBar() {
+    var btn = document.querySelector(".kb-bar .kb-alias");
+    if (!btn) return;
+    var narrow = window.innerWidth <= 520;
+    var label = (btn.textContent || "").replace(/\s+/g, " ").trim() || "Sign in";
+    if (narrow) {
+      btn.classList.add("hi-alias-icon");
+      if (btn.getAttribute("aria-label") !== label) btn.setAttribute("aria-label", label);
+    } else {
+      btn.classList.remove("hi-alias-icon");
+      if (btn.getAttribute("aria-label") === label) btn.removeAttribute("aria-label");
+    }
   }
   function isMenuControl(node) {
     if (!node || !node.closest) return false;
@@ -244,14 +270,21 @@
     return false;
   }
   var hubSlotted = false;
+  var ROW = 56;
   function slotMenu() {
     var nodes = menuNodes();
     var nav = document.querySelector("#hi-drawer nav");
     var open = drawerOpen();
-    var d = document.getElementById("hi-drawer");
+    paintMenuWords();
+    fitBar();
+    if (nav && nav.getAttribute("data-hi-scroll") !== "1") {
+      nav.setAttribute("data-hi-scroll", "1");
+      nav.addEventListener("scroll", function () { slotMenu(); }, { passive: true });
+    }
     if (nav) {
       if (!nav.hasAttribute("data-hub-menu-host")) nav.setAttribute("data-hub-menu-host", "");
-      nav.style.paddingTop = open ? (124 + nodes.length * 56) + "px" : "";
+      nav.style.paddingTop = open ? (nodes.length * ROW) + "px" : "";
+      nav.style.marginTop = open ? "0" : "";
     }
     if (!open) hubSlotted = false;
     else if (!hubSlotted && window.HubMenu && typeof HubMenu.scan === "function") {
@@ -259,23 +292,33 @@
       HubMenu.scan();
     }
     nodes.forEach(function (el, i) {
-      if (!open || !d) {
+      if (el.tagName === "BUTTON") el.setAttribute("data-hi-tool", i === 1 ? "read" : "type");
+      if (!open || !nav) {
         clearSlot(el);
         return;
       }
-      var r = d.getBoundingClientRect();
+      var nr = nav.getBoundingClientRect();
+      var top = nr.top - nav.scrollTop + i * ROW;
+      var bottom = top + (el.offsetHeight || ROW);
       el.style.position = "fixed";
       el.style.zIndex = "80";
       el.style.margin = "0";
-      el.style.visibility = "visible";
-      el.style.pointerEvents = "auto";
       el.style.minHeight = "48px";
       el.style.boxSizing = "border-box";
       el.style.display = "flex";
       el.style.alignItems = "center";
-      el.style.left = Math.round(r.left + 16) + "px";
-      el.style.top = Math.round(r.top + 116 + i * 56) + "px";
-      el.style.width = Math.max(48, Math.round(r.width - 32)) + "px";
+      el.style.left = Math.round(nr.left) + "px";
+      el.style.top = Math.round(top) + "px";
+      el.style.width = Math.max(48, Math.round(nr.width)) + "px";
+      if (top < nr.top - 0.5 || bottom > nr.bottom + 0.5) {
+        el.style.visibility = "hidden";
+        el.style.pointerEvents = "none";
+        el.style.clipPath = "";
+      } else {
+        el.style.visibility = "visible";
+        el.style.pointerEvents = "auto";
+        el.style.clipPath = "";
+      }
       var sel = el.querySelector && el.querySelector("select");
       if (sel) {
         sel.style.width = "100%";
@@ -290,6 +333,7 @@
     if (!row) return;
     if (!play || play.getBoundingClientRect().width < 8) {
       clearSlot(row);
+      if (play) play.style.marginBottom = "";
       return;
     }
     var pr = play.getBoundingClientRect();
@@ -300,8 +344,11 @@
     row.style.display = "flex";
     row.style.gap = "8px";
     row.style.left = Math.round(pr.left) + "px";
-    row.style.top = Math.round(pr.bottom + 8) + "px";
     row.style.width = Math.round(Math.max(pr.width, 48)) + "px";
+    var h = row.offsetHeight || 48;
+    play.style.marginBottom = Math.round(h + 16) + "px";
+    pr = play.getBoundingClientRect();
+    row.style.top = Math.round(pr.bottom + 8) + "px";
   }
   function render() {
     if (!home()) {

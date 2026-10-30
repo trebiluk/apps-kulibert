@@ -1,4 +1,4 @@
-/* HI 1.1.25 — Challenge of the Day. Dream navy, one hard shadow, no truck. */
+/* HI 1.1.26 — Challenge of the Day. Dream navy, one hard shadow, no truck. */
 body.hi-day {
   background: #06122b;
 }
@@ -132,10 +132,12 @@ body.hi-day .kb-bar a {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-top: 108px !important;
 }
 #hi-drawer[data-state="open"] nav {
   flex: 1 1 auto;
   min-height: 0;
+  margin-top: 0 !important;
   overflow-y: auto;
 }
 #hi-drawer a,
@@ -144,7 +146,7 @@ body.hi-day .kb-bar a {
   min-height: 48px;
 }
 #hi-drawer > button {
-  top: 60px !important;
+  top: 52px !important;
   min-width: 48px;
   width: auto;
   height: 48px;
@@ -310,6 +312,75 @@ body.hi-day button.hi-day-door.is-sel {
 .hi-day :focus-visible {
   outline: 3px solid #eaf0ff;
   outline-offset: 3px;
+}
+body.hi-day .shop:not(.shop-editor) span:has(#lp-lang) {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+body.hi-day .shop:not(.shop-editor) #lp-lang {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #1a120c !important;
+  border-radius: 8px;
+  background-color: #f7f4ee !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%231a120c' stroke-width='2' d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 16px !important;
+  padding-inline: 8px 28px;
+}
+html[dir="rtl"] body.hi-day .shop:not(.shop-editor) #lp-lang {
+  background-position: left 10px center !important;
+}
+body.hi-day [data-hi-tool] {
+  gap: 8px;
+}
+body.hi-day [data-hi-tool]::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex: none;
+  background: currentColor;
+}
+body.hi-day [data-hi-tool="read"]::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3 9h4l5-4v14l-5-4H3zM15 9.2a4 4 0 0 1 0 5.6l-1.2-1.2a2.2 2.2 0 0 0 0-3.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3 9h4l5-4v14l-5-4H3zM15 9.2a4 4 0 0 1 0 5.6l-1.2-1.2a2.2 2.2 0 0 0 0-3.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+body.hi-day [data-hi-tool="type"]::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M4 20 L10 5 L16 20 L13.6 20 L12.4 16.5 H7.6 L6.4 20 Z M8.5 14 h3 L10 9.2 Z M17 7 h6 v2.2 h-6z M19 4.2 h2.2 V13 H19z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M4 20 L10 5 L16 20 L13.6 20 L12.4 16.5 H7.6 L6.4 20 Z M8.5 14 h3 L10 9.2 Z M17 7 h6 v2.2 h-6z M19 4.2 h2.2 V13 H19z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[dir="rtl"] .kb-bar {
+  direction: rtl;
+}
+@media (max-width: 520px) {
+  .kb-plate {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kb-alias.hi-alias-icon {
+    flex: 0 0 48px;
+    width: 48px;
+    max-width: 48px;
+    min-width: 48px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0;
+  }
+  .kb-alias.hi-alias-icon::before {
+    content: "";
+    width: 22px;
+    height: 22px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-3.3 0-8 1.7-8 5v2h16v-2c0-3.3-4.7-5-8-5z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-3.3 0-8 1.7-8 5v2h16v-2c0-3.3-4.7-5-8-5z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
 }
 
 @media (max-height: 520px) {
