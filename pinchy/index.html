@@ -246,13 +246,22 @@
     #title-screen, #game { padding: 4px 8px; }
     #langs, #levels {
       flex-wrap: nowrap;
-      overflow-x: auto;
+      overflow: hidden;
       min-height: 48px;
       max-height: 56px;
       margin: 0;
       padding: 2px 0;
     }
-    button.lang, button.level { flex: 0 0 auto; }
+    button.lang, button.level {
+      flex: 1 1 48px;
+      min-width: 48px;
+      overflow: hidden;
+    }
+    button.lang, button.level .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
     #goal {
       margin: 2px 0;
       max-height: 24px;
@@ -282,13 +291,20 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.2.0</span>
+  <span class="ver" id="app-version">v1.2.1</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.2.1</p>
+  <ul>
+    <li>Move a robot arm.</li>
+    <li>The 3D scene fills the width, and the labels on it are large enough to read.</li>
+    <li>Base left and Base right have Spanish, Arabic, and Dari names. Those names are a machine draft.</li>
+    <li>Retry clears the stars on the row and in the words.</li>
+  </ul>
   <p>Version 1.2.0</p>
   <ul>
     <li>Move a robot arm.</li>
@@ -1392,7 +1408,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.1") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));

@@ -83,39 +83,36 @@
     var h = canvas.clientHeight || 0;
     layer.replaceChildren();
     if (w < 2 || h < 2) return;
+    var host = layer.getBoundingClientRect();
     var placed = [];
-    var i, item, p, x, y, span, estW, estH, tries, hit, j, o;
+    var i, item, p, x, y, span, box, k, dx, dy, ang, rad, ok, j, other;
     for (i = 0; i < labelQueue.length; i++) {
       item = labelQueue[i];
       p = item.position.clone().project(camera);
       if (p.z < -1 || p.z > 1) continue;
       x = (p.x * 0.5 + 0.5) * w;
       y = (-p.y * 0.5 + 0.5) * h;
-      if (x < -40 || y < -20 || x > w + 40 || y > h + 20) continue;
       span = document.createElement("span");
       span.textContent = item.text;
       layer.appendChild(span);
-      estW = Math.max(36, item.text.length * 8.4 + 12);
-      estH = 22;
-      tries = 0;
-      while (tries < 10) {
-        hit = false;
+      ok = false;
+      for (k = 0; k < 28 && !ok; k++) {
+        rad = k === 0 ? 0 : 6 + k * 11;
+        ang = k * 2.4;
+        dx = Math.cos(ang) * rad;
+        dy = Math.sin(ang) * rad * 0.72;
+        span.style.left = (x + dx) + "px";
+        span.style.top = (y + dy) + "px";
+        box = span.getBoundingClientRect();
+        if (box.left < host.left + 1 || box.right > host.right - 1 || box.top < host.top + 1 || box.bottom > host.bottom - 1) continue;
+        ok = true;
         for (j = 0; j < placed.length; j++) {
-          o = placed[j];
-          if (x - estW / 2 < o.x + o.w / 2 && x + estW / 2 > o.x - o.w / 2 && y - estH / 2 < o.y + o.h / 2 && y + estH / 2 > o.y - o.h / 2) {
-            hit = true;
-            break;
-          }
+          other = placed[j];
+          if (box.left < other.right + 3 && box.right > other.left - 3 && box.top < other.bottom + 3 && box.bottom > other.top - 3) ok = false;
         }
-        if (!hit) break;
-        y -= 20;
-        tries += 1;
       }
-      x = Math.max(estW / 2 + 2, Math.min(w - estW / 2 - 2, x));
-      y = Math.max(estH / 2 + 2, Math.min(h - estH / 2 - 2, y));
-      span.style.left = x + "px";
-      span.style.top = y + "px";
-      placed.push({ x: x, y: y, w: estW, h: estH });
+      if (!ok) span.remove();
+      else placed.push(span.getBoundingClientRect());
     }
   }
 
