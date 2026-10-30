@@ -123,12 +123,88 @@
     return document.querySelector("script[data-menu]") || document.querySelector("script[data-whats-new]");
   }
 
+  function whatsAttr(script, lang) {
+    if (!script || !lang || !script.getAttributeNames) return "";
+    var want = "data-whats-new-" + String(lang).toLowerCase();
+    var names = script.getAttributeNames();
+    for (var i = 0; i < names.length; i++) {
+      if (String(names[i]).toLowerCase() === want) {
+        var value = script.getAttribute(names[i]);
+        if (value) return value;
+      }
+    }
+    return "";
+  }
+
   function whatsLine() {
     var script = barTag();
+    var lang = pageLang();
+    var specific = whatsAttr(script, lang);
+    if (specific) return specific;
+    if (lang && lang !== "en") {
+      var translated = pack().line;
+      if (translated) return translated;
+    }
     var attr = script && script.getAttribute("data-whats-new");
     if (attr) return attr;
-    var line = pack().line;
-    return line || COPY.en.line;
+    return pack().line || COPY.en.line;
+  }
+
+  function chooseLang(block, code) {
+    if (root.KulibertPrefs && typeof root.KulibertPrefs.acceptLang === "function") {
+      root.KulibertPrefs.acceptLang(code);
+    } else {
+      try {
+        var cur = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "{}");
+        if (!cur || typeof cur !== "object") cur = {};
+        cur.lang = code;
+        cur.v = 1;
+        localStorage.setItem("kulibert-prefs-v1", JSON.stringify(cur));
+      } catch (eStore) {}
+      try {
+        root.dispatchEvent(new CustomEvent("kulibert-lang", {
+          detail: { lang: code, dir: code === "ar" || code === "fa-AF" ? "rtl" : "ltr" }
+        }));
+      } catch (eLang) {}
+    }
+    var blocks = document.querySelectorAll(".hub-menu-block");
+    for (var i = 0; i < blocks.length; i++) paint(blocks[i]);
+    if (block && block.isConnected) paint(block);
+    translateRawKeys();
+  }
+
+  function isHubKey(ev) {
+    if (!ev) return false;
+    return ev.key === "Enter" || ev.key === " " || ev.key === "Spacebar" || ev.code === "Space";
+  }
+
+  function onHubKey(ev) {
+    if (!isHubKey(ev)) return;
+    var target = ev.target;
+    if (!target || !target.closest || !target.closest(".hub-menu-block")) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+    if (ev.type !== "keydown" || ev.repeat) return;
+    var control = target.closest("button, a");
+    if (!control || !control.closest(".hub-menu-block")) return;
+    var block = control.closest(".hub-menu-block");
+    var code = control.getAttribute("data-lang");
+    if (code) {
+      chooseLang(block, code);
+      return;
+    }
+    control.click();
+  }
+
+  function translateRawKeys() {
+    var word = pack().whatsNew;
+    if (!word) return;
+    var nodes = document.querySelectorAll("[data-bb='whatsNew']");
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].closest && nodes[i].closest(".hub-menu-block")) continue;
+      if (nodes[i].textContent !== word) nodes[i].textContent = word;
+    }
   }
 
   function chipVersion() {
@@ -401,8 +477,7 @@
           b.addEventListener("click", function (ev) {
             ev.preventDefault();
             ev.stopPropagation();
-            if (root.KulibertPrefs && root.KulibertPrefs.acceptLang) root.KulibertPrefs.acceptLang(code);
-            paint(block);
+            chooseLang(block, code);
           });
           langs.appendChild(b);
         });
@@ -447,6 +522,8 @@
     });
     block.addEventListener("keydown", function (ev) {
       if (!ev || ev.key !== "Escape" || row.getAttribute("aria-expanded") !== "true") return;
+      ev.preventDefault();
+      ev.stopPropagation();
       setExpanded(block, false);
       row.focus();
     });
@@ -506,6 +583,7 @@
     placing = true;
     try {
       trustAppMenu();
+      translateRawKeys();
       syncPlate();
       var hosts = findHosts();
       for (var i = 0; i < hosts.length; i++) {
@@ -549,6 +627,8 @@
       }).observe(document.body, { childList: true, subtree: true });
     }
     root.addEventListener("kulibert-lang", function () { scan(); });
+    root.addEventListener("keydown", onHubKey, true);
+    root.addEventListener("keyup", onHubKey, true);
   }
 
   if (document.body) boot();
