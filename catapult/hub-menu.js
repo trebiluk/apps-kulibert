@@ -131,6 +131,35 @@
     return line || COPY.en.line;
   }
 
+  function chipVersion() {
+    var script = barTag();
+    var version = script && script.getAttribute("data-version");
+    return version || "JC 2.4.5";
+  }
+
+  function syncPlate() {
+    var version = chipVersion();
+    var line = whatsLine();
+    var news = document.querySelectorAll(".ti-rail-news");
+    for (var i = 0; i < news.length; i++) {
+      if (news[i].textContent !== line) news[i].textContent = line;
+    }
+    if (!document.body) return;
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    var oldNews = "New name: Bertapult. Your saves are still here.";
+    var oldNewsAlt = "This app has a new name: Bertapult. Your work is still here.";
+    while ((node = walker.nextNode())) {
+      var parent = node.parentElement;
+      if (!parent || !parent.closest) continue;
+      if (parent.closest(".hub-menu-block") || parent.closest(".kb-bar") || parent.closest(".ti-rail-news")) continue;
+      var value = node.nodeValue;
+      if (!value) continue;
+      if (/^JC \d+\.\d+\.\d+$/.test(value) && value !== version) node.nodeValue = version;
+      if ((value === oldNews || value === oldNewsAlt) && value !== line) node.nodeValue = line;
+    }
+  }
+
   function el(tag, className) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -477,6 +506,7 @@
     placing = true;
     try {
       trustAppMenu();
+      syncPlate();
       var hosts = findHosts();
       for (var i = 0; i < hosts.length; i++) {
         var host = hosts[i];
