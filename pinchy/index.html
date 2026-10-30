@@ -554,11 +554,17 @@ var renderPalette = function () {
     b.dataset.cmd = id;
     if (keyHint) b.setAttribute("aria-keyshortcuts", keyHint);
     b.tabIndex = i === focusIndex ? 0 : -1;
-    if (id.indexOf("wrist") === 0) {
+    if (id.indexOf("wrist") === 0 || id.indexOf("base-") === 0) {
       var meta = PINCHY.langMeta(lang);
       b.lang = lang;
       b.dir = meta.rtl ? "rtl" : "ltr";
-      if (meta.draft) b.dataset.draft = "true";
+      if (meta.draft || (id.indexOf("base-") === 0 && meta.baseDraft)) {
+        b.dataset.draft = "true";
+        var draftMark = document.createElement("span");
+        draftMark.className = "sr-only";
+        draftMark.textContent = "Machine draft.";
+        b.appendChild(draftMark);
+      }
     }
     b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
     b.addEventListener("focus", function () {

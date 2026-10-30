@@ -28,9 +28,9 @@
     { id: "en", name: "English", draft: false, rtl: false, up: "Wrist up", down: "Wrist down", part: "wrist" },
     { id: "uk", name: "Українська", draft: false, rtl: false, up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя" },
     { id: "ru", name: "Русский", draft: false, rtl: false, up: "Запястье вверх", down: "Запястье вниз", part: "запястье" },
-    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca" },
-    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ" },
-    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ" },
+    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true },
+    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true },
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true },
     { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza" },
     { id: "ti", name: "ትግርኛ", draft: true, rtl: false, up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ" }
   ];
@@ -89,6 +89,8 @@
     var meta = langMeta(lang || "en");
     if (id === "wrist-up") return meta.up;
     if (id === "wrist-down") return meta.down;
+    if (id === "base-left" && meta.baseLeft) return meta.baseLeft;
+    if (id === "base-right" && meta.baseRight) return meta.baseRight;
     var block = blockById(id);
     return block ? block.label : id;
   }

@@ -94,6 +94,18 @@ assert.equal(G.langMeta("ar").rtl, true);
 assert.equal(G.langMeta("fa-AF").rtl, true);
 assert.equal(G.langMeta("en").rtl, false);
 assert.equal(G.langMeta("es").rtl, false);
+assert.equal(G.labelFor("base-left", "en"), "Base left");
+assert.equal(G.labelFor("base-right", "en"), "Base right");
+assert.equal(G.labelFor("base-left", "es"), "Base izquierda");
+assert.equal(G.labelFor("base-right", "es"), "Base derecha");
+assert.equal(G.labelFor("base-left", "ar"), "القاعدة يسار");
+assert.equal(G.labelFor("base-right", "ar"), "القاعدة يمين");
+assert.equal(G.labelFor("base-left", "fa-AF"), "پایه چپ");
+assert.equal(G.labelFor("base-right", "fa-AF"), "پایه راست");
+assert.equal(G.langMeta("es").baseDraft, true);
+assert.equal(G.langMeta("ar").baseDraft, true);
+assert.equal(G.langMeta("fa-AF").baseDraft, true);
+assert.equal(G.langMeta("en").baseDraft, undefined);
 assert.deepEqual(G.blocksFor(G.LEVELS[0]), ["base-left", "base-right", "shoulder-up", "shoulder-down", "elbow-up", "elbow-down", "claw-open", "claw-close"]);
 
 const flat = { base: 0, shoulder: 15, elbow: -90, wrist: 0, open: true, gap: 34, holding: false, part: null };
