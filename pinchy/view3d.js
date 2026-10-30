@@ -353,6 +353,10 @@
     function mesh(geo, material, cast) {
       var m = new THREE.Mesh(geo, material);
       if (cast && renderer.shadowMap.enabled) m.castShadow = true;
+      if (material === MATS.ghost) {
+        m.castShadow = false;
+        m.receiveShadow = false;
+      }
       return m;
     }
     function makeLink(ghost) {
@@ -456,11 +460,21 @@
       var jaws = [makeJaw(ghost), makeJaw(ghost)];
       rootG.add(jaws[0]);
       rootG.add(jaws[1]);
+      if (ghost) {
+        var ghostBase = new THREE.Group();
+        var ghostBlock = mesh(GEO.base, MATS.ghost, false);
+        ghostBlock.position.y = 8;
+        ghostBase.add(ghostBlock);
+        rootG.add(ghostBase);
+      }
       scene.add(rootG);
+      rootG.visible = !ghost;
       return { root: rootG, links: links, servos: servos, jaws: jaws };
     }
     var solidRig = buildRig(false);
     var ghostRig = buildRig(true);
+    ghostRig.root.visible = false;
+    ghostRig.root.position.set(0, 0, 0);
     function poseRig(rig, state) {
       var layout = root.PINCHY.LAYOUT;
       var pose = root.PINCHY.pose(state);
@@ -505,12 +519,14 @@
         var a = grip.clone().addScaledVector(side, offsets[j]);
         var b = a.clone().addScaledVector(along, 22);
         var jaw = rig.jaws[j];
+        if (jaw.parent !== rig.root) rig.root.attach(jaw);
         jaw.position.copy(a).lerp(b, 0.5);
         aim(jaw, along);
         jaw.userData.finger.scale.z = Math.abs(offsets[j]) > 8 ? 0.7 : 1;
         if (jaw.userData.pad) {
           jaw.userData.pad.position.set(offsets[j] > 0 ? -3.1 : 3.1, 0, 0);
         }
+        if (!rig.servos.length) rig.links[3].attach(jaw);
       }
     }
 
@@ -527,12 +543,13 @@
       optsHot = function (s, name) { return cmd.indexOf(name) === 0; };
       if (level && level.kind === "match" && level.target) {
         ghostRig.root.visible = true;
+        ghostRig.root.position.set(0, 0, 0);
         poseRig(ghostRig, {
           base: level.target.base,
           shoulder: level.target.shoulder,
           elbow: level.target.elbow,
-          wrist: 0,
-          open: true,
+          wrist: level.target.wrist || 0,
+          open: level.target.open !== false,
           gap: root.PINCHY.LAYOUT.gapOpen
         });
       } else ghostRig.root.visible = false;
@@ -557,6 +574,11 @@
       gridLight.visible = !darkTheme;
       gridDark.visible = darkTheme;
       if (opts && opts.world) buildWorld(dyn, state, level);
+      if (ghostRig.root.visible) {
+        var code = document.documentElement.lang || "en";
+        var targetWord = root.PINCHY && root.PINCHY.uiText ? root.PINCHY.uiText(code, "Target") : "Target";
+        addLabel(ghostRig.root, "\u25CC " + targetWord, new THREE.Vector3(0, 28, 36));
+      }
       placeLabels(canvas, camera);
       renderer.render(scene, camera);
     }

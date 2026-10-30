@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <script>
 try {
-  if (localStorage.getItem("pinchy-theme") === "dark") {
+  var savedTheme = localStorage.getItem("pinchy-theme");
+  var osDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (savedTheme === "dark" || (savedTheme !== "light" && osDark)) {
     document.documentElement.classList.add("pz-dark");
     document.documentElement.setAttribute("data-theme", "dark");
   }
@@ -514,58 +516,58 @@ try {
 <div id="pz-menu" aria-label="Levels">
   <div id="chrome-narrow" class="pz-narrow"></div>
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
-  <p id="draft-note" hidden>Machine draft.</p>
+  <p id="draft-note" hidden data-k="draftBadge">Machine draft.</p>
 <section id="whats-new" hidden>
-  <h2>What's new</h2>
-  <p>Version 1.3.1</p>
+  <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v131">Version 1.3.1</p>
   <ul>
-    <li>The arm is printed links, six servos, and a two-jaw gripper.</li>
-    <li>One Menu button in every app. It opens that app's menu.</li>
+    <li data-k="w131a">The arm is printed links, six servos, and a two-jaw gripper.</li>
+    <li data-k="w131b">One Menu button in every app. It opens that app's menu.</li>
   </ul>
-  <p>Version 1.3.0</p>
+  <p data-k="v130">Version 1.3.0</p>
   <ul>
-    <li>Move a robot arm.</li>
-    <li>Paper pendant: warm paper, charcoal ink, and mustard only on the header bars, the arm, and the E-STOP band.</li>
-    <li>One Menu button in every app. It opens that app's menu.</li>
+    <li data-k="w130a">Move a robot arm.</li>
+    <li data-k="w130b">Paper pendant: warm paper, charcoal ink, and mustard only on the header bars, the arm, and the E-STOP band.</li>
+    <li data-k="w130c">One Menu button in every app. It opens that app's menu.</li>
   </ul>
-  <p>Version 1.2.2</p>
+  <p data-k="v122">Version 1.2.2</p>
   <ul>
-    <li>Move a robot arm.</li>
-    <li>The empty gap above the status line is gone.</li>
-    <li>On a short sideways screen the level names stay whole, and the program stays on screen.</li>
-    <li>Spanish, Arabic, and Dari name the blocks and the help. Those words are a machine draft.</li>
+    <li data-k="w122a">Move a robot arm.</li>
+    <li data-k="w122b">The empty gap above the status line is gone.</li>
+    <li data-k="w122c">On a short sideways screen the level names stay whole, and the program stays on screen.</li>
+    <li data-k="w122d">Spanish, Arabic, and Dari name the blocks and the help. Those words are a machine draft.</li>
   </ul>
-  <p>Version 1.2.1</p>
+  <p data-k="v121">Version 1.2.1</p>
   <ul>
-    <li>Move a robot arm.</li>
-    <li>The 3D scene fills the width, and the labels on it are large enough to read.</li>
-    <li>Base left and Base right have Spanish, Arabic, and Dari names. Those names are a machine draft.</li>
-    <li>Retry clears the stars on the row and in the words.</li>
+    <li data-k="w121a">Move a robot arm.</li>
+    <li data-k="w121b">The 3D scene fills the width, and the labels on it are large enough to read.</li>
+    <li data-k="w121c">Base left and Base right have Spanish, Arabic, and Dari names. Those names are a machine draft.</li>
+    <li data-k="w121d">Retry clears the stars on the row and in the words.</li>
   </ul>
-  <p>Version 1.2.0</p>
+  <p data-k="v120">Version 1.2.0</p>
   <ul>
-    <li>Move a robot arm.</li>
-    <li>The arm is drawn in 3D from a fixed camera, so the base can turn.</li>
-    <li>Levels 1 to 6 are unchanged. Stars stay on this screen only.</li>
+    <li data-k="w120a">Move a robot arm.</li>
+    <li data-k="w120b">The arm is drawn in 3D from a fixed camera, so the base can turn.</li>
+    <li data-k="w120c">Levels 1 to 6 are unchanged. Stars stay on this screen only.</li>
   </ul>
-  <p>Version 1.1.0</p>
+  <p data-k="v110">Version 1.1.0</p>
   <ul>
-    <li>Move a robot arm.</li>
-    <li>Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.</li>
-    <li>Wrist up and Wrist down are in the later levels. A crash names the wrist.</li>
-    <li>Stars mean done, under the block par, and under the time par. They stay on this screen only.</li>
+    <li data-k="w110a">Move a robot arm.</li>
+    <li data-k="w110b">Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.</li>
+    <li data-k="w110c">Wrist up and Wrist down are in the later levels. A crash names the wrist.</li>
+    <li data-k="w110d">Stars mean done, under the block par, and under the time par. They stay on this screen only.</li>
   </ul>
-  <p>Version 1.0.0</p>
+  <p data-k="v100">Version 1.0.0</p>
   <ul>
-    <li>Pinchy McPinchface is the arm game.</li>
-    <li>Level 1 moves one joint. Level 2 picks up a part and places it. Level 3 goes to a spot from A1 to C3.</li>
-    <li>If the arm hits something, the note names the part and the step stays outlined. Retry keeps your program.</li>
+    <li data-k="w100a">Pinchy McPinchface is the arm game.</li>
+    <li data-k="w100b">Level 1 moves one joint. Level 2 picks up a part and places it. Level 3 goes to a spot from A1 to C3.</li>
+    <li data-k="w100c">If the arm hits something, the note names the part and the step stays outlined. Retry keeps your program.</li>
   </ul>
   <button type="button" class="tool" id="whats-close">Close</button>
 </section>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
   <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
-  <p class="hub-line">One Menu button in every app. It opens that app's menu.</p>
+  <p class="hub-line" data-k="hubLine">One Menu button in every app. It opens that app's menu.</p>
   <button type="button" id="kb-menu" class="kb-menu" aria-expanded="false" aria-controls="hub-drawer"><span aria-hidden="true">☰ </span><span data-i18n="menu">Menu</span></button>
 </div>
 <button type="button" class="tool" id="theme-btn" aria-pressed="false">◐ Dark</button>
@@ -626,7 +628,7 @@ try {
     <svg class="star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
     <span id="star-words">No stars yet.</span>
   </p>
-  <p id="star-rules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
+  <p id="star-rules" data-k="starRules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
   <p id="metrics">
     <span id="m-blocks">Blocks: 0</span>
     <span id="m-time">Time: none yet</span>
@@ -692,15 +694,13 @@ var lang = "en";
 var estopped = false;
 var markDraft = function (el) {
   if (!el) return;
-  var olds = el.querySelectorAll(".sr-only");
-  for (var d = 0; d < olds.length; d++) {
-    if (olds[d].textContent === "Machine draft.") olds[d].remove();
-  }
+  var olds = el.querySelectorAll(".draft-badge");
+  for (var d = 0; d < olds.length; d++) olds[d].remove();
   if (lang === "ar" || lang === "fa-AF") {
     el.dataset.draft = "true";
     var note = document.createElement("span");
-    note.className = "sr-only";
-    note.textContent = "Machine draft.";
+    note.className = "sr-only draft-badge";
+    note.textContent = PINCHY.uiText(lang, "draftBadge");
     el.appendChild(note);
   } else el.removeAttribute("data-draft");
 };
@@ -752,12 +752,13 @@ var updateMetrics = function () {
   var n = session.programs[session.level].length;
   var runNow = session.run[session.level] || {};
   var shownSwaps = runNow.kind === "running" ? (runNow.scoredSwaps || 0) : (runNow.swaps || 0);
-  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = "Swaps: " + shownSwaps;
-  else document.getElementById("m-blocks").textContent = "Blocks: " + n;
+  var fillLine = function (key, n) { return PINCHY.uiText(lang, key).replace("{n}", n); };
+  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = fillLine("swapsLine", shownSwaps);
+  else document.getElementById("m-blocks").textContent = fillLine("blocksLine", n);
   var timeEl = document.getElementById("m-time");
-  if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
-  else if (lastMs == null) timeEl.textContent = "Time: none yet";
-  else timeEl.textContent = "Time: " + formatMs(lastMs);
+  if (playing && runT0) timeEl.textContent = fillLine("timeLine", formatMs(performance.now() - runT0));
+  else if (lastMs == null) timeEl.textContent = PINCHY.uiText(lang, "timeNone");
+  else timeEl.textContent = fillLine("timeLine", formatMs(lastMs));
 };
 
 var renderProgram = function (now, stop) {
@@ -839,11 +840,12 @@ var renderLevels = function () {
     ? PINCHY.uiText(lang, levelNow.id + "-goal")
     : levelNow.goal;
   var legend = document.getElementById("legend");
-  var turn3d = "The 3D arm turns on its base. ";
-  if (levelNow.kind === "pile") legend.textContent = turn3d + "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
-  else if (levelNow.kind === "sensor") legend.textContent = turn3d + "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
-  else if (levelNow.debug) legend.textContent = turn3d + "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
-  else legend.textContent = (lang === "ar" || lang === "fa-AF") ? PINCHY.uiText(lang, "legend") : turn3d + "Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.";
+  var legendKey = "legend";
+  if (levelNow.kind === "pile") legendKey = "legendPile";
+  else if (levelNow.kind === "sensor") legendKey = "legendSensor";
+  else if (levelNow.debug) legendKey = "legendDebug";
+  legend.textContent = PINCHY.uiText(lang, legendKey);
+  markDraft(legend);
   var helpEl = document.getElementById("help");
   var helpText = PINCHY.helpFor(lang, !!levelNow.debug);
   var helpMeta = PINCHY.langMeta(lang);
@@ -853,8 +855,8 @@ var renderLevels = function () {
   if (helpMeta.blocksDraft && (levelNow.debug ? helpMeta.helpDebug : helpMeta.help)) {
     helpEl.dataset.draft = "true";
     var helpDraft = document.createElement("span");
-    helpDraft.className = "sr-only";
-    helpDraft.textContent = " Machine draft.";
+    helpDraft.className = "sr-only draft-badge";
+    helpDraft.textContent = PINCHY.uiText(lang, "draftBadge");
     helpEl.appendChild(helpDraft);
   } else {
     helpEl.removeAttribute("data-draft");
@@ -864,15 +866,15 @@ var renderLevels = function () {
     if (!actionBtn) return;
     var actionName = actionBtn.querySelector(".name");
     if (actionName) actionName.textContent = PINCHY.actionLabel(actionId, lang);
-    var oldDraft = actionBtn.querySelector(".sr-only");
+      var oldDraft = actionBtn.querySelector(".draft-badge");
     if (oldDraft) oldDraft.remove();
     if (helpMeta.blocksDraft && helpMeta.actions && helpMeta.actions[actionId]) {
       actionBtn.dataset.draft = "true";
       actionBtn.lang = lang;
       actionBtn.dir = helpMeta.rtl ? "rtl" : "ltr";
       var actionDraft = document.createElement("span");
-      actionDraft.className = "sr-only";
-      actionDraft.textContent = "Machine draft.";
+      actionDraft.className = "sr-only draft-badge";
+      actionDraft.textContent = PINCHY.uiText(lang, "draftBadge");
       actionBtn.appendChild(actionDraft);
     } else {
       actionBtn.removeAttribute("data-draft");
@@ -947,7 +949,9 @@ var renderPalette = function () {
     var ro = document.createElement("div");
     ro.className = "ro";
     ro.id = row.read;
-    ro.textContent = row.claw ? "OPEN" : "000.0\u00b0";
+    ro.textContent = row.claw
+      ? ((world && world.open) ? PINCHY.uiText(lang, "OPEN") : (world ? PINCHY.uiText(lang, "SHUT") : PINCHY.uiText(lang, "OPEN")))
+      : "000.0\u00b0";
     line.appendChild(ro);
     line.appendChild(makeSide(row.hi, row.hiWord, false));
     jointPad.appendChild(line);
@@ -996,6 +1000,52 @@ var paintChrome = function () {
     if (levelsBtn) levelsBtn.removeAttribute("data-draft");
     if (programTitle) programTitle.removeAttribute("data-draft");
   }
+  var estopBtn = document.getElementById("estop");
+  if (estopBtn) {
+    estopBtn.textContent = PINCHY.uiText(lang, "estop");
+    if (lang === "ar" || lang === "fa-AF") markDraft(estopBtn);
+    else estopBtn.removeAttribute("data-draft");
+  }
+  var clearBtnNow = document.getElementById("clear");
+  if (clearBtnNow) {
+    clearBtnNow.textContent = PINCHY.uiText(lang, "clear");
+    if (lang === "ar" || lang === "fa-AF") markDraft(clearBtnNow);
+    else clearBtnNow.removeAttribute("data-draft");
+  }
+  var themeBtnNow = document.getElementById("theme-btn");
+  if (themeBtnNow) {
+    var darkNow = document.documentElement.classList.contains("pz-dark");
+    themeBtnNow.textContent = PINCHY.uiText(lang, darkNow ? "themeLight" : "themeDark");
+    if (lang === "ar" || lang === "fa-AF") markDraft(themeBtnNow);
+    else themeBtnNow.removeAttribute("data-draft");
+  }
+  var copyNodes = document.querySelectorAll("[data-k]");
+  for (i = 0; i < copyNodes.length; i++) {
+    el = copyNodes[i];
+    el.textContent = PINCHY.uiText(lang, el.getAttribute("data-k"));
+    if ((lang === "ar" || lang === "fa-AF") && el.id !== "draft-note") markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+  var newsName = document.querySelector("#whats-btn .name");
+  if (newsName) newsName.textContent = PINCHY.uiText(lang, "whatsTitle");
+  var closeName = document.querySelector("#whats-close .name");
+  if (closeName) closeName.textContent = PINCHY.uiText(lang, "whatsClose");
+  else {
+    var closeBtn = document.getElementById("whats-close");
+    if (closeBtn) closeBtn.textContent = PINCHY.uiText(lang, "whatsClose");
+  }
+  var playName = document.querySelector("#play .name");
+  if (playName) playName.textContent = PINCHY.uiText(lang, "play");
+  var jointPad = document.getElementById("joint-pad");
+  if (jointPad) jointPad.setAttribute("aria-label", PINCHY.uiText(lang, "jointsAria"));
+  var programWrap = document.getElementById("program-wrap");
+  if (programWrap) programWrap.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+  var actionsGroup = document.getElementById("actions");
+  if (actionsGroup) actionsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "actionsAria"));
+  var menuEl = document.getElementById("pz-menu");
+  if (menuEl) menuEl.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
+  var levelsGroup = document.getElementById("levels");
+  if (levelsGroup) levelsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
 };
 var applyLang = function (code) {
   var meta = PINCHY.langMeta(code);
@@ -1012,7 +1062,10 @@ var applyLang = function (code) {
   renderPalette();
   renderProgram(-1, -1);
   paintChrome();
+  renderRun();
+  updateMetrics();
   if (document.getElementById("levels").children.length) renderLevels();
+  if (world && typeof paintGame === "function") paintGame();
 };
 var doSwap = function (index) {
   if (playing) return;
@@ -1519,13 +1572,11 @@ var paintView = function (canvas, state, level, opts) {
 };
 var paintGame = function () {
   if (!world) return;
-  var angleLine = PINCHY.jointReadout(world);
-  if ((lang === "ar" || lang === "fa-AF") && PINCHY.uiText) {
-    var tWord = function (key) { return PINCHY.uiText(lang, key); };
-    var clawWord = world.open ? tWord("Open") : tWord("Close");
-    angleLine = tWord("Base") + " " + Math.round(world.base) + "\u00b0 \u00b7 " + tWord("Shoulder") + " " + Math.round(world.shoulder) + "\u00b0 \u00b7 " + tWord("Elbow") + " " + Math.round(world.elbow) + "\u00b0 \u00b7 " + tWord("Wrist") + " " + Math.round(world.wrist || 0) + "\u00b0 \u00b7 " + tWord("Claw") + " " + clawWord;
-  }
-  document.getElementById("angles").textContent = angleLine;
+  var angleLine = PINCHY.jointReadout(world, lang);
+  var anglesEl = document.getElementById("angles");
+  anglesEl.textContent = angleLine;
+  if (lang === "ar" || lang === "fa-AF") markDraft(anglesEl);
+  else anglesEl.removeAttribute("data-draft");
   var fmtDeg = function (n) {
     var neg = n < 0;
     var fixed = Math.abs(n).toFixed(1).split(".");
@@ -1536,8 +1587,10 @@ var paintGame = function () {
   document.getElementById("ro-shoulder").textContent = fmtDeg(world.shoulder);
   document.getElementById("ro-elbow").textContent = fmtDeg(world.elbow);
   document.getElementById("ro-wrist").textContent = fmtDeg(world.wrist || 0);
-  document.getElementById("ro-claw").textContent = world.open ? PINCHY.uiText(lang, "OPEN") : "SHUT";
-  if (world.open && (lang === "ar" || lang === "fa-AF")) markDraft(document.getElementById("ro-claw"));
+  var clawEl = document.getElementById("ro-claw");
+  clawEl.textContent = world.open ? PINCHY.uiText(lang, "OPEN") : PINCHY.uiText(lang, "SHUT");
+  if (lang === "ar" || lang === "fa-AF") markDraft(clawEl);
+  else clawEl.removeAttribute("data-draft");
   paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
@@ -1875,7 +1928,7 @@ var boot = function () {
     if (dark) document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
     try { localStorage.setItem("pinchy-theme", dark ? "dark" : "light"); } catch (err) {}
-    themeBtn.textContent = dark ? "\u25D0 Light" : "\u25D0 Dark";
+    themeBtn.textContent = PINCHY.uiText(lang, dark ? "themeLight" : "themeDark");
     themeBtn.setAttribute("aria-pressed", dark ? "true" : "false");
     if (viewCanvas) viewCanvas._glW = 0;
     if (titleCanvas) titleCanvas._glW = 0;
@@ -2007,7 +2060,8 @@ var boot = function () {
     b.dir = item.rtl ? "rtl" : "ltr";
     b.textContent = item.name;
     b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
-    b.setAttribute("aria-label", item.draft ? item.name + ". Machine draft." : item.name);
+    var draftNote = (item.draft || item.id === "ar") ? ". " + PINCHY.uiText(item.id, "draftBadge") : "";
+    b.setAttribute("aria-label", item.name + draftNote);
     if (item.draft) b.dataset.draft = "true";
     b.addEventListener("click", function () { applyLang(item.id); });
     langNav.appendChild(b);
@@ -2020,6 +2074,19 @@ var boot = function () {
   if (startLang !== "en") applyLang(startLang);
 
   window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      var drawer = document.getElementById("pz-menu");
+      var levelsButton = document.getElementById("levels-btn");
+      if (drawer && drawer.classList.contains("is-open")) {
+        e.preventDefault();
+        drawer.classList.remove("is-open");
+        if (levelsButton) {
+          levelsButton.setAttribute("aria-expanded", "false");
+          levelsButton.focus();
+        }
+        return;
+      }
+    }
     if (document.getElementById("game").hidden) return;
     var key = e.key;
     if (key === "Enter" && PINCHY.LEVELS[session.level].debug) {
