@@ -491,3 +491,33 @@ html[dir="rtl"] .lp-dialog[class*="56rem"] th,
 html[dir="rtl"] .lp-dialog[class*="56rem"] td {
   text-align: right !important;
 }
+
+/* HI 1.1.23 — editor taps. Measured on 1.1.22 before this block:
+   at 1366 the Report icon was 36×36, All tension and Member report
+   were 36px tall, and the 2×4 / 4×4 / 6×6 chips were 40–41px wide.
+   Select, Joint, Member, Erase, Test, and Full screen were already ≥44.
+   The phone dock at 412 already fit on screen. */
+.shop-editor button,
+.shop-editor a[class*="inline-flex"],
+.hi-fs {
+  min-width: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+.shop-editor > footer.hi-dock {
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.shop-editor > footer.hi-dock button {
+  flex: 1 1 44px;
+  min-width: 44px;
+  min-height: 44px;
+}
+.shop-editor button:focus-visible,
+.shop-editor a[class*="inline-flex"]:focus-visible,
+.hi-fs:focus-visible {
+  outline: 3px solid #102024;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #f4f1ea;
+}
