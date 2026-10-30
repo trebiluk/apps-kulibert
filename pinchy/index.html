@@ -149,13 +149,14 @@
   button:disabled { opacity: 0.55; }
   button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
   #goal, .legend, .help, #angles, #metrics { margin: 8px 0; font-weight: 650; }
+  #goal { min-height: 3.4em; }
   .stage {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
     gap: 8px;
     align-items: start;
   }
-  .side { display: flex; flex-direction: column; gap: 8px; }
+  .side { display: flex; flex-direction: column; gap: 8px; min-height: 560px; }
   .palette, .actions { display: grid; gap: 8px; }
   .palette { grid-template-columns: 1fr 1fr; padding: 8px; background: var(--violet); border-radius: 12px; }
   .actions { grid-template-columns: 1fr 1fr 1fr; }
@@ -176,7 +177,7 @@
   }
   #status {
     margin: 8px 0;
-    min-height: 48px;
+    min-height: 96px;
     padding: 8px 10px;
     border: 2px solid var(--line);
     border-radius: 10px;
@@ -193,6 +194,8 @@
     border: 2px solid var(--line);
     border-radius: 12px;
     padding: 8px;
+    height: 104px;
+    overflow: hidden;
   }
   #program-wrap p { margin: 0 0 6px; font-weight: 750; }
   #program {
@@ -264,11 +267,13 @@
     }
     #goal {
       margin: 2px 0;
+      min-height: 0;
       max-height: 24px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+    .side { min-height: 0; }
     #title-arm { height: 120px; }
     #view { height: 196px; min-height: 196px; max-height: 196px; }
     .stage { grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); }
