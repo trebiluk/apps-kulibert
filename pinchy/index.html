@@ -233,13 +233,19 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">1.0.0</span>
+  <span class="ver" id="app-version">v1.1.0</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.1.0</p>
+  <ul>
+    <li>Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.</li>
+    <li>Wrist up and Wrist down are in the later levels. A crash names the wrist.</li>
+    <li>Stars mean done, under the block par, and under the time par. They stay on this screen only.</li>
+  </ul>
   <p>Version 1.0.0</p>
   <ul>
     <li>Pinchy McPinchface is the arm game.</li>
@@ -1229,7 +1235,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.0.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.1.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.stars.push(0);
@@ -1241,7 +1247,7 @@ var boot = function () {
       session.programs[seed] = PINCHY.LEVELS[seed].broken.slice();
     }
   }
-  document.getElementById("app-version").textContent = PINCHY.APP_VERSION;
+  document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
   viewCanvas = document.getElementById("view");
   titleCanvas = document.getElementById("title-arm");
   var mq = window.matchMedia("(prefers-reduced-motion: reduce)");

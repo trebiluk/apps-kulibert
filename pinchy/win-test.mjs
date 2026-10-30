@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.0.0");
+assert.equal(G.APP_VERSION, "1.1.0");
 assert.equal(G.LEVELS.length, 6);
 assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
@@ -216,6 +216,8 @@ assert.match(page, /translate="no"/);
 assert.match(page, /Archivo/);
 assert.match(page, /#06122B/);
 assert.match(page, /#E85820/);
+assert.match(page, /v1\.1\.0/);
+assert.match(page, /Version 1\.1\.0/);
 assert.match(page, /1\.0\.0/);
 assert.match(page, /What's new/);
 assert.match(page, /id="langs"/);
