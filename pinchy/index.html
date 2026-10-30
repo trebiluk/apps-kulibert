@@ -268,14 +268,15 @@
       min-height: 0;
       max-height: none;
       margin: 0;
-      padding: 2px 0;
+      padding: 0;
+      gap: 4px;
     }
     button.lang, button.level {
       flex: 0 0 auto;
       min-width: 48px;
       overflow: visible;
     }
-    button.lang { padding: 2px 4px; font-size: 15px; }
+    button.lang { padding: 2px 4px; font-size: 14px; }
     button.level .name {
       overflow: visible;
       text-overflow: unset;
@@ -291,7 +292,7 @@
     #levels { grid-column: 1 / -1; }
     .stage { display: contents; }
     .stage > div:first-child { grid-column: 1; grid-row: 2; }
-    .side { grid-column: 2; grid-row: 2; min-height: 0; }
+    .side { grid-column: 2; grid-row: 2; min-height: 0; gap: 2px; }
     #status { grid-column: 1; grid-row: 3; margin: 0; min-height: 48px; }
     #stars { grid-column: 2; grid-row: 3; margin: 0; align-self: end; }
     #star-rules, #metrics, #angles, .legend { display: none; }
@@ -308,7 +309,7 @@
     .help { grid-column: 1 / -1; margin: 4px 0; }
     #title-arm { height: 96px; }
     #view { height: 108px; min-height: 108px; max-height: 108px; }
-    .palette { overflow-x: auto; overflow-y: hidden; display: flex; flex-wrap: nowrap; }
+    .palette { overflow-x: auto; overflow-y: hidden; display: flex; flex-wrap: nowrap; padding: 2px 4px; gap: 4px; }
     .palette button.block { flex: 0 0 auto; }
   }
   @media (prefers-reduced-motion: reduce) {
