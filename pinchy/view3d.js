@@ -59,8 +59,9 @@
   }
 
   var sprites = {};
-  function labelSprite(text) {
-    if (sprites[text]) return sprites[text].clone();
+  function labelSprite(text, sx, sy) {
+    var key = text + "/" + (sx || 40);
+    if (sprites[key]) return sprites[key].clone();
     var canvas = document.createElement("canvas");
     canvas.width = 384;
     canvas.height = 80;
@@ -78,13 +79,13 @@
     var texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
     var sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false }));
-    sprite.scale.set(46, 10, 1);
-    sprites[text] = sprite;
+    sprite.scale.set(sx || 40, sy || 9, 1);
+    sprites[key] = sprite;
     return sprite.clone();
   }
 
-  function addLabel(parent, text, position) {
-    var sprite = labelSprite(text);
+  function addLabel(parent, text, position, sx, sy) {
+    var sprite = labelSprite(text, sx, sy);
     sprite.position.copy(position);
     parent.add(sprite);
   }
@@ -108,9 +109,9 @@
     canvas.style.height = "";
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(CLEAR);
-    var camera = new THREE.PerspectiveCamera(36, 1, 1, 4000);
-    camera.position.set(280, 200, 360);
-    camera.lookAt(0, 64, 40);
+    var camera = new THREE.PerspectiveCamera(34, 1, 1, 4000);
+    camera.position.set(340, 230, 320);
+    camera.lookAt(0, 78, 70);
     scene.add(new THREE.AmbientLight(0xb7c4ea, 0.62));
     var key = new THREE.DirectionalLight(0xf7f9ff, 0.78);
     key.position.set(120, 260, 160);
@@ -158,6 +159,15 @@
       renderer.setPixelRatio(Math.min(root.devicePixelRatio || 1, 1.5));
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
+      if (camera.aspect < 1.7) {
+        camera.fov = 48;
+        camera.position.set(460, 300, 430);
+        camera.lookAt(0, 118, 80);
+      } else {
+        camera.fov = 34;
+        camera.position.set(340, 230, 320);
+        camera.lookAt(0, 78, 70);
+      }
       camera.updateProjectionMatrix();
     }
 
@@ -192,20 +202,27 @@
       addJoint(parent, grip, ghost ? 2.6 : 4.4, !ghost && optsHot(state, "claw"));
       var half = pose.gap / 2;
       var sign, x1, y1, x2, y2;
+      var clawMat = ghost ? MATS.ghost : MATS.claw;
       for (sign = -1; sign <= 1; sign += 2) {
-        x1 = pose.gx + pose.nx * sign * half;
-        y1 = pose.gy + pose.ny * sign * half;
-        x2 = x1 + pose.px * layout.jaw;
-        y2 = y1 + pose.py * layout.jaw;
-        addBone(parent, vec(x1, y1, yaw), vec(x2, y2, yaw), ghost ? 1.6 : 2.8, ghost ? MATS.ghost : MATS.claw);
+        x1 = pose.gx + pose.nx * sign * half * 0.42;
+        y1 = pose.gy + pose.ny * sign * half * 0.42;
+        x2 = pose.gx + pose.nx * sign * half + pose.px * layout.jaw;
+        y2 = pose.gy + pose.ny * sign * half + pose.py * layout.jaw;
+        addBone(parent, grip, vec(x1, y1, yaw), ghost ? 1.4 : 2.4, clawMat);
+        addBone(parent, vec(x1, y1, yaw), vec(x2, y2, yaw), ghost ? 1.6 : 2.8, clawMat);
       }
       if (!ghost) {
-        var side = yaw * Math.PI / 180;
-        addLabel(parent, "Base " + Math.round(yaw) + "\u00b0", new THREE.Vector3(Math.cos(side) * 48, 46, -Math.sin(side) * 48));
-        addLabel(parent, "Shoulder " + Math.round(state.shoulder) + "\u00b0", shoulder.clone().add(new THREE.Vector3(0, 18, 0)));
-        addLabel(parent, "Elbow " + Math.round(state.elbow) + "\u00b0", elbow.clone().add(new THREE.Vector3(0, 16, 0)));
-        addLabel(parent, "Wrist " + Math.round(state.wrist || 0) + "\u00b0", wrist.clone().add(new THREE.Vector3(0, 14, 0)));
-        addLabel(parent, "Claw", tip.clone().add(new THREE.Vector3(0, 18, 0)));
+        var forward = new THREE.Vector3();
+        camera.getWorldDirection(forward);
+        var right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+        var beside = function (point, side, up) {
+          return point.clone().addScaledVector(right, side).add(new THREE.Vector3(0, up, 0));
+        };
+        addLabel(parent, "Base " + Math.round(yaw) + "\u00b0", beside(new THREE.Vector3(0, 14, 0), 78, 0));
+        addLabel(parent, "Shoulder " + Math.round(state.shoulder) + "\u00b0", beside(shoulder, 42, 4));
+        addLabel(parent, "Elbow " + Math.round(state.elbow) + "\u00b0", beside(elbow, 46, 6));
+        addLabel(parent, "Wrist " + Math.round(state.wrist || 0) + "\u00b0", beside(wrist, 40, -20));
+        addLabel(parent, "Claw", beside(tip, -22, 28));
       }
     }
 
@@ -255,7 +272,7 @@
         );
         mesh.position.copy(spot);
         parent.add(mesh);
-        addLabel(parent, name, spot.clone().setY(8));
+        addLabel(parent, name, spot.clone().setY(11), 22, 6);
       }
     }
     var bins = G.binsOf(level);
@@ -278,7 +295,7 @@
       wall.position.set(0, bin.h / 2, bin.half * 0.35);
       group.add(wall);
       parent.add(group);
-      addLabel(parent, bin.id ? "Bin " + bin.id + (bin.mark ? " " + bin.mark : "") : "Bin", new THREE.Vector3(hx, bin.h + 12, hz));
+      addLabel(parent, bin.id ? "Bin " + bin.id + (bin.mark ? " " + bin.mark : "") : "Bin", new THREE.Vector3(hx - 30, bin.h + 24, hz + 18), 36, 8);
     }
     function addPart(part) {
       if (!part) return;
@@ -293,9 +310,10 @@
       }
       mesh.position.copy(pos);
       parent.add(mesh);
-      if (part.shape === "square" && part.color === "red") addLabel(parent, "Red square \u25a0", pos.clone().setY(pos.y + 14));
-      else if (part.shape === "circle" && part.color === "blue") addLabel(parent, "Blue circle \u25cf", pos.clone().setY(pos.y + 14));
-      else addLabel(parent, "Part", pos.clone().setY(pos.y + 14));
+      var tagAt = pos.clone().add(new THREE.Vector3(-28, 22, 16));
+      if (part.shape === "square" && part.color === "red") addLabel(parent, "Red square \u25a0", tagAt, 40, 9);
+      else if (part.shape === "circle" && part.color === "blue") addLabel(parent, "Blue circle \u25cf", tagAt, 40, 9);
+      else addLabel(parent, "Part", tagAt, 28, 8);
     }
     addPart(state.part);
     var q = state.queue || [];

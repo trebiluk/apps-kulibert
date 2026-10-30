@@ -275,7 +275,7 @@
     <div>
       <canvas id="view" width="800" height="300" aria-hidden="true"></canvas>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
-      <p class="legend" id="legend">Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.</p>
+      <p class="legend" id="legend">Spots A1 to C3 and the bins sit on the table. The arm turns on its base. A block is the part. A thick mark means go here.</p>
     </div>
     <div class="side">
       <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
@@ -482,7 +482,7 @@ var renderLevels = function () {
   if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
   else if (levelNow.kind === "sensor") legend.textContent = "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
   else if (levelNow.debug) legend.textContent = "The outlined step swaps with the next step. Fewer swaps is better. Wrist up and Wrist down are on the block list.";
-  else legend.textContent = "Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.";
+  else legend.textContent = "Spots A1 to C3 and the bins sit on the table. The arm turns on its base. A block is the part. A thick mark means go here.";
   document.getElementById("help").textContent = levelNow.debug
     ? "Arrow keys pick a step. Enter swaps it with the next step. R runs. Z undoes."
     : "Arrow keys pick a block. Enter adds it. Q turns the base left. E turns the base right. R runs. Z undoes. Retry keeps the program.";
@@ -1046,7 +1046,7 @@ var paintGame = function () {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
     showGrid: true,
-    world: false
+    world: true
   });
 };
 var drawLevel = function () {
@@ -1107,10 +1107,14 @@ var blend = function (start, result, f) {
     part: null
   };
   vis.open = vis.gap > 22;
+  vis.queue = (result.state.queue || start.queue || []).slice();
+  vis.binned = (result.state.binned || start.binned || []).slice();
+  vis.sorted = result.state.sorted || start.sorted || 0;
   var source = start.part || (result.state.holding ? result.state.part : null);
   if (source) {
     vis.part = {
       base: source.base, r: source.r, y: source.y, hw: source.hw, hh: source.hh,
+      shape: source.shape || "", color: source.color || "", mark: source.mark || "",
       inBin: false, dropped: false
     };
     if (vis.holding) {

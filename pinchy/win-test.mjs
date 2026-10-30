@@ -229,6 +229,8 @@ assert.match(page, /Q turns the base left/);
 assert.match(page, /aria-keyshortcuts/);
 assert.match(page, /addBlock\("base-left"\)/);
 assert.match(page, /addBlock\("base-right"\)/);
+assert.match(page, /world: true/);
+assert.match(page, /Spots A1 to C3 and the bins sit on the table/);
 assert.match(page, /vendor\/three\.min\.js/);
 assert.match(page, /view3d\.js/);
 assert.doesNotMatch(page, /https?:\/\//);
