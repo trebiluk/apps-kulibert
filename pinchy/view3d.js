@@ -219,7 +219,7 @@
       var pmrem = new THREE.PMREMGenerator(renderer);
       var envTex = pmrem.fromScene(room, 0.04).texture;
       scene.environmentIntensity = 0.5;
-      var reflective = [MATS.link, MATS.pocket, MATS.servo, MATS.horn, MATS.screw, MATS.pad];
+      var reflective = [MATS.link, MATS.servo, MATS.horn, MATS.screw];
       var ri;
       for (ri = 0; ri < reflective.length; ri++) {
         reflective[ri].envMap = envTex;
