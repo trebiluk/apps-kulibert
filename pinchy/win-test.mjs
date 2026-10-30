@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.3.0");
+assert.equal(G.APP_VERSION, "1.3.1");
 assert.equal(G.LEVELS.length, 6);
 assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
