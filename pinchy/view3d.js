@@ -28,7 +28,7 @@
     joint: mat(0x3e4650),
     hot: mat(0x22d3ee),
     claw: mat(0x22d3ee),
-    table: mat(0x0b1a40),
+    table: mat(0x3a3a3a),
     ghost: mat(0xc5ceda, 0.35),
     grid: mat(0x132a5c),
     gridOn: mat(0x22d3ee),
@@ -168,6 +168,12 @@
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = 1.2;
     scene.add(ring);
+    var gridLight = new THREE.GridHelper(640, 32, 0x111111, 0x111111);
+    var gridDark = new THREE.GridHelper(640, 32, 0x555555, 0x555555);
+    gridLight.position.y = 0.6;
+    gridDark.position.y = 0.6;
+    scene.add(gridLight);
+    scene.add(gridDark);
     var dyn = new THREE.Group();
     scene.add(dyn);
 
@@ -194,16 +200,16 @@
       if (!rimPts) {
         rimPts = [];
         var i, a;
-        for (i = 0; i < 16; i++) {
-          a = (i / 16) * Math.PI * 2;
-          rimPts.push(new THREE.Vector3(Math.cos(a) * 220, 1, Math.sin(a) * 220));
+        for (i = 0; i < 20; i++) {
+          a = (i / 20) * Math.PI * 2;
+          rimPts.push(new THREE.Vector3(Math.cos(a) * 300, 1, Math.sin(a) * 300));
         }
-        rimPts.push(new THREE.Vector3(0, 260, 20));
-        rimPts.push(new THREE.Vector3(0, 90, 210));
-        rimPts.push(new THREE.Vector3(140, 80, 60));
-        rimPts.push(new THREE.Vector3(-140, 80, 60));
+        rimPts.push(new THREE.Vector3(0, 280, 20));
+        rimPts.push(new THREE.Vector3(0, 100, 230));
+        rimPts.push(new THREE.Vector3(160, 80, 80));
+        rimPts.push(new THREE.Vector3(-160, 80, 80));
       }
-      var target = new THREE.Vector3(0, 80, 30);
+      var target = new THREE.Vector3(0, 48, 16);
       var dir = new THREE.Vector3(0.82, 0.58, 0.9).normalize();
       var lo = 420;
       var hi = 2000;
@@ -316,6 +322,12 @@
         }, true);
       }
       arm(dyn, state, false);
+      var darkTheme = document.documentElement.getAttribute("data-theme") === "dark";
+      var clear = darkTheme ? 0x111111 : 0xE0E0DC;
+      renderer.setClearColor(clear, 1);
+      scene.background = new THREE.Color(clear);
+      gridLight.visible = !darkTheme;
+      gridDark.visible = darkTheme;
       if (opts && opts.world) buildWorld(dyn, state, level);
       placeLabels(canvas, camera);
       renderer.render(scene, camera);

@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
+<script>
+try { if (localStorage.getItem("pinchy-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
 <link rel="icon" href="data:,">
 <title>Pinchy McPinchface</title>
@@ -17,22 +20,38 @@
     src: url("archivo-700.woff2") format("woff2");
   }
   :root {
-    color-scheme: dark;
-    --bg: #06122B;
-    --blue: #0B1A40;
-    --blue-2: #132A5C;
-    --violet: #132A5C;
-    --violet-2: #0B1A40;
-    --ink: #F7F9FF;
-    --muted: #B7C4EA;
-    --line: #B7C4EA;
-    --ember: #22D3EE;
-    --royal: #3B82F6;
-    --dream: #A855F7;
+    color-scheme: light;
+    --bg: #E0E0DC;
+    --panel: #ECECE8;
+    --blue: #ECECE8;
+    --blue-2: #E4E4E0;
+    --violet: #ECECE8;
+    --violet-2: #D8D8D4;
+    --ink: #111111;
+    --muted: #1A1A1A;
+    --line: #111111;
+    --ember: #111111;
+    --yellow: #F5C400;
+    --royal: #111111;
+    --dream: #111111;
     --arm: #A8AEB6;
     --arm-2: #8E949C;
     --arm-3: #7E868E;
     --joint: #3E4650;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111111;
+    --panel: #1A1A1A;
+    --blue: #1A1A1A;
+    --blue-2: #161616;
+    --violet: #1A1A1A;
+    --violet-2: #111111;
+    --ink: #EDEDED;
+    --muted: #EDEDED;
+    --line: #F5C400;
+    --ember: #F5C400;
+    --yellow: #F5C400;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); }
@@ -48,11 +67,11 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: #06122B;
+    background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 5;
-    border-bottom: 2px solid #3B82F6;
+    border-bottom: 2px solid var(--line);
   }
   .brand { margin: 0; font-size: 18px; font-weight: 750; }
   .ver {
@@ -88,7 +107,7 @@
     box-shadow: 6px 6px 0 #030914;
     max-width: 40rem;
   }
-  #whats-new h2 { margin: 0 0 8px; font-size: 20px; color: #A855F7; }
+  #whats-new h2 { margin: 0 0 8px; font-size: 20px; color: var(--ink); }
   #whats-new p, #whats-new li { margin: 0 0 8px; }
   #title-screen, #game { padding: 8px; }
   #hero {
@@ -125,9 +144,9 @@
     position: absolute;
     transform: translate(-50%, -50%);
     font: 600 14px/1.2 system-ui, sans-serif;
-    color: #F7F9FF;
-    background: #132A5C;
-    border: 1px solid #22D3EE;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--line);
     border-radius: 4px;
     padding: 1px 4px;
     white-space: nowrap;
@@ -144,7 +163,8 @@
     text-align: left;
     flex: 1 1 160px;
   }
-  button.level[aria-pressed="true"] { border-width: 3px; border-color: #3B82F6; background: var(--blue-2); }
+  button.level[aria-pressed="true"] { border-width: 3px; border-color: #111111; background: var(--blue-2); color: var(--ink); }
+  html[data-theme="dark"] button.level[aria-pressed="true"] { border-color: #F5C400; }
   button:focus-visible, .chip:focus-visible {
     outline: 3px solid var(--ember);
     outline-offset: 2px;
@@ -162,24 +182,36 @@
   }
   .controls, .side { display: flex; flex-direction: column; gap: 8px; }
   .panel {
-    border: 2px solid #3B82F6;
-    background: #0B1A40;
+    border: 3px solid #111111;
+    background: var(--panel);
     padding: 8px;
+    border-image: repeating-linear-gradient(90deg, #111111 0 8px, #F5C400 8px 16px) 1;
   }
   .panel-label {
     margin: 0 0 8px;
-    color: #B7C4EA;
+    color: var(--ink);
     font: 700 13px/1 system-ui, sans-serif;
     font-variant: small-caps;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
   .viewport {
-    border: 2px solid #3B82F6;
-    background: #06122B;
+    position: relative;
+    border: 3px solid #111111;
+    background: var(--bg);
     padding: 4px;
     min-height: 280px;
   }
+  .gizmo {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: 64px;
+    height: 64px;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .pid { float: inline-end; margin-inline-start: 8px; font-variant: normal; letter-spacing: 0.04em; }
   .palette, .actions { display: grid; gap: 8px; }
   .palette { grid-template-columns: 1fr 1fr; }
   .actions { grid-template-columns: 1fr 1fr 1fr; }
@@ -193,35 +225,59 @@
     padding: 6px 8px;
     text-align: left;
     border-radius: 2px;
-    background: #132A5C;
+    background: var(--panel);
+    border-radius: 2px;
+  }
+  button.block:focus, button.action:focus {
+    background: #F5C400;
+    color: #111111;
+    border-color: #111111;
   }
   #retry {
-    border-color: #C45A4A;
-    background: #2A1830;
-    border-radius: 2px;
+    width: 92px;
+    height: 92px;
+    min-width: 92px;
+    min-height: 92px;
+    margin: 4px auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    color: #111111;
+    background: repeating-linear-gradient(-45deg, #111111 0 6px, #F5C400 6px 12px);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    flex-direction: column;
+    justify-content: center;
+  }
+  #retry .name {
+    background: #F5C400;
+    color: #111111;
+    padding: 6px 4px;
+    font-weight: 800;
   }
   .lamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
   .lamp {
-    border: 2px solid #B7C4EA;
-    color: #B7C4EA;
-    background: #06122B;
+    border: 2px solid #111111;
+    color: #111111;
+    background: var(--panel);
     padding: 4px 8px;
     font-weight: 750;
   }
-  .lamp.is-on { color: #F7F9FF; border-color: #22D3EE; background: #132A5C; }
-  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
-  .readouts p {
+  html[data-theme="dark"] .lamp { color: #EDEDED; border-color: #EDEDED; }
+  .lamp.is-on { color: #111111; border-color: #111111; background: #F5C400; }
+  .readouts, .mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
+  .readouts p, .mode-row p {
     margin: 0;
     display: flex;
     justify-content: space-between;
     gap: 8px;
-    border: 2px solid #132A5C;
-    background: #06122B;
+    border: 2px solid #111111;
+    background: var(--bg);
+    color: var(--ink);
     padding: 6px 8px;
-    font-variant: small-caps;
+    font-family: ui-monospace, monospace;
     letter-spacing: 0.04em;
   }
-  .readouts b { font-variant: normal; letter-spacing: 0; }
+  .unit { font-size: 12px; }
   button .name { flex: 1 1 auto; line-height: 1.15; }
   kbd {
     border: 1px solid var(--line);
@@ -301,25 +357,11 @@
   }
   @media (max-height: 520px) {
     #goal, .legend, .help, #star-rules, #metrics, #angles, #stars { display: none; }
-    #langs {
-      position: absolute;
-      top: 6px;
-      inset-inline-start: 300px;
-      inset-inline-end: 8px;
-      z-index: 6;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      max-height: 44px;
-      min-height: 0;
-      margin: 0;
-      padding: 0;
-    }
-    #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: 52px; margin: 4px 0; }
+    #langs, #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: none; margin: 4px 0; position: static; }
     #view { height: 280px; min-height: 280px; }
     .scene-col .panel { padding: 4px; }
     .lamps, .readouts { margin: 0 0 4px; }
-    .readouts { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .readouts p { padding: 2px 4px; }
+    .readouts, .mode-row, .lamps { direction: ltr; }
     #status { min-height: 0; max-height: 36px; overflow: hidden; white-space: nowrap; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -340,6 +382,7 @@
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
   <span class="ver" id="app-version">v1.3.0</span>
+  <button type="button" class="tool" id="theme-btn" aria-pressed="false">Dark mode</button>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
@@ -398,15 +441,36 @@
   <div class="stage">
     <div class="controls">
       <section class="panel">
-        <h2 class="panel-label">Joints</h2>
+        <h2 class="panel-label">Status <span class="pid">S-01</span></h2>
+        <div class="mode-row">
+          <p><span>MODE</span><b id="mode-read">JOG</b></p>
+          <p><span>STEP</span><b id="step-read">00</b></p>
+        </div>
+        <div class="lamps" id="lamps">
+          <span class="lamp is-on" data-lamp="ready">● Ready</span>
+          <span class="lamp" data-lamp="running">▲ Running</span>
+          <span class="lamp" data-lamp="fault">■ Fault</span>
+          <span class="lamp" data-lamp="win">★ Win</span>
+        </div>
+        <div class="readouts" id="readouts">
+          <p><span>J1</span><b id="ro-base">000.0°</b><span class="unit">deg</span></p>
+          <p><span>J2</span><b id="ro-shoulder">000.0°</b><span class="unit">deg</span></p>
+          <p><span>J3</span><b id="ro-elbow">000.0°</b><span class="unit">deg</span></p>
+          <p><span>J4</span><b id="ro-wrist">000.0°</b><span class="unit">deg</span></p>
+          <p><span>CL</span><b id="ro-claw">OPEN</b><span class="unit">state</span></p>
+        </div>
+        <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label">Joints <span class="pid">J-01</span></h2>
         <div class="palette" id="joint-pad" role="group" aria-label="Joints"></div>
       </section>
       <section class="panel">
-        <h2 class="panel-label">Base</h2>
+        <h2 class="panel-label">Base <span class="pid">B-01</span></h2>
         <div class="palette" id="base-pad" role="group" aria-label="Base turn"></div>
       </section>
       <section class="panel">
-        <h2 class="panel-label">Program</h2>
+        <h2 class="panel-label">Program <span class="pid">P-01</span></h2>
         <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
         <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
           <p>Program</p>
@@ -418,24 +482,15 @@
     <div class="scene-col">
       <div class="viewport">
         <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
+        <svg class="gizmo" viewBox="0 0 64 64" aria-hidden="true">
+          <line x1="18" y1="46" x2="46" y2="46" stroke="currentColor" stroke-width="2"/>
+          <line x1="18" y1="46" x2="18" y2="16" stroke="currentColor" stroke-width="2"/>
+          <line x1="18" y1="46" x2="34" y2="58" stroke="#F5C400" stroke-width="2"/>
+          <text x="48" y="50" fill="currentColor" font-size="10">X</text>
+          <text x="8" y="14" fill="currentColor" font-size="10">Y</text>
+          <text x="36" y="62" fill="currentColor" font-size="10">Z</text>
+        </svg>
       </div>
-      <section class="panel">
-        <h2 class="panel-label">Status</h2>
-        <div class="lamps" id="lamps">
-          <span class="lamp is-on" data-lamp="ready">● Ready</span>
-          <span class="lamp" data-lamp="running">▲ Running</span>
-          <span class="lamp" data-lamp="fault">■ Fault</span>
-          <span class="lamp" data-lamp="win">★ Win</span>
-        </div>
-        <div class="readouts" id="readouts">
-          <p><span>Base</span><b id="ro-base">0°</b></p>
-          <p><span>Shoulder</span><b id="ro-shoulder">0°</b></p>
-          <p><span>Elbow</span><b id="ro-elbow">0°</b></p>
-          <p><span>Wrist</span><b id="ro-wrist">0°</b></p>
-          <p><span>Claw</span><b id="ro-claw">Open</b></p>
-        </div>
-        <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
-      </section>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
       <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
     </div>
@@ -544,6 +599,19 @@ var renderRun = function () {
   else if (view.kind === "won") lamp = "win";
   var lamps = document.querySelectorAll(".lamp");
   for (i = 0; i < lamps.length; i++) lamps[i].classList.toggle("is-on", lamps[i].dataset.lamp === lamp);
+  var mode = "JOG";
+  if (view.kind === "running") mode = "RUN";
+  else if (view.kind === "won") mode = "WIN";
+  else if (view.kind === "crashed" || view.kind === "failed") mode = "FAULT";
+  var modeEl = document.getElementById("mode-read");
+  var stepEl = document.getElementById("step-read");
+  if (modeEl) modeEl.textContent = mode;
+  if (stepEl) {
+    var stepN = state.steps || 0;
+    var stepText = String(stepN);
+    while (stepText.length < 2) stepText = "0" + stepText;
+    stepEl.textContent = stepText;
+  }
 };
 var setRun = function (state) {
   session.run[session.level] = state;
@@ -1248,11 +1316,17 @@ var paintView = function (canvas, state, level, opts) {
 var paintGame = function () {
   if (!world) return;
   document.getElementById("angles").textContent = PINCHY.jointReadout(world);
-  document.getElementById("ro-base").textContent = Math.round(world.base) + "\u00b0";
-  document.getElementById("ro-shoulder").textContent = Math.round(world.shoulder) + "\u00b0";
-  document.getElementById("ro-elbow").textContent = Math.round(world.elbow) + "\u00b0";
-  document.getElementById("ro-wrist").textContent = Math.round(world.wrist || 0) + "\u00b0";
-  document.getElementById("ro-claw").textContent = world.open ? "Open" : "Closed";
+  var fmtDeg = function (n) {
+    var neg = n < 0;
+    var fixed = Math.abs(n).toFixed(1).split(".");
+    while (fixed[0].length < 3) fixed[0] = "0" + fixed[0];
+    return (neg ? "-" : "") + fixed[0] + "." + fixed[1] + "\u00b0";
+  };
+  document.getElementById("ro-base").textContent = fmtDeg(world.base);
+  document.getElementById("ro-shoulder").textContent = fmtDeg(world.shoulder);
+  document.getElementById("ro-elbow").textContent = fmtDeg(world.elbow);
+  document.getElementById("ro-wrist").textContent = fmtDeg(world.wrist || 0);
+  document.getElementById("ro-claw").textContent = world.open ? "OPEN" : "SHUT";
   paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
     cmd: activeCmd,
@@ -1562,8 +1636,25 @@ var boot = function () {
     }
   }
   document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
+  var themeBtn = document.getElementById("theme-btn");
+  var applyTheme = function (theme) {
+    var dark = theme === "dark";
+    if (dark) document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("pinchy-theme", dark ? "dark" : "light"); } catch (err) {}
+    themeBtn.textContent = dark ? "Light mode" : "Dark mode";
+    themeBtn.setAttribute("aria-pressed", dark ? "true" : "false");
+    if (viewCanvas) viewCanvas._glW = 0;
+    if (titleCanvas) titleCanvas._glW = 0;
+    if (world) paintGame();
+    else if (titleOn) paintTitle(32);
+  };
+  themeBtn.addEventListener("click", function () {
+    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
   viewCanvas = document.getElementById("view");
   titleCanvas = document.getElementById("title-arm");
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
   var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
   reduce = !!(mq && mq.matches);
   var onMotion = function () {
