@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // Locked 2.5.547 (ManagerBot). Daily Board card v1. All non-English lines are machine drafts; rw, ti, and fa-AF are the weakest.
+  { v: '2.5.547', date: '2026-10-30', lines: {
+    en: ['2.5.547 — Goals now shows today\'s Daily and your Sweep.'],
+    simple: ['2.5.547 — Goals shows today\'s Daily and your Sweep.'],
+    uk: ['2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.'],
+    ru: ['2.5.547 — В Целях теперь видно задание дня и твою зачистку.'],
+    es: ['2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.'],
+    ar: ['2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.'],
+    'fa-AF': ['2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.'],
+    rw: ['2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.'],
+    ti: ['2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።'],
+  }},
+
   // Locked 2.5.534 was already below main (2.5.540), so this is 2.5.541. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.541', date: '2026-10-28', lines: {
     en: ['2.5.541 — The Menu opens on the first click and speaks your language.'],
