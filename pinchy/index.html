@@ -1268,7 +1268,7 @@ var selectLevel = function (index) {
   renderLevels();
   renderProgram(-1, -1);
   updateMetrics();
-  if (!session.run[index]) session.run[index] = PINCHY.settleRun(null, { type: "level" });
+  session.run[index] = PINCHY.settleRun(null, { type: "level" });
   renderRun();
   drawLevel();
 };
