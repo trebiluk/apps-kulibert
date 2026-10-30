@@ -50,7 +50,9 @@
     { id: "wrist-up", joint: "wrist", delta: 15, label: "Wrist up" },
     { id: "wrist-down", joint: "wrist", delta: -15, label: "Wrist down" },
     { id: "claw-open", joint: "claw", angle: GAP_OPEN, label: "Open claw" },
-    { id: "claw-close", joint: "claw", angle: GAP_CLOSED, label: "Close claw" }
+    { id: "claw-close", joint: "claw", angle: GAP_CLOSED, label: "Close claw" },
+    { id: "repeat-3", joint: "repeat", label: "Repeat 3" },
+    { id: "end-repeat", joint: "repeat", label: "End repeat" }
   ];
 
   var CORE_BLOCKS = [
@@ -96,7 +98,8 @@
     if (!part) return null;
     return {
       base: part.base, r: part.r, y: part.y, hw: part.hw, hh: part.hh,
-      inBin: !!part.inBin, dropped: !!part.dropped
+      inBin: !!part.inBin, dropped: !!part.dropped,
+      shape: part.shape || "", color: part.color || "", mark: part.mark || ""
     };
   }
 
@@ -109,7 +112,10 @@
       open: !!state.open,
       gap: state.gap,
       holding: !!state.holding,
-      part: copyPart(state.part)
+      part: copyPart(state.part),
+      sorted: state.sorted || 0,
+      queue: (state.queue || []).map(copyPart),
+      binned: (state.binned || []).map(copyPart)
     };
   }
 
@@ -274,6 +280,9 @@
       return spotName(state.base, p.cx) === level.spot && p.cy >= 10 && p.cy <= 52 && !state.holding;
     }
     if (level.kind === "place") return !!(state.part && state.part.inBin);
+    if (level.kind === "pile") {
+      return (state.sorted || 0) >= (level.need || 1) && !(state.queue && state.queue.length) && !state.holding;
+    }
     return false;
   }
 
@@ -291,7 +300,45 @@
     return part;
   }
 
+  function seal(state, result) {
+    if (!result || !result.state || result.state === state) return result;
+    var next = result.state;
+    if (next.sorted == null) next.sorted = state.sorted || 0;
+    if (!next.queue) next.queue = (state.queue || []).map(copyPart);
+    if (!next.binned) next.binned = (state.binned || []).map(copyPart);
+    return result;
+  }
+
+  function deliverPile(state, level, p) {
+    var sorted = (state.sorted || 0) + 1;
+    var queue = (state.queue || []).map(copyPart);
+    var next = queue.length ? queue.shift() : null;
+    var kept = copyPart(state.part);
+    kept.inBin = true;
+    kept.dropped = false;
+    kept.base = state.base;
+    kept.r = p.cx;
+    kept.y = state.part.hh;
+    var binned = (state.binned || []).map(copyPart);
+    binned.push(kept);
+    var need = level.need || 1;
+    return {
+      ok: true,
+      win: sorted >= need && !next,
+      t: 1,
+      state: {
+        base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
+        open: true, gap: GAP_OPEN, holding: false,
+        part: next, sorted: sorted, queue: queue, binned: binned
+      }
+    };
+  }
+
   function applyCommand(state, cmd, level) {
+    return seal(state, applyCommandBody(state, cmd, level));
+  }
+
+  function applyCommandBody(state, cmd, level) {
     var spec = JOINTS[cmd];
     var i, t, trial, hit, p, nBase, nSh, nEl, sd, ed, base, gap;
     if (spec) {
@@ -399,6 +446,7 @@
         open: true, gap: GAP_OPEN, holding: false, part: state.part
       });
       if (overBin(p, state.base, level)) {
+        if (level.kind === "pile") return deliverPile(state, level, p);
         return {
           ok: true, win: true, t: 1,
           state: {
@@ -430,6 +478,12 @@
     if (goalMet(state, level)) return "";
     if (level.kind === "match") return "The arm does not match the mark yet.";
     if (level.kind === "spot") return "The claw is not on spot " + level.spot + " yet.";
+    if (level.kind === "pile") {
+      var placed = state.sorted || 0;
+      if (state.holding) return "The part is still held. Open the claw over the bin.";
+      if (state.part && state.part.dropped) return "The part missed the bin.";
+      return "The pile still has parts out. " + placed + " of " + (level.need || 3) + " are in the bin.";
+    }
     if (state.holding) return "The part is still held. Open the claw over the bin.";
     if (state.part && state.part.dropped) return "The part missed the bin.";
     return "The claw never closed on the part.";
@@ -488,7 +542,27 @@
       spot: "A2",
       blocks: CORE_BLOCKS.slice()
     };
-    return [l1, l2, l3];
+    var pilePart = { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false };
+    var l4 = {
+      id: "L4",
+      name: "Sort a pile",
+      goal: "Use Repeat 3 to put all 3 parts from the pile into the bin.",
+      start: { base: 0, shoulder: 15, elbow: -90, wrist: 0 },
+      kind: "pile",
+      target: null,
+      par: 8,
+      timePar: 14000,
+      need: 3,
+      part: pilePart,
+      queue: [
+        { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false },
+        { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false }
+      ],
+      bin: { base: 30, r: gp.cx, half: 36, h: 22 },
+      spot: "",
+      blocks: ["repeat-3", "end-repeat", "wrist-up", "wrist-down"].concat(CORE_BLOCKS)
+    };
+    return [l1, l2, l3, l4];
   }
 
   var LEVELS = buildLevels();
@@ -502,7 +576,69 @@
       open: true,
       gap: GAP_OPEN,
       holding: false,
-      part: copyPart(level.part)
+      part: copyPart(level.part),
+      sorted: 0,
+      queue: (level.queue || []).map(copyPart),
+      binned: []
+    };
+  }
+
+  function isRepeat(cmd) {
+    return cmd === "repeat-2" || cmd === "repeat-3";
+  }
+
+  function matchEnd(commands, ip, openTest, closeId) {
+    var depth = 1;
+    for (var i = ip + 1; i < commands.length; i++) {
+      if (openTest(commands[i])) depth += 1;
+      else if (commands[i] === closeId) {
+        depth -= 1;
+        if (!depth) return i;
+      }
+    }
+    return -1;
+  }
+
+  function beginRun(commands) {
+    return { commands: commands.slice(), ip: 0, loops: [] };
+  }
+
+  function advance(run, state, level) {
+    var commands = run.commands;
+    if (run.ip >= commands.length) {
+      return { done: true, ok: true, state: state, index: -1, cmd: "", t: 0 };
+    }
+    var index = run.ip;
+    var cmd = commands[index];
+    if (isRepeat(cmd)) {
+      var end = matchEnd(commands, index, isRepeat, "end-repeat");
+      if (end < 0) {
+        return { done: true, ok: false, msg: "Repeat needs End repeat", t: 0, state: state, index: index, cmd: cmd };
+      }
+      var times = cmd === "repeat-2" ? 2 : 3;
+      run.loops.push({ end: end, next: index + 1, left: times - 1 });
+      run.ip = index + 1;
+      return { done: false, ok: true, structural: true, t: 0, state: state, index: index, cmd: cmd };
+    }
+    if (cmd === "end-repeat") {
+      var loop = run.loops.length ? run.loops[run.loops.length - 1] : null;
+      if (!loop || loop.end !== index) {
+        return { done: true, ok: false, msg: "End repeat without Repeat", t: 0, state: state, index: index, cmd: cmd };
+      }
+      if (loop.left > 0) {
+        loop.left -= 1;
+        run.ip = loop.next;
+      } else {
+        run.loops.pop();
+        run.ip = index + 1;
+      }
+      return { done: false, ok: true, structural: true, t: 0, state: state, index: index, cmd: cmd };
+    }
+    var result = applyCommand(state, cmd, level);
+    run.ip = index + 1;
+    return {
+      done: false, ok: result.ok, win: !!result.win, msg: result.msg || "", miss: !!result.miss,
+      t: result.t || 0, state: result.state, index: index, cmd: cmd, structural: false
     };
   }
 
@@ -510,23 +646,29 @@
     var state = initialState(level);
     var startHit = collide(state, level);
     if (startHit) return { win: false, crash: startHit, step: 0, state: state, blocks: commands.length };
-    for (var i = 0; i < commands.length; i++) {
-      var result = applyCommand(state, commands[i], level);
-      if (!result.ok) {
+    var run = beginRun(commands);
+    var guard = 0;
+    while (guard < 500) {
+      guard += 1;
+      var ev = advance(run, state, level);
+      if (ev.done && !ev.cmd) {
         return {
-          win: false, crash: result.msg, step: i + 1, state: result.state,
-          miss: !!result.miss, blocks: commands.length
+          win: false, crash: "", step: commands.length, blocks: commands.length,
+          state: state, end: endReason(state, level)
         };
       }
-      state = result.state;
-      if (result.win || goalMet(state, level)) {
-        return { win: true, crash: "", step: i + 1, blocks: commands.length, state: state };
+      if (!ev.ok) {
+        return {
+          win: false, crash: ev.msg, step: ev.index >= 0 ? ev.index + 1 : 0, state: ev.state,
+          miss: !!ev.miss, blocks: commands.length
+        };
+      }
+      state = ev.state;
+      if (ev.win || (!ev.structural && goalMet(state, level))) {
+        return { win: true, crash: "", step: ev.index + 1, blocks: commands.length, state: state };
       }
     }
-    return {
-      win: false, crash: "", step: commands.length, blocks: commands.length,
-      state: state, end: endReason(state, level)
-    };
+    return { win: false, crash: "program ran too long", step: 0, state: state, blocks: commands.length };
   }
 
   function stepList(commands) {
@@ -582,7 +724,8 @@
       ].join(":");
     }
     return [
-      state.base, state.shoulder, state.elbow, state.wrist || 0, state.open ? 1 : 0, state.holding ? 1 : 0, p
+      state.base, state.shoulder, state.elbow, state.wrist || 0, state.open ? 1 : 0, state.holding ? 1 : 0,
+      state.sorted || 0, (state.queue || []).length, p
     ].join(",");
   }
 
@@ -613,6 +756,8 @@
     initialState: initialState,
     applyCommand: applyCommand,
     runAll: runAll,
+    beginRun: beginRun,
+    advance: advance,
     endReason: endReason,
     stepList: stepList,
     crashLine: crashLine,

@@ -292,7 +292,7 @@
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
 var STEP_MS = 520;
 var SNAP_HOLD = 80;
-var session = { level: 0, programs: [[], [], []], stars: [0, 0, 0] };
+var session = { level: 0, programs: [], stars: [], swaps: [] };
 var world = null;
 var playback = 0;
 var playing = false;
@@ -321,13 +321,15 @@ var ICONS = {
   "wrist-down": svg('<circle cx="7" cy="7" r="2" ' + ST + '/><path d="M9 9 L16 16" ' + ST + '/><path d="M12 16 h6 v-6" ' + ST + '/>'),
   "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
   "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
+  "repeat-3": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "end-repeat": svg('<path d="M5 7 h14 M5 12 h14 M5 17 h10" ' + ST + '/>'),
   "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
   "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
   "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
   "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
 };
-var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot" };
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3" };
 
 var lang = "en";
 var labelOf = function (id) {
@@ -337,6 +339,7 @@ var angleText = function (id) {
   var block = PINCHY.blockById(id);
   if (!block) return "";
   if (block.joint === "claw") return block.angle + "\u00b0";
+  if (block.delta == null) return "";
   return (block.delta > 0 ? "+" : "") + block.delta + "\u00b0";
 };
 var formatMs = function (ms) {
@@ -427,7 +430,11 @@ var renderLevels = function () {
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
   }
-  document.getElementById("goal").textContent = PINCHY.LEVELS[session.level].goal;
+  var levelNow = PINCHY.LEVELS[session.level];
+  document.getElementById("goal").textContent = levelNow.goal;
+  var legend = document.getElementById("legend");
+  if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
+  else legend.textContent = "Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.";
   paintStars();
 };
 
@@ -741,7 +748,14 @@ var drawScene = function (canvas, state, opts) {
     ctx.strokeStyle = "#3E4650";
     ctx.lineWidth = 2;
     ctx.strokeRect(px, py, pw, ph);
-    tag("Part", part.r, part.y, 0, 26);
+    var pileN = 1 + ((state.queue || []).length);
+    if (pileN > 1) {
+      ctx.fillStyle = "#8EA0BE";
+      ctx.fillRect(px + 8, py - 8, pw, ph);
+      ctx.strokeStyle = "#3E4650";
+      ctx.strokeRect(px + 8, py - 8, pw, ph);
+      tag("Pile " + pileN, part.r, part.y, 0, 26);
+    } else tag("Part", part.r, part.y, 0, 26);
   } else if (part && part.inBin && level && level.bin) {
     var ix = P.x(part.r - part.hw);
     var iy = P.y(part.hh * 2);
@@ -933,6 +947,7 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "place") text = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "match") text = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "spot") text = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "pile") text = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   text += " " + PINCHY.starWords(n) + "";
   setStatus(text, "win");
   setStepLive(text);
@@ -973,40 +988,46 @@ var play = async function () {
     updateMetrics();
     return;
   }
-  for (var i = 0; i < commands.length; i++) {
+  var run = PINCHY.beginRun(commands);
+  var guard = 0;
+  while (guard < 500) {
+    guard += 1;
     if (token !== playback) return;
-    activeCmd = commands[i];
-    renderProgram(i, -1);
-    setStepLive("Step " + (i + 1) + " of " + commands.length + ". " + labelOf(commands[i]) + ".");
-    setStatus("Running step " + (i + 1) + " of " + commands.length + ": " + labelOf(commands[i]) + ".", "");
-    var result = PINCHY.applyCommand(state, commands[i], level);
-    var moved = result.t > 0;
+    var ev = PINCHY.advance(run, state, level);
+    if (ev.done && !ev.cmd) break;
+    var stepNo = ev.index + 1;
+    activeCmd = ev.cmd;
+    renderProgram(ev.index, -1);
+    setStepLive("Step " + stepNo + " of " + commands.length + ". " + labelOf(ev.cmd) + ".");
+    setStatus("Running step " + stepNo + " of " + commands.length + ": " + labelOf(ev.cmd) + ".", "");
+    var moved = ev.t > 0 && !ev.structural;
     if (moved && !reduce) {
-      var alive = await glide(Math.max(180, STEP_MS * result.t), token, function (u) {
-        world = blend(state, result, u);
+      var alive = await glide(Math.max(180, STEP_MS * ev.t), token, function (u) {
+        world = blend(state, { state: ev.state }, u);
         paintGame();
       });
       if (!alive || token !== playback) return;
     } else {
-      world = PINCHY.cloneState(result.state);
+      world = PINCHY.cloneState(ev.state);
       paintGame();
-      var held = await until(reduce ? SNAP_HOLD : 0, token);
+      var hold = ev.structural ? (reduce ? SNAP_HOLD : 180) : (reduce ? SNAP_HOLD : 0);
+      var held = await until(hold, token);
       if (!held || token !== playback) return;
     }
-    state = result.state;
+    state = ev.state;
     world = PINCHY.cloneState(state);
     activeCmd = "";
     paintGame();
-    if (!result.ok || result.win || PINCHY.goalMet(state, level)) {
+    if (!ev.ok || ev.win || (!ev.structural && PINCHY.goalMet(state, level))) {
       lastMs = performance.now() - runT0;
       playing = false;
       setBusy(false);
-      if (result.win || PINCHY.goalMet(state, level)) {
-        renderProgram(i, -1);
+      if (ev.ok && (ev.win || PINCHY.goalMet(state, level))) {
+        renderProgram(ev.index, -1);
         finishWin(commands.length, lastMs);
       } else {
-        renderProgram(-1, i);
-        finishFail(result.msg, i + 1);
+        renderProgram(-1, ev.index);
+        finishFail(ev.msg, stepNo);
       }
       updateMetrics();
       paintGame();
@@ -1096,6 +1117,11 @@ var showGame = function () {
 
 var boot = function () {
   if (!window.PINCHY || PINCHY.APP_VERSION !== "1.0.0") return;
+  while (session.programs.length < PINCHY.LEVELS.length) {
+    session.programs.push([]);
+    session.stars.push(0);
+    session.swaps.push(0);
+  }
   document.getElementById("app-version").textContent = PINCHY.APP_VERSION;
   viewCanvas = document.getElementById("view");
   titleCanvas = document.getElementById("title-arm");

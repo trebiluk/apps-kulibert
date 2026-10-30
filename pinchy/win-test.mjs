@@ -33,8 +33,8 @@ function findWin(level, cap) {
 }
 
 assert.equal(G.APP_VERSION, "1.0.0");
-assert.equal(G.LEVELS.length, 3);
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot"]);
+assert.equal(G.LEVELS.length, 4);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -150,6 +150,19 @@ assert.equal(G.spotName(l3result.state.base, G.pose(l3result.state).cx), l3.spot
 assert.ok(l3win.length <= l3.par);
 assert.equal(l3.spot, "A2");
 
+const l4 = G.LEVELS[3];
+const l4win = ["repeat-3", "claw-close", "base-right", "base-right", "claw-open", "base-left", "base-left", "end-repeat"];
+const l4result = G.runAll(l4, l4win);
+assert.equal(l4result.win, true, "L4 is winnable");
+assert.equal(l4result.state.sorted, 3);
+assert.ok(l4win.indexOf("repeat-3") !== -1);
+assert.ok(l4win.indexOf("end-repeat") !== -1);
+assert.ok(l4win.length <= l4.par);
+assert.equal(G.runAll(l4, ["claw-close", "base-right", "base-right", "claw-open", "base-left", "base-left"]).win, false);
+assert.equal(G.starsFor(true, l4win.length, 1000, l4), 3);
+assert.equal(G.starsFor(true, l4win.length + 1, 1000, l4), 1);
+assert.equal(G.starsFor(false, 1, 1, l4), 0);
+
 const crashProgram = ["shoulder-down", "shoulder-down", "shoulder-down"];
 const crashCopy = crashProgram.slice();
 const crash = G.runAll(l1, crashProgram);
@@ -192,5 +205,6 @@ assert.match(hub, /translate="no">Pinchy<\/span>/);
 console.log("L1", l1win.join(" > "));
 console.log("L2", l2win.join(" > "));
 console.log("L3", l3win.join(" > "));
+console.log("L4", l4win.join(" > "));
 console.log("crash", line);
 console.log("pinchy win-test ok");
