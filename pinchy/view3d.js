@@ -198,8 +198,10 @@
           a = (i / 20) * Math.PI * 2;
           rimPts.push(new THREE.Vector3(Math.cos(a) * 300, 1, Math.sin(a) * 300));
         }
-        rimPts.push(new THREE.Vector3(0, 200, 40));
-        rimPts.push(new THREE.Vector3(40, 160, 160));
+        rimPts.push(new THREE.Vector3(0, 320, 40));
+        rimPts.push(new THREE.Vector3(0, 140, 240));
+        rimPts.push(new THREE.Vector3(180, 120, 80));
+        rimPts.push(new THREE.Vector3(-180, 120, 80));
       }
       var target = new THREE.Vector3(0, 24, 16);
       var dir = new THREE.Vector3(0.82, 0.58, 0.9).normalize();

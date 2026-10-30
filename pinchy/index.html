@@ -110,7 +110,7 @@
     border-radius: 12px;
   }
   #title-arm { height: 280px; }
-  #view { height: 380px; }
+  #view { height: max(280px, 52vh); min-height: 280px; }
   .scene-labels {
     position: absolute;
     inset: 0;
@@ -152,11 +152,11 @@
   #goal { min-height: 1.4em; }
   .stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+    grid-template-columns: minmax(240px, 380px) minmax(280px, 1fr);
     gap: 8px;
     align-items: start;
   }
-  .side { display: flex; flex-direction: column; gap: 8px; }
+  .controls, .side { display: flex; flex-direction: column; gap: 8px; }
   .palette, .actions { display: grid; gap: 8px; }
   .palette { grid-template-columns: 1fr 1fr; padding: 8px; background: var(--violet); border-radius: 12px; }
   .actions { grid-template-columns: 1fr 1fr 1fr; }
@@ -237,80 +237,12 @@
     white-space: nowrap;
     border: 0;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 700px) {
     .stage { grid-template-columns: 1fr; }
-    #view { height: 70vw; min-height: 280px; max-height: 420px; }
+    .scene-col { order: -1; }
+    #view { height: 280px; min-height: 280px; }
     #title-arm { height: 220px; }
-    #langs, #levels { min-height: 168px; }
-  }
-  @media (max-height: 520px) {
-    #hero { font-size: 32px; }
-    .top { padding: 2px 8px; }
-    #title-screen, #game { padding: 4px 8px; }
-    .top { flex-wrap: nowrap; }
-    #langs {
-      position: absolute;
-      top: 4px;
-      inset-inline-start: 300px;
-      gap: 4px;
-      inset-inline-end: 8px;
-      z-index: 2;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      min-height: 48px;
-      max-height: 56px;
-      margin: 0;
-      padding: 0;
-    }
-    #levels {
-      flex-wrap: wrap;
-      overflow: visible;
-      min-height: 0;
-      max-height: none;
-      margin: 0;
-      padding: 0;
-      gap: 4px;
-    }
-    button.lang, button.level {
-      flex: 0 0 auto;
-      min-width: 48px;
-      overflow: visible;
-    }
-    button.lang { padding: 2px 4px; font-size: 14px; }
-    button.level .name {
-      overflow: visible;
-      text-overflow: unset;
-      white-space: nowrap;
-    }
-    #goal { display: none; }
-    #game {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
-      column-gap: 8px;
-      align-items: start;
-    }
-    #levels { grid-column: 1 / -1; }
-    .stage { display: contents; }
-    .stage > div:first-child { grid-column: 1; grid-row: 2; }
-    .side { grid-column: 2; grid-row: 2; min-height: 0; gap: 2px; }
-    #status { grid-column: 1; grid-row: 3; margin: 0; min-height: 0; height: 48px; overflow: hidden; white-space: nowrap; }
-    #stars { grid-column: 2; grid-row: 3; margin: 0; align-self: end; }
-    #star-rules, #metrics, #angles, .legend { display: none; }
-    #program-wrap {
-      grid-column: 1;
-      grid-row: 4;
-      height: auto;
-      min-height: 0;
-      margin: 0;
-      padding: 0 8px;
-    }
-    #program-wrap p { margin: 0; line-height: 1.1; }
-    #program { min-height: 48px; padding: 0; }
-    .help { grid-column: 1 / -1; margin: 4px 0; }
-    #title-arm { height: 96px; }
-    #view { height: 108px; min-height: 108px; max-height: 108px; }
-    .palette { overflow-x: auto; overflow-y: hidden; display: flex; flex-wrap: nowrap; padding: 2px 4px; gap: 4px; }
-    .palette button.block { flex: 0 0 auto; }
+    #langs, #levels { min-height: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -329,13 +261,18 @@
 <body>
 <header class="top">
   <p class="brand" translate="no">Pinchy</p>
-  <span class="ver" id="app-version">v1.2.2</span>
+  <span class="ver" id="app-version">v1.3.0</span>
   <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
 </header>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <p id="draft-note" hidden>Machine draft.</p>
 <section id="whats-new" hidden>
   <h2>What's new</h2>
+  <p>Version 1.3.0</p>
+  <ul>
+    <li>Move a robot arm.</li>
+    <li>Rough layout: controls on the left, the 3D scene on the right. On a narrow screen the scene is on top.</li>
+  </ul>
   <p>Version 1.2.2</p>
   <ul>
     <li>Move a robot arm.</li>
@@ -380,14 +317,18 @@
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
   <p id="goal"></p>
   <div class="stage">
-    <div>
+    <div class="controls">
+      <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
+      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
+      <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
+        <p>Program</p>
+        <ol id="program"></ol>
+      </div>
+    </div>
+    <div class="scene-col">
       <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
       <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
-    </div>
-    <div class="side">
-      <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
-      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
     </div>
   </div>
   <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
@@ -402,10 +343,6 @@
     <span id="m-blocks">Blocks: 0</span>
     <span id="m-time">Time: none yet</span>
   </p>
-  <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
-    <p>Program</p>
-    <ol id="program"></ol>
-  </div>
   <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
 </main>
 <noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
@@ -1487,7 +1424,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.2.2") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.3.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));

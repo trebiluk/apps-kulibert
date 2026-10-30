@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var APP_VERSION = "1.2.2";
+  var APP_VERSION = "1.3.0";
   var UPPER = 108;
   var FORE = 78;
   var WRIST = 24;
