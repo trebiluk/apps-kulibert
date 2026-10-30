@@ -1,15 +1,15 @@
 export const CHANGELOG = [
-  // 2.5.542 texture packs, part 1. rw, ti, and fa-AF are machine drafts.
-  { v: '2.5.542', date: '2026-10-29', lines: {
-    en: ['2.5.542 — Classic and Mystical looks. Small textures stay sharp.'],
-    simple: ['2.5.542 — Two looks: Classic and Mystical. Small textures stay sharp.'],
-    uk: ['2.5.542 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.'],
-    ru: ['2.5.542 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.'],
-    es: ['2.5.542 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.'],
-    ar: ['2.5.542 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.'],
-    'fa-AF': ['2.5.542 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.'],
-    rw: ['2.5.542 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.'],
-    ti: ['2.5.542 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።'],
+  // 2.5.545 texture packs, part 1. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.545', date: '2026-10-30', lines: {
+    en: ['2.5.545 — Classic and Mystical looks. Small textures stay sharp.'],
+    simple: ['2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.'],
+    uk: ['2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.'],
+    ru: ['2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.'],
+    es: ['2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.'],
+    ar: ['2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.'],
+    'fa-AF': ['2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.'],
+    rw: ['2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.'],
+    ti: ['2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።'],
   }},
 
   // Locked 2.5.534 was already below main (2.5.540), so this is 2.5.541. rw, ti, and fa-AF are machine drafts.

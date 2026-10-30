@@ -620,23 +620,68 @@ def put(px, x, y, rgb):
         px[x, y] = (rgb[0], rgb[1], rgb[2], 255)
 
 
+# 2.5.545 calm art. Grass, sand and water are drawn on a 32 x 32 grid of 2x2
+# cells, so every shape survives the 32px box-average exactly. Flat base color
+# plus a few deliberate shapes. No per-pixel random speckle. All shapes wrap,
+# so tiles join without seams.
+def cell(px, cx, cy, rgb):
+    cx %= 32
+    cy %= 32
+    for dy in range(2):
+        for dx in range(2):
+            px[cx * 2 + dx, cy * 2 + dy] = (rgb[0], rgb[1], rgb[2], 255)
+
+
+def fill_flat(px, rgb):
+    for y in range(64):
+        for x in range(64):
+            px[x, y] = (rgb[0], rgb[1], rgb[2], 255)
+
+
+def spot_jitter(sx, sy, salt):
+    # Fixed little shuffle so blade clusters do not line up in rows.
+    n = (sx * 7 + sy * 13 + salt * 5) % 9
+    return n % 3, n // 3
+
+
+def blade_cluster(px, cx, cy, tall, wide, tip, body, root):
+    # A short clump: 1 or 2 columns, 2-3 cells tall, bright tip, dark root cell.
+    for col in range(wide):
+        h = tall - (1 if col == 1 else 0)
+        for i in range(h):
+            if i == 0:
+                c = tip
+            elif i == h - 1:
+                c = root
+            else:
+                c = body
+            cell(px, cx + col, cy + i, c)
+
+
 def draw_grass(px, mystical):
     if mystical:
-        fill_noise(px, [(92, 58, 122), (110, 70, 140), (74, 46, 104), (128, 90, 150), (84, 52, 112)], 3)
-        fleck = (46, 130, 124)
-        for y in range(2, 62, 1):
-            for x in range(2, 62):
-                if (x * 5 + y * 9) % 23 == 0:
-                    put(px, x, y, fleck)
-                    put(px, x + 1, y, (38, 112, 108))
+        base, root, body, tip = (96, 62, 128), (74, 46, 104), (108, 72, 140), (128, 92, 158)
+        fleck_a, fleck_b = (46, 130, 124), (38, 112, 108)
     else:
-        fill_noise(px, [(46, 110, 40), (62, 138, 48), (34, 90, 32), (80, 150, 56), (40, 100, 36)], 1)
-        for y in range(64):
-            for x in range(64):
-                if (x * 3 + y * 11) % 37 == 0:
-                    put(px, x, y, (90, 70, 40))
-                elif (x + y * 2) % 29 == 0:
-                    put(px, x, y, (24, 70, 22))
+        base, root, body, tip = (60, 132, 46), (36, 94, 34), (72, 148, 52), (98, 170, 66)
+    fill_flat(px, base)
+    for sy in range(8):
+        for sx in range(8):
+            if (sx * 5 + sy * 3) % 7 == 0:
+                continue  # leave some calm ground between clumps
+            jx, jy = spot_jitter(sx, sy, 1)
+            cx = sx * 4 + jx
+            cy = sy * 4 + jy
+            tall = 3 if (sx + sy * 2) % 3 else 2
+            wide = 2 if (sx * 3 + sy) % 4 < 2 else 1
+            blade_cluster(px, cx, cy, tall, wide, tip, body, root)
+    if mystical:
+        # Teal flecks: pairs, no glow, a dozen in the whole tile.
+        for k in range(12):
+            fx = (k * 11 + 3) % 32
+            fy = (k * 7 + k // 3 * 5 + 2) % 32
+            cell(px, fx, fy, fleck_a)
+            cell(px, fx + 1, fy, fleck_b)
 
 
 def draw_dirt(px, mystical):
@@ -781,21 +826,53 @@ def draw_leaves(px, mystical, under=False):
 
 
 def draw_sand(px, mystical):
-    if not mystical:
-        fill_noise(px, [(210, 190, 130), (196, 174, 112), (176, 154, 96), (220, 200, 146), (160, 140, 88)], 11)
-        for y in range(64):
-            for x in range(64):
-                if (x * 9 + y * 4) % 31 == 0:
-                    put(px, x, y, (140, 118, 72))
-        return
-    colors = [(150, 130, 176), (90, 140, 138), (176, 150, 190), (70, 100, 120), (130, 110, 150)]
-    for y in range(64):
-        for x in range(64):
-            cell = (x // 8) + (y // 8) * 3
-            a = colors[cell % len(colors)]
-            b = colors[(cell + 2) % len(colors)]
-            c = a if (x % 8) + (y % 8) < 8 else b
-            put(px, x, y, c)
+    if mystical:
+        base, ripple, grain = (136, 116, 166), (112, 94, 142), (162, 140, 188)
+    else:
+        base, ripple, grain = (204, 180, 122), (174, 148, 92), (220, 198, 142)
+    fill_flat(px, base)
+    # Soft ripple lines: a run of cells that steps up one row halfway.
+    for r in range(4):
+        y0 = 3 + r * 8
+        x0 = (r * 11 + 2) % 32
+        for seg in range(2):
+            xs = x0 + seg * 16
+            for i in range(7):
+                step = 0 if i < 4 else -1
+                cell(px, xs + i, y0 + step, ripple)
+            # light edge just under the line, shorter than the line
+            for i in range(1, 5):
+                step = 0 if i < 4 else -1
+                cell(px, xs + i, y0 + step + 1, grain)
+    # A few grain pairs.
+    for k in range(10):
+        gx = (k * 13 + 5) % 32
+        gy = (k * 9 + 1) % 32
+        cell(px, gx, gy, grain if k % 2 else ripple)
+        cell(px, gx + 1, gy, grain if k % 2 else ripple)
+    if mystical:
+        # Crystal sand: six small plus-shaped facets, teal body with a pale center.
+        facet, core = (84, 140, 138), (176, 150, 196)
+        for k in range(6):
+            fx = (k * 9 + 6) % 32
+            fy = (k * 13 + 4 + (k % 2) * 3) % 32
+            for dx, dy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+                cell(px, fx + dx, fy + dy, facet)
+            cell(px, fx, fy, core)
+
+
+def draw_water(px, mystical):
+    # Deep matte blue, darker ripple bands. No white, no shimmer, no animation.
+    base, band, edge = (28, 88, 168), (18, 62, 130), (40, 108, 188)
+    fill_flat(px, base)
+    for r in range(4):
+        y0 = 3 + r * 8
+        for x in range(32):
+            wave = int(round(1.4 * math.sin(2 * math.pi * (x + r * 6) / 32.0)))
+            cell(px, x, y0 + wave, band)
+            cell(px, x, y0 + wave + 1, band)
+            if x % 8 < 5:
+                cell(px, x, y0 + wave - 1, edge)
 
 
 def draw_coal(px, mystical):
@@ -843,6 +920,7 @@ MASTERS = {
     'leaves_under': lambda m: draw_leaves(m, False, True),
     'sand': lambda m: draw_sand(m, False),
     'stone_coal': lambda m: draw_coal(m, False),
+    'water': lambda m: draw_water(m, False),
 }
 
 MASTERS_MYST = {
@@ -856,6 +934,7 @@ MASTERS_MYST = {
     'leaves_under': lambda m: draw_leaves(m, True, True),
     'sand': lambda m: draw_sand(m, True),
     'stone_coal': lambda m: draw_coal(m, True),
+    'water': lambda m: draw_water(m, True),
 }
 
 
@@ -988,6 +1067,7 @@ def main():
     for key in WRAPS:
         wrap_layers.append('wrap_' + key)
     layers.extend(wrap_layers)
+    layers.append('water')
 
     alias = {
         'benchTop': 'workbench',
@@ -1044,7 +1124,7 @@ def main():
         'sapling': 'leaves.png',
         'chair': 'wood.png',
         'sewing': 'wood.png',
-        'water': 'ice.png',
+        'water': 'water.png',
         'woodshopBench': 'workbench.png',
         'pushButtonOn': 'wrap_pushButton.png',
         'leverOn': 'wrap_lever.png',
@@ -1078,7 +1158,7 @@ def main():
         'woodshop': ('workbench.png', 'benchSide.png', 'wood.png'),
         'woodshopSide': ('workbench.png', 'benchSide.png', 'wood.png'),
     }
-    masters_keys = {'grass', 'dirt', 'stone', 'coal', 'sand', 'planks', 'log', 'leaves'}
+    masters_keys = {'grass', 'dirt', 'stone', 'coal', 'sand', 'planks', 'log', 'leaves', 'water'}
     direct = {
         'dirt': 'dirt.png',
         'stone': 'stone.png',
