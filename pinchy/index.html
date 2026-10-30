@@ -322,14 +322,18 @@ var ICONS = {
   "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
   "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
   "repeat-3": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "repeat-2": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
   "end-repeat": svg('<path d="M5 7 h14 M5 12 h14 M5 17 h10" ' + ST + '/>'),
+  "if-red-square": svg('<rect x="4" y="4" width="16" height="16" ' + ST + '/><path d="M7 12 h10" ' + ST + '/>'),
+  "if-blue-circle": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><circle cx="12" cy="12" r="2" fill="currentColor"/>'),
+  "end-if": svg('<path d="M6 7 h12 M6 12 h8 M6 17 h12" ' + ST + '/>'),
   "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
   "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
   "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
   "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
 };
-var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3" };
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square" };
 
 var lang = "en";
 var labelOf = function (id) {
@@ -434,6 +438,7 @@ var renderLevels = function () {
   document.getElementById("goal").textContent = levelNow.goal;
   var legend = document.getElementById("legend");
   if (levelNow.kind === "pile") legend.textContent = "Repeat 3 runs the blocks up to End repeat three times. The pile has 3 parts. Wrist up and Wrist down are here too.";
+  else if (levelNow.kind === "sensor") legend.textContent = "A red square goes in bin A. A blue circle goes in bin B. The words and the shape match. Color is not the only cue.";
   else legend.textContent = "Cells are A1 to C3. The dot is the claw. A square is the part. A U is the bin. A thick outline means go here.";
   paintStars();
 };
@@ -681,8 +686,10 @@ var drawScene = function (canvas, state, opts) {
   tag("Table", VIEW.x0 + 28, -8, 0, 16);
 
   var level = opts.level || null;
-  if (level && level.bin && Math.abs(state.base - level.bin.base) <= 7) {
-    var bin = level.bin;
+  var bins = level ? PINCHY.binsOf(level) : [];
+  for (var bi = 0; bi < bins.length; bi++) {
+    var bin = bins[bi];
+    if (Math.abs(state.base - bin.base) > 7) continue;
     var xL = P.x(bin.r - bin.half);
     var xR = P.x(bin.r + bin.half);
     var y0 = P.y(0);
@@ -695,7 +702,9 @@ var drawScene = function (canvas, state, opts) {
     ctx.lineTo(xR, y0);
     ctx.lineTo(xR, yH);
     ctx.stroke();
-    tag("Bin", bin.r, bin.h, 0, -22);
+    var binName = bin.id ? "Bin " + bin.id : "Bin";
+    if (bin.mark) binName += " " + bin.mark;
+    tag(binName, bin.r, bin.h, 0, -22);
   }
 
   var bx = P.x(-26);
@@ -743,11 +752,33 @@ var drawScene = function (canvas, state, opts) {
     var py = P.y(part.y + part.hh);
     var pw = P.x(part.r + part.hw) - px;
     var ph = P.y(part.y - part.hh) - py;
-    ctx.fillStyle = "#C5CEDA";
-    ctx.fillRect(px, py, pw, ph);
-    ctx.strokeStyle = "#3E4650";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(px, py, pw, ph);
+    if (part.shape === "circle") {
+      ctx.beginPath();
+      ctx.fillStyle = "#8EA0BE";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(4, Math.abs(pw) / 2), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#F3EEE4";
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.fillStyle = "#06122B";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(2, Math.abs(pw) / 5), 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = "#C5CEDA";
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = part.color === "red" ? "#E85820" : "#3E4650";
+      ctx.lineWidth = part.shape === "square" ? 3 : 2;
+      ctx.strokeRect(px, py, pw, ph);
+      if (part.shape === "square") {
+        ctx.beginPath();
+        ctx.moveTo(px + 3, py + 3);
+        ctx.lineTo(px + pw - 3, py + ph - 3);
+        ctx.moveTo(px + pw - 3, py + 3);
+        ctx.lineTo(px + 3, py + ph - 3);
+        ctx.stroke();
+      }
+    }
     var pileN = 1 + ((state.queue || []).length);
     if (pileN > 1) {
       ctx.fillStyle = "#8EA0BE";
@@ -755,7 +786,9 @@ var drawScene = function (canvas, state, opts) {
       ctx.strokeStyle = "#3E4650";
       ctx.strokeRect(px + 8, py - 8, pw, ph);
       tag("Pile " + pileN, part.r, part.y, 0, 26);
-    } else tag("Part", part.r, part.y, 0, 26);
+    } else if (part.shape === "square" && part.color === "red") tag("Red square \u25a0", part.r, part.y, 0, 26);
+    else if (part.shape === "circle" && part.color === "blue") tag("Blue circle \u25cf", part.r, part.y, 0, 26);
+    else tag("Part", part.r, part.y, 0, 26);
   } else if (part && part.inBin && level && level.bin) {
     var ix = P.x(part.r - part.hw);
     var iy = P.y(part.hh * 2);
@@ -803,6 +836,15 @@ var drawScene = function (canvas, state, opts) {
       var extra = "";
       if (part && !part.inBin && PINCHY.spotName(part.base, part.r) === name) extra = "Part";
       if (level && level.bin && PINCHY.spotName(level.bin.base, level.bin.r) === name) extra = extra ? extra + " / Bin" : "Bin";
+      if (level && level.bins) {
+        for (var bn = 0; bn < level.bins.length; bn++) {
+          var gridBin = level.bins[bn];
+          if (PINCHY.spotName(gridBin.base, gridBin.r) === name) {
+            var gridWord = "Bin " + gridBin.id + (gridBin.mark ? " " + gridBin.mark : "");
+            extra = extra ? extra + " / " + gridWord : gridWord;
+          }
+        }
+      }
       if (name === here) extra = extra ? extra + " / Go here" : "Go here";
       if (extra) ctx.fillText(extra, midX, midY + 10);
     }
@@ -948,6 +990,7 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "match") text = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "spot") text = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "pile") text = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "sensor") text = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
   text += " " + PINCHY.starWords(n) + "";
   setStatus(text, "win");
   setStepLive(text);

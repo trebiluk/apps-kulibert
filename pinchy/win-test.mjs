@@ -33,8 +33,8 @@ function findWin(level, cap) {
 }
 
 assert.equal(G.APP_VERSION, "1.0.0");
-assert.equal(G.LEVELS.length, 4);
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile"]);
+assert.equal(G.LEVELS.length, 5);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -163,6 +163,27 @@ assert.equal(G.starsFor(true, l4win.length, 1000, l4), 3);
 assert.equal(G.starsFor(true, l4win.length + 1, 1000, l4), 1);
 assert.equal(G.starsFor(false, 1, 1, l4), 0);
 
+const l5 = G.LEVELS[4];
+const l5win = ["repeat-2", "claw-close", "if-red-square", "base-right", "claw-open", "base-left", "end-if", "if-blue-circle", "base-left", "claw-open", "base-right", "end-if", "end-repeat"];
+const l5result = G.runAll(l5, l5win);
+assert.equal(l5result.win, true, "L5 is winnable");
+assert.equal(l5result.state.sorted, 2);
+assert.ok(l5win.length <= l5.par);
+assert.equal(G.labelFor("if-red-square", "en"), "If red \u25a0");
+assert.equal(G.labelFor("if-blue-circle", "en"), "If blue \u25cf");
+assert.equal(G.sensorMatch({ holding: true, part: { color: "red", shape: "circle" } }, "if-red-square"), false);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "blue", shape: "square" } }, "if-blue-circle"), false);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "red", shape: "square" } }, "if-red-square"), true);
+assert.equal(G.sensorMatch({ holding: true, part: { color: "blue", shape: "circle" } }, "if-blue-circle"), true);
+assert.equal(G.sensorMatch({ holding: false, part: { color: "red", shape: "square" } }, "if-red-square"), false);
+const l5wrong = G.runAll(l5, ["claw-close", "base-left", "claw-open"]);
+assert.equal(l5wrong.win, false);
+assert.match(l5wrong.crash, /wrong bin/);
+G.BLOCKS.forEach(function (block) {
+  assert.notEqual(block.label, "Red");
+  assert.notEqual(block.label, "Blue");
+});
+
 const crashProgram = ["shoulder-down", "shoulder-down", "shoulder-down"];
 const crashCopy = crashProgram.slice();
 const crash = G.runAll(l1, crashProgram);
@@ -206,5 +227,6 @@ console.log("L1", l1win.join(" > "));
 console.log("L2", l2win.join(" > "));
 console.log("L3", l3win.join(" > "));
 console.log("L4", l4win.join(" > "));
+console.log("L5", l5win.join(" > "));
 console.log("crash", line);
 console.log("pinchy win-test ok");

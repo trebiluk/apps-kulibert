@@ -52,7 +52,11 @@
     { id: "claw-open", joint: "claw", angle: GAP_OPEN, label: "Open claw" },
     { id: "claw-close", joint: "claw", angle: GAP_CLOSED, label: "Close claw" },
     { id: "repeat-3", joint: "repeat", label: "Repeat 3" },
-    { id: "end-repeat", joint: "repeat", label: "End repeat" }
+    { id: "repeat-2", joint: "repeat", label: "Repeat 2" },
+    { id: "end-repeat", joint: "repeat", label: "End repeat" },
+    { id: "if-red-square", joint: "if", label: "If red \u25a0" },
+    { id: "if-blue-circle", joint: "if", label: "If blue \u25cf" },
+    { id: "end-if", joint: "if", label: "End if" }
   ];
 
   var CORE_BLOCKS = [
@@ -161,10 +165,18 @@
     return Math.abs(x) <= 34 && y >= -4 && y <= SY + 8;
   }
 
+  function binsOf(level) {
+    if (level && level.bins && level.bins.length) return level.bins;
+    if (level && level.bin) return [level.bin];
+    return [];
+  }
+
   function obstacles(level, base) {
     var obs = [];
-    var bin = level.bin;
-    if (bin && Math.abs(base - bin.base) <= COL_TOL) {
+    var bins = binsOf(level);
+    for (var n = 0; n < bins.length; n++) {
+      var bin = bins[n];
+      if (Math.abs(base - bin.base) > COL_TOL) continue;
       var mouthL = bin.r - bin.half;
       var mouthR = bin.r + bin.half;
       obs.push({ l: mouthL - THICK, r: mouthL, h: bin.h, name: "bin" });
@@ -187,11 +199,26 @@
     return "";
   }
 
+  function binUnder(p, base, level) {
+    var bins = binsOf(level);
+    for (var i = 0; i < bins.length; i++) {
+      var bin = bins[i];
+      if (Math.abs(base - bin.base) > COL_TOL) continue;
+      if (p.cx > bin.r - bin.half && p.cx < bin.r + bin.half && p.cy > 6 && p.cy < 240) return bin;
+    }
+    return null;
+  }
+
   function overBin(p, base, level) {
-    var bin = level.bin;
-    if (!bin) return false;
-    if (Math.abs(base - bin.base) > COL_TOL) return false;
-    return p.cx > bin.r - bin.half && p.cx < bin.r + bin.half && p.cy > 6 && p.cy < 240;
+    return !!binUnder(p, base, level);
+  }
+
+  function sensorMatch(state, cmd) {
+    if (!state || !state.holding || !state.part) return false;
+    var part = state.part;
+    if (cmd === "if-red-square") return part.color === "red" && part.shape === "square";
+    if (cmd === "if-blue-circle") return part.color === "blue" && part.shape === "circle";
+    return false;
   }
 
   function contains(p, state) {
@@ -280,7 +307,7 @@
       return spotName(state.base, p.cx) === level.spot && p.cy >= 10 && p.cy <= 52 && !state.holding;
     }
     if (level.kind === "place") return !!(state.part && state.part.inBin);
-    if (level.kind === "pile") {
+    if (level.kind === "pile" || level.kind === "sensor") {
       return (state.sorted || 0) >= (level.need || 1) && !(state.queue && state.queue.length) && !state.holding;
     }
     return false;
@@ -310,6 +337,22 @@
   }
 
   function deliverPile(state, level, p) {
+    var landed = binUnder(p, state.base, level);
+    if (level.kind === "sensor" && landed && (landed.shape !== state.part.shape || landed.color !== state.part.color)) {
+      var missed = copyPart(state.part);
+      missed.base = state.base;
+      missed.r = p.cx;
+      missed.y = state.part.hh;
+      missed.inBin = false;
+      missed.dropped = true;
+      return {
+        ok: false, miss: true, t: 1, msg: "part went to the wrong bin",
+        state: {
+          base: state.base, shoulder: state.shoulder, elbow: state.elbow, wrist: state.wrist || 0,
+          open: true, gap: GAP_OPEN, holding: false, part: missed
+        }
+      };
+    }
     var sorted = (state.sorted || 0) + 1;
     var queue = (state.queue || []).map(copyPart);
     var next = queue.length ? queue.shift() : null;
@@ -446,7 +489,7 @@
         open: true, gap: GAP_OPEN, holding: false, part: state.part
       });
       if (overBin(p, state.base, level)) {
-        if (level.kind === "pile") return deliverPile(state, level, p);
+        if (level.kind === "pile" || level.kind === "sensor") return deliverPile(state, level, p);
         return {
           ok: true, win: true, t: 1,
           state: {
@@ -483,6 +526,11 @@
       if (state.holding) return "The part is still held. Open the claw over the bin.";
       if (state.part && state.part.dropped) return "The part missed the bin.";
       return "The pile still has parts out. " + placed + " of " + (level.need || 3) + " are in the bin.";
+    }
+    if (level.kind === "sensor") {
+      if (state.holding) return "The part is still held. Open the claw over the matching bin.";
+      if (state.part && state.part.dropped) return "The part missed the matching bin.";
+      return "Red squares go in bin A. Blue circles go in bin B.";
     }
     if (state.holding) return "The part is still held. Open the claw over the bin.";
     if (state.part && state.part.dropped) return "The part missed the bin.";
@@ -562,7 +610,29 @@
       spot: "",
       blocks: ["repeat-3", "end-repeat", "wrist-up", "wrist-down"].concat(CORE_BLOCKS)
     };
-    return [l1, l2, l3, l4];
+    var redPart = { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false, shape: "square", color: "red", mark: "\u25a0" };
+    var bluePart = { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false, shape: "circle", color: "blue", mark: "\u25cf" };
+    var l5 = {
+      id: "L5",
+      name: "Sensor bins",
+      goal: "If the sensor sees a red square, put it in bin A. If it sees a blue circle, put it in bin B. Use the shape and the color together.",
+      start: { base: 0, shoulder: 15, elbow: -90, wrist: 0 },
+      kind: "sensor",
+      target: null,
+      par: 13,
+      timePar: 16000,
+      need: 2,
+      part: redPart,
+      queue: [bluePart],
+      bin: null,
+      bins: [
+        { id: "A", base: 15, r: gp.cx, half: 36, h: 22, shape: "square", color: "red", mark: "\u25a0" },
+        { id: "B", base: -15, r: gp.cx, half: 36, h: 22, shape: "circle", color: "blue", mark: "\u25cf" }
+      ],
+      spot: "",
+      blocks: ["repeat-2", "end-repeat", "if-red-square", "if-blue-circle", "end-if", "wrist-up", "wrist-down"].concat(CORE_BLOCKS)
+    };
+    return [l1, l2, l3, l4, l5];
   }
 
   var LEVELS = buildLevels();
@@ -585,6 +655,10 @@
 
   function isRepeat(cmd) {
     return cmd === "repeat-2" || cmd === "repeat-3";
+  }
+
+  function isIf(cmd) {
+    return cmd === "if-red-square" || cmd === "if-blue-circle";
   }
 
   function matchEnd(commands, ip, openTest, closeId) {
@@ -632,6 +706,18 @@
         run.loops.pop();
         run.ip = index + 1;
       }
+      return { done: false, ok: true, structural: true, t: 0, state: state, index: index, cmd: cmd };
+    }
+    if (isIf(cmd)) {
+      var endIf = matchEnd(commands, index, isIf, "end-if");
+      if (endIf < 0) {
+        return { done: true, ok: false, msg: "If needs End if", t: 0, state: state, index: index, cmd: cmd };
+      }
+      run.ip = sensorMatch(state, cmd) ? index + 1 : endIf + 1;
+      return { done: false, ok: true, structural: true, t: 0, state: state, index: index, cmd: cmd };
+    }
+    if (cmd === "end-if") {
+      run.ip = index + 1;
       return { done: false, ok: true, structural: true, t: 0, state: state, index: index, cmd: cmd };
     }
     var result = applyCommand(state, cmd, level);
@@ -758,6 +844,8 @@
     runAll: runAll,
     beginRun: beginRun,
     advance: advance,
+    sensorMatch: sensorMatch,
+    binsOf: binsOf,
     endReason: endReason,
     stepList: stepList,
     crashLine: crashLine,
