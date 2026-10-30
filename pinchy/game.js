@@ -28,9 +28,45 @@
     { id: "en", name: "English", draft: false, rtl: false, up: "Wrist up", down: "Wrist down", part: "wrist" },
     { id: "uk", name: "Українська", draft: false, rtl: false, up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя" },
     { id: "ru", name: "Русский", draft: false, rtl: false, up: "Запястье вверх", down: "Запястье вниз", part: "запястье" },
-    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true },
-    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true },
-    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true },
+    { id: "es", name: "Español", draft: false, rtl: false, up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "Base izquierda", "base-right": "Base derecha",
+        "shoulder-up": "Hombro arriba", "shoulder-down": "Hombro abajo",
+        "elbow-up": "Codo arriba", "elbow-down": "Codo abajo",
+        "claw-open": "Abrir pinza", "claw-close": "Cerrar pinza",
+        "repeat-3": "Repetir 3", "repeat-2": "Repetir 2", "end-repeat": "Fin repetir",
+        "if-red-square": "Si rojo \u25a0", "if-blue-circle": "Si azul \u25cf", "end-if": "Fin si"
+      },
+      actions: { run: "Ejecutar", undo: "Deshacer", retry: "Reintentar" },
+      help: "Las flechas eligen un bloque. Enter lo agrega. Q gira la base a la izquierda en 3D. E gira la base a la derecha en 3D. R ejecuta. Z deshace. Reintentar conserva el programa.",
+      helpDebug: "Las flechas eligen un paso. Enter lo cambia con el siguiente. El brazo 3D gira sobre su base al ejecutar. R ejecuta. Z deshace."
+    },
+    { id: "ar", name: "العربية", draft: false, rtl: true, up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "القاعدة يسار", "base-right": "القاعدة يمين",
+        "shoulder-up": "كتف أعلى", "shoulder-down": "كتف أسفل",
+        "elbow-up": "كوع أعلى", "elbow-down": "كوع أسفل",
+        "claw-open": "افتح المخلب", "claw-close": "أغلق المخلب",
+        "repeat-3": "كرر 3", "repeat-2": "كرر 2", "end-repeat": "نهاية التكرار",
+        "if-red-square": "إذا أحمر \u25a0", "if-blue-circle": "إذا أزرق \u25cf", "end-if": "نهاية الشرط"
+      },
+      actions: { run: "تشغيل", undo: "تراجع", retry: "إعادة" },
+      help: "الأسهم تختار بلوكًا. Enter يضيفه. Q تدير القاعدة يسارًا في 3D. E تدير القاعدة يمينًا في 3D. R يشغّل. Z يتراجع. إعادة المحاولة تبقي البرنامج.",
+      helpDebug: "الأسهم تختار خطوة. Enter تبدلها مع التالية. الذراع 3D يدور على قاعدته عند التشغيل. R يشغّل. Z يتراجع."
+    },
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
+      blocks: {
+        "base-left": "پایه چپ", "base-right": "پایه راست",
+        "shoulder-up": "شانه بالا", "shoulder-down": "شانه پایین",
+        "elbow-up": "آرنج بالا", "elbow-down": "آرنج پایین",
+        "claw-open": "چنگال باز", "claw-close": "چنگال بسته",
+        "repeat-3": "تکرار ۳", "repeat-2": "تکرار ۲", "end-repeat": "پایان تکرار",
+        "if-red-square": "اگر سرخ \u25a0", "if-blue-circle": "اگر آبی \u25cf", "end-if": "پایان اگر"
+      },
+      actions: { run: "اجرا", undo: "برگردان", retry: "تلاش دوباره" },
+      help: "تیرها یک بلاک را انتخاب می‌کنند. Enter آن را اضافه می‌کند. Q پایه را در 3D به چپ می‌چرخاند. E پایه را در 3D به راست می‌چرخاند. R اجرا می‌کند. Z برمی‌گرداند. تلاش دوباره برنامه را نگه می‌دارد.",
+      helpDebug: "تیرها یک گام را انتخاب می‌کنند. Enter آن را با گام بعدی عوض می‌کند. بازوی 3D هنگام اجرا روی پایه می‌چرخد. R اجرا می‌کند. Z برمی‌گرداند."
+    },
     { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza" },
     { id: "ti", name: "ትግርኛ", draft: true, rtl: false, up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ" }
   ];
@@ -89,10 +125,28 @@
     var meta = langMeta(lang || "en");
     if (id === "wrist-up") return meta.up;
     if (id === "wrist-down") return meta.down;
+    if (meta.blocks && meta.blocks[id]) return meta.blocks[id];
     if (id === "base-left" && meta.baseLeft) return meta.baseLeft;
     if (id === "base-right" && meta.baseRight) return meta.baseRight;
     var block = blockById(id);
     return block ? block.label : id;
+  }
+
+  function actionLabel(id, lang) {
+    var meta = langMeta(lang || "en");
+    if (meta.actions && meta.actions[id]) return meta.actions[id];
+    if (id === "run") return "Run";
+    if (id === "undo") return "Undo";
+    if (id === "retry") return "Retry";
+    return id;
+  }
+
+  function helpFor(lang, debug) {
+    var meta = langMeta(lang || "en");
+    if (debug && meta.helpDebug) return meta.helpDebug;
+    if (!debug && meta.help) return meta.help;
+    if (debug) return "Arrow keys pick a step. Enter swaps it with the next step. The 3D arm turns on its base when the program runs. R runs. Z undoes.";
+    return "Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.";
   }
 
   function blocksFor(level) {
@@ -912,6 +966,8 @@
     blocksFor: blocksFor,
     langMeta: langMeta,
     labelFor: labelFor,
+    actionLabel: actionLabel,
+    helpFor: helpFor,
     pose: pose,
     collide: collide,
     contains: contains,
