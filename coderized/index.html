@@ -132,5 +132,27 @@
   <script src="origin.js"></script>
   <script src="app.js"></script>
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="coderized" data-name="Coderized" data-version="CZ 1.4.0" data-rtl="1" data-whats-new="Coderized shows its version, and ☰ takes you Home." defer></script>
+  <script defer>
+  (function () {
+    function syncChip() {
+      var chip = document.getElementById("version-chip");
+      var plate = document.querySelector(".kb-bar .kb-plate");
+      if (!chip) return;
+      var plateText = plate ? plate.textContent.replace(/\s+/g, " ").trim() : "";
+      var chipText = (chip.textContent || "").replace(/\s+/g, " ").trim();
+      chip.classList.toggle("hidden", plateText.length > 0 && plateText === chipText);
+    }
+    function arm() {
+      syncChip();
+      window.addEventListener("resize", syncChip);
+      var plate = document.querySelector(".kb-bar .kb-plate");
+      if (plate && window.MutationObserver) {
+        new MutationObserver(syncChip).observe(plate, { childList: true, characterData: true, subtree: true });
+      }
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arm);
+    else arm();
+  })();
+  </script>
 </body>
 </html>
