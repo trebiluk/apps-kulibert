@@ -552,22 +552,25 @@ var addBlock = function (id) {
 };
 var undo = function () {
   if (playing) return;
+  var note = "Undone.";
   if (PINCHY.LEVELS[session.level].debug) {
     var hist = swapHistory[session.level] || [];
-    if (!hist.length) return;
-    session.programs[session.level] = hist.pop();
-    session.swaps[session.level] = Math.max(0, (session.swaps[session.level] || 0) - 1);
-    renderProgram(-1, -1);
-    updateMetrics();
-    setRun(PINCHY.settleRun(null, { type: "undo", note: "Swap undone. Swaps: " + session.swaps[session.level] + "." }));
-    return;
+    if (hist.length) {
+      session.programs[session.level] = hist.pop();
+      session.swaps[session.level] = Math.max(0, (session.swaps[session.level] || 0) - 1);
+      renderProgram(-1, -1);
+      updateMetrics();
+      note = "Swap undone. Swaps: " + session.swaps[session.level] + ".";
+    }
+  } else {
+    var list = session.programs[session.level];
+    if (list.length) {
+      list.pop();
+      renderProgram(-1, -1);
+      updateMetrics();
+    }
   }
-  var list = session.programs[session.level];
-  if (!list.length) return;
-  list.pop();
-  renderProgram(-1, -1);
-  updateMetrics();
-  setRun(PINCHY.settleRun(null, { type: "undo", note: "Undone." }));
+  setRun(PINCHY.settleRun(null, { type: "undo", note: note }));
 };
 
 var projector = function (w, h, originX, originY) {
