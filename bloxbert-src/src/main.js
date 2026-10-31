@@ -242,7 +242,7 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
 })
 CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
 import { wildBushLoot } from './drops.js'
-import { createHands } from './hands.js'
+import { createHolo } from './holo.js' // Holo Hand part 1: replaces the first-person hand (hands.js is no longer mounted)
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
@@ -3447,6 +3447,7 @@ function syncGlasses() {
   if (glassesMesh) glassesMesh.setEnabled(on)
 }
 let hands = null
+let holo = null
 function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
   if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
@@ -10427,14 +10428,40 @@ function paintLook(g) {
     if (sens._val) sens._val.textContent = lookSens.toFixed(1) + '×'
     applyLook()
   })
+  const ctlHead = document.createElement('p')
+  ctlHead.className = 'gnote ghead'
+  ctlHead.textContent = t('controlsHead')
+  // Holo Hand part 1: Main hand is two buttons, Left and Right; the chosen one is pressed. Saved with the look prefs.
   const side = lookLine(t('mainHand'), null, 'hand')
-  const sideBtn = document.createElement('button')
-  sideBtn.type = 'button'
-  sideBtn.className = 'pill on'
-  const paintSide = () => { sideBtn.textContent = mainHand === 'left' ? t('left') : t('right') }
+  const sidePair = document.createElement('span')
+  sidePair.className = 'hand-pair'
+  sidePair.setAttribute('role', 'group')
+  sidePair.setAttribute('aria-label', t('mainHand'))
+  const sideBtns = ['left', 'right'].map((v) => {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'pill'
+    b.dataset.hand = v
+    b.textContent = t(v)
+    b.addEventListener('click', () => {
+      if (mainHand === v) return
+      mainHand = v
+      applyLook()
+      paintSide()
+      if (holo) holo.announce(t('mainHand') + ': ' + t(v))
+    })
+    return b
+  })
+  const paintSide = () => {
+    for (const b of sideBtns) {
+      const on = b.dataset.hand === mainHand
+      b.classList.toggle('on', on)
+      b.setAttribute('aria-pressed', String(on))
+    }
+  }
   paintSide()
-  sideBtn.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
-  side.append(sideBtn)
+  sidePair.append(...sideBtns)
+  side.append(sidePair)
   const cam = lookLine(t('cameraView'), null, 'camera')
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
@@ -10495,6 +10522,7 @@ function paintLook(g) {
   paintClothes()
   clothes.append(clothesLab, clothesGroup)
   g.append(
+    ctlHead,
     sens,
     range,
     lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert', 'invert'),
@@ -11920,21 +11948,14 @@ function poseBerty(dt) {
   heldMat.diffuseColor.set(c[0], c[1], c[2])
   heldMat.emissiveColor.set(c[0] * 0.45, c[1] * 0.45, c[2] * 0.45)
 }
-hands = createHands({
-  scene,
-  camera: noa.rendering.camera,
-  noa,
+// Holo Hand part 1: a flat amber hologram of the held item replaces the first-person hand. Same show / hide rules as before.
+holo = createHolo({
   held: fillHeld,
   wandMode: () => wandMode,
   side: () => mainHand,
   show: () => showHand,
   hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open') || noa.camera.zoomDistance > 0.5,
   wet: () => underWater,
-  lite: () => quality === 'lite' || REDUCE,
-  speed: () => {
-    const b = noa.ents.getPhysicsBody(noa.playerEntity)
-    return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
-  },
 })
 paintBertySuit()
 let beltAt = 0
@@ -12139,6 +12160,7 @@ noa.on('beforeRender', (dt) => {
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
+  if (holo) holo.update()
   poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
@@ -12549,6 +12571,7 @@ if (!__BLOX_STUDENT__) {
     hold: (st, v) => { noa.inputs.state[st] = v },
     get climb() { return autoClimb },
     hand() {
+      if (holo) return { show: showHand, side: mainHand, ...holo.info() } // Holo Hand part 1
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
     },
     handSwing(kind) { pokeHand(kind) },

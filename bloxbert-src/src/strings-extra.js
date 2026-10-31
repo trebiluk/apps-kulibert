@@ -3885,3 +3885,20 @@ for (const [lang, row] of Object.entries(TEX550)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// Holo Hand part 1: heading over the controls in Settings. fa-AF, rw, and ti are machine drafts.
+const HOLO1 = {
+  en: { controlsHead: 'Controls' },
+  simple: { controlsHead: 'Controls' },
+  uk: { controlsHead: 'Керування' },
+  ru: { controlsHead: 'Управление' },
+  es: { controlsHead: 'Controles' },
+  ar: { controlsHead: 'التحكم' },
+  'fa-AF': { controlsHead: 'کنترول‌ها' },
+  rw: { controlsHead: 'Igenzura' },
+  ti: { controlsHead: 'መቆጻጸሪ' },
+}
+for (const [lang, row] of Object.entries(HOLO1)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
