@@ -32,6 +32,7 @@
     pocket: mat(0x1a1816, 0, 0.5),
     servo: mat(0x1f2226, 0.15, 0.35),
     horn: mat(0xe8b400, 0.3, 0.38),
+    hornB: mat(0x2f8f8a, 0.3, 0.38),
     screw: mat(0x9a958c, 0.85, 0.3),
     pad: mat(0x3a3f45, 0, 0.85),
     table: mat(0xc9d3db, 0, 0.9),
@@ -68,6 +69,14 @@
   function addLabel(parent, text, position) {
     labelQueue.push({ text: text, position: position.clone() });
   }
+  // Two small line icons, one per arm, so the chips tell the arms apart without colour.
+  var CHIP_ICON = {
+    berty: '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4 20h7M7 20V11l8-5 4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="11" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/></svg>',
+    bizzy: '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13 20h7M17 20V11L9 6 5 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="11" r="1.6" fill="currentColor"/><circle cx="9" cy="6" r="1.6" fill="currentColor"/></svg>'
+  };
+  function addChip(who, text, title, position) {
+    labelQueue.push({ chip: who, text: text, title: title, position: position.clone() });
+  }
 
   function labelLayer(canvas) {
     var layer = canvas._labels;
@@ -92,14 +101,21 @@
     var host = layer.getBoundingClientRect();
     var placed = [];
     var i, item, p, x, y, span, box, k, dx, dy, ang, rad, ok, j, other;
-    for (i = 0; i < labelQueue.length; i++) {
-      item = labelQueue[i];
+    // The two arm chips are placed first, so a crowded view never drops them.
+    var ordered = labelQueue.filter(function (q) { return q.chip; }).concat(labelQueue.filter(function (q) { return !q.chip; }));
+    for (i = 0; i < ordered.length; i++) {
+      item = ordered[i];
       p = item.position.clone().project(camera);
       if (p.z < -1 || p.z > 1) continue;
       x = (p.x * 0.5 + 0.5) * w;
       y = (-p.y * 0.5 + 0.5) * h;
       span = document.createElement("span");
-      span.textContent = item.text;
+      if (item.chip) {
+        span.className = "chip3d";
+        span.innerHTML = CHIP_ICON[item.chip] + "<b></b>";
+        span.lastChild.textContent = item.text;
+        if (item.title) span.title = item.title;
+      } else span.textContent = item.text;
       span.style.left = x + "px";
       span.style.top = y + "px";
       layer.appendChild(span);
@@ -224,7 +240,7 @@
       var pmrem = new THREE.PMREMGenerator(renderer);
       var envTex = pmrem.fromScene(room, 0.04).texture;
       scene.environmentIntensity = 0.5;
-      var reflective = [MATS.link, MATS.servo, MATS.horn, MATS.screw];
+      var reflective = [MATS.link, MATS.servo, MATS.horn, MATS.hornB, MATS.screw];
       var ri;
       for (ri = 0; ri < reflective.length; ri++) {
         reflective[ri].envMap = envTex;
@@ -405,13 +421,13 @@
         screws[3].position.set(-4.2, -len * 0.22, -5.7);
       }
     }
-    function makeServo() {
+    function makeServo(hornMat) {
       var g = new THREE.Group();
       g.add(mesh(GEO.servo, MATS.servo, false));
       var horn = mesh(GEO.horn, MATS.servo, false);
       horn.position.y = 4.6;
       g.add(horn);
-      var cap = mesh(GEO.capHorn, MATS.horn, false);
+      var cap = mesh(GEO.capHorn, hornMat || MATS.horn, false);
       cap.position.y = 5.8;
       g.add(cap);
       var cable = mesh(GEO.cable, MATS.servo, true);
@@ -431,7 +447,7 @@
       }
       return g;
     }
-    function buildRig(ghost) {
+    function buildRig(ghost, hornMat, offsetX) {
       var rootG = new THREE.Group();
       var links = [makeLink(ghost), makeLink(ghost), makeLink(ghost), makeLink(ghost)];
       var i;
@@ -452,7 +468,7 @@
         }
         rootG.add(base);
         for (i = 0; i < 6; i++) {
-          var servo = makeServo();
+          var servo = makeServo(hornMat);
           servos.push(servo);
           rootG.add(servo);
         }
@@ -468,10 +484,12 @@
         rootG.add(ghostBase);
       }
       scene.add(rootG);
+      rootG.position.x = offsetX || 0;
       rootG.visible = !ghost;
       return { root: rootG, links: links, servos: servos, jaws: jaws };
     }
     var solidRig = buildRig(false);
+    var bizzyRig = buildRig(false, MATS.hornB, root.PINCHY.LAYOUT.bizzyX || 190);
     var ghostRig = buildRig(true);
     ghostRig.root.visible = false;
     ghostRig.root.position.set(0, 0, 0);
@@ -554,6 +572,9 @@
         });
       } else ghostRig.root.visible = false;
       poseRig(solidRig, state);
+      var parked = root.PINCHY.PARKED;
+      var bz = state.bizzy || { base: parked.base, shoulder: parked.shoulder, elbow: parked.elbow, wrist: parked.wrist, open: true, gap: root.PINCHY.LAYOUT.gapOpen };
+      poseRig(bizzyRig, bz);
       var darkTheme = document.documentElement.getAttribute("data-theme") === "dark";
       MATS.link.color.setHex(darkTheme ? 0xe9e4da : 0x2b2824).convertSRGBToLinear();
       MATS.link.metalness = 0;
@@ -579,6 +600,13 @@
         var targetWord = root.PINCHY && root.PINCHY.uiText ? root.PINCHY.uiText(code, "Target") : "Target";
         addLabel(ghostRig.root, "\u25CC " + targetWord, new THREE.Vector3(0, 28, 36));
       }
+      var lang = document.documentElement.lang || "en";
+      var T = root.PINCHY.uiText;
+      var dof = T(lang, "dof");
+      var dofTitle = T(lang, "dofTitle");
+      var bx = root.PINCHY.LAYOUT.bizzyX || 190;
+      addChip("berty", T(lang, "nameBerty") + " \u00b7 " + dof, dofTitle, new THREE.Vector3(0, 150, 0));
+      addChip("bizzy", T(lang, "nameBizzy") + " \u00b7 " + dof, dofTitle, new THREE.Vector3(bx, 150, 0));
       placeLabels(canvas, camera);
       renderer.render(scene, camera);
     }
@@ -628,6 +656,26 @@
       group.add(wall);
       parent.add(group);
       addLabel(parent, bin.id ? "Bin " + bin.id + (bin.mark ? " " + bin.mark : "") : "Bin", new THREE.Vector3(hx - 30, bin.h + 24, hz + 18), 36, 8);
+    }
+    if (level.binZ) {
+      var bz = level.binZ;
+      var zyaw = bz.base * Math.PI / 180;
+      var zx = (G.BIZZY_X || 190) + Math.sin(zyaw) * bz.r;
+      var zz = Math.cos(zyaw) * bz.r;
+      var zgroup = new THREE.Group();
+      zgroup.position.set(zx, 0, zz);
+      zgroup.rotation.y = zyaw;
+      var zwall = new THREE.Mesh(new THREE.BoxGeometry(4, bz.h, bz.half), MATS.joint);
+      zwall.position.set(-bz.half, bz.h / 2, 0);
+      zgroup.add(zwall);
+      zwall = new THREE.Mesh(new THREE.BoxGeometry(4, bz.h, bz.half), MATS.joint);
+      zwall.position.set(bz.half, bz.h / 2, 0);
+      zgroup.add(zwall);
+      zwall = new THREE.Mesh(new THREE.BoxGeometry(bz.half * 2, bz.h, 4), MATS.joint);
+      zwall.position.set(0, bz.h / 2, bz.half * 0.35);
+      zgroup.add(zwall);
+      parent.add(zgroup);
+      addLabel(parent, "Bin", new THREE.Vector3(zx - 30, bz.h + 24, zz + 18), 36, 8);
     }
     function addPart(part) {
       if (!part) return;
