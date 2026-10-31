@@ -820,6 +820,9 @@ export function createSession(api) {
       next.width = side
       next.height = side
       if (c.dataset && c.dataset.block) next.dataset.block = c.dataset.block
+      if (c.dataset && c.dataset.packMat) next.dataset.packMat = c.dataset.packMat
+      if (c.dataset && c.dataset.kind) next.dataset.kind = c.dataset.kind
+      if (c.dataset && c.dataset.tex) next.dataset.tex = c.dataset.tex
       const g = next.getContext('2d', { willReadFrequently: true })
       g.imageSmoothingEnabled = false
       g.drawImage(c, 0, 0, side, side)
