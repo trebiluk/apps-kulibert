@@ -610,8 +610,23 @@
     ["2/4", "3/4", "4/4", "6/8"].forEach((meter) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "btn" + (state.song.meter === meter ? " on" : "");
-      b.textContent = meter;
+      b.className = "btn meter-btn" + (state.song.meter === meter ? " on" : "");
+      b.setAttribute("aria-pressed", state.song.meter === meter ? "true" : "false");
+      // MU 2.36.65: a row of beat dots (a shape, not a colour) and the numbers. 6/8 shows two groups of three.
+      const dots = document.createElement("span");
+      dots.className = "mt-dots";
+      dots.setAttribute("aria-hidden", "true");
+      const beats = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter];
+      for (let d = 0; d < beats; d++) {
+        const dot = document.createElement("i");
+        if (meter === "6/8" && d === 3) dot.className = "gap";
+        dots.appendChild(dot);
+      }
+      const label = document.createElement("span");
+      label.className = "mt-text";
+      label.textContent = meter;
+      b.appendChild(dots);
+      b.appendChild(label);
       b.addEventListener("click", () => {
         if (isRichSong()) { sayScore(mu("richMeterStays")); return; }
         Song.setMeter(state.song, meter);
@@ -807,7 +822,7 @@
     const box = $("score-note");
     if (!box) return;
     box.textContent = text || "";
-    box.hidden = !text || !isRichSong();
+    box.hidden = !text;
   }
   function lenWord(d, rest) {
     return mu((rest ? "richRest_" : "richLen_") + d) || "";
@@ -956,7 +971,9 @@
     const svg = document.querySelector("#staff svg");
     if (!svg) return;
     svg.querySelectorAll(".sel-box").forEach((n) => n.remove());
-    if (!isRichSong()) return;
+    svg.querySelectorAll(".picked").forEach((n) => n.classList.remove("picked"));
+    // MU 2.36.65 round 1: every song shows the picked note (the one a letter or a length changes), not only the real-length songs.
+    // The box is a shape and the note itself gets a thicker stroke (see styles.css), so it never depends on colour.
     const ev = pickedEv();
     const node = ev && svg.querySelectorAll(".abcjs-note, .abcjs-rest")[ev.glyph];
     if (!node) return;
@@ -972,6 +989,7 @@
     rect.setAttribute("rx", "3");
     rect.setAttribute("aria-hidden", "true");
     node.appendChild(rect);
+    node.classList.add("picked");
     followNote(node); // keep the picked note inside the staff panel after the staff is drawn again
   }
   // Everything the staff needs after it is drawn: the length row, the picked-note box, and a place the keyboard can land.
@@ -3196,6 +3214,7 @@
     return state.tab || "songs";
   }
   function paintTabs(tab) {
+    if (tab !== "score" && document.body.classList.contains("score-tools-open")) setScoreTools(false); // MU 2.36.65: the Score tools drawer shuts when you leave Score
     if (TABS.indexOf(tab) < 0) tab = "songs";
     state.tab = tab;
     TABS.forEach((name) => document.body.classList.toggle("tab-" + name, name === tab));
@@ -4620,7 +4639,7 @@
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
       // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len")) return;
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
       e.preventDefault();
       $("play-btn").click();
     }
@@ -4648,21 +4667,91 @@
   paintMeters();
   paintInks();
   paintKeypad();
-  $("add-bar").addEventListener("click", () => {
+  // MU 2.36.65: the Score tools bar. "Add a bar" and the "Score tools" button sit in a row above the staff, so they are in plain reach by tap
+  // and by Tab. The button opens the drawer (time signatures first) under the length row; the staff and the length row stay in view.
+  function setScoreTools(open, how) {
+    const drawer = $("song-more");
+    const toggle = $("tools-toggle");
+    const want = !!open && document.body.classList.contains("tab-score");
+    document.body.classList.toggle("score-tools-open", want);
+    if (drawer) drawer.open = want;
+    if (toggle) toggle.setAttribute("aria-expanded", want ? "true" : "false");
+    if (!how) return;
+    if (want) {
+      // by keyboard the drawer is far from the button in Tab order, so focus goes in; by finger it stays where it is
+      if (how === "key") {
+        const first = document.querySelector("#meters .btn");
+        if (first) first.focus();
+      }
+      if (drawer && drawer.scrollIntoView) drawer.scrollIntoView({ block: "nearest" });
+    } else if (how === "key" && toggle) {
+      toggle.focus();
+    }
+  }
+  function wireScoreTools() {
+    const toggle = $("tools-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", (e) => {
+        const now = document.body.classList.contains("score-tools-open");
+        setScoreTools(!now, e.detail === 0 ? "key" : "tap");
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || e.defaultPrevented || !document.body.classList.contains("score-tools-open")) return;
+      if (document.body.classList.contains("menu-open") || ($("looks-drawer") && !$("looks-drawer").hidden)) return;
+      e.preventDefault();
+      const inside = document.activeElement && document.activeElement.closest && document.activeElement.closest("#song-more");
+      setScoreTools(false, inside || document.activeElement === document.body ? "key" : "tap");
+    });
+  }
+  // MU 2.36.65 round 1: the first note of the newest bar, and a scroll that brings it into the staff panel. "nearest" moves nothing when it is
+  // already in view; the motion is instant when the reader asked for reduced motion.
+  function newBarMark() {
+    const evs = Song.events(state.song);
+    const last = state.song.measures.length - 1;
+    const first = evs.find((ev) => ev.measure === last);
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    return (first && marks[first.glyph != null ? first.glyph : evs.indexOf(first)]) || marks[marks.length - 1] || null;
+  }
+  function revealNewBar() {
+    const mark = newBarMark();
+    if (!mark || !mark.scrollIntoView) return;
+    const calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    mark.scrollIntoView({ block: "nearest", inline: "nearest", behavior: calm ? "auto" : "smooth" });
+  }
+  function addBarNow() {
     const before = state.song.measures.length;
     Song.addMeasure(state.song);
     keep();
     renderStaff();
     paintCount();
+    const grew = state.song.measures.length !== before;
     if (isRichSong()) {
       songRev += 1;
       paintRichEdit();
-      sayScore(state.song.measures.length === before ? "That is 32 bars. That is a long song." : mu("richBarAdded"));
     }
-    $("lesson").textContent = state.song.measures.length === before
-      ? "That is 32 bars. That is a long song."
-      : "A new bar is on the score. It is saved.";
-  });
+    // MU 2.36.65: the line under the staff answers on every song, and the picked note moves to the new bar so the keys go there.
+    if (grew && Song.events) {
+      const evs = Song.events(state.song);
+      const first = evs.findIndex((ev) => ev.measure === state.song.measures.length - 1);
+      if (first >= 0) {
+        if (isRichSong()) moveCursor(first);
+        else { state.cursor = first; if (!state.playing) state.step = first; paintSelection(); paintCount(); }
+      }
+    }
+    sayScore(grew ? (mu("richBarAdded") || "A new bar is on the score. Every bar is full.") : "That is 32 bars. That is a long song.");
+    // The calm line changes the height of the staff panel, so the scroll comes after it, and once more when the page has settled.
+    if (grew) {
+      revealNewBar();
+      window.requestAnimationFrame(revealNewBar);
+    }
+    $("lesson").textContent = grew
+      ? "A new bar is on the score. It is saved."
+      : "That is 32 bars. That is a long song.";
+  }
+  $("add-bar").addEventListener("click", addBarNow);
+  if ($("bar-add")) $("bar-add").addEventListener("click", addBarNow);
+  wireScoreTools();
   $("expert-btn").addEventListener("click", () => {
     state.expert = !state.expert;
     keep();

@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
-  <link rel="stylesheet" href="./styles.css?v=mu23664"/>
+  <link rel="stylesheet" href="./styles.css?v=mu23665"/>
 </head>
 <body class="mu237 tab-tap">
   <p id="mu-chip" class="mu-chip"></p>
@@ -363,7 +363,14 @@
 
     </div>
     <div class="desk">
+    <div id="tool-row" class="tool-row">
     <p id="tool-line" class="tool-line" data-mu="toolTap">Tap: hit pads and see the dots.</p>
+    <!-- MU 2.36.65: Score tools bar. Add a bar and the Score tools drawer in plain reach (shown on the Score tab only). -->
+    <div id="score-bar" class="score-bar" role="group" data-mu-label="scoreTools" aria-label="Score tools">
+      <button type="button" id="bar-add" class="btn tool-btn"><span class="tb-ico" aria-hidden="true">+</span><span class="tb-text" data-mu="addBar">Add a bar</span></button>
+      <button type="button" id="tools-toggle" class="btn tool-btn" aria-expanded="false" aria-controls="song-more"><span class="tb-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" focusable="false"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="7" r="2.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></span><span class="tb-text" data-mu="scoreTools">Score tools</span><span class="tb-caret" aria-hidden="true"></span></button>
+    </div>
+    </div>
     <div id="songbar" class="songbar" hidden>
       <span id="songbar-meta"></span>
     </div>
@@ -709,7 +716,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23664"></script>
+  <script src="./version.js?v=mu23665"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -718,8 +725,8 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23664"></script>
-  <script src="./songs.js?v=mu23664"></script>
-  <script src="./app.js?v=mu23664"></script>
+  <script src="./strings.js?v=mu23665"></script>
+  <script src="./songs.js?v=mu23665"></script>
+  <script src="./app.js?v=mu23665"></script>
 </body>
 </html>

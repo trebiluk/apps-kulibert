@@ -6403,16 +6403,35 @@ body.mu237 #len .btn[aria-pressed="true"] {
   overflow-wrap: anywhere;
 }
 body.mu237.tab-score #notes-pane > #score-note:not([hidden]) { display: block !important; }
+/* The picked note: a solid box (a shape) AND a bolder note (a thicker stroke), so it never relies on colour. Both use the staff ink, which is the dark
+   #0E1A22 in the light and the dark theme, because the staff paper is light in both (16.4:1 on #F4F7F8, 13.8:1 on the dark theme's #D9E2E7).
+   It used to be var(--text), which is light in the dark theme: 1.12:1 on that paper. No hue, no glow. */
 #staff .sel-box {
-  fill: none !important;
-  stroke: var(--text);
+  fill: rgba(14, 26, 34, 0.08) !important;
+  stroke: var(--ink);
   stroke-width: 3px;
-  stroke-dasharray: 7 4;
+  stroke-dasharray: none;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
+/* scrollIntoView leaves a little air round the note, so its box is never cut by the edge of the panel */
+#staff .abcjs-note, #staff .abcjs-rest { scroll-margin: 12px; }
+#staff .abcjs-note.picked:not(.now) path,
+#staff .abcjs-rest.picked:not(.now) path {
+  stroke: var(--ink);
+  stroke-width: 1.7px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+/* Beat-cell songs: the staff panel was clipped (overflow hidden, 40% high) inside a pane that scrolls, so bars past the first rows could not be reached,
+   by a swipe or by Add a bar. The panel now grows with the staff and the pane is the one thing that scrolls (one scroller, so a swipe never fights a
+   second one). The sideways strip keeps its own sideways scroll. */
+@media not all and (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score.is-both:not(.rich-edit) .staff-wrap { overflow: visible !important; max-height: none !important; }
+}
 @media (forced-colors: active) {
-  #staff .sel-box { stroke: Highlight; }
+  #staff .sel-box { stroke: Highlight; fill: none !important; }
+  #staff .abcjs-note.picked:not(.now) path, #staff .abcjs-rest.picked:not(.now) path { stroke: CanvasText; }
 }
 body.mu237 .staff-wrap:focus-visible { outline: 3px solid var(--active); outline-offset: -3px; }
 @media (orientation: landscape) and (max-height: 500px) {
@@ -6477,7 +6496,7 @@ body.mu237.tab-score.is-both.rich-edit #len { margin-block: 0.1rem !important; }
 }
 /* the check mark that every pressed button shows sits in the corner, so the pressed length is not taller than the others */
 body.mu237 #len .btn::after { position: absolute; top: 3px; inset-inline-start: 5px; font-size: 0.75rem; line-height: 1.25; }
-/* abcjs paints a tapped note red. The picked note already has its dashed box, so the note itself keeps the normal ink (one cue, and no red). */
+/* abcjs paints a tapped note red. The picked note already has its box and bolder stroke, so the note itself keeps the normal ink (no red). */
 #staff .abcjs-note_selected path, #staff .abcjs-rest_selected path { fill: currentColor !important; }
 /* the pen and length rows clip anything drawn outside a button, so their focus ring is drawn inside it, in the text colour (light and dark themes) */
 body.mu237 #len .btn:focus-visible,
@@ -6485,4 +6504,183 @@ body.mu237 #pen .btn:focus-visible {
   outline: 3px solid var(--text) !important;
   outline-offset: -6px !important;
   z-index: 2;
+}
+
+/* MU 2.36.65: Score tools bar. "Add a bar" and "Score tools" sit in one row above the staff on the Score tab, 44px tall, icon and words.
+   The row shares the line that used to hold only the hint, so the staff and the length row keep their room. On every other tab the wrapper is invisible. */
+.tool-row { display: contents; }
+#score-bar { display: none !important; }
+body.mu237.tab-score .tool-row {
+  display: flex !important;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 10px;
+  min-width: 0;
+}
+body.mu237.tab-score .tool-row .tool-line { flex: 1 1 auto; min-width: 0; margin: 0; padding: 0 !important; }
+body.mu237.tab-score #score-bar {
+  display: flex !important;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+  margin-inline-start: auto;
+}
+body.mu237 .tool-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 14px !important;
+  font-size: 1rem !important;
+  line-height: 1.1;
+  font-weight: 800;
+  white-space: nowrap !important;
+}
+body.mu237 .tool-btn .tb-ico { display: inline-flex; align-items: center; justify-content: center; width: 22px; font-size: 1.5rem; font-weight: 900; line-height: 1; }
+body.mu237 .tool-btn .tb-ico svg { display: block; }
+body.mu237 .tool-btn .tb-caret {
+  width: 0; height: 0;
+  border-inline: 5px solid transparent;
+  border-top: 6px solid currentColor;
+}
+body.mu237 #tools-toggle[aria-expanded="true"] { box-shadow: inset 0 -5px 0 var(--accent) !important; }
+body.mu237 #tools-toggle[aria-expanded="true"] .tb-caret { transform: rotate(180deg); }
+/* the ring is drawn inside the button, in the text colour, so no row can clip it (light and dark) */
+body.mu237 .tool-btn:focus-visible,
+body.mu237 #meters .btn:focus-visible,
+body.mu237.tab-score #song-more summary:focus-visible {
+  outline: 3px solid var(--text) !important;
+  outline-offset: -6px !important;
+  z-index: 2;
+}
+
+/* The drawer. It opens where the drum strip is, so the staff does not move. Time signatures first, then the other tools, which scroll. */
+body.mu237.tab-score #song-more > summary { display: none !important; }
+body.mu237.tab-score #both-btn,
+body.mu237.tab-score #add-bar,
+body.mu237.tab-score #expert-btn { display: none !important; }
+body.mu237.tab-score.score-tools-open #notes-pane > #song-more {
+  display: block !important;
+  flex: 0 0 auto !important;
+  order: 9;
+  margin: 0.25rem 0 0;
+  padding: 6px 8px;
+  max-height: 160px;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+}
+body.mu237.tab-score.score-tools-open #drums-pane { display: none !important; }
+body.mu237.tab-score.score-tools-open #song-more > .score-tools { display: flex !important; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
+body.mu237.tab-score #song-more > details { margin: 0; border-top: 1px solid var(--border); }
+body.mu237.tab-score #song-more > details > summary {
+  display: flex !important;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+body.mu237 #meters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+body.mu237 #meters .meter-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 84px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 12px !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  white-space: nowrap !important;
+}
+body.mu237 #meters .meter-btn::after { content: none !important; }
+body.mu237 #meters .meter-btn .mt-dots { display: inline-flex; align-items: center; gap: 3px; }
+body.mu237 #meters .meter-btn .mt-dots i { display: block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+body.mu237 #meters .meter-btn .mt-dots i.gap { margin-inline-start: 5px; }
+body.mu237 #meters .meter-btn[aria-pressed="true"] { font-weight: 900; box-shadow: inset 0 -5px 0 var(--accent) !important; }
+body.mu237 #meters .meter-btn[aria-pressed="true"] .mt-text::after { content: " \2713"; }
+@media (forced-colors: active) {
+  body.mu237 #meters .meter-btn[aria-pressed="true"], body.mu237 #tools-toggle[aria-expanded="true"] { outline: 2px solid Highlight; }
+}
+/* upright phone: the two buttons share the row, and the hint (it only repeats the tab name) stays for screen readers */
+@media (max-width: 560px) {
+  body.mu237.tab-score .tool-row .tool-line {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    margin: -1px !important; padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+  body.mu237.tab-score #score-bar { flex: 1 1 100%; margin-inline-start: 0; }
+  body.mu237.tab-score #score-bar .tool-btn { flex: 1 1 0; min-width: 0 !important; padding: 0 8px !important; }
+  body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 112px; }
+}
+/* upright phone: dots over the numbers, so all four time signatures share one row */
+@media (max-width: 560px) {
+  body.mu237 #meters { flex-wrap: nowrap; gap: 6px; }
+  body.mu237 #meters .meter-btn {
+    flex: 1 1 0 !important;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0 !important;
+    padding: 0 4px !important;
+    line-height: 1.1;
+  }
+}
+/* sideways phone: the staff keeps at least 72px and the length row stays, so the drawer is a short scrolling strip where the drums were */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score .tool-row { padding: 2px 10px; }
+  body.mu237.tab-score.score-tools-open #notes-pane { flex: 1 1 auto !important; min-height: 0 !important; }
+  body.mu237.tab-score.score-tools-open #notes-pane .staff-wrap { flex: 1 1 0 !important; min-height: 72px !important; }
+  body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 84px; margin-top: 2px; }
+}
+body.mu237.tab-score #song-more > .score-tools > #meters { flex: 1 1 100%; }
+/* sideways phone: the version chip is fixed at the right edge of this row, so the row leaves that corner free and the hint (the tab name again) steps aside */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score .tool-row { padding-inline-end: 98px; }
+}
+/* Sideways phone: abcjs sets overflow:hidden on the staff itself, so the one-line staff could not be swiped (only the first ~3 bars showed, and a new bar was out of sight).
+   The staff takes its real width and its panel scrolls instead; the picked note is scrolled into view by followNote. */
+body.mu237.tab-score #staff.staff-strip {
+  overflow: visible !important;
+  width: max-content !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 56px; padding-block: 3px; }
+}
+/* upright phone: a long word (Spanish "Herramientas de partitura") wraps to a second line inside its 44px button instead of pushing the row wider than the screen */
+@media (max-width: 560px) {
+  body.mu237.tab-score #score-bar { min-width: 0; max-width: 100%; }
+  body.mu237.tab-score #score-bar .tool-btn {
+    min-width: 0 !important;
+    gap: 6px;
+    padding: 0 6px !important;
+    font-size: 0.94rem !important;
+    line-height: 1.05;
+    text-align: center;
+    overflow: hidden;
+    white-space: normal !important;
+  }
+  body.mu237.tab-score #score-bar .tool-btn .tb-text { min-width: 0; overflow-wrap: anywhere; }
+  body.mu237.tab-score #score-bar .tool-btn .tb-ico { width: 20px; flex: 0 0 20px; }
+}
+/* right-to-left: the desk keeps its own left-to-right flow and the chip moves to the left corner, so the clear space moves with it */
+@media (orientation: landscape) and (max-height: 500px) {
+  html[dir="rtl"] body.mu237.tab-score .tool-row { padding-left: 98px; padding-right: 10px; }
 }
