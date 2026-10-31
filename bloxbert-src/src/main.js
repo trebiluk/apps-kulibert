@@ -144,6 +144,15 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.553 what's new. en and simple only for now; other languages follow and still show the older line until then.
+const WN553 = {
+  en: { whatsNewBody: '2.5.553 — Rocks, ores, oak, pine and beds have new hand-drawn looks. Stone has no more grid lines.' },
+  simple: { whatsNewBody: '2.5.553 — New looks for rocks, ores, trees and beds. Stone has no grid.' },
+}
+for (const [lang, row] of Object.entries(WN553)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
