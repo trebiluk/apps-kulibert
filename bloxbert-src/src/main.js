@@ -1634,7 +1634,7 @@ function shape(name, parts, mat) {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const woodD = dye('shape-wood', 0.72, 0.48, 0.24)
+const woodD = dye('shape-wood', 0.45, 0.355, 0.25) // 2.5.553: was 0.72, 0.48, 0.24, which lit to a bright orange; now lights to about the planks tone (#A57C4E)
 const glassD = dye('shape-glass', 0.55, 0.86, 0.95, 0.45)
 const metalD = dye('shape-metal', 0.55, 0.6, 0.66)
 const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
