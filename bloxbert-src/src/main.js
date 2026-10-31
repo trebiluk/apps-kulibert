@@ -7830,6 +7830,7 @@ function bindWandPill() {
 bindWandPill()
 let seated = null
 let sleepBusy = false
+let sleepHold = null // 2.5.561: where the player lies while asleep. Nothing moves them until they wake.
 let useTarget = null
 liveNotesReady = true
 let useScanAt = 0
@@ -7964,6 +7965,7 @@ function standUp() {
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (body) body.gravityMultiplier = flying ? 0 : GRAV_MULT
   noa.entities.setPosition(noa.playerEntity, [spot.x + 0.5 + Math.sin(h) * 0.85, spot.y + 0.05, spot.z + 0.5 + Math.cos(h) * 0.85])
+  unstickSafe() // 2.5.561: blocks may have come back where standing up lands (Undo, Redo, a tree or a door while sitting)
   return true
 }
 function sleepNow() {
@@ -7972,6 +7974,8 @@ function sleepNow() {
   if (phase !== 'night') { toast(t('notTired')); return 'day' }
   const fade = $('sleep-fade')
   sleepBusy = true
+  const lying = noa.entities.getPosition(noa.playerEntity)
+  sleepHold = lying ? [lying[0], lying[1], lying[2]] : null
   paintUsePill(null)
   const wake = () => {
     if (basics && basics.skipMorning) basics.skipMorning()
@@ -7979,6 +7983,10 @@ function sleepNow() {
     try { applySky() } catch (e) {}
     paintDayClock()
     sleepBusy = false
+    sleepHold = null
+    const body = noa.ents.getPhysicsBody(noa.playerEntity)
+    if (body && !seated && !tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: a block may have landed on the bed while they slept
   }
   if (!fade) { wake(); return 'night' }
   fade.hidden = false
@@ -9048,6 +9056,7 @@ function setMode(table) {
     noa.camera.zoomDistance = camBehind ? 4 : 0
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: blocks may have come back at the table's spot while it was open
   }
 }
 function armLive(m) {
@@ -9760,6 +9769,7 @@ function wallId(id) {
 // 2.5.561: the player's body against the voxel store. undo(), redo(), a growing tree and a closing door can all put a solid block
 // where the player already stands. noa never pushes a body out of a block, so the player is stuck. These move them to clear space.
 const BODY_EPS = 0.02
+let lastUnstickAt = -1e9 // when unstickPlayer last moved the player
 function bodyBox() {
   const p = noa.entities.getPosition(noa.playerEntity)
   const pd = noa.ents.getPositionData(noa.playerEntity)
@@ -9861,6 +9871,7 @@ function unstickPlayer() {
   }
   if (!best) return false
   noa.entities.setPosition(noa.playerEntity, best)
+  lastUnstickAt = performance.now()
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (body) {
     body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0
@@ -10058,7 +10069,8 @@ function feelTick(dt) {
         if ((noa.camera.currentZoom || 0) > 0) noa.camera.currentZoom = 0
       } else {
         const eye = noa.camera.getPosition()
-        if (eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
+        // The camera's eye lags the body for a few frames after a move, so right after unstickPlayer it still looks blocked. Wait it out.
+        if (!seated && !sleepBusy && performance.now() - lastUnstickAt > 400 && eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
       }
     }
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
@@ -10188,6 +10200,11 @@ noa.on('tick', (dt) => {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
     noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
     noa.entities.setPosition(noa.playerEntity, [seated.x + 0.5, seated.y + 0.02, seated.z + 0.5])
+  } else if (sleepBusy && sleepHold) {
+    body.gravityMultiplier = 0
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+    noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
+    noa.entities.setPosition(noa.playerEntity, sleepHold)
   } else if (flying) {
     body.gravityMultiplier = 0
     if (body.resting) body.resting = [false, false, false]
