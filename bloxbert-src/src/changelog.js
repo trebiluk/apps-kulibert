@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.588', date: '2026-10-31', lines: {
+    en: ["2.5.588 — On a small phone the hotbar stays one row and never covers the quest card or the move stick."],
+    simple: ["2.5.588 — On a small phone the hotbar stays one row. It does not cover the quest or the stick."],
+    uk: ["2.5.588 — На маленькому телефоні панель лишається в один ряд і ніколи не закриває картку квесту чи джойстик."],
+    ru: ["2.5.588 — На маленьком телефоне панель остаётся в один ряд и никогда не закрывает карточку квеста или джойстик."],
+    es: ["2.5.588 — En un teléfono pequeño la barra se queda en una fila y nunca cubre la tarjeta de la misión ni el stick."],
+    ar: ["2.5.588 — على هاتف صغير يبقى الشريط في صف واحد ولا يغطي بطاقة المهمة أو عصا الحركة."],
+    'fa-AF': ["2.5.588 — در تلفن کوچک نوار در یک ردیف می‌ماند و کارت مأموریت یا دسته حرکت را نمی‌پوشاند."],
+    rw: ["2.5.588 — Ku telefoni ntoya umurongo usigara umwe kandi ntukingire ikarita y'umurimo cyangwa inkoni."],
+    ti: ["2.5.588 — ኣብ ንእሽቶ ተሌፎን መስመር ኣብ ሓደ ረድእ ይጸንሕ እሞ ካርድ ስራሕ ወይ መንቀሳቐሲ ኣይሽፍን።"],
+  } },
+
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
