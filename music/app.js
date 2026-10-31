@@ -69,7 +69,7 @@
     "Sakura": picture("bloom", "rose", "dusk", "glow", false, "rain", "ice"),
     "Arirang": picture("ribbon", "ice", "night", "line", false, "stars", "violet"),
     "Jasmine Flower": picture("bloom", "lime", "aurora", "glow", false, "clouds", "ice"),
-    "Chanda Mama": picture("stars", "ice", "night", "glow", false, "orbit", "violet"),
+    "Sa Re Ga Ma": picture("stars", "ice", "night", "glow", false, "orbit", "violet"),
     "Ode to Joy": picture("fireworks", "amber", "sunset", "glow", false, "rings", "rose"),
     "Korobeiniki": picture("orbit", "cyan", "night", "rgb", true, "tiles", "violet"),
     "Frere Jacques": picture("rings", "violet", "dusk", "glow", false, "stars", "amber"),
@@ -80,7 +80,6 @@
     "Simple Gifts": picture("bloom", "amber", "dusk", "line", false, "clouds", "rose"),
     "Aloha Oe": picture("ribbon", "cyan", "sea", "glow", false, "rain", "ice"),
     "Tumbalalaika": picture("stars", "violet", "night", "glow", false, "orbit", "ice"),
-    "Zum Gali Gali": picture("tiles", "amber", "sunset", "glow", false, "bars", "rose"),
     "Dona Nobis": picture("bloom", "ice", "dusk", "glow", false, "rings", "violet"),
     "Twinkle": picture("stars", "amber", "night", "glow", false, "orbit", "cyan"),
     "Little Lamb": picture("clouds", "ice", "dusk", "line", false, "bloom", "rose"),
@@ -98,6 +97,11 @@
     { id: "ocean", name: "Ocean", viz: picture("rain", "cyan", "sea", "glow", false, "ribbon", "ice") },
   ];
   const VIZ_MAP = "kulibert.music.vizmap";
+  // MU 2.36.63: songs with real notation (key, time, pickup, note lengths) come from songs.js.
+  const richOf = (name) => (window.MU_SONGS && window.MU_SONGS[name]) || null;
+  function richToSong(rich) {
+    return { bpm: rich.bpm, meter: rich.meter, key: rich.key, pickup: rich.pickup, measures: rich.measures };
+  }
   let songCatalog = [];
   let openTune = function () {};
   let libraryFilter = "all";
@@ -587,6 +591,16 @@
   };
   function songLen() {
     return Math.max(1, Song.events(state.song).length);
+  }
+  // MU 2.36.63: bar and beat of a note. The pickup bar is bar 0 ("Pickup"); full bars count from 1.
+  function barBeat(ev, step) {
+    if (!ev) return { bar: 1, beat: Math.max(0, step) + 1, pickup: false };
+    const pickup = ev.bar === 0;
+    return { bar: ev.bar != null ? ev.bar : ev.measure + 1, beat: ev.beat + 1, pickup: pickup };
+  }
+  function playPosText(bb) {
+    if (bb.pickup) return (mu("playPosPickup") || "Pickup · Beat {beat}").replace("{beat}", String(bb.beat));
+    return (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bb.bar)).replace("{beat}", String(bb.beat));
   }
   function paintMeters() {
     const box = $("meters");
@@ -1339,10 +1353,9 @@
   function sayNow(step) {
     const evs = Song.events(state.song);
     const ev = evs[Math.max(0, step)];
-    const bar = ev ? ev.measure + 1 : 1;
-    const beat = ev ? ev.beat + 1 : Math.max(0, step) + 1;
+    const bb = barBeat(ev, step);
     const heard = namesAt(Math.max(0, step)).join(mu("tapAnd") || " and ");
-    const core = mu("tapNow", { bar: bar, beat: beat, heard: heard });
+    const core = bb.pickup ? mu("tapNowPickup", { beat: bb.beat, heard: heard }) : mu("tapNow", { bar: bb.bar, beat: bb.beat, heard: heard });
     if ($("now-line") && core) $("now-line").textContent = core;
   }
   function hookTurnNow() {
@@ -1495,13 +1508,14 @@
     if (!counting) {
       const isRest = !(ev && ev.label);
       const note = isRest ? (mu("rest") || "Rest") : ev.label;
-      const bar = ev ? ev.measure + 1 : 1;
-      const beat = ev ? ev.beat + 1 : step + 1;
+      const bb = barBeat(ev, step);
       const heard = namesAt(drum).join(mu("tapAnd") || " and ");
-      const core = mu("tapNow", { bar: bar, beat: beat, heard: heard }) || ("Bar " + bar + ", beat " + beat + ". Now: " + heard + ".");
+      const core = bb.pickup
+        ? (mu("tapNowPickup", { beat: bb.beat, heard: heard }) || ("Pickup, beat " + bb.beat + ". Now: " + heard + "."))
+        : (mu("tapNow", { bar: bb.bar, beat: bb.beat, heard: heard }) || ("Bar " + bb.bar + ", beat " + bb.beat + ". Now: " + heard + "."));
       $("now-line").textContent = lead + off + core;
       const pos = $("play-pos");
-      if (pos) pos.textContent = (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bar)).replace("{beat}", String(beat));
+      if (pos) pos.textContent = playPosText(bb);
       if (!state.along) paintFeel(note, isRest ? "" : "on");
       const teach = $("teach");
       if (teach) {
@@ -1657,10 +1671,8 @@
     const n = evs.length || 1;
     const idx = state.step < 0 ? 0 : ((state.step % n) + n) % n;
     const ev = evs[idx];
-    const bar = ev ? ev.measure + 1 : Math.floor(Math.max(0, state.grid) / 8) + 1;
-    const beat = ev ? ev.beat + 1 : (Math.max(0, state.grid) % 8) + 1;
-    const tpl = mu("playPos") || "Bar {bar} · Beat {beat}";
-    pos.textContent = tpl.replace("{bar}", String(bar)).replace("{beat}", String(beat));
+    const bb = ev ? barBeat(ev, idx) : { bar: Math.floor(Math.max(0, state.grid) / 8) + 1, beat: (Math.max(0, state.grid) % 8) + 1, pickup: false };
+    pos.textContent = playPosText(bb);
   }
   function paintBeat(grid) {
     paintPlayPos();
@@ -1803,23 +1815,34 @@
     const spe = stepsPerEvent();
     const start = ctx.currentTime + 0.04;
     let grid = 0;
+    let tick = 0;
     let ev = 0;
+    let sounding = 0;
     let next = start;
     let eventCount = 0;
-    const songN = songLen();
+    // MU 2.36.63: every note has its own start. A song with real note lengths (events carry `at`, in eighths) places a note
+    // where it is written, so half notes, dotted notes, rests and a pickup bar last as long as they should.
+    // Beat-cell songs keep one event per beat, exactly as before (event i starts at step i * spe).
+    const evList = Song.events(state.song);
+    const songN = Math.max(1, evList.length);
+    const timed = evList.length > 0 && evList[0].at != null;
+    const startOf = (i) => (timed ? evList[i].at * 2 : i * spe);
+    const totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
     state.plan = [];
     const schedule = () => {
       if (gen !== playGen || !state.playing || !ctx) return;
       const horizon = ctx.currentTime + 0.12;
       while (next < horizon) {
-        const melody = grid % spe === 0;
-        scheduleHit(grid, ev, next, melody);
-        state.plan.push({ when: next, grid: grid, event: ev });
+        const melody = evList.length > 0 && startOf(ev) === tick % totalSteps;
+        if (melody) sounding = ev;
+        scheduleHit(grid, sounding, next, melody);
+        // plan.event is the note that is sounding at this step (it used to be the next note for 3 of every 4 steps)
+        state.plan.push({ when: next, grid: grid, event: sounding });
         if (state.plan.length > 48) state.plan.shift();
         if (melody) {
           eventCount += 1;
           if (state.once && eventCount >= songN) {
-            const endAt = next + stepSeconds(grid);
+            const endAt = next + (timed ? evList[sounding].dur * 2 : 1) * stepSeconds(grid);
             state.timer = window.setTimeout(() => {
               stop();
               if (state.showing) bow();
@@ -1830,6 +1853,7 @@
         }
         next += stepSeconds(grid);
         grid = (grid + 1) % GRID;
+        tick += 1;
       }
       state.timer = window.setTimeout(schedule, 25);
     };
@@ -3828,6 +3852,10 @@
     nodes: () => state.made,
     ctx: () => (ctx ? ctx.state : "none"),
     grid: () => state.grid,
+    step: () => state.step,
+    now: () => (ctx ? ctx.currentTime : -1),
+    song: () => state.song,
+    events: () => Song.events(state.song),
     classes: () => readClass(),
   };
   $("menu-btn").addEventListener("click", () => {
@@ -4419,7 +4447,7 @@
       setBdi(name, full);
       name.title = full; // a long name is cut with an ellipsis in the bar; the whole name shows on hover and to a screen reader
     }
-    if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
+    if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4") + (song.pickup ? " · " + (mu("pickupWord") || "Pickup") : "");
     document.documentElement.classList.add("tempo-known");
     if (cover) {
       const ink = { cyan: "#22d3ee", amber: "#fbbf24", violet: "#a78bfa", rose: "#fb7185", lime: "#a3e635", ice: "#bae6fd" };
@@ -4427,7 +4455,6 @@
       cover.style.background = "linear-gradient(145deg, " + (color || "#22d3ee") + ", #10203f)";
     }
   }
-  const BIRTHDAY = ["F", "F", "G", "F", "B", "c", "F", "F", "G", "F", "c", "B", "F", "F", "F", "D", "B", "A", "G", "c", "c", "B", "G", "A", "F", null, null];
   function placeSong(opts) {
     const wasPlaying = !!state.playing;
     silenceOwner();
@@ -4436,7 +4463,7 @@
     const per = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter] || 4;
     const notes = opts.notes || [];
     const measures = [];
-    for (let i = 0; notes.length ? i < notes.length && measures.length < 32 : measures.length < 1; i += per) {
+    for (let i = 0; !opts.rich && (notes.length ? i < notes.length && measures.length < 32 : measures.length < 1); i += per) {
       const beats = [];
       for (let b = 0; b < per; b++) beats.push(notes[i + b] == null ? null : notes[i + b]);
       measures.push({ id: "in-" + measures.length, label: String(measures.length + 1), beats: beats });
@@ -4444,7 +4471,7 @@
     }
     const TitlesNow = window.KulibertTitles;
     const alias = opts.alias || (TitlesNow && TitlesNow.partsOf(state.song.alias) ? state.song.alias : (TitlesNow ? TitlesNow.starterTitle() : ""));
-    state.song = Song.normalize({
+    state.song = Song.normalize(Object.assign({
       alias: alias,
       bpm: opts.bpm || 96,
       meter: meter,
@@ -4453,7 +4480,7 @@
       viz: opts.viz || null,
       why: {},
       from: opts.from || [],
-    });
+    }, opts.rich ? { bpm: opts.bpm || opts.rich.bpm, meter: opts.rich.meter, key: opts.rich.key, pickup: opts.rich.pickup, measures: opts.rich.measures } : {}));
     state.cursor = 0;
     state.step = 0;
     if (!opts.drums) {
@@ -4502,6 +4529,7 @@
   function openShelfSong(item, remix) {
     placeSong({
       notes: item.notes,
+      rich: item.rich || null,
       bpm: item.bpm,
       meter: item.meter || "4/4",
       key: item.key || "C",
@@ -4544,7 +4572,7 @@
     const saveBox = $("my-saves");
     if (openBox) {
       openBox.innerHTML = "";
-      const rows = [{ name: "Happy Birthday", from: "public domain", notes: BIRTHDAY, bpm: 90, meter: "3/4", key: "F", feel: "bright" }].concat(songCatalog.filter((item) => item.name !== "Happy Birthday"));
+      const rows = songCatalog.filter((item) => item.name === "Happy Birthday").concat(songCatalog.filter((item) => item.name !== "Happy Birthday"));
       rows.slice(0, 28).forEach((item) => {
         const row = document.createElement("div");
         row.className = "song-row";
@@ -4552,7 +4580,7 @@
         const strong = document.createElement("strong");
         setBdi(strong, item.name);
         const span = document.createElement("span");
-        span.textContent = (placeWord(item.from) || mu("classWord") || "class") + " · " + (item.meter || "4/4");
+        span.textContent = (placeWord(item.from) || mu("classWord") || "class") + " · " + (item.meter || "4/4") + " · " + (item.key || "C");
         text.append(strong, span);
         const open = document.createElement("button");
         open.type = "button";
@@ -5733,15 +5761,16 @@
         silenceOwner();
         state.playing = false;
         const measures = [];
+        const rich = richOf(name);
         const bars = Math.ceil(notes.length / 4);
-        for (let i = 0; i < bars; i++) {
+        for (let i = 0; !rich && i < bars; i++) {
           measures.push({
             id: "tune-" + i,
             label: String(i + 1),
             beats: [0, 1, 2, 3].map((b) => notes[i * 4 + b] || null),
           });
         }
-        state.song = Song.normalize({
+        state.song = Song.normalize(Object.assign({
           alias: state.song.alias,
           bpm: bpm || 96,
           meter: "4/4",
@@ -5749,7 +5778,7 @@
           viz: PICTURES[name] || null,
           why: {},
           from: [name],
-        });
+        }, rich ? Object.assign(richToSong(rich), { bpm: bpm || rich.bpm }) : {}));
         state.cursor = 0;
         state.step = 0;
         if (state.song.viz) applyViz(state.song.viz);
@@ -5848,15 +5877,16 @@
           ["Jasmine Flower", "China", ["E", "G", "A", "G", "E", "D", "C", null, "D", "E", "G", "A", "G", "E", "D", "C"], 84],
         ]],
         ["South Asia", [
-          ["Chanda Mama", "India", ["C", "E", "G", "A", "G", "E", "C", null, "D", "F", "E", "D", "C", null, null, null], 86],
+          ["Sa Re Ga Ma", "India", null, 86],
         ]],
         ["Europe", [
-          ["Ode to Joy", "Germany", ["E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "E", "D", "D", null, "E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "D", "C", "C", null], 104],
+          ["Ode to Joy", "Germany", null, 104],
           ["Korobeiniki", "Russia", ["E", "G", "A", "c", "A", "G", "F", "E", "D", "F", "G", "B", "G", "F", "E", "D", "C", "E", "F", "A", "G", "F", "E", "D", "C", null, null, null], 120],
           ["Frere Jacques", "France", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null], 96],
           ["Scarborough Fair", "England", ["A", "A", "E", "F", "E", "D", "C", null, "D", "E", "F", "E", "D", "A", "A", null], 76],
         ]],
         ["Americas", [
+          ["Happy Birthday", "United States", null, 90],
           ["The Saints", "United States", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null], 112],
           ["La Cucaracha", "Mexico", ["C", "C", "C", "F", "A", "A", "A", null, "F", "F", "F", "A", "c", "c", "c", null, "G", "G", "G", "B", "c", "A", "F", null], 116],
           ["Cielito Lindo", "Mexico", ["C", "E", "G", "G", "A", "G", "E", "C", "D", "E", "F", "E", "D", "C", null, null], 100],
@@ -5865,14 +5895,13 @@
         ["Islands and more", [
           ["Aloha Oe", "Hawaiʻi", ["C", "E", "G", "A", "G", "E", "C", null, "E", "G", "A", "G", "E", "D", "C", null], 84],
           ["Tumbalalaika", "Yiddish folk", ["E", "G", "A", "B", "c", "A", "G", "E", "D", "G", "A", "B", "A", "G", "E", null], 92],
-          ["Zum Gali Gali", "Israel", ["C", "C", "C", "G", "A", "G", "E", "C", "C", "C", "C", "G", "A", "G", "E", "C"], 108],
           ["Dona Nobis", "a round", ["C", "D", "E", "G", "A", "G", "E", "C", "E", "F", "G", "c", "B", "A", "G", "E", "G", "A", "c", "B", "A", "G", "E", "C"], 80],
         ]],
         ["Lullabies", [
-          ["Twinkle", "many places", ["C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null, "G", "G", "F", "F", "E", "E", "D", null, "C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null], 96],
-          ["Little Lamb", "United States", ["E", "D", "C", "D", "E", "E", "E", null, "D", "D", "D", null, "E", "G", "G", null, "E", "D", "C", "D", "E", "E", "E", "E", "D", "D", "E", "D", "C", null, null, null], 96],
+          ["Twinkle", "many places", null, 96],
+          ["Little Lamb", "United States", null, 96],
           ["Amazing Grace", "many places", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null], 72],
-          ["Jingle Bells", "United States", ["E", "E", "E", null, "E", "E", "E", null, "E", "G", "C", "D", "E", null, null, null, "F", "F", "F", "F", "F", "E", "E", "E", "E", "D", "D", "E", "D", "G", null, null], 120],
+          ["Jingle Bells", "United States", null, 120],
         ]],
       ];
       shelves.forEach(([place, songs]) => {
@@ -5883,9 +5912,10 @@
         classics.appendChild(h);
         const grid = document.createElement("div");
         grid.className = "shelf-songs";
-        songs.forEach(([name, from, notes, bpm]) => {
-          if (name === "Ode to Joy") odeNotes = notes;
-          catalog.push({ name: name, from: from, notes: notes, bpm: bpm, feel: bpm < 90 ? "calm" : bpm > 110 ? "drive" : "bright" });
+        songs.forEach(([name, from, notes0, bpm]) => {
+          const rich = richOf(name);
+          const notes = notes0 || [];
+          catalog.push({ name: name, from: from, notes: notes, rich: rich, key: rich ? rich.key : "C", meter: rich ? rich.meter : "4/4", pickup: rich ? rich.pickup : 0, bpm: bpm, feel: bpm < 90 ? "calm" : bpm > 110 ? "drive" : "bright" });
           const b = document.createElement("button");
           b.type = "button";
           b.className = "btn";
