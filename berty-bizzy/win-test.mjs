@@ -32,12 +32,12 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.5.0");
-assert.equal(G.LEVELS.length, 7);
+assert.equal(G.APP_VERSION, "1.6.0");
+assert.equal(G.LEVELS.length, 10);
 assert.equal(G.LEVELS[6].id, "T3");
 assert.ok(G.LEVELS[6].duo);
 for (let i = 0; i < 6; i++) assert.ok(!G.LEVELS[i].duo, "L" + (i + 1) + " stays Berty-only");
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug", "handoff"]);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug", "handoff", "handoff", "handoff", "handoff"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -252,7 +252,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.5\.0/);
+assert.match(page, /v1\.6\.0/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -344,6 +344,7 @@ assert.doesNotMatch(page, /access-v1|kulibert-prefs\.js/);
 assert.doesNotMatch(stored, /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /bb-tips-off/);
 assert.match(page, /bb-intro-seen/);
+assert.match(page, /bb-best-v1/);
 assert.match(page, /pinchy-theme/);
 assert.doesNotMatch(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8"), /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /prefers-reduced-motion/);
@@ -357,7 +358,7 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.5\.0<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.6\.0<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
@@ -377,10 +378,10 @@ console.log("crash", line);
 // 1.3.2: every language names every chrome string the ShipCheck listed, and none falls back to English.
 var CHROME = ["estop", "clear", "themeDark", "themeLight", "Base", "Shoulder", "Elbow", "Wrist", "Claw", "degrees", "clawOpen", "clawShut",
   "OPEN", "SHUT", "No stars yet.", "One star.", "Two stars.", "Three stars.", "Add a block, then press Run.", "Add blocks, then press Run.",
-  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v150", "w150a", "w150b", "w150c", "nameBerty", "nameBizzy", "dof", "dofTitle", "laneAria", "laneNow", "armHit", "bothHold", "T3", "T3-goal", "legendDuo", "hb8", "hf5", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
+  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v160", "w160a", "w160b", "w160c", "cardDone", "cardCycle", "cardBlocks", "cardParts", "cardBest", "cardNew", "cardTry", "cardNext", "cardClose", "cardAria", "syncLone", "syncStuck", "T4", "T5", "T6", "T4-goal", "T5-goal", "T6-goal", "hb9", "hf6", "v150", "w150a", "w150b", "w150c", "nameBerty", "nameBizzy", "dof", "dofTitle", "laneAria", "laneNow", "armHit", "bothHold", "T3", "T3-goal", "legendDuo", "hb8", "hf5", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
   "v131", "w131a", "v130", "w130b", "v122", "w122d", "v121", "w121c", "v120", "w120b", "v110", "w110b", "v100", "w100c"];
 var LANG_IDS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
-var SAME_OK = { "es Base": 1, "es nameBerty": 1, "es nameBizzy": 1, "rw nameBerty": 1, "rw nameBizzy": 1, "rw dof": 1, "ti dof": 1 };
+var SAME_OK = { "es T6": 0, "es Base": 1, "es nameBerty": 1, "es nameBizzy": 1, "rw nameBerty": 1, "rw nameBizzy": 1, "rw dof": 1, "ti dof": 1 };
 var NO_LATIN = { ar: 1, "fa-AF": 1, ti: 1, uk: 1, ru: 1 };
 for (var li = 0; li < LANG_IDS.length; li++) {
   var code = LANG_IDS[li];
@@ -440,5 +441,75 @@ assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
   assert.equal(G.LAYOUT.bizzyX, 190);
   // levels 1 to 6 carry no second arm in their state
   for (let i = 0; i < 6; i++) assert.equal(G.initialState(G.LEVELS[i]).bizzy, undefined);
+}
+
+// 1.6.0: Sync and Wait blocks, three more hand-off levels, cycle time.
+{
+  const rep = (a, n) => Array(n).fill(a);
+  const lv = id => G.LEVELS.find(l => l.id === id);
+  for (const id of ["sync-a", "sync-b", "sync-c", "wait-other", "wait-half"]) {
+    assert.ok(G.blockById(id), id + " is a block");
+    for (const code of LANG_IDS) assert.ok(G.labelFor(id, code), code + " names " + id);
+  }
+  for (const id of ["T4", "T5", "T6"]) {
+    assert.ok(lv(id).duo);
+    assert.ok(lv(id).blocks.includes("sync-a") && lv(id).blocks.includes("wait-other") && lv(id).blocks.includes("wait-half"), id + " offers the Sync and Wait blocks");
+  }
+  assert.ok(!lv("T3").blocks.includes("sync-a"), "T3 is unchanged");
+  assert.ok(!G.LEVELS.slice(0, 6).some(l => (l.blocks || []).some(b => /^(sync|wait)-/.test(b))), "levels 1 to 6 are unchanged");
+  // T4: the waiting arm waits at Sync A. 18 blocks, same 15 beats as padding with 24.
+  const B4 = [].concat(rep("shoulder-down", 2), rep("elbow-down", 2), ["claw-close"], rep("base-right", 3), ["sync-a", "claw-open"]);
+  const Z4 = [].concat(["sync-a", "claw-close"], rep("base-right", 5), ["claw-open"]);
+  const r4 = G.runAllDuo(lv("T4"), B4, Z4);
+  assert.equal(r4.win, true, "T4 with Sync A: " + r4.crash);
+  assert.equal(r4.beats, 15);
+  assert.equal(r4.cycle, 7.5);
+  assert.equal(r4.blocks, 18);
+  assert.equal(r4.parts, 1);
+  const pad = G.runAllDuo(lv("T4"), B4.filter(c => c !== "sync-a"), [].concat(rep("claw-open", 8), ["claw-close"], rep("base-right", 5), ["claw-open"]));
+  assert.equal(pad.win, true);
+  assert.ok(pad.blocks > lv("T4").par && r4.blocks <= lv("T4").par, "only the Sync solution is under the block par");
+  // the faster arm waits: Bizzy stays still at the Sync until Berty gets there
+  {
+    let st = G.initialState(lv("T4")); const runs = G.beginDuoRun(B4, Z4); const bizzyBase = []; let sawWait = false, sawRelease = false;
+    for (let i = 0; i < 40; i++) { const ev = G.duoAdvance(runs, st, lv("T4")); if (ev.done) break; if (ev.release) { sawRelease = true; assert.equal(ev.cmd, "sync-a"); assert.ok(ev.index >= 0 && ev.indexZ >= 0, "both lanes are highlighted at the release"); continue; } if (ev.waitZ) { sawWait = true; assert.equal(ev.cmdZ, ""); } st = ev.state; bizzyBase.push(G.armOf(st, "bizzy").base); if (ev.win) break; }
+    assert.ok(sawWait && sawRelease);
+    assert.equal(new Set(bizzyBase.slice(0, 8)).size, 1, "Bizzy does not move while it waits at Sync A");
+  }
+  // T5: the other way round
+  const B5 = [].concat(["sync-a", "claw-close"], rep("base-left", 5), ["claw-open"]);
+  const Z5 = [].concat(rep("shoulder-down", 2), rep("elbow-down", 2), ["claw-close"], rep("base-left", 3), ["sync-a", "claw-open"]);
+  assert.equal(G.runAllDuo(lv("T5"), B5, Z5).win, true);
+  // T6: two cubes with Repeat 2 and two Syncs
+  const B6 = [].concat(rep("shoulder-down", 2), rep("elbow-down", 2), ["repeat-2", "claw-close"], rep("base-right", 3), ["sync-a", "claw-open"], rep("base-left", 3), ["sync-b", "end-repeat"]);
+  const Z6 = [].concat(["repeat-2", "sync-a", "claw-close"], rep("base-right", 5), ["claw-open", "sync-b"], rep("base-left", 5), ["end-repeat"]);
+  const r6 = G.runAllDuo(lv("T6"), B6, Z6);
+  assert.equal(r6.win, true, "T6: " + r6.crash);
+  assert.equal(r6.parts, 2);
+  assert.equal(r6.cycle, 13.5);
+  assert.ok(r6.blocks <= lv("T6").par);
+  // a Sync with no match names the lane and the step before anything moves
+  const lone = G.runAllDuo(lv("T4"), ["claw-open", "claw-open", "sync-a"], ["claw-open"]);
+  assert.deepEqual([lone.win, lone.sync.who, lone.sync.cmd, lone.sync.index, lone.beats], [false, "berty", "sync-a", 2, 0]);
+  assert.equal(G.syncLoneLine(lone.sync, "en"), "Berty's Sync A (step 3) has no match in Bizzy's lane.");
+  const lone2 = G.runAllDuo(lv("T4"), ["claw-open"], ["claw-open", "sync-b"]);
+  assert.equal(G.syncLoneLine(lone2.sync, "en"), "Bizzy's Sync B (step 2) has no match in Berty's lane.");
+  for (const code of LANG_IDS) {
+    const line = G.syncLoneLine(lone.sync, code);
+    assert.ok(line.indexOf("{") < 0 && line.indexOf("3") >= 0, code + " sync line is filled in: " + line);
+  }
+  // crossed Syncs would wait for ever: the run stops and names the arm that waits
+  const crossed = G.runAllDuo(lv("T4"), ["sync-a", "sync-b"], ["sync-b", "sync-a"]);
+  assert.equal(crossed.win, false);
+  assert.deepEqual([crossed.stuck.who, crossed.stuck.cmd, crossed.stuck.index], ["berty", "sync-a", 0]);
+  assert.equal(G.syncStuckLine(crossed.stuck, "en"), "Berty waits at Sync A (step 1), but Bizzy never gets there.");
+  // Wait for other arm holds while the other arm moves a joint; Wait 0.5 s is one idle beat
+  {
+    let st = G.initialState(lv("T4")); const runs = G.beginDuoRun(rep("base-right", 3), ["wait-other", "wait-half", "claw-open"]);
+    const waits = []; for (let i = 0; i < 8; i++) { const ev = G.duoAdvance(runs, st, lv("T4")); if (ev.done) break; waits.push(ev.waitZ ? "w" : "."); st = ev.state; }
+    assert.equal(waits.slice(0, 3).join(""), "www", "Bizzy waits for each of Berty's three moves");
+    assert.equal(runs.beats, 6);
+  }
+  assert.equal(G.cycleSeconds({ beats: 15 }), 7.5);
 }
 console.log("berty-bizzy win-test ok");

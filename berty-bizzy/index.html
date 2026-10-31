@@ -511,6 +511,9 @@ try {
     .scene-col #view { height: 100%; min-height: 0; }
     .actions { gap: 4px; }
     .actions .action, .actions button { min-width: 0; padding-inline: 4px; }
+    /* Sync, Wait and Repeat sit in one scrolling row of full-size (44 px) buttons */
+    #program-pad { display: flex; gap: 4px; overflow-x: auto; padding: 2px 4px; }
+    #program-pad button.block { flex: 0 0 auto; min-height: 44px; height: 44px; min-width: 44px; padding: 0 10px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -595,11 +598,29 @@ try {
     .lane-tabs { margin: 0 0 3px; gap: 4px; }
     .lane-tab { min-height: 44px; padding: 2px 6px; font-size: 14px; }
   }
+
+  .chip.is-wait { border-style: dashed; border-width: 3px; }
+  #program .chip, #program2 .chip { flex: 0 0 auto; }
+  .bb-card { position: fixed; inset: 0; z-index: 65; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--pz-bg); overflow-y: auto; }
+  .bb-card[hidden] { display: none; }
+  .bb-card-box { width: min(440px, 100%); background: var(--pz-panel); border: 3px solid var(--pz-on-yellow); border-radius: 8px; padding: 0 0 14px; }
+  .bb-card-head { margin: 0; padding: 8px 14px; background: var(--pz-yellow); color: var(--pz-on-yellow); font: 700 20px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; border-radius: 4px 4px 0 0; }
+  .bb-card-new { display: inline-block; margin: 10px 14px 0; padding: 4px 12px; border: 3px solid var(--pz-on-yellow); border-radius: 999px; background: var(--pz-yellow); color: var(--pz-on-yellow); font: 700 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-new[hidden] { display: none; }
+  .bb-card-rows { margin: 8px 14px 0; display: grid; gap: 6px; }
+  .bb-card-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--pz-line); font: 600 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-row b { font: 700 24px "IBM Plex Mono", ui-monospace, monospace; direction: ltr; unicode-bidi: isolate; }
+  .bb-card-actions { margin: 14px 14px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .bb-card-actions button { flex: 1 1 120px; min-height: 48px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-actions button[hidden] { display: none; }
+  .bb-card-actions button.is-primary { background: var(--pz-yellow); color: var(--pz-on-yellow); border-color: var(--pz-on-yellow); }
+  .bb-card-actions button:focus-visible { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
+  @media (max-height: 520px) { .bb-card-rows { grid-template-columns: 1fr 1fr; column-gap: 14px; } .bb-card-row b { font-size: 20px; } .bb-card-head { font-size: 17px; padding: 5px 12px; } .bb-card-box { padding-bottom: 8px; } .bb-card-actions { margin-top: 8px; } }
 </style>
 </head>
 <body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.5.0</span></small></p>
+  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.6.0</span></small></p>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -611,6 +632,12 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v160">Version 1.6.0</p>
+  <ul>
+    <li data-k="w160a">Sync A, B and C make the faster arm wait for the other arm. There are also Wait for other arm and Wait 0.5 s.</li>
+    <li data-k="w160b">A result card shows cycle time, blocks used and parts moved, and your best on this device.</li>
+    <li data-k="w160c">Three new levels: Sync it, Other way and Two cubes.</li>
+  </ul>
   <p data-k="v150">Version 1.5.0</p>
   <ul>
     <li data-k="w150a">Bizzy, a second robot arm, joins Berty. Each arm has 5 joints.</li>
@@ -786,6 +813,23 @@ try {
     <button type="button" id="bb-tip-close" class="bb-tip-close"><span aria-hidden="true">&#x2715;</span></button>
   </div>
 </aside>
+<section id="bb-card" class="bb-card" role="dialog" aria-modal="false" aria-labelledby="bb-card-head" hidden>
+  <div class="bb-card-box">
+    <h2 id="bb-card-head" class="bb-card-head"></h2>
+    <p id="bb-card-new" class="bb-card-new" hidden></p>
+    <div class="bb-card-rows">
+      <div class="bb-card-row"><span id="bb-card-l-cycle"></span><b id="bb-card-cycle"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-blocks"></span><b id="bb-card-blocks"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-parts"></span><b id="bb-card-parts"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-best"></span><b id="bb-card-best"></b></div>
+    </div>
+    <div class="bb-card-actions">
+      <button type="button" id="bb-card-next" class="is-primary"></button>
+      <button type="button" id="bb-card-try"></button>
+      <button type="button" id="bb-card-close"></button>
+    </div>
+  </div>
+</section>
 <section id="bb-help" class="bb-help" role="dialog" aria-modal="true" aria-labelledby="bb-help-title" hidden>
   <div class="bb-help-card">
     <div class="bb-help-head">
@@ -801,10 +845,10 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.5.0" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.6.0" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="game.js?v=1.5.0"></script>
-<script src="view3d.js?v=1.5.0"></script>
+<script src="game.js?v=1.6.0"></script>
+<script src="view3d.js?v=1.6.0"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -850,10 +894,15 @@ var ICONS = {
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
   "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
   "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
+  "sync-a": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><path d="M7 12 H17 M14 9 l3 3 l-3 3 M10 9 l-3 3 l3 3" ' + ST + '/>'),
+  "sync-b": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><path d="M7 9 H17 M7 15 H17" ' + ST + '/>'),
+  "sync-c": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><circle cx="12" cy="12" r="3" ' + ST + '/>'),
+  "wait-other": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><path d="M12 7 V12 L15 14" ' + ST + '/>'),
+  "wait-half": svg('<path d="M7 4 H17 M7 20 H17 M8 4 C8 10 16 10 16 4 M8 20 C8 14 16 14 16 20" ' + ST + '/>'),
   "swap": svg('<path d="M7 8 h10" ' + ST + '/><path d="M14 5 l3 3 l-3 3" ' + ST + '/><path d="M17 16 H7" ' + ST + '/><path d="M10 13 l-3 3 l3 3" ' + ST + '/>'),
   "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
 };
-var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square", L6: "swap" };
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square", L6: "swap", T3: "sync-a", T4: "sync-a", T5: "sync-a", T6: "repeat-2" };
 var fixAt = 0;
 var swapHistory = [];
 
@@ -942,7 +991,7 @@ var laneList = function (lane) {
 };
 var laneWho = function (lane) { return lane === 1 ? "bizzy" : "berty"; };
 var laneName = function (lane) { return PINCHY.duoNameOf(laneWho(lane), lang); };
-var renderLaneInto = function (ol, list, now, stop, lane) {
+var renderLaneInto = function (ol, list, now, stop, lane, waiting) {
   ol.dataset.steps = JSON.stringify(PINCHY.stepList(list));
   ol.replaceChildren();
   if (!list.length) {
@@ -976,12 +1025,13 @@ var renderLaneInto = function (ol, list, now, stop, lane) {
     if (i === now) {
       li.classList.add("is-now");
       li.setAttribute("aria-current", "step");
+      if (waiting) li.classList.add("is-wait");
     }
     if (i === stop) li.classList.add("is-stop");
     if (i === now || i === stop) {
       var mark = document.createElement("span");
       mark.className = "mark";
-      mark.textContent = i === stop ? "✗" : "▶";
+      mark.textContent = i === stop ? "✗" : (waiting && i === now ? "⏸" : "▶");
       li.appendChild(mark);
     }
     var idx = document.createElement("span");
@@ -1006,9 +1056,9 @@ var renderLaneInto = function (ol, list, now, stop, lane) {
   var current = ol.querySelector(".is-now, .is-stop");
   if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
 };
-var renderProgram = function (now, stop, now2, stop2) {
-  renderLaneInto(document.getElementById("program"), session.programs[session.level], now, stop, 0);
-  if (isDuo()) renderLaneInto(document.getElementById("program2"), laneList(1), now2 == null ? -1 : now2, stop2 == null ? -1 : stop2, 1);
+var renderProgram = function (now, stop, now2, stop2, wait1, wait2) {
+  renderLaneInto(document.getElementById("program"), session.programs[session.level], now, stop, 0, !!wait1);
+  if (isDuo()) renderLaneInto(document.getElementById("program2"), laneList(1), now2 == null ? -1 : now2, stop2 == null ? -1 : stop2, 1, !!wait2);
   paintLaneCounts();
 };
 var paintLaneCounts = function () {
@@ -1206,7 +1256,7 @@ var renderPalette = function () {
   }
   for (i = 0; i < ids.length; i++) {
     var id = ids[i];
-    if (id.indexOf("repeat") === -1 && id.indexOf("if") === -1 && id !== "end-repeat" && id !== "end-if") continue;
+    if (id.indexOf("repeat") === -1 && id.indexOf("if") === -1 && id !== "end-repeat" && id !== "end-if" && id.indexOf("sync-") !== 0 && id.indexOf("wait-") !== 0) continue;
     var b = makeButton("block", id, PINCHY.labelFor(id, lang), "");
     b.dataset.cmd = id;
     b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
@@ -2031,7 +2081,7 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "spot") note = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "pile") note = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "sensor") note = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
-  if (level.kind === "handoff") note = "The hand-off worked. The part is in Bizzy's bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "handoff") note = "The hand-off worked. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "debug") {
     var swapWord = attemptSwaps === 1 ? "1 swap" : attemptSwaps + " swaps";
     note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
@@ -2061,6 +2111,10 @@ var finishFailDuo = function (ev) {
   }
   setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
 };
+var duoStopStep = function (who, index) {
+  // the stopped step goes in the lane of the arm that was named; the other lane shows no stop
+  return who === "bizzy" ? [-1, -1, -1, index] : [-1, index, -1, -1];
+};
 var playDuo = async function () {
   var level = PINCHY.LEVELS[session.level];
   var cb = laneList(0).slice();
@@ -2069,9 +2123,17 @@ var playDuo = async function () {
     setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
     return;
   }
+  var lone = PINCHY.syncCheck(cb, cz);
+  if (lone) {
+    var at = duoStopStep(lone.who, lone.index);
+    renderProgram(at[0], at[1], at[2], at[3]);
+    setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.syncLoneLine(lone, lang) }));
+    return;
+  }
   var token = ++playback;
   playing = true;
   if (typeof bbTipHide === "function") bbTipHide();
+  if (typeof bbCardHide === "function") bbCardHide();
   estopped = false;
   setBusy(true);
   world = PINCHY.initialState(level);
@@ -2086,8 +2148,18 @@ var playDuo = async function () {
   var state = world;
   var runs = PINCHY.beginDuoRun(cb, cz);
   var guard = 0;
-  var tick = 0;
-  while (guard < 400) {
+  var finishWon = function () {
+    var cycle = PINCHY.cycleSeconds(runs);
+    lastMs = cycle * 1000;
+    playing = false;
+    activeCmd = "";
+    setBusy(false);
+    finishWin(total, lastMs);
+    if (typeof bbCardShow === "function") bbCardShow(level, total, cycle, state.sorted || 0);
+    updateMetrics();
+    paintGame();
+  };
+  while (guard < 900) {
     guard += 1;
     if (token !== playback) return;
     var ev = PINCHY.duoAdvance(runs, state, level);
@@ -2096,15 +2168,28 @@ var playDuo = async function () {
       playing = false;
       setBusy(false);
       lastMs = performance.now() - runT0;
-      renderProgram(-1, -1, -1, -1);
-      setRun(PINCHY.settleRun(null, { type: "crash", note: "\u2717 " + PINCHY.crashLine(ev.msg, ev.index + 1, lang) }));
+      if (ev.stuck) {
+        var st = duoStopStep(ev.stuck.who, ev.stuck.index);
+        renderProgram(st[0], st[1], st[2], st[3]);
+        setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.syncStuckLine(ev.stuck, lang) }));
+      } else {
+        renderProgram(-1, -1, -1, -1);
+        setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.crashLine(ev.msg, ev.index + 1, lang) }));
+      }
       updateMetrics();
+      paintGame();
       return;
     }
-    tick += 1;
+    if (ev.release) {
+      // both arms are at the same Sync: highlight both for a moment, then let them go (no time of its own)
+      renderProgram(ev.index, -1, ev.indexZ, -1);
+      var rel = await until(reduce ? SNAP_HOLD : 220, token);
+      if (!rel || token !== playback) return;
+      continue;
+    }
     activeCmd = ev.cmd || ev.cmdZ;
-    renderProgram(ev.index, -1, ev.indexZ, -1);
-    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: tick, note: "Running step " + tick + "." }));
+    renderProgram(ev.index, -1, ev.indexZ, -1, ev.waitB, ev.waitZ);
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: ev.beat, note: "Running step " + ev.beat + "." }));
     if (!reduce) {
       var alive = await glide(STEP_MS, token, function (u) {
         world = PINCHY.duoView(state, ev.state, u);
@@ -2122,18 +2207,18 @@ var playDuo = async function () {
     activeCmd = "";
     paintGame();
     if (!ev.ok || ev.win || PINCHY.goalMet(state, level)) {
-      lastMs = performance.now() - runT0;
-      playing = false;
-      setBusy(false);
       if (ev.ok) {
         renderProgram(ev.index, -1, ev.indexZ, -1);
-        finishWin(total, lastMs);
+        finishWon();
       } else {
+        lastMs = performance.now() - runT0;
+        playing = false;
+        setBusy(false);
         renderProgram(-1, ev.index, -1, ev.indexZ);
         finishFailDuo(ev);
+        updateMetrics();
+        paintGame();
       }
-      updateMetrics();
-      paintGame();
       return;
     }
   }
@@ -2143,8 +2228,8 @@ var playDuo = async function () {
   activeCmd = "";
   setBusy(false);
   renderProgram(-1, -1, -1, -1);
-  if (PINCHY.goalMet(state, level)) finishWin(total, lastMs);
-  else setRun(PINCHY.settleRun(null, { type: "fail", note: PINCHY.endReason(state, level) }));
+  if (PINCHY.goalMet(state, level)) { finishWon(); return; }
+  setRun(PINCHY.settleRun(null, { type: "fail", note: PINCHY.endReason(state, level) }));
   updateMetrics();
   paintGame();
 };
@@ -2472,6 +2557,78 @@ var bbIntroStart = function () {
   else armTimer();
   bbIntroTimer = setTimeout(bbIntroEnd, 6000);
 };
+
+// ---- Result card and personal best (this device only) ----
+var BB_BEST_KEY = "bb-best-v1";
+var bbBestAll = function () {
+  var s = bbStore("local");
+  try {
+    var v = JSON.parse((s && s.getItem(BB_BEST_KEY)) || "{}");
+    return v && typeof v === "object" ? v : {};
+  } catch (errBest) { return {}; }
+};
+var bbBestSave = function (id, entry) {
+  var s = bbStore("local");
+  var all = bbBestAll();
+  all[id] = entry;
+  try { if (s) s.setItem(BB_BEST_KEY, JSON.stringify(all)); } catch (errSaveBest) {}
+};
+var bbCardState = null;
+var bbCardHide = function () {
+  var card = document.getElementById("bb-card");
+  if (card && !card.hidden) card.hidden = true;
+};
+var bbCardPaint = function () {
+  var c = bbCardState;
+  var t = function (k) { return PINCHY.uiText(lang, k); };
+  var box = document.getElementById("bb-card");
+  if (!box) return;
+  box.lang = lang;
+  box.dir = PINCHY.langMeta(lang).rtl ? "rtl" : "ltr";
+  document.getElementById("bb-card-l-cycle").textContent = t("cardCycle");
+  document.getElementById("bb-card-l-blocks").textContent = t("cardBlocks");
+  document.getElementById("bb-card-l-parts").textContent = t("cardParts");
+  document.getElementById("bb-card-l-best").textContent = t("cardBest");
+  document.getElementById("bb-card-try").textContent = t("cardTry");
+  document.getElementById("bb-card-next").textContent = t("cardNext");
+  document.getElementById("bb-card-close").textContent = t("cardClose");
+  box.setAttribute("aria-label", t("cardAria"));
+  if (!c) return;
+  document.getElementById("bb-card-head").textContent = t("cardDone") + " " + t(c.id);
+  var badge = document.getElementById("bb-card-new");
+  badge.textContent = t("cardNew");
+  badge.hidden = !c.isNew;
+  document.getElementById("bb-card-cycle").textContent = c.cycle.toFixed(1) + " s";
+  document.getElementById("bb-card-blocks").textContent = String(c.blocks);
+  document.getElementById("bb-card-parts").textContent = String(c.parts);
+  document.getElementById("bb-card-best").textContent = c.best.time.toFixed(1) + " s · " + c.best.blocks;
+};
+var bbCardShow = function (level, blocks, cycle, parts) {
+  var index = PINCHY.LEVELS.indexOf(level);
+  var all = bbBestAll();
+  var prev = all[level.id];
+  var better = !prev || cycle < prev.time || (cycle === prev.time && blocks < prev.blocks);
+  var best = better ? { time: cycle, blocks: blocks } : prev;
+  if (better) bbBestSave(level.id, best);
+  bbCardState = { id: level.id, index: index, cycle: cycle, blocks: blocks, parts: parts, isNew: better, best: best };
+  bbCardPaint();
+  var next = document.getElementById("bb-card-next");
+  next.hidden = index + 1 >= PINCHY.LEVELS.length;
+  document.getElementById("bb-card").hidden = false;
+  (next.hidden ? document.getElementById("bb-card-try") : next).focus();
+};
+var bbCardWire = function () {
+  var back = function () { bbCardHide(); var run = document.getElementById("run"); if (run) run.focus(); };
+  document.getElementById("bb-card-close").addEventListener("click", back);
+  document.getElementById("bb-card-try").addEventListener("click", function () { bbCardHide(); retry(); var run = document.getElementById("run"); if (run) run.focus(); });
+  document.getElementById("bb-card-next").addEventListener("click", function () {
+    bbCardHide();
+    if (bbCardState && bbCardState.index + 1 < PINCHY.LEVELS.length) selectLevel(bbCardState.index + 1);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("bb-card").hidden) { e.preventDefault(); e.stopPropagation(); back(); }
+  }, true);
+};
 var bbPaint = function () {
   var t = function (k) { return PINCHY.uiText(lang, k); };
   var rtl = PINCHY.langMeta(lang).rtl;
@@ -2497,8 +2654,9 @@ var bbPaint = function () {
     ul.replaceChildren();
     keys.forEach(function (k) { var li = document.createElement("li"); li.textContent = t(k); ul.appendChild(li); });
   };
-  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "hb8"]);
-  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4", "hf5"]);
+  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "hb8", "hb9"]);
+  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4", "hf5", "hf6"]);
+  if (typeof bbCardPaint === "function") bbCardPaint();
   var level = PINCHY.LEVELS[session.level];
   var ctl = document.getElementById("bb-help-controls");
   if (ctl) ctl.textContent = PINCHY.helpFor(lang, !!(level && level.debug));
@@ -2542,11 +2700,12 @@ var bbInit = function () {
     if (e.key === "Escape" && !document.getElementById("bb-help").hidden) { e.preventDefault(); e.stopPropagation(); bbHelpClose(); }
   }, true);
   window.addEventListener("resize", bbTipAnchor);
+  bbCardWire();
   bbIntroStart();
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.5.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.6.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.programs2.push([]);
