@@ -6082,22 +6082,21 @@ html[data-kp-motion="less"] body.mu237.tab-tap .tap-pads .pad:active,
 body.pref-less-motion.tab-tap .tap-pads .pad.lit,
 body.pref-less-motion.tab-tap .tap-pads .pad:active { transform: none; }
 
-/* MU 2.36.61 layout. Order puts the pads and the lane first; hints and extras follow and may scroll. */
+/* MU 2.36.61 layout (2.36.62: the actions sit in .tap-side after the lane, so what you see and the Tab order are the same). */
 html body.mu237.tab-tap #drums-pane { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior: contain; }
 html body.mu237.tab-tap .tap-write { height: 44px; min-height: 44px; margin: 0; flex: 0 0 auto; }
 html body.mu237.tab-tap .tap-pads { order: 1; }
 html body.mu237.tab-tap #tap-strip { order: 2; }
-html body.mu237.tab-tap #guide-line { order: 3; margin: 4px 0 0; }
-html body.mu237.tab-tap #playhead-read { order: 4; }
-html body.mu237.tab-tap .tap-actions { order: 5; }
-html body.mu237.tab-tap .tap-tiles { order: 6; }
+html body.mu237.tab-tap .tap-side { order: 3; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+html body.mu237.tab-tap #guide-line { margin: 4px 0 0; }
+html body.mu237.tab-tap #count-in { order: 0; }
 
-/* Wide and tall (1366x768): pads on the left, actions on the right, the 16-step lane under both. */
+/* Wide and tall (1366x768): pads and the lane in the left column, actions in the right column. */
 @media (min-width: 1200px) and (min-height: 640px) {
   html body.mu237.tab-tap #drums-pane {
     display: grid !important;
     grid-template-columns: 784px minmax(0, 1fr);
-    grid-auto-rows: auto;
+    grid-template-rows: auto auto auto;
     column-gap: 16px;
     row-gap: 6px;
     align-content: start;
@@ -6107,12 +6106,11 @@ html body.mu237.tab-tap .tap-tiles { order: 6; }
   html body.mu237.tab-tap #drums-pane > * { min-width: 0; }
   html body.mu237.tab-tap .tap-write { grid-column: 1 / -1; grid-row: 1; }
   html body.mu237.tab-tap #count-in { grid-column: 2; grid-row: 2; }
-  html body.mu237.tab-tap .tap-pads { grid-column: 1; grid-row: 2 / span 5; margin: 0; }
-  html body.mu237.tab-tap #guide-line { grid-column: 2; grid-row: 2; margin: 0; align-self: start; }
-  html body.mu237.tab-tap #playhead-read { grid-column: 2; grid-row: 3; align-self: start; }
-  html body.mu237.tab-tap .tap-actions { grid-column: 2; grid-row: 4; align-self: start; }
-  html body.mu237.tab-tap .tap-tiles { grid-column: 2; grid-row: 5; align-self: start; height: auto !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
-  html body.mu237.tab-tap #tap-strip { grid-column: 1 / -1; grid-row: 7; margin: 4px 0 0; }
+  html body.mu237.tab-tap .tap-pads { grid-column: 1; grid-row: 2; margin: 0; }
+  html body.mu237.tab-tap #tap-strip { grid-column: 1; grid-row: 3; margin: 4px 0 0; }
+  html body.mu237.tab-tap .tap-side { grid-column: 2; grid-row: 2 / span 2; align-self: start; }
+  html body.mu237.tab-tap #guide-line { margin: 0; }
+  html body.mu237.tab-tap .tap-tiles { height: auto !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
 }
 
 /* Phone upright: the picture box steps aside (Picture button brings it back) so 8 pads and the whole lane fit. */
@@ -6141,7 +6139,8 @@ html body.mu237.tab-tap .tap-tiles { order: 6; }
   html body.mu237.tab-tap .tap-write { grid-column: 1 / -1; grid-row: 1; }
   html body.mu237.tab-tap .tap-pads { grid-column: 1; grid-row: 2; grid-template-columns: repeat(4, 78px); grid-auto-rows: 100px; gap: 6px; }
   html body.mu237.tab-tap #tap-strip { grid-column: 2; grid-row: 2; margin: 22px 0 0; }
-  html body.mu237.tab-tap #guide-line { grid-column: 1 / -1; grid-row: 3; margin: 0; }
+  html body.mu237.tab-tap .tap-side { grid-column: 1 / -1; grid-row: 3; }
+  html body.mu237.tab-tap #guide-line { margin: 0; }
   html body.mu237.tab-tap .tap-pads .pad { font-size: 14px; }
   html body.mu237.tab-tap .tap-pads .pad .pad-ico { width: 30px; height: 30px; }
   .tap-strip.is-narrow .lane-track,
@@ -6149,3 +6148,188 @@ html body.mu237.tab-tap .tap-tiles { order: 6; }
   .tap-strip.is-narrow .lane-mark { width: 44px; }
   .tap-strip.is-narrow .lane-cell { width: 44px; height: 44px; }
 }
+
+/* MU 2.36.62 — bottom bar words you can read in the dark theme.
+   Root cause: MU 2.36.14 sets --text and --muted to dark steel ink (#111827, #1F2937) inside .transport "in both themes",
+   and the MU 2.36.9 steel skin forces #111827 on the bar buttons. The dark theme later paints the bar and its buttons dark,
+   so the song name, New beat, Bar/Beat, Tempo, Record, Perform and More came out dark on dark (contrast 1:1).
+   The words were in the page, with their strings; you could not see them. Fix: in the dark theme the bar uses the theme's own
+   text colours again (about 15:1 and 8:1). The light theme is not touched. */
+html[data-theme="dark"] body.mu237 .transport {
+  --text: #E6EEF2;
+  --muted: #9FB0C6;
+}
+html[data-theme="dark"] body.mu237 .transport,
+html[data-theme="dark"] body.mu237 .transport .btn,
+html[data-theme="dark"] body.mu237 .transport .btn .ctl-word,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy bdi,
+html[data-theme="dark"] body.mu237 .transport .tempo,
+html[data-theme="dark"] body.mu237 .transport .tempo > span,
+html[data-theme="dark"] body.mu237 .whose { color: var(--text) !important; text-shadow: none !important; }
+html[data-theme="dark"] body.mu237 .transport #play-pos,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy span { color: var(--muted) !important; }
+/* Icon + word on every bar button (the glyph is decoration; the word names the button). */
+body.mu237 #song-cover::before { content: "\266A" / ""; margin-inline-end: 4px; }
+body.mu237 #new-beat::before { content: "+" / ""; margin-inline-end: 4px; font-weight: 800; }
+body.mu237 #piano-dock-toggle::before { content: "\266B" / ""; margin-inline-end: 4px; }
+body.mu237 #dock-oct-down::before { content: "\2212" / ""; margin-inline-end: 4px; font-weight: 800; }
+body.mu237 #dock-oct-up::before { content: "+" / ""; margin-inline-end: 4px; font-weight: 800; }
+
+/* Piano dock: Piano and Octave share one row, so the keys are 119px tall and the key letters fit above the player bar.
+   Before, the keys were 120px under two 44px rows in a 176px dock, so the bottom of each white key (where its letter is) was cut off. */
+body.mu237 .piano-dock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 44px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 4px;
+  align-items: center;
+}
+body.mu237 #piano-dock-toggle { grid-column: 1; grid-row: 1; align-self: stretch; flex: none; }
+body.mu237 #dock-oct { grid-column: 2; grid-row: 1; display: flex !important; align-items: center; gap: 8px; min-width: 0; }
+body.mu237 #dock-oct .btn { flex: 1 1 0; min-width: 0; height: 44px; padding: 2px 8px; font-size: 14px; line-height: 1.1; white-space: normal; display: inline-flex; align-items: center; justify-content: center; text-align: center; }
+body.mu237 #dock-oct #dock-oct-read { flex: 0 0 auto; min-width: 32px; text-align: center; }
+body.mu237 #dock-keys { grid-column: 1 / -1; grid-row: 2; height: 100% !important; min-height: 0 !important; align-self: stretch; }
+body.mu237:not(.piano-dock-open) .piano-dock { grid-template-rows: 44px; }
+
+/* Score staff: real size, so noteheads are about 9px wide (they were 4 to 6px). The panel scrolls instead of shrinking the staff. */
+body.mu237.tab-score .staff-wrap,
+body.mu237.tab-score.is-both .staff-wrap {
+  max-height: 44vh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+body.mu237 #staff svg { height: auto; }
+/* Sideways phone: one line that scrolls sideways, at real size. */
+body.mu237.tab-score .staff-wrap:has(#staff.staff-strip) { overflow-x: auto !important; overflow-y: hidden !important; max-height: none !important; min-height: 0 !important; }
+body.mu237 #staff.staff-strip svg { width: auto !important; max-width: none !important; height: auto; }
+/* Lit note while it plays: the head stays filled black (16:1 on the paper) and gets a thick ring, so it is not shown by colour alone. */
+#staff .abcjs-note.now path,
+#staff .abcjs-rest.now path { stroke: #0E7490; stroke-width: 7px; paint-order: stroke; stroke-linejoin: round; }
+#staff .abcjs-note.now path[data-name="stem"],
+#staff .abcjs-note.now path[data-name="ledger"] { stroke-width: 1px; }
+.abcjs-note.now, .abcjs-rest.now { outline: 0; }
+@media (forced-colors: active) {
+  #staff .abcjs-note.now path, #staff .abcjs-rest.now path { stroke: Highlight; }
+}
+/* Same cause as the bar: in the dark theme the Score beat-row names were dark on dark. */
+html[data-theme="dark"] body.mu237.tab-score .drum-row b,
+html[data-theme="dark"] body.mu237.tab-score .bar-label { color: var(--text) !important; }
+
+/* Sideways phone, Score: the empty picture strip shrinks to one thin row so the one-line staff (real size) fits above the note letters. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body.mu237.tab-score:not(.show):not(.stage-on) .out { height: 30px !important; max-height: 30px !important; min-height: 0 !important; overflow: hidden !important; }
+  html body.mu237.tab-score .staff-wrap:has(#staff.staff-strip) { height: auto !important; min-height: 0 !important; max-height: none !important; padding-block: 2px !important; }
+}
+
+/* MU 2.36.62 — a real dark theme. It follows the computer's light/dark setting until the kid flips the switch, then it keeps their choice.
+   Why: the dark theme only recoloured some tiles; the MU 2.36.9 steel skin kept the rail, the desk and parts of the player bar light grey with stripes,
+   so some words were light on light. In the dark theme the steel is now soft navy (no stripes, no glow, nothing brighter than #D9E2E7), and the staff paper is a soft grey-white. Light theme: not touched. */
+html[data-theme="dark"] { background: #08131A; --paper: #D9E2E7; --ink: #0E1A22; --ring: #3AA0AB; }
+html[data-theme="light"], html[data-theme="calm"] { --ring: #0F766E; }
+html[data-theme="dark"] body.mu237,
+html[data-theme="dark"] body.mu237 .desk,
+html[data-theme="dark"] body.mu237 .work {
+  color: var(--text) !important;
+  background-color: var(--bg) !important;
+  background-image: none !important;
+}
+html[data-theme="dark"] body.mu237 .side,
+html[data-theme="dark"] body.mu237 .transport {
+  color: var(--text) !important;
+  background-color: var(--panel) !important;
+  background-image: none !important;
+  border-color: var(--border) !important;
+}
+html[data-theme="dark"] body.mu237 #dock-left .tab,
+html[data-theme="dark"] body.mu237 #scenes .btn,
+html[data-theme="dark"] body.mu237 #mic-lights,
+html[data-theme="dark"] body.mu237 .transport .btn {
+  background-color: var(--panel) !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  border: 1px solid var(--btn-line) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none;
+}
+/* Pressed = a thick light border as well as the teal fill, so it is not colour alone. */
+html[data-theme="dark"] body.mu237 #dock-left .tab[aria-pressed="true"],
+html[data-theme="dark"] body.mu237 #dock-left .tab.on,
+html[data-theme="dark"] body.mu237 #scenes .btn[aria-pressed="true"],
+html[data-theme="dark"] body.mu237 #scenes .btn.on,
+html[data-theme="dark"] body.mu237 #mic-lights[aria-pressed="true"] {
+  background-color: var(--active) !important;
+  background-image: none !important;
+  color: var(--accent-fg) !important;
+  border: 3px solid var(--text) !important;
+  box-shadow: none !important;
+}
+/* Play: a thick teal ring (3px) in both themes, soft dark face in the dark theme. */
+html[data-theme] body.mu237 #play-btn { border: 3px solid var(--ring) !important; }
+html[data-theme="dark"] body.mu237 #play-btn,
+html[data-theme="dark"] body.mu237.playing #play-btn {
+  background: #16242E !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+  transform: none;
+}
+html[data-theme] body.mu237 #play-btn:focus-visible { outline: 3px solid var(--ring) !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px var(--bg) !important; }
+html[data-theme="dark"] body.mu237 .tool-line,
+html[data-theme="dark"] body.mu237 .tool-line * { color: var(--text) !important; }
+html[data-theme="dark"] body.mu237 #scenes .swatch-word,
+html[data-theme="dark"] body.mu237 #scenes .tick,
+html[data-theme="dark"] body.mu237 #mic-lights span,
+html[data-theme="dark"] body.mu237 #dock-left .tab span { color: inherit !important; }
+html[data-theme="dark"] body.mu237 #scenes .btn:focus-visible,
+html[data-theme="dark"] body.mu237 .fader-row input:focus-visible,
+html[data-theme="dark"] body.mu237 #dock-left .tab:focus-visible,
+html[data-theme="dark"] body.mu237 #mic-lights:focus-visible {
+  outline: 3px solid var(--ring) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px var(--bg) !important;
+}
+/* Tap lane in the dark theme: a step that is on is teal with a dot and a light edge (no bright white block). */
+html[data-theme="dark"] .lane-cell.on { background: var(--active); border-color: var(--text); color: var(--accent-fg); }
+html[data-theme="dark"] .lane-cell { background: var(--panel); color: var(--panel); }
+html[data-theme="dark"] .lane-cell.on { color: var(--accent-fg); }
+
+/* MU 2.36.62 — transport bar. Tempo gets an icon. "Bar 5 · Beat 1" stays on one line at 1280 and 1366 and shows at 412 upright.
+   The song name is cut with an ellipsis (the whole name is in its title) instead of wrapping into the next control. */
+#transport .tempo > .tempo-ico { width: 20px; height: 20px; flex: 0 0 20px; margin-inline-end: 4px; color: inherit; }
+@media (min-width: 1100px) {
+  body.mu237 .transport .songbar-copy { flex: 1.2 1 360px; min-width: 0; max-width: 26rem; }
+  body.mu237 .transport .tempo { flex: 1 1 260px; min-width: 220px; }
+}
+#transport .tempo > span { white-space: nowrap; flex: 0 0 auto; }
+body.mu237 #songbar-name { flex: 1 1 0; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+body.mu237 #play-pos { flex: 0 0 auto; white-space: nowrap; }
+@media (max-width: 480px) and (orientation: portrait) {
+  body.mu237 .transport .songbar-copy { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 6px; align-items: center; }
+  body.mu237 #songbar-name { grid-column: 1; grid-row: 1; -webkit-line-clamp: 1; line-clamp: 1; font-size: 14px; }
+  body.mu237 #play-pos { display: block !important; grid-column: 1; grid-row: 2; font-size: 13px; line-height: 1.2; }
+  body.mu237 #new-beat { grid-column: 2; grid-row: 1 / span 2; }
+  /* five tabs in one row: Show no longer drops to a second row */
+  body.mu237 #dock-left { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+  body.mu237 #dock-left .tab { padding: 0 2px; font-size: 12.5px; }
+  body.mu237 #dock-left .tab span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+}
+/* Score: the beat grid scrolls inside its own panel and stops above the piano row and the player bar.
+   Before, the grid was 458px tall inside a 140 to 166px panel that clipped, so the lower rows could not be reached and ran under the bar. */
+html body.mu237.tab-score #drums-pane { display: flex !important; flex-direction: column; min-height: 0 !important; overflow: hidden !important; }
+html body.mu237.tab-score #drums {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: 8px;
+  padding-bottom: 8px;
+}
+html body.mu237.tab-score #drums { scroll-snap-type: y proximity; }
+html body.mu237.tab-score #drums .drum-row,
+html body.mu237.tab-score #drums .bar-label { scroll-snap-align: start; }

@@ -777,6 +777,27 @@
     });
   }
 
+  // MU 2.36.62: spread the bars evenly over the lines, so the last line is never one lonely bar.
+  function balanceAbc(abc, wide, oneLine) {
+    const m = abc.match(/^([\s\S]*\nK:[^\n]*\n)([\s\S]*)$/);
+    if (!m) return abc;
+    const bars = m[2].replace(/\n/g, " ").split("|").map((x) => x.trim()).filter(Boolean);
+    const total = bars.length;
+    const base = wide < 420 ? 2 : wide < 760 ? 3 : 4;
+    if (!total) return abc;
+    let lines = oneLine ? 1 : Math.ceil(total / base);
+    if (!oneLine && total % base === 1 && lines > 1) lines -= 1;
+    const out = [];
+    let at = 0;
+    for (let i = 0; i < lines; i++) {
+      const n = Math.floor(total / lines) + (i < total % lines ? 1 : 0);
+      out.push(bars.slice(at, at + n).join(" | ") + " |");
+      at += n;
+    }
+    return m[1] + out.join("\n") + "\n";
+  }
+  // MU 2.36.62: the engraving keeps its real size, so every notehead stays about 9px wide.
+  // It used to be squeezed to a fixed height, which shrank the heads to 4 to 6px and left only the stems.
   function renderStaff() {
     const host = $("staff");
     if (!host) return;
@@ -784,6 +805,8 @@
     let abc = Song.toAbc(state.song);
     const both = state.mode === "both" || document.body.classList.contains("tab-score");
     if (both || window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
+    const strip = window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+    host.classList.toggle("staff-strip", strip);
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
       nameLooseSvgs();
@@ -792,14 +815,19 @@
     try {
       const pane = host.closest("#notes-pane") || host.parentElement || host;
       const wide = Math.max(280, (pane.clientWidth || host.clientWidth || 640) - 12);
-      window.ABCJS.renderAbc(host, abc, {
-        responsive: "resize",
-        add_classes: true,
-        staffwidth: wide,
-        wrap: { minSpacing: 1.6, maxSpacing: 2.4, preferredMeasuresPerLine: wide < 420 ? 2 : 4 },
-        paddingleft: 8,
-        paddingright: 8,
-      });
+      if (strip) {
+        const flat = balanceAbc(abc, wide, true).replace(/^Q:.*\n/m, "");
+        const bars = Math.max(1, flat.split("|").length - 1);
+        window.ABCJS.renderAbc(host, flat, { add_classes: true, staffwidth: Math.max(wide, bars * 190 + 90), paddingleft: 8, paddingright: 8 });
+      } else {
+        window.ABCJS.renderAbc(host, balanceAbc(abc, wide), {
+          responsive: "resize",
+          add_classes: true,
+          staffwidth: wide,
+          paddingleft: 8,
+          paddingright: 8,
+        });
+      }
     } catch (err) {
       host.textContent = abc;
     }
@@ -807,33 +835,36 @@
     if (svg) {
       svg.setAttribute("role", "img");
       svg.setAttribute("aria-label", "Staff for this song");
-      svg.style.width = "100%";
-      svg.style.maxWidth = "none";
-      svg.removeAttribute("height");
       svg.addEventListener("pointerdown", placeNote);
-      if (state.mode === "both") {
-        const wrap = host.parentElement;
-        const desk = document.querySelector(".desk");
-        const cap = Math.max(120, Math.round((desk ? desk.clientHeight : window.innerHeight) * 0.4));
-        window.requestAnimationFrame(() => {
-          const box = svg.getBoundingClientRect();
-          if (box.height > 8) {
-            const h = Math.min(box.height, cap);
-            svg.style.height = h + "px";
-            svg.style.width = "100%";
-            if (wrap) {
-              wrap.style.height = h + "px";
-              wrap.style.maxHeight = cap + "px";
-              wrap.style.overflow = "hidden";
-            }
-          }
-        });
+      if (!strip) {
+        svg.style.width = "100%";
+        svg.style.maxWidth = "none";
+        svg.style.height = "auto";
+        svg.removeAttribute("height");
       }
     }
     nameLooseSvgs();
   }
 
-
+  // MU 2.36.62: the note that is playing lights up on the staff (it only did after you tapped a note, never during Play).
+  function paintStaffNow(step) {
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    if (!marks.length) return;
+    const evNow = step >= 0 ? Song.events(state.song)[step] : null;
+    marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
+  }
+  // Keep the lit note inside the staff panel. Only the panel scrolls, never the page.
+  function followNote(node) {
+    const wrap = node.closest && node.closest(".staff-wrap");
+    if (!wrap || !(wrap.scrollHeight > wrap.clientHeight + 2 || wrap.scrollWidth > wrap.clientWidth + 2)) return;
+    const a = node.getBoundingClientRect();
+    const r = wrap.getBoundingClientRect();
+    if (a.top < r.top + 4) wrap.scrollTop += a.top - r.top - 12;
+    else if (a.bottom > r.bottom - 4) wrap.scrollTop += a.bottom - r.bottom + 12;
+    if (a.left < r.left + 4) wrap.scrollLeft += a.left - r.left - 48;
+    else if (a.right > r.right - 4) wrap.scrollLeft += a.right - r.right + 48;
+  }
   function nameLooseSvgs() {
     document.querySelectorAll("svg[role='img']").forEach((svg) => {
       if (svg.getAttribute("aria-label") || svg.getAttribute("aria-labelledby")) return;
@@ -1254,6 +1285,7 @@
   function bindPad(el, id) {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
+      try { el.focus({ preventScroll: true }); } catch (err) { /* the tap still plays */ }
       state.held[id] = true;
       try { el.setPointerCapture(e.pointerId); } catch (err) { /* a tap still counts */ }
       strike(id, el);
@@ -1272,9 +1304,7 @@
       b.textContent = word;
       b.setAttribute("aria-label", word);
       b.setAttribute("data-mu", "drum_" + id);
-      b.setAttribute("data-i18n", "drum_" + id);
       b.setAttribute("data-mu-label", "drum_" + id);
-      b.setAttribute("data-i18n-label", "drum_" + id);
       bindPad(b, id);
       box.appendChild(b);
     });
@@ -1487,6 +1517,7 @@
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     const evNow = evs[step];
     marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
     document.querySelectorAll(".cell").forEach((cell) => {
       cell.classList.toggle("now", Number(cell.dataset.step) === drum);
     });
@@ -1824,6 +1855,7 @@
         }
         if (hit.grid !== state.seenGrid) {
           state.seenGrid = hit.grid;
+          paintStaffNow(hit.event);
           hearDrop(hit.grid);
           advanceTurn();
           paintBeat(hit.grid);
@@ -1846,6 +1878,7 @@
   function stop() {
     silenceOwner();
     state.playing = false;
+    paintStaffNow(-1);
     resetDrop();
     document.body.classList.remove("playing");
     fitViz();
@@ -3859,6 +3892,18 @@
     }
   }
   paintTheme(document.documentElement.getAttribute("data-theme"), false);
+  // MU 2.36.62: until the kid flips the switch, the theme follows the computer's light/dark setting, live.
+  try {
+    const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
+    const followScheme = (e) => {
+      let saved = "";
+      try { saved = localStorage.getItem("kulibert.music.theme") || ""; } catch (err) { saved = ""; }
+      if (saved === "dark" || saved === "calm") return;
+      paintTheme(e.matches ? "dark" : "calm", false);
+    };
+    if (darkMq.addEventListener) darkMq.addEventListener("change", followScheme);
+    else if (darkMq.addListener) darkMq.addListener(followScheme);
+  } catch (eMq) { /* the switch still works */ }
   const themeBtn = $("theme-switch");
   if (themeBtn) themeBtn.addEventListener("click", () => {
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
@@ -4369,7 +4414,11 @@
     const name = $("songbar-name");
     const meta = $("songbar-meta");
     const cover = $("song-cover");
-    if (name) setBdi(name, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
+    if (name) {
+      const full = songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song);
+      setBdi(name, full);
+      name.title = full; // a long name is cut with an ellipsis in the bar; the whole name shows on hover and to a screen reader
+    }
     if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
     document.documentElement.classList.add("tempo-known");
     if (cover) {
@@ -5310,6 +5359,8 @@
       btn.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         hitPad(btn.dataset.pad, btn);
+        // preventDefault stops the browser from focusing the pad, so Tab would start again at the top (the menu and the bottom nav).
+        try { btn.focus({ preventScroll: true }); } catch (err) { /* the tap still played */ }
       });
       // Space or Enter on a focused pad: pointer taps already played on pointerdown (detail > 0).
       btn.addEventListener("click", (e) => {
@@ -5343,7 +5394,12 @@
   }
   bootTapWrite();
   function fitTapRows() {
-    if (!document.body.classList.contains("tab-tap")) return;
+    if (!document.body.classList.contains("tab-tap")) {
+      // MU 2.36.62: the Tap sizes must not stay on #drums after you leave Tap, or the Score beat grid cannot scroll and runs under the player bar.
+      const loose = $("drums");
+      if (loose && loose.style.length) ["flex", "height", "max-height"].forEach((prop) => loose.style.removeProperty(prop));
+      return;
+    }
     const box = $("drums");
     const pane = $("drums-pane");
     if (!box || !pane) return;
@@ -5415,7 +5471,11 @@
   }
   keep();
 
+  // MU 2.36.62: music's own words first (strings.js). The shared pack is only a fallback for a key music does not own,
+  // so a failed shared fetch no longer logs one "missing" warning per drum word.
   function i18nWord(key, fallback) {
+    const own = mu(key);
+    if (own) return own;
     try {
       const api = window.KulibertI18n;
       if (api && api.t) {
@@ -5423,7 +5483,7 @@
         if (v && v !== key) return v;
       }
     } catch (err) { /* music words still work */ }
-    return mu(key) || fallback || "";
+    return fallback || "";
   }
   function paintClick() {
     const btn = $("click-btn");
@@ -5466,7 +5526,7 @@
       slider.max = "100";
       slider.value = String(state.mix[id] || 0);
       slider.setAttribute("data-drum", id);
-      slider.setAttribute("data-i18n-label", "loud_" + id);
+      slider.setAttribute("data-mu-label", "loud_" + id);
       slider.setAttribute("aria-label", label + " loudness");
       const read = document.createElement("b");
       read.textContent = slider.value;
