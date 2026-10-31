@@ -992,7 +992,7 @@
     8: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="10" cy="12" rx="6.5" ry="4.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
     dot: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><circle cx="10" cy="12" r="3.4" fill="currentColor"/></svg>',
   };
-  const WIDE_SIDEWAYS = window.matchMedia("(orientation: landscape) and (max-height: 500px) and (min-width: 880px)");
+  const WIDE_SIDEWAYS = window.matchMedia("(orientation: landscape) and (max-height: 500px)"); // Round B: every sideways phone has the second row now
   if (WIDE_SIDEWAYS.addEventListener) WIDE_SIDEWAYS.addEventListener("change", () => { try { paintLen(); } catch (eLen) {} });
   function paintLen() {
     const host = $("len");
@@ -1134,6 +1134,31 @@
   }
   // MU 2.36.62: the engraving keeps its real size, so every notehead stays about 9px wide.
   // It used to be squeezed to a fixed height, which shrank the heads to 4 to 6px and left only the stems.
+  // Round B: on the smallest sideways phones (568x320) a one-line staff with notes under the lines is taller than its panel, which used to centre
+  // and clip it. The whole line scales down to the panel's height instead, so every note stays on the screen. A few px of stem above the panel is fine.
+  function fitStrip(svg) {
+    const host = $("staff");
+    const wrap = host && host.closest(".staff-wrap");
+    if (!svg || !wrap) return;
+    if (!svg.dataset.w0) { svg.dataset.w0 = svg.getAttribute("width") || String(svg.getBoundingClientRect().width); svg.dataset.h0 = svg.getAttribute("height") || String(svg.getBoundingClientRect().height); }
+    const w0 = parseFloat(svg.dataset.w0), h0 = parseFloat(svg.dataset.h0);
+    const room = wrap.clientHeight - 4;
+    if (!(room > 40 && w0 > 0 && h0 > room + 10)) {
+      if (svg.dataset.fit) { svg.setAttribute("width", String(w0)); svg.setAttribute("height", String(h0)); svg.style.height = ""; host.style.height = h0 + "px"; delete svg.dataset.fit; }
+      return;
+    }
+    if (!svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 " + w0 + " " + h0);
+    svg.setAttribute("preserveAspectRatio", "xMinYMin meet");
+    svg.setAttribute("height", String(room));
+    svg.setAttribute("width", String(Math.round((w0 / h0) * room)));
+    svg.style.height = room + "px";
+    host.style.height = room + "px";
+    svg.dataset.fit = "1";
+  }
+  if (window.ResizeObserver) {
+    const wrapEl = document.querySelector("#notes-pane .staff-wrap");
+    if (wrapEl) new ResizeObserver(() => { const svg = document.querySelector("#staff.staff-strip svg"); if (svg) fitStrip(svg); }).observe(wrapEl);
+  }
   function renderStaff() {
     const host = $("staff");
     if (!host) return;
@@ -1177,6 +1202,8 @@
         svg.style.maxWidth = "none";
         svg.style.height = "auto";
         svg.removeAttribute("height");
+      } else {
+        fitStrip(svg);
       }
     }
     nameLooseSvgs();
