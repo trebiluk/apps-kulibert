@@ -486,26 +486,31 @@ try {
     .panel-label { padding: 1px 8px; }
     .lamps { gap: 3px; margin: 0; }
     .lamp { padding: 1px 4px; font-size: 11px; }
-    #status { display: none; }
+    /* The status line is never hidden: here it is compact (small text, two lines) and still aria-live. */
+    #status { display: block; margin: 0; min-height: 0; max-height: 53px; padding: 3px 6px; border-width: 1px; font-size: 12px; line-height: 1.25; overflow-y: auto; }
     .haz { height: 4px; }
     .estop-row { padding: 3px; gap: 4px; }
-    #estop, #retry { min-height: 32px; height: 32px; font-size: 13px; }
+    #estop, #retry { min-height: 44px; height: 44px; font-size: 13px; }
     .joint { grid-template-columns: minmax(72px, 1fr) 64px 72px 64px; gap: 2px; }
-    button.block { min-height: 28px; height: 28px; padding: 0 2px; font-size: 11px; }
-    .ro { height: 28px; font-size: 13px; padding: 0 4px; }
+    button.block { min-height: 44px; height: 44px; padding: 0 2px; font-size: 12px; }
+    .ro { height: 44px; font-size: 13px; padding: 0 4px; }
     .ro[data-long="1"] { font-size: 9px; padding: 0 2px; }
     #draft-note { position: fixed; inset-inline-start: 6px; bottom: 4px; margin: 0; z-index: 20; font-size: 11px; padding: 1px 6px; }
     .viewport { min-height: 0; height: 100%; }
     #view { height: 100%; min-height: 120px; }
   }
+  @media (max-height: 520px) and (min-width: 601px) and (max-width: 759px) {
+    .controls { max-height: calc(100vh - 108px); overflow-y: auto; }
+  }
   /* 1.5.0: a short sideways screen gets three columns, so the view and one lane (with Run) are on screen together. */
   @media (max-height: 520px) and (min-width: 760px) {
-    .stage { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.95fr); grid-template-rows: auto minmax(0, 1fr); height: calc(100vh - 118px); }
+    /* joints | view with the status line and E-STOP under it | program */
+    .stage { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.95fr); grid-template-rows: minmax(0, 1fr) auto; height: calc(100vh - 108px); }
     .controls { display: contents; }
-    .controls .panel:nth-child(1) { grid-column: 1; grid-row: 1; }
-    .controls .panel:nth-child(2) { grid-column: 1; grid-row: 2; }
+    .controls .panel:nth-child(1) { grid-column: 2; grid-row: 2; }
+    .controls .panel:nth-child(2) { grid-column: 1; grid-row: 1 / span 2; overflow-y: auto; }
     .controls .panel:nth-child(3) { grid-column: 3; grid-row: 1 / span 2; overflow-y: auto; }
-    .scene-col { grid-column: 2; grid-row: 1 / span 2; min-height: 0; display: flex; flex-direction: column; }
+    .scene-col { grid-column: 2; grid-row: 1; min-height: 0; display: flex; flex-direction: column; }
     .scene-col .viewport { flex: 1 1 auto; display: flex; flex-direction: column; }
     .scene-col .viewport .scene { flex: 1 1 auto; min-height: 0; }
     .scene-col #view { height: 100%; min-height: 0; }
@@ -603,6 +608,7 @@ try {
 
   .chip.is-wait { border-style: dashed; border-width: 3px; }
   #program .chip, #program2 .chip { flex: 0 0 auto; }
+  html .kb-bar .kb-plate { margin-inline-end: 8px; }
   .bb-card { position: fixed; inset: 0; z-index: 65; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--pz-bg); overflow-y: auto; }
   .bb-card[hidden] { display: none; }
   .bb-card-box { width: min(440px, 100%); background: var(--pz-panel); border: 3px solid var(--pz-on-yellow); border-radius: 8px; padding: 0 0 14px; }
@@ -2107,8 +2113,10 @@ var finishFailDuo = function (ev) {
     if (first < 0) first = ev.armHit.a === "bizzy" ? ev.index : ev.indexZ;
     text = "\u2717 " + PINCHY.armHitLine(ev.armHit, first + 1, lang);
   } else if (ev.bothHold) {
-    var at = ev.who === "bizzy" ? ev.indexZ : ev.index;
-    text = "\u2717 " + PINCHY.uiText(lang, "bothHold") + " (" + (at + 1) + ")";
+    var at = (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1;
+    var stepWord = lang === "en" ? " (step " + at + ")" : PINCHY.uiText(lang, "stepSuffix").replace("{n}", String(at));
+    var endMark = lang === "ti" ? "\u1362" : ".";
+    text = "\u2717 " + PINCHY.uiText(lang, "bothHold").replace(/[.\u1362]$/, "") + stepWord + endMark;
   } else if (ev.miss) {
     text = "\u2717 " + PINCHY.crashLine(ev.msg, (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1, lang);
   } else {
@@ -2374,6 +2382,8 @@ var selectLevel = function (index) {
   stopPlay();
   session.level = index;
   activeLane = 0;
+  // every hand-off level starts with two empty lanes
+  if (PINCHY.LEVELS[index].duo) { session.programs[index] = []; session.programs2[index] = []; }
   estopped = false;
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;

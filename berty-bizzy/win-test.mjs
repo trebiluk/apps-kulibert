@@ -544,4 +544,22 @@ assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
   assert.equal(G.crashLine("elbow hit the table", 3, "en"), "Elbow hit the table at step 3.");
   assert.equal(G.runView({ kind: "won", n: 3, note: "Done. 1 block, 0.6 s." }, "uk").status, "Готово. Блоків: 1, Час: 0.6 с. Три зірки.");
 }
+
+// 1.6.1 (ShipCheck 1.6.0): short sideways screens keep the status line, use 44 px controls, and each hand-off level starts with empty lanes.
+{
+  assert.doesNotMatch(page, /#status\s*\{\s*display:\s*none/, "the status line is never display:none");
+  const side = page.slice(page.indexOf("@media (max-height: 520px) and (min-width: 601px) {"));
+  assert.match(side.slice(0, 2600), /#status \{ display: block;/);
+  assert.match(side.slice(0, 2600), /button\.block \{ min-height: 44px; height: 44px;/);
+  assert.match(side.slice(0, 2600), /#estop, #retry \{ min-height: 44px; height: 44px;/);
+  assert.match(page, /role="status" aria-live="assertive"/);
+  assert.match(page, /" \(step " \+ at \+ "\)"/, "both-claws text says (step N)");
+  assert.match(page, /\.duo\) \{ session\.programs\[index\] = \[\]; session\.programs2\[index\] = \[\];/, "hand-off levels reset their lanes");
+  assert.match(page, /html \.kb-bar \.kb-plate \{ margin-inline-end: 8px; \}/);
+  for (const code of LANG_IDS) {
+    const bothHold = G.uiText(code, "bothHold");
+    assert.ok(/[.።]$/.test(bothHold), code + " both-claws text ends with a full stop");
+    assert.ok(G.uiText(code, "stepSuffix").indexOf("{n}") >= 0, code + " has a step suffix for it");
+  }
+}
 console.log("berty-bizzy win-test ok");
