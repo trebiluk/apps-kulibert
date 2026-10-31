@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.571', date: '2026-10-31', lines: {
+    en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.'],
+    simple: ['2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.'],
+    uk: ['2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.'],
+    ru: ['2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.'],
+    es: ['2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.'],
+    ar: ['2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.'],
+    'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.'],
+    rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.'],
+    ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
