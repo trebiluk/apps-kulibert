@@ -144,6 +144,22 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.562 what's new. rw, ti, and fa-AF are machine drafts.
+const WN562 = {
+  en: { whatsNewBody: '2.5.562 — Menus, the Look list and the language list now show in your language. Arabic shows clearly in the language list.' },
+  simple: { whatsNewBody: '2.5.562 — More words in your language. Arabic is easy to see in the language list.' },
+  uk: { whatsNewBody: '2.5.562 — Меню, список «Вигляд» і список мов тепер твоєю мовою. Арабська добре видно у списку мов.' },
+  ru: { whatsNewBody: '2.5.562 — Меню, список «Вид» и список языков теперь на твоём языке. Арабский хорошо виден в списке языков.' },
+  es: { whatsNewBody: '2.5.562 — Los menús, la lista de Aspecto y la de idiomas ya están en tu idioma. El árabe se ve bien en la lista de idiomas.' },
+  ar: { whatsNewBody: '2.5.562 — القوائم وقائمة المظهر وقائمة اللغات أصبحت بلغتك. العربية تظهر بوضوح في قائمة اللغات.' },
+  'fa-AF': { whatsNewBody: '2.5.562 — منوها، فهرست نما و فهرست زبان‌ها حالا به زبان تو هستند. عربی در فهرست زبان‌ها واضح دیده می‌شود.' },
+  rw: { whatsNewBody: '2.5.562 — Menu, urutonde rw\'Isura n\'urutonde rw\'indimi ubu biri mu rurimi rwawe. Icyarabu kigaragara neza ku rutonde rw\'indimi.' },
+  ti: { whatsNewBody: '2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።' },
+}
+for (const [lang, row] of Object.entries(WN562)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined

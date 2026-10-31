@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.562 i18n cleanup. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.562', date: '2026-10-31', lines: {
+    en: ['2.5.562 — Menus, the Look list and the language list now show in your language. Arabic shows clearly in the language list.'],
+    simple: ['2.5.562 — More words in your language. Arabic is easy to see in the language list.'],
+    uk: ['2.5.562 — Меню, список «Вигляд» і список мов тепер твоєю мовою. Арабська добре видно у списку мов.'],
+    ru: ['2.5.562 — Меню, список «Вид» и список языков теперь на твоём языке. Арабский хорошо виден в списке языков.'],
+    es: ['2.5.562 — Los menús, la lista de Aspecto y la de idiomas ya están en tu idioma. El árabe se ve bien en la lista de idiomas.'],
+    ar: ['2.5.562 — القوائم وقائمة المظهر وقائمة اللغات أصبحت بلغتك. العربية تظهر بوضوح في قائمة اللغات.'],
+    'fa-AF': ['2.5.562 — منوها، فهرست نما و فهرست زبان‌ها حالا به زبان تو هستند. عربی در فهرست زبان‌ها واضح دیده می‌شود.'],
+    rw: ['2.5.562 — Menu, urutonde rw\'Isura n\'urutonde rw\'indimi ubu biri mu rurimi rwawe. Icyarabu kigaragara neza ku rutonde rw\'indimi.'],
+    ti: ['2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
