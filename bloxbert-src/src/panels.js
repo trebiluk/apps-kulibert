@@ -124,14 +124,23 @@ export function mountPanels(api) {
   }
   // 2.5.586: the crafting panel starts below the shared top bar, measured live, because on phones the
   // bar wraps to two rows (about 100px at 412) and covered the panel's title and Close.
+  // 2.5.593: every panel does this (Notebook, World, Menu...), so the Menu chip, Sign in and the version chip
+  // never sit on top of a panel's title or Close.
   function craftBelowBar(id) {
-    if (id !== 'crafting') { sheet.style.removeProperty('top'); return }
     const bar = document.querySelector('.kb-bar')
-    const r = bar ? bar.getBoundingClientRect() : null
-    const h = r && r.height ? Math.ceil(r.bottom) : 48
+    const r = bar && getComputedStyle(bar).display !== 'none' ? bar.getBoundingClientRect() : null
+    let h = r && r.height ? Math.ceil(r.bottom) : (id === 'crafting' ? 48 : 0)
+    // Menu and Settings keep the game bar (header.top) above the panel (read.css 2.5.523); start below it too.
+    // On phones that bar wraps to two rows, so the old fixed 68px left the panel's Close under it.
+    if (id === 'menu' || id === 'settings') {
+      const hud = document.querySelector('header.top')
+      const hr = hud && getComputedStyle(hud).display !== 'none' ? hud.getBoundingClientRect() : null
+      if (hr && hr.height) h = Math.max(h, Math.ceil(hr.bottom))
+    }
+    if (!h) { sheet.style.removeProperty('top'); return }
     sheet.style.setProperty('top', h + 'px', 'important')
   }
-  window.addEventListener('resize', () => { if (!sheet.hidden && sheet.dataset.panel === 'crafting') craftBelowBar('crafting') })
+  window.addEventListener('resize', () => { if (!sheet.hidden && sheet.dataset.panel) craftBelowBar(sheet.dataset.panel) })
   let openedAt = 0
   let lastFill = null
   function freshSlots() {
@@ -545,7 +554,8 @@ export function mountPanels(api) {
           tile('folder', api.t('loadSaved'), () => api.load()),
           tile('up', api.t('exportWorld'), () => api.exportWorld()),
           tile('down', api.t('importWorld'), () => api.importWorld()),
-          tile('spark', api.t('freshWorld'), () => { if (confirm(api.t('confirmFresh'))) api.fresh() }),
+          // 2.5.593: one "start over" action. With the world maker on, Fresh world opens it (it asks before it starts).
+          tile('spark', api.t('freshWorld'), () => { if (api.makerOn && api.makerOn() && api.openMaker) { api.openMaker(); return } if (confirm(api.t('confirmFresh'))) api.fresh() }),
           tile('home', api.t('hub'), () => api.hub()),
         )
         if (api.teacher && api.teacher()) {
