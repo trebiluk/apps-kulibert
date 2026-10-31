@@ -480,6 +480,13 @@ try {
   }
   @media (max-height: 520px) and (min-width: 601px) {
     body { overflow: hidden; }
+    /* 1.7.0 round 2: the title screen is compact here so Play is on screen on first load (no scrolling needed) */
+    #title-screen { padding: 2px 8px; }
+    #hero { font-size: 30px; line-height: 1.1; margin: 0 0 4px; }
+    #title-screen .scene { margin: 0; }
+    #title-arm { height: 150px; min-height: 0; }
+    #title-screen p { margin: 4px 0 0; }
+    #play { min-height: 44px; }
     .top { flex-wrap: nowrap; min-height: 40px; padding: 2px 8px; }
     .brand { font-size: 18px; }
     .brand small { display: none; }
