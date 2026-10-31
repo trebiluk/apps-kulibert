@@ -1077,13 +1077,13 @@ export function createSession(api) {
     const main = document.createElement('div')
     main.className = 'bag-main'
     const cap = hotCap()
-    main.append(tab(t('hotbar'), 'hotbar'), row(0, cap))
-    const pocketAt = []
-    for (let i = 9; i < bag.slots.length; i++) if (bag.slots[i]) pocketAt.push(i)
-    if (pocketAt.length) {
+    const hotN = Math.min(cap, bag.slots.length)
+    main.append(tab(t('hotbar'), 'hotbar'), row(0, hotN))
+    // 2.5.568: always show the rest of the 15-slot bag, including empty pockets.
+    if (bag.slots.length > hotN) {
       const pockets = document.createElement('div')
       pockets.className = 'wells'
-      for (const i of pocketAt) pockets.append(one(bag.slots[i], i))
+      for (let i = hotN; i < bag.slots.length; i++) pockets.append(one(bag.slots[i], i))
       main.append(tab(t('pockets'), 'pockets'), pockets)
     }
     layout.append(main)
