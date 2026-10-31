@@ -502,15 +502,26 @@
     },
     {
       "source": "/blocks",
-      "destination": "/blocks/",
-      "permanent": false
+      "destination": "/bertopia/",
+      "permanent": true
+    },
+    {
+      "source": "/blocks/:path((?!sw\\.js$).*)",
+      "destination": "/bertopia/:path",
+      "permanent": true
+    },
+    {
+      "source": "/blocks-test",
+      "destination": "/bertopia/",
+      "permanent": true
+    },
+    {
+      "source": "/blocks-test/:path((?!sw\\.js$).*)",
+      "destination": "/bertopia/:path",
+      "permanent": true
     }
   ],
   "rewrites": [
-    {
-      "source": "/bertopia/",
-      "destination": "/blocks/index.html"
-    },
     {
       "source": "/holdit/play/:levelId",
       "destination": "/holdit/index.html"
@@ -945,13 +956,16 @@
     {
       "source": "/bistro/:path*",
       "destination": "https://bearcat-bistro.vercel.app/bistro/:path*"
-    },
-    {
-      "source": "/bertopia/:path*",
-      "destination": "/blocks/:path*"
     }
   ],
   "headers": [
+    {
+      "source": "/(blocks|blocks-test)/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
+      ]
+    },
     {
       "source": "/",
       "headers": [
