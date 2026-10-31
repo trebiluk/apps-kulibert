@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.585', date: '2026-10-31', lines: {
+    en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
+    simple: ["2.5.585 — New worlds start you on the ground."],
+  } },
   // 2.5.579 worldgen part A. rw, ti, and fa-AF are draft translations.
   { v: '2.5.579', date: '2026-10-31', lines: {
     en: ['2.5.579 — Snow sits on high hills. Red sand sits on a deep riverbank. Ice and red brick can be made. Slate is not stone.'],
