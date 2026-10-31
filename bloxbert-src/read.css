@@ -3093,3 +3093,28 @@ html body .daily-mark-star { font-size: 20px; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   html body .daily-card, html body .daily-card * { transition: none !important; animation: none !important; }
 }
+
+/* 2.5.562: the Arabic and Dari names in the language list draw from Bertopia's own Noto Sans Arabic, so the row is never blank when the page font has no Arabic letters. The name sits next to the check like the other rows; the word itself stays right to left. */
+@font-face {
+  font-family: "Bertopia Arabic";
+  src: url("/fonts/noto-sans-arabic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bertopia Arabic";
+  src: url("/fonts/noto-sans-arabic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+html body #sheet .lang-opt[data-lang="ar"] .lang-name,
+html body #sheet .lang-opt[data-lang="fa-AF"] .lang-name {
+  font-family: "Bertopia Arabic", "Noto Sans Arabic", Tahoma, "Segoe UI", sans-serif !important;
+  font-size: 18px;
+  line-height: 1.4;
+  color: inherit;
+  opacity: 1;
+  unicode-bidi: isolate;
+}

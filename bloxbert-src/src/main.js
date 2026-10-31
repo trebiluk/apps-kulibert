@@ -13594,8 +13594,8 @@ function paintLangRow(g) {
     opt.type = 'button'
     opt.className = 'pill lang-opt'
     opt.setAttribute('role', 'option')
-    opt.lang = code === 'ar' ? 'ar' : code
-    opt.dir = code === 'ar' ? 'rtl' : 'ltr'
+    opt.lang = code
+    opt.dir = 'ltr'
     opt.dataset.lang = code
     const on = code === cur
     opt.setAttribute('aria-selected', on ? 'true' : 'false')
@@ -13607,6 +13607,8 @@ function paintLangRow(g) {
     mark.textContent = on ? '✓' : ''
     const word = document.createElement('span')
     word.className = 'lang-name'
+    word.lang = code
+    word.dir = code === 'ar' || code === 'fa-AF' ? 'rtl' : 'ltr'
     word.textContent = name
     opt.append(mark, word)
     opt.addEventListener('pointerdown', (e) => {
