@@ -23,7 +23,8 @@ function roundStep(n) {
 }
 
 export function fogFor(addH) {
-  const end = addH * 24 - 4
+  // 2.5.550: floor at 20 blocks so the low-fps guard never pulls a white wall up close.
+  const end = Math.max(20, addH * 24 - 4)
   const start = Math.min(Math.max(20, end * 0.55), Math.max(0, end - 1))
   return { start, end }
 }
