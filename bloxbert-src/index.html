@@ -754,6 +754,8 @@ body[data-glasses="1"] .cross{box-shadow:none}
 .top,#path-chip,#game-menu,#inspect-chip,#wallet-chip,#fs-btn,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
+/* 2.5.592: phone World panel, two columns so labels show in full (no "Load my...") */
+@media (max-width:600px){#sheet[data-panel="world"] .ggrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#sheet[data-panel="world"] .gtile .glbl{display:block!important;-webkit-line-clamp:unset!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-height:none!important;max-width:none!important;overflow-wrap:break-word;line-height:1.2}}
 #qol-tip.kd-tip,#qol-held{
   position:fixed;z-index:80;font-size:max(14px,var(--ks-fs-s));
   padding:calc(var(--ks-pad) / 3) var(--ks-pad);pointer-events:none
