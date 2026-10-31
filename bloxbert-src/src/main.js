@@ -1,3 +1,4 @@
+import '@babylonjs/core/Rendering/edgesRenderer' // side effect: enables mesh.enableEdgesRendering() for the place ghost outline
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
