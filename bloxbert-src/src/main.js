@@ -4837,7 +4837,9 @@ async function snapshot() {
     ...(Object.keys(effects).length ? { effects } : {}),
   }
 }
+let oldSwap = false // 2.5.592: true while Load my saved world swaps the old save in; saves wait it out
 async function saveBody() {
+  if (oldSwap) return -1
   if (!(await waitWriter())) {
     pauseOtherTab()
     const err = new Error('paused')
@@ -9089,10 +9091,11 @@ async function loadOldClicked() {
       const now = new Date()
       await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
     } catch (e) {}
+    oldSwap = true // no autosave of the current world may land on top of the old one
+    try { await saveChain } catch (e) {}
     await idbPut(WORLD, old)
     try { localStorage.removeItem(SPOT_KEY) } catch (e) {} // stand where the old world left you, not where this one did
     try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
-    try { await saveChain } catch (e) {}
     const ok = await load()
     if (!ok) { toast(t('saveKept')); return false }
     toast(t('oldLoaded'))
@@ -9102,6 +9105,7 @@ async function loadOldClicked() {
     toast(t('saveKept'))
     return false
   } finally {
+    oldSwap = false
     loadOldClicked.busy = false
     if (btn) btn.removeAttribute('aria-busy')
   }
