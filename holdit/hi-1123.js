@@ -72,11 +72,57 @@ function paintIntro(ol) {
     paintIntro(ol);
   }
 
+  var OLD_ROLE = "This is the design tool. SpanCraft and Spire Lab are the bridge and tower challenge games.";
+  // rw, ti, fa-AF: draft translation
+  var ROLE = {
+    en: "This is the design tool. Span and Spire are its bridge and tower modes.",
+    uk: "Це інструмент для проєктування. Span і Spire — його режими мосту й вежі.",
+    ru: "Это инструмент для проектирования. Span и Spire — его режимы моста и башни.",
+    es: "Esta es la herramienta de diseño. Span y Spire son sus modos de puente y torre.",
+    ar: "هذه أداة التصميم. Span و Spire هما وضعا الجسر والبرج.",
+    "fa-AF": "این ابزار طراحی است. Span و Spire حالت‌های پل و برج آن هستند.",
+    rw: "Iki ni igikoresho cyo gushushanya. Span na Spire ni uburyo bwacyo bwo ku kiraro no ku munara.",
+    ti: "እዚ መሳርሒ ንድፊ እዩ። Spanን Spireን ናይ ድልድልን ግምብን ኩነታቱ እዮም."
+  };
+  function roleLang() {
+    var lang = "en";
+    try {
+      var q = new URLSearchParams(location.search).get("lang");
+      if (q) lang = q;
+      else if (document.documentElement.lang) lang = document.documentElement.lang;
+    } catch (eLang) {}
+    if (lang === "simple") lang = "en";
+    if (lang === "fa" || lang === "faAF") lang = "fa-AF";
+    return ROLE[lang] ? lang : "en";
+  }
+  function inHistory(node) {
+    var el = node && node.parentElement;
+    while (el) {
+      if (el.matches && el.matches("ol.mt-10")) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+  function paintRole() {
+    if (!document.body) return;
+    var next = ROLE[roleLang()];
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var value = node.nodeValue;
+      if (!value || (value.indexOf("SpanCraft") === -1 && value.indexOf("Spire Lab") === -1)) continue;
+      if (inHistory(node)) continue;
+      if (value.indexOf("stays the bridge challenge") !== -1) continue;
+      if (value.indexOf(OLD_ROLE) !== -1) node.nodeValue = value.split(OLD_ROLE).join(next);
+      else node.nodeValue = value.replace(/SpanCraft/g, "Span").replace(/Spire Lab/g, "Spire");
+    }
+  }
+
   var busy = false;
   function pass() {
     if (busy) return;
     busy = true;
-    try { paintChips(); paintNews(); } finally { busy = false; }
+    try { paintChips(); paintNews(); paintRole(); } finally { busy = false; }
   }
 
   function arm() {

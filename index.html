@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-31-boards-quiet"/>
+<meta name="tech-room-rev" content="2026-10-31-links-fix"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -2224,7 +2224,7 @@
         <nav class="board">
           <a class="tile" data-id="catapult" data-keywords="throwit catapult shop jolly rancher parts ticket glasses" href="/catapult/">
             <img class="mark" src="/icons/icon-catapult.svg" alt="" width="72" height="72"/>
-            <span class="label">Bertapult</span>
+            <span class="label">ThrowIt</span>
             <span class="blurb" data-i18n="blurbThrow">Toss candy at a target</span>
           </a>
           <a class="tile" data-id="sprocket" data-keywords="sprocket shop" href="/sprocket/index.html">
@@ -4441,8 +4441,18 @@
         if (!plateState || !document.body.classList.contains("is-framed")) return;
         showPlate(plateState.name, plateState.version, plateState.menu, plateState.help, plateState.app);
       });
+      function babooDoor(href) {
+        try {
+          var url = new URL(href, location.href);
+          if (url.hostname !== location.hostname) return href;
+          var path = url.pathname || "/";
+          if (path !== "/baboo" && path.indexOf("/baboo/") !== 0) return href;
+          var rest = path.replace(/^\/baboo\/?/, "");
+          return "https://baboo.kulibert.net/" + rest + url.search + url.hash;
+        } catch (eBaboo) { return href; }
+      }
       function openFrame(href, title, fromPop, replace) {
-        href = schoolHref(href);
+        href = babooDoor(schoolHref(href));
         if (!href) return;
         if (!hubClassic && window.KulibertPrefs) {
           try {
@@ -4581,15 +4591,15 @@ document.addEventListener("click", function (event) {
             try { localStorage.removeItem("tech-room-progress"); } catch (eClear) {}
           }
           if (chip) { chip.hidden = true; chip.textContent = ""; }
-          for (var i = 0; i < labels.length; i++) labels[i].textContent = "Bertapult";
+          for (var i = 0; i < labels.length; i++) labels[i].textContent = "ThrowIt";
           var note = document.getElementById("announce");
           if (bar && note && note.hidden) bar.hidden = true;
           return;
         }
         try { localStorage.setItem("tech-room-progress", JSON.stringify({ type: "tech-room-progress", app: "throwit", alias: alias, code: code })); } catch (eSave) {}
         if (bar) bar.hidden = false;
-        if (chip) { chip.hidden = false; chip.textContent = "Bertapult · " + alias + " · " + code; }
-        for (var j = 0; j < labels.length; j++) labels[j].textContent = "Bertapult · " + code;
+        if (chip) { chip.hidden = false; chip.textContent = "ThrowIt · " + alias + " · " + code; }
+        for (var j = 0; j < labels.length; j++) labels[j].textContent = "ThrowIt · " + code;
       }
       try { rememberDesk(JSON.parse(localStorage.getItem("tech-room-progress") || "null")); } catch (eDesk) {}
       window.addEventListener("message", function (ev) {
