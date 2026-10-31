@@ -99,7 +99,11 @@
     "blurbTw": "† صنف و امتیازت را ببین",
     "blurbKz": "† یک روبات را پروگرام کن",
     "blurbDebug": "† گام خراب را پیدا کن",
-    "moreApps": "† برنامه‌های بیشتر"
+    "moreApps": "† برنامه‌های بیشتر",
+    "goals": "هدف‌ها",
+    "keysChip": "? کلیدها",
+    "keysAgain": "? را بزن تا کلیدها را دوباره ببینی.",
+    "creditDyslexia": "خط نارساخوانی: OpenDyslexic (OFL 1.1)."
   },
   "rw": {
     "home": "Ahabanza",
@@ -210,7 +214,11 @@
     "blurbTw": "† Reba icyiciro n'amanota",
     "blurbKz": "† Tegura roboti",
     "blurbDebug": "† Shaka intambwe mbi",
-    "moreApps": "† Ibindi porogaramu"
+    "moreApps": "† Ibindi porogaramu",
+    "goals": "Intego",
+    "keysChip": "? IMBOKO",
+    "keysAgain": "Kanda ? urebe imfunguzo ukundi.",
+    "creditDyslexia": "Imyandikire yo gusoma: OpenDyslexic (OFL 1.1)."
   },
   "ti": {
     "home": "መበገሲ",
@@ -321,7 +329,11 @@
     "blurbTw": "† ክፍሊኻን ነጥብታትካን ርአ",
     "blurbKz": "† ሮቦት ፕሮግራም ግበር",
     "blurbDebug": "† ጌጋ ስጉምቲ ርኸብ",
-    "moreApps": "† ተወሳኺ መተግበሪታት"
+    "moreApps": "† ተወሳኺ መተግበሪታት",
+    "goals": "ዕላማታት",
+    "keysChip": "? መጠወቒ",
+    "keysAgain": "? ጠውቕ መጠወቒታት ዳግማይ ንምርኣይ።",
+    "creditDyslexia": "ቅርጺ ፊደል ንጸገም ንባብ: OpenDyslexic (OFL 1.1)."
   },
   "whatsNewLine": {
     "rw": "Abana ntibakibona kode za verisiyo. †",
