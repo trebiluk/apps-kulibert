@@ -97,6 +97,30 @@
 
   applyDebugFlag();
 
+  /* r3: the hub's Start link is an in-app route (pushState), which drops
+     ?debug. Carry the flag onto the next in-app URL when it is missing. */
+  function keepDebug(url) {
+    if (!debugOn() || url == null) return url;
+    try {
+      var u = new URL(String(url), location.href);
+      if (u.origin !== location.origin || u.pathname.indexOf("/holdit") !== 0) return url;
+      if (u.searchParams.has("debug")) return url;
+      u.searchParams.set("debug", new URLSearchParams(location.search).get("debug") || "1");
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return url;
+    }
+  }
+  ["pushState", "replaceState"].forEach(function (name) {
+    var orig = history[name];
+    if (typeof orig !== "function") return;
+    history[name] = function (state, title, url) {
+      var r = orig.call(this, state, title, keepDebug(url));
+      applyDebugFlag();
+      return r;
+    };
+  });
+
   function editorOn() {
     if (document.querySelector(".shop.shop-editor")) return true;
     return /\/play\//.test(location.pathname);
