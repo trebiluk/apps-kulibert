@@ -41,8 +41,65 @@
     gridOn: mat(0x22d3ee, 0.1, 0.45),
     red: mat(0xc45a4a, 0, 0.55),
     blue: mat(0x3b82f6, 0, 0.5),
-    part: mat(0xc5ceda, 0, 0.55)
+    part: mat(0xf0a830, 0, 0.5),
+    partB: mat(0x7d8fa3, 0, 0.55),
+    bin: mat(0x4f7392, 0, 0.6),
+    stop: mat(0x3a3f45, 0, 0.7),
+    belt: mat(0x2f3338, 0, 0.85),
+    hot: mat(0xe8b400, 0.2, 0.4)
   };
+  // 1.7.x graphics pass: bins, stops and joints had no material (they drew flat white). Give them real ones.
+  MATS.joint = MATS.bin;
+  MATS.edge = new THREE.LineBasicMaterial({ color: 0x1d1b18 });
+  var EDGE_GEO = {};
+  function edgesFor(geo, key) {
+    if (!EDGE_GEO[key]) EDGE_GEO[key] = new THREE.EdgesGeometry(geo);
+    return EDGE_GEO[key];
+  }
+  var BOX_GEO = {};
+  function boxGeo(w, h, d) {
+    var key = w + "x" + h + "x" + d;
+    if (!BOX_GEO[key]) BOX_GEO[key] = new THREE.BoxGeometry(w, h, d);
+    return BOX_GEO[key];
+  }
+  function outlined(geo, material, key) {
+    var m = new THREE.Mesh(geo, material);
+    var line = new THREE.LineSegments(edgesFor(geo, key), MATS.edge);
+    line.userData.sharedGeo = true;
+    m.userData.sharedGeo = true;
+    m.add(line);
+    return m;
+  }
+  // A soft round shadow drawn once to a canvas: cheap contact shadows while real shadows stay off.
+  var BLOB = null;
+  function blobTexture() {
+    if (BLOB) return BLOB;
+    var cv = document.createElement("canvas");
+    cv.width = cv.height = 64;
+    var ctx = cv.getContext("2d");
+    var g = ctx.createRadialGradient(32, 32, 2, 32, 32, 31);
+    g.addColorStop(0, "rgba(0,0,0,0.45)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 64, 64);
+    BLOB = new THREE.CanvasTexture(cv);
+    return BLOB;
+  }
+  var BLOB_MAT = null;
+  function blob(size) {
+    if (!BLOB_MAT) BLOB_MAT = new THREE.MeshBasicMaterial({ map: blobTexture(), transparent: true, depthWrite: false });
+    var m = new THREE.Mesh(planeGeo(), BLOB_MAT);
+    m.userData.sharedGeo = true;
+    m.rotation.x = -Math.PI / 2;
+    m.scale.set(size, size, 1);
+    m.position.y = 0.9;
+    return m;
+  }
+  var PLANE = null;
+  function planeGeo() {
+    if (!PLANE) PLANE = new THREE.PlaneGeometry(1, 1);
+    return PLANE;
+  }
 
   function vec(reach, height, yawDeg) {
     var a = (yawDeg || 0) * Math.PI / 180;
@@ -113,7 +170,8 @@
       if (item.chip) {
         span.className = "chip3d";
         span.innerHTML = CHIP_ICON[item.chip] + "<b></b>";
-        span.lastChild.textContent = item.text;
+        // On a small view the arm tags show only the name, so they cover less of the arms.
+        span.lastChild.textContent = h < 170 ? String(item.text).split(" \u00b7 ")[0] : item.text;
         if (item.title) span.title = item.title;
       } else span.textContent = item.text;
       span.style.left = x + "px";
@@ -248,11 +306,15 @@
       }
       pmrem.dispose();
     } catch (envErr) {}
-    var table = new THREE.Mesh(new THREE.CircleGeometry(300, 48), MATS.table);
+    // A round workbench with a little thickness, so the floor reads as a table and not as an endless plane.
+    var table = new THREE.Mesh(new THREE.CylinderGeometry(300, 300, 10, 72), MATS.table);
     table.receiveShadow = true;
-    table.rotation.x = -Math.PI / 2;
-    table.position.y = 0;
+    table.position.y = -5;
     scene.add(table);
+    var benchRim = new THREE.Mesh(new THREE.TorusGeometry(300, 2.2, 6, 96), MATS.stop);
+    benchRim.rotation.x = Math.PI / 2;
+    benchRim.position.y = -0.5;
+    scene.add(benchRim);
     function linearGrid(grid) {
       var attr = grid.geometry.getAttribute("color");
       if (!attr) return;
@@ -264,8 +326,9 @@
       }
       attr.needsUpdate = true;
     }
-    var gridLight = new THREE.GridHelper(640, 32, 0x111111, 0x111111);
-    var gridDark = new THREE.GridHelper(640, 32, 0x555555, 0x555555);
+    // Softer lines that stay inside the round table (420 x 420 fits in the 300 radius).
+    var gridLight = new THREE.GridHelper(420, 21, 0x8f9aa4, 0xa9b3bb);
+    var gridDark = new THREE.GridHelper(420, 21, 0x66707a, 0x515a63);
     linearGrid(gridLight);
     linearGrid(gridDark);
     gridLight.position.y = 0.6;
@@ -274,10 +337,14 @@
     scene.add(gridDark);
     var dyn = new THREE.Group();
     scene.add(dyn);
+    var stat = new THREE.Group();
+    scene.add(stat);
+    var statKey = null;
+    var statLabels = [];
 
     var sharedGeo = {};
     function disposeTree(node) {
-      if (node.geometry && !sharedGeo[node.geometry.uuid]) node.geometry.dispose();
+      if (node.geometry && !sharedGeo[node.geometry.uuid] && !node.userData.sharedGeo) node.geometry.dispose();
       var kids = node.children;
       if (!kids) return;
       for (var k = kids.length - 1; k >= 0; k--) disposeTree(kids[k]);
@@ -296,21 +363,18 @@
     function frameCamera() {
       camera.fov = 38;
       camera.aspect = Math.max(0.2, (canvas.clientWidth || 1) / (canvas.clientHeight || 1));
+      // Frame the work area (both arms, the bins and the parts), not the whole table, so the arms fill the view.
+      var bx = (root.PINCHY && root.PINCHY.LAYOUT.bizzyX) || 190;
       if (!rimPts) {
         rimPts = [];
-        var i, a;
-        for (i = 0; i < 20; i++) {
-          a = (i / 20) * Math.PI * 2;
-          rimPts.push(new THREE.Vector3(Math.cos(a) * 300, 1, Math.sin(a) * 300));
-        }
-        rimPts.push(new THREE.Vector3(0, 280, 20));
-        rimPts.push(new THREE.Vector3(0, 100, 230));
-        rimPts.push(new THREE.Vector3(160, 80, 80));
-        rimPts.push(new THREE.Vector3(-160, 80, 80));
+        var xs = [-95, bx + 70];
+        var zs = [-30, 175];
+        var ys = [0, 240];
+        xs.forEach(function (x) { zs.forEach(function (z) { ys.forEach(function (y) { rimPts.push(new THREE.Vector3(x, y, z)); }); }); });
       }
-      var target = new THREE.Vector3(0, 48, 16);
-      var dir = new THREE.Vector3(0.82, 0.58, 0.9).normalize();
-      var lo = 420;
+      var target = new THREE.Vector3(bx * 0.42, 70, 60);
+      var dir = new THREE.Vector3(0.55, 0.52, 1).normalize();
+      var lo = 200;
       var hi = 2000;
       var best = hi;
       var step, mid, fit, s, projected, ax, ay;
@@ -324,7 +388,7 @@
           projected = rimPts[s].clone().project(camera);
           ax = Math.abs(projected.x);
           ay = Math.abs(projected.y);
-          if (ax > 0.94 || ay > 0.94 || projected.z > 1) fit = false;
+          if (ax > 0.97 || ay > 0.95 || projected.z > 1) fit = false;
         }
         if (fit) { best = mid; hi = mid; }
         else lo = mid;
@@ -488,6 +552,11 @@
       rootG.visible = !ghost;
       return { root: rootG, links: links, servos: servos, jaws: jaws };
     }
+    var bertyBlob = blob(78);
+    scene.add(bertyBlob);
+    var bizzyBlob = blob(78);
+    bizzyBlob.position.x = root.PINCHY.LAYOUT.bizzyX || 190;
+    scene.add(bizzyBlob);
     var solidRig = buildRig(false);
     var bizzyRig = buildRig(false, MATS.hornB, root.PINCHY.LAYOUT.bizzyX || 190);
     var ghostRig = buildRig(true);
@@ -587,14 +656,36 @@
       srgbColor(MATS.gridOn.color, 0x22d3ee);
       srgbColor(MATS.red.color, 0xc45a4a);
       srgbColor(MATS.blue.color, 0x3b82f6);
-      srgbColor(MATS.part.color, 0xc5ceda);
+      srgbColor(MATS.part.color, 0xf0a830);
+      srgbColor(MATS.bin.color, darkTheme ? 0x6f93b3 : 0x4f7392);
+      srgbColor(MATS.partB.color, 0x7d8fa3);
+      srgbColor(MATS.stop.color, 0x3a3f45);
+      srgbColor(MATS.belt.color, 0x2f3338);
+      srgbColor(MATS.hot.color, 0xe8b400);
+      MATS.edge.color.setHex(darkTheme ? 0x0b0a09 : 0x1d1b18).convertSRGBToLinear();
       hemi.intensity = darkTheme ? 0.45 : 0.6;
       var clear = darkTheme ? 0x2a2723 : 0xfbf8f1;
       srgbColor(scene.background, clear);
       renderer.setClearColor(scene.background, 1);
       gridLight.visible = !darkTheme;
       gridDark.visible = darkTheme;
-      if (opts && opts.world) buildWorld(dyn, state, level);
+      if (opts && opts.world) {
+        // The level's fixed things (spots, bins, belt) are built once per level and reused; only parts are rebuilt per frame.
+        var key = level ? level.id : "";
+        if (key !== statKey) {
+          var si;
+          for (si = stat.children.length - 1; si >= 0; si--) { disposeTree(stat.children[si]); stat.remove(stat.children[si]); }
+          var keep = labelQueue;
+          labelQueue = [];
+          if (level) buildStatic(stat, level);
+          statLabels = labelQueue;
+          labelQueue = keep;
+          statKey = key;
+        }
+        stat.visible = true;
+        for (var li = 0; li < statLabels.length; li++) labelQueue.push(statLabels[li]);
+        buildParts(dyn, state, level);
+      } else stat.visible = false;
       if (ghostRig.root.visible) {
         var code = document.documentElement.lang || "en";
         var targetWord = root.PINCHY && root.PINCHY.uiText ? root.PINCHY.uiText(code, "Target") : "Target";
@@ -614,7 +705,7 @@
     return { render: render, resize: resize };
   }
 
-  function buildWorld(parent, state, level) {
+  function buildStatic(parent, level) {
     var G = root.PINCHY;
     if (!G || !level) return;
     var cols = G.COLS;
@@ -645,13 +736,13 @@
       group = new THREE.Group();
       group.position.set(hx, 0, hz);
       group.rotation.y = yaw;
-      wall = new THREE.Mesh(new THREE.BoxGeometry(4, bin.h, bin.half), MATS.joint);
+      wall = outlined(boxGeo(4, bin.h, bin.half), MATS.bin, "w" + bin.h + "x" + bin.half);
       wall.position.set(-bin.half, bin.h / 2, 0);
       group.add(wall);
-      wall = new THREE.Mesh(new THREE.BoxGeometry(4, bin.h, bin.half), MATS.joint);
+      wall = outlined(boxGeo(4, bin.h, bin.half), MATS.bin, "w" + bin.h + "x" + bin.half);
       wall.position.set(bin.half, bin.h / 2, 0);
       group.add(wall);
-      wall = new THREE.Mesh(new THREE.BoxGeometry(bin.half * 2, bin.h, 4), MATS.joint);
+      wall = outlined(boxGeo(bin.half * 2, bin.h, 4), MATS.bin, "b" + bin.h + "x" + bin.half);
       wall.position.set(0, bin.h / 2, bin.half * 0.35);
       group.add(wall);
       parent.add(group);
@@ -665,13 +756,13 @@
       var zgroup = new THREE.Group();
       zgroup.position.set(zx, 0, zz);
       zgroup.rotation.y = zyaw;
-      var zwall = new THREE.Mesh(new THREE.BoxGeometry(4, bz.h, bz.half), MATS.joint);
+      var zwall = outlined(boxGeo(4, bz.h, bz.half), MATS.bin, "w" + bz.h + "x" + bz.half);
       zwall.position.set(-bz.half, bz.h / 2, 0);
       zgroup.add(zwall);
-      zwall = new THREE.Mesh(new THREE.BoxGeometry(4, bz.h, bz.half), MATS.joint);
+      zwall = outlined(boxGeo(4, bz.h, bz.half), MATS.bin, "w" + bz.h + "x" + bz.half);
       zwall.position.set(bz.half, bz.h / 2, 0);
       zgroup.add(zwall);
-      zwall = new THREE.Mesh(new THREE.BoxGeometry(bz.half * 2, bz.h, 4), MATS.joint);
+      zwall = outlined(boxGeo(bz.half * 2, bz.h, 4), MATS.bin, "b" + bz.h + "x" + bz.half);
       zwall.position.set(0, bz.h / 2, bz.half * 0.35);
       zgroup.add(zwall);
       parent.add(zgroup);
@@ -682,22 +773,28 @@
       var byaw = ph.belt.base * Math.PI / 180;
       var rig = new THREE.Group();
       rig.rotation.y = byaw;
-      var slab = new THREE.Mesh(new THREE.BoxGeometry(34, 3, ph.belt.r1 - ph.belt.r0), MATS.table);
+      var slab = new THREE.Mesh(new THREE.BoxGeometry(34, 3, ph.belt.r1 - ph.belt.r0), MATS.belt);
       slab.position.set(0, ph.belt.top - 1.5, (ph.belt.r0 + ph.belt.r1) / 2);
       rig.add(slab);
-      var stopper = new THREE.Mesh(new THREE.BoxGeometry(34, ph.stop.top - ph.belt.top + 3, ph.stop.hw * 2), MATS.joint);
+      var stopper = new THREE.Mesh(new THREE.BoxGeometry(34, ph.stop.top - ph.belt.top + 3, ph.stop.hw * 2), MATS.stop);
       stopper.position.set(0, (ph.stop.top + ph.belt.top - 3) / 2, ph.stop.r);
       rig.add(stopper);
       parent.add(rig);
       addLabel(parent, "Belt \u2192", vec((ph.belt.r0 + ph.belt.r1) / 2 - 40, ph.belt.top + 22, ph.belt.base), 36, 8);
       if (ph.target) {
         var tg = ph.target;
-        var tm = new THREE.Mesh(new THREE.BoxGeometry(tg.hw * 2, tg.hh * 2, tg.hw * 2), MATS.part);
+        var tm = outlined(boxGeo(tg.hw * 2, tg.hh * 2, tg.hw * 2), MATS.partB, "box" + tg.hw + "x" + tg.hh);
         tm.position.copy(vec(tg.r, tg.hh, tg.base));
         tm.rotation.y = tg.base * Math.PI / 180;
         parent.add(tm);
       }
     }
+  }
+
+  function buildParts(parent, state, level) {
+    var G = root.PINCHY;
+    if (!G || !level) return;
+    var i;
     function addPart(part) {
       if (!part) return;
       var y = part.inBin ? part.hh : part.y;
@@ -705,9 +802,18 @@
       var colorMat = part.color === "red" ? MATS.red : (part.color === "blue" ? MATS.blue : MATS.part);
       var mesh;
       if (part.shape === "circle") {
-        mesh = new THREE.Mesh(new THREE.CylinderGeometry(part.hw, part.hw, part.hh * 2, 16), colorMat);
+        var ckey = "cyl" + part.hw + "x" + part.hh;
+        if (!BOX_GEO[ckey]) BOX_GEO[ckey] = new THREE.CylinderGeometry(part.hw, part.hw, part.hh * 2, 20);
+        mesh = outlined(BOX_GEO[ckey], colorMat, ckey);
       } else {
-        mesh = new THREE.Mesh(new THREE.BoxGeometry(part.hw * 2, part.hh * 2, part.hw * 2), colorMat);
+        mesh = outlined(boxGeo(part.hw * 2, part.hh * 2, part.hw * 2), colorMat, "box" + part.hw + "x" + part.hh);
+      }
+      if (y < part.hh + 30) {
+        var shade = blob(part.hw * 4.2);
+        var foot = vec(part.r, 0, part.base);
+        shade.position.x = foot.x;
+        shade.position.z = foot.z;
+        parent.add(shade);
       }
       mesh.position.copy(pos);
       if (part.ang) { mesh.rotation.order = "YXZ"; mesh.rotation.y = part.base * Math.PI / 180; mesh.rotation.x = -part.ang; }
