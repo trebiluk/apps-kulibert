@@ -826,6 +826,38 @@ def draw_leaves(px, mystical, under=False):
                         put(px, x + dx, y + dy, col)
 
 
+# 2.5.550: birch gets real pack art (was the legacy 16px wrap in both packs).
+def draw_birch_log(px, mystical):
+    if mystical:
+        bark, tone, mark = (168, 156, 186), (152, 140, 172), (70, 56, 88)
+    else:
+        bark, tone, mark = (200, 192, 170), (182, 174, 152), (64, 58, 50)
+    fill_noise(px, [bark, tone, bark, (bark[0] - 8, bark[1] - 8, bark[2] - 8)], 3)
+    # Short dark horizontal dashes: birch reads by its marks, not by color.
+    for k in range(14):
+        y = (k * 9 + 3) % 60
+        x = (k * 23 + 5) % 52
+        w = 6 + (k % 3) * 2
+        for dx in range(w):
+            put(px, x + dx, y, mark)
+            put(px, x + dx, y + 1, mark)
+
+
+def draw_birch_leaves(px, mystical):
+    if mystical:
+        cols = [(120, 140, 120), (104, 124, 106), (136, 156, 132), (96, 116, 100)]
+        pocket = (80, 98, 86)
+    else:
+        cols = [(112, 150, 70), (98, 134, 60), (128, 166, 82), (104, 142, 64)]
+        pocket = (82, 112, 50)
+    fill_noise(px, cols, 11)
+    for y in range(3, 60, 8):
+        for x in range(3 + (y // 8 % 2) * 4, 60, 10):
+            for d in range(3):
+                put(px, x + d, y, pocket)
+                put(px, x + 1, y + d - 1, pocket)
+
+
 def draw_sand(px, mystical):
     if mystical:
         base, ripple, grain = (136, 116, 166), (112, 94, 142), (162, 140, 188)
@@ -1252,6 +1284,10 @@ def main():
     def face_for(layer, myst):
         if layer == 'leavesUnder':
             return tune_face('leavesUnder', master_image('leaves_under', myst), myst)
+        if layer == 'wrap_birchLog':
+            im = new_image(); draw_birch_log(im.load(), myst); return im
+        if layer == 'wrap_birchLeaves':
+            im = new_image(); draw_birch_leaves(im.load(), myst); return im
         if layer.startswith('wrap_'):
             return wraps[layer[5:]]
         if layer in MASTERS:
