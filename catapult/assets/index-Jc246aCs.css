@@ -16,16 +16,23 @@ html:not(.kb-framed) body.kb-on .ti-shell.min-h-dvh .ti-top{top:48px}
 @media (max-height:500px){.ti-rail .ti-rail-news,.ti-dock .ti-rail-news{display:none}}
 
 /* JC 2.4.6: Settings language names stay whole on a narrow sheet.
-   Long labels (Ikinyarwanda, Українська) were clipped in the 3-column grid. */
+   Never break inside a word: buttons size to their name and wrap as whole pills. */
 .ti-settings fieldset:has(button[aria-pressed]) button{
   white-space:normal;
-  overflow-wrap:anywhere;
+  word-break:normal;
+  overflow-wrap:normal;
+  hyphens:none;
   text-align:center;
   min-height:44px;
+  min-width:44px;
   height:auto;
 }
-@media (max-width:440px){
-  .ti-settings fieldset:has(button[aria-pressed]) .grid{
-    grid-template-columns:minmax(0,1fr);
-  }
+.ti-settings fieldset .grid:has(> button:nth-child(4)){
+  display:flex;
+  flex-wrap:wrap;
+}
+.ti-settings fieldset .grid:has(> button:nth-child(4)) > button{
+  flex:1 1 auto;
+  white-space:nowrap;
+  font-size:max(12px,min(.875rem,3.4vw));
 }
