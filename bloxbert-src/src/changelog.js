@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.564 Holo Hand part 1. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.564', date: '2026-10-31', lines: {
+    en: ['2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.'],
+    simple: ['2.5.564 — Your hand is a small amber picture of what you hold. Settings: pick Left or Right hand.'],
+    uk: ['2.5.564 — Рука тепер маленька бурштинова голограма того, що ти тримаєш. У Налаштуваннях є Керування з кнопками Ліва і Права для головної руки.'],
+    ru: ['2.5.564 — Рука теперь маленькая янтарная голограмма того, что ты держишь. В Настройках есть Управление с кнопками Левая и Правая для главной руки.'],
+    es: ['2.5.564 — Tu mano ahora es un pequeño holograma ámbar de lo que sostienes. Ajustes tiene Controles, con botones Izquierda y Derecha para tu mano principal.'],
+    ar: ['2.5.564 — يدك الآن صورة مجسمة كهرمانية صغيرة لما تحمله. في الإعدادات قسم التحكم، مع زري يسار ويمين ليدك الرئيسية.'],
+    'fa-AF': ['2.5.564 — دست شما حالا یک هولوگرام کوچک کهربایی از چیزی است که در دست دارید. در تنظیمات بخش کنترول‌ها با دکمه‌های چپ و راست برای دست اصلی هست.'],
+    rw: ['2.5.564 — Ukuboko kwawe ubu ni ishusho ntoya y\'umuhondo y\'icyo ufashe. Igenamiterere rifite Igenzura, n\'utubuto Ibumoso n\'Iburyo ku kuboko kwawe nyamukuru.'],
+    ti: ['2.5.564 — ኢድካ ሕጂ ናይቲ ሒዝካዮ ዘለኻ ንእሽቶ ቡናዊ ሆሎግራም እያ። ኣብ ቅጥዕታት መቆጻጸሪ ኣሎ፡ ንቀንዲ ኢድካ ጸጋምን የማንን መጠወቒታት።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
