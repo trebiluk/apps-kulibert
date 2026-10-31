@@ -6701,3 +6701,7 @@ body.mu237 .songbar-copy #saved-line:empty { display: none !important; }
 /* MU 2.36.67 r1: Make a beat first is the one main button: its word takes the button size, heavier edge. Layout/weight only. */
 body.mu237 #make-beat > span { font-size: inherit !important; font-weight: 800; letter-spacing: normal; }
 body.mu237 #make-beat { min-height: max(56px, 22vh); border-width: 3px; }
+/* MU 2.36.67 r1: the drum pad grid keeps a side gutter so the edge pads (Bell, Clap) never touch the screen edge and get cut. Layout only. */
+@media (max-width: 600px) {
+  body.mu237 #tap-pads { box-sizing: border-box; width: 100%; max-width: 100%; padding-inline: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
