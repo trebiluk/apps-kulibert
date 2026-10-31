@@ -26,6 +26,7 @@ import { BLOCKS } from './data/blocks-list.js';
 import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
 import { initPainter, addPaintButton } from './gfx/painter.js'
 import { REST, blendSky, bodies, glowFor, hillSamples, hillBytes, hillColors, HILL_N } from './gfx/horizon.js'
+import { readDebug, aimFor, DEBUG_CLOCK } from './debug-params.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 // 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
@@ -6173,8 +6174,10 @@ function armBrief() {
   }
   window.__briefReady = true
 }
+const DEBUG = readDebug(location.search)
 function armClock() {
   const q = location.search
+  if (DEBUG) return
   if (!q.includes('clock=')) return
   try { Rules.set('survival.daynight', q.includes('clock=lock') ? 'day' : 'cycle') } catch (e) {}
   if (basics) {
@@ -6189,6 +6192,21 @@ function armClock() {
   try { applySky() } catch (e) {}
   paintDayClock()
   window.__clockReady = true
+}
+// 2.5.563 debug params. Only with ?debug=1. The clock pin lives in basics and is never written to the save.
+function armDebug() {
+  if (!DEBUG) return
+  if (DEBUG.clock && basics && basics.pinSky) {
+    basics.pinSky(DEBUG_CLOCK[DEBUG.clock])
+    try { applySky() } catch (e) {}
+    paintDayClock()
+  }
+  if (DEBUG.cam) {
+    const aim = () => { const a = aimFor(DEBUG.cam, basics && basics.clockMs ? basics.clockMs() : null); setLook(a.h, a.p) }
+    aim()
+    setTimeout(aim, 1200)
+  }
+  window.__debugParams = { clock: DEBUG.clock, cam: DEBUG.cam }
 }
 window.__clock = {
   face: () => basics && basics.face ? basics.face() : null,
@@ -13085,6 +13103,7 @@ load().catch(() => {}).finally(() => {
     }
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
   armClock()
+  armDebug()
   runBtTest()
   paintDayClock()
   armBrief()
