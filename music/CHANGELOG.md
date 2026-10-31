@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.64** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.64 — On songs with real note lengths you can change how long a note lasts, add a dot, a tie or a rest. Five more songs have real notation.
+
+In kid words: pick a note on the Score, then tap Eighth, Quarter, Half, Whole or Dot to change how long it lasts. Tap a letter to change the note. A rest makes it quiet. A tie joins two notes that are the same letter. On a keyboard, the arrow keys move and change the note, 1 to 4 and the dot key set its length, Delete makes a rest, and Space plays. The bar always stays full. If a note is too long for its bar, a calm line says why and what to try. A new bar is always full too. Sakura, Frere Jacques, La Cucaracha, Simple Gifts and Amazing Grace are written like a music book now (tunes only, no words). Other songs and saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.63** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.63 — Six songs now have real music notation: the right note lengths, key, time and pickup.
