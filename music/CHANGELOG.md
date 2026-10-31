@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.67** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.67 — Make a beat is the first big button, Saved is honest, and Help and Teacher hold the long lists.
+
+In kid words: the first time you open DJ Berty you see one big Make a beat button at the top, with a drum picture and its word. Tab lands on it first. "Saved" does not show until your beat really is saved; if the browser cannot keep it, you see "! Not saved yet". Come back later and your beat is there, with "Saved". In the menu, How to use it and What's new open with the Help button. Assign practice and the class file are under a Teacher button at the end of the menu. Swipe hints only show on touch screens. New words fall back to English in the other languages.
+
+## Earlier
+
 **Chip: MU 2.36.65** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside.
