@@ -97,5 +97,95 @@ const again = createBelts({ metaGet: (k) => copy.get(k), metaSet: (k, v) => copy
 again.adopt()
 ok('reload keeps belt items', again.stats().tiles === 4 && again.stats().sample.filter((t) => t.n).length === 3)
 Date.now = realNow
-console.log(fails ? 'belt-oven: ' + fails + ' FAIL' : 'belt-oven: all PASS')
-process.exit(fails ? 1 : 0)
+
+// Panel: belt slot shows the waiting icon and count, then "belt: empty" once a bake takes the sand.
+class FakeNode {
+  constructor(tag) {
+    this.tagName = tag
+    this.className = ''
+    this.children = []
+    this.attrs = {}
+    this.dataset = {}
+    this.hidden = false
+    this._text = ''
+    this._html = ''
+  }
+  get textContent() { return this._text }
+  set textContent(v) { this._text = String(v ?? '') }
+  get innerHTML() { return this._html }
+  set innerHTML(v) { this._html = String(v ?? ''); if (!this._html) this.children = [] }
+  setAttribute(k, v) { this.attrs[k] = String(v) }
+  getAttribute(k) { return this.attrs[k] }
+  append(...nodes) { for (const n of nodes) if (n) this.children.push(n) }
+  replaceChildren(...nodes) { this.children = nodes.filter(Boolean); this._html = '' }
+  querySelector(sel) {
+    const walk = (n) => {
+      if (!n || !n.children) return null
+      for (const c of n.children) {
+        const classes = String(c.className || '').split(/\s+/)
+        if (sel.startsWith('.') && !sel.includes(' ') && classes.includes(sel.slice(1))) return c
+        const hit = walk(c)
+        if (hit) return hit
+      }
+      return null
+    }
+    return walk(this)
+  }
+  get classList() {
+    const self = this
+    return { add(...xs) { const set = new Set(String(self.className || '').split(/\s+/).filter(Boolean)); xs.forEach((x) => set.add(x)); self.className = [...set].join(' ') }, remove() {}, toggle() {} }
+  }
+}
+globalThis.document = { createElement: (tag) => new FakeNode(tag) }
+globalThis.window = {
+  KulibertSlots: {
+    ui: {
+      machinePanel(el) {
+        const inputs = document.createElement('div')
+        inputs.className = 'ks-inputs'
+        el.append(inputs)
+        return { destroy() {}, update() {} }
+      },
+    },
+  },
+}
+const panelApi = createStations({
+  t: (key) => EXTRA.en[key] || key,
+  name: (item) => item,
+  icon(item) {
+    const n = document.createElement('span')
+    n.dataset.block = '1'
+    n.dataset.item = item
+    return n
+  },
+  have: () => 0,
+  spend: () => false,
+  give() {},
+  touch() {},
+})
+const host = document.createElement('div')
+panelApi.paint(host, '2,5,2', 'oven')
+const slot = host.querySelector('.belt-fed')
+const lab = () => slot && slot.querySelector('.belt-fed-lab')
+const art = () => slot && slot.querySelector('.belt-fed-art')
+const count = () => slot && slot.querySelector('.belt-fed-count')
+ok('empty belt slot says belt: empty', !!(lab() && lab().textContent === 'belt: empty'))
+ok('empty belt slot has an icon', !!(art() && art().innerHTML.includes('<svg')))
+ok('belt words in 8 languages', ['uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple'].every((l) => EXTRA[l] && EXTRA[l].beltFrom && EXTRA[l].beltEmpty))
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+panelApi.pushIn('2,5,2', 'log')
+panelApi.pushIn('2,5,2', 'sand')
+wait(300).then(() => {
+  ok('one sand shows icon, count, from belt', lab().textContent === 'from belt' && count().textContent === '1' && art().children[0] && art().children[0].dataset.item === 'sand', (lab() && lab().textContent) + ' ' + (count() && count().textContent))
+  panelApi.pushIn('2,5,2', 'sand')
+  return wait(300)
+}).then(() => {
+  ok('count drops to belt: empty once the bake starts', lab().textContent === 'belt: empty' && art().innerHTML.includes('<svg'), lab() && lab().textContent)
+  if (host._ksDestroy) host._ksDestroy()
+  console.log(fails ? 'belt-oven: ' + fails + ' FAIL' : 'belt-oven: all PASS')
+  process.exit(fails ? 1 : 0)
+}).catch((err) => {
+  if (host._ksDestroy) host._ksDestroy()
+  console.log('FAIL belt panel ' + err)
+  process.exit(1)
+})

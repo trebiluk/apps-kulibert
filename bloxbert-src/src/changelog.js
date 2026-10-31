@@ -1,15 +1,15 @@
 export const CHANGELOG = [
   // 2.5.572 belts feed ovens (brief 0066). rw, ti, and fa-AF are machine drafts.
   { v: '2.5.572', date: '2026-10-31', lines: {
-    en: ['2.5.572 — Belts can feed an oven now: logs and coal become fuel, sand becomes glass. The belt hint asks for the oven-to-box loop, which you can finish.'],
-    simple: ['2.5.572 — Belts can feed an oven. Logs and coal are fuel. Sand makes glass. The belt hint is oven to box.'],
-    uk: ['2.5.572 — Стрічки тепер можуть годувати піч: колоди й вугілля стають паливом, пісок — склом. Підказка стрічки просить коло «піч до скрині», яке можна завершити.'],
-    ru: ['2.5.572 — Ленты теперь могут кормить печь: брёвна и уголь становятся топливом, песок — стеклом. Подсказка ленты просит круг «печь до сундука», который можно закончить.'],
-    es: ['2.5.572 — Las cintas ya pueden alimentar un horno: troncos y carbón son combustible, la arena se vuelve vidrio. La pista de la cinta pide el circuito horno-caja, que sí se puede terminar.'],
-    ar: ['2.5.572 — السيور تغذّي الفرن الآن: الجذوع والفحم وقود، والرمل يصير زجاجاً. تلميح السير يطلب حلقة الفرن إلى الصندوق، ويمكن إنهاؤها.'],
-    'fa-AF': ['2.5.572 — نوارها حالا می‌توانند داش را پر کنند: چوب و ذغال سوخت می‌شوند و ریگ شیشه می‌شود. راهنمای نوار حلقه داش به صندوق را می‌خواهد که می‌توان تمامش کرد.'],
-    rw: ['2.5.572 — Imigozi ubu ishobora kugaburira ifuru: ibiti n\'amakara biba lisansi, umucanga uba ikirahure. Inama y\'umugozi isaba uruziga ifuru-agasanduku, rushobora kurangira.'],
-    ti: ['2.5.572 — መተሓላለፊታት ሕጂ ንእቶን ክምግቡ ይኽእሉ፡ ዕንጸይትን ከሰልን ነዳዲ ይኾኑ፡ ሑጻ መስትያት ይኸውን። ምኽሪ መተሓላለፊ ናይ እቶን-ሳንዱቕ ዑደት ይሓትት፡ እዚ ድማ ክውዳእ ይከኣል።'],
+    en: ['2.5.572 — Belts can feed an oven now: logs and coal become fuel, sand becomes glass. The belt hint asks for the oven-to-box loop, which you can finish.', '2.5.572 — The oven panel shows the belt slot: a sand icon and a count before it bakes, or "belt: empty".'],
+    simple: ['2.5.572 — Belts can feed an oven. Logs and coal are fuel. Sand makes glass. The belt hint is oven to box.', '2.5.572 — The oven shows the belt slot. Sand has an icon and a count. Empty says belt: empty.'],
+    uk: ['2.5.572 — Стрічки тепер можуть годувати піч: колоди й вугілля стають паливом, пісок — склом. Підказка стрічки просить коло «піч до скрині», яке можна завершити.', '2.5.572 — Панель печі показує слот стрічки: іконка й кількість піску до випікання, або «стрічка: порожньо».'],
+    ru: ['2.5.572 — Ленты теперь могут кормить печь: брёвна и уголь становятся топливом, песок — стеклом. Подсказка ленты просит круг «печь до сундука», который можно закончить.', '2.5.572 — Панель печи показывает слот ленты: значок и число песка до выпечки, или «лента: пусто».'],
+    es: ['2.5.572 — Las cintas ya pueden alimentar un horno: troncos y carbón son combustible, la arena se vuelve vidrio. La pista de la cinta pide el circuito horno-caja, que sí se puede terminar.', '2.5.572 — El panel del horno muestra el hueco de la cinta: icono y cantidad de arena antes de hornear, o «cinta: vacía».'],
+    ar: ['2.5.572 — السيور تغذّي الفرن الآن: الجذوع والفحم وقود، والرمل يصير زجاجاً. تلميح السير يطلب حلقة الفرن إلى الصندوق، ويمكن إنهاؤها.', '2.5.572 — لوحة الفرن تعرض خانة السير: أيقونة وعدد الرمل قبل الخبز، أو «السير: فارغ».'],
+    'fa-AF': ['2.5.572 — نوارها حالا می‌توانند داش را پر کنند: چوب و ذغال سوخت می‌شوند و ریگ شیشه می‌شود. راهنمای نوار حلقه داش به صندوق را می‌خواهد که می‌توان تمامش کرد.', '2.5.572 — تخته داش خانه نوار را نشان می‌دهد: نشان و شمار ریگ پیش از پختن، یا «نوار: خالی».'],
+    rw: ['2.5.572 — Imigozi ubu ishobora kugaburira ifuru: ibiti n\'amakara biba lisansi, umucanga uba ikirahure. Inama y\'umugozi isaba uruziga ifuru-agasanduku, rushobora kurangira.', '2.5.572 — Ifuru yerekana akazu k\'umugozi: ishusho n\'umubare w\'umucanga mbere yo guteka, cyangwa «umugozi: ubusa».'],
+    ti: ['2.5.572 — መተሓላለፊታት ሕጂ ንእቶን ክምግቡ ይኽእሉ፡ ዕንጸይትን ከሰልን ነዳዲ ይኾኑ፡ ሑጻ መስትያት ይኸውን። ምኽሪ መተሓላለፊ ናይ እቶን-ሳንዱቕ ዑደት ይሓትት፡ እዚ ድማ ክውዳእ ይከኣል።', '2.5.572 — እቶን ናይ መተሓላለፊ ቦታ የርኢ፡ ምልክትን ቁጽርን ሑጻ ቅድሚ ምጥባስ፡ ወይ «መተሓላለፊ: ባዶ».'],
   } },
   // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
   { v: '2.5.571', date: '2026-10-31', lines: {

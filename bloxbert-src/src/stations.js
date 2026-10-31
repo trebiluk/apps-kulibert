@@ -3,6 +3,23 @@ import { RECIPES, BED_SHOP } from './data/recipes.js'
 import { ITEMS } from './data/items.js'
 import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
+import { EXTRA } from './strings-extra.js'
+// 2.5.572: the oven panel names the belt slot. rw, ti, and fa-AF are draft translations.
+const BELT_SLOT = {
+  en: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  simple: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  uk: { beltFrom: 'зі стрічки', beltEmpty: 'стрічка: порожньо' },
+  ru: { beltFrom: 'с ленты', beltEmpty: 'лента: пусто' },
+  es: { beltFrom: 'de la cinta', beltEmpty: 'cinta: vacía' },
+  ar: { beltFrom: 'من السير', beltEmpty: 'السير: فارغ' },
+  'fa-AF': { beltFrom: 'از نوار', beltEmpty: 'نوار: خالی' },
+  rw: { beltFrom: 'kuva ku mugozi', beltEmpty: 'umugozi: ubusa' },
+  ti: { beltFrom: 'ካብ መተሓላለፊ', beltEmpty: 'መተሓላለፊ: ባዶ' },
+}
+for (const lang of Object.keys(BELT_SLOT)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], BELT_SLOT[lang])
+}
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8, pinecone: 1 }
 let slotsOf = () => []
@@ -1191,7 +1208,54 @@ export function createStations(api) {
       t: (key) => api.t(key),
       belt: () => (api.belt ? api.belt(k) : null),
     })
-    g._ksDestroy = panel.destroy
+    // Belt-fed sand waits here before it bakes. Always an icon plus words, never a blank box.
+    const beltHost = document.createElement('div')
+    beltHost.className = 'belt-fed'
+    beltHost.tabIndex = 0
+    beltHost.setAttribute('role', 'status')
+    beltHost.setAttribute('aria-live', 'polite')
+    const beltArt = document.createElement('span')
+    beltArt.className = 'belt-fed-art'
+    beltArt.setAttribute('aria-hidden', 'true')
+    const beltCount = document.createElement('span')
+    beltCount.className = 'belt-fed-count'
+    const beltLab = document.createElement('span')
+    beltLab.className = 'belt-fed-lab'
+    beltHost.append(beltArt, beltCount, beltLab)
+    const beltHome = g.querySelector('.ks-inputs') || g.querySelector('.ks-main') || g
+    beltHome.append(beltHost)
+    let beltSig = ''
+    const paintBelt = () => {
+      const rec = get(k, 'oven')
+      const held = rec.beltIn && rec.beltIn.item && rec.beltIn.n > 0 ? rec.beltIn : null
+      const sig = held ? held.item + ':' + held.n : 'empty'
+      if (sig === beltSig) return
+      beltSig = sig
+      beltArt.replaceChildren()
+      if (held) {
+        const icon = face(held.item)
+        if (icon) beltArt.append(icon)
+        beltCount.hidden = false
+        beltCount.textContent = String(held.n)
+        beltLab.textContent = api.t('beltFrom')
+        beltHost.dataset.state = 'full'
+        beltHost.setAttribute('aria-label', itemName(held.item) + ' ' + held.n + ', ' + api.t('beltFrom'))
+      } else {
+        beltArt.innerHTML = '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M3 16h18M5 16v3h2.5v-3M16.5 16v3H19v-3M4 13h16l-1.5-4h-13z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'
+        beltCount.hidden = true
+        beltCount.textContent = ''
+        beltLab.textContent = api.t('beltEmpty')
+        beltHost.dataset.state = 'empty'
+        beltHost.setAttribute('aria-label', api.t('beltEmpty'))
+      }
+    }
+    paintBelt()
+    const beltTimer = setInterval(paintBelt, 250)
+    const killPanel = panel.destroy
+    g._ksDestroy = () => {
+      clearInterval(beltTimer)
+      if (killPanel) killPanel()
+    }
   }
   function baking() {
     const out = []
