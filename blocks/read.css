@@ -3239,6 +3239,39 @@ html body header.top #day-clock { min-height: 44px !important; }
   }
 }
 
+/* 2.5.560 round 1: the Menu on short windows. The tile groups used to be taller than their row and spilled UP over the BERTOPIA
+   plate and Resume, where they could not be scrolled to. Plate and Resume stay on top; the groups scroll under them. */
+@media (max-height: 500px) {
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) > #sheet-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .ggrid {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+  }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .kd-groups {
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    align-self: stretch !important;
+    padding-bottom: 12px;
+  }
+}
+/* About 240 tall there is no room for the plate row: Resume, Exit and Close share the first row and the groups take the rest. */
+@media (max-height: 330px) {
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .kd-plate { display: none !important; }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .ggrid {
+    grid-template-areas: "go exit close" "groups groups groups" !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+  }
+}
+
 /* Sideways phones: Goals moves right of the stick, Suit right of Goals, and the Jump column drops to the corner,
    clear of Pause and Full screen. A left-handed layout (stick on the right) keeps Goals where it was. */
 @media (max-height: 420px) {
