@@ -3869,6 +3869,22 @@ for (const [lang, row] of Object.entries(DAILY547)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// 2.5.557 round 1: the World panel line that says which world opened. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+const WORLD557 = {
+  en: { worldSeed: 'seed {n}', worldFromDevice: 'from this device', worldFromServer: 'from the school server', worldFromNew: 'new world', worldSaved: 'saved {when}' },
+  uk: { worldSeed: 'зерно {n}', worldFromDevice: 'з цього пристрою', worldFromServer: 'зі шкільного сервера', worldFromNew: 'новий світ', worldSaved: 'збережено {when}' },
+  ru: { worldSeed: 'зерно {n}', worldFromDevice: 'с этого устройства', worldFromServer: 'со школьного сервера', worldFromNew: 'новый мир', worldSaved: 'сохранено {when}' },
+  es: { worldSeed: 'semilla {n}', worldFromDevice: 'de este dispositivo', worldFromServer: 'del servidor de la escuela', worldFromNew: 'mundo nuevo', worldSaved: 'guardado {when}' },
+  ar: { worldSeed: 'البذرة {n}', worldFromDevice: 'من هذا الجهاز', worldFromServer: 'من خادم المدرسة', worldFromNew: 'عالم جديد', worldSaved: 'حُفظ {when}' },
+  'fa-AF': { worldSeed: 'دانه {n}', worldFromDevice: 'از همین دستگاه', worldFromServer: 'از سرور مکتب', worldFromNew: 'جهان تازه', worldSaved: 'ذخیره شد {when}' },
+  rw: { worldSeed: 'imbuto {n}', worldFromDevice: 'kuri iki gikoresho', worldFromServer: 'kuri seriveri y\'ishuri', worldFromNew: 'isi nshya', worldSaved: 'yabitswe {when}' },
+  ti: { worldSeed: 'ዘርኢ {n}', worldFromDevice: 'ካብዚ መሳርሒ', worldFromServer: 'ካብ ሰርቨር ቤት ትምህርቲ', worldFromNew: 'ሓድሽ ዓለም', worldSaved: 'ተዓቂቡ {when}' },
+}
+for (const [lang, row] of Object.entries(WORLD557)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 // 2.5.550 Look: small textures wording. fa-AF, rw, and ti are machine drafts.
 const TEX550 = {
   en: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },

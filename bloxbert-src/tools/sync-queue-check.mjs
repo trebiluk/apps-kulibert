@@ -5,6 +5,7 @@
 import { createHash } from 'node:crypto'
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { fromDoc, fitPlayer } from '../src/save.js'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const MOD = process.env.SYNC_MODULE ? pathToFileURL(path.resolve(process.env.SYNC_MODULE)).href : pathToFileURL(path.join(HERE, '../src/save/server-sync.js')).href
@@ -50,17 +51,37 @@ globalThis.window = { addEventListener: (ev, fn) => { (listeners[ev] ||= []).pus
 Object.defineProperty(globalThis, 'navigator', { value: { get onLine() { return net.onLine } }, configurable: true })
 globalThis.location = { search: '?sync=1' }
 let school = []
+let idbs = {}
+let idbOpts = {}
+const idbPuts = []
+// Named in-memory databases. A DB that is created fresh fires onupgradeneeded; an old one without the store makes transaction() throw.
 globalThis.indexedDB = {
-  open() {
+  open(name) {
     const r = {}
     realSetImmediate(() => {
+      const fresh = !idbs[name]
+      if (fresh) idbs[name] = { stores: {} }
+      const d = idbs[name]
       r.result = {
-        transaction: () => {
-          const tx = { objectStore: () => ({ put: (v, k) => { school.push(k); realSetImmediate(() => tx.oncomplete && tx.oncomplete()) } }) }
+        objectStoreNames: { contains: (n) => !!d.stores[n] },
+        createObjectStore: (n) => { d.stores[n] = new Map() },
+        transaction: (n) => {
+          if (idbOpts.txThrows) throw new Error('InvalidStateError')
+          const st = d.stores[n]
+          if (!st) throw new Error('NotFoundError')
+          const tx = {
+            objectStore: () => ({
+              put: (v, k) => { st.set(k, v); idbPuts.push({ db: name, key: k }); if (String(k).endsWith('-school-copy')) school.push(k) },
+              get: (k) => { const q = {}; realSetImmediate(() => { q.result = st.get(k); q.onsuccess && q.onsuccess() }); return q },
+            }),
+          }
+          realSetTimeout(() => tx.oncomplete && tx.oncomplete(), 8)
           return tx
         },
         close() {},
       }
+      if (fresh && r.onupgradeneeded) r.onupgradeneeded()
+      if (idbOpts.blocked) { r.onblocked && r.onblocked(); return }
       r.onsuccess && r.onsuccess()
     })
     return r
@@ -73,6 +94,14 @@ globalThis.fetch = async (url, opt = {}) => {
     srv.gets++
     if (srv.onGet) srv.onGet()
     if (!srv.exists) return json(404, { ok: false })
+    if (String(url).includes('&ck=')) {
+      const tok = decodeURIComponent(String(url).split('&ck=')[1]).split(',')
+      const want = []
+      for (let i = 0; i < tok.length; i += 3) want.push(tok.slice(i, i + 3).join(',')) // same grouping as the server's key list
+      const out = {}
+      for (const k of want) if (k in srv.chunks) out[k] = srv.chunks[k]
+      return json(200, { ok: true, chunks: out })
+    }
     const chunks = {}
     for (const [k, v] of Object.entries(srv.chunks)) chunks[k] = { hash: sha(v), rev: srv.rev }
     return json(200, { ok: true, rev: srv.rev, schema: 6, head: srv.head, chunks })
@@ -98,7 +127,7 @@ console.log = (...a) => { logs.push(a.join(' ')) }
 
 let n = 0
 async function fresh() {
-  resetNet(); logs = []; school = []; timers.clear()
+  resetNet(); logs = []; school = []; idbs = {}; idbOpts = {}; idbPuts.length = 0; timers.clear()
   for (const k of Object.keys(listeners)) delete listeners[k]
   n++
   return import(MOD + '?run=' + n)
@@ -216,6 +245,119 @@ const doc = (blocks, at) => ({ id: 'bertyville-survival', updatedAt: at || new D
   maybePush(doc(['a', 'b']))
   await advance(60000)
   eq(srv.puts.length === 1, '401: sync stopped (' + srv.puts.length + ')')
+}
+
+const WORLD = 'bertyville-survival'
+const stored = (db, key = WORLD) => (idbs[db] && idbs[db].stores.worlds ? idbs[db].stores.worlds.get(key) : undefined)
+const hang = (p) => Promise.race([p, new Promise((r) => realSetTimeout(() => r('HANG'), 1500))])
+const synced = (over = {}) => ({ id: WORLD, updatedAt: '2026-10-31T09:00:00.000Z', syncRev: 3, syncedAt: '2026-10-31T09:00:00.000Z', chunks: { '0,0,0': 'a' }, ...over })
+function serverAt(rev, updatedAt, chunk = 'srv') {
+  srv.exists = true; srv.rev = rev; srv.head = { format: 'kuliblocks', v: 2, schema: 6, id: WORLD, updatedAt, title: 'T' }; srv.chunks = { '0,0,0': chunk }
+}
+
+// 9. clock set back 1 h, edit offline, reload online: local edit wins and reaches the server
+{
+  const { maybePull } = await fresh()
+  serverAt(3, '2026-10-31T09:30:00.000Z')
+  // the offline edit carries an EARLIER updatedAt than the server head (device clock was set back)
+  const local = synced({ updatedAt: '2026-10-31T08:00:00.000Z', chunks: { '0,0,0': 'edited offline' } })
+  idbs.kuliblocks = { stores: { worlds: new Map([[WORLD, local]]) } }
+  const got = await hang(maybePull(WORLD, local))
+  eq(got === null, 'dirty local doc is not replaced by the server copy (' + String(got && got.id) + ')')
+  await flush()
+  eq(srv.puts.length === 1 && srv.puts[0].ifMatch === 3 && srv.chunks['0,0,0'] === 'edited offline', 'local edit reaches the server (puts ' + srv.puts.length + ')')
+  const rec = stored('kuliblocks')
+  eq(rec && rec.syncRev === 4 && rec.syncedAt === '2026-10-31T08:00:00.000Z', 'stored world is stamped with the new server rev')
+}
+
+// 10. saved and unchanged since the last sync, server moved on: pull, with a backup
+{
+  const { maybePull } = await fresh()
+  serverAt(5, '2026-10-31T10:00:00.000Z', 'from other device')
+  const local = synced()
+  const got = await hang(maybePull(WORLD, local))
+  eq(got && got !== 'HANG' && got.syncRev === 5 && got.chunks['0,0,0'] === 'from other device', 'clean local doc takes the newer server rev')
+  eq(got && got.syncedAt === '2026-10-31T10:00:00.000Z', 'pulled doc is marked as synced')
+  eq(idbPuts.some((p) => p.db === 'kuliblocks' && p.key.includes('-backup-')), 'local copy backed up before the pull')
+  eq(srv.puts.length === 0, 'pull does not push')
+}
+
+// 11. server has the same rev, or an older clock but a newer rev elsewhere: nothing to pull
+{
+  const { maybePull } = await fresh()
+  serverAt(3, '2030-01-01T00:00:00.000Z')
+  const got = await hang(maybePull(WORLD, synced()))
+  eq(got === null && srv.puts.length === 0, 'same rev: no pull, no push, whatever the server clock says')
+}
+
+// 12. never synced local world + server copy: local is kept and pushed; no local world: pull
+{
+  const { maybePull } = await fresh()
+  serverAt(2, '2026-10-31T09:00:00.000Z')
+  const local = { id: WORLD, updatedAt: '2026-10-31T07:00:00.000Z', chunks: { '0,0,0': 'mine' } }
+  const got = await hang(maybePull(WORLD, local))
+  await flush()
+  eq(got === null && srv.puts.length === 1 && srv.chunks['0,0,0'] === 'mine', 'local doc without syncRev is kept and pushed')
+  const b = await fresh()
+  serverAt(2, '2026-10-31T09:00:00.000Z', 'theirs')
+  const none = await hang(b.maybePull(WORLD, null))
+  eq(none && none !== 'HANG' && none.chunks['0,0,0'] === 'theirs' && none.syncRev === 2, 'no local world: pull the server copy')
+}
+
+// 13. syncMark carries the last synced rev into the next save
+{
+  const { maybePush, syncMark } = await fresh()
+  eq(Object.keys(syncMark(WORLD)).length === 0, 'no mark before any sync')
+  const d = doc(['a'], '2026-10-31T11:00:00.000Z')
+  maybePush(d)
+  await flush()
+  const m = syncMark(WORLD)
+  eq(m.syncRev === 1 && m.syncedAt === '2026-10-31T11:00:00.000Z', 'mark after the first push: ' + JSON.stringify(m))
+}
+
+// 14. database name comes from main: test build writes backups only to kuliblocks-test
+{
+  const { maybePull, setSyncDb } = await fresh()
+  setSyncDb('kuliblocks-test')
+  serverAt(5, '2026-10-31T10:00:00.000Z')
+  await hang(maybePull(WORLD, synced()))
+  eq(idbPuts.length > 0 && idbPuts.every((p) => p.db === 'kuliblocks-test'), 'backups only in kuliblocks-test: ' + JSON.stringify(idbPuts.map((p) => p.db)))
+  eq(!idbs.kuliblocks, 'student database not opened')
+}
+
+// 15. fresh profile (no database yet): no hang, store is created, pull and backup finish
+{
+  const { maybePull } = await fresh()
+  serverAt(5, '2026-10-31T10:00:00.000Z')
+  const t0 = Date.now()
+  const got = await hang(maybePull(WORLD, synced()))
+  eq(got && got !== 'HANG', 'fresh profile: pull finishes without hanging')
+  eq(idbs.kuliblocks && idbs.kuliblocks.stores.worlds && idbPuts.length === 1, 'fresh profile: store created on upgrade and backup written')
+  void t0
+}
+
+// 16. blocked open, old database without the store, and a throwing transaction() all reject quickly (never hang)
+for (const [label, setup] of [
+  ['blocked', () => { idbOpts.blocked = true }],
+  ['no store', () => { idbs.kuliblocks = { stores: {} } }],
+  ['transaction throws', () => { idbOpts.txThrows = true; idbs.kuliblocks = { stores: { worlds: new Map() } } }],
+]) {
+  const { maybePull } = await fresh()
+  setup()
+  serverAt(5, '2026-10-31T10:00:00.000Z')
+  const got = await hang(maybePull(WORLD, synced()))
+  eq(got && got !== 'HANG', label + ': pull still returns the server doc, no hang')
+}
+
+// 17. save.js: player, mode, bag and hot slot
+{
+  const creative = fromDoc({ v: 2, mode: 'creative' })
+  eq(creative.player.mode === 'creative' && creative.player.bag.length === 15, 'doc with no player and mode creative reloads creative with 15 slots')
+  eq(fromDoc({ v: 2 }).player.mode === 'survival', 'no player, no mode: survival')
+  const odd = fromDoc({ v: 2, player: { mode: 'creative', bag: [{ item: 'a', n: 1 }], hot: 99 } }).player
+  eq(odd.bag.length === 15 && odd.bag[0].item === 'a' && odd.bag[14] === null && odd.hot === 14, 'short bag padded to 15, hot clamped to 14')
+  eq(fitPlayer({ bag: [], hot: -3 }).hot === 0 && fitPlayer({ bag: [], hot: 'x' }).hot === 0 && fitPlayer({ bag: [], hot: 2.9 }).hot === 2, 'hot clamped to 0-14, junk becomes 0')
+  eq(fitPlayer({ mode: 'survival', bag: new Array(20).fill(null), hot: 3 }).bag.length === 20, 'longer bags are left alone')
 }
 
 console.log = realLog
