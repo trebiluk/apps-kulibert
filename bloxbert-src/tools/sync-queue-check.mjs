@@ -556,8 +556,16 @@ for (const [label, setup] of [
     const row = EXTRA[lang] || {}
     eq(typeof row.signOptional === 'string' && row.signOptional.length > 20 && row.signOptional !== 'signOptional', lang + ': signOptional is a real sentence')
     eq(typeof row.signOut === 'string' && row.signOut.length > 1 && row.signOut !== 'signOut', lang + ': signOut is a real word')
+    eq(typeof row.codeHint === 'string' && row.codeHint.length > 1 && row.codeHint !== 'codeHint', lang + ': code placeholder is real text')
+    eq(typeof row.pinHint === 'string' && row.pinHint.length > 1 && row.pinHint !== 'pinHint', lang + ': PIN placeholder is real text')
+    if (lang !== 'en') eq(row.codeHint !== EXTRA.en.codeHint && row.pinHint !== EXTRA.en.pinHint, lang + ': placeholders are not the English text')
   }
   eq(/Tap Sign in/.test(EXTRA.en.signOptional), 'English sentence reads right')
+  eq(EXTRA.en.codeHint === '5 characters' && EXTRA.en.pinHint === 'From your teacher', 'English placeholders unchanged')
+  // main.js applies the placeholder attribute and checks it for drift (source-level check; the page needs a build)
+  const mainSrc = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8')
+  eq(/querySelectorAll\('\[data-i18n-placeholder\]'\)\) el\.setAttribute\('placeholder', t\(el\.dataset\.i18nPlaceholder\)\)/.test(mainSrc), 'applyI18n sets the placeholder attribute')
+  eq(/getAttribute\('placeholder'\) !== t\(el\.dataset\.i18nPlaceholder\)/.test(mainSrc), 'drift check covers placeholders')
 }
 
 console.log = realLog

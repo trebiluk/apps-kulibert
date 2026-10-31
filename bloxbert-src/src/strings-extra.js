@@ -3869,17 +3869,41 @@ for (const [lang, row] of Object.entries(DAILY547)) {
   Object.assign(EXTRA[lang], row)
 }
 
-// 2.5.559 sign-in popup text. The shared popup (tw-session.js) puts data-i18n on these two lines, and this page
+// 2.5.559 sign-in popup text. The shared popup (tw-session.js) puts data-i18n on two lines and data-i18n-placeholder on the two inputs, and this page
 // rewrites every data-i18n, so without them the popup showed the raw key. Copied from shared/i18n. rw, ti, and Dari are machine drafts.
 const SIGN559 = {
-  en: { signOptional: 'You can use every app without signing in. Tap Sign in to keep your marks and your alias.', signOut: 'Sign out' },
-  uk: { signOptional: 'Ти можеш користуватися кожною програмою без входу. Натисни «Увійти», щоб зберегти свої оцінки й псевдонім.', signOut: 'Вийти' },
-  ru: { signOptional: 'Ты можешь пользоваться любым приложением без входа. Нажми «Войти», чтобы сохранить свои отметки и псевдоним.', signOut: 'Выйти' },
-  es: { signOptional: 'Puedes usar cada app sin entrar. Toca Entrar para guardar tus marcas y tu alias.', signOut: 'Salir' },
-  ar: { signOptional: 'يمكنك استخدام كل تطبيق بدون تسجيل الدخول. اضغط تسجيل الدخول لحفظ علاماتك واسمك المستعار.', signOut: 'خروج' },
-  'fa-AF': { signOptional: 'هر برنامه را بدون ورود استفاده کرده می‌توانی. برای نگه‌داشتن نمره‌ها و نام مستعار خود، ورود را بزن.', signOut: 'بیرون شدن' },
-  rw: { signOptional: 'Ushobora gukoresha porogaramu zose utinjiye. Kanda Injira kugira ngo ubike amanota yawe n\'izina ryawe ry\'irihimbano.', signOut: 'Sohoka' },
-  ti: { signOptional: 'ብዘይ ምእታው ነፍሲ ወከፍ ኣፕ ክትጥቀም ትኽእል ኢኻ። ምልክታትካን ሳጓ ስምካን ንምዕቃብ እቶ ጠውቕ።', signOut: 'ውጻእ' },
+  en: {
+    signOptional: 'You can use every app without signing in. Tap Sign in to keep your marks and your alias.', signOut: 'Sign out',
+    codeHint: '5 characters', pinHint: 'From your teacher',
+  },
+  uk: {
+    signOptional: 'Ти можеш користуватися кожною програмою без входу. Натисни «Увійти», щоб зберегти свої оцінки й псевдонім.', signOut: 'Вийти',
+    codeHint: '5 знаків', pinHint: 'Від учителя',
+  },
+  ru: {
+    signOptional: 'Ты можешь пользоваться любым приложением без входа. Нажми «Войти», чтобы сохранить свои отметки и псевдоним.', signOut: 'Выйти',
+    codeHint: '5 знаков', pinHint: 'От учителя',
+  },
+  es: {
+    signOptional: 'Puedes usar cada app sin entrar. Toca Entrar para guardar tus marcas y tu alias.', signOut: 'Salir',
+    codeHint: '5 caracteres', pinHint: 'De tu profe',
+  },
+  ar: {
+    signOptional: 'يمكنك استخدام كل تطبيق بدون تسجيل الدخول. اضغط تسجيل الدخول لحفظ علاماتك واسمك المستعار.', signOut: 'خروج',
+    codeHint: '٥ أحرف', pinHint: 'من معلمك',
+  },
+  'fa-AF': {
+    signOptional: 'هر برنامه را بدون ورود استفاده کرده می‌توانی. برای نگه‌داشتن نمره‌ها و نام مستعار خود، ورود را بزن.', signOut: 'بیرون شدن',
+    codeHint: '۵ حرف', pinHint: 'از معلم',
+  },
+  rw: {
+    signOptional: 'Ushobora gukoresha porogaramu zose utinjiye. Kanda Injira kugira ngo ubike amanota yawe n\'izina ryawe ry\'irihimbano.', signOut: 'Sohoka',
+    codeHint: 'Inyuguti 5', pinHint: 'Biva ku mwarimu',
+  },
+  ti: {
+    signOptional: 'ብዘይ ምእታው ነፍሲ ወከፍ ኣፕ ክትጥቀም ትኽእል ኢኻ። ምልክታትካን ሳጓ ስምካን ንምዕቃብ እቶ ጠውቕ።', signOut: 'ውጻእ',
+    codeHint: '5 ፊደላት', pinHint: 'ካብ መምህርካ',
+  },
 }
 for (const [lang, row] of Object.entries(SIGN559)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}

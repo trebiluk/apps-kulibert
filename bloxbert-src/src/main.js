@@ -1032,6 +1032,7 @@ function applyI18n() {
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)) // 2.5.559: sign-in popup inputs
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -1142,6 +1143,9 @@ function langDrifted() {
   for (const el of document.querySelectorAll('[data-i18n]')) {
     const key = i18nKey(el)
     if (el.textContent !== t(key)) return true
+  }
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) {
+    if (el.getAttribute('placeholder') !== t(el.dataset.i18nPlaceholder)) return true
   }
   return false
 }
