@@ -13107,14 +13107,15 @@ load().catch(() => {}).finally(() => {
       console.info('[bt-bridge] arena at', bx, by, bz)
     }
   } catch (e) { console.warn('[bt-bridge] skip', e && e.message) }
-  // PROTO debug: ?debug=1&tp=bridge spawns on the west cliff top facing +x along the deck (both params required)
+  // PROTO debug: ?debug=1&tp=bridge spawns on the west cliff top facing +x along the deck (both params required).
+  // Wide screens look down at the first deck cell so a click places at once; phones keep the level view the touch path uses.
   try {
     const q = new URLSearchParams(location.search)
     const o = bridge && bridge.origin()
     if (o && [...q.getAll('debug')].includes('1') && [...q.getAll('tp')].includes('bridge')) {
       const at = [o[0] + 2.5, o[1] + 2.05, o[2] + 0.5]
       noa.entities.setPosition(noa.playerEntity, at)
-      spawnWait = { at, col: [o[0] + 2, o[2]], look: [Math.PI / 2, 0.15], since: performance.now() }
+      spawnWait = { at, col: [o[0] + 2, o[2]], look: [Math.PI / 2, innerWidth > 600 ? 1.0 : 0.15], since: performance.now() }
       if (playerBody) playerBody.gravityMultiplier = 0
       console.info('[bt-bridge] debug tp', at.join(','))
     }
