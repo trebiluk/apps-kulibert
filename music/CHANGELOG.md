@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.68** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.68 — On a beat song, Add a bar says to tap a letter to fill the new bar. The Chords group names its chords for a screen reader.
+
+In kid words: on a song made of beats (the song you start with), Add a bar used to say "Every bar is full", but the new bar was empty. Now it says "Tap a letter to fill it." Songs with real note lengths still say every bar is full, because it is. A screen reader hears "Chords: C, F, G, A minor" for the chord buttons. One file (import.js) now updates with the rest when the version changes. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.66** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.66 — On a sideways phone all the note-length buttons show without swiping, the Score tools drawer speaks your language, and Space presses the button you are on.
