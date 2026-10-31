@@ -144,6 +144,38 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.571 what's new (brief 0065). rw, ti, and fa-AF are machine drafts.
+const WN571 = {
+  en: { whatsNewBody: '2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.' },
+  simple: { whatsNewBody: '2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.' },
+  uk: { whatsNewBody: '2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.' },
+  ru: { whatsNewBody: '2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.' },
+  es: { whatsNewBody: '2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.' },
+  ar: { whatsNewBody: '2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.' },
+  'fa-AF': { whatsNewBody: '2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.' },
+  rw: { whatsNewBody: '2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.' },
+  ti: { whatsNewBody: '2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።' },
+}
+for (const [lang, row] of Object.entries(WN571)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+// 2.5.572 what's new (brief 0066). rw, ti, and fa-AF are machine drafts.
+const WN572 = {
+  en: { whatsNewBody: '2.5.572 — Belts can feed an oven now: logs and coal become fuel, sand becomes glass. The belt hint asks for the oven-to-box loop, which you can finish.' },
+  simple: { whatsNewBody: '2.5.572 — Belts can feed an oven. Logs and coal are fuel. Sand makes glass. The belt hint is oven to box.' },
+  uk: { whatsNewBody: '2.5.572 — Стрічки тепер можуть годувати піч: колоди й вугілля стають паливом, пісок — склом. Підказка стрічки просить коло «піч до скрині», яке можна завершити.' },
+  ru: { whatsNewBody: '2.5.572 — Ленты теперь могут кормить печь: брёвна и уголь становятся топливом, песок — стеклом. Подсказка ленты просит круг «печь до сундука», который можно закончить.' },
+  es: { whatsNewBody: '2.5.572 — Las cintas ya pueden alimentar un horno: troncos y carbón son combustible, la arena se vuelve vidrio. La pista de la cinta pide el circuito horno-caja, que sí se puede terminar.' },
+  ar: { whatsNewBody: '2.5.572 — السيور تغذّي الفرن الآن: الجذوع والفحم وقود، والرمل يصير زجاجاً. تلميح السير يطلب حلقة الفرن إلى الصندوق، ويمكن إنهاؤها.' },
+  'fa-AF': { whatsNewBody: '2.5.572 — نوارها حالا می‌توانند داش را پر کنند: چوب و ذغال سوخت می‌شوند و ریگ شیشه می‌شود. راهنمای نوار حلقه داش به صندوق را می‌خواهد که می‌توان تمامش کرد.' },
+  rw: { whatsNewBody: '2.5.572 — Imigozi ubu ishobora kugaburira ifuru: ibiti n\'amakara biba lisansi, umucanga uba ikirahure. Inama y\'umugozi isaba uruziga ifuru-agasanduku, rushobora kurangira.' },
+  ti: { whatsNewBody: '2.5.572 — መተሓላለፊታት ሕጂ ንእቶን ክምግቡ ይኽእሉ፡ ዕንጸይትን ከሰልን ነዳዲ ይኾኑ፡ ሑጻ መስትያት ይኸውን። ምኽሪ መተሓላለፊ ናይ እቶን-ሳንዱቕ ዑደት ይሓትት፡ እዚ ድማ ክውዳእ ይከኣል።' },
+}
+for (const [lang, row] of Object.entries(WN572)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
@@ -6752,6 +6784,7 @@ belts = createBelts({
     return list
   },
   pullOven: (x, y, z) => stations.pullOut(beltKey(x, y, z)) || '',
+  pushOven: (x, y, z, item) => stations.pushIn(beltKey(x, y, z), item), // 0066: belts feed ovens
   ovenCounts: (x, y, z) => stations.slotCounts(beltKey(x, y, z)),
   pushBox(x, y, z, item) {
     const rec = session && session.meta && session.meta.get(beltKey(x, y, z))

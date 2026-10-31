@@ -1,11 +1,12 @@
 // Conveyor lines. One flat loop per tick. State lives in the world meta (facing, held count).
 import { EXTRA } from './strings-extra.js'
 import { RECIPES } from './data/recipes.js'
+import { anyList } from './craft.js' // 0065: one alias table for plankAny / stoneAny / woolAny
 
 const COPY = {
   en: {
     conveyor: 'Conveyor',
-    beltHint: 'Belt the Smelter to the Box',
+    beltHint: 'Belt the Oven to the Box',
     beltIn: 'In: Conveyor',
     beltOut: 'Out: Conveyor',
     beltMove: 'Input {inn} -> 4/sec -> Output {outn}',
@@ -15,7 +16,7 @@ const COPY = {
   },
   uk: {
     conveyor: 'Конвеєр',
-    beltHint: 'Стрічка: Плавильня до Скриня',
+    beltHint: 'Стрічка: Піч до Скрині',
     beltIn: 'Вхід: Конвеєр',
     beltOut: 'Вихід: Конвеєр',
     beltMove: 'Вхід {inn} -> 4/сек -> Вихід {outn}',
@@ -25,7 +26,7 @@ const COPY = {
   },
   ru: {
     conveyor: 'Конвейер',
-    beltHint: 'Лента: Плавильня до Сундук',
+    beltHint: 'Лента: Печь до Сундука',
     beltIn: 'Вход: Конвейер',
     beltOut: 'Выход: Конвейер',
     beltMove: 'Вход {inn} -> 4/сек -> Выход {outn}',
@@ -35,7 +36,7 @@ const COPY = {
   },
   es: {
     conveyor: 'Transportador',
-    beltHint: 'Cinta de la Fundidora a la Caja',
+    beltHint: 'Cinta del Horno a la Caja',
     beltIn: 'Entra: Transportador',
     beltOut: 'Sale: Transportador',
     beltMove: 'Entrada {inn} -> 4/s -> Salida {outn}',
@@ -45,7 +46,7 @@ const COPY = {
   },
   ar: {
     conveyor: 'سير',
-    beltHint: 'صِل مصهر إلى صندوق',
+    beltHint: 'صِل الفرن إلى الصندوق',
     beltIn: 'داخل: سير',
     beltOut: 'خارج: سير',
     beltMove: 'مدخل {inn} -> 4/ث -> مخرج {outn}',
@@ -55,7 +56,7 @@ const COPY = {
   },
   'fa-AF': {
     conveyor: 'نوار',
-    beltHint: 'کوره گداز را به صندوق برسان',
+    beltHint: 'داش را به صندوق برسان',
     beltIn: 'ورود: نوار',
     beltOut: 'خروج: نوار',
     beltMove: 'ورود {inn} -> ۴/ث -> خروج {outn}',
@@ -65,7 +66,7 @@ const COPY = {
   },
   rw: {
     conveyor: 'Umugozi',
-    beltHint: 'Huza Isaturire na Agasanduku',
+    beltHint: 'Huza Ifuru na Agasanduku',
     beltIn: 'Injira: Umugozi',
     beltOut: 'Sohoka: Umugozi',
     beltMove: 'Iwinjira {inn} -> 4/seg -> Ibisohoka {outn}',
@@ -75,7 +76,7 @@ const COPY = {
   },
   ti: {
     conveyor: 'መተሓላለፊ',
-    beltHint: 'መፍለሒ ናብ ሳንዱቅ',
+    beltHint: 'እቶን ናብ ሳንዱቕ',
     beltIn: 'እታይ: መተሓላለፊ',
     beltOut: 'ወጻኢ: መተሓላለፊ',
     beltMove: 'እታይ {inn} -> 4/ሰ -> ወጻኢ {outn}',
@@ -126,7 +127,7 @@ export function createBelts(api) {
   const pausedLine = new Set()
 
   function t(k) { return api.t ? api.t(k) : k }
-  function write(tile) {
+  function writeTile(tile) {
     const prev = api.metaGet(tile.key) || {}
     api.metaSet(tile.key, {
       ...prev,
@@ -138,6 +139,7 @@ export function createBelts(api) {
       born: tile.born || 0,
     })
   }
+  const write = writeTile
   function readMeta() {
     tiles.clear()
     const all = api.metaEntries ? api.metaEntries() : []
@@ -344,6 +346,10 @@ export function createBelts(api) {
     markPaused(anchors || [])
     let moved = false
     const nextFull = new Set()
+    // 0066: a tile that moves twice in one tick (gives to the next, takes from the one before) was written twice.
+    // Collect the touched tiles and write each once after the pass.
+    const touched = new Set()
+    const write = (tile) => { touched.add(tile) }
     for (const line of lines) {
       const running = lineNear(line, anchors) && !pausedLine.has(line)
       if (!running) continue
@@ -404,6 +410,7 @@ export function createBelts(api) {
     }
     full.clear()
     for (const key of nextFull) full.add(key)
+    for (const tile of touched) writeTile(tile)
     if (moved && api.mark) api.mark()
   }
   function finishHint() {
@@ -489,10 +496,17 @@ export function createBelts(api) {
   }
 }
 
+function haveOf(have, item) {
+  const list = anyList(item)
+  if (!list) return have[item] || 0
+  let n = 0
+  for (const k of list) n += have[k] || 0
+  return n
+}
 export function beltRecipeOk(bin, recipe) {
   const have = {}
   for (const s of bin || []) if (s && s.n) have[s.item] = (have[s.item] || 0) + s.n
-  return (recipe.in || []).every(([item, n]) => (have[item] || 0) >= n)
+  return (recipe.in || []).every(([item, n]) => haveOf(have, item) >= n)
 }
 
 export function craftOnce(bin, bout, recipes) {
@@ -501,13 +515,26 @@ export function craftOnce(bin, bout, recipes) {
     if (!recipe || (recipe.at !== 'hand' && recipe.at !== 'bench')) continue
     if (!beltRecipeOk(bin, recipe)) continue
     if (!roomFor(bout, recipe.out[0], recipe.out[1])) continue
-    for (const [item, n] of recipe.in) takeStack(bin, item, n)
+    for (const [item, n] of recipe.in) takeAny(bin, item, n)
     addStack(bout, recipe.out[0], recipe.out[1])
     return recipe.id
   }
   return ''
 }
 
+// 0065: an alias input (plankAny...) takes from any of its kinds, in bin order.
+function takeAny(slots, item, n) {
+  const list = anyList(item)
+  if (!list) { takeStack(slots, item, n); return }
+  let left = n
+  for (const k of list) {
+    if (left <= 0) break
+    let have = 0
+    for (const s of slots) if (s && s.item === k) have += s.n
+    const d = Math.min(have, left)
+    if (d > 0) { takeStack(slots, k, d); left -= d }
+  }
+}
 function takeStack(slots, item, n) {
   let left = n
   for (const s of slots) {
