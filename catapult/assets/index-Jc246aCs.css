@@ -14,3 +14,18 @@ html:not(.kb-framed) body.kb-on .ti-shell.min-h-dvh .ti-top{top:48px}
 .ti-more{pointer-events:auto;position:static;min-height:44px;min-width:44px;padding:0 .9rem;border:0;border-radius:999px;background:#0f7a3a;color:#fff;font-size:.875rem;font-weight:600;line-height:1;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .ti-more:focus-visible{outline:2px solid #10210f;outline-offset:2px}
 @media (max-height:500px){.ti-rail .ti-rail-news,.ti-dock .ti-rail-news{display:none}}
+
+/* JC 2.4.6: Settings language names stay whole on a narrow sheet.
+   Long labels (Ikinyarwanda, Українська) were clipped in the 3-column grid. */
+.ti-settings fieldset:has(button[aria-pressed]) button{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  text-align:center;
+  min-height:44px;
+  height:auto;
+}
+@media (max-width:440px){
+  .ti-settings fieldset:has(button[aria-pressed]) .grid{
+    grid-template-columns:minmax(0,1fr);
+  }
+}

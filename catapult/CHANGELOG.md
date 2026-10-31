@@ -10,6 +10,7 @@ Door: https://apps.kulibert.net/catapult/
 - Shell and rail height under the Hub bar get an svh fallback.
 - Rail Menu and Settings buttons show an icon and a label (known-issues #10).
 - New asset names (index-Jc246aTi.js, index-Jc246aCs.css, siege-Jc246sFa.js) so rollback is one revert.
+- Settings language buttons wrap, and sit in one column under 440px, so Ikinyarwanda, Українська, دری, and ትግርኛ stay fully visible.
 
 ## JC 2.4.5 — Hub Menu row — 2026-10-30
 
