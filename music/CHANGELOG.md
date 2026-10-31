@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.66** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.66 — On a sideways phone all the note-length buttons show without swiping, the Score tools drawer speaks your language, and Space presses the button you are on.
+
+In kid words: turn the phone sideways on Score and the five length buttons (Eighth, Quarter, Half, Whole, Dot) sit in their own row under the letters, all on the screen. "Saved" and the hint moved up beside the Add a bar button to make room, and the staff stays big. Open Score tools and every word inside it (the section names, Defend the notes, Remixes, the picture names) comes in your language now. On a keyboard, Space presses a button when the button has the focus (a letter, a tab, Menu, Add a bar). Space still plays when you are on the page or the staff. Smaller sideways phones keep the one-line strip for now. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.65** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside.

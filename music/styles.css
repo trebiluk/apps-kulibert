@@ -6665,3 +6665,66 @@ body.mu237.tab-score #staff.staff-strip {
 @media (orientation: landscape) and (max-height: 500px) {
   html[dir="rtl"] body.mu237.tab-score .tool-row { padding-left: 98px; padding-right: 10px; }
 }
+
+/* MU 2.36.66: sideways phone, Score. The length row was the third group in one strip that scrolls, so at 915x412 it started off the right edge.
+   Room first: "Saved" moves up into the tools row (the hint beside it only repeats the tab name, so it stays for screen readers only) and the gaps shrink.
+   That gives every sideways phone about 32 px more for the staff. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body.mu237.tab-score:not(.show):not(.stage-on) .out {
+    position: absolute !important;
+    top: 6px;
+    inset-inline-start: 10px;
+    width: auto !important;
+    max-width: 38% !important;
+    height: 21px !important;
+    min-height: 0 !important;
+    max-height: 21px !important;
+    z-index: 2;
+    pointer-events: none;
+  }
+  body.mu237.tab-score .desk { gap: 2px !important; }
+  body.mu237.tab-score .work { row-gap: 2px !important; }
+  body.mu237.tab-score .tool-row .tool-line {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    margin: -1px !important; padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+  body.mu237.tab-score .score-note { margin: 1px 0 0 !important; padding: 1px 0.5rem !important; line-height: 1.25 !important; }
+  body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 60px; }
+  /* the version chip sat at the old tools-row height; it now sits in the clear corner of the tools row, not on the staff */
+  html body.mu237.tab-score .mu-chip { top: 66px; }
+}
+/* 880 px wide and up (915x412 and bigger sideways screens): the note rows wrap. Letters and pens on the first row, all five length buttons on the second.
+   Narrower sideways screens keep the one-line strip from 2.36.65, because two rows of 44 px buttons would not fit beside the left tabs. */
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 880px) {
+  body.mu237.tab-score .note-row {
+    flex-wrap: wrap !important;
+    max-height: none !important;
+    overflow: visible !important;
+    gap: 4px !important;
+    align-content: flex-start;
+  }
+  body.mu237.tab-score .note-row #len {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    max-height: 44px !important;
+    margin: 0 !important;
+  }
+  body.mu237.tab-score .note-row #len .btn { flex: 1 1 0 !important; min-width: 0 !important; }
+  body.mu237.tab-score.is-both.rich-edit .note-row #inks,
+  body.mu237.tab-score.is-both.rich-edit .note-row #pen,
+  body.mu237.tab-score.is-both.rich-edit .note-row #len,
+  body.mu237.tab-score .note-row #inks,
+  body.mu237.tab-score .note-row #pen,
+  body.mu237.tab-score .note-row #len { margin-block: 0 !important; }
+}
+/* inside the Hub frame (sideways, short screens) the top bar is gone and the tools row moves up with it */
+@media (orientation: landscape) and (max-height: 420px) and (min-width: 880px) {
+  html.kb-framed body.mu237.tab-score .mu-chip { top: 14px; }
+}
+/* the length row is not used by beat-cell songs. Its own hidden rule lost to the flex rule on specificity, so an empty 2px bar and its margins stayed on screen. */
+body.mu237 #len[hidden] { display: none !important; }

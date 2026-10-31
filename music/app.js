@@ -1690,6 +1690,25 @@
     const evs = Song.events(state.song);
     return evs[Math.max(0, step)] || evs[0];
   }
+  // MU 2.36.66: the reasons in the Score tools drawer come from strings.js (English if a language has no draft yet), never from the code.
+  function whyWord(id) {
+    const hit = REASONS.find((pair) => pair[0] === id);
+    return mu("drWhy_" + id) || (hit ? hit[1] : "");
+  }
+  function whyLabel(id) {
+    return whyWord(id).replace(/[.\u3002\u06D4\u0964\u1362]$/, "");
+  }
+  function bassWord(on) {
+    return on ? (mu("bassOn") || "Bass is on") : (mu("bassFollow") || "Bass follows the kick");
+  }
+  // Words the drawer builds itself, painted again when the language changes (static words use data-mu in index.html).
+  function paintDrawerWords() {
+    document.querySelectorAll("#why-reasons .btn[data-why]").forEach((btn) => { btn.textContent = whyLabel(btn.dataset.why); });
+    const bass = $("bass-btn");
+    if (bass && bass.dataset.ready) bass.textContent = bassWord(state.bass);
+    try { paintWhy(); } catch (eWhy) {}
+    try { paintVizNow(); } catch (eViz) {}
+  }
   function paintWhy() {
     const ask = $("why-ask");
     const progress = $("why-progress");
@@ -1699,15 +1718,16 @@
     let done = 0;
     evs.forEach((ev) => { if (why[ev.measure + "-" + ev.beat]) done += 1; });
     progress.textContent = done === evs.length
-      ? "You can defend every mark on this score."
-      : done + " of " + evs.length + " marks have a reason.";
+      ? (mu("drWhyAll") || "You can defend every mark on this score.")
+      : (mu("drWhyCount", { done: done, total: evs.length }) || (done + " of " + evs.length + " marks have a reason."));
     const step = state.playing && state.step >= 0 ? state.step : state.cursor;
     const ev = markAt(step);
     if (!ev) return;
-    const fact = ev.pitch ? (TEACH[ev.pitch] || ev.label) : "Rest. Count it. Nothing plays.";
+    const fact = ev.pitch ? (mu("drTeach_" + ev.pitch) || TEACH[ev.pitch] || ev.label) : (mu("tapRestTeach") || "Rest. Count it. Nothing plays.");
     const said = why[ev.measure + "-" + ev.beat];
-    const sentence = said ? (REASONS.find((pair) => pair[0] === said) || ["", ""])[1] : "Why is it here?";
-    ask.textContent = "Bar " + (ev.measure + 1) + ", beat " + (ev.beat + 1) + ". " + fact + " " + sentence;
+    const sentence = said ? whyWord(said) : (mu("drWhyAsk") || "Why is it here?");
+    const where = mu("drWhere", { bar: ev.measure + 1, beat: ev.beat + 1 }) || ("Bar " + (ev.measure + 1) + ", beat " + (ev.beat + 1) + ".");
+    ask.textContent = where + " " + fact + " " + sentence;
     document.querySelectorAll("#why-reasons .btn").forEach((btn) => {
       btn.classList.toggle("on", btn.dataset.why === said);
     });
@@ -4422,7 +4442,7 @@
       b.type = "button";
       b.className = "btn";
       b.dataset.why = id;
-      b.textContent = sentence.replace(/\.$/, "");
+      b.textContent = whyLabel(id);
       b.addEventListener("click", () => {
         const ev = markAt(state.playing && state.step >= 0 ? state.step : state.cursor);
         if (!ev) return;
@@ -4431,7 +4451,7 @@
         state.song = Song.parse(Song.serialize(state.song));
         keep();
         paintWhy();
-        $("lesson").textContent = mu("lineSaved", { line: sentence }) || (sentence + " Saved.");
+        $("lesson").textContent = mu("lineSaved", { line: whyWord(id) }) || (sentence + " Saved.");
       });
       reasons.appendChild(b);
     });
@@ -4452,7 +4472,8 @@
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn";
-      b.textContent = item.label;
+      b.setAttribute("data-mu", "look_" + item.id); // MU 2.36.66: the picture names follow the language
+      b.textContent = mu("look_" + item.id) || item.label;
       b.addEventListener("click", () => {
         state.layers[0].look = item.id;
         state.look = item.id;
@@ -4635,8 +4656,9 @@
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
-      // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
+      // MU 2.36.61: Space on a Tap pad or lane step presses that button.
+      // MU 2.36.66: so does Space on any focused button, tab or summary (that is how a keyboard presses it). Space plays from the page or the staff.
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, button, summary, [role='button'], [role='tab'], [role='switch'], [role='menuitem'], [role='checkbox'], [role='radio']")) return;
       e.preventDefault();
       $("play-btn").click();
     }
@@ -6013,6 +6035,7 @@
         b.type = "button";
         b.className = "btn";
         const key = lineKeys[name];
+        b.setAttribute("data-mu", key);
         b.textContent = mu(key) || name;
         b.addEventListener("click", () => writeLine(mu(key) || name, notes));
         ideas.appendChild(b);
@@ -6020,6 +6043,7 @@
       const again = document.createElement("button");
       again.type = "button";
       again.className = "btn";
+      again.setAttribute("data-mu", "lineAgain");
       again.textContent = mu("lineAgain") || "Again";
       again.addEventListener("click", () => {
         const evs = Song.events(state.song);
@@ -6047,6 +6071,7 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
+        b.setAttribute("data-mu", key);
         b.textContent = mu(key) || key;
         b.addEventListener("click", () => shift(dir, mu(wordKey) || wordKey));
         ideas.appendChild(b);
@@ -6161,7 +6186,7 @@
         if (bassBtn) {
           bassBtn.classList.toggle("on", state.bass);
           bassBtn.setAttribute("aria-pressed", String(state.bass));
-          bassBtn.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+          bassBtn.textContent = bassWord(state.bass);
         }
         if ($("tempo")) {
           $("tempo").value = String(style.bpm);
@@ -6272,12 +6297,12 @@
       bass.dataset.ready = "1";
       bass.classList.toggle("on", state.bass);
       bass.setAttribute("aria-pressed", String(state.bass));
-      bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+      bass.textContent = bassWord(state.bass);
       bass.addEventListener("click", () => {
         state.bass = !state.bass;
         bass.classList.toggle("on", state.bass);
         bass.setAttribute("aria-pressed", String(state.bass));
-        bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+        bass.textContent = bassWord(state.bass);
         keep();
       });
     }
@@ -7014,6 +7039,7 @@
     if (typeof paintTapStrip === "function") paintTapStrip();
     sayHow(state.mode);
     paintKeypad();
+    paintDrawerWords();
     document.querySelectorAll("#style-row [data-pack]").forEach((btn) => {
       const map = { Trap: "style_trap", "Lo-fi": "style_lofi", Rock: "style_rock", Marching: "style_marching" };
       const key = map[btn.dataset.pack];
