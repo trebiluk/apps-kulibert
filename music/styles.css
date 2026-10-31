@@ -6705,3 +6705,7 @@ body.mu237 #make-beat { min-height: max(56px, 22vh); border-width: 3px; }
 @media (max-width: 600px) {
   body.mu237 #tap-pads { box-sizing: border-box; width: 100%; max-width: 100%; padding-inline: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 }
+/* MU 2.36.67 r1: the save line keeps its spot even when empty (hidden, not removed), so Saved appearing never moves the bar. */
+body.mu237 .songbar-copy #saved-line,
+body.mu237 .songbar-copy #saved-line:empty { display: inline-flex !important; align-items: center; gap: 0.25rem; margin: 0 0 0 0.5rem !important; position: static !important; visibility: visible; box-sizing: border-box; min-width: 9em; height: 1.4em; line-height: 1.4em; white-space: nowrap; vertical-align: middle; }
+body.mu237 .songbar-copy #saved-line:empty { visibility: hidden; }
