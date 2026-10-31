@@ -1,6 +1,7 @@
 // Swappable block art. Built-in packs live in assets/packs/<id>/.
 // The strip is one square layer per material, with a 2px copied gutter.
 // setPack swaps that strip without a reload. Only the pack id is saved.
+// 2.5.590: Mystical is the default for a fresh profile. A saved choice (either pack) is kept as it is.
 import SHEET from '../../assets/packs/sheet.json'
 
 const PACKS = {
@@ -8,6 +9,7 @@ const PACKS = {
   mystical: { id: 'mystical', name: 'Mystical Topia' },
 }
 const STORE = 'bertopia-pack'
+const DEFAULT_PACK = 'mystical'
 const SMALL_KEY = 'bertopia-tex-small'
 
 // 32 student colors. Index 0 is the dark check, 16 is the bright check.
@@ -36,7 +38,7 @@ export function currentPackId() {
     const id = localStorage.getItem(STORE)
     if (id === 'mystical' || id === 'classic') return id
   } catch (e) {}
-  return 'classic'
+  return DEFAULT_PACK
 }
 
 function queryTex() {
@@ -264,7 +266,7 @@ export function installPacks(noa, gfxLook) {
 }
 
 export function setPack(id) {
-  if (!PACKS[id]) id = 'classic'
+  if (!PACKS[id]) id = DEFAULT_PACK
   const started = performance.now()
   try { localStorage.setItem(STORE, id) } catch (e) {}
   const url = stripUrl(id)

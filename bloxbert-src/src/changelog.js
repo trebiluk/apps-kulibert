@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.590', date: '2026-10-31', lines: {
+    en: ["2.5.590 — Mystical is the look for a new player. Your saved look stays as it was."],
+    simple: ["2.5.590 — New players get the Mystical look. Your saved look stays."],
+  } },
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
