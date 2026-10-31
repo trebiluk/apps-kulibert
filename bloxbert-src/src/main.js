@@ -4908,7 +4908,7 @@ saveSoon = () => {
     if (!(bytes >= 0)) return bytes
     paintSaveChip(navigator.onLine ? 'saved' : 'offline')
     return bytes
-  })
+  }).catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip(); return -1 })
 }
 async function saveClicked() {
   paintSaveChip('saving')
