@@ -36,3 +36,7 @@ html:not(.kb-framed) body.kb-on .ti-shell.min-h-dvh .ti-top{top:48px}
   white-space:nowrap;
   font-size:max(12px,min(.875rem,3.4vw));
 }
+
+/* JC 2.4.6 r4: the Settings sheet starts below the 48px Tech Room bar and scrolls to its top item. */
+html:not(.kb-framed) body.kb-on .fixed.inset-0:has(> .ti-settings){top:48px}
+.ti-settings{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;max-height:100%;box-sizing:border-box}
