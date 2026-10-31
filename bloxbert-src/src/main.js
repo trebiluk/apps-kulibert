@@ -23,6 +23,7 @@ import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTextur
 import ATLAS from '../assets/atlas.json'
 import { BLOCKS } from './data/blocks-list.js';
 import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
+import { initPainter, addPaintButton } from './gfx/painter.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 // 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
@@ -89,6 +90,23 @@ for (const [lang, row] of Object.entries(WN542)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.546 what's new. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+const WN546 = {
+  en: { whatsNewBody: '2.5.546 — Paint a block in Settings > Look and see it in your world.' },
+  simple: { whatsNewBody: '2.5.546 — Paint a block in Settings. See it in your world.' },
+  uk: { whatsNewBody: '2.5.546 — Намалюй блок у Налаштуваннях > Вигляд і побач його у своєму світі.' },
+  ru: { whatsNewBody: '2.5.546 — Нарисуй блок в Настройках > Вид и увидь его в своём мире.' },
+  es: { whatsNewBody: '2.5.546 — Pinta un bloque en Ajustes > Aspecto y velo en tu mundo.' },
+  ar: { whatsNewBody: '2.5.546 — ارسم مكعبًا في الإعدادات > المظهر وشاهده في عالمك.' },
+  'fa-AF': { whatsNewBody: '2.5.546 — در تنظیمات > نما یک بلاک رنگ کن و آن را در جهانت ببین.' },
+  rw: { whatsNewBody: '2.5.546 — Shushanya block muri Igenamiterere > Isura urebe mu isi yawe.' },
+  ti: { whatsNewBody: '2.5.546 — ኣብ ቅጥዕታት > መልክዕ ብሎክ ቀልሕ ኣብ ዓለምካ ርኣዮ።' },
+}
+for (const [lang, row] of Object.entries(WN546)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+initPainter({ t, toast })
 function holdWalletChip() {
   const el = document.getElementById('wallet-chip')
   if (!el || el.dataset.cogReady === '1') return
@@ -10330,6 +10348,7 @@ function paintPackLook(g) {
   paintSmall()
   smallBtn.addEventListener('click', () => setSmallTextures(!smallTextures()))
   g.append(lookHead, packRow, smallBtn)
+  addPaintButton(g)
   if (autoTex32()) {
     const hint = document.createElement('p')
     hint.className = 'gnote'

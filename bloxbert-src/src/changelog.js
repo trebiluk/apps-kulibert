@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.546 Block Painter, part 2. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.546', date: '2026-10-30', lines: {
+    en: ['2.5.546 — Paint a block in Settings > Look and see it in your world.'],
+    simple: ['2.5.546 — Paint a block in Settings. See it in your world.'],
+    uk: ['2.5.546 — Намалюй блок у Налаштуваннях > Вигляд і побач його у своєму світі.'],
+    ru: ['2.5.546 — Нарисуй блок в Настройках > Вид и увидь его в своём мире.'],
+    es: ['2.5.546 — Pinta un bloque en Ajustes > Aspecto y velo en tu mundo.'],
+    ar: ['2.5.546 — ارسم مكعبًا في الإعدادات > المظهر وشاهده في عالمك.'],
+    'fa-AF': ['2.5.546 — در تنظیمات > نما یک بلاک رنگ کن و آن را در جهانت ببین.'],
+    rw: ['2.5.546 — Shushanya block muri Igenamiterere > Isura urebe mu isi yawe.'],
+    ti: ['2.5.546 — ኣብ ቅጥዕታት > መልክዕ ብሎክ ቀልሕ ኣብ ዓለምካ ርኣዮ።'],
+  }},
+
   // 2.5.542 texture packs, part 1. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.542', date: '2026-10-29', lines: {
     en: ['2.5.542 — Classic and Mystical looks. Small textures stay sharp.'],

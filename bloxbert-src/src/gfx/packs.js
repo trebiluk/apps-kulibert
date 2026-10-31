@@ -21,6 +21,9 @@ export const PALETTE = [
   [120, 80, 60], [238, 243, 247],
 ]
 
+// Faces a student key paints when it is narrower than the block's whole key. Grass top leaves dirt alone.
+const STUDENT_FACES = { grass: ['grass_top'] }
+
 let noaRef = null
 let readyWait = []
 
@@ -236,6 +239,7 @@ export function installPacks(noa, gfxLook) {
   }).catch(() => {})
   const mark = () => {
     window.__bertPackReady = true
+    if (window.__bertStudentRestore) window.__bertStudentRestore()
     window.dispatchEvent(new Event('bertopia-pack-ready'))
     const wait = readyWait
     readyWait = []
@@ -271,6 +275,7 @@ export function setPack(id) {
     } else publishSheet(url)
     window.__bertPack = id
     window.dispatchEvent(new Event('bertopia-pack'))
+    if (window.__bertStudentRestore) window.__bertStudentRestore()
     return { id: id, ms: performance.now() - started }
   })
 }
@@ -339,7 +344,7 @@ export function applyStudent(json) {
     const tex = textures[key]
     const pixels = tex && tex.pixels
     if (!pixels || pixels.length !== 256) return
-    const mats = (SHEET.keyMats && SHEET.keyMats[key]) || []
+    const mats = STUDENT_FACES[key] || (SHEET.keyMats && SHEET.keyMats[key]) || []
     mats.forEach((mat) => {
       const ix = indexOf(mat)
       if (ix < 0) return
