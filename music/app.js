@@ -4108,6 +4108,22 @@
     });
   });
   if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
+  // MU 2.36.67: the shared top bar is position:fixed, so its DOM spot does not move it on screen. Put it after #home
+  // so the first Tab lands on Make a beat first by plain DOM order (no tabindex).
+  (function barAfterHome() {
+    const home = $("home");
+    if (!home) return;
+    const move = () => {
+      const bar = document.querySelector("body > .kb-bar");
+      if (bar && home.parentNode === document.body && bar.nextElementSibling !== home.nextElementSibling && bar.previousElementSibling !== home) {
+        document.body.insertBefore(bar, home.nextSibling);
+      }
+      return !!bar;
+    };
+    if (move()) return;
+    const mo = new MutationObserver(() => { if (move()) mo.disconnect(); });
+    mo.observe(document.body, { childList: true });
+  })();
   if ($("new-beat")) $("new-beat").addEventListener("click", makeBeat);
   if ($("my-songs")) $("my-songs").addEventListener("click", () => {
     resetScroll();

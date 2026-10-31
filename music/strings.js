@@ -74,7 +74,7 @@
     loud_bell: "Bell loudness",
     loud_tamb: "Tamb loudness",
     loud_crash: "Crash loudness",
-    makeBeat: "Make a beat",
+    makeBeat: "Make a beat first",
     menuEvery: "Menu opens from the left on every screen.",
     listsEasy: "Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.",
     everyWord: "Every word is easy to read, menus close after you pick, and Perform fits your screen.",
