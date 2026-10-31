@@ -24,6 +24,9 @@
 
   <link rel="stylesheet" crossorigin href="/holdit/assets/index-s7eGG6Hp.css">
 
+  <!-- r3: the Hub bar's styles load in the head (render-blocking), so the bar never paints unstyled. kulibert-bar.js sees data-kb-css and skips its late copy. -->
+  <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-27-sign-optional" data-kb-css="1">
+
   <link rel="stylesheet" href="/holdit/phone-fit.css?v=1.1.24-2">
 
   <script src="/shared/hub-staff-auth.js?v=2026-10-20-staff-i18n-bust"></script>
