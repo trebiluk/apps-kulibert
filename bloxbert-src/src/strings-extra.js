@@ -3885,3 +3885,20 @@ for (const [lang, row] of Object.entries(TEX550)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
+const CRAFT065 = {
+  en: { needsMetal: '🔒 Needs metal tier' },
+  simple: { needsMetal: '🔒 Needs metal' },
+  uk: { needsMetal: '🔒 Потрібен рівень металу' },
+  ru: { needsMetal: '🔒 Нужна ступень металла' },
+  es: { needsMetal: '🔒 Necesita nivel de metal' },
+  ar: { needsMetal: '🔒 يلزم مستوى المعدن' },
+  'fa-AF': { needsMetal: '🔒 پله فلز لازم است' },
+  rw: { needsMetal: '🔒 Ikeneye urwego rw\'icyuma' },
+  ti: { needsMetal: '🔒 ደረጃ ብረት የድሊ' },
+}
+for (const [lang, row] of Object.entries(CRAFT065)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
