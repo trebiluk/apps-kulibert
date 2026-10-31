@@ -10,6 +10,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [ ] notation-1-kye-kye-kule: Kye Kye Kule still has its old placeholder tune (C, 4/4, with rests). It needs a public-domain or teacher-supplied transcription before it can be re-entered. Blocked on Diego for a source. Follows MU 2.36.63.
+- [x] notation-1: Songs have real note lengths (quarter, half, dotted half, whole, eighth, dotted quarter, rests, ties), a key (C, G or F), a time signature and an optional pickup. Twinkle, Little Lamb, Ode to Joy, Happy Birthday (F, 3/4, 2-eighth pickup), Jingle Bells chorus (G) and a new Sa Re Ga Ma warm-up are re-entered from public-domain sources. Sa Re Ga Ma replaces Chanda Mama, Zum Gali Gali is removed (library = 23). Tapping a note changes its pitch; length editing comes in part 2. MU 2.36.63 (sha in the draft PR).
 - [x] bar-words-noteheads: Bottom buttons show icon + word in both themes (dark-theme text was dark on dark). Piano keys show their letters. Score notes keep real size, the playing note gets a ring, and lines of music are balanced. MU 2.36.62 (sha in the draft PR).
 - [x] studio-deck-1: Tap has 8 big picture pads (A S D F G H J K) and one 16-step lane for the picked pad. A step that is on is filled with a dot, and a triangle moves along the lane during Play. Saved songs are unchanged. MU 2.36.61 (sha in the draft PR).
 - [x] click-restore: A click you turned on comes back. A click that record turned on turns off. MU 2.36.60.

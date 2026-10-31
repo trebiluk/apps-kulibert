@@ -3,10 +3,15 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61, 2.36.62): laneFor, news23661 and news23662 in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.63): laneFor, news23661 to news23663, pickupWord, playPosPickup and tapNowPickup in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
+    /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+    pickupWord: "Pickup",
+    playPosPickup: "Pickup · Beat {beat}",
+    tapNowPickup: "Pickup, beat {beat}. Now: {heard}.",
+    news23663: "MU 2.36.63 — Songs now show their key, time and pickup, and play with real note lengths. Seven songs are new or fixed.",
     /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/en.json. */
     helpMix: "🎚 Each loudness slider says the drum name.",
     blendAria: "Drums or score",
@@ -704,6 +709,11 @@
     news23662: "MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see."
   };
   var SIMPLE = {
+    /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+    pickupWord: "Pickup",
+    playPosPickup: "Pickup · Beat {beat}",
+    tapNowPickup: "Pickup, beat {beat}. Now: {heard}.",
+    news23663: "MU 2.36.63 — Songs show key, time and pickup. They play with real note lengths.",
     /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/simple.json. */
     helpMix: "🎚 The sliders say how loud each drum is.",
     blendAria: "Drums or notes",
@@ -1064,6 +1074,11 @@
   /* filled below */
   var MORE = {
     "uk": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "Затакт",
+      "playPosPickup": "Затакт · Доля {beat}",
+      "tapNowPickup": "Затакт, біт {beat}. Зараз: {heard}.",
+      "news23663": "MU 2.36.63 — Пісні показують тональність, розмір і затакт та грають зі справжньою тривалістю нот. Сім пісень нові або виправлені.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/uk.json. */
       "helpMix": "🎚 Повзунок гучності називає барабан.",
       "blendAria": "Барабани чи ноти",
@@ -1762,6 +1777,11 @@
       "news23662": "MU 2.36.62 — У темній темі видно слова на всіх нижніх кнопках, а ноти на нотному стані стали більшими."
     },
     "ru": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "Затакт",
+      "playPosPickup": "Затакт · Доля {beat}",
+      "tapNowPickup": "Затакт, доля {beat}. Сейчас: {heard}.",
+      "news23663": "MU 2.36.63 — Песни показывают тональность, размер и затакт и играют с настоящей длительностью нот. Семь песен новые или исправлены.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ru.json. */
       "helpMix": "🎚 Ползунок громкости называет барабан.",
       "blendAria": "Барабаны или ноты",
@@ -2460,6 +2480,11 @@
       "news23662": "MU 2.36.62 — В тёмной теме видны слова на всех нижних кнопках, а ноты на нотном стане стали крупнее."
     },
     "es": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "Anacrusa",
+      "playPosPickup": "Anacrusa · Tiempo {beat}",
+      "tapNowPickup": "Anacrusa, tiempo {beat}. Ahora: {heard}.",
+      "news23663": "MU 2.36.63 — Las canciones muestran su tonalidad, compás y anacrusa, y suenan con la duración real de las notas. Siete canciones son nuevas o corregidas.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/es.json. */
       "helpMix": "🎚 Cada control de volumen dice el nombre del tambor.",
       "blendAria": "Batería o partitura",
@@ -3159,6 +3184,11 @@
       "news23662": "MU 2.36.62 — En el tema oscuro se leen todos los botones de abajo, y las notas del pentagrama son más grandes."
     },
     "ar": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "مازورة تمهيدية",
+      "playPosPickup": "مازورة تمهيدية · نبضة {beat}",
+      "tapNowPickup": "المازورة التمهيدية، النبضة {beat}. الآن: {heard}.",
+      "news23663": "MU 2.36.63 — تعرض الأغاني السلّم والميزان والمازورة التمهيدية وتُعزف بأطوال النوتات الحقيقية. سبع أغانٍ جديدة أو مصحَّحة.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ar.json. */
       "helpMix": "🎚 شريط العلو يقول اسم الطبلة.",
       "blendAria": "الطبول أو النوتة",
@@ -3858,6 +3888,11 @@
       "news23662": "MU 2.36.62 — في الوضع الداكن تظهر كلمات كل الأزرار السفلية، وصارت النوتات على المدرج أكبر."
     },
     "fa-AF": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "میزان آغازین",
+      "playPosPickup": "میزان آغازین · ضرب {beat}",
+      "tapNowPickup": "میزان آغازین، ضرب {beat}. حالا: {heard}.",
+      "news23663": "MU 2.36.63 — آهنگ‌ها کلید، میزان و میزان آغازین را نشان می‌دهند و با طول واقعی نت‌ها نواخته می‌شوند. هفت آهنگ تازه یا درست شده‌اند.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/fa-AF.json. */
       "helpMix": "🎚 نوار بلندی نام طبل را می‌گوید.",
       "blendAria": "طبل‌ها یا نت",
@@ -4557,6 +4592,11 @@
       "news23662": "MU 2.36.62 — در حالت تاریک کلمات همهٔ دکمه‌های پایین دیده می‌شود و نت‌ها روی خطوط بزرگ‌تر شده‌اند."
     },
     "rw": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "Intangiriro",
+      "playPosPickup": "Intangiriro · Beat {beat}",
+      "tapNowPickup": "Intangiriro, umurongo {beat}. Ubu: {heard}.",
+      "news23663": "MU 2.36.63 — Indirimbo zerekana ijwi ryazo, igihe n'intangiriro, kandi zivugwa n'uburebure nyakuri bw'inoti. Indirimbo zirindwi ni nshya cyangwa zakosowe.",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/rw.json. */
       "helpMix": "🎚 Umuzingo w'amajwi uvuga izina ry'ingoma.",
       "blendAria": "Ingoma cyangwa amanota",
@@ -5256,6 +5296,11 @@
       "news23662": "MU 2.36.62 — Mu buryo bwijimye, amagambo y'utubuto two hasi yose arigaragara, kandi inoti ku murongo ziraruta."
     },
     "ti": {
+      /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
+      "pickupWord": "መእተዊ",
+      "playPosPickup": "መእተዊ · ምት {beat}",
+      "tapNowPickup": "መእተዊ፡ ምት {beat}። ሕጂ፡ {heard}።",
+      "news23663": "MU 2.36.63 — ደርፍታት ቃና፣ ጊዜን መእተዊን የርእዩ፣ ብሓቀኛ ንውሓት ኖታ ይጻወቱ። ሸውዓተ ደርፍታት ሓደሽቲ ወይ ዝተኣረሙ እዮም።",
       /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ti.json. */
       "helpMix": "🎚 መቆጻጸሪ ድምጺ ስም ከበሮ ይብል።",
       "blendAria": "ከበሮ ወይ ነቶ",

@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.63** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.63 — Six songs now have real music notation: the right note lengths, key, time and pickup.
+
+In kid words: Twinkle, Little Lamb, Ode to Joy, Happy Birthday, Jingle Bells and a new Sa Re Ga Ma warm-up are written the way a music book writes them. Half notes, whole notes, dotted notes and rests all show up and all last as long as they look. Happy Birthday starts with its two little pickup notes before the first bar, in F and in 3/4 time. Jingle Bells is in G. The note that is playing lights up on time. Tap a note to change its pitch. Changing note lengths comes next. Sa Re Ga Ma replaces Chanda Mama on the South Asia shelf, and Zum Gali Gali is gone, so the library has 23 songs. Kye Kye Kule is not changed yet. All other songs and all saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.62** · 2026-10-30 · channel **draft PR**
 
 MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see.
