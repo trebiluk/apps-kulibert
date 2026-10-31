@@ -152,7 +152,8 @@ for (let i = 0; i < langs.length; i++) {
   const line = G.crashLine(wristHit.msg, 4, code);
   if (code === "en") assert.match(line, /Wrist/);
   else assert.ok(line.indexOf(wristPart[code]) !== -1, code + " crash names the wrist");
-  assert.match(line, /at step 4/);
+  if (code === "en") assert.match(line, /at step 4/);
+  else assert.ok(line.indexOf("4") !== -1 && !/at step/.test(line) && !/ hit /.test(line), code + " crash line is said in the language: " + line);
 }
 
 const l1 = G.LEVELS[0];
@@ -511,5 +512,36 @@ assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
     assert.equal(runs.beats, 6);
   }
   assert.equal(G.cycleSeconds({ beats: 15 }), 7.5);
+}
+
+// 1.6.1: the status line after a run is said in the chosen language (same table as the star words).
+{
+  const NOTES = [
+    "Done. 1 block, 0.6 s.", "The shoulder matches the mark. 2 blocks, 1.2 s.", "The part is in the bin. 8 blocks, 4.5 s.", "The claw is on spot A2. 7 blocks, 3.9 s.",
+    "The pile is in the bin. 8 blocks, 9.1 s.", "Each part is in the matching bin. 13 blocks, 11.0 s.", "The program works. 1 swap, 4.5 s.", "The hand-off worked. 18 blocks, 7.5 s.",
+    "Running step 3.", "Running step 3 of 8: x.", "Swapped step 1 with step 2. Swaps: 1.", "Swap undone. Swaps: 1.", "Program is full at 24 blocks.",
+    "Swap two steps. Arrows pick a step. Enter swaps it with the next.", "The claw is not on spot A2 yet.", "The arm does not match the mark yet.",
+    "The pile still has parts out. 1 of 3 are in the bin.", "2 of 3 cubes are in the bin.", "The part is still held. Open the claw over the bin.", "The part is still held. Open the claw over the matching bin.",
+    "The part missed the bin.", "The part missed the matching bin.", "The part fell before it reached the bin.", "The claw never closed on the part.", "Red squares go in bin A. Blue circles go in bin B.",
+    "The part is not in the bin yet. One arm picks it, the other places it.", "Stopped.", "Undone.", "Running.", "Arm reset. Program kept.", "Add a block, then press Run."
+  ];
+  for (const code of LANG_IDS) {
+    for (const note of NOTES) {
+      const said = G.noteText(note, code);
+      if (code === "en") { assert.equal(said, note); continue; }
+      assert.notEqual(said, note, code + " says: " + note);
+      assert.ok(said.indexOf("{") < 0, code + " fills in: " + said);
+      if (NO_LATIN[code] && !/^Running step 3 of 8/.test(note)) assert.ok(!/[A-Za-z]{3,}/.test(said.replace(/A2|bin|\bs\b|Enter/g, "")), code + " has no English words: " + said);
+    }
+    for (const msg of ["claw hit the table", "elbow hit the table", "wrist hit the part", "claw hit the arm", "part hit the table", "part hit the bin", "shoulder stopped at 120 degrees", "part missed the bin", "Repeat needs End repeat", "program ran too long", "unknown block"]) {
+      const said = G.crashLine(msg, 3, code);
+      if (code === "en") continue;
+      assert.ok(said.indexOf("3") >= 0 && !/ hit | stopped | at step /.test(said), code + " crash: " + said);
+      if (NO_LATIN[code]) assert.ok(!/[A-Za-z]{3,}/.test(said), code + " crash has no English words: " + said);
+    }
+  }
+  // the engine still speaks English; the stored notes do not change
+  assert.equal(G.crashLine("elbow hit the table", 3, "en"), "Elbow hit the table at step 3.");
+  assert.equal(G.runView({ kind: "won", n: 3, note: "Done. 1 block, 0.6 s." }, "uk").status, "Готово. Блоків: 1, Час: 0.6 с. Три зірки.");
 }
 console.log("berty-bizzy win-test ok");

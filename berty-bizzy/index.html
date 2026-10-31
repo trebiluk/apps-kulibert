@@ -558,10 +558,11 @@ try {
   .bb-tip-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
   .bb-tip button { min-height: 44px; min-width: 44px; padding: 0 10px; background: var(--pz-panel); color: var(--pz-ink); border: 2px solid var(--pz-on-yellow); border-radius: 6px; font: 700 14px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
   .bb-tip button:focus-visible, #help-btn:focus-visible, .bb-help button:focus-visible { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
-  .bb-help { position: fixed; inset: 0; z-index: 70; background: var(--pz-bg); overflow-y: auto; padding: 12px; }
+  .bb-help { position: fixed; inset: var(--bb-bar, 56px) 0 0 0; z-index: 70; background: var(--pz-bg); overflow-y: auto; padding: 0 12px 12px; }
   .bb-help[hidden] { display: none; }
   .bb-help-card { max-width: 640px; margin: 0 auto; background: var(--pz-panel); border: 2px solid var(--pz-line); border-radius: 8px; padding: 12px 14px 14px; }
-  .bb-help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .bb-help-card { margin-top: 12px; }
+  .bb-help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: 0; z-index: 2; background: var(--pz-panel); padding: 4px 0 6px; margin: -2px 0 0; border-bottom: 2px solid var(--pz-line); }
   .bb-help h2 { margin: 0; font: 700 22px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
   .bb-help h3 { margin: 14px 0 4px; font: 700 15px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); padding: 3px 8px; border-radius: 4px; }
   .bb-help ul { margin: 0; padding-inline-start: 20px; }
@@ -2503,8 +2504,15 @@ var bbTipsReset = function () {
   try { if (s) s.removeItem("bb-tips-off"); } catch (errReset) {}
   bbTipsClosed = {};
 };
+// The shared top bar is fixed above the page; Help starts right under it so its title and Close are never covered.
+var bbBarGap = function () {
+  var bar = document.querySelector(".kb-bar");
+  var bottom = bar ? Math.ceil(bar.getBoundingClientRect().bottom) : 0;
+  document.documentElement.style.setProperty("--bb-bar", Math.max(bottom, 0) + "px");
+};
 var bbHelpOpen = function () {
   var box = document.getElementById("bb-help");
+  bbBarGap();
   box.hidden = false;
   document.getElementById("help-btn").setAttribute("aria-expanded", "true");
   bbTipHide();
@@ -2705,7 +2713,7 @@ var bbInit = function () {
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !document.getElementById("bb-help").hidden) { e.preventDefault(); e.stopPropagation(); bbHelpClose(); }
   }, true);
-  window.addEventListener("resize", bbTipAnchor);
+  window.addEventListener("resize", function () { bbTipAnchor(); bbBarGap(); });
   bbCardWire();
   bbIntroStart();
 };
