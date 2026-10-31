@@ -61,6 +61,7 @@ export function makeHub({ db, send, gen, now = Date.now }) {
     sim: (t = now()) => world.sim(t),
     clock: () => world.clock(),
     simAt: () => world.simAt(),
+    budget: (ref, x, z) => world.budgetAt(h32(ref), x, z),
     who: h32,
   }
 }

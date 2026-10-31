@@ -4,6 +4,7 @@
 // An edit says what the client thought was there (b). If that is not what is there, it is
 // refused as 'stale' and the true block comes back. Last writer never silently wins.
 import { locate, validCell, encodeChunk, decodeChunk } from './chunks.js'
+import { HIGH_TICK, chunkTally, decide } from './budget.js'
 import { CATCHUP_MS, STEP_CHUNKS, decodeMachines, encodeMachines, grant, isMachine, machinesIn, stepChunk, touchOps } from './sim.js'
 
 export const KEEP_OPS = 20000
@@ -20,6 +21,25 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
   // never has to scan every chunk. Built once from existing chunks when missing (older worlds).
   let mindex = db.getMeta('mindex') == null ? null : new Set(JSON.parse(db.getMeta('mindex')))
   let cursor = 0
+  // Who placed each standing high-tick machine: 'cx,cz,idx' -> actor hash. Persisted in meta so the
+  // per-player budget survives a restart. Machines placed before this existed belong to nobody: they
+  // count for their area, not for any player.
+  const owner = new Map(Object.entries(JSON.parse(db.getMeta('htown') ?? '{}')))
+  let ownerDirty = false
+  const mineOf = (who) => { let n = 0; for (const w of owner.values()) if (w === who) n++; return n }
+  // Per-chunk tallies (lag points, high-tick count), recomputed when a chunk's edits change.
+  const tallies = new Map()
+  const tallyOf = (cx, cz) => {
+    const k = cx + ',' + cz
+    let t = tallies.get(k)
+    if (!t) { t = chunkTally(load(cx, cz).edits); tallies.set(k, t) }
+    return t
+  }
+  const nearOf = (cx, cz) => {
+    let lag = 0, ht = 0
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) { const t = tallyOf(cx + dx, cz + dz); lag += t.lag; ht += t.ht }
+    return { lag, ht }
+  }
 
   const load = (cx, cz) => {
     const k = cx + ',' + cz
@@ -77,6 +97,12 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     },
     machineChunks: () => { ensureIndex(); return mindex.size },
 
+    // used/max for a player at a cell: { area:[n,10], you:[n,10], lag:[points,400] } (no placement).
+    budgetAt(who, x, z) {
+      const { cx, cz } = locate(x, 0, z)
+      return decide({ near: nearOf(cx, cz), mine: mineOf(who), cur: 0, id: 0 }).budget
+    },
+
     // batch: [{x,y,z,id,b}]  who: small int (room-local player id or 0 for staff)
     apply(batch, who, t = now()) {
       return batch.map((e) => {
@@ -87,12 +113,20 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
         const cur = c.edits.has(idx) ? c.edits.get(idx) : gen ? gen(e.x, e.y, e.z) : e.b
         if (cur !== e.b) return { ok: false, why: 'stale', cur }
         if (cur === e.id) return { ok: true, s: wseq, same: true }
+        // Budgets: lagcost first, then high-tick (budget.js). The server decides.
+        const cellKey = cx + ',' + cz + ',' + idx
+        // replacing your own machine frees its place in your budget first
+        const verdict = decide({ near: nearOf(cx, cz), mine: mineOf(who) - (owner.get(cellKey) === who ? 1 : 0), cur, id: e.id })
+        if (!verdict.ok) return { ok: false, why: verdict.why, budget: verdict.budget }
         c.edits.set(idx, e.id)
         c.dirty = true
         if (isMachine(cur) && !isMachine(e.id)) c.m.delete(idx)   // a broken machine takes its counter with it
         if (isMachine(e.id) || isMachine(cur)) index(cx, cz, c)
+        tallies.delete(cx + ',' + cz)
+        if (owner.delete(cellKey)) ownerDirty = true
+        if (HIGH_TICK.has(e.id)) { owner.set(cellKey, who); ownerDirty = true }
         pending.push({ s: ++wseq, w: who, x: e.x, y: e.y, z: e.z, b: cur, i: e.id, t })
-        return { ok: true, s: wseq }
+        return HIGH_TICK.has(e.id) || HIGH_TICK.has(cur) ? { ok: true, s: wseq, budget: verdict.budget } : { ok: true, s: wseq }
       })
     },
 
@@ -126,14 +160,16 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     flush() {
       const rows = []
       for (const c of cache.values()) if (c.dirty && !c.locked) rows.push([c.cx, c.cz, encodeChunk(c.edits, encodeMachines(c.m))])
-      if (!rows.length && !pending.length && !metaDirty) return 0
+      if (!rows.length && !pending.length && !metaDirty && !ownerDirty) return 0
       const meta = { wseq: String(wseq), clock: String(clock) }
       if (simAt != null) meta.simAt = String(simAt)
       if (mindex) meta.mindex = JSON.stringify([...mindex])
+      if (ownerDirty) meta.htown = JSON.stringify(Object.fromEntries(owner))
       db.commit({ chunks: rows, ops: pending, meta, keep: KEEP_OPS })
       for (const c of cache.values()) c.dirty = false
       pending = []
       metaDirty = false
+      ownerDirty = false
       if (cache.size > MAX_CLEAN) for (const k of cache.keys()) { if (cache.size <= MAX_CLEAN / 2) break; cache.delete(k) }
       return rows.length
     },

@@ -19,7 +19,7 @@ function fresh(gen) {
   const db = memDb()
   return { db, world: makeWorld(db, { gen: gen ?? (() => 0) }) }
 }
-const put = (world, x, y, z, id, t = T0) => world.apply([{ x, y, z, id, b: 0 }], 7, t)[0]
+const put = (world, x, y, z, id, t = T0, who = 7) => world.apply([{ x, y, z, id, b: 0 }], who, t)[0]
 const chunkOf = (world, cx, cz) => decodeChunk(world.chunk(cx, cz).d)
 const machine = (world, x, y, z) => { const { cx, cz, idx } = locate(x, y, z); return chunkOf(world, cx, cz).m.find((r) => r[0] === idx) }
 
@@ -110,7 +110,7 @@ test('a catch-up equals a never-slept run (within the cap): same clock, same ove
 
 test('a step handles at most 64 machine chunks, round robin; each chunk advances by its own elapsed time', () => {
   const { world } = fresh()
-  for (let i = 0; i < 70; i++) put(world, i * 16 + 1, 64, 1, OVEN)   // 70 chunks
+  for (let i = 0; i < 70; i++) put(world, i * 16 + 1, 64, 1, OVEN, T0, 1000 + i)   // 70 chunks, one kid each (2.5.591 caps 10 machines per kid)
   assert.equal(world.sim(T0).chunks, 64)              // starts chunks 0..63
   world.flush()
   assert.equal(chunkOf(world, 69, 0).m.length, 0, 'chunk 69 not reached in the first round')
