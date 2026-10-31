@@ -318,6 +318,7 @@ body:not(.menu-open) #sheet[hidden] ~ .keys{display:block}
 #sheet[data-panel] .sheet-bar{flex:0 0 auto;overflow:visible;max-height:none}
 .slot.bag-tile{position:static;flex:0 0 auto;right:auto}
 #sheet[hidden]{display:none}
+@media (min-width:700px){#sheet[data-panel="inventory"],#sheet[data-panel="menu"]{align-items:center;justify-content:center}} /* 2.5.550: Bag and Escape menu centered, not docked left */
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
 .sheet-bar button{min-width:48px;min-height:48px;background:rgba(11,18,32,.85);color:#f8fafc;border:1px solid var(--teal);border-radius:10px}
 html[dir=rtl] #fs-btn{right:12px;left:auto}
