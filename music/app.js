@@ -4229,9 +4229,12 @@
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
   });
   if ($("menu-help")) {
+    // MU 2.36.67: How to use it and What's new sit behind Help, so the menu opens on a short list.
     $("menu-help").addEventListener("click", () => {
-      const go = document.querySelector('#drawer h2[data-mu="go"]');
-      if (go && go.scrollIntoView) go.scrollIntoView({ block: "start" });
+      const box = $("help-box");
+      if (!box) return;
+      box.hidden = !box.hidden;
+      $("menu-help").setAttribute("aria-expanded", box.hidden ? "false" : "true");
     });
   }
   $("tempo").addEventListener("input", (e) => {
@@ -4657,7 +4660,7 @@
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
       // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more, #make-beat, #menu-help, #teacher-toggle")) return; // MU 2.36.65: the Score tools buttons take Space too; MU 2.36.67: so do Make a beat, Help and Teacher
       e.preventDefault();
       $("play-btn").click();
     }
@@ -5498,7 +5501,7 @@
         if (preset === "band" || preset === "sound" || preset === "lights") reopen = tabForMode(preset);
       }
     } catch (errRe) { reopen = ""; }
-    openTab(reopen || "tap"); // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
+    openTab(reopen || (state.hadSave ? "tap" : "songs")); // MU 2.36.67: a fresh start lands on Songs, where Make a beat is the first, biggest button // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
   }
   if ($("tempo") && state.song && state.song.bpm) {
     $("tempo").value = String(state.song.bpm);

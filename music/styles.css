@@ -6684,3 +6684,12 @@ body.mu237.tab-score #staff.staff-strip {
 @media (orientation: landscape) and (max-height: 500px) {
   html[dir="rtl"] body.mu237.tab-score .tool-row { padding-left: 98px; padding-right: 10px; }
 }
+
+/* MU 2.36.67: Make a beat carries an icon with its word; Help hides the long how-to list. Layout only. */
+.make-beat { display: flex; align-items: center; justify-content: center; gap: 0.5em; min-height: max(48px, 22vh); }
+.make-beat .mb-ico { width: 1.1em; height: 1.1em; flex: none; }
+.make-beat:focus-visible, .help-toggle:focus-visible, .teacher-toggle:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.help-toggle, .teacher-toggle { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; }
+.help-box[hidden], .teacher-box[hidden] { display: none !important; }
+body.mu237 #make-beat { font-size: clamp(1.4rem, 3vw, 2.2rem) !important; }
+body.mu237 #make-beat .mb-ico { width: 1.2em; height: 1.2em; }

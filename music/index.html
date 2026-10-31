@@ -32,7 +32,8 @@
   </div>
 
   <section id="home" class="home">
-    <button type="button" id="make-beat" class="make-beat" data-mu="makeBeat">Make a beat</button>
+    <!-- MU 2.36.67: tabindex 1 so the first Tab lands on Make a beat, ahead of the shared top bar. -->
+    <button type="button" id="make-beat" class="make-beat" tabindex="1"><svg class="mb-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></svg><span data-mu="makeBeat">Make a beat</span></button>
     <button type="button" id="my-songs" class="my-songs" data-mu="mySongs">My songs</button>
     <div id="shelf-extra" hidden>
     <h1 data-mu="songsH">Songs</h1>
@@ -147,6 +148,8 @@
         <span id="theme-label" data-mu="darkMode">Dark mode</span>
         <button type="button" id="theme-switch" class="theme-switch" role="switch" aria-checked="false" aria-labelledby="theme-label"><svg class="theme-ico theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.2 3.4A8.2 8.2 0 1 0 20.6 16 6.4 6.4 0 1 1 15.2 3.4z"/></svg><svg class="theme-ico theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.3" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3L5.1 18.9"/></svg></button>
       </div>
+      <button type="button" id="menu-help" class="btn help-toggle" aria-expanded="false" aria-controls="help-box"><span class="tb-ico" aria-hidden="true">?</span><span data-i18n="help">Help</span></button>
+      <div id="help-box" class="help-box" hidden>
       <h2 data-mu="helpHead">How to use it</h2>
       <ul class="whats-list">
         <li><span data-mu="helpRail">▣ Tap a tool on the side bar or bottom bar.</span></li>
@@ -260,7 +263,7 @@
         <li><bdi class="news-ver">MU 2.35.5</bdi> <span data-mu="listsEasy">Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.</span></li>
         <li><bdi class="news-ver">MU 2.35.4</bdi> <span data-mu="menuEvery">Menu opens from the left on every screen.</span></li>
       </ul>
-      <button type="button" id="menu-help" class="btn" data-i18n="help">Help</button>
+      </div>
     </section>
     <section class="group" id="menu-tabs">
       <h2 data-mu="tabsHead">Tabs</h2>
