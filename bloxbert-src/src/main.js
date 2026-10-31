@@ -155,6 +155,22 @@ for (const [lang, row] of Object.entries(WN552)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.563 what's new. rw, ti, and fa-AF are machine drafts.
+const WN563 = {
+  en: { whatsNewBody: '2.5.563 — Behind the scenes: new checking tools for the sky and sun. Your game plays the same.' },
+  simple: { whatsNewBody: '2.5.563 — New tools to check the sky. Your game is the same.' },
+  uk: { whatsNewBody: '2.5.563 — За лаштунками: нові інструменти перевірки неба й сонця. Гра працює так само.' },
+  ru: { whatsNewBody: '2.5.563 — За кулисами: новые инструменты проверки неба и солнца. Игра работает так же.' },
+  es: { whatsNewBody: '2.5.563 — Detrás de escena: nuevas herramientas para revisar el cielo y el sol. Tu juego sigue igual.' },
+  ar: { whatsNewBody: '2.5.563 — خلف الكواليس: أدوات جديدة لفحص السماء والشمس. لعبتك تبقى كما هي.' },
+  'fa-AF': { whatsNewBody: '2.5.563 — پشت صحنه: ابزارهای تازه برای بررسی آسمان و آفتاب. بازی شما همان‌طور است.' },
+  rw: { whatsNewBody: '2.5.563 — Inyuma y\'amaso: ibikoresho bishya byo kugenzura ikirere n\'izuba. Umukino wawe ni nk\'uko wari uri.' },
+  ti: { whatsNewBody: '2.5.563 — ድሕሪ መጋረጃ፡ ሰማይን ጸሓይን ንምፍታሽ ሓደሽቲ መሳርሒታት። ጸወታኹም ከምቲ ዝነበሮ እዩ።' },
+}
+for (const [lang, row] of Object.entries(WN563)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
