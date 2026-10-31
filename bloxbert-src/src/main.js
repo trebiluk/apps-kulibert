@@ -199,6 +199,7 @@ import { dayCap } from './econ/cogs.js'
 import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
+import { createBridgeRush } from './minigames/bridge-rush.js' // PROTO: Bridge Rush
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -3463,9 +3464,11 @@ function syncGlasses() {
   if (glassesMesh) glassesMesh.setEnabled(on)
 }
 let hands = null
+let bridge = null // PROTO: Bridge Rush arena
 function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
   if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
+  if (bridge && bridge.tryBreak(x, y, z)) return true // PROTO: Bridge Rush deck gives the budget back
   const id = getVoxel(x, y, z)
   if (!id) return false
   if (isFoundryConsole(id, x, z) && survivalOn()) { useAt({ position: [x, y, z], id }); return false }
@@ -3665,6 +3668,7 @@ function placeBlock(face, opts) {
       return false
     }
   }
+  if (bridge && bridge.inside() && bridge.tryPlace(bridge.landing(aimedBlock))) return true // PROTO: Bridge Rush deck
   if (tryBush(aimedBlock)) return false
   if (tryCrop(aimedBlock)) return false
   if (tryPlant(aimedBlock, repeat)) return false
@@ -8374,7 +8378,7 @@ function tickSpawnWait() {
   const w = spawnWait
   if (playerBody) playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
   noa.entities.setPosition(noa.playerEntity, w.at)
-  const x0 = Math.floor(SPAWN[0]), z0 = Math.floor(SPAWN[2])
+  const x0 = Math.floor(w.col ? w.col[0] : SPAWN[0]), z0 = Math.floor(w.col ? w.col[1] : SPAWN[2])
   if (!spawnChunksReady(x0, z0)) return true
   let spot = null
   for (let r = 0; r <= 6 && !spot; r++) {
@@ -8387,7 +8391,8 @@ function tickSpawnWait() {
   if (!spot) return true
   spawnWait = null
   noa.entities.setPosition(noa.playerEntity, spot)
-  worldSpawn = spot.slice()
+  if (w.look) setLook(w.look[0], w.look[1]) // debug teleport: face where asked, keep the home spawn
+  else worldSpawn = spot.slice()
   if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
   console.info('[bertopia] spawn on ground ' + spot.join(','))
   if (dirty) save()
@@ -9500,6 +9505,7 @@ function shutByKey() {
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
   if (e.key === 'Escape' || e.key === 'Tab') return
+  if (bridge && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && $('sheet') && $('sheet').hidden && bridge.onKey(e)) { e.preventDefault(); return } // PROTO: T test, R retry, 1/2 material
   if (e.key === 'e' || e.key === 'E') { // 2.5.506: E toggles the Bag even while the wand is held
     if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return
     e.preventDefault()
@@ -12214,6 +12220,7 @@ noa.on('beforeRender', (dt) => {
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
+  if (bridge) bridge.update(dt || 16) // PROTO: Bridge Rush
   poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
@@ -12627,6 +12634,8 @@ if (!__BLOX_STUDENT__) {
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
     },
     handSwing(kind) { pokeHand(kind) },
+    bridge: () => (bridge ? bridge.state() : null), // PROTO test hook
+    bridgeApi: () => bridge,
     lookHand(patch) {
       if (patch) {
         if (patch.show != null) showHand = !!patch.show
@@ -13076,6 +13085,41 @@ load().catch(() => {}).finally(() => {
       } else console.info('[bt-foundry] skipped (safe)')
     }
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
+  // PROTO: Bridge Rush arena just east of town on the road line (x 44..65, z -3..3), built once per device
+  try {
+    bridge = createBridgeRush({
+      getVoxel, edit, scene, noa,
+      playerPos: () => noa.entities.getPosition(noa.playerEntity),
+      t: (k) => { const v = t(k); return v === k ? '' : v },
+      toast: (m) => toast(m),
+      say: (m) => { const el = mountStayChip('bridge-best-chip', 'rgba(31,138,138,.9)'); el.textContent = '⭐ ' + m; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => { el.hidden = true }, 4000) },
+      alias: () => '',
+    })
+    const bx = 44, bz = 0
+    let built = null
+    try { built = JSON.parse(localStorage.getItem('bt-bridge-origin-1') || 'null') } catch (e) { built = null }
+    if (Array.isArray(built) && built.length === 3) bridge.setOrigin(built)
+    else {
+      let by = 4
+      for (let y = 8; y > 0; y--) { if ((getVoxel(bx, y, bz) | 0) > 0) { by = y; break } }
+      bridge.place([bx, by, bz])
+      localStorage.setItem('bt-bridge-origin-1', JSON.stringify([bx, by, bz]))
+      console.info('[bt-bridge] arena at', bx, by, bz)
+    }
+  } catch (e) { console.warn('[bt-bridge] skip', e && e.message) }
+  // PROTO debug: ?debug=1&tp=bridge spawns on the west cliff top facing +x along the deck (both params required).
+  // Wide screens look down at the first deck cell so a click places at once; phones keep the level view the touch path uses.
+  try {
+    const q = new URLSearchParams(location.search)
+    const o = bridge && bridge.origin()
+    if (o && [...q.getAll('debug')].includes('1') && [...q.getAll('tp')].includes('bridge')) {
+      const at = [o[0] + 2.5, o[1] + 2.05, o[2] + 0.5]
+      noa.entities.setPosition(noa.playerEntity, at)
+      spawnWait = { at, col: [o[0] + 2, o[2]], look: [Math.PI / 2, innerWidth > 600 ? 1.0 : 0.15], since: performance.now() }
+      if (playerBody) playerBody.gravityMultiplier = 0
+      console.info('[bt-bridge] debug tp', at.join(','))
+    }
+  } catch (e) { console.warn('[bt-bridge] tp skip', e && e.message) }
   armClock()
   runBtTest()
   paintDayClock()
