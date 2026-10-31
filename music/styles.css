@@ -6615,8 +6615,8 @@ body.mu237 #meters .meter-btn[aria-pressed="true"] .mt-text::after { content: " 
 @media (forced-colors: active) {
   body.mu237 #meters .meter-btn[aria-pressed="true"], body.mu237 #tools-toggle[aria-expanded="true"] { outline: 2px solid Highlight; }
 }
-/* upright phone: the two buttons share the row, and the hint (it only repeats the tab name) stays for screen readers */
-@media (max-width: 560px) {
+/* upright phone, and a sideways phone narrower than 812 px: the two buttons share the row, and the hint (it only repeats the tab name) stays for screen readers */
+@media (max-width: 560px), (orientation: landscape) and (max-height: 500px) and (max-width: 811px) {
   body.mu237.tab-score .tool-row .tool-line {
     position: absolute !important;
     width: 1px !important; height: 1px !important;
@@ -6664,8 +6664,9 @@ body.mu237.tab-score #staff.staff-strip {
 @media (orientation: landscape) and (max-height: 500px) {
   body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 56px; padding-block: 3px; }
 }
-/* upright phone: a long word (Spanish "Herramientas de partitura") wraps to a second line inside its 44px button instead of pushing the row wider than the screen */
-@media (max-width: 560px) {
+/* upright phone, and a sideways phone narrower than 812 px: a long word (Spanish "Herramientas de partitura") wraps to a second line inside its 44px button
+   instead of pushing the row wider than the screen */
+@media (max-width: 560px), (orientation: landscape) and (max-height: 500px) and (max-width: 811px) {
   body.mu237.tab-score #score-bar { min-width: 0; max-width: 100%; }
   body.mu237.tab-score #score-bar .tool-btn {
     min-width: 0 !important;
@@ -6741,9 +6742,18 @@ body.mu237.tab-score #staff.staff-strip {
   body.mu237.tab-score .note-row #pen,
   body.mu237.tab-score .note-row #len { margin-block: 0 !important; }
 }
-/* inside the Hub frame (sideways, short screens) the top bar is gone and the tools row moves up with it */
-@media (orientation: landscape) and (max-height: 420px) and (min-width: 880px) {
+/* inside the Hub frame (sideways, short screens, any width) the top bar is gone and the tools row moves up with it, so the chip moves up too */
+@media (orientation: landscape) and (max-height: 420px) {
   html.kb-framed body.mu237.tab-score .mu-chip { top: 14px; }
 }
 /* the length row is not used by beat-cell songs. Its own hidden rule lost to the flex rule on specificity, so an empty 2px bar and its margins stayed on screen. */
 body.mu237 #len[hidden] { display: none !important; }
+
+/* sideways phone narrower than 812 px: "Saved" moves to the clear corner at the end of the tools row, under the version chip, so the two buttons get the whole
+   width in front of it and their wrapped words fit. The chip moves up to make room for it (also inside the Hub frame). */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 811px) {
+  html body.mu237.tab-score:not(.show):not(.stage-on) .out { top: 26px; inset-inline-start: auto; right: 8px; }
+  html[dir="rtl"] body.mu237.tab-score:not(.show):not(.stage-on) .out { right: auto; left: 8px; }
+  html body.mu237.tab-score .mu-chip { top: 54px; }
+  html.kb-framed body.mu237.tab-score .mu-chip { top: 2px; }
+}

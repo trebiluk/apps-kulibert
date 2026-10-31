@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, every dr* key (Score tools drawer words), pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, every dr* key (Score tools drawer words, drWherePickup), pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -78,6 +78,7 @@
     drWhyCount: "{done} of {total} marks have a reason.",
     drWhyAsk: "Why is it here?",
     drWhere: "Bar {bar}, beat {beat}.",
+    drWherePickup: "Pickup, beat {beat}.",
     drTeach_C: "C hangs under the staff. It is the home note.",
     drTeach_D: "D sits just under the staff.",
     drTeach_E: "E sits on the bottom line.",
@@ -862,6 +863,7 @@
     drWhyCount: "{done} of {total} notes have a reason.",
     drWhyAsk: "Why is it here?",
     drWhere: "Bar {bar}, beat {beat}.",
+    drWherePickup: "Pickup, beat {beat}.",
     drTeach_C: "C hangs under the staff. It is the home note.",
     drTeach_D: "D sits just under the staff.",
     drTeach_E: "E sits on the bottom line.",
@@ -1309,6 +1311,7 @@
       "drWhyCount": "{done} із {total} позначок мають причину.",
       "drWhyAsk": "Чому вона тут?",
       "drWhere": "Такт {bar}, доля {beat}.",
+      "drWherePickup": "Затакт, доля {beat}.",
       "drTeach_C": "C висить під нотним станом. Це домашня нота.",
       "drTeach_D": "D стоїть просто під нотним станом.",
       "drTeach_E": "E стоїть на нижній лінійці.",
@@ -2094,6 +2097,7 @@
       "drWhyCount": "{done} из {total} отметок имеют причину.",
       "drWhyAsk": "Почему она здесь?",
       "drWhere": "Такт {bar}, доля {beat}.",
+      "drWherePickup": "Затакт, доля {beat}.",
       "drTeach_C": "C висит под нотным станом. Это домашняя нота.",
       "drTeach_D": "D стоит прямо под нотным станом.",
       "drTeach_E": "E стоит на нижней линейке.",
@@ -2879,6 +2883,7 @@
       "drWhyCount": "{done} de {total} marcas tienen una razón.",
       "drWhyAsk": "¿Por qué está aquí?",
       "drWhere": "Compás {bar}, tiempo {beat}.",
+      "drWherePickup": "Anacrusa, tiempo {beat}.",
       "drTeach_C": "C cuelga bajo el pentagrama. Es la nota de casa.",
       "drTeach_D": "D está justo debajo del pentagrama.",
       "drTeach_E": "E está en la línea de abajo.",
@@ -3665,6 +3670,7 @@
       "drWhyCount": "{done} من {total} علامات لها سبب.",
       "drWhyAsk": "لماذا هي هنا؟",
       "drWhere": "المازورة {bar}، النبضة {beat}.",
+      "drWherePickup": "المازورة التمهيدية، النبضة {beat}.",
       "drTeach_C": "C معلّقة تحت المدرّج. إنها نوتة البيت.",
       "drTeach_D": "D تقع تحت المدرّج مباشرة.",
       "drTeach_E": "E تقع على الخط السفلي.",
@@ -4451,6 +4457,7 @@
       "drWhyCount": "{done} از {total} نشانه دلیل دارند.",
       "drWhyAsk": "چرا اینجا است؟",
       "drWhere": "میزان {bar}، ضرب {beat}.",
+      "drWherePickup": "میزان آغازین، ضرب {beat}.",
       "drTeach_C": "C زیر حامل نُت آویزان است. این نُت خانه است.",
       "drTeach_D": "D درست زیر حامل نُت قرار دارد.",
       "drTeach_E": "E روی خط پایینی قرار دارد.",
@@ -5237,6 +5244,7 @@
       "drWhyCount": "{done} kuri {total} by'ibimenyetso bifite impamvu.",
       "drWhyAsk": "Kuki iri hano?",
       "drWhere": "Umurongo {bar}, umuryango {beat}.",
+      "drWherePickup": "Intangiriro, umuryango {beat}.",
       "drTeach_C": "C imanitse munsi y'imirongo y'inota. Ni inota y'urugo.",
       "drTeach_D": "D iri munsi y'imirongo y'inota.",
       "drTeach_E": "E iri ku murongo wo hasi.",
@@ -6023,6 +6031,7 @@
       "drWhyCount": "ካብ {total} ምልክታት {done} ምኽንያት ኣለዎም።",
       "drWhyAsk": "ስለምንታይ ኣብዚ ኣላ?",
       "drWhere": "መስመር {bar}, ምት {beat}።",
+      "drWherePickup": "መእተዊ, ምት {beat}።",
       "drTeach_C": "C ኣብ ትሕቲ መስመራት ተሰቒላ ኣላ። እዛ ናይ ገዛ ኖታ እያ።",
       "drTeach_D": "D ልክዕ ኣብ ትሕቲ መስመራት ትርከብ።",
       "drTeach_E": "E ኣብ እተሓተ መስመር ትርከብ።",

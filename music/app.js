@@ -1729,7 +1729,11 @@
     const fact = ev.pitch ? (mu("drTeach_" + ev.pitch) || TEACH[ev.pitch] || ev.label) : (mu("tapRestTeach") || "Rest. Count it. Nothing plays.");
     const said = why[ev.measure + "-" + ev.beat];
     const sentence = said ? whyWord(said) : (mu("drWhyAsk") || "Why is it here?");
-    const where = mu("drWhere", { bar: ev.measure + 1, beat: ev.beat + 1 }) || ("Bar " + (ev.measure + 1) + ", beat " + (ev.beat + 1) + ".");
+    // The same bar and beat numbers as the staff and the play counter: the pickup is "Pickup", and the first full bar is Bar 1.
+    const bb = barBeat(ev, 0);
+    const where = bb.pickup
+      ? (mu("drWherePickup", { beat: bb.beat }) || ("Pickup, beat " + bb.beat + "."))
+      : (mu("drWhere", { bar: bb.bar, beat: bb.beat }) || ("Bar " + bb.bar + ", beat " + bb.beat + "."));
     ask.textContent = where + " " + fact + " " + sentence;
     document.querySelectorAll("#why-reasons .btn").forEach((btn) => {
       btn.classList.toggle("on", btn.dataset.why === said);
