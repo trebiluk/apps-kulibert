@@ -89,6 +89,14 @@
     }
   }
 
+  function applyDebugFlag() {
+    var root = document.documentElement;
+    if (!root) return;
+    root.classList.toggle("hi-debug", debugOn());
+  }
+
+  applyDebugFlag();
+
   function editorOn() {
     if (document.querySelector(".shop.shop-editor")) return true;
     return /\/play\//.test(location.pathname);
@@ -108,41 +116,74 @@
     return el;
   }
 
+  function ensureDebugRow(box) {
+    var row = box.querySelector("a.hi-debug-row");
+    if (!debugOn()) {
+      if (row) row.remove();
+      return;
+    }
+    if (!row) {
+      row = document.createElement("a");
+      row.className = "hi-debug-row";
+      row.href = "/holdit/debug";
+      var icon = document.createElement("span");
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = "\u2699 ";
+      var text = document.createElement("span");
+      text.textContent = "Debug";
+      row.appendChild(icon);
+      row.appendChild(text);
+    }
+    var sign = box.querySelector(".hi-sign-in");
+    var hub = box.querySelector(".hi-back-hub");
+    var home = box.querySelector(".kb-drawer-home");
+    var anchor = sign || hub || home;
+    if (anchor && anchor.nextElementSibling !== row) anchor.insertAdjacentElement("afterend", row);
+    else if (!row.parentNode) box.appendChild(row);
+  }
+
   function parkBar() {
     var on = editorOn();
     document.documentElement.classList.toggle("hi-editor", on);
-    document.documentElement.classList.toggle("hi-debug", debugOn());
+    applyDebugFlag();
     var box = document.getElementById("kb-drawer");
     if (!box) return;
     var home = box.querySelector(".kb-drawer-home");
     if (!on) {
       var extra = box.querySelectorAll(".hi-back-hub, .hi-sign-in");
       for (var i = 0; i < extra.length; i++) extra[i].remove();
-      return;
+    } else {
+      if (!box.querySelector(".hi-back-hub")) {
+        var back = row("a", "hi-back-hub", "Back to Hub");
+        back.href = "https://apps.kulibert.net/";
+        back.target = "_top";
+        if (home) home.insertAdjacentElement("afterend", back);
+        else box.appendChild(back);
+      }
+      if (!box.querySelector(".hi-sign-in")) {
+        var sign = row("button", "hi-sign-in", "Sign in");
+        sign.addEventListener("click", function () {
+          var alias = document.querySelector(".kb-alias");
+          if (alias) alias.click();
+        });
+        var hub = box.querySelector(".hi-back-hub");
+        if (hub) hub.insertAdjacentElement("afterend", sign);
+      }
     }
-    if (!box.querySelector(".hi-back-hub")) {
-      var back = row("a", "hi-back-hub", "Back to Hub");
-      back.href = "https://apps.kulibert.net/";
-      back.target = "_top";
-      if (home) home.insertAdjacentElement("afterend", back);
-      else box.appendChild(back);
-    }
-    if (!box.querySelector(".hi-sign-in")) {
-      var sign = row("button", "hi-sign-in", "Sign in");
-      sign.addEventListener("click", function () {
-        var alias = document.querySelector(".kb-alias");
-        if (alias) alias.click();
-      });
-      var hub = box.querySelector(".hi-back-hub");
-      if (hub) hub.insertAdjacentElement("afterend", sign);
-    }
+    ensureDebugRow(box);
+    applyDebugFlag();
   }
 
   var busy = false;
+  var pending = false;
   function pass() {
-    if (busy) return;
+    if (busy) { pending = true; return; }
     busy = true;
-    try { paintChips(); paintNews(); parkBar(); } finally { busy = false; }
+    try { applyDebugFlag(); paintChips(); paintNews(); parkBar(); }
+    finally {
+      busy = false;
+      if (pending) { pending = false; pass(); }
+    }
   }
 
   function arm() {
@@ -151,4 +192,5 @@
   }
   if (document.body) arm();
   else document.addEventListener("DOMContentLoaded", arm);
+  window.addEventListener("pageshow", applyDebugFlag);
 })();
