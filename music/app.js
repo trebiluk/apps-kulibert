@@ -312,7 +312,7 @@
   const openedBak = openedMain ? false : applySaved(readBox(BACKUP));
   state.restored = openedBak;
   state.hadSave = !!(openedMain || openedBak);
-  // MU 2.36.68: load-time marker. boxOwned = this page has seen the save key (at load or after its own write).
+  // MU 2.36.74: load-time marker. boxOwned = this page has seen the save key (at load or after its own write).
   let boxOwned = false;
   try { boxOwned = localStorage.getItem(KEY) !== null; } catch (err) { boxOwned = false; }
   if (!openedMain && !openedBak) {
@@ -586,11 +586,11 @@
     let ok = false;
     try {
       const prev = localStorage.getItem(KEY);
-      // MU 2.36.68: the quiet unload write must not bring back a save that was cleared while the page was open.
+      // MU 2.36.74: the quiet unload write must not bring back a save that was cleared while the page was open.
       if (quiet && boxOwned && (prev === null || localStorage.length === 0)) return;
       if (prev && prev !== body) localStorage.setItem(BACKUP, prev);
       localStorage.setItem(KEY, body);
-      ok = localStorage.getItem(KEY) === body; // MU 2.36.68: Saved only after a read-back proves the write
+      ok = localStorage.getItem(KEY) === body; // MU 2.36.74: Saved only after a read-back proves the write
       if (ok) boxOwned = true;
     } catch (err) {
       ok = false;

@@ -1,8 +1,8 @@
 # Music changelog
 
-**Chip: MU 2.36.68** · 2026-10-31 · channel **draft PR**
+**Chip: MU 2.36.74** · 2026-10-31 · channel **draft PR**
 
-MU 2.36.68 — Clearing site data really clears DJ Berty, and Saved is only shown after a checked write.
+MU 2.36.74 — Clearing site data really clears DJ Berty, and Saved is only shown after a checked write.
 
 In kid words: if the browser's data is cleared, DJ Berty opens fresh on Songs with Make a beat first. Your old beat does not sneak back when you leave the page. "Saved" shows only after DJ Berty reads your beat back from storage.
 
