@@ -25,10 +25,50 @@
 
   // Every non-English language is a machine draft (1.3.2): the table marks it and the app shows the badge. ar and fa-AF are RTL.
   var LANGS = [
-    { id: "en", name: "English", draft: false, rtl: false, appName: "Pinchy", appName: "Pinchy", up: "Wrist up", down: "Wrist down", part: "wrist" },
-    { id: "uk", name: "Українська", draft: true, rtl: false, appName: "Пінчі", appName: "Пінчі", up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя" },
-    { id: "ru", name: "Русский", draft: true, rtl: false, appName: "Пинчи", appName: "Пинчи", up: "Запястье вверх", down: "Запястье вниз", part: "запястье" },
-    { id: "es", name: "Español", draft: true, rtl: false, appName: "Pinchy", appName: "Pinchy", up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
+    { id: "en", name: "English", draft: false, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Wrist up", down: "Wrist down", part: "wrist" },
+    { id: "uk", name: "Українська", draft: true, rtl: false, appName: "Пінчі", gameName: "Пінчі Макпінчфейс", up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя", blocksDraft: true,
+      blocks: {
+        "base-left": "Основа ліворуч",
+        "base-right": "Основа праворуч",
+        "shoulder-up": "Плече вгору",
+        "shoulder-down": "Плече вниз",
+        "elbow-up": "Лікоть вгору",
+        "elbow-down": "Лікоть вниз",
+        "claw-open": "Відкрити кіготь",
+        "claw-close": "Закрити кіготь",
+        "repeat-3": "Повтор 3",
+        "repeat-2": "Повтор 2",
+        "end-repeat": "Кінець повтору",
+        "if-red-square": "Якщо червоний ■",
+        "if-blue-circle": "Якщо синій ●",
+        "end-if": "Кінець якщо"
+      },
+      actions: { run: "Пуск", undo: "Скасувати", retry: "Скинути" },
+      help: "Стрілки вибирають блок. Enter додає його. Q повертає основу ліворуч у 3D. E повертає основу праворуч у 3D. R запускає. Z скасовує. Скидання зберігає програму.",
+      helpDebug: "Стрілки вибирають крок. Enter міняє його з наступним. 3D-рука повертається на основі під час запуску. R запускає. Z скасовує."
+    },
+    { id: "ru", name: "Русский", draft: true, rtl: false, appName: "Пинчи", gameName: "Пинчи Макпинчфейс", up: "Запястье вверх", down: "Запястье вниз", part: "запястье", blocksDraft: true,
+      blocks: {
+        "base-left": "Основание влево",
+        "base-right": "Основание вправо",
+        "shoulder-up": "Плечо вверх",
+        "shoulder-down": "Плечо вниз",
+        "elbow-up": "Локоть вверх",
+        "elbow-down": "Локоть вниз",
+        "claw-open": "Открыть клешню",
+        "claw-close": "Закрыть клешню",
+        "repeat-3": "Повтор 3",
+        "repeat-2": "Повтор 2",
+        "end-repeat": "Конец повтора",
+        "if-red-square": "Если красный ■",
+        "if-blue-circle": "Если синий ●",
+        "end-if": "Конец если"
+      },
+      actions: { run: "Пуск", undo: "Отмена", retry: "Сброс" },
+      help: "Стрелки выбирают блок. Enter добавляет его. Q поворачивает основание влево в 3D. E поворачивает основание вправо в 3D. R запускает. Z отменяет. Сброс сохраняет программу.",
+      helpDebug: "Стрелки выбирают шаг. Enter меняет его со следующим. 3D-рука поворачивается на основании при запуске. R запускает. Z отменяет."
+    },
+    { id: "es", name: "Español", draft: true, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "Base izquierda", "base-right": "Base derecha",
         "shoulder-up": "Hombro arriba", "shoulder-down": "Hombro abajo",
@@ -41,7 +81,7 @@
       help: "Las flechas eligen un bloque. Enter lo agrega. Q gira la base a la izquierda en 3D. E gira la base a la derecha en 3D. R ejecuta. Z deshace. Reintentar conserva el programa.",
       helpDebug: "Las flechas eligen un paso. Enter lo cambia con el siguiente. El brazo 3D gira sobre su base al ejecutar. R ejecuta. Z deshace."
     },
-    { id: "ar", name: "العربية", draft: true, rtl: true, appName: "بينشي", appName: "بينشي", up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
+    { id: "ar", name: "العربية", draft: true, rtl: true, appName: "بينشي", gameName: "بينشي ماكبينشفيس", up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "القاعدة يسار", "base-right": "القاعدة يمين",
         "shoulder-up": "كتف أعلى", "shoulder-down": "كتف أسفل",
@@ -54,7 +94,7 @@
       help: "الأسهم تختار بلوكًا. Enter يضيفه. Q تدير القاعدة يسارًا في 3D. E تدير القاعدة يمينًا في 3D. R يشغّل. Z يتراجع. إعادة المحاولة تبقي البرنامج.",
       helpDebug: "الأسهم تختار خطوة. Enter تبدلها مع التالية. الذراع 3D يدور على قاعدته عند التشغيل. R يشغّل. Z يتراجع."
     },
-    { id: "fa-AF", name: "دری", draft: true, rtl: true, appName: "پینچی", appName: "پینچی", up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, appName: "پینچی", gameName: "پینچی مک‌پینچ‌فیس", up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "پایه چپ", "base-right": "پایه راست",
         "shoulder-up": "شانه بالا", "shoulder-down": "شانه پایین",
@@ -67,8 +107,48 @@
       help: "تیرها یک بلاک را انتخاب می‌کنند. Enter آن را اضافه می‌کند. Q پایه را در 3D به چپ می‌چرخاند. E پایه را در 3D به راست می‌چرخاند. R اجرا می‌کند. Z برمی‌گرداند. تلاش دوباره برنامه را نگه می‌دارد.",
       helpDebug: "تیرها یک گام را انتخاب می‌کنند. Enter آن را با گام بعدی عوض می‌کند. بازوی 3D هنگام اجرا روی پایه می‌چرخد. R اجرا می‌کند. Z برمی‌گرداند."
     },
-    { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, appName: "Pinchy", appName: "Pinchy", up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza" },
-    { id: "ti", name: "ትግርኛ", draft: true, rtl: false, appName: "ፒንቺ", appName: "ፒንቺ", up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ" }
+    { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza", blocksDraft: true,
+      blocks: {
+        "base-left": "Ikibanza ibumoso",
+        "base-right": "Ikibanza iburyo",
+        "shoulder-up": "Urutugu hejuru",
+        "shoulder-down": "Urutugu hasi",
+        "elbow-up": "Inkokora hejuru",
+        "elbow-down": "Inkokora hasi",
+        "claw-open": "Fungura agashumi",
+        "claw-close": "Funga agashumi",
+        "repeat-3": "Subiramo 3",
+        "repeat-2": "Subiramo 2",
+        "end-repeat": "Iherezo ry'isubiramo",
+        "if-red-square": "Niba ari umutuku ■",
+        "if-blue-circle": "Niba ari ubururu ●",
+        "end-if": "Iherezo rya Niba"
+      },
+      actions: { run: "Tangira", undo: "Subiza inyuma", retry: "Ongera utangire" },
+      help: "Imyambi ihitamo ikibumbe. Enter kikongeraho. Q izenguruka ikibanza ibumoso muri 3D. E izenguruka ikibanza iburyo muri 3D. R itangira. Z isubiza inyuma. Kongera gutangira bibika porogaramu.",
+      helpDebug: "Imyambi ihitamo intambwe. Enter iyihindura n'ikurikira. Ukuboko kwa 3D kuzenguruka ku kibanza iyo gutangiye. R itangira. Z isubiza inyuma."
+    },
+    { id: "ti", name: "ትግርኛ", draft: true, rtl: false, appName: "ፒንቺ", gameName: "ፒንቺ ማክፒንችፌስ", up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ", blocksDraft: true,
+      blocks: {
+        "base-left": "መሰረት ጸጋም",
+        "base-right": "መሰረት የማን",
+        "shoulder-up": "ትከሻ ላዕሊ",
+        "shoulder-down": "ትከሻ ታሕቲ",
+        "elbow-up": "ኩርኩር ላዕሊ",
+        "elbow-down": "ኩርኩር ታሕቲ",
+        "claw-open": "ጭንካል ክፈት",
+        "claw-close": "ጭንካል ዓግት",
+        "repeat-3": "ድገም 3",
+        "repeat-2": "ድገም 2",
+        "end-repeat": "መወዳእታ ድገም",
+        "if-red-square": "እንተ ቀይሕ ■",
+        "if-blue-circle": "እንተ ሰማያዊ ●",
+        "end-if": "መወዳእታ እንተ"
+      },
+      actions: { run: "ጀምር", undo: "ተመለስ", retry: "ዳግም ኣዘጋጅ" },
+      help: "ምልክታት ኣቕጣጫ ብሎክ የምርጹ። Enter የእቱ። Q ኣብ 3D መሰረት ንጸጋም የዙር። E ኣብ 3D መሰረት ንየማን የዙር። R የጀምር። Z ይመልስ። ዳግም ምዕዳል መደብ የቐምጥ።",
+      helpDebug: "ምልክታት ኣቕጣጫ ስጉምቲ የምርጹ። Enter ምስ ዝቕጽል የቐያይሮ። ናይ 3D ኢድ ኣብ መሰረቱ ይዛወር። R የጀምር። Z ይመልስ።"
+    }
   ];
 
   var COLS = [["A", -30], ["B", 0], ["C", 30]];
@@ -958,7 +1038,7 @@
       themeDark: "\u25D0 Dark", themeLight: "\u25D0 Light",
       starRules: "Stars: done, under the block par, under the time par. They stay on this screen only.",
       blocksLine: "Blocks: {n}", swapsLine: "Swaps: {n}", timeNone: "Time: none yet", timeLine: "Time: {n}",
-      menu: "Menu", draftBadge: "Machine draft.", Target: "Target",
+      menu: "Menu", langAria: "Language", padAria: "Program blocks", draftBadge: "Machine draft.", Target: "Target",
       whatsTitle: "What's new", whatsClose: "Close", play: "Play",
       hubLine: "One Menu button in every app. It opens that app's menu.",
       programAria: "Program. Enter adds the picked block.",
@@ -1018,7 +1098,7 @@
       "estop": "■ PARADA DE EMERGENCIA", "clear": "✕ Borrar", "themeDark": "◐ Oscuro",
       "themeLight": "◐ Claro", "starRules": "Estrellas: hecho, menos bloques que el par, menos tiempo que el par. Solo se quedan en esta pantalla.", "blocksLine": "Bloques: {n}",
       "swapsLine": "Cambios: {n}", "timeNone": "Tiempo: aún no", "timeLine": "Tiempo: {n}",
-      "menu": "Menú", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
+      "menu": "Menú", "langAria": "Idioma", "padAria": "Bloques del programa", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
       "whatsClose": "Cerrar", "play": "Jugar", "hubLine": "Un solo botón Menú en cada aplicación. Abre el menú de esa aplicación.",
       "programAria": "Programa. Enter añade el bloque elegido.", "jointsAria": "Articulaciones", "actionsAria": "Botones del programa",
       "v132": "Versión 1.3.2", "w132a": "Los 8 idiomas ya traducen la línea de estado, la parada de emergencia, Borrar, el resumen de articulaciones, la pinza, las estrellas, bloques y tiempo, la barra superior, el botón de tema y Novedades.", "w132b": "El idioma elegido se guarda y se ve desde la primera pantalla. Las palabras que no están en inglés son un borrador automático.",
@@ -1054,7 +1134,7 @@
       "estop": "■ АВАРІЙНА ЗУПИНКА", "clear": "✕ Очистити", "themeDark": "◐ Темна",
       "themeLight": "◐ Світла", "starRules": "Зірки: виконано, менше за норму блоків, менше за норму часу. Вони лишаються тільки на цьому екрані.", "blocksLine": "Блоків: {n}",
       "swapsLine": "Обмінів: {n}", "timeNone": "Час: ще немає", "timeLine": "Час: {n}",
-      "menu": "Меню", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
+      "menu": "Меню", "langAria": "Мова", "padAria": "Блоки програми", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
       "whatsClose": "Закрити", "play": "Грати", "hubLine": "Одна кнопка «Меню» в кожній програмі. Вона відкриває меню цієї програми.",
       "programAria": "Програма. Enter додає вибраний блок.", "jointsAria": "Суглоби", "actionsAria": "Кнопки програми",
       "v132": "Версія 1.3.2", "w132a": "Усі 8 мов тепер перекладають рядок стану, аварійну зупинку, «Очистити», підсумок суглобів, показ кігтя, зірки, блоки й час, верхню панель, кнопку теми та «Що нового».", "w132b": "Вибрана мова зберігається й видна з першого екрана. Слова не англійською — машинна чернетка.",
@@ -1067,7 +1147,7 @@
       "w120a": "Рухай руку робота.", "w120b": "Руку намальовано в 3D з нерухомої камери, тож основа може повертатися.", "w120c": "Рівні з 1 по 6 без змін. Зірки лишаються тільки на цьому екрані.",
       "v110": "Версія 1.1.0", "w110a": "Рухай руку робота.", "w110b": "Рівень 4 сортує купу з повтором. Рівень 5 відправляє червоний квадрат у контейнер A, а синє коло — у контейнер B. Рівень 6 лагодить зламану програму обмінами.",
       "w110c": "Зап'ястя вгору й вниз є в пізніших рівнях. Зіткнення називає зап'ястя.", "w110d": "Зірки означають: виконано, менше за норму блоків і менше за норму часу. Вони лишаються тільки на цьому екрані.", "v100": "Версія 1.0.0",
-      "w100a": "Pinchy McPinchface — гра з рукою робота.", "w100b": "Рівень 1 рухає один суглоб. Рівень 2 піднімає деталь і кладе її. Рівень 3 іде до точки від A1 до C3.", "w100c": "Якщо рука щось зачепить, примітка називає деталь, а крок лишається обведеним. Повтор зберігає твою програму."
+      "w100a": "Пінчі Макпінчфейс — гра з рукою робота.", "w100b": "Рівень 1 рухає один суглоб. Рівень 2 піднімає деталь і кладе її. Рівень 3 іде до точки від A1 до C3.", "w100c": "Якщо рука щось зачепить, примітка називає деталь, а крок лишається обведеним. Повтор зберігає твою програму."
     },
     ru: {
       "L1": "Подвинь один сустав", "L2": "Возьми и положи", "L3": "Иди в точку",
@@ -1090,7 +1170,7 @@
       "estop": "■ АВАРИЙНЫЙ СТОП", "clear": "✕ Очистить", "themeDark": "◐ Тёмная",
       "themeLight": "◐ Светлая", "starRules": "Звёзды: выполнено, меньше нормы блоков, меньше нормы времени. Они остаются только на этом экране.", "blocksLine": "Блоков: {n}",
       "swapsLine": "Обменов: {n}", "timeNone": "Время: пока нет", "timeLine": "Время: {n}",
-      "menu": "Меню", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
+      "menu": "Меню", "langAria": "Язык", "padAria": "Блоки программы", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
       "whatsClose": "Закрыть", "play": "Играть", "hubLine": "Одна кнопка «Меню» в каждом приложении. Она открывает меню этого приложения.",
       "programAria": "Программа. Enter добавляет выбранный блок.", "jointsAria": "Суставы", "actionsAria": "Кнопки программы",
       "v132": "Версия 1.3.2", "w132a": "Все 8 языков теперь переводят строку состояния, аварийный стоп, «Очистить», сводку суставов, показ клешни, звёзды, блоки и время, верхнюю панель, кнопку темы и «Что нового».", "w132b": "Выбранный язык сохраняется и виден с первого экрана. Слова не на английском — машинный черновик.",
@@ -1103,7 +1183,7 @@
       "w120a": "Двигай руку робота.", "w120b": "Рука нарисована в 3D с неподвижной камеры, поэтому основание может поворачиваться.", "w120c": "Уровни с 1 по 6 без изменений. Звёзды остаются только на этом экране.",
       "v110": "Версия 1.1.0", "w110a": "Двигай руку робота.", "w110b": "Уровень 4 сортирует кучу с повтором. Уровень 5 отправляет красный квадрат в корзину A, а синий круг — в корзину B. Уровень 6 чинит сломанную программу обменами.",
       "w110c": "Запястье вверх и вниз есть на поздних уровнях. Столкновение называет запястье.", "w110d": "Звёзды значат: выполнено, меньше нормы блоков и меньше нормы времени. Они остаются только на этом экране.", "v100": "Версия 1.0.0",
-      "w100a": "Pinchy McPinchface — игра про руку робота.", "w100b": "Уровень 1 двигает один сустав. Уровень 2 берёт деталь и кладёт её. Уровень 3 идёт в точку от A1 до C3.", "w100c": "Если рука что-то заденет, заметка называет деталь, а шаг остаётся обведённым. Повтор сохраняет твою программу."
+      "w100a": "Пинчи Макпинчфейс — игра про руку робота.", "w100b": "Уровень 1 двигает один сустав. Уровень 2 берёт деталь и кладёт её. Уровень 3 идёт в точку от A1 до C3.", "w100c": "Если рука что-то заденет, заметка называет деталь, а шаг остаётся обведённым. Повтор сохраняет твою программу."
     },
     rw: {
       "L1": "Hindura ingingo imwe", "L2": "Fata ushyire", "L3": "Jya ahantu",
@@ -1126,7 +1206,7 @@
       "estop": "■ HAGARARA VUBA", "clear": "✕ Siba", "themeDark": "◐ Umwijima",
       "themeLight": "◐ Urumuri", "starRules": "Inyenyeri: byarangiye, ibibumbe bike, igihe gito. Zigumana kuri iyi ngaruriro gusa.", "blocksLine": "Ibibumbe: {n}",
       "swapsLine": "Impinduka: {n}", "timeNone": "Igihe: nta cyo", "timeLine": "Igihe: {n}",
-      "menu": "Menyu", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
+      "menu": "Menyu", "langAria": "Ururimi", "padAria": "Ibibumbe bya porogaramu", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
       "whatsClose": "Funga", "play": "Gukina", "hubLine": "Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
       "programAria": "Porogaramu. Enter yongeraho ikibumbe cyatoranyijwe.", "jointsAria": "Ingingo", "actionsAria": "Utubuto twa porogaramu",
       "v132": "Verisiyo 1.3.2", "w132a": "Indimi 8 zose zisobanura umurongo w'imiterere, Hagarara vuba, Siba, incamake y'ingingo, agashumi, inyenyeri, ibibumbe n'igihe, umurongo wo hejuru, buto y'ibara, n'Ibishya.", "w132b": "Ururimi uhisemo rurabikwa kandi rugaragara kuva ku ngaruriro ya mbere. Amagambo atari Icyongereza ni inyandiko ya mashini.",
@@ -1162,7 +1242,7 @@
       "estop": "■ ህጹጽ ደው", "clear": "✕ ደምስስ", "themeDark": "◐ ጸሊም",
       "themeLight": "◐ ብሩህ", "starRules": "ኮኸባት፡ ተወዲኡ፣ ካብ ደረጃ ብሎክ ንኽልተ፣ ካብ ደረጃ ግዜ ንኽልተ። ኣብዚ ገጽ ጥራይ ይቕመጡ።", "blocksLine": "ብሎኮታት፡ {n}",
       "swapsLine": "ለውጢ፡ {n}", "timeNone": "ግዜ፡ ገና", "timeLine": "ግዜ፡ {n}",
-      "menu": "ዝርዝር", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
+      "menu": "ዝርዝር", "langAria": "ቋንቋ", "padAria": "ብሎኮታት መደብ", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
       "whatsClose": "ዕጾ", "play": "ተጻወት", "hubLine": "ኣብ ነፍሲ ወከፍ መተግበሪ ሓደ መጠወቒ ዝርዝር ኣሎ። ዝርዝር ናይታ መተግበሪ ይኸፍት።",
       "programAria": "መደብ። Enter ዝተመርጸ ብሎክ የእቱ።", "jointsAria": "ጉልባባት", "actionsAria": "መጠወቕታት መደብ",
       "v132": "ዕትም 1.3.2", "w132a": "ኩለን 8 ቋንቋታት ሕጂ መስመር ኩነታት፣ ህጹጽ ደው፣ ደምስስ፣ ጽሑፍ ጉልባባት፣ ጭንካል፣ ኮኸባት፣ ብሎኮታትን ግዜን፣ ላዕለዋይ መስመር፣ መጠወቒ ገጽ፣ ሓድሽ እንታይ ኣሎን የተርጉማ።", "w132b": "ዝተመርጸ ቋንቋ ይቕመጥ፣ ካብ ቀዳማይ ገጽ ድማ ይርአ። ካብ እንግሊዝኛ ወጻኢ ዝዀኑ ቃላት ናይ ማሽን ረቂቕ እዮም።",
@@ -1175,7 +1255,7 @@
       "w120a": "ኢድ ሮቦት ኣንቀሳቕስ።", "w120b": "ኢድ ብ3D ካብ ሓደ ቀዋሚ ካሜራ ይስእል፣ ስለዚ መሰረት ክዘወር ይኽእል።", "w120c": "ደረጃታት 1 ክሳብ 6 ኣይተቐየሩን። ኮኸባት ኣብዚ ገጽ ጥራይ ይተርፉ።",
       "v110": "ዕትም 1.1.0", "w110a": "ኢድ ሮቦት ኣንቀሳቕስ።", "w110b": "ደረጃ 4 ክምር ብዳግም ይሰላስል። ደረጃ 5 ቀይሕ ርብዒ ናብ ሳጹን A ሰማያዊ ክቢ ድማ ናብ ሳጹን B ይልእኽ። ደረጃ 6 ዝተበላሸወ መደብ ብለውጢ ይኸውን።",
       "w110c": "ኣሰር ላዕሊን ኣሰር ታሕትን ኣብ ዝቕጽሉ ደረጃታት እዮም። ግጭት ኣሰር ይሰምዮ።", "w110d": "ኮኸባት ተወዲኡ፣ ካብ ደረጃ ብሎክ ንኽልተ፣ ካብ ደረጃ ግዜ ንኽልተ ማለት እዮም። ኣብዚ ገጽ ጥራይ ይተርፉ።", "v100": "ዕትም 1.0.0",
-      "w100a": "Pinchy McPinchface ጸወታ ኢድ እዩ።", "w100b": "ደረጃ 1 ሓደ ጉልባብ የንቀሳቕስ። ደረጃ 2 ክፋል የልዕል የንብር። ደረጃ 3 ካብ A1 ክሳብ C3 ናብ ነጥቢ ይኸይድ።", "w100c": "ኢድ ንሓደ ነገር እንተተጋጨወ፣ መመላእታ ንክፋል ይሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ። ደጊምካ ፈትን መደብካ የቐምጦ።"
+      "w100a": "ፒንቺ ማክፒንችፌስ ጸወታ ኢድ እዩ።", "w100b": "ደረጃ 1 ሓደ ጉልባብ የንቀሳቕስ። ደረጃ 2 ክፋል የልዕል የንብር። ደረጃ 3 ካብ A1 ክሳብ C3 ናብ ነጥቢ ይኸይድ።", "w100c": "ኢድ ንሓደ ነገር እንተተጋጨወ፣ መመላእታ ንክፋል ይሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ። ደጊምካ ፈትን መደብካ የቐምጦ።"
     },
     ar: {
       L1: "حرّك مفصلاً واحداً", L2: "التقط وضع", L3: "اذهب إلى نقطة", L4: "رتّب كومة", L5: "صناديق الحساس", L6: "أصلح البرنامج",
@@ -1207,7 +1287,7 @@
       themeDark: "\u25D0 داكن", themeLight: "\u25D0 فاتح",
       starRules: "النجوم: تم، تحت حد البلوكات، تحت حد الوقت. تبقى على هذه الشاشة فقط.",
       blocksLine: "البلوكات: {n}", swapsLine: "التبديلات: {n}", timeNone: "الوقت: لا شيء بعد", timeLine: "الوقت: {n}",
-      menu: "القائمة", draftBadge: "مسودة آلية.", Target: "الهدف",
+      menu: "القائمة", langAria: "اللغة", padAria: "بلوكات البرنامج", draftBadge: "مسودة آلية.", Target: "الهدف",
       whatsTitle: "ما الجديد", whatsClose: "إغلاق", play: "العب",
       hubLine: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
       programAria: "البرنامج. Enter يضيف البلوك المختار.",
@@ -1242,7 +1322,7 @@
       w110c: "الرسغ لأعلى والرسغ لأسفل في المستويات اللاحقة. الاصطدام يسمّي الرسغ.",
       w110d: "النجوم تعني تم، وتحت حد البلوكات، وتحت حد الوقت. تبقى على هذه الشاشة فقط.",
       v100: "الإصدار 1.0.0",
-      w100a: "Pinchy McPinchface هي لعبة الذراع.",
+      w100a: "بينشي ماكبينشفيس هي لعبة الذراع.",
       w100b: "المستوى 1 يحرّك مفصلاً واحدًا. المستوى 2 يلتقط قطعة ويضعها. المستوى 3 يذهب إلى نقطة من A1 إلى C3.",
       w100c: "إذا اصطدمت الذراع بشيء، تذكر الملاحظة القطعة وتبقى الخطوة محددة. إعادة المحاولة تبقي برنامجك."
     },
@@ -1276,7 +1356,7 @@
       themeDark: "\u25D0 تاریک", themeLight: "\u25D0 روشن",
       starRules: "ستاره‌ها: انجام شد، کمتر از حد بلاک، کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
       blocksLine: "بلاک‌ها: {n}", swapsLine: "جابه‌جایی‌ها: {n}", timeNone: "زمان: هنوز هیچ", timeLine: "زمان: {n}",
-      menu: "فهرست", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
+      menu: "فهرست", langAria: "زبان", padAria: "بلاک‌های برنامه", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
       whatsTitle: "تازه‌ها", whatsClose: "بستن", play: "بازی",
       hubLine: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
       programAria: "برنامه. Enter بلاک انتخاب‌شده را اضافه می‌کند.",
@@ -1311,7 +1391,7 @@
       w110c: "مچ بالا و مچ پایین در مرحله‌های بعدی است. برخورد نام مچ را می‌گوید.",
       w110d: "ستاره‌ها یعنی انجام شد، کمتر از حد بلاک، و کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
       v100: "نسخه 1.0.0",
-      w100a: "Pinchy McPinchface بازی بازو است.",
+      w100a: "پینچی مک‌پینچ‌فیس بازی بازو است.",
       w100b: "مرحله 1 یک بند را حرکت می‌دهد. مرحله 2 یک قطعه را برمی‌دارد و می‌گذارد. مرحله 3 به نقطه‌ای از A1 تا C3 می‌رود.",
       w100c: "اگر بازو به چیزی بخورد، یادداشت نام قطعه را می‌گوید و گام خط‌کشی می‌ماند. تلاش دوباره برنامه را نگه می‌دارد."
     }
