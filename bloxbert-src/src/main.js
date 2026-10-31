@@ -534,6 +534,8 @@ function seatToasts() {
   try {
     const floor = Math.round(Math.max(
       shownBottom(document.querySelector('header.top')),
+      shownBottom(document.querySelector('.kb-bar')), // 2.5.592 r2: the shared top bar and the game HUD row too
+      shownBottom(document.getElementById('top')),
       shownBottom(document.getElementById('chip-lane')),
       shownBottom(document.getElementById('boss-bar'))
     ) + 8)
@@ -4837,7 +4839,9 @@ async function snapshot() {
     ...(Object.keys(effects).length ? { effects } : {}),
   }
 }
+let oldSwap = false // 2.5.592: true while Load my saved world swaps the old save in; saves wait it out
 async function saveBody() {
+  if (oldSwap) return -1
   if (!(await waitWriter())) {
     pauseOtherTab()
     const err = new Error('paused')
@@ -7371,7 +7375,7 @@ panels = mountPanels({
   workbenchOn: () => calm.workbenchOn(),
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
-  load: () => load(),
+  load: () => loadOldClicked(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
@@ -8424,7 +8428,8 @@ function rescueToGround(fromVoid) {
     playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
     if (!tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
   }
-  console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
+  // Debug only (?debug=1): normal loads keep the console quiet.
+  if (/[?&]debug=1(&|$)/.test(location.search)) console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
   if (fromVoid !== false) {
     const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
     toast(usedHome ? t('poofBunk') : t('poofTown'))
@@ -9022,7 +9027,108 @@ $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contain
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))
 $('m-save').addEventListener('click', () => { saveClicked() })
-$('m-load').addEventListener('click', () => load())
+// 2.5.592: "Load my saved world" brings in the OLD bloxbert save (IndexedDB kuliblocks-test / worlds, the pre-/bertopia/ door).
+// It used to call load(), which only re-read the current world, so nothing changed and nothing was said.
+function readOldSave() {
+  return Promise.race([
+    new Promise((res) => {
+      let req
+      try { req = indexedDB.open('kuliblocks-test') } catch (e) { res(null); return }
+      req.onupgradeneeded = (e) => { e.target.transaction.abort(); res(null) }
+      req.onsuccess = () => {
+        const db = req.result
+        if (!db.objectStoreNames.contains('worlds')) { db.close(); res(null); return }
+        const g = db.transaction('worlds', 'readonly').objectStore('worlds').get(WORLD)
+        g.onsuccess = () => { db.close(); res(g.result || null) }
+        g.onerror = () => { db.close(); res(null) }
+      }
+      req.onerror = () => res(null)
+    }),
+    new Promise((r) => setTimeout(() => r(null), 3000)),
+  ])
+}
+// 2.5.592 test path for ShipCheck: ?debug=1&seedOldSave=1 writes a small fixture world in the OLD bloxbert storage
+// (IndexedDB kuliblocks-test / worlds / <world>), so "Load my saved world" has something to load. Game data only, no names.
+async function seedOldSave() {
+  const q = location.search
+  if (!/[?&]debug=1(&|$)/.test(q) || !/[?&]seedOldSave=1(&|$)/.test(q)) return false
+  try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {} // skip the boot "Bring my old world?" card so the test uses the button
+  // Two chunks around the town spawn (x 8.5, z 1.5): grass floor, plus a red wool fence 3 high and a blue wool post you see on load.
+  const near = new Uint16Array(S * S * S)
+  const far = new Uint16Array(S * S * S)
+  const at = (x, y, z, id) => { const c = z < 0 ? far : near; c[x * S * S + y * S + (z < 0 ? z + S : z)] = id }
+  for (let x = 0; x < S; x++) for (let z = -S; z < S; z++) { for (let y = 0; y < 4; y++) at(x, y, z, 3); at(x, 4, z, 1) }
+  for (let x = 3; x <= 14; x++) for (let z = -4; z <= 7; z++) if (x === 3 || x === 14 || z === -4 || z === 7) for (let y = 5; y <= 7; y++) at(x, y, z, 15)
+  for (let y = 5; y <= 10; y++) at(12, y, 5, 13)
+  const palette = ['air', 'grass', 'dirt', 'stone', 'slate', 'coal', 'sand', 'gravel', 'brickRed', 'brickGrey', 'planks', 'log', 'leaves', 'woolBlue', 'woolGreen', 'woolRed', 'woolTan', 'snow', 'ice', 'redSand', 'glass', 'coreplate', 'workbench', 'oven', 'vend', 'storeCounter', 'bunk', 'box', 'wheat', 'reed', 'door', 'doorOpen', 'glowPebble']
+  const doc = { format: 'kuliblocks', v: 2, chunkSize: S, palette, chunks: { '0,0,0': await gz(near), '0,0,-1': await gz(far) }, spawn: [8.5, 6, 1.5], player: { mode: 'survival', bag: [], hot: 0 }, fixture: 'seedOldSave' }
+  return new Promise((res) => {
+    const req = indexedDB.open('kuliblocks-test', 1)
+    req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('worlds')) req.result.createObjectStore('worlds') }
+    req.onsuccess = () => {
+      const db = req.result
+      const tx = db.transaction('worlds', 'readwrite')
+      tx.objectStore('worlds').put(doc, WORLD)
+      tx.oncomplete = () => { db.close(); console.info('[bertopia] seedOldSave: fixture written to kuliblocks-test/' + WORLD); res(true) }
+      tx.onerror = tx.onabort = () => { db.close(); res(false) }
+    }
+    req.onerror = () => res(false)
+  })
+}
+window.__bertopiaOldSeed = seedOldSave()
+let bootLoad = Promise.resolve() // set to the first load() below, so an early click waits for it
+async function loadOldClicked() {
+  const btn = $('m-load')
+  if (loadOldClicked.busy) return
+  loadOldClicked.busy = true
+  if (btn) btn.setAttribute('aria-busy', 'true')
+  // 2.5.592 r2: each of these stays at least 4 s, so a kid can read it
+  const say = (key) => { showToast(t(key), { ms: 4500 }); seatToasts() }
+  // The toast can wait in line behind another one, so count the 4 s from when it is really on screen.
+  let shownAt = 0
+  const t0 = performance.now()
+  const watch = setInterval(() => {
+    const el = document.getElementById('toast')
+    if (!shownAt && el && !el.hidden && (el.textContent || '').indexOf(t('oldLoading')) !== -1) shownAt = performance.now()
+    if (shownAt || performance.now() - t0 > 6000) clearInterval(watch)
+  }, 50)
+  const after4 = async () => {
+    while (!shownAt && performance.now() - t0 < 6000) await new Promise((r) => setTimeout(r, 50))
+    const from = shownAt || t0
+    await new Promise((r) => setTimeout(r, Math.max(0, 4300 - (performance.now() - from)))) // 4 s readable plus the fade-in
+  }
+  say('oldLoading')
+  markSave(t('oldLoading'))
+  try {
+    try { await window.__bertopiaOldSeed } catch (e) {}
+    try { await bootLoad } catch (e) {}
+    const old = await readOldSave()
+    if (!old || old.format !== 'kuliblocks') { await after4(); say('oldNone'); markSave(t('oldNone')); return false }
+    try {
+      const now = new Date()
+      await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
+    } catch (e) {}
+    oldSwap = true // no autosave of the current world may land on top of the old one
+    try { await saveChain } catch (e) {}
+    await idbPut(WORLD, old)
+    try { localStorage.removeItem(SPOT_KEY) } catch (e) {} // stand where the old world left you, not where this one did
+    try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
+    const ok = await load()
+    await after4()
+    if (!ok) { say('saveKept'); return false }
+    say('oldLoaded')
+    markSave(t('oldLoaded'))
+    return true
+  } catch (e) {
+    say('saveKept')
+    return false
+  } finally {
+    oldSwap = false
+    loadOldClicked.busy = false
+    if (btn) btn.removeAttribute('aria-busy')
+  }
+}
+$('m-load').addEventListener('click', () => { loadOldClicked() })
 $('m-export').addEventListener('click', () => exportJSON())
 $('m-import').addEventListener('click', () => $('import-file').click())
 $('import-file').addEventListener('change', async (e) => {
@@ -12982,7 +13088,7 @@ window.__bertopiaRotateCheck = function () {
     resetCount: bertRotateResets,
   }
 }
-load().catch(() => {}).finally(() => {
+;(bootLoad = load()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
   if (allowSave) window.__bertOpen = true

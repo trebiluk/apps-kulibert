@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// One Bertopia URL: the old /blocks/ and /blocks-test/ doors redirect on the server; this is the fallback.
+// Local test servers (localhost, 127.0.0.1) still open /blocks-test/ so the build checks keep working.
+;(function () { try { if (/^\/blocks(-test)?(\/|$)/.test(location.pathname) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { document.documentElement.style.background = '#0B1220'; location.replace('/bertopia/' + location.search + location.hash) } } catch (e) {} })()
+</script>
 <link rel="icon" href="data:,">
 <title>Bertopia 2.5.584</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.541">
@@ -749,6 +754,8 @@ body[data-glasses="1"] .cross{box-shadow:none}
 .top,#path-chip,#game-menu,#inspect-chip,#wallet-chip,#fs-btn,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
+/* 2.5.592: phone World panel, two columns so labels show in full (no "Load my...") */
+@media (max-width:600px){#sheet[data-panel="world"] .ggrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#sheet[data-panel="world"] .gtile .glbl{display:block!important;-webkit-line-clamp:unset!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-height:none!important;max-width:none!important;overflow-wrap:break-word;line-height:1.2}}
 #qol-tip.kd-tip,#qol-held{
   position:fixed;z-index:80;font-size:max(14px,var(--ks-fs-s));
   padding:calc(var(--ks-pad) / 3) var(--ks-pad);pointer-events:none
@@ -1423,7 +1430,7 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/kulibert-slots.js?v=2.5.541"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.586" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.592" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
 <script src="app.js?v=2.5.586" defer></script>
 
 <script>
@@ -1562,7 +1569,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (window.__bertOpen === true) { window.dispatchEvent(new Event('bert-update')); return }
       reloadOnce()
     })
-    navigator.serviceWorker.register(scope + 'sw.js', { scope: scope, updateViaCache: 'none' }).then(arm).catch(function () {}) // 2.5.484
+    // One URL + kill-switch: never register a worker again (a new register() would revive one that is unregistering).
+    // An old worker is asked to update instead; the update is the kill-switch sw.js, which clears bloxbert-* caches and unregisters.
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { if (r.scope.indexOf(scope) !== -1) { try { r.update().catch(function () {}) } catch (e) {} } })
+    }).catch(function () {})
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return
       navigator.serviceWorker.getRegistration(scope).then(function (reg) {
