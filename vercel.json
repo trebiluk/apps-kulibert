@@ -15,7 +15,7 @@
     },
     {
       "source": "/pinchy/:path*",
-      "destination": "/berty-bizzy/:path*",
+      "destination": "/berty-bizzy/",
       "permanent": true
     },
     {

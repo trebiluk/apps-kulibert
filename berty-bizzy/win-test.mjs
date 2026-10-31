@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.6.0");
+assert.equal(G.APP_VERSION, "1.6.1");
 assert.equal(G.LEVELS.length, 10);
 assert.equal(G.LEVELS[6].id, "T3");
 assert.ok(G.LEVELS[6].duo);
@@ -252,7 +252,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.6\.0/);
+assert.match(page, /v1\.6\.1/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -358,12 +358,12 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.6\.0<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.6\.1<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
   const r = vj.redirects.find(x => x.source === src);
-  assert.ok(r && r.permanent === true && /^\/berty-bizzy\//.test(r.destination), "308 redirect for " + src);
+  assert.ok(r && r.permanent === true && r.destination === "/berty-bizzy/", "308 redirect for " + src + " goes to /berty-bizzy/, never to a path that may not exist");
 }
 assert.match(hub, /translate="no">Berty &amp; Bizzy<\/span>/);
 
@@ -378,7 +378,7 @@ console.log("crash", line);
 // 1.3.2: every language names every chrome string the ShipCheck listed, and none falls back to English.
 var CHROME = ["estop", "clear", "themeDark", "themeLight", "Base", "Shoulder", "Elbow", "Wrist", "Claw", "degrees", "clawOpen", "clawShut",
   "OPEN", "SHUT", "No stars yet.", "One star.", "Two stars.", "Three stars.", "Add a block, then press Run.", "Add blocks, then press Run.",
-  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v160", "w160a", "w160b", "w160c", "cardDone", "cardCycle", "cardBlocks", "cardParts", "cardBest", "cardNew", "cardTry", "cardNext", "cardClose", "cardAria", "syncLone", "syncStuck", "T4", "T5", "T6", "T4-goal", "T5-goal", "T6-goal", "hb9", "hf6", "v150", "w150a", "w150b", "w150c", "nameBerty", "nameBizzy", "dof", "dofTitle", "laneAria", "laneNow", "armHit", "bothHold", "T3", "T3-goal", "legendDuo", "hb8", "hf5", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
+  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v161", "w161a", "w161b", "v160", "w160a", "w160b", "w160c", "cardDone", "cardCycle", "cardBlocks", "cardParts", "cardBest", "cardNew", "cardTry", "cardNext", "cardClose", "cardAria", "syncLone", "syncStuck", "T4", "T5", "T6", "T4-goal", "T5-goal", "T6-goal", "hb9", "hf6", "v150", "w150a", "w150b", "w150c", "nameBerty", "nameBizzy", "dof", "dofTitle", "laneAria", "laneNow", "armHit", "bothHold", "T3", "T3-goal", "legendDuo", "hb8", "hf5", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
   "v131", "w131a", "v130", "w130b", "v122", "w122d", "v121", "w121c", "v120", "w120b", "v110", "w110b", "v100", "w100c"];
 var LANG_IDS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
 var SAME_OK = { "es T6": 0, "es Base": 1, "es nameBerty": 1, "es nameBizzy": 1, "rw nameBerty": 1, "rw nameBizzy": 1, "rw dof": 1, "ti dof": 1 };
