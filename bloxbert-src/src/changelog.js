@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.584', date: '2026-10-31', lines: {
+    en: ["2.5.584 \u2014 Bertopia no longer keeps an old copy of itself on your device, so you always get the newest version."],
+    simple: ["2.5.584 \u2014 No more old copy on your device. You always get the newest version."],
+  } },
   // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
   { v: '2.5.571', date: '2026-10-31', lines: {
     en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.', 'Woodshop floor lamp and wall lamp show Needs metal tier until the smelter tier opens. The rug does not.'],
