@@ -11695,9 +11695,10 @@ function ghostCell() {
   if (!tableMode) {
     if (!canReach([spot.x, spot.y, spot.z])) return null
     const p = noa.entities.getPosition(noa.playerEntity)
-    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return null
+    // 2.5.550: blocked cells still get a ghost, drawn red with a reason (was hidden, so red never showed).
+    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return Object.assign({}, spot, { why: 'standing' })
   }
-  if (getVoxel(spot.x, spot.y, spot.z)) return null
+  if (getVoxel(spot.x, spot.y, spot.z)) return Object.assign({}, spot, { why: 'noRoom' })
   return spot
 }
 function ghostBedScale(on) {
@@ -11793,9 +11794,9 @@ function syncPlaceGhost() {
   }
   const id = heldBlockId()
   let side = null
-  let amber = false
+  let amber = !!spot.why
   let bunkWhy = ''
-  if (id === ID.woodshop || id === ID.bunk) {
+  if (!amber && (id === ID.woodshop || id === ID.bunk)) {
     side = shopSpan(spot.x, spot.y, spot.z)
     if (id === ID.bunk) {
       bunkWhy = bedBlockReason(spot.x, spot.y, spot.z, side)
@@ -11813,7 +11814,7 @@ function syncPlaceGhost() {
     ghostEdge(placeGhost, [0.9, 0.15, 0.15])
     ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
-    paintCue('no', id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
+    paintCue('no', spot.why ? t(spot.why) : id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat
