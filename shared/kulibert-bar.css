@@ -40,6 +40,21 @@
   .kb-help{display:none}
 }
 .kb-menu-dupe{display:none !important}
+html.kb-framed #levels-btn,
+html.kb-framed #levels-btn.kb-menu-dupe,
+html.kb-framed [data-kb-levels]{
+  display:inline-flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+.kb-levels-label{
+  margin:0 0 8px;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  font-weight:700;
+  color:inherit;
+}
 html:not([data-theme="classic"]) .kb-bar .kb-menu{display:inline-flex !important}
 html:not([data-theme="classic"]) #land-menu.kb-menu-dupe{display:none !important}
 .kb-drawer-backdrop{

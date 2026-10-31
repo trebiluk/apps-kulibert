@@ -54,7 +54,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-27-sign-optional");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-31-bb-levels");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -263,7 +263,30 @@
     });
     paintDrawer();
   }
-  var dupeLock = false;
+  function isLevelsControl(el) {
+    if (!el || !el.getAttribute) return false;
+    if (el.id === "levels-btn") return true;
+    if ((el.getAttribute("aria-controls") || "") === "pz-menu") return true;
+    var name = ((el.getAttribute("aria-label") || "") + " " + (el.textContent || "")).replace(/\s+/g, " ").trim();
+    return el.tagName === "BUTTON" && /\bLevels\b/.test(name);
+  }
+  function labelLevelsPanel(el) {
+    if (!isLevelsControl(el)) return;
+    var id = el.getAttribute("aria-controls");
+    if (!id) return;
+    var panel = document.getElementById(id);
+    if (!panel) return;
+    var raw = ((el.textContent || "").replace(/\s+/g, " ").trim()) || "Levels";
+    var h = panel.querySelector("[data-kb-levels-label]");
+    if (!h) {
+      h = document.createElement("p");
+      h.className = "kb-levels-label";
+      h.setAttribute("data-kb-levels-label", "1");
+      h.setAttribute("aria-hidden", "true");
+      panel.insertBefore(h, panel.firstChild);
+    }
+    if (h.textContent !== raw) h.textContent = raw;
+  }
   function ensureDupeCss(sels) {
     var ok = [];
     for (var i = 0; i < sels.length; i++) {
@@ -272,7 +295,7 @@
     if (!ok.length) return;
     var strong = [];
     for (var j = 0; j < ok.length; j++) strong.push("html.kb-framed " + ok[j] + ".kb-menu-dupe");
-    var css = ok.join(",") + "{display:none !important}" + strong.join(",") + "{display:none !important}";
+    var css = ok.map(function (sel) { return sel + ":not([data-kb-levels])"; }).join(",") + "{display:none !important}" + strong.map(function (sel) { return sel + ":not([data-kb-levels])"; }).join(",") + "{display:none !important}";
     var tag = document.getElementById("kb-dupe-style");
     if (!tag) {
       tag = document.createElement("style");
@@ -281,11 +304,21 @@
     }
     if (tag.textContent !== css) tag.textContent = css;
   }
+  var dupeLock = false;
   function hideDupes() {
     if (dupeLock) return;
     dupeLock = true;
     try {
       var sels = dupeSelectors();
+      try {
+        var levelsNodes = document.querySelectorAll("#levels-btn, button[aria-controls='pz-menu']");
+        for (var li = 0; li < levelsNodes.length; li++) {
+          if (!isLevelsControl(levelsNodes[li])) continue;
+          levelsNodes[li].setAttribute("data-kb-levels", "1");
+          levelsNodes[li].classList.remove("kb-menu-dupe");
+          labelLevelsPanel(levelsNodes[li]);
+        }
+      } catch (eLevels) {}
       var tag = document.getElementById("kb-dupe-style");
       if (tag) tag.disabled = true;
       var touched = [];
@@ -296,6 +329,12 @@
           var el = nodes[i];
           if (!el || !el.classList) continue;
           if (el.classList.contains("kb-menu") && el.closest && el.closest(".kb-bar")) continue;
+          if (isLevelsControl(el)) {
+            el.setAttribute("data-kb-levels", "1");
+            el.classList.remove("kb-menu-dupe");
+            labelLevelsPanel(el);
+            continue;
+          }
           if (el.closest && (el.closest(".kb-drawer") || el.closest("#hub-drawer"))) continue;
           if (el.getAttribute("data-kb-was-shown") !== "1" && shownControl(el)) el.setAttribute("data-kb-was-shown", "1");
           el.classList.add("kb-menu-dupe");
@@ -312,7 +351,11 @@
   }
   function dupeSelectors() {
     var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", ".tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "#hi-menu", "header.sticky > button[aria-expanded]", "button.menu-btn[aria-controls='baboo-menu']"];
-    if (menuSel) sels.push(menuSel);
+    if (menuSel && menuSel !== "#levels-btn") {
+      var menuIsLevels = false;
+      try { menuIsLevels = isLevelsControl(document.querySelector(menuSel)); } catch (eMenuLevels) {}
+      if (!menuIsLevels) sels.push(menuSel);
+    }
     return sels;
   }
   function reportFrame() {
@@ -418,6 +461,7 @@
       var wasOpen = el.getAttribute("data-kb-open") === "1" || el.getAttribute("aria-expanded") === "true";
       var beforeExp = el.getAttribute("aria-expanded");
       el.click();
+      labelLevelsPanel(el);
       if (trust) {
         var afterExp = el.getAttribute("aria-expanded");
         var flipped = afterExp !== beforeExp && (afterExp === "true" || afterExp === "false");
