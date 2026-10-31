@@ -763,7 +763,7 @@ body[data-glasses="1"] .cross{box-shadow:none}
 .qol-shake{animation:qol-shake 160ms linear 1}
 @media (prefers-reduced-motion:reduce){.qol-shake{animation:none}}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.541">
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.547">
 <style>
 .top{
   flex-wrap:nowrap;align-items:center;gap:6px;padding:1px 8px;min-height:60px;
@@ -1385,6 +1385,41 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
+<div id="painter" class="pt" role="dialog" aria-modal="true" aria-labelledby="pt-title" hidden>
+  <div class="pt-card">
+    <header class="pt-head">
+      <h2 id="pt-title">Block Painter</h2>
+      <label class="pt-pickrow"><span class="pt-pickico" aria-hidden="true"></span><span id="pt-block-label">Block</span><select id="pt-block"></select></label>
+      <button type="button" class="pt-btn" id="pt-close"></button>
+    </header>
+    <div class="pt-tools" id="pt-tools" role="toolbar" aria-label="Tools"></div>
+    <main class="pt-mid">
+      <p id="pt-meta" class="pt-meta"></p>
+      <div id="pt-grid" class="pt-grid" dir="ltr" tabindex="0" role="application" data-mirror="0" aria-label="Painting grid">
+        <canvas id="pt-canvas" width="16" height="16"></canvas>
+        <div class="pt-lines" aria-hidden="true"></div>
+        <div id="pt-cursor" class="pt-cursor" aria-hidden="true"></div>
+      </div>
+    </main>
+    <div class="pt-side">
+      <div id="pt-palette" class="pt-palette" dir="ltr" role="group" aria-label="32 colors"></div>
+      <div class="pt-prev">
+        <p id="pt-prev-label" class="pt-plabel">Preview</p>
+        <div id="pt-stage" class="pt-stage" role="img" dir="ltr" aria-label="Preview"><div id="pt-cube" class="pt-cube" data-spin="1"></div></div>
+        <button type="button" class="pt-btn" id="pt-rotate" hidden></button>
+      </div>
+    </div>
+    <footer class="pt-foot">
+      <p id="pt-msg" class="pt-msg" role="status" aria-live="polite"></p>
+      <p id="pt-err" class="pt-errline" role="alert"></p>
+      <div class="pt-acts">
+        <button type="button" class="pt-btn pt-back" id="pt-back"></button>
+        <button type="button" class="pt-btn pt-use" id="pt-use"></button>
+      </div>
+    </footer>
+    <p id="pt-live" class="pt-sr" aria-live="polite"></p>
+  </div>
+</div>
 <script src="/shared/kulibert-slots.js?v=2.5.541"></script>
 <script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.549" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
 <script src="app.js?v=2.5.549" defer></script>
