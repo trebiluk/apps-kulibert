@@ -10381,7 +10381,6 @@ function paintPackLook(g) {
   smallBtn.type = 'button'
   smallBtn.className = 'look-pack'
   smallBtn.dataset.small = '1'
-  smallBtn.textContent = 'Small textures (faster)'
   smallBtn.style.setProperty('min-height', '48px', 'important')
   smallBtn.style.setProperty('height', '48px', 'important')
   smallBtn.style.setProperty('min-width', '48px', 'important')
@@ -10392,6 +10391,7 @@ function paintPackLook(g) {
   smallBtn.style.setProperty('align-self', 'flex-start', 'important')
   const paintSmall = () => {
     const on = smallTextures()
+    smallBtn.textContent = on ? t('texSmallOn') : t('texSmallOff')
     smallBtn.setAttribute('aria-pressed', on ? 'true' : 'false')
     smallBtn.style.setProperty('background', on ? '#3a4048' : '#2c333b', 'important')
     smallBtn.style.setProperty('color', '#e6eef2', 'important')
@@ -10401,11 +10401,11 @@ function paintPackLook(g) {
   smallBtn.addEventListener('click', () => setSmallTextures(!smallTextures()))
   g.append(lookHead, packRow, smallBtn)
   addPaintButton(g)
-  if (autoTex32()) {
+  if (smallTextures()) {
     const hint = document.createElement('p')
     hint.className = 'gnote'
     hint.id = 'tex-auto-hint'
-    hint.textContent = '32px textures are in use automatically.'
+    hint.textContent = t('texSmallHint')
     smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
     g.insertBefore(hint, g.firstChild)
   }
