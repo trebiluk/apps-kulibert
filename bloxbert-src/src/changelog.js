@@ -1,4 +1,10 @@
 export const CHANGELOG = [
+  // 2.5.552 far horizon. en and simple only for now; other languages follow.
+  { v: '2.5.552', date: '2026-10-31', lines: {
+    en: ['2.5.552 — Sunsets and sunrises look far away now: soft hills on the horizon, and a sky that changes slowly.'],
+    simple: ['2.5.552 — Sunsets and sunrises look far away. You can see soft hills. The sky changes slowly.'],
+  }},
+
   // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.549', date: '2026-10-30', lines: {
     en: ['2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.'],
