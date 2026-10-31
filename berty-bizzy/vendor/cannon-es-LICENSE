@@ -1,0 +1,3 @@
+PLACEHOLDER - the real cannon-es MIT LICENSE file was not downloadable in the build sandbox.
+RepoCoder replaces this file with the LICENSE text from github.com/pmndrs/cannon-es in the build commit,
+together with vendor/cannon-es.js. Do not ship cannon-es without it.
