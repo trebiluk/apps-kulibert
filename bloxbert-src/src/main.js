@@ -128,17 +128,17 @@ for (const [lang, row] of Object.entries(WN547)) {
 // Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
 // Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
 // Nothing writes that key yet. A missing or bad value falls back to the defaults.
-// 2.5.549 what's new. rw, ti, and fa-AF are machine drafts.
+// 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
 const WN549 = {
-  en: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.' },
-  simple: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.' },
-  uk: { whatsNewBody: '2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.' },
-  ru: { whatsNewBody: '2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.' },
-  es: { whatsNewBody: '2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.' },
-  ar: { whatsNewBody: '2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.' },
-  'fa-AF': { whatsNewBody: '2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.' },
-  rw: { whatsNewBody: '2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.' },
-  ti: { whatsNewBody: '2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+  en: { whatsNewBody: '2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.' },
+  simple: { whatsNewBody: '2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle. Farther fog. New birch trees.' },
+  uk: { whatsNewBody: '2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині. Туман далі, берези намальовані заново.' },
+  ru: { whatsNewBody: '2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре. Туман дальше, берёзы нарисованы заново.' },
+  es: { whatsNewBody: '2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro. La niebla queda más lejos y los abedules son nuevos.' },
+  ar: { whatsNewBody: '2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط. الضباب أبعد، وأشجار البتولا جديدة.' },
+  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط. مه دورتر است و درختان توس تازه شده‌اند.' },
+  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati. Igihu kiri kure, ibiti bishya bya birch.' },
+  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል። ግመ ርሒቑ፡ ኦም በርች ሓድሽ።' },
 }
 for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
@@ -247,6 +247,7 @@ import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
+import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder'
 import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
@@ -255,6 +256,7 @@ import { initBot } from './bot/bot.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
+import { mountFpsOverlay } from './fps-overlay.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -481,8 +483,9 @@ function layoutLane() {
       const gap = 8
       const roomRight = (window.innerWidth - right) - (play.right + gap)
       const roomLeft = (play.left - gap) - left
-      if (roomRight >= 120 || roomRight >= roomLeft) left = Math.max(left, Math.round(play.right) + gap)
-      else right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
+      // 2.5.550: never squeeze the quest card under 220px (412 upright collapsed it to one letter wide).
+      if (roomRight >= 220 && (roomRight >= 120 || roomRight >= roomLeft)) left = Math.max(left, Math.round(play.right) + gap)
+      else if (roomLeft >= 220) right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
     }
   }
   lane.style.left = left + 'px'
@@ -1636,7 +1639,7 @@ const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
 const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
-lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+lampD.emissiveColor = new Color3(0.57, 0.37, 0.07) // 2.5.550: dim lamp, no bloom
 const copperD = dye('shape-copper', 0.78, 0.42, 0.16)
 const copperOn = dye('shape-copper-on', 0.25, 0.9, 0.95)
 copperOn.emissiveColor = new Color3(0.15, 0.75, 0.85)
@@ -1963,7 +1966,8 @@ function plantMat(name, spec) {
   mat.alpha = 1
   mat.backFaceCulling = false
   mat.specularColor = new Color3(0, 0, 0)
-  mat.emissiveColor = new Color3(0.55, 0.55, 0.5)
+  // 2.5.550: flowers lit by the world, not glowing at night.
+  mat.emissiveColor = new Color3(0.28, 0.28, 0.25)
   mat.diffuseColor = new Color3(0.85, 0.9, 0.8)
   return mat
 }
@@ -10414,7 +10418,6 @@ function paintPackLook(g) {
   smallBtn.type = 'button'
   smallBtn.className = 'look-pack'
   smallBtn.dataset.small = '1'
-  smallBtn.textContent = 'Small textures (faster)'
   smallBtn.style.setProperty('min-height', '48px', 'important')
   smallBtn.style.setProperty('height', '48px', 'important')
   smallBtn.style.setProperty('min-width', '48px', 'important')
@@ -10425,6 +10428,7 @@ function paintPackLook(g) {
   smallBtn.style.setProperty('align-self', 'flex-start', 'important')
   const paintSmall = () => {
     const on = smallTextures()
+    smallBtn.textContent = on ? t('texSmallOn') : t('texSmallOff')
     smallBtn.setAttribute('aria-pressed', on ? 'true' : 'false')
     smallBtn.style.setProperty('background', on ? '#3a4048' : '#2c333b', 'important')
     smallBtn.style.setProperty('color', '#e6eef2', 'important')
@@ -10434,11 +10438,11 @@ function paintPackLook(g) {
   smallBtn.addEventListener('click', () => setSmallTextures(!smallTextures()))
   g.append(lookHead, packRow, smallBtn)
   addPaintButton(g)
-  if (autoTex32()) {
+  if (smallTextures()) {
     const hint = document.createElement('p')
     hint.className = 'gnote'
     hint.id = 'tex-auto-hint'
-    hint.textContent = '32px textures are in use automatically.'
+    hint.textContent = t('texSmallHint')
     smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
     g.insertBefore(hint, g.firstChild)
   }
@@ -11069,7 +11073,7 @@ sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
 function skyDisc(name, rgb, local) {
-  const mesh = CreatePlane(name, { size: 4.5 }, scene)
+  const mesh = CreateDisc(name, { radius: 2.25, tessellation: 32 }, scene) // 2.5.550: round sun and moon
   const mat = new StandardMaterial(name + '-m', scene)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
   mat.disableLighting = true
@@ -11214,7 +11218,7 @@ const WOOL_RGB = { woolBlue: [0.25, 0.45, 0.86], woolGreen: [0.22, 0.66, 0.32], 
 const decorTints = []
 for (let i = 0; i < 8; i++) {
   const mat = new StandardMaterial('decor-tint-m' + i, scene)
-  mat.emissiveColor = new Color3(1, 0.9, 0.6)
+  mat.emissiveColor = new Color3(0.6, 0.54, 0.36) // 2.5.550: shade glow capped near #D9C27A
   mat.diffuseColor = new Color3(0, 0, 0)
   mat.specularColor = new Color3(0, 0, 0)
   mat.disableLighting = true
@@ -11271,7 +11275,7 @@ function syncDecorTint(srcs) {
     }
     if (!rgb) continue
     const mesh = decorTints[n++]
-    mesh.material.emissiveColor.set(rgb[0], rgb[1], rgb[2])
+    mesh.material.emissiveColor.set(rgb[0] * 0.6, rgb[1] * 0.6, rgb[2] * 0.6)
     mesh.scaling.set(sc[0] / 0.3, sc[1] / 0.3, sc[2] / 0.3)
     const lp = noa.globalToLocal(spot, null, glowLocal)
     mesh.position.set(lp[0], lp[1], lp[2])
@@ -11725,9 +11729,10 @@ function ghostCell() {
   if (!tableMode) {
     if (!canReach([spot.x, spot.y, spot.z])) return null
     const p = noa.entities.getPosition(noa.playerEntity)
-    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return null
+    // 2.5.550: blocked cells still get a ghost, drawn red with a reason (was hidden, so red never showed).
+    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return Object.assign({}, spot, { why: 'standing' })
   }
-  if (getVoxel(spot.x, spot.y, spot.z)) return null
+  if (getVoxel(spot.x, spot.y, spot.z)) return Object.assign({}, spot, { why: 'noRoom' })
   return spot
 }
 function ghostBedScale(on) {
@@ -11823,9 +11828,9 @@ function syncPlaceGhost() {
   }
   const id = heldBlockId()
   let side = null
-  let amber = false
+  let amber = !!spot.why
   let bunkWhy = ''
-  if (id === ID.woodshop || id === ID.bunk) {
+  if (!amber && (id === ID.woodshop || id === ID.bunk)) {
     side = shopSpan(spot.x, spot.y, spot.z)
     if (id === ID.bunk) {
       bunkWhy = bedBlockReason(spot.x, spot.y, spot.z, side)
@@ -11843,7 +11848,7 @@ function syncPlaceGhost() {
     ghostEdge(placeGhost, [0.9, 0.15, 0.15])
     ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
-    paintCue('no', id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
+    paintCue('no', spot.why ? t(spot.why) : id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat
@@ -13992,3 +13997,4 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
 
 repaintBlocks()
 void T0
+mountFpsOverlay()

@@ -706,10 +706,10 @@ def draw_stone(px, mystical):
         vein = (46, 120, 116)
         crack = (52, 46, 64)
     else:
-        # Base stays light so the darker cracks still read after a 2x2 average.
-        fill_noise(px, [(168, 164, 156), (150, 146, 138), (184, 180, 172), (136, 132, 124)], 6)
+        # 2.5.550: cool mid-grey stone (spec #7A7D80, tones #6A6D70-#8E9194), cool cracks, not brown.
+        fill_noise(px, [(122, 125, 128), (110, 113, 116), (142, 145, 148), (116, 119, 122)], 6)
         vein = None
-        crack = (78, 74, 70)
+        crack = (68, 71, 75)
     for y0 in range(6, 58, 13):
         yy = y0
         for x in range(2, 62):
@@ -814,15 +814,48 @@ def draw_leaves(px, mystical, under=False):
     if mystical:
         fill_noise(px, [(70, 48, 110), (46, 110, 108), (92, 60, 130), (38, 88, 90), (120, 80, 150)], 8)
     else:
-        fill_noise(px, [(40, 110, 36), (24, 78, 28), (70, 140, 48), (30, 90, 32), (16, 60, 20)], 7)
+        # 2.5.550: canopy lifted off near-black (spec 15-85% luminance, 3-5 tones).
+        fill_noise(px, [(78, 122, 58), (64, 104, 48), (92, 138, 66), (70, 112, 52), (58, 94, 44)], 7)
     # A few darker pockets so the canopy is not a flat slab.
     for y in range(4, 60, 9):
         for x in range(4, 60, 11):
-            col = (30, 20, 48) if mystical else (16, 52, 18)
+            col = (30, 20, 48) if mystical else (50, 82, 40)
             for dy in range(3):
                 for dx in range(3):
                     if dx + dy < 4:
                         put(px, x + dx, y + dy, col)
+
+
+# 2.5.550: birch gets real pack art (was the legacy 16px wrap in both packs).
+def draw_birch_log(px, mystical):
+    if mystical:
+        bark, tone, mark = (168, 156, 186), (152, 140, 172), (70, 56, 88)
+    else:
+        bark, tone, mark = (200, 192, 170), (182, 174, 152), (64, 58, 50)
+    fill_noise(px, [bark, tone, bark, (bark[0] - 8, bark[1] - 8, bark[2] - 8)], 3)
+    # Short dark horizontal dashes: birch reads by its marks, not by color.
+    for k in range(14):
+        y = (k * 9 + 3) % 60
+        x = (k * 23 + 5) % 52
+        w = 6 + (k % 3) * 2
+        for dx in range(w):
+            put(px, x + dx, y, mark)
+            put(px, x + dx, y + 1, mark)
+
+
+def draw_birch_leaves(px, mystical):
+    if mystical:
+        cols = [(120, 140, 120), (104, 124, 106), (136, 156, 132), (96, 116, 100)]
+        pocket = (80, 98, 86)
+    else:
+        cols = [(112, 150, 70), (98, 134, 60), (128, 166, 82), (104, 142, 64)]
+        pocket = (82, 112, 50)
+    fill_noise(px, cols, 11)
+    for y in range(3, 60, 8):
+        for x in range(3 + (y // 8 % 2) * 4, 60, 10):
+            for d in range(3):
+                put(px, x + d, y, pocket)
+                put(px, x + 1, y + d - 1, pocket)
 
 
 def draw_sand(px, mystical):
@@ -1251,6 +1284,10 @@ def main():
     def face_for(layer, myst):
         if layer == 'leavesUnder':
             return tune_face('leavesUnder', master_image('leaves_under', myst), myst)
+        if layer == 'wrap_birchLog':
+            im = new_image(); draw_birch_log(im.load(), myst); return im
+        if layer == 'wrap_birchLeaves':
+            im = new_image(); draw_birch_leaves(im.load(), myst); return im
         if layer.startswith('wrap_'):
             return wraps[layer[5:]]
         if layer in MASTERS:

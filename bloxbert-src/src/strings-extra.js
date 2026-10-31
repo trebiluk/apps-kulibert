@@ -3924,3 +3924,20 @@ for (const [lang, row] of Object.entries(WORLD557)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.550 Look: small textures wording. fa-AF, rw, and ti are machine drafts.
+const TEX550 = {
+  en: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },
+  simple: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },
+  uk: { texSmallOn: 'Малі текстури: УВІМК. (швидше)', texSmallOff: 'Малі текстури: ВИМК. (чіткіше)', texSmallHint: 'Вимкни для чіткішого вигляду.' },
+  ru: { texSmallOn: 'Маленькие текстуры: ВКЛ. (быстрее)', texSmallOff: 'Маленькие текстуры: ВЫКЛ. (чётче)', texSmallHint: 'Выключи для чёткости.' },
+  es: { texSmallOn: 'Texturas pequeñas: SÍ (más rápido)', texSmallOff: 'Texturas pequeñas: NO (más nítido)', texSmallHint: 'Desactívalo para más nitidez.' },
+  ar: { texSmallOn: 'قوام صغير: مُفعّل (أسرع)', texSmallOff: 'قوام صغير: مُعطّل (أوضح)', texSmallHint: 'أوقفه لصورة أوضح.' },
+  'fa-AF': { texSmallOn: 'بافت کوچک: روشن (سریع\u200cتر)', texSmallOff: 'بافت کوچک: خاموش (واضح\u200cتر)', texSmallHint: 'برای وضوح بیشتر خاموش کن.' },
+  rw: { texSmallOn: 'Amashusho mato: ARAKORA (byihuse)', texSmallOff: 'Amashusho mato: NTAKORA (bigaragara neza)', texSmallHint: 'Bizimye kugira ngo bigaragare neza.' },
+  ti: { texSmallOn: 'ንኣሽቱ ምስልታት: ይሰርሕ (ቅልጡፍ)', texSmallOff: 'ንኣሽቱ ምስልታት: ኣይሰርሕን (ብሩህ)', texSmallHint: 'ንዝበለጸ ብሩህነት ኣጥፍኦ።' },
+}
+for (const [lang, row] of Object.entries(TEX550)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
