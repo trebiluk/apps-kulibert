@@ -1,5 +1,39 @@
 # Music changelog
 
+**Chip: MU 2.36.64** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.64 — On songs with real note lengths you can change how long a note lasts, add a dot, a tie or a rest. Five more songs have real notation.
+
+In kid words: pick a note on the Score, then tap Eighth, Quarter, Half, Whole or Dot to change how long it lasts. Tap a letter to change the note. A rest makes it quiet. A tie joins two notes that are the same letter. On a keyboard, the arrow keys move and change the note, 1 to 4 and the dot key set its length, Delete makes a rest, and Space plays. The bar always stays full. If a note is too long for its bar, a calm line says why and what to try. A new bar is always full too. Sakura, Frere Jacques, La Cucaracha, Simple Gifts and Amazing Grace are written like a music book now (tunes only, no words). Other songs and saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
+**Chip: MU 2.36.63** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.63 — Six songs now have real music notation: the right note lengths, key, time and pickup.
+
+In kid words: Twinkle, Little Lamb, Ode to Joy, Happy Birthday, Jingle Bells and a new Sa Re Ga Ma warm-up are written the way a music book writes them. Half notes, whole notes, dotted notes and rests all show up and all last as long as they look. Happy Birthday starts with its two little pickup notes before the first bar, in F and in 3/4 time. Jingle Bells is in G. The note that is playing lights up on time. Tap a note to change its pitch. Changing note lengths comes next. Sa Re Ga Ma replaces Chanda Mama on the South Asia shelf, and Zum Gali Gali is gone, so the library has 23 songs. Kye Kye Kule is not changed yet. All other songs and all saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
+**Chip: MU 2.36.62** · 2026-10-30 · channel **draft PR**
+
+MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see.
+
+In kid words: in the dark theme the buttons along the bottom (New beat, Record, Perform, More) and the song name were dark letters on a dark bar, so they looked blank. They are light letters now. The piano keys show their letters, and Octave down and Octave up say so. On Score the notes keep their real size (they were squeezed to about 4 pixels), the note that is playing gets a ring, and the lines of music are balanced.
+
+Round 1 fixes (still 2.36.62): the dark theme is a real dark theme now (it follows the computer's light or dark setting until you flip the switch). Tempo has an icon, "Bar 5 · Beat 1" stays on one line, and the Score beat grid scrolls above the bottom bar instead of running under it. Tab from a pad goes to the next pad, then the steps. The five tabs fit in one row on a phone. Play has a thick teal ring. Fewer console warnings when words load slowly.
+
+## Earlier
+
+**Chip: MU 2.36.61** · 2026-10-30 · channel **draft PR**
+
+MU 2.36.61 — Tap has 8 big pads and one 16-step lane to build a beat.
+
+DJ Berty 3.0 Studio Deck, slice 1 (the Tap tab). Eight picture pads in a 4 by 2 deck (A S D F / G H J K). Tapping a pad plays it and picks it for the lane. The lane shows all 16 steps for that pad: a step that is on is filled and has a dot. During Play a triangle marker moves along the head row. Saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.60** · 2026-10-26 · channel **live**
 
 MU 2.36.60 — Your click comes back. A record click turns off.
