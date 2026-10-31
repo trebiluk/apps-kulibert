@@ -226,7 +226,7 @@ html[dir=rtl] .qbtn.on{box-shadow:inset -3px 0 0 var(--cyan)}
 .new{background:rgba(20,184,166,.10);border:1px solid rgba(20,184,166,.45);border-radius:10px;padding:8px 10px;font-size:13px;margin:4px 0 2px}
 .plate{display:inline-block;margin-top:6px;font-size:12px;color:var(--cyan);border:1px solid rgba(95,179,196,.45);border-radius:999px;padding:2px 9px}
 #fs-btn{position:fixed;top:calc(var(--top-h) + 8px);right:12px;z-index:6;width:48px;height:48px;border-radius:10px;border:1px solid rgba(248,250,252,.45);background:rgba(11,18,32,.35);color:var(--snow);font-size:18px}
-html[data-kb-bar]:not(.kb-framed) #fs-btn{top:calc(48px + var(--top-h) + 8px)}
+html[data-kb-bar]:not(.kb-framed) #fs-btn{top:calc(var(--kb-h, 48px) + var(--top-h) + 8px)}
 html[dir=rtl] #fs-btn{right:auto;left:12px}
 #fs-hint{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:14;max-width:min(420px,92vw);background:var(--ink2);border:1px solid var(--teal);border-radius:14px;padding:16px}
 #fs-hint p{margin:0 0 12px}
@@ -1146,7 +1146,7 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
   body.touch #hotbar .bag-tile .lbl{font-size:10px;line-height:1}
 }
 #pause-btn{position:fixed;top:calc(var(--top-h) + 8px);right:68px;z-index:30;width:48px;height:48px;border-radius:10px;border:1px solid rgba(248,250,252,.45);background:rgba(11,18,32,.78);color:#f8fafc;font:700 16px/1 inherit;display:inline-flex;align-items:center;justify-content:center;padding:0}
-html[data-kb-bar]:not(.kb-framed) #pause-btn{top:calc(48px + var(--top-h) + 8px)}
+html[data-kb-bar]:not(.kb-framed) #pause-btn{top:calc(var(--kb-h, 48px) + var(--top-h) + 8px)}
 html[dir=rtl] #pause-btn{right:68px;left:auto}
 #pause-btn.on{border-color:var(--accent);color:var(--accent)}
 /* 2.5.470: Pause sits on the open Bag. Close is the way out, and Pause returns when the Bag shuts. */
