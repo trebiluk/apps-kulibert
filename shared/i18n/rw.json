@@ -35,7 +35,7 @@
   "errNeedBoth": "Andika kode y'inyuguti 5 na PIN y'imibare 4.",
   "errNoMatch": "Iyo kode cyangwa PIN ntibihuye.",
   "errNotListed": "Iyo kode ntiba ku rutonde.",
-  "errOffline": "TechWorks ntiyashubije. Ongera ugerageze ku murongo w'ishuri.",
+  "errOffline": "Ntibishoboka kugera kuri seriveri y'ishuri. Ongera ugerageze ku murongo w'ishuri.",
   "searchHint": "Shakisha cyangwa omenyeko umurongo",
   "more": "Ibindi",
   "gotIt": "Nabonye",

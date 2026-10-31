@@ -811,7 +811,11 @@ let freshDropDate = ''
 function t(key) {
   if (key === 'confirmFresh' && freshDropDate) return t('confirmFreshFull').replace('{date}', freshDropDate)
   const hit = (EXTRA[LANG] && EXTRA[LANG][key]) || (STR[LANG] && STR[LANG][key]) || (EXTRA.en && EXTRA.en[key]) || (STR.en && STR.en[key])
-  if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
+  if (!hit) {
+    // 2.5.594: a key the shared top bar owns (sign-in panel) comes from the shared pack, English fallback included, never a raw key
+    try { const sh = window.KulibertI18n && window.KulibertI18n.t && window.KulibertI18n.t(key, ''); if (sh && sh !== key) return sh } catch (e) {}
+    console.warn('missing string', key); return EXTRA.en[key] || key
+  }
   return hit
 }
 function tintIco(canvas, hex) {
@@ -1046,11 +1050,12 @@ function applyI18n() {
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
   else document.documentElement.dir = 'ltr'
   for (const el of document.querySelectorAll('[data-i18n]')) {
+    if (sharedI18n(el)) continue
     const key = i18nKey(el)
     el.textContent = t(key)
   }
-  for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
-  for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  for (const el of document.querySelectorAll('[data-i18n-label]')) { if (!sharedI18n(el)) el.setAttribute('aria-label', t(el.dataset.i18nLabel)) }
+  for (const el of document.querySelectorAll('[data-i18n-title]')) { if (!sharedI18n(el)) el.setAttribute('title', t(el.dataset.i18nTitle)) }
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -1156,9 +1161,16 @@ function repaintLiveNotes() {
 let painting = false
 let lookReady = false
 let langArm = 0
+// 2.5.594: the shared top bar and its sign-in panel (kulibert-bar.js, tw-session.js) paint their own words.
+// Painting them here wrote raw keys (signOptional, errOffline) and the drift guard kept writing them back.
+const SHARED_I18N = '.kb-bar, .tw-pop, .tw-solo-out, .tw-solo-in, .tw-wrap, [class^="tw-"], [class*=" tw-"]'
+function sharedI18n(el) {
+  return !!(el && el.closest && el.closest(SHARED_I18N))
+}
 function langDrifted() {
   if (document.documentElement.lang !== LANG) return true
   for (const el of document.querySelectorAll('[data-i18n]')) {
+    if (sharedI18n(el)) continue
     const key = i18nKey(el)
     if (el.textContent !== t(key)) return true
   }
@@ -9442,6 +9454,20 @@ function gameKeyGuard(e) {
   e.preventDefault()
   if (e.code === 'Tab') e.stopImmediatePropagation()
 }
+// 2.5.594: while a text field has focus (the sign-in code and PIN above all), game keys never fire.
+// Window capture runs before every document listener and before the engine, so 1-9 stay in the PIN
+// and never move the hotbar; Z, E, C and Space stay typing. Escape and Tab still pass so the panel
+// closes and focus moves as before. The key's own default (typing) is untouched.
+function typingField(e) {
+  const inField = (el) => !!(el && el.closest && el.closest('input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]), textarea, select, [contenteditable=""], [contenteditable="true"]'))
+  return inField(e.target) || inField(document.activeElement)
+}
+function fieldKeyGuard(e) {
+  if (e.key === 'Escape' || e.key === 'Tab') return
+  if (typingField(e)) e.stopImmediatePropagation()
+}
+window.addEventListener('keydown', fieldKeyGuard, true)
+window.addEventListener('keyup', fieldKeyGuard, true)
 document.addEventListener('keydown', gameKeyGuard, true)
 document.addEventListener('keyup', gameKeyGuard, true)
 document.addEventListener('keydown', (e) => {

@@ -35,7 +35,7 @@
   "errNeedBoth": "Enter the 5-character code and the 4-digit PIN.",
   "errNoMatch": "That code or PIN does not match.",
   "errNotListed": "That code is not on the list.",
-  "errOffline": "TechWorks did not answer. Try again on the school network.",
+  "errOffline": "Can't reach the class server. Try again on the school network.",
   "searchHint": "Search or paste a link",
   "more": "More",
   "gotIt": "Got it",

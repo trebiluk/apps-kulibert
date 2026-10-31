@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.594', date: '2026-10-31', lines: {
+    en: ["2.5.594 — Sign in shows real words, not code names. Typing your PIN never moves the hotbar. If the class server can't be reached, it says so in plain words."],
+    simple: ["2.5.594 — Sign in shows real words. Typing your PIN does not move the hotbar. If the class server is away, it says so."],
+    uk: ["2.5.594 — Вхід показує справжні слова, а не коди. Введення PIN не рухає панель. Якщо сервер класу недоступний, це сказано простими словами."],
+    ru: ["2.5.594 — Вход показывает настоящие слова, а не коды. Ввод PIN не двигает панель. Если сервер класса недоступен, об этом сказано простыми словами."],
+    es: ["2.5.594 — Iniciar sesión muestra palabras reales, no códigos. Escribir el PIN no mueve la barra. Si no se llega al servidor de la clase, lo dice con palabras claras."],
+    ar: ["2.5.594 — تسجيل الدخول يعرض كلمات حقيقية لا رموزًا. كتابة الرقم السري لا تحرّك الشريط. إن تعذّر الوصول إلى خادم الصف، يقول ذلك بكلمات واضحة."],
+    'fa-AF': ["2.5.594 — ورود کلمات واقعی را نشان می‌دهد، نه کد. نوشتن PIN نوار را حرکت نمی‌دهد. اگر سرور صنف در دسترس نباشد، با کلمات ساده می‌گوید."],
+    rw: ["2.5.594 — Kwinjira kwerekana amagambo nyayo, atari kode. Kwandika PIN ntibihindura akabari. Niba seriveri y'ishuri itagerwaho, birabivuga mu magambo yoroshye."],
+    ti: ["2.5.594 — ምእታው ናይ ሓቂ ቃላት የርኢ፣ ኮድ ኣይኮነን። PIN ምጽሓፍ ነቲ ባር ኣየንቀሳቕስን። ሰርቨር ክፍሊ እንተ ዘይተረኸበ፡ ብቐሊል ቃላት ይብል።"],
+  } },
   { v: '2.5.586', date: '2026-10-31', lines: {
     en: ["2.5.586 — On phones, the crafting panel opens below the top bar, so its title and Close are easy to reach."],
     simple: ["2.5.586 — On phones, Crafting opens below the top bar. Close is easy to tap."],

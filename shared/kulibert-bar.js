@@ -54,7 +54,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-27-sign-optional");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-31-class-server");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -82,7 +82,7 @@
   }
   function openAlias(aliasBtn) {
     if (!aliasBtn || aliasBtn.hidden || aliasesHidden()) return;
-    var rev = (root.HUB_REV) || "2026-10-27-sign-optional";
+    var rev = (root.HUB_REV) || "2026-10-31-class-server";
     function go() {
       if (root.TwSession && root.TwSession.open) {
         root.TwSession.open(aliasBtn, function () { paintAlias(aliasBtn); });
@@ -570,7 +570,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-27-sign-optional");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-31-class-server");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -665,7 +665,7 @@
     var api = root.KulibertWho;
     if (api && api.active && api.active()) return;
     bridgeAsked = true;
-    var rev = (root.HUB_REV) || "2026-10-27-sign-carry";
+    var rev = (root.HUB_REV) || "2026-10-31-class-server";
     var frame = document.createElement("iframe");
     frame.hidden = true;
     frame.setAttribute("aria-hidden", "true");
