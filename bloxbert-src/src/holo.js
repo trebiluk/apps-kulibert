@@ -60,7 +60,9 @@ export function createHolo(opts) {
     if (spec.key === 'buildWand') return wandCanvas((opts.wandMode && opts.wandMode()) || 'select')
     if (spec.kind === 'block') {
       const b = BLOCKS.find((x) => x[0] === (spec.id | 0))
-      return b ? blockIcon(b, ATLAS) : null
+      // Same picture as the hotbar: slotArt keeps the world cube for cube blocks and uses the item's own sprite
+      // for placeable items like Sapling (its cube tile read as a tan square).
+      return slotArt(spec.key, b ? blockIcon(b, ATLAS) : null)
     }
     const item = ITEMS[spec.key]
     if (item && item.svg) return { svg: itemSvg(item.svg) }
