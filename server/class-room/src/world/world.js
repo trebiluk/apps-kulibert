@@ -104,7 +104,8 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     },
 
     // batch: [{x,y,z,id,b}]  who: small int (room-local player id or 0 for staff)
-    apply(batch, who, t = now()) {
+    // opts.staff: exempt from the per-player machine cap (the area cap and lagcost still apply)
+    apply(batch, who, t = now(), opts = {}) {
       return batch.map((e) => {
         if (!e || !validCell(e.x, e.y, e.z) || !Number.isInteger(e.id) || e.id < 0 || !Number.isInteger(e.b) || e.b < 0) return { ok: false, why: 'shape' }
         const { cx, cz, idx } = locate(e.x, e.y, e.z)
@@ -116,7 +117,7 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
         // Budgets: lagcost first, then high-tick (budget.js). The server decides.
         const cellKey = cx + ',' + cz + ',' + idx
         // replacing your own machine frees its place in your budget first
-        const verdict = decide({ near: nearOf(cx, cz), mine: mineOf(who) - (owner.get(cellKey) === who ? 1 : 0), cur, id: e.id })
+        const verdict = decide({ near: nearOf(cx, cz), mine: opts.staff ? -Infinity : mineOf(who) - (owner.get(cellKey) === who ? 1 : 0), cur, id: e.id })
         if (!verdict.ok) return { ok: false, why: verdict.why, budget: verdict.budget }
         c.edits.set(idx, e.id)
         c.dirty = true

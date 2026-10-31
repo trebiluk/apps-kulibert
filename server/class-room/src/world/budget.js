@@ -40,7 +40,8 @@ export function decide({ near, mine, cur, id }) {
   const dHt = (HIGH_TICK.has(id) ? 1 : 0) - (HIGH_TICK.has(cur) ? 1 : 0)
   const dMine = HIGH_TICK.has(id) ? 1 : 0
   const after = { lag: near.lag + dLag, ht: near.ht + dHt, mine: mine + dMine }
-  const budget = (a) => ({ area: [a.ht, HIGH_TICK_MAX], you: [a.mine, HIGH_TICK_MAX], lag: [Math.round(a.lag), LAG_BUDGET] })
+  // mine = -Infinity means staff: exempt from the per-player cap; shown as 0.
+  const budget = (a) => ({ area: [a.ht, HIGH_TICK_MAX], you: [Number.isFinite(a.mine) ? a.mine : 0, HIGH_TICK_MAX], lag: [Math.round(a.lag), LAG_BUDGET] })
   if (id === 0) return { ok: true, budget: budget(after) }                                        // breaking: always
   if (weightOf(id) > CLASS_WEIGHT.solid && dLag > 0 && after.lag > LAG_BUDGET) return { ok: false, why: 'lag', budget: budget({ ...near, mine }) }
   if (dHt > 0 && (after.ht > HIGH_TICK_MAX || after.mine > HIGH_TICK_MAX)) return { ok: false, why: 'hightick', budget: budget({ ...near, mine }) }

@@ -71,6 +71,16 @@ test('breaking or replacing a machine frees its place in both budgets; breaking 
   assert.deepEqual(world.budgetAt(A, 5, 0).you, [8, 10])
 })
 
+test('staff are exempt from the per-player cap; the area cap still applies to them', () => {
+  const { world } = fresh()
+  const staff = (x, z, id, b = 0) => world.apply([{ x, y: 64, z, id, b }], A, undefined, { staff: true })[0]
+  for (let i = 0; i < 12; i++) assert.equal(staff(i * 64, 0, OVEN).ok, true, 'staff oven ' + (i + 1))
+  assert.deepEqual(staff(12 * 64, 0, BELT).budget.you, [0, 10], 'no per-player count for staff')
+  for (let i = 0; i < 10; i++) staff(i, 100, BELT)                       // one area, 10 machines
+  const r = staff(10, 100, BELT)
+  assert.deepEqual([r.ok, r.why, r.budget.area], [false, 'hightick', [10, 10]])
+})
+
 test('swapping your own belt for an oven does not count twice', () => {
   const { world } = fresh()
   for (let i = 0; i < 10; i++) place(world, A, i * 64, 0, BELT)
