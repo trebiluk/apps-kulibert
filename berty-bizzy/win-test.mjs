@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.7.0");
+assert.equal(G.APP_VERSION, "1.7.2");
 assert.equal(G.LEVELS.length, 11);
 assert.equal(G.LEVELS[6].id, "T3");
 assert.ok(G.LEVELS[6].duo);
@@ -253,7 +253,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.7\.0/);
+assert.match(page, /v1\.7\.2/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -359,7 +359,7 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.7\.0<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.7\.2<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
