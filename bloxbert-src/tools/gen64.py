@@ -706,10 +706,10 @@ def draw_stone(px, mystical):
         vein = (46, 120, 116)
         crack = (52, 46, 64)
     else:
-        # Base stays light so the darker cracks still read after a 2x2 average.
-        fill_noise(px, [(168, 164, 156), (150, 146, 138), (184, 180, 172), (136, 132, 124)], 6)
+        # 2.5.550: cool mid-grey stone (spec #7A7D80, tones #6A6D70-#8E9194), cool cracks, not brown.
+        fill_noise(px, [(122, 125, 128), (110, 113, 116), (142, 145, 148), (116, 119, 122)], 6)
         vein = None
-        crack = (78, 74, 70)
+        crack = (68, 71, 75)
     for y0 in range(6, 58, 13):
         yy = y0
         for x in range(2, 62):
