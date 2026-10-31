@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  // 2.5.565 Holo Hand parts 1 and 2. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.565', date: '2026-10-31', lines: {
+    en: ['2.5.565 — A thin amber beam now points from your hand to what you mine, place or open, with words like Mining 60% and Place. Broken blocks fade away instead of flashing.'],
+    simple: ['2.5.565 — A thin line goes from your hand to what you dig, put or open. It says Digging 60% or Put block. No flash when a block breaks.'],
+    uk: ['2.5.565 — Тонкий бурштиновий промінь тепер іде від руки до того, що копаєш, ставиш або відкриваєш, зі словами як «Копаю 60%» і «Поставити». Розбиті блоки зникають плавно, без спалаху.'],
+    ru: ['2.5.565 — Тонкий янтарный луч теперь идёт от руки к тому, что копаешь, ставишь или открываешь, со словами как «Копаю 60%» и «Поставить». Разбитые блоки исчезают плавно, без вспышки.'],
+    es: ['2.5.565 — Un rayo ámbar fino va de tu mano a lo que picas, pones o abres, con palabras como Picando 60% y Poner. Los bloques rotos se desvanecen en vez de destellar.'],
+    ar: ['2.5.565 — شعاع كهرماني رفيع يمتد الآن من يدك إلى ما تعدّنه أو تضعه أو تفتحه، مع كلمات مثل «تعدين 60٪» و«ضع». الكتل المكسورة تتلاشى بدلاً من أن تومض.'],
+    'fa-AF': ['2.5.565 — یک پرتو کهربایی نازک حالا از دست تو به چیزی که می‌کنی، می‌گذاری یا باز می‌کنی می‌رود، با کلماتی مثل «کندن ۶۰٪» و «بگذار». بلاک‌های شکسته به جای چشمک زدن محو می‌شوند.'],
+    rw: ['2.5.565 — Umurongo muto w\'umuhondo ubu uva ku kuboko kwawe ugana ku cyo ucukura, ushyiraho cyangwa ufungura, hamwe n\'amagambo nka Gucukura 60% na Shyiraho. Amabuye yamenetse arashira aho kumurika.'],
+    ti: ['2.5.565 — ቀጢን ጩራ ኣምበር ሕጂ ካብ ኢድካ ናብቲ እትኹዕቶ፡ እተቐምጦ ወይ እትኸፍቶ ይኸይድ፡ ከም «ምኹዓት 60%» ን «ኣቐምጥ» ዝኣመሰሉ ቃላት ኣለዉዎ። ዝተሰብሩ ብሎካት ኣብ ክንዲ ምብልጭላጭ ይጠፍኡ።'],
   // 2.5.564 Holo Hand part 1. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.564', date: '2026-10-31', lines: {
     en: ['2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.'],
