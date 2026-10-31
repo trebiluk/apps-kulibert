@@ -11,6 +11,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
 - No open briefs.
+- [x] door plate, Hub rev 2026-10-30-door-plates
 
 ## 4. Rules
 - Every brief: 8 languages (en, uk, ru, es, ar, fa-AF, rw, ti), taps ≥44 px, ☰ top-left, phones equal to Chromebooks, and DONE only when its Accept passes on a fresh page.

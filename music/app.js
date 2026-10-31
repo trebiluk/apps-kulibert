@@ -891,6 +891,71 @@
     else if (pen === "quarter") finishEdit(ev.pitch === pitch ? Song.setRestIdx(state.song, idx) : Song.setPitchIdx(state.song, idx, pitch), ev.pitch === pitch ? "rest" : "pitch", ev);
     else sayScore(mu("richNoMark"));
   }
+  // MU 2.36.66 round 1: lengths on a beat-cell song, built only from what a beat cell can say: a note held over beats (the tie), or a beat split in two eighths.
+  // One beat is two eighths (one eighth in 6/8). Only the rests after a note are used, so no other note is ever overwritten; if they do not fit,
+  // nothing changes and a calm line says so. A dot works on a held note (2 beats <-> 3); a dotted quarter cannot be said in whole beats.
+  function beatRun(evs, i) {
+    let s = i;
+    while (s > 0 && evs[s].tiedFrom) s -= 1;
+    let n = 1;
+    while (evs[s + n] && evs[s + n].tiedFrom) n += 1;
+    return { s: s, n: n };
+  }
+  function beatLenNow() {
+    const evs = Song.events(state.song);
+    if (!evs.length) return { d: 0, run: { s: 0, n: 1 }, unit: 2 };
+    const run = beatRun(evs, clampCursor());
+    const unit = state.song.meter === "6/8" ? 1 : 2;
+    const head = evs[run.s];
+    const none = !head.pitch;
+    return { d: none ? 0 : (head.eighths ? 1 : run.n * unit), run: run, unit: unit, head: head };
+  }
+  function editBeatLength(kind) {
+    const now = beatLenNow();
+    const head = now.head;
+    if (!head || !head.pitch) { sayScore(mu("lenPickNote") || "Pick a note first, then a length."); return; }
+    const run = now.run;
+    const unit = now.unit;
+    const m = head.measure;
+    const b = head.beat;
+    const beats = state.song.measures[m].beats;
+    const cell = beats[b];
+    const pitch = cell.eighths ? (cell.eighths[0] || cell.eighths[1]) : cell.p;
+    let want; // length in beats; "split" = the beat itself becomes two eighths
+    if (kind === "dot") {
+      if (run.n % 2 === 0) want = (run.n * 3) / 2;
+      else if (run.n % 3 === 0 && !cell.eighths) want = (run.n * 2) / 3;
+      else { sayScore(mu("lenNoDot") || "A dot works on a held note here. Songs with real note lengths can dot any note."); return; }
+    } else {
+      const eighths = { 1: 1, 2: 2, 4: 4, 8: 8 }[kind];
+      if (eighths === 1 && unit === 2) want = "split";
+      else want = eighths / unit;
+    }
+    const need = want === "split" ? 1 : want;
+    const free = (c) => c && typeof c === "object" && !c.p && !c.eighths;
+    for (let i = run.n; i < need; i++) {
+      if (!free(beats[b + i])) { sayScore(mu("richNoRoom")); return; }
+    }
+    for (let i = 1; i < run.n; i++) Song.setBeat(state.song, m, b + i, null); // let go of the old held beats; they are rebuilt below
+    Song.setBeat(state.song, m, b, pitch); // one plain beat
+    if (beats[b].tie) Song.toggleTie(state.song, m, b);
+    if (want === "split") {
+      Song.setEighths(state.song, m, b, pitch);
+      Song.setEighths(state.song, m, b, pitch);
+    } else {
+      for (let i = 0; i < need - 1; i++) Song.toggleTie(state.song, m, b + i);
+    }
+    state.cursor = run.s;
+    if (!state.playing) state.step = state.cursor;
+    songRev += 1;
+    keep();
+    renderStaff();
+    paintInks();
+    paintKeypad();
+    paintCount();
+    const nowD = beatLenNow().d;
+    sayScore(mu("lenBeatsDone", { len: lenWord(nowD, false) }) || (mu("lessonSaved") || ""));
+  }
   function editLength(d) {
     if (!isRichSong()) return;
     const ev = pickedEv();
@@ -927,19 +992,26 @@
     8: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="10" cy="12" rx="6.5" ry="4.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
     dot: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><circle cx="10" cy="12" r="3.4" fill="currentColor"/></svg>',
   };
+  const WIDE_SIDEWAYS = window.matchMedia("(orientation: landscape) and (max-height: 500px) and (min-width: 880px)");
+  if (WIDE_SIDEWAYS.addEventListener) WIDE_SIDEWAYS.addEventListener("change", () => { try { paintLen(); } catch (eLen) {} });
   function paintLen() {
     const host = $("len");
     if (!host) return;
     const rich = isRichSong();
-    host.hidden = !rich;
-    if (!rich) return;
+    // MU 2.36.66 fix round: beat-cell songs get the same five buttons, but only on a sideways phone 880 px wide and up (where the length row has its
+    // own line). Everywhere else they stay out of sight, as before. Real-length songs always show the row.
+    host.hidden = !(rich || WIDE_SIDEWAYS.matches);
+    host.classList.toggle("len-beats", !rich);
     if (!host.childElementCount) {
       [[1, "1"], [2, "2"], [4, "3"], [8, "4"], ["dot", "."]].forEach(([d, hint]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
         b.dataset.len = String(d);
-        b.addEventListener("click", () => (d === "dot" ? editDot() : editLength(d)));
+        b.addEventListener("click", () => {
+          if (!isRichSong()) { editBeatLength(d); return; }
+          if (d === "dot") editDot(); else editLength(d);
+        });
         const icon = document.createElement("span");
         icon.className = "len-icon";
         icon.innerHTML = LEN_ICON[d];
@@ -953,7 +1025,7 @@
     }
     host.setAttribute("aria-label", mu("richLenGroup") || "Length of the picked note");
     const ev = pickedEv();
-    const d = ev ? ev.dur : 0;
+    const d = rich ? (ev ? ev.dur : 0) : beatLenNow().d;
     const base = d === 3 ? 2 : d === 6 ? 4 : d;
     [...host.children].forEach((b) => {
       const kind = b.dataset.len;
@@ -963,7 +1035,8 @@
       b.classList.toggle("on", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
       b.setAttribute("aria-label", kind === "dot" ? word : (mu("richLen_" + kind) || word));
-      b.setAttribute("aria-keyshortcuts", kind === "dot" ? "." : ({ 1: "1", 2: "2", 4: "3", 8: "4" })[kind]);
+      if (rich) b.setAttribute("aria-keyshortcuts", kind === "dot" ? "." : ({ 1: "1", 2: "2", 4: "3", 8: "4" })[kind]);
+      else b.removeAttribute("aria-keyshortcuts"); // the keys 1 to 4 and the dot belong to real-length songs
     });
   }
   // The picked note gets a dashed box (a shape, so it is not shown by colour alone). It sits inside the staff picture, so it scrolls with it.
@@ -1693,6 +1766,25 @@
     const evs = Song.events(state.song);
     return evs[Math.max(0, step)] || evs[0];
   }
+  // MU 2.36.66: the reasons in the Score tools drawer come from strings.js (English if a language has no draft yet), never from the code.
+  function whyWord(id) {
+    const hit = REASONS.find((pair) => pair[0] === id);
+    return mu("drWhy_" + id) || (hit ? hit[1] : "");
+  }
+  function whyLabel(id) {
+    return whyWord(id).replace(/[.\u3002\u06D4\u0964\u1362]$/, "");
+  }
+  function bassWord(on) {
+    return on ? (mu("bassOn") || "Bass is on") : (mu("bassFollow") || "Bass follows the kick");
+  }
+  // Words the drawer builds itself, painted again when the language changes (static words use data-mu in index.html).
+  function paintDrawerWords() {
+    document.querySelectorAll("#why-reasons .btn[data-why]").forEach((btn) => { btn.textContent = whyLabel(btn.dataset.why); });
+    const bass = $("bass-btn");
+    if (bass && bass.dataset.ready) bass.textContent = bassWord(state.bass);
+    try { paintWhy(); } catch (eWhy) {}
+    try { paintVizNow(); } catch (eViz) {}
+  }
   function paintWhy() {
     const ask = $("why-ask");
     const progress = $("why-progress");
@@ -1702,15 +1794,20 @@
     let done = 0;
     evs.forEach((ev) => { if (why[ev.measure + "-" + ev.beat]) done += 1; });
     progress.textContent = done === evs.length
-      ? "You can defend every mark on this score."
-      : done + " of " + evs.length + " marks have a reason.";
+      ? (mu("drWhyAll") || "You can defend every mark on this score.")
+      : (mu("drWhyCount", { done: done, total: evs.length }) || (done + " of " + evs.length + " marks have a reason."));
     const step = state.playing && state.step >= 0 ? state.step : state.cursor;
     const ev = markAt(step);
     if (!ev) return;
-    const fact = ev.pitch ? (TEACH[ev.pitch] || ev.label) : "Rest. Count it. Nothing plays.";
+    const fact = ev.pitch ? (mu("drTeach_" + ev.pitch) || TEACH[ev.pitch] || ev.label) : (mu("tapRestTeach") || "Rest. Count it. Nothing plays.");
     const said = why[ev.measure + "-" + ev.beat];
-    const sentence = said ? (REASONS.find((pair) => pair[0] === said) || ["", ""])[1] : "Why is it here?";
-    ask.textContent = "Bar " + (ev.measure + 1) + ", beat " + (ev.beat + 1) + ". " + fact + " " + sentence;
+    const sentence = said ? whyWord(said) : (mu("drWhyAsk") || "Why is it here?");
+    // The same bar and beat numbers as the staff and the play counter: the pickup is "Pickup", and the first full bar is Bar 1.
+    const bb = barBeat(ev, 0);
+    const where = bb.pickup
+      ? (mu("drWherePickup", { beat: bb.beat }) || ("Pickup, beat " + bb.beat + "."))
+      : (mu("drWhere", { bar: bb.bar, beat: bb.beat }) || ("Bar " + bb.bar + ", beat " + bb.beat + "."));
+    ask.textContent = where + " " + fact + " " + sentence;
     document.querySelectorAll("#why-reasons .btn").forEach((btn) => {
       btn.classList.toggle("on", btn.dataset.why === said);
     });
@@ -4425,7 +4522,7 @@
       b.type = "button";
       b.className = "btn";
       b.dataset.why = id;
-      b.textContent = sentence.replace(/\.$/, "");
+      b.textContent = whyLabel(id);
       b.addEventListener("click", () => {
         const ev = markAt(state.playing && state.step >= 0 ? state.step : state.cursor);
         if (!ev) return;
@@ -4434,7 +4531,7 @@
         state.song = Song.parse(Song.serialize(state.song));
         keep();
         paintWhy();
-        $("lesson").textContent = mu("lineSaved", { line: sentence }) || (sentence + " Saved.");
+        $("lesson").textContent = mu("lineSaved", { line: whyWord(id) }) || (sentence + " Saved.");
       });
       reasons.appendChild(b);
     });
@@ -4455,7 +4552,8 @@
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn";
-      b.textContent = item.label;
+      b.setAttribute("data-mu", "look_" + item.id); // MU 2.36.66: the picture names follow the language
+      b.textContent = mu("look_" + item.id) || item.label;
       b.addEventListener("click", () => {
         state.layers[0].look = item.id;
         state.look = item.id;
@@ -4638,8 +4736,9 @@
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
-      // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
+      // MU 2.36.61: Space on a Tap pad or lane step presses that button.
+      // MU 2.36.66: so does Space on any focused button, tab or summary (that is how a keyboard presses it). Space plays from the page or the staff.
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, button, summary, [role='button'], [role='tab'], [role='switch'], [role='menuitem'], [role='checkbox'], [role='radio']")) return;
       e.preventDefault();
       $("play-btn").click();
     }
@@ -6039,6 +6138,7 @@
         b.type = "button";
         b.className = "btn";
         const key = lineKeys[name];
+        b.setAttribute("data-mu", key);
         b.textContent = mu(key) || name;
         b.addEventListener("click", () => writeLine(mu(key) || name, notes));
         ideas.appendChild(b);
@@ -6046,6 +6146,7 @@
       const again = document.createElement("button");
       again.type = "button";
       again.className = "btn";
+      again.setAttribute("data-mu", "lineAgain");
       again.textContent = mu("lineAgain") || "Again";
       again.addEventListener("click", () => {
         const evs = Song.events(state.song);
@@ -6073,6 +6174,7 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
+        b.setAttribute("data-mu", key);
         b.textContent = mu(key) || key;
         b.addEventListener("click", () => shift(dir, mu(wordKey) || wordKey));
         ideas.appendChild(b);
@@ -6187,7 +6289,7 @@
         if (bassBtn) {
           bassBtn.classList.toggle("on", state.bass);
           bassBtn.setAttribute("aria-pressed", String(state.bass));
-          bassBtn.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+          bassBtn.textContent = bassWord(state.bass);
         }
         if ($("tempo")) {
           $("tempo").value = String(style.bpm);
@@ -6298,12 +6400,12 @@
       bass.dataset.ready = "1";
       bass.classList.toggle("on", state.bass);
       bass.setAttribute("aria-pressed", String(state.bass));
-      bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+      bass.textContent = bassWord(state.bass);
       bass.addEventListener("click", () => {
         state.bass = !state.bass;
         bass.classList.toggle("on", state.bass);
         bass.setAttribute("aria-pressed", String(state.bass));
-        bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+        bass.textContent = bassWord(state.bass);
         keep();
       });
     }
@@ -7040,6 +7142,7 @@
     if (typeof paintTapStrip === "function") paintTapStrip();
     sayHow(state.mode);
     paintKeypad();
+    paintDrawerWords();
     document.querySelectorAll("#style-row [data-pack]").forEach((btn) => {
       const map = { Trap: "style_trap", "Lo-fi": "style_lofi", Rock: "style_rock", Marching: "style_marching" };
       const key = map[btn.dataset.pack];

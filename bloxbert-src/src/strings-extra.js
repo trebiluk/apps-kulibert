@@ -3662,3 +3662,226 @@ for (const [lang, row] of Object.entries(GOAL522)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.546 Block Painter, part 2. uk, ru, es, ar are reviewed-style drafts; fa-AF, rw, and ti are machine drafts.
+const PAINTER = {
+  en: {
+    ptOpen: 'Paint a block', ptTitle: 'Block Painter', ptBlock: 'Block',
+    ptDirt: 'Dirt', ptStone: 'Stone', ptPlanks: 'Planks', ptSand: 'Sand', ptGrassTop: 'Grass top', ptLeaves: 'Leaves',
+    ptPencil: 'Pencil', ptFill: 'Fill', ptEraser: 'Eraser', ptPickColor: 'Pick color', ptMirror: 'Mirror', ptUndo: 'Undo', ptRedo: 'Redo',
+    ptTools: 'Tools', ptGridHelp: 'Painting grid. Arrow keys move. Space paints.', ptColors: '32 colors', ptColor: 'Color {n}',
+    ptPreview: 'Preview', ptRotate: 'Rotate', ptUse: 'Use it', ptClose: 'Close', ptBack: 'Back to Classic',
+    ptInWorld: 'Your block is in the world ✓', ptClassicBack: 'Classic is back ✓',
+    ptErr: 'This paint cannot be used. Paint the block again.', ptNoSave: 'Could not save on this device.',
+    ptCell: 'Row {r}, column {c}', ptOn: 'On', ptOff: 'Off'
+  },
+  simple: {
+    ptOpen: 'Paint a block', ptTitle: 'Block Painter', ptBlock: 'Block',
+    ptDirt: 'Dirt', ptStone: 'Stone', ptPlanks: 'Planks', ptSand: 'Sand', ptGrassTop: 'Grass top', ptLeaves: 'Leaves',
+    ptPencil: 'Pencil', ptFill: 'Fill', ptEraser: 'Eraser', ptPickColor: 'Pick color', ptMirror: 'Mirror', ptUndo: 'Undo', ptRedo: 'Redo',
+    ptTools: 'Tools', ptGridHelp: 'Paint grid. Arrows move. Space paints.', ptColors: '32 colors', ptColor: 'Color {n}',
+    ptPreview: 'Preview', ptRotate: 'Turn', ptUse: 'Use it', ptClose: 'Close', ptBack: 'Back to Classic',
+    ptInWorld: 'Your block is in the world ✓', ptClassicBack: 'Classic is back ✓',
+    ptErr: 'This paint does not work. Paint the block again.', ptNoSave: 'Could not save here.',
+    ptCell: 'Row {r}, column {c}', ptOn: 'On', ptOff: 'Off'
+  },
+  uk: {
+    ptOpen: 'Намалювати блок', ptTitle: 'Малювання блоків', ptBlock: 'Блок',
+    ptDirt: 'Земля', ptStone: 'Камінь', ptPlanks: 'Дошки', ptSand: 'Пісок', ptGrassTop: 'Верх трави', ptLeaves: 'Листя',
+    ptPencil: 'Олівець', ptFill: 'Заливка', ptEraser: 'Гумка', ptPickColor: 'Взяти колір', ptMirror: 'Дзеркало', ptUndo: 'Скасувати', ptRedo: 'Повторити',
+    ptTools: 'Інструменти', ptGridHelp: 'Сітка малювання. Стрілки рухають. Пробіл малює.', ptColors: '32 кольори', ptColor: 'Колір {n}',
+    ptPreview: 'Перегляд', ptRotate: 'Крутити', ptUse: 'Використати', ptClose: 'Закрити', ptBack: 'Назад до Класичного',
+    ptInWorld: 'Твій блок у світі ✓', ptClassicBack: 'Класичний вигляд повернувся ✓',
+    ptErr: 'Цю фарбу не можна використати. Намалюй блок ще раз.', ptNoSave: 'Не вдалося зберегти на цьому пристрої.',
+    ptCell: 'Рядок {r}, стовпець {c}', ptOn: 'Увімк.', ptOff: 'Вимк.'
+  },
+  ru: {
+    ptOpen: 'Нарисовать блок', ptTitle: 'Рисование блоков', ptBlock: 'Блок',
+    ptDirt: 'Земля', ptStone: 'Камень', ptPlanks: 'Доски', ptSand: 'Песок', ptGrassTop: 'Верх травы', ptLeaves: 'Листва',
+    ptPencil: 'Карандаш', ptFill: 'Заливка', ptEraser: 'Ластик', ptPickColor: 'Взять цвет', ptMirror: 'Зеркало', ptUndo: 'Отменить', ptRedo: 'Повторить',
+    ptTools: 'Инструменты', ptGridHelp: 'Сетка рисования. Стрелки двигают. Пробел рисует.', ptColors: '32 цвета', ptColor: 'Цвет {n}',
+    ptPreview: 'Просмотр', ptRotate: 'Повернуть', ptUse: 'Использовать', ptClose: 'Закрыть', ptBack: 'Назад к Классике',
+    ptInWorld: 'Твой блок в мире ✓', ptClassicBack: 'Классика вернулась ✓',
+    ptErr: 'Эту краску нельзя использовать. Нарисуй блок снова.', ptNoSave: 'Не удалось сохранить на этом устройстве.',
+    ptCell: 'Строка {r}, столбец {c}', ptOn: 'Вкл.', ptOff: 'Выкл.'
+  },
+  es: {
+    ptOpen: 'Pintar un bloque', ptTitle: 'Pintor de bloques', ptBlock: 'Bloque',
+    ptDirt: 'Tierra', ptStone: 'Piedra', ptPlanks: 'Tablas', ptSand: 'Arena', ptGrassTop: 'Césped de arriba', ptLeaves: 'Hojas',
+    ptPencil: 'Lápiz', ptFill: 'Rellenar', ptEraser: 'Borrador', ptPickColor: 'Tomar color', ptMirror: 'Espejo', ptUndo: 'Deshacer', ptRedo: 'Rehacer',
+    ptTools: 'Herramientas', ptGridHelp: 'Cuadrícula de pintura. Las flechas mueven. Espacio pinta.', ptColors: '32 colores', ptColor: 'Tono {n}',
+    ptPreview: 'Vista previa', ptRotate: 'Girar', ptUse: 'Usar', ptClose: 'Cerrar', ptBack: 'Volver a Clásico',
+    ptInWorld: 'Tu bloque está en el mundo ✓', ptClassicBack: 'Volvió el aspecto Clásico ✓',
+    ptErr: 'No se puede usar esta pintura. Pinta el bloque otra vez.', ptNoSave: 'No se pudo guardar en este aparato.',
+    ptCell: 'Fila {r}, columna {c}', ptOn: 'Sí', ptOff: 'No'
+  },
+  ar: {
+    ptOpen: 'ارسم مكعبًا', ptTitle: 'رسّام المكعبات', ptBlock: 'مكعب',
+    ptDirt: 'تراب', ptStone: 'حجر', ptPlanks: 'ألواح', ptSand: 'رمل', ptGrassTop: 'أعلى العشب', ptLeaves: 'أوراق',
+    ptPencil: 'قلم', ptFill: 'تعبئة', ptEraser: 'ممحاة', ptPickColor: 'التقط لونًا', ptMirror: 'مرآة', ptUndo: 'تراجع', ptRedo: 'إعادة',
+    ptTools: 'الأدوات', ptGridHelp: 'شبكة الرسم. الأسهم تحرك. المسافة ترسم.', ptColors: '32 لونًا', ptColor: 'لون {n}',
+    ptPreview: 'معاينة', ptRotate: 'دوّر', ptUse: 'استخدمه', ptClose: 'إغلاق', ptBack: 'العودة إلى الكلاسيكي',
+    ptInWorld: 'مكعبك في العالم ✓', ptClassicBack: 'عاد المظهر الكلاسيكي ✓',
+    ptErr: 'لا يمكن استخدام هذا الرسم. ارسم المكعب من جديد.', ptNoSave: 'تعذّر الحفظ على هذا الجهاز.',
+    ptCell: 'الصف {r}، العمود {c}', ptOn: 'يعمل', ptOff: 'متوقف'
+  },
+  'fa-AF': {
+    ptOpen: 'یک بلاک رنگ کن', ptTitle: 'رنگ‌کننده بلاک', ptBlock: 'بلاک',
+    ptDirt: 'خاک', ptStone: 'سنگ', ptPlanks: 'تخته', ptSand: 'ریگ', ptGrassTop: 'بالای علف', ptLeaves: 'برگ',
+    ptPencil: 'قلم', ptFill: 'پر کردن', ptEraser: 'پاک‌کن', ptPickColor: 'رنگ بگیر', ptMirror: 'آینه', ptUndo: 'برگشت', ptRedo: 'دوباره',
+    ptTools: 'ابزارها', ptGridHelp: 'شبکه رنگ‌کاری. کلیدهای جهت حرکت می‌دهند. فاصله رنگ می‌کند.', ptColors: '۳۲ رنگ', ptColor: 'رنگ {n}',
+    ptPreview: 'پیش‌نمایش', ptRotate: 'بچرخان', ptUse: 'استفاده کن', ptClose: 'بستن', ptBack: 'برگشت به کلاسیک',
+    ptInWorld: 'بلاک تو در جهان است ✓', ptClassicBack: 'نمای کلاسیک برگشت ✓',
+    ptErr: 'این رنگ را نمی‌توان استفاده کرد. بلاک را دوباره رنگ کن.', ptNoSave: 'در این دستگاه ذخیره نشد.',
+    ptCell: 'ردیف {r}، ستون {c}', ptOn: 'روشن', ptOff: 'خاموش'
+  },
+  rw: {
+    ptOpen: 'Shushanya block', ptTitle: 'Gushushanya block', ptBlock: 'Bloki',
+    ptDirt: 'Itaka', ptStone: 'Ibuye', ptPlanks: 'Imbaho', ptSand: 'Umucanga', ptGrassTop: 'Hejuru y\'ibyatsi', ptLeaves: 'Amababi',
+    ptPencil: 'Ikaramu', ptFill: 'Uzuza', ptEraser: 'Gusiba', ptPickColor: 'Fata ibara', ptMirror: 'Indorerwamo', ptUndo: 'Subira inyuma', ptRedo: 'Subiramo',
+    ptTools: 'Ibikoresho', ptGridHelp: 'Urusobe rwo gushushanya. Imyambi irimura. Umwanya ushushanya.', ptColors: 'Amabara 32', ptColor: 'Ibara {n}',
+    ptPreview: 'Reba', ptRotate: 'Zenguruka', ptUse: 'Koresha', ptClose: 'Funga', ptBack: 'Subira kuri Classic',
+    ptInWorld: 'Block yawe iri mu isi ✓', ptClassicBack: 'Classic yagarutse ✓',
+    ptErr: 'Iri bara ntirishobora gukoreshwa. Ongera ushushanye block.', ptNoSave: 'Ntibyabitswe kuri iki gikoresho.',
+    ptCell: 'Umurongo {r}, inkingi {c}', ptOn: 'Bifunguye', ptOff: 'Bifunze'
+  },
+  ti: {
+    ptOpen: 'ብሎክ ቀልሕ', ptTitle: 'ቀላሒ ብሎክ', ptBlock: 'ብሎክ',
+    ptDirt: 'ሓመድ', ptStone: 'እምኒ', ptPlanks: 'ጣውላ', ptSand: 'ሓሸዋ', ptGrassTop: 'ልዕሊ ሳዕሪ', ptLeaves: 'ቆጽሊ',
+    ptPencil: 'ርሳሕ', ptFill: 'ምላእ', ptEraser: 'መደምሰሲ', ptPickColor: 'ሕብሪ ሕረ', ptMirror: 'መስተዋት', ptUndo: 'ምምላስ', ptRedo: 'ዳግም',
+    ptTools: 'መሳርሕታት', ptGridHelp: 'መርበብ ቀለም። ኣሰርቲ የንቀሳቕሱ። ክፍተት ይቀልሕ።', ptColors: '32 ሕብርታት', ptColor: 'ሕብሪ {n}',
+    ptPreview: 'ቅድመ-ርእይ', ptRotate: 'ዙር', ptUse: 'ተጠቐም', ptClose: 'ዕጸው', ptBack: 'ናብ ክላሲክ ተመለስ',
+    ptInWorld: 'ብሎክካ ኣብ ዓለም ኣሎ ✓', ptClassicBack: 'ክላሲክ ተመሊሱ ✓',
+    ptErr: 'እዚ ቀለም ኣይሰርሕን። ነቲ ብሎክ ደጊምካ ቀልሖ።', ptNoSave: 'ኣብዚ መሳርሒ ክሕለው ኣይተኻኣለን።',
+    ptCell: 'ረድፊ {r}፣ ዓምዲ {c}', ptOn: 'ክፉት', ptOff: 'ዕጹው'
+  },
+}
+for (const [lang, row] of Object.entries(PAINTER)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.547 Daily Board card. Every non-English line here is a machine DRAFT until a speaker reviews it.
+// rw, ti, and fa-AF are the weakest drafts. Dailies are named by what they are, so the names are drafts too.
+const DAILY547 = {
+  en: {
+    dailyHead: "Today's Daily", dailySurprise: 'Surprise!', dailySoon: 'Coming soon', dailyPlay: 'Play',
+    dailySweep: 'Sweep: {n} of {need} this week', dailyMarkDone: 'done', dailyMarkTodo: 'not yet',
+    wdMon: 'Mon', wdTue: 'Tue', wdWed: 'Wed', wdThu: 'Thu', wdFri: 'Fri',
+    dailyNameMolten: 'Molten Chasm', dailyWhatMolten: 'Build a bridge that holds.',
+    dailyNameCircuit: 'Circuit Fix', dailyWhatCircuit: 'Find the fault and fix the circuit.',
+    dailyNameBertDist: 'Bertapult Distance', dailyWhatBertDist: 'Launch it as far as you can.',
+    dailyNameBertMark: 'Bertapult Mark', dailyWhatBertMark: 'Launch it to hit the mark.',
+    dailyNamePaper: 'PaperLab Fold', dailyWhatPaper: 'Fold the paper to meet the goal.',
+    dailyNameParkour: 'Parkour Rush', dailyWhatParkour: 'Run the course and reach the end.',
+  },
+  simple: {
+    dailyHead: "Today's Daily", dailySurprise: 'Surprise!', dailySoon: 'Coming soon', dailyPlay: 'Play',
+    dailySweep: 'Sweep: {n} of {need} this week', dailyMarkDone: 'done', dailyMarkTodo: 'not yet',
+    wdMon: 'Mon', wdTue: 'Tue', wdWed: 'Wed', wdThu: 'Thu', wdFri: 'Fri',
+    dailyNameMolten: 'Molten Chasm', dailyWhatMolten: 'Build a strong bridge.',
+    dailyNameCircuit: 'Circuit Fix', dailyWhatCircuit: 'Fix the broken circuit.',
+    dailyNameBertDist: 'Bertapult Distance', dailyWhatBertDist: 'Launch it far.',
+    dailyNameBertMark: 'Bertapult Mark', dailyWhatBertMark: 'Launch it at the mark.',
+    dailyNamePaper: 'PaperLab Fold', dailyWhatPaper: 'Fold the paper to reach the goal.',
+    dailyNameParkour: 'Parkour Rush', dailyWhatParkour: 'Run to the end.',
+  },
+  uk: {
+    dailyHead: 'Щоденне завдання', dailySurprise: 'Сюрприз!', dailySoon: 'Скоро буде', dailyPlay: 'Грати',
+    dailySweep: 'Зачистка: {n} з {need} цього тижня', dailyMarkDone: 'зроблено', dailyMarkTodo: 'ще ні',
+    wdMon: 'Пн', wdTue: 'Вт', wdWed: 'Ср', wdThu: 'Чт', wdFri: 'Пт',
+    dailyNameMolten: 'Розплавлена прірва', dailyWhatMolten: 'Збудуй міст, який витримає.',
+    dailyNameCircuit: 'Полагодь схему', dailyWhatCircuit: 'Знайди несправність і полагодь схему.',
+    dailyNameBertDist: 'Бертапульт: відстань', dailyWhatBertDist: 'Запусти якомога далі.',
+    dailyNameBertMark: 'Бертапульт: у ціль', dailyWhatBertMark: 'Запусти так, щоб влучити в ціль.',
+    dailyNamePaper: 'Паперова лабораторія', dailyWhatPaper: 'Склади папір, щоб досягти цілі.',
+    dailyNameParkour: 'Паркур-гонка', dailyWhatParkour: 'Пробіжи трасу до кінця.',
+  },
+  ru: {
+    dailyHead: 'Задание дня', dailySurprise: 'Сюрприз!', dailySoon: 'Скоро будет', dailyPlay: 'Играть',
+    dailySweep: 'Зачистка: {n} из {need} на этой неделе', dailyMarkDone: 'готово', dailyMarkTodo: 'ещё нет',
+    wdMon: 'Пн', wdTue: 'Вт', wdWed: 'Ср', wdThu: 'Чт', wdFri: 'Пт',
+    dailyNameMolten: 'Расплавленная пропасть', dailyWhatMolten: 'Построй мост, который выдержит.',
+    dailyNameCircuit: 'Почини схему', dailyWhatCircuit: 'Найди неисправность и почини схему.',
+    dailyNameBertDist: 'Бертапульт: дальность', dailyWhatBertDist: 'Запусти как можно дальше.',
+    dailyNameBertMark: 'Бертапульт: в цель', dailyWhatBertMark: 'Запусти так, чтобы попасть в цель.',
+    dailyNamePaper: 'Бумажная лаборатория', dailyWhatPaper: 'Сложи бумагу, чтобы достичь цели.',
+    dailyNameParkour: 'Паркур-гонка', dailyWhatParkour: 'Пробеги трассу до конца.',
+  },
+  es: {
+    dailyHead: 'Reto de hoy', dailySurprise: '¡Sorpresa!', dailySoon: 'Muy pronto', dailyPlay: 'Jugar',
+    dailySweep: 'Barrido: {n} de {need} esta semana', dailyMarkDone: 'hecho', dailyMarkTodo: 'aún no',
+    wdMon: 'Lun', wdTue: 'Mar', wdWed: 'Mié', wdThu: 'Jue', wdFri: 'Vie',
+    dailyNameMolten: 'Abismo de lava', dailyWhatMolten: 'Construye un puente que aguante.',
+    dailyNameCircuit: 'Arregla el circuito', dailyWhatCircuit: 'Halla la falla y arregla el circuito.',
+    dailyNameBertDist: 'Bertapult: distancia', dailyWhatBertDist: 'Lánzalo lo más lejos que puedas.',
+    dailyNameBertMark: 'Bertapult: blanco', dailyWhatBertMark: 'Lánzalo para dar en el blanco.',
+    dailyNamePaper: 'Plegado PaperLab', dailyWhatPaper: 'Dobla el papel para lograr la meta.',
+    dailyNameParkour: 'Carrera de parkour', dailyWhatParkour: 'Corre el recorrido y llega al final.',
+  },
+  ar: {
+    dailyHead: 'تحدي اليوم', dailySurprise: 'مفاجأة!', dailySoon: 'قريبًا', dailyPlay: 'العب',
+    dailySweep: 'الكنس: {n} من {need} هذا الأسبوع', dailyMarkDone: 'تم', dailyMarkTodo: 'ليس بعد',
+    wdMon: 'اثن', wdTue: 'ثلا', wdWed: 'أرب', wdThu: 'خمي', wdFri: 'جمع',
+    dailyNameMolten: 'الهوة المنصهرة', dailyWhatMolten: 'ابنِ جسرًا يتحمّل.',
+    dailyNameCircuit: 'إصلاح الدارة', dailyWhatCircuit: 'اعثر على العطل وأصلح الدارة.',
+    dailyNameBertDist: 'بيرتابولت: المسافة', dailyWhatBertDist: 'أطلقه إلى أبعد مسافة ممكنة.',
+    dailyNameBertMark: 'بيرتابولت: الهدف', dailyWhatBertMark: 'أطلقه لتصيب الهدف.',
+    dailyNamePaper: 'مختبر الورق: الطي', dailyWhatPaper: 'اطوِ الورقة لتحقق الهدف.',
+    dailyNameParkour: 'سباق الباركور', dailyWhatParkour: 'اركض في المسار حتى النهاية.',
+  },
+  'fa-AF': {
+    dailyHead: 'چالش امروز', dailySurprise: 'سورپرایز!', dailySoon: 'به‌زودی', dailyPlay: 'بازی',
+    dailySweep: 'جاروب: {n} از {need} این هفته', dailyMarkDone: 'انجام شد', dailyMarkTodo: 'هنوز نه',
+    wdMon: 'دو', wdTue: 'سه', wdWed: 'چها', wdThu: 'پنج', wdFri: 'جمع',
+    dailyNameMolten: 'شکاف مذاب', dailyWhatMolten: 'پلی بساز که تحمل کند.',
+    dailyNameCircuit: 'درست کردن مدار', dailyWhatCircuit: 'خرابی را پیدا کن و مدار را درست کن.',
+    dailyNameBertDist: 'برتاپولت: فاصله', dailyWhatBertDist: 'تا جایی که می‌توانی دور پرتاب کن.',
+    dailyNameBertMark: 'برتاپولت: هدف', dailyWhatBertMark: 'پرتاب کن تا به هدف بخورد.',
+    dailyNamePaper: 'لابراتوار کاغذ', dailyWhatPaper: 'کاغذ را تا کن تا به هدف برسی.',
+    dailyNameParkour: 'مسابقه پارکور', dailyWhatParkour: 'مسیر را بدو تا به پایان برسی.',
+  },
+  rw: {
+    dailyHead: 'Umukino wa none', dailySurprise: 'Igitangaza!', dailySoon: 'Biraza vuba', dailyPlay: 'Kina',
+    dailySweep: 'Isuku: {n} kuri {need} muri iki cyumweru', dailyMarkDone: 'byarangiye', dailyMarkTodo: 'ntibiraba',
+    wdMon: 'Mbe', wdTue: 'Kabi', wdWed: 'Gatu', wdThu: 'Kane', wdFri: 'Gatn',
+    dailyNameMolten: 'Icyuho cy\'umuriro', dailyWhatMolten: 'Ubaka ikiraro gikomeye.',
+    dailyNameCircuit: 'Gukosora umuzenguruko', dailyWhatCircuit: 'Shaka ikibazo ukosore umuzenguruko.',
+    dailyNameBertDist: 'Bertapult: intera', dailyWhatBertDist: 'Wohereze kure uko ushoboye.',
+    dailyNameBertMark: 'Bertapult: intego', dailyWhatBertMark: 'Wohereze ugere ku ntego.',
+    dailyNamePaper: 'Gupfunyika PaperLab', dailyWhatPaper: 'Pfunyika urupapuro ugere ku ntego.',
+    dailyNameParkour: 'Isiganwa rya parkour', dailyWhatParkour: 'Kora inzira ugere ku iherezo.',
+  },
+  ti: {
+    dailyHead: 'ናይ ሎሚ ዕለታዊ', dailySurprise: 'ድንቂ!', dailySoon: 'ይመጽእ ኣሎ', dailyPlay: 'ተጻወት',
+    dailySweep: 'ምጽራግ: {n} ካብ {need} ሰሙን እዚ', dailyMarkDone: 'ተወዲኡ', dailyMarkTodo: 'ገና',
+    wdMon: 'ሰኑ', wdTue: 'ሰሉ', wdWed: 'ረቡ', wdThu: 'ሓሙ', wdFri: 'ዓር',
+    dailyNameMolten: 'ዝፈሰሰ ጉድጓድ', dailyWhatMolten: 'ድልድል ዝጸንዕ ሃንጽ።',
+    dailyNameCircuit: 'ምዕራይ ሰርኪት', dailyWhatCircuit: 'ጌጋ ረኺብካ ሰርኪት ኣዐርዮ።',
+    dailyNameBertDist: 'በርታፑልት: ርሕቀት', dailyWhatBertDist: 'ክሳብ ዝከኣል ርሒቕካ ተኵሶ።',
+    dailyNameBertMark: 'በርታፑልት: ዕላማ', dailyWhatBertMark: 'ዕላማ ክትሃሪም ተኵሶ።',
+    dailyNamePaper: 'ላብ ወረቐት', dailyWhatPaper: 'ወረቐት ደይብ ንዕላማ ንምብጻሕ።',
+    dailyNameParkour: 'ሩጫ ፓርኩር', dailyWhatParkour: 'መስርሕ ሩጽ ክሳብ መወዳእታ።',
+  },
+}
+for (const [lang, row] of Object.entries(DAILY547)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.550 Look: small textures wording. fa-AF, rw, and ti are machine drafts.
+const TEX550 = {
+  en: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },
+  simple: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },
+  uk: { texSmallOn: 'Малі текстури: УВІМК. (швидше)', texSmallOff: 'Малі текстури: ВИМК. (чіткіше)', texSmallHint: 'Вимкни для чіткішого вигляду.' },
+  ru: { texSmallOn: 'Маленькие текстуры: ВКЛ. (быстрее)', texSmallOff: 'Маленькие текстуры: ВЫКЛ. (чётче)', texSmallHint: 'Выключи для чёткости.' },
+  es: { texSmallOn: 'Texturas pequeñas: SÍ (más rápido)', texSmallOff: 'Texturas pequeñas: NO (más nítido)', texSmallHint: 'Desactívalo para más nitidez.' },
+  ar: { texSmallOn: 'قوام صغير: مُفعّل (أسرع)', texSmallOff: 'قوام صغير: مُعطّل (أوضح)', texSmallHint: 'أوقفه لصورة أوضح.' },
+  'fa-AF': { texSmallOn: 'بافت کوچک: روشن (سریع\u200cتر)', texSmallOff: 'بافت کوچک: خاموش (واضح\u200cتر)', texSmallHint: 'برای وضوح بیشتر خاموش کن.' },
+  rw: { texSmallOn: 'Amashusho mato: ARAKORA (byihuse)', texSmallOff: 'Amashusho mato: NTAKORA (bigaragara neza)', texSmallHint: 'Bizimye kugira ngo bigaragare neza.' },
+  ti: { texSmallOn: 'ንኣሽቱ ምስልታት: ይሰርሕ (ቅልጡፍ)', texSmallOff: 'ንኣሽቱ ምስልታት: ኣይሰርሕን (ብሩህ)', texSmallHint: 'ንዝበለጸ ብሩህነት ኣጥፍኦ።' },
+}
+for (const [lang, row] of Object.entries(TEX550)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

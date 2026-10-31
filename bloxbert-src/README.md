@@ -23,7 +23,7 @@ Commit the built door folder together with the source change.
 ## Stack (pinned)
 - noa-engine: `github:fenomas/noa#8a74866055ab94ff3cfb332ff4762820e86a1721` (develop branch, MIT). No local edits.
 - @babylonjs/core 6.49.0 (Apache-2.0). esbuild 0.24.2 bundles `src/main.js` into one IIFE.
-- Block art: Kenney Voxel Pack (CC0, `assets/KENNEY-LICENSE.txt`), cut to a 32 px atlas by `tools/make-atlas.py` (needs the unzipped pack; set `KENNEY_TILES`). `assets/atlas.json` maps block names to atlas rows.
+- Block art: Kenney Voxel Pack (CC0, `assets/KENNEY-LICENSE.txt`), cut to a 32 px atlas by `tools/make-atlas.py` (needs the unzipped pack; set `KENNEY_TILES`). `assets/atlas.json` maps block names to atlas rows. New blocks and objects ship with their textures in BOTH `assets/packs/classic` and `assets/packs/mystical` in the same commit. `node tools/pack-check.mjs` (part of `npm test`) fails the build if a face is missing or not a 64×64 PNG. Add those faces with `tools/gen64.py` or a later approved import. Do not hand-edit tiles.
 - Saves: `kuliblocks` v1 JSON in IndexedDB, plus Export/Import of a file. Our chunk store is the source of truth; noa only draws.
 
 ## Local checks (headless Chrome)

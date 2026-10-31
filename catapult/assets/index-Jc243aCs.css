@@ -9,8 +9,8 @@ html:not(.kb-framed) body.kb-on .ti-shell.min-h-dvh>.ti-rail{top:48px}
 html:not(.kb-framed) body.kb-on .ti-dock{top:48px}
 html:not(.kb-framed) body.kb-on .ti-shell.min-h-dvh .ti-top{top:48px}
 .ti-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.25rem}
-.ti-more-wrap{position:sticky;bottom:0;height:0;pointer-events:none;z-index:2}
-.ti-more-wrap:before{content:"";position:absolute;left:-.5rem;right:-.5rem;bottom:-.5rem;height:4.5rem;background:linear-gradient(to top,var(--color-surface,#fff) 35%,rgba(255,255,255,0));pointer-events:none}
-.ti-more{pointer-events:auto;position:absolute;right:0;bottom:0;min-height:44px;min-width:44px;padding:0 .9rem;border:0;border-radius:999px;background:#0f7a3a;color:#fff;font-size:.875rem;font-weight:600;line-height:1;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.ti-more-wrap{position:static;height:auto;display:flex;justify-content:flex-end;pointer-events:none;z-index:2;margin:.35rem 0 .15rem}
+.ti-more-wrap:before{content:none}
+.ti-more{pointer-events:auto;position:static;min-height:44px;min-width:44px;padding:0 .9rem;border:0;border-radius:999px;background:#0f7a3a;color:#fff;font-size:.875rem;font-weight:600;line-height:1;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .ti-more:focus-visible{outline:2px solid #10210f;outline-offset:2px}
 @media (max-height:500px){.ti-rail .ti-rail-news,.ti-dock .ti-rail-news{display:none}}

@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
-  <link rel="stylesheet" href="./styles.css?v=mu23665"/>
+  <link rel="stylesheet" href="./styles.css?v=mu23666"/>
 </head>
 <body class="mu237 tab-tap">
   <p id="mu-chip" class="mu-chip"></p>
@@ -388,45 +388,45 @@
         <details class="more-box" id="song-more">
           <summary data-mu="scoreTools">Score tools</summary>
           <div class="score-tools">
-            <div id="meters" class="meters" aria-label="Time signature"></div>
+            <div id="meters" class="meters" aria-label="Time signature" data-mu-label="drMeters"></div>
             <button type="button" id="both-btn" class="btn" data-mu="scoreDrums">Score + drums</button>
             <button type="button" id="add-bar" class="btn" data-mu="addBar">Add a bar</button>
             <button type="button" id="expert-btn" class="btn" aria-pressed="false" data-mu="justStaff">Just the staff</button>
           </div>
           <details class="more-box">
-            <summary>More note tools</summary>
-            <div id="keypad" class="keypad" aria-label="More note tools"></div>
+            <summary data-mu="drMoreNotes">More note tools</summary>
+            <div id="keypad" class="keypad" aria-label="More note tools" data-mu-label="drMoreNotes"></div>
           </details>
           <details class="more-box">
-            <summary>Chords</summary>
+            <summary data-mu="partChords">Chords</summary>
             <div id="chord-row">
-            <div id="chords" class="looks" aria-label="Chords"></div>
+            <div id="chords" class="looks" aria-label="Chords" data-mu-label="partChords"></div>
             <button type="button" id="bass-btn" class="btn" aria-pressed="false">Bass follows the kick</button>
             </div>
           </details>
           <details class="more-box">
-            <summary>Melody ideas</summary>
-            <div id="melodies" class="looks" aria-label="Melody ideas"></div>
+            <summary data-mu="drMelodies">Melody ideas</summary>
+            <div id="melodies" class="looks" aria-label="Melody ideas" data-mu-label="drMelodies"></div>
           </details>
           <details class="more-box">
-            <summary>This song's picture</summary>
+            <summary data-mu="drPicture">This song's picture</summary>
             <p id="viz-now" class="hint">The picture travels with the song.</p>
-            <div id="viz-picks" class="shelf-songs" aria-label="Pictures"></div>
+            <div id="viz-picks" class="shelf-songs" aria-label="Pictures" data-mu-label="drPictures"></div>
             <button type="button" id="viz-use" class="btn" hidden data-mu="useThis">Use this picture</button>
           </details>
           <details class="more-box">
-            <summary>Defend the notes</summary>
+            <summary data-mu="drDefend">Defend the notes</summary>
             <p id="why-progress" class="hint">Give every mark a reason you can say out loud.</p>
             <p id="why-ask" class="teach-line"></p>
-            <div id="why-reasons" class="shelf-songs" aria-label="Reasons"></div>
-            <button type="button" id="why-next" class="btn">Next mark</button>
+            <div id="why-reasons" class="shelf-songs" aria-label="Reasons" data-mu-label="drReasons"></div>
+            <button type="button" id="why-next" class="btn" data-mu="drNextMark">Next mark</button>
           </details>
           <details class="more-box">
-            <summary>Remixes</summary>
-            <p class="hint">A remix keeps the picture and clears the reasons. A file can move to another computer.</p>
-            <button type="button" id="remix-btn" class="btn">Remix this</button>
-            <div id="shelf" class="shelf-songs" aria-label="Saved remixes"></div>
-            <button type="button" id="open-btn" class="btn">Open a song file</button>
+            <summary data-mu="drRemixes">Remixes</summary>
+            <p class="hint" data-mu="drRemixHint">A remix keeps the picture and clears the reasons. A file can move to another computer.</p>
+            <button type="button" id="remix-btn" class="btn" data-mu="drRemixThis">Remix this</button>
+            <div id="shelf" class="shelf-songs" aria-label="Saved remixes" data-mu-label="drShelf"></div>
+            <button type="button" id="open-btn" class="btn" data-mu="drOpenFile">Open a song file</button>
             <input id="open-file" type="file" accept="application/json,.json" hidden/>
           </details>
         </details>
@@ -716,7 +716,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23665"></script>
+  <script src="./version.js?v=mu23666"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -725,8 +725,8 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23665"></script>
-  <script src="./songs.js?v=mu23665"></script>
-  <script src="./app.js?v=mu23665"></script>
+  <script src="./strings.js?v=mu23666"></script>
+  <script src="./songs.js?v=mu23666"></script>
+  <script src="./app.js?v=mu23666"></script>
 </body>
 </html>
