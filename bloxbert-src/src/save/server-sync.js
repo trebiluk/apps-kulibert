@@ -1,4 +1,5 @@
 import { setSyncState, onSyncRetry } from './sync-chip.js'
+import { flagOn, persistFlag } from './sync-flag.js'
 // Server copy for Bertopia worlds. Active only with ?sync=1.
 // Push-only was S2a; this adds pull when local is missing or older.
 // Never throws into the caller. Never loads without ?sync=1 + signed-in.
@@ -31,20 +32,6 @@ const fails = Object.create(null)
 const hints = Object.create(null)
 const gaveUp = Object.create(null)
 const kept = Object.create(null) // a school copy already exists for the current conflict
-
-function flagOn() {
-  try {
-    if (typeof location !== 'undefined' && /(?:\?|&)sync=1(?:&|$)/.test(location.search)) return true
-    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('bt-sync') === '1') return true
-  } catch (e) {}
-  return false
-}
-
-function persistFlag() {
-  try {
-    if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('bt-sync', '1')
-  } catch (e) {}
-}
 
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))

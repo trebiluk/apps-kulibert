@@ -1161,6 +1161,7 @@ new MutationObserver((records) => {
   }
 }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'], subtree: true, childList: true, characterData: true })
 applyI18n()
+try { mountSyncChip() } catch (e) {} // 2.5.559: also at start, not only after the tab shows again
 pinKeysLine()
 
 let walkPresses = 0
