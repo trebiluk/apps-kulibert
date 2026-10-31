@@ -11,6 +11,7 @@ export function sqlDb(ctx) {
     getMeta: (k) => one('SELECT v FROM meta WHERE k=?', k)?.v ?? null,
     opsSince: (s, n) => sql.exec('SELECT s,w,x,y,z,b,i,t FROM ops WHERE s>? ORDER BY s LIMIT ?', s, n).toArray(),
     oldestOp: () => one('SELECT MIN(s) AS m FROM ops')?.m ?? null,
+    purgeOps(before) { sql.exec('DELETE FROM ops WHERE t < ?', before); return one('SELECT changes() AS n')?.n ?? 0 },
     *allChunks() { for (const r of sql.exec('SELECT cx,cz,d FROM chunks')) yield [r.cx, r.cz, r.d] },
     commit({ chunks = [], ops = [], meta = {}, keep = 20000 }) {
       ctx.storage.transactionSync(() => {

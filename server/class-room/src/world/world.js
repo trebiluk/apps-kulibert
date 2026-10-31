@@ -4,6 +4,7 @@
 // An edit says what the client thought was there (b). If that is not what is there, it is
 // refused as 'stale' and the true block comes back. Last writer never silently wins.
 import { locate, validCell, encodeChunk, decodeChunk } from './chunks.js'
+import { CATCHUP_MS, STEP_CHUNKS, decodeMachines, encodeMachines, grant, isMachine, machinesIn, stepChunk, touchOps } from './sim.js'
 
 export const KEEP_OPS = 20000
 const MAX_CLEAN = 256
@@ -12,20 +13,69 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
   const cache = new Map()
   let wseq = Number(db.getMeta('wseq') ?? 0)
   let pending = []
+  // Day clock (world ms) and when the sim last ran. Both persist in meta.
+  let clock = Number(db.getMeta('clock') ?? 0)
+  let simAt = db.getMeta('simAt') == null ? null : Number(db.getMeta('simAt'))
+  // Machine chunks: keys 'cx,cz' of chunks holding at least one machine, kept in meta so a sim step
+  // never has to scan every chunk. Built once from existing chunks when missing (older worlds).
+  let mindex = db.getMeta('mindex') == null ? null : new Set(JSON.parse(db.getMeta('mindex')))
+  let cursor = 0
 
   const load = (cx, cz) => {
     const k = cx + ',' + cz
     let c = cache.get(k)
     if (!c) {
       const r = decodeChunk(db.getChunk(cx, cz))
-      c = { cx, cz, edits: r.edits || new Map(), dirty: false, locked: r.error || null }
+      c = { cx, cz, edits: r.edits || new Map(), m: decodeMachines(r.m), dirty: false, locked: r.error || null }
       cache.set(k, c)
     }
     return c
   }
 
+  // Keep the machine index in step with a chunk's edits.
+  const index = (cx, cz, c) => {
+    ensureIndex()
+    const k = cx + ',' + cz
+    if (machinesIn(c.edits).length) mindex.add(k); else mindex.delete(k)
+    metaDirty = true
+  }
+  let metaDirty = false
+  const ensureIndex = () => {
+    if (mindex) return
+    mindex = new Set()
+    for (const [cx, cz, str] of db.allChunks()) { const r = decodeChunk(str); if (r.edits && machinesIn(r.edits).length) mindex.add(cx + ',' + cz) }
+    metaDirty = true
+  }
+
   return {
     head: () => wseq,
+    clock: () => clock,
+    simAt: () => simAt,
+
+    // One sim step at nowMs. Advances the day clock by the granted time and up to STEP_CHUNKS
+    // machine chunks (round robin), each by its own elapsed time. Changed machines become touch
+    // ops so rooms fan them out. Returns { chunks, touched }.
+    sim(nowMs, cap = CATCHUP_MS) {
+      ensureIndex()
+      clock += simAt == null ? 0 : grant(simAt, nowMs, cap)
+      simAt = nowMs
+      metaDirty = true
+      const keys = [...mindex]
+      let touched = 0, n = 0
+      for (let i = 0; i < keys.length && n < STEP_CHUNKS; i++, n++) {
+        const k = keys[(cursor + i) % keys.length]
+        const [cx, cz] = k.split(',').map(Number)
+        const c = load(cx, cz)
+        if (c.locked) continue
+        const r = stepChunk(c.edits, c.m, nowMs, cap)
+        c.m = r.m
+        c.dirty = true
+        for (const op of touchOps(cx, cz, c.m, r.changed)) { pending.push({ s: ++wseq, w: 0, x: op.x, y: op.y, z: op.z, b: op.id, i: op.id, t: nowMs }); touched++ }
+      }
+      cursor = keys.length ? (cursor + n) % keys.length : 0
+      return { chunks: n, touched }
+    },
+    machineChunks: () => { ensureIndex(); return mindex.size },
 
     // batch: [{x,y,z,id,b}]  who: small int (room-local player id or 0 for staff)
     apply(batch, who, t = now()) {
@@ -39,6 +89,8 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
         if (cur === e.id) return { ok: true, s: wseq, same: true }
         c.edits.set(idx, e.id)
         c.dirty = true
+        if (isMachine(cur) && !isMachine(e.id)) c.m.delete(idx)   // a broken machine takes its counter with it
+        if (isMachine(e.id) || isMachine(cur)) index(cx, cz, c)
         pending.push({ s: ++wseq, w: who, x: e.x, y: e.y, z: e.z, b: cur, i: e.id, t })
         return { ok: true, s: wseq }
       })
@@ -56,7 +108,7 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     // Current chunk for a client, with the seq it is good up to.
     chunk(cx, cz) {
       const c = load(cx, cz)
-      return c.locked ? { error: c.locked } : { s: wseq, d: encodeChunk(c.edits) }
+      return c.locked ? { error: c.locked } : { s: wseq, d: encodeChunk(c.edits, encodeMachines(c.m)) }
     },
 
     // Block now at a cell, or undefined if never edited and no worldgen. (For undo and tests.)
@@ -73,11 +125,15 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     // and the next flush retries, so no edit is lost and none is applied twice.
     flush() {
       const rows = []
-      for (const c of cache.values()) if (c.dirty && !c.locked) rows.push([c.cx, c.cz, encodeChunk(c.edits)])
-      if (!rows.length && !pending.length) return 0
-      db.commit({ chunks: rows, ops: pending, meta: { wseq: String(wseq) }, keep: KEEP_OPS })
+      for (const c of cache.values()) if (c.dirty && !c.locked) rows.push([c.cx, c.cz, encodeChunk(c.edits, encodeMachines(c.m))])
+      if (!rows.length && !pending.length && !metaDirty) return 0
+      const meta = { wseq: String(wseq), clock: String(clock) }
+      if (simAt != null) meta.simAt = String(simAt)
+      if (mindex) meta.mindex = JSON.stringify([...mindex])
+      db.commit({ chunks: rows, ops: pending, meta, keep: KEEP_OPS })
       for (const c of cache.values()) c.dirty = false
       pending = []
+      metaDirty = false
       if (cache.size > MAX_CLEAN) for (const k of cache.keys()) { if (cache.size <= MAX_CLEAN / 2) break; cache.delete(k) }
       return rows.length
     },
