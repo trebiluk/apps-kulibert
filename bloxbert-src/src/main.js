@@ -246,6 +246,7 @@ import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
+import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder'
 import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
@@ -11037,7 +11038,7 @@ sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
 function skyDisc(name, rgb, local) {
-  const mesh = CreatePlane(name, { size: 4.5 }, scene)
+  const mesh = CreateDisc(name, { radius: 2.25, tessellation: 32 }, scene) // 2.5.550: round sun and moon
   const mat = new StandardMaterial(name + '-m', scene)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
   mat.disableLighting = true
