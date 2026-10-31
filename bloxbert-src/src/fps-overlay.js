@@ -6,7 +6,7 @@ export function mountFpsOverlay() {
   const box = document.createElement('div')
   box.id = 'fps-overlay'
   box.setAttribute('aria-hidden', 'true')
-  box.style.cssText = 'position:fixed;left:12px;top:120px;z-index:99999;padding:2px 6px;border-radius:6px;background:rgba(10,14,30,.85);color:#e8ecf4;font:600 11px/1.3 monospace;white-space:nowrap;pointer-events:none'
+  box.style.cssText = 'position:fixed;left:12px;top:120px;z-index:35;padding:2px 6px;border-radius:6px;background:rgba(10,14,30,.85);color:#e8ecf4;font:600 11px/1.3 monospace;white-space:nowrap;pointer-events:none'
   document.body.append(box)
   const times = []
   let last = performance.now()
