@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt جسر",
   "helpHoldItSpan": "HoldIt جسر هو تحدي الجسر. HoldIt هو أداة التصميم.",
   "helpGateConflict": "كل دفع يشغل فحص Hub: الكود، علامات التعارض، و /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "تظهر نسخة Hub في الأسفل عند فتح الموظفين."
+  "helpHideDevRev": "تظهر نسخة Hub في الأسفل عند فتح الموظفين.",
+  "goals": "الأهداف",
+  "keysChip": "? مفاتيح",
+  "keysAgain": "اضغط ? لترى المفاتيح مرة أخرى.",
+  "creditDyslexia": "خط عسر القراءة: OpenDyslexic (OFL 1.1)."
 }

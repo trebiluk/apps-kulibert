@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt پل",
   "helpHoldItSpan": "HoldIt پل چالش پل است. HoldIt ابزار طراحی است.",
   "helpGateConflict": "هر push بررسی Hub را اجرا می‌کند: کد، نشانه‌های تعارض و /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "نسخه Hub در پایین وقتی کارکنان باز می‌کنند نشان داده می‌شود."
+  "helpHideDevRev": "نسخه Hub در پایین وقتی کارکنان باز می‌کنند نشان داده می‌شود.",
+  "goals": "هدف‌ها",
+  "keysChip": "? کلیدها",
+  "keysAgain": "? را بزن تا کلیدها را دوباره ببینی.",
+  "creditDyslexia": "خط نارساخوانی: OpenDyslexic (OFL 1.1)."
 }
