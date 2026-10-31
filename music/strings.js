@@ -435,6 +435,7 @@
     listenOnce: "Listen once. Each pad flashes. Then it says Your turn.",
     listenOff: "Listen. You can leave the sound off.",
     saved: "Saved",
+    notSavedYet: "Not saved yet",
     bringBack: "Bring it back",
     thatsSong: "That's the song",
     playAgain: "Play it again",

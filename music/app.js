@@ -302,6 +302,7 @@
     if (Array.isArray(saved.chairs) && saved.chairs.length === 8) state.chairs = saved.chairs;
     if (saved.bpm) state.song.bpm = saved.bpm;
     state.touched = saved.touched === true;
+    state.kept = saved.kept === true || state.touched;
     return true;
   }
   function readBox(key) {
@@ -530,14 +531,30 @@
     src.stop(t + dur + 0.02);
   }
 
-  function paintSaved(ok) {
+  // MU 2.36.67: an honest save line. "none" = nothing to say yet (fresh start), "saved" = this beat really is in storage,
+  // "unsaved" = there are changes the browser could not keep. Icon + text, never colour alone.
+  function paintSaved(status) {
     const line = $("saved-line");
     if (!line) return;
-    line.classList.toggle("bad", !ok);
-    line.textContent = ok ? "Saved" : "Not saved. Open the menu and tap Save a file.";
+    state.saveStatus = status;
+    line.classList.toggle("bad", status === "unsaved");
+    line.textContent = "";
+    if (status !== "saved" && status !== "unsaved") return;
+    const ico = document.createElement("span");
+    ico.className = "saved-ico";
+    ico.setAttribute("aria-hidden", "true");
+    ico.textContent = status === "saved" ? "\u2713" : "!";
+    const word = document.createElement("span");
+    word.textContent = status === "saved" ? (mu("saved") || "Saved") : (mu("notSavedYet") || "Not saved yet");
+    line.appendChild(ico);
+    line.appendChild(word);
   }
-  function keep() {
+  // keep({ quiet: true }) is the start-up write: it stores the starter song but does not claim the kid saved anything.
+  function keep(opts) {
+    const quiet = !!(opts && opts.quiet);
+    if (!quiet) state.kept = true;
     const body = JSON.stringify({
+      kept: state.kept === true,
       song: JSON.parse(Song.serialize(state.song)),
       drums: state.drums,
       look: state.look,
@@ -572,7 +589,8 @@
     } catch (err) {
       ok = false;
     }
-    paintSaved(ok);
+    if (ok) paintSaved(state.kept ? "saved" : "none");
+    else paintSaved(quiet && !state.kept ? "none" : "unsaved");
     paintCount();
     paintSongBar();
     const beat = Song.toBeat(state.song);
@@ -4365,7 +4383,7 @@
       localStorage.setItem(SHELF, body);
       if (localStorage.getItem(SHELF) !== body) throw new Error("short");
     } catch (err) {
-      paintSaved(false);
+      paintSaved("unsaved");
       return false;
     }
     paintShelf();
@@ -4644,7 +4662,7 @@
       $("play-btn").click();
     }
   });
-  window.addEventListener("pagehide", () => { keep(); releaseMic(); forgetClip(); });
+  window.addEventListener("pagehide", () => { keep({ quiet: true }); releaseMic(); forgetClip(); });
 
   const Titles = window.KulibertTitles;
   if (Titles && $("title-lists")) {
@@ -5846,7 +5864,8 @@
       }
     }, 0);
   }
-  keep();
+  keep({ quiet: true });
+  window.addEventListener("kulibert-lang", () => { try { paintSaved(state.saveStatus || "none"); } catch (eSv) {} });
 
   // MU 2.36.62: music's own words first (strings.js). The shared pack is only a fallback for a key music does not own,
   // so a failed shared fetch no longer logs one "missing" warning per drum word.
