@@ -54,6 +54,7 @@
     news23664: "MU 2.36.64 — On songs with real note lengths you can now change how long a note lasts, add a dot, a tie or a rest. Every bar stays full. Five more songs have real notation.",
     news23665: "MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside. They work by tap and by keyboard.",
     news23667: "MU 2.36.67 — Make a beat is the first big button. Saved shows only when your beat really is saved. Help and Teacher open their own lists.",
+    news23668: "MU 2.36.68 — After you clear the browser, DJ Berty starts fresh. Saved shows only when your beat is really stored.",
     barsMax: "That is 32 bars. That is a long song.",
     /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
     pickupWord: "Pickup",
