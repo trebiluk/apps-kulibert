@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// One Bertopia URL: the old /blocks/ and /blocks-test/ doors redirect on the server; this is the fallback.
+// Local test servers (localhost, 127.0.0.1) still open /blocks-test/ so the build checks keep working.
+;(function () { try { if (/^\/blocks(-test)?(\/|$)/.test(location.pathname) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { document.documentElement.style.background = '#0B1220'; location.replace('/bertopia/' + location.search + location.hash) } } catch (e) {} })()
+</script>
 <link rel="icon" href="data:,">
 <title>Bertopia 2.5.550</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.541">
@@ -1562,7 +1567,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (window.__bertOpen === true) { window.dispatchEvent(new Event('bert-update')); return }
       reloadOnce()
     })
-    navigator.serviceWorker.register(scope + 'sw.js', { scope: scope, updateViaCache: 'none' }).then(arm).catch(function () {}) // 2.5.484
+    // One URL + kill-switch: never register a worker again (a new register() would revive one that is unregistering).
+    // An old worker is asked to update instead; the update is the kill-switch sw.js, which clears bloxbert-* caches and unregisters.
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { if (r.scope.indexOf(scope) !== -1) { try { r.update().catch(function () {}) } catch (e) {} } })
+    }).catch(function () {})
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return
       navigator.serviceWorker.getRegistration(scope).then(function (reg) {

@@ -8408,7 +8408,8 @@ function rescueToGround(fromVoid) {
     playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
     if (!tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
   }
-  console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
+  // Debug only (?debug=1): normal loads keep the console quiet.
+  if (/[?&]debug=1(&|$)/.test(location.search)) console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
   if (fromVoid !== false) {
     const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
     toast(usedHome ? t('poofBunk') : t('poofTown'))
