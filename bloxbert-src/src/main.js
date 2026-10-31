@@ -4908,6 +4908,11 @@ saveSoon = () => {
     if (!(bytes >= 0)) return bytes
     paintSaveChip(navigator.onLine ? 'saved' : 'offline')
     return bytes
+  }).catch((e) => {
+    // Topia sync P1: a failed save (quota full, held, newer copy) says "Not saved" instead of an uncaught rejection.
+    // A paused tab already shows its own pause chip.
+    if (!(e && e.code === 'paused')) showNotSavedChip()
+    return -1
   })
 }
 async function saveClicked() {
