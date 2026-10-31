@@ -777,6 +777,27 @@
     });
   }
 
+  // MU 2.36.62: spread the bars evenly over the lines, so the last line is never one lonely bar.
+  function balanceAbc(abc, wide, oneLine) {
+    const m = abc.match(/^([\s\S]*\nK:[^\n]*\n)([\s\S]*)$/);
+    if (!m) return abc;
+    const bars = m[2].replace(/\n/g, " ").split("|").map((x) => x.trim()).filter(Boolean);
+    const total = bars.length;
+    const base = wide < 420 ? 2 : wide < 760 ? 3 : 4;
+    if (!total) return abc;
+    let lines = oneLine ? 1 : Math.ceil(total / base);
+    if (!oneLine && total % base === 1 && lines > 1) lines -= 1;
+    const out = [];
+    let at = 0;
+    for (let i = 0; i < lines; i++) {
+      const n = Math.floor(total / lines) + (i < total % lines ? 1 : 0);
+      out.push(bars.slice(at, at + n).join(" | ") + " |");
+      at += n;
+    }
+    return m[1] + out.join("\n") + "\n";
+  }
+  // MU 2.36.62: the engraving keeps its real size, so every notehead stays about 9px wide.
+  // It used to be squeezed to a fixed height, which shrank the heads to 4 to 6px and left only the stems.
   function renderStaff() {
     const host = $("staff");
     if (!host) return;
@@ -784,6 +805,8 @@
     let abc = Song.toAbc(state.song);
     const both = state.mode === "both" || document.body.classList.contains("tab-score");
     if (both || window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
+    const strip = window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+    host.classList.toggle("staff-strip", strip);
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
       nameLooseSvgs();
@@ -792,14 +815,19 @@
     try {
       const pane = host.closest("#notes-pane") || host.parentElement || host;
       const wide = Math.max(280, (pane.clientWidth || host.clientWidth || 640) - 12);
-      window.ABCJS.renderAbc(host, abc, {
-        responsive: "resize",
-        add_classes: true,
-        staffwidth: wide,
-        wrap: { minSpacing: 1.6, maxSpacing: 2.4, preferredMeasuresPerLine: wide < 420 ? 2 : 4 },
-        paddingleft: 8,
-        paddingright: 8,
-      });
+      if (strip) {
+        const flat = balanceAbc(abc, wide, true).replace(/^Q:.*\n/m, "");
+        const bars = Math.max(1, flat.split("|").length - 1);
+        window.ABCJS.renderAbc(host, flat, { add_classes: true, staffwidth: Math.max(wide, bars * 190 + 90), paddingleft: 8, paddingright: 8 });
+      } else {
+        window.ABCJS.renderAbc(host, balanceAbc(abc, wide), {
+          responsive: "resize",
+          add_classes: true,
+          staffwidth: wide,
+          paddingleft: 8,
+          paddingright: 8,
+        });
+      }
     } catch (err) {
       host.textContent = abc;
     }
@@ -807,33 +835,36 @@
     if (svg) {
       svg.setAttribute("role", "img");
       svg.setAttribute("aria-label", "Staff for this song");
-      svg.style.width = "100%";
-      svg.style.maxWidth = "none";
-      svg.removeAttribute("height");
       svg.addEventListener("pointerdown", placeNote);
-      if (state.mode === "both") {
-        const wrap = host.parentElement;
-        const desk = document.querySelector(".desk");
-        const cap = Math.max(120, Math.round((desk ? desk.clientHeight : window.innerHeight) * 0.4));
-        window.requestAnimationFrame(() => {
-          const box = svg.getBoundingClientRect();
-          if (box.height > 8) {
-            const h = Math.min(box.height, cap);
-            svg.style.height = h + "px";
-            svg.style.width = "100%";
-            if (wrap) {
-              wrap.style.height = h + "px";
-              wrap.style.maxHeight = cap + "px";
-              wrap.style.overflow = "hidden";
-            }
-          }
-        });
+      if (!strip) {
+        svg.style.width = "100%";
+        svg.style.maxWidth = "none";
+        svg.style.height = "auto";
+        svg.removeAttribute("height");
       }
     }
     nameLooseSvgs();
   }
 
-
+  // MU 2.36.62: the note that is playing lights up on the staff (it only did after you tapped a note, never during Play).
+  function paintStaffNow(step) {
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    if (!marks.length) return;
+    const evNow = step >= 0 ? Song.events(state.song)[step] : null;
+    marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
+  }
+  // Keep the lit note inside the staff panel. Only the panel scrolls, never the page.
+  function followNote(node) {
+    const wrap = node.closest && node.closest(".staff-wrap");
+    if (!wrap || !(wrap.scrollHeight > wrap.clientHeight + 2 || wrap.scrollWidth > wrap.clientWidth + 2)) return;
+    const a = node.getBoundingClientRect();
+    const r = wrap.getBoundingClientRect();
+    if (a.top < r.top + 4) wrap.scrollTop += a.top - r.top - 12;
+    else if (a.bottom > r.bottom - 4) wrap.scrollTop += a.bottom - r.bottom + 12;
+    if (a.left < r.left + 4) wrap.scrollLeft += a.left - r.left - 48;
+    else if (a.right > r.right - 4) wrap.scrollLeft += a.right - r.right + 48;
+  }
   function nameLooseSvgs() {
     document.querySelectorAll("svg[role='img']").forEach((svg) => {
       if (svg.getAttribute("aria-label") || svg.getAttribute("aria-labelledby")) return;
@@ -1487,6 +1518,7 @@
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     const evNow = evs[step];
     marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
     document.querySelectorAll(".cell").forEach((cell) => {
       cell.classList.toggle("now", Number(cell.dataset.step) === drum);
     });
@@ -1824,6 +1856,7 @@
         }
         if (hit.grid !== state.seenGrid) {
           state.seenGrid = hit.grid;
+          paintStaffNow(hit.event);
           hearDrop(hit.grid);
           advanceTurn();
           paintBeat(hit.grid);
@@ -1846,6 +1879,7 @@
   function stop() {
     silenceOwner();
     state.playing = false;
+    paintStaffNow(-1);
     resetDrop();
     document.body.classList.remove("playing");
     fitViz();

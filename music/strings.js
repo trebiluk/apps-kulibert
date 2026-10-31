@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61): laneFor and news23661 in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61, 2.36.62): laneFor, news23661 and news23662 in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -686,7 +686,8 @@
     news23659: "MU 2.36.59 — Happy Birthday plays just the tune.",
     news23660: "MU 2.36.60 — Your click comes back. A record click turns off.",
     laneFor: "{drum}: 16 steps",
-    news23661: "MU 2.36.61 — Tap has 8 big pads and one 16-step lane to build a beat."
+    news23661: "MU 2.36.61 — Tap has 8 big pads and one 16-step lane to build a beat.",
+    news23662: "MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -1027,7 +1028,8 @@
     news23659: "MU 2.36.59 — Happy Birthday is just the tune.",
     news23660: "MU 2.36.60 — Your click stays. Record click turns off.",
     laneFor: "{drum}: 16 steps. Tap a box.",
-    news23661: "MU 2.36.61 — Tap has 8 big pads. Tap a box to make a beat."
+    news23661: "MU 2.36.61 — Tap has 8 big pads. Tap a box to make a beat.",
+    news23662: "MU 2.36.62 — You can read every bottom button in the dark theme. Notes on the staff are bigger."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1713,7 +1715,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday грає лише мелодію.",
       "news23660": "MU 2.36.60 — Твій клік лишається. Клік запису вимикається.",
       "laneFor": "{drum}: 16 кроків",
-      "news23661": "MU 2.36.61 — У Tap 8 великих падів і одна доріжка з 16 кроків для біту."
+      "news23661": "MU 2.36.61 — У Tap 8 великих падів і одна доріжка з 16 кроків для біту.",
+      "news23662": "MU 2.36.62 — У темній темі видно слова на всіх нижніх кнопках, а ноти на нотному стані стали більшими."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2396,7 +2399,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday играет только мелодию.",
       "news23660": "MU 2.36.60 — Твой клик остаётся. Клик записи выключается.",
       "laneFor": "{drum}: 16 шагов",
-      "news23661": "MU 2.36.61 — В Tap 8 больших падов и одна дорожка из 16 шагов для бита."
+      "news23661": "MU 2.36.61 — В Tap 8 больших падов и одна дорожка из 16 шагов для бита.",
+      "news23662": "MU 2.36.62 — В тёмной теме видны слова на всех нижних кнопках, а ноты на нотном стане стали крупнее."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -3080,7 +3084,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday suena solo la melodía.",
       "news23660": "MU 2.36.60 — Tu clic se queda. El clic de grabar se apaga.",
       "laneFor": "{drum}: 16 pasos",
-      "news23661": "MU 2.36.61 — Tap tiene 8 pads grandes y una pista de 16 pasos para armar un ritmo."
+      "news23661": "MU 2.36.61 — Tap tiene 8 pads grandes y una pista de 16 pasos para armar un ritmo.",
+      "news23662": "MU 2.36.62 — En el tema oscuro se leen todos los botones de abajo, y las notas del pentagrama son más grandes."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3764,7 +3769,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday يعزف اللحن فقط.",
       "news23660": "MU 2.36.60 — نقرتك تبقى. نقرة التسجيل تنطفئ.",
       "laneFor": "{drum}: 16 خطوة",
-      "news23661": "MU 2.36.61 — في Tap ثمانية أزرار كبيرة ومسار من 16 خطوة لبناء إيقاع."
+      "news23661": "MU 2.36.61 — في Tap ثمانية أزرار كبيرة ومسار من 16 خطوة لبناء إيقاع.",
+      "news23662": "MU 2.36.62 — في الوضع الداكن تظهر كلمات كل الأزرار السفلية، وصارت النوتات على المدرج أكبر."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -4448,7 +4454,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday فقط آهنگ را می‌نوازد.",
       "news23660": "MU 2.36.60 — کلیک تو می‌ماند. کلیک ضبط خاموش می‌شود.",
       "laneFor": "{drum}: 16 گام",
-      "news23661": "MU 2.36.61 — در Tap هشت پد بزرگ و یک مسیر ۱۶ گامی برای ساختن ریتم است."
+      "news23661": "MU 2.36.61 — در Tap هشت پد بزرگ و یک مسیر ۱۶ گامی برای ساختن ریتم است.",
+      "news23662": "MU 2.36.62 — در حالت تاریک کلمات همهٔ دکمه‌های پایین دیده می‌شود و نت‌ها روی خطوط بزرگ‌تر شده‌اند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -5132,7 +5139,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday iririmba indirimbo gusa.",
       "news23660": "MU 2.36.60 — Kanda yawe iguma. Kanda yo kwandika irazimya.",
       "laneFor": "{drum}: intambwe 16",
-      "news23661": "MU 2.36.61 — Tap ifite utubuto 8 dunini n'umurongo w'intambwe 16 wo gukora injyana."
+      "news23661": "MU 2.36.61 — Tap ifite utubuto 8 dunini n'umurongo w'intambwe 16 wo gukora injyana.",
+      "news23662": "MU 2.36.62 — Mu buryo bwijimye, amagambo y'utubuto two hasi yose arigaragara, kandi inoti ku murongo ziraruta."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5816,7 +5824,8 @@
       "news23659": "MU 2.36.59 — Happy Birthday ዜማ ጥራይ ይጻውት።",
       "news23660": "MU 2.36.60 — ጠውታኻ ይቕጽል። ጠውታ ምዝገባ ይጠፍእ።",
       "laneFor": "{drum}: 16 ስጉምታት",
-      "news23661": "MU 2.36.61 — ኣብ Tap 8 ዓቢ ፓድ ከምኡውን ሓደ ናይ 16 ስጉምቲ መስመር ሪትም ንምስራሕ ኣለዉ።"
+      "news23661": "MU 2.36.61 — ኣብ Tap 8 ዓቢ ፓድ ከምኡውን ሓደ ናይ 16 ስጉምቲ መስመር ሪትም ንምስራሕ ኣለዉ።",
+      "news23662": "MU 2.36.62 — ኣብ ጸልማት ዓይነት ቃላት ኩሉ ናይ ታሕቲ ጠውቕታት ይርኣዩ፣ ኖታታት ኣብ መስመር ድማ ዓቢ እዮም።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

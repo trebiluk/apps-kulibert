@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.62** · 2026-10-30 · channel **draft PR**
+
+MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see.
+
+In kid words: in the dark theme the buttons along the bottom (New beat, Record, Perform, More) and the song name were dark letters on a dark bar, so they looked blank. They are light letters now. The piano keys show their letters, and Octave down and Octave up say so. On Score the notes keep their real size (they were squeezed to about 4 pixels), the note that is playing gets a ring, and the lines of music are balanced.
+
+## Earlier
+
 **Chip: MU 2.36.61** · 2026-10-30 · channel **draft PR**
 
 MU 2.36.61 — Tap has 8 big pads and one 16-step lane to build a beat.

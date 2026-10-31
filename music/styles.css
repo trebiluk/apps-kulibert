@@ -6149,3 +6149,78 @@ html body.mu237.tab-tap .tap-tiles { order: 6; }
   .tap-strip.is-narrow .lane-mark { width: 44px; }
   .tap-strip.is-narrow .lane-cell { width: 44px; height: 44px; }
 }
+
+/* MU 2.36.62 — bottom bar words you can read in the dark theme.
+   Root cause: MU 2.36.14 sets --text and --muted to dark steel ink (#111827, #1F2937) inside .transport "in both themes",
+   and the MU 2.36.9 steel skin forces #111827 on the bar buttons. The dark theme later paints the bar and its buttons dark,
+   so the song name, New beat, Bar/Beat, Tempo, Record, Perform and More came out dark on dark (contrast 1:1).
+   The words were in the page, with their strings; you could not see them. Fix: in the dark theme the bar uses the theme's own
+   text colours again (about 15:1 and 8:1). The light theme is not touched. */
+html[data-theme="dark"] body.mu237 .transport {
+  --text: #E6EEF2;
+  --muted: #9FB0C6;
+}
+html[data-theme="dark"] body.mu237 .transport,
+html[data-theme="dark"] body.mu237 .transport .btn,
+html[data-theme="dark"] body.mu237 .transport .btn .ctl-word,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy bdi,
+html[data-theme="dark"] body.mu237 .transport .tempo,
+html[data-theme="dark"] body.mu237 .transport .tempo > span,
+html[data-theme="dark"] body.mu237 .whose { color: var(--text) !important; text-shadow: none !important; }
+html[data-theme="dark"] body.mu237 .transport #play-pos,
+html[data-theme="dark"] body.mu237 .transport .songbar-copy span { color: var(--muted) !important; }
+/* Icon + word on every bar button (the glyph is decoration; the word names the button). */
+body.mu237 #song-cover::before { content: "\266A" / ""; margin-inline-end: 4px; }
+body.mu237 #new-beat::before { content: "+" / ""; margin-inline-end: 4px; font-weight: 800; }
+body.mu237 #piano-dock-toggle::before { content: "\266B" / ""; margin-inline-end: 4px; }
+body.mu237 #dock-oct-down::before { content: "\2212" / ""; margin-inline-end: 4px; font-weight: 800; }
+body.mu237 #dock-oct-up::before { content: "+" / ""; margin-inline-end: 4px; font-weight: 800; }
+
+/* Piano dock: Piano and Octave share one row, so the keys are 119px tall and the key letters fit above the player bar.
+   Before, the keys were 120px under two 44px rows in a 176px dock, so the bottom of each white key (where its letter is) was cut off. */
+body.mu237 .piano-dock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 44px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 4px;
+  align-items: center;
+}
+body.mu237 #piano-dock-toggle { grid-column: 1; grid-row: 1; align-self: stretch; flex: none; }
+body.mu237 #dock-oct { grid-column: 2; grid-row: 1; display: flex !important; align-items: center; gap: 8px; min-width: 0; }
+body.mu237 #dock-oct .btn { flex: 1 1 0; min-width: 0; height: 44px; padding: 2px 8px; font-size: 14px; line-height: 1.1; white-space: normal; display: inline-flex; align-items: center; justify-content: center; text-align: center; }
+body.mu237 #dock-oct #dock-oct-read { flex: 0 0 auto; min-width: 32px; text-align: center; }
+body.mu237 #dock-keys { grid-column: 1 / -1; grid-row: 2; height: 100% !important; min-height: 0 !important; align-self: stretch; }
+body.mu237:not(.piano-dock-open) .piano-dock { grid-template-rows: 44px; }
+
+/* Score staff: real size, so noteheads are about 9px wide (they were 4 to 6px). The panel scrolls instead of shrinking the staff. */
+body.mu237.tab-score .staff-wrap,
+body.mu237.tab-score.is-both .staff-wrap {
+  max-height: 44vh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+body.mu237 #staff svg { height: auto; }
+/* Sideways phone: one line that scrolls sideways, at real size. */
+body.mu237.tab-score .staff-wrap:has(#staff.staff-strip) { overflow-x: auto !important; overflow-y: hidden !important; max-height: none !important; min-height: 0 !important; }
+body.mu237 #staff.staff-strip svg { width: auto !important; max-width: none !important; height: auto; }
+/* Lit note while it plays: the head stays filled black (16:1 on the paper) and gets a thick ring, so it is not shown by colour alone. */
+#staff .abcjs-note.now path,
+#staff .abcjs-rest.now path { stroke: #0E7490; stroke-width: 7px; paint-order: stroke; stroke-linejoin: round; }
+#staff .abcjs-note.now path[data-name="stem"],
+#staff .abcjs-note.now path[data-name="ledger"] { stroke-width: 1px; }
+.abcjs-note.now, .abcjs-rest.now { outline: 0; }
+@media (forced-colors: active) {
+  #staff .abcjs-note.now path, #staff .abcjs-rest.now path { stroke: Highlight; }
+}
+/* Same cause as the bar: in the dark theme the Score beat-row names were dark on dark. */
+html[data-theme="dark"] body.mu237.tab-score .drum-row b,
+html[data-theme="dark"] body.mu237.tab-score .bar-label { color: var(--text) !important; }
+
+/* Sideways phone, Score: the empty picture strip shrinks to one thin row so the one-line staff (real size) fits above the note letters. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body.mu237.tab-score:not(.show):not(.stage-on) .out { height: 30px !important; max-height: 30px !important; min-height: 0 !important; overflow: hidden !important; }
+  html body.mu237.tab-score .staff-wrap:has(#staff.staff-strip) { height: auto !important; min-height: 0 !important; max-height: none !important; padding-block: 2px !important; }
+}
