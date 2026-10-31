@@ -273,5 +273,7 @@ export function createHolo(opts) {
     update,
     announce,
     info: () => ({ visible, side, key: shownKey || '', state: root.dataset.state, room: root.dataset.room === '1', rect: spot ? { ...spot } : null, tris: 0 }),
+    // Part 2: where the beam starts. The centre of the hologram, or null while it is hidden.
+    origin: () => (visible && spot ? { x: spot.x + spot.s / 2, y: spot.y + spot.s / 2 } : null),
   }
 }

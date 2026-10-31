@@ -4,7 +4,7 @@ import '@babylonjs/core/Rendering/edgesRenderer' // side effect: enables mesh.en
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
 const VERSION = PKG_VERSION
 import { Engine } from 'noa-engine'
-import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
+import { CreateLines, CreateDashedLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
 import { CreateGround } from '@babylonjs/core/Meshes/Builders/groundBuilder'
@@ -144,6 +144,22 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.565 what's new: Holo Hand parts 1 and 2. rw, ti, and fa-AF are machine drafts.
+const WN565 = {
+  en: { whatsNewBody: '2.5.565 — Your hand is now a small amber hologram of what you hold. A thin beam points at what you mine, place or open. Settings > Controls: Main hand Left or Right, and H hides the hologram.' },
+  simple: { whatsNewBody: '2.5.565 — Your hand is a small amber picture of what you hold. A thin line points at what you dig, put or open. Settings > Controls: Left or Right hand. H hides it.' },
+  uk: { whatsNewBody: '2.5.565 — Рука тепер — маленька бурштинова голограма того, що тримаєш. Тонкий промінь показує, що копаєш, ставиш або відкриваєш. Налаштування > Керування: ліва чи права рука, H ховає голограму.' },
+  ru: { whatsNewBody: '2.5.565 — Рука теперь — маленькая янтарная голограмма того, что держишь. Тонкий луч показывает, что копаешь, ставишь или открываешь. Настройки > Управление: левая или правая рука, H прячет голограмму.' },
+  es: { whatsNewBody: '2.5.565 — Tu mano ahora es un pequeño holograma ámbar de lo que llevas. Un rayo fino señala lo que picas, pones o abres. Ajustes > Controles: mano izquierda o derecha, y H oculta el holograma.' },
+  ar: { whatsNewBody: '2.5.565 — يدك الآن صورة مجسّمة كهرمانية صغيرة لما تحمله. شعاع رفيع يشير إلى ما تعدّنه أو تضعه أو تفتحه. الإعدادات > التحكم: اليد اليسرى أو اليمنى، و H يخفي الصورة.' },
+  'fa-AF': { whatsNewBody: '2.5.565 — دست تو حالا یک هولوگرام کهربایی کوچک از چیزی است که در دست داری. یک پرتو نازک به چیزی که می‌کنی، می‌گذاری یا باز می‌کنی اشاره می‌کند. تنظیمات > کنترول‌ها: دست چپ یا راست، و H هولوگرام را پنهان می‌کند.' },
+  rw: { whatsNewBody: '2.5.565 — Ukuboko kwawe ubu ni ishusho nto y\'umuhondo w\'icyo ufashe. Umurongo muto werekana icyo ucukura, ushyiraho cyangwa ufungura. Igenamiterere > Igenzura: ukuboko kw\'ibumoso cyangwa iburyo, H ihisha ishusho.' },
+  ti: { whatsNewBody: '2.5.565 — ኢድካ ሕጂ ንእሽቶ ሆሎግራም ኣምበር ናይቲ ዝሓዝካዮ እዩ። ቀጢን ጩራ ናብቲ እትኹዕቶ፡ እተቐምጦ ወይ እትኸፍቶ የመልክት። ቅጥዒ > መቆጻጸሪ: ጸጋማይ ወይ የማናይ ኢድ፡ H ነቲ ሆሎግራም ይሓብእ።' },
+}
+for (const [lang, row] of Object.entries(WN565)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
@@ -243,6 +259,7 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
 CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
 import { wildBushLoot } from './drops.js'
 import { createHolo } from './holo.js' // Holo Hand part 1: replaces the first-person hand (hands.js is no longer mounted)
+import { createHoloBeam } from './holo-beam.js' // Holo Hand part 2: beam and state words
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
@@ -3448,7 +3465,13 @@ function syncGlasses() {
 }
 let hands = null
 let holo = null
-function pokeHand(kind) { if (hands) hands.swing(kind) }
+let holoBeam = null
+function pokeHand(kind, x, y, z) {
+  if (hands) hands.swing(kind)
+  // Holo Hand part 2: a placed block settles 96% -> 100%; a broken block fades and drops. No flash either way.
+  if (kind === 'place') startSettle()
+  else if (kind === 'break' && x != null) startBreakFx(x, y, z)
+}
 function breakAt(x, y, z, hold) {
   if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
   const id = getVoxel(x, y, z)
@@ -3515,7 +3538,7 @@ function breakAt(x, y, z, hold) {
     const cargo = belts.remove(x, y, z)
     if (cargo && session && session.give) session.give(cargo, 1)
   }
-  if (gone) pokeHand('break')
+  if (gone) pokeHand('break', x, y, z)
   return gone
 }
 function wildWheatCell(x, y, z) {
@@ -3674,6 +3697,7 @@ function placeBlock(face, opts) {
     x = spot.x
     y = spot.y
     z = spot.z
+    lastPlacedCell = [x, y, z] // Holo Hand part 2: the settle body sits here if the place goes through
     if (!tableMode) {
       if (!canReach([x, y, z])) { sayFar(); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
@@ -9610,13 +9634,8 @@ function showCrack(p, x, y, early) {
   else ring.style.background = 'conic-gradient(#14B8A6 ' + shown + 'turn, transparent 0)'
 }
 function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true; showCrack.stage = 0 }
-function puff() {
-  const el = $('poof')
-  if (!el || REDUCE) return
-  el.hidden = false
-  clearTimeout(puff.t)
-  puff.t = setTimeout(() => { el.hidden = true }, 180)
-}
+// Holo Hand part 2: no screen flash on break. The old #poof radial flash is gone; breakAt starts a fade-and-drop ghost instead.
+function puff() {}
 function heldTool() { return session && session.toolTier ? session.toolTier() : 'hand' }
 const toolTold = {}
 function clampGate(dig, now) {
@@ -11675,6 +11694,12 @@ tealMat.specularColor = new Color3(0, 0, 0)
 tealMat.alpha = 0.25
 tealMat.transparencyMode = 2
 tealMat.backFaceCulling = false
+// Holo Hand part 2: the ghost outline is dashed (edges renderer cannot dash), muted amber when it fits.
+const ghostDash = CreateDashedLines('place-ghost-dash', { points: wandBoxPoints(), dashNb: 48, dashSize: 3, gapSize: 2 }, scene)
+ghostDash.color = new Color3(0.79, 0.54, 0.24)
+ghostDash.isPickable = false
+ghostDash.setEnabled(false)
+noa.rendering.addMeshToScene(ghostDash)
 const placeGhostSide = CreateBox('place-ghost-side', { size: 0.98 }, scene)
 placeGhostSide.material = ghostMat
 placeGhostSide.isPickable = false
@@ -11753,7 +11778,16 @@ function seedHeld() {
   if (!survivalOn() || !session || !session.selectedItem) return false
   return (session.selectedItem() || '') === 'wheatSeeds'
 }
+function syncGhostDash(on, red) {
+  if (!ghostDash) return
+  if (!on) { if (ghostDash.isEnabled()) ghostDash.setEnabled(false); return }
+  if (red) ghostDash.color.set(0.9, 0.15, 0.15); else ghostDash.color.set(0.79, 0.54, 0.24)
+  ghostDash.position.copyFrom(placeGhost.position)
+  ghostDash.scaling.copyFrom(placeGhost.scaling)
+  if (!ghostDash.isEnabled()) ghostDash.setEnabled(true)
+}
 function hideGhosts() {
+  syncGhostDash(false)
   if (placeGhost) placeGhost.setEnabled(false)
   if (placeGhostSide) placeGhostSide.setEnabled(false)
 }
@@ -11870,12 +11904,133 @@ function syncPlaceGhost() {
   const lp = noa.globalToLocal([spot.x + 0.5, spot.y + gy, spot.z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
+  syncGhostDash(true, amber)
   if (side) {
     const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + gy, side.sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)
   } else placeGhostSide.setEnabled(false)
 }
+// Holo Hand part 2. What the beam and the crosshair word should show this frame.
+// kind: 'mine' (holding dig on a block), 'place' (a ghost is shown), 'use' (aiming at a usable block in reach), 'far' (a block past reach), or ''.
+const HOLO_WORD = { }
+function aimScreen(x, y, z) { return cropScreen(x, y, z) } // centre-top of the cell on screen, or null
+function holoState() {
+  if (!holo || !holo.origin()) return null
+  if (tableMode || anyCard()) return null
+  const tgt = noa.targetedBlock
+  let kind = ''
+  let label = ''
+  let end = null
+  const touchPt = look && look.pt === 'touch' && dig && dig.kind === 'touch' ? [look.x, look.y] : null
+  if (dig && !dig.broke && dig.p > 0 && !dig.draining && (dig.kind === 'mouse' || dig.kind === 'touch')) {
+    kind = 'mine'
+    label = t('holoMining').replace('{n}', String(Math.min(99, Math.floor(dig.p * 100))))
+    end = touchPt || aimScreen(dig.x, dig.y - 0.65, dig.z)
+  } else if (ghostCell() && placeGhost.isEnabled()) {
+    kind = 'place'
+    label = t('holoPlace')
+    const lp = placeGhost.position
+    const gp = noa.localToGlobal ? noa.localToGlobal([lp.x, lp.y, lp.z], [0, 0, 0]) : null
+    end = gp ? aimScreen(gp[0] - 0.5, gp[1] - 1.15, gp[2] - 0.5) : null
+  } else if (tgt && isUseBlock(tgt.blockID || 0) && canReach(tgt.position)) {
+    kind = 'use'
+    label = t('holoOpen')
+    end = aimScreen(tgt.position[0], tgt.position[1] - 0.65, tgt.position[2])
+  } else if (!tgt && farBlockAhead()) {
+    kind = 'far'
+    label = t('holoTooFar')
+  }
+  if (!end && kind !== 'far' && kind) end = [innerWidth / 2, innerHeight / 2]
+  return { kind, label, end }
+}
+// A block in the look direction between reach and 12 blocks: the crosshair says "Too far" and no beam shows.
+let farAt = 0
+let farHit = false
+function farBlockAhead() {
+  const now = performance.now()
+  if (now - farAt < 120) return farHit
+  farAt = now
+  farHit = false
+  try {
+    const hit = noa.pick(null, null, 12, (id) => id !== 0 && id !== WATER)
+    farHit = !!hit
+  } catch (e) { farHit = false }
+  return farHit
+}
+// Break: the block is already gone from the world; a copy of its cell fades and drops over 220 ms. One mesh, reused.
+let breakFx = null
+let breakFxAt = 0
+const breakLocal = [0, 0, 0]
+function startBreakFx(x, y, z) {
+  if (REDUCE) return // reduced motion: no settle, no fade; the block simply goes
+  if (!breakFx) {
+    breakFx = CreateBox('holo-break-fx', { size: 0.96 }, scene)
+    const m = new StandardMaterial('holo-break-fx-m', scene)
+    m.diffuseColor = new Color3(0.62, 0.55, 0.45)
+    m.emissiveColor = new Color3(0.22, 0.18, 0.12)
+    m.specularColor = new Color3(0, 0, 0)
+    m.alpha = 0.55
+    m.transparencyMode = 2
+    m.backFaceCulling = false
+    breakFx.material = m
+    breakFx.isPickable = false
+    breakFx.setEnabled(false)
+    noa.rendering.addMeshToScene(breakFx, false)
+  }
+  breakFx.__cell = [x, y, z]
+  breakFxAt = performance.now()
+  breakFx.setEnabled(true)
+}
+function tickBreakFx() {
+  if (!breakFx || !breakFx.isEnabled()) return
+  const u = (performance.now() - breakFxAt) / 220
+  if (u >= 1) { breakFx.setEnabled(false); return }
+  const cell = breakFx.__cell
+  const lp = noa.globalToLocal([cell[0] + 0.5, cell[1] + 0.5 - u * 0.45, cell[2] + 0.5], null, breakLocal)
+  breakFx.position.set(lp[0], lp[1], lp[2])
+  const k = 1 - u * 0.5
+  breakFx.scaling.set(k, k, k)
+  breakFx.material.alpha = 0.55 * (1 - u)
+}
+// Place: the ghost settles from 96% to 100% over 120 ms (nothing under reduced motion).
+// A voxel cannot be scaled, so a solid amber-tinted box sits over the new block for 120 ms and grows 96% -> 100%.
+let settleFx = null
+let settleAt = 0
+let settleCell = null
+function startSettle() {
+  if (REDUCE) return
+  const spot = lastPlacedCell
+  if (!spot) return
+  if (!settleFx) {
+    settleFx = CreateBox('holo-settle-fx', { size: 1.0 }, scene)
+    const m = new StandardMaterial('holo-settle-fx-m', scene)
+    m.diffuseColor = new Color3(0.79, 0.54, 0.24)
+    m.emissiveColor = new Color3(0.2, 0.14, 0.06)
+    m.specularColor = new Color3(0, 0, 0)
+    m.alpha = 0.35
+    m.transparencyMode = 2
+    m.backFaceCulling = false
+    settleFx.material = m
+    settleFx.isPickable = false
+    settleFx.setEnabled(false)
+    noa.rendering.addMeshToScene(settleFx, false)
+  }
+  settleCell = spot
+  settleAt = performance.now()
+  settleFx.setEnabled(true)
+}
+function tickSettleFx() {
+  if (!settleFx || !settleFx.isEnabled()) return
+  const u = (performance.now() - settleAt) / 120
+  if (u >= 1) { settleFx.setEnabled(false); return }
+  const lp = noa.globalToLocal([settleCell[0] + 0.5, settleCell[1] + 0.5, settleCell[2] + 0.5], null, breakLocal)
+  settleFx.position.set(lp[0], lp[1], lp[2])
+  const k = 0.96 + 0.04 * u
+  settleFx.scaling.set(k, k, k)
+  settleFx.material.alpha = 0.35 * (1 - u)
+}
+let lastPlacedCell = null
 function paintOutline() {
   const tgt = noa.targetedBlock
   const pos = tgt ? tgt.position : (tableMode ? tableCursor : null)
@@ -11964,6 +12119,7 @@ function poseBerty(dt) {
   heldMat.emissiveColor.set(c[0] * 0.45, c[1] * 0.45, c[2] * 0.45)
 }
 // Holo Hand part 1: a flat amber hologram of the held item replaces the first-person hand. Same show / hide rules as before.
+holoBeam = createHoloBeam({ origin: () => (holo ? holo.origin() : null) })
 holo = createHolo({
   held: fillHeld,
   wandMode: () => wandMode,
@@ -12176,6 +12332,9 @@ noa.on('beforeRender', (dt) => {
   underwaterTick()
   if (hands) hands.update(dt || 16)
   if (holo) holo.update()
+  if (holoBeam) holoBeam.update(holoState())
+  tickBreakFx()
+  tickSettleFx()
   poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
@@ -12588,6 +12747,16 @@ if (!__BLOX_STUDENT__) {
     hand() {
       if (holo) return { show: showHand, side: mainHand, ...holo.info() } // Holo Hand part 1
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
+    },
+    holo2() { // Holo Hand part 2 test hook
+      const beam = holoBeam ? holoBeam.info() : null
+      let brightest = 0
+      try {
+        const c = document.getElementById('holo-beam')
+        const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
+        for (let i = 0; i < d.length; i += 4) if (d[i + 3]) brightest = Math.max(brightest, d[i], d[i + 1], d[i + 2])
+      } catch (e) {}
+      return { beam: beam ? { ...beam, brightest } : null, ghostDash: !!(ghostDash && ghostDash.isEnabled()), settle: !!(settleFx && settleFx.isEnabled()), breakFx: !!(breakFx && breakFx.isEnabled()), state: holoState() }
     },
     handSwing(kind) { pokeHand(kind) },
     lookHand(patch) {

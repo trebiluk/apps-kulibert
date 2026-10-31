@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.565 Holo Hand parts 1 and 2. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.565', date: '2026-10-31', lines: {
+    en: ['2.5.565 — Your hand is now a small amber hologram of what you hold. A thin beam points at what you mine, place or open. Settings > Controls: Main hand Left or Right, and H hides the hologram.'],
+    simple: ['2.5.565 — Your hand is a small amber picture of what you hold. A thin line points at what you dig, put or open. Settings > Controls: Left or Right hand. H hides it.'],
+    uk: ['2.5.565 — Рука тепер — маленька бурштинова голограма того, що тримаєш. Тонкий промінь показує, що копаєш, ставиш або відкриваєш. Налаштування > Керування: ліва чи права рука, H ховає голограму.'],
+    ru: ['2.5.565 — Рука теперь — маленькая янтарная голограмма того, что держишь. Тонкий луч показывает, что копаешь, ставишь или открываешь. Настройки > Управление: левая или правая рука, H прячет голограмму.'],
+    es: ['2.5.565 — Tu mano ahora es un pequeño holograma ámbar de lo que llevas. Un rayo fino señala lo que picas, pones o abres. Ajustes > Controles: mano izquierda o derecha, y H oculta el holograma.'],
+    ar: ['2.5.565 — يدك الآن صورة مجسّمة كهرمانية صغيرة لما تحمله. شعاع رفيع يشير إلى ما تعدّنه أو تضعه أو تفتحه. الإعدادات > التحكم: اليد اليسرى أو اليمنى، و H يخفي الصورة.'],
+    'fa-AF': ['2.5.565 — دست تو حالا یک هولوگرام کهربایی کوچک از چیزی است که در دست داری. یک پرتو نازک به چیزی که می‌کنی، می‌گذاری یا باز می‌کنی اشاره می‌کند. تنظیمات > کنترول‌ها: دست چپ یا راست، و H هولوگرام را پنهان می‌کند.'],
+    rw: ['2.5.565 — Ukuboko kwawe ubu ni ishusho nto y\'umuhondo w\'icyo ufashe. Umurongo muto werekana icyo ucukura, ushyiraho cyangwa ufungura. Igenamiterere > Igenzura: ukuboko kw\'ibumoso cyangwa iburyo, H ihisha ishusho.'],
+    ti: ['2.5.565 — ኢድካ ሕጂ ንእሽቶ ሆሎግራም ኣምበር ናይቲ ዝሓዝካዮ እዩ። ቀጢን ጩራ ናብቲ እትኹዕቶ፡ እተቐምጦ ወይ እትኸፍቶ የመልክት። ቅጥዒ > መቆጻጸሪ: ጸጋማይ ወይ የማናይ ኢድ፡ H ነቲ ሆሎግራም ይሓብእ።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
