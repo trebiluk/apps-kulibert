@@ -4228,6 +4228,14 @@
   if (themeBtn) themeBtn.addEventListener("click", () => {
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
   });
+  if ($("teacher-toggle")) {
+    $("teacher-toggle").addEventListener("click", () => {
+      const box = $("teacher-box");
+      if (!box) return;
+      box.hidden = !box.hidden;
+      $("teacher-toggle").setAttribute("aria-expanded", box.hidden ? "false" : "true");
+    });
+  }
   if ($("menu-help")) {
     // MU 2.36.67: How to use it and What's new sit behind Help, so the menu opens on a short list.
     $("menu-help").addEventListener("click", () => {

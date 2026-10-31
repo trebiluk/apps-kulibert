@@ -6693,3 +6693,5 @@ body.mu237.tab-score #staff.staff-strip {
 .help-box[hidden], .teacher-box[hidden] { display: none !important; }
 body.mu237 #make-beat { font-size: clamp(1.4rem, 3vw, 2.2rem) !important; }
 body.mu237 #make-beat .mb-ico { width: 1.2em; height: 1.2em; }
+/* MU 2.36.67: swipe hints are for touch screens only; a mouse and keyboard never see them. */
+@media not (pointer: coarse) { .touch-only { display: none !important; } }
