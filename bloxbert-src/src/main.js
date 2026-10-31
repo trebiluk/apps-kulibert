@@ -91,9 +91,11 @@ for (const [lang, row] of Object.entries(WN547)) {
 }
 // Daily Board card (2.5.547). Mount only: all logic lives in daily/card.js.
 // Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
+// Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
 // Nothing writes that key yet. A missing or bad value falls back to the defaults.
 function dailyOverride() {
   try {
+    if (!teacherOn()) return undefined
     const raw = localStorage.getItem('bloxbert-daily-board')
     return raw ? JSON.parse(raw) : undefined
   } catch (e) { return undefined }
