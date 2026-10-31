@@ -6,6 +6,22 @@
 //
 // Memory only: when the room object is evicted the log is gone. Making it durable (so a
 // rollback survives a restart) stores student-adjacent data and needs Diego's yes first.
+//
+// P4 (Diego, 0068): the DURABLE build history is the world's ops table, one row per applied
+// edit {s, w, x, y, z, b (before), i (after), t}. w is h32(actor ref), a one-way hash, never
+// the ref or an alias. Rows older than HISTORY_MS are purged by the World alarm. Rollback from
+// it is NOT wired (P5). The memory log above stays as the room-local tool it was.
+
+export const HISTORY_MS = 7 * 24 * 60 * 60 * 1000
+
+// Durable history over a world db (memdb/sqldb). rows(since) = the kept edits after seq `since`.
+export function makeHistory(db) {
+  return {
+    rows: (since = 0, limit = 1000) => db.opsSince(since, limit),
+    // Drops rows older than HISTORY_MS at nowMs. Returns how many went.
+    purge: (nowMs, keepMs = HISTORY_MS) => db.purgeOps(nowMs - keepMs),
+  }
+}
 
 export const MAX_ENTRIES = 5000
 
