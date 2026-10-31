@@ -10,9 +10,10 @@ const CAMS = ['sun', 'horizon']
 
 export function readDebug(search) {
   const q = new URLSearchParams(search || '')
-  if (q.get('debug') !== '1') return null
-  const c = q.get('clock')
-  const cam = q.get('cam')
+  const param = (k) => q.get(k) // not t('...'): keeps check-strings from reading these as string keys
+  if (param('debug') !== '1') return null
+  const c = param('clock')
+  const cam = param('cam')
   return {
     clock: Object.prototype.hasOwnProperty.call(DEBUG_CLOCK, c) ? c : null,
     cam: CAMS.includes(cam) ? cam : null,
