@@ -6746,6 +6746,9 @@ body.mu237.tab-score #staff.staff-strip {
 @media (orientation: landscape) and (max-height: 420px) {
   html.kb-framed body.mu237.tab-score .mu-chip { top: 14px; }
 }
+/* Beat-cell songs (the default song) have the same five length buttons on a sideways phone 880 px wide and up; app.js shows or hides the row for them
+   (paintLen), so no display rule is needed here. Their keys (1 to 4, dot) belong to real-length songs, so no key hints. */
+#len.len-beats kbd { display: none; }
 /* the length row is not used by beat-cell songs. Its own hidden rule lost to the flex rule on specificity, so an empty 2px bar and its margins stayed on screen. */
 body.mu237 #len[hidden] { display: none !important; }
 

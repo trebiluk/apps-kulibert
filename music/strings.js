@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, every dr* key (Score tools drawer words, drWherePickup), pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, every dr* key (Score tools drawer words, drWherePickup), lenPickNote, lenNoDot, lenBeatsDone, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -90,6 +90,9 @@
     drRemixHint: "A remix keeps the picture and clears the reasons. A file can move to another computer.",
     drRemixThis: "Remix this",
     drOpenFile: "Open a song file",
+    lenPickNote: "Pick a note first, then a length.",
+    lenNoDot: "A dot works on a held note here. Songs with real note lengths can dot any note.",
+    lenBeatsDone: "Length: {len}.",
     /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
     pickupWord: "Pickup",
     playPosPickup: "Pickup · Beat {beat}",
@@ -875,6 +878,9 @@
     drRemixHint: "A remix keeps the picture. It clears the reasons. A file can go to another computer.",
     drRemixThis: "Remix this",
     drOpenFile: "Open a song file",
+    lenPickNote: "Pick a note first. Then pick a length.",
+    lenNoDot: "A dot works on a long note here. Real-length songs can dot any note.",
+    lenBeatsDone: "Length: {len}.",
     /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
     pickupWord: "Pickup",
     playPosPickup: "Pickup · Beat {beat}",
@@ -1323,6 +1329,9 @@
       "drRemixHint": "Ремікс зберігає картинку й стирає причини. Файл можна перенести на інший комп’ютер.",
       "drRemixThis": "Зробити ремікс",
       "drOpenFile": "Відкрити файл пісні",
+      "lenPickNote": "Спочатку обери ноту, потім тривалість.",
+      "lenNoDot": "Тут крапка працює на витриманій ноті. У піснях зі справжньою тривалістю нот її можна додати до будь-якої ноти.",
+      "lenBeatsDone": "Тривалість: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Затакт",
       "playPosPickup": "Затакт · Доля {beat}",
@@ -2109,6 +2118,9 @@
       "drRemixHint": "Ремикс сохраняет картинку и стирает причины. Файл можно перенести на другой компьютер.",
       "drRemixThis": "Сделать ремикс",
       "drOpenFile": "Открыть файл песни",
+      "lenPickNote": "Сначала выбери ноту, потом длительность.",
+      "lenNoDot": "Здесь точка работает на выдержанной ноте. В песнях с настоящей длительностью нот её можно добавить к любой ноте.",
+      "lenBeatsDone": "Длительность: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Затакт",
       "playPosPickup": "Затакт · Доля {beat}",
@@ -2895,6 +2907,9 @@
       "drRemixHint": "Un remix guarda la imagen y borra las razones. Un archivo puede pasar a otro ordenador.",
       "drRemixThis": "Hacer un remix",
       "drOpenFile": "Abrir un archivo de canción",
+      "lenPickNote": "Elige primero una nota y luego una duración.",
+      "lenNoDot": "Aquí el puntillo funciona en una nota sostenida. En canciones con duraciones reales se puede poner a cualquier nota.",
+      "lenBeatsDone": "Duración: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Anacrusa",
       "playPosPickup": "Anacrusa · Tiempo {beat}",
@@ -3682,6 +3697,9 @@
       "drRemixHint": "الريمكس يحتفظ بالصورة ويمسح الأسباب. يمكن نقل الملف إلى حاسوب آخر.",
       "drRemixThis": "اصنع ريمكس",
       "drOpenFile": "افتح ملف أغنية",
+      "lenPickNote": "اختر نوتة أولًا ثم مدة.",
+      "lenNoDot": "هنا تعمل النقطة على نوتة ممتدة. في الأغاني ذات المدد الحقيقية يمكن إضافتها إلى أي نوتة.",
+      "lenBeatsDone": "المدة: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "مازورة تمهيدية",
       "playPosPickup": "مازورة تمهيدية · نبضة {beat}",
@@ -4469,6 +4487,9 @@
       "drRemixHint": "ریمیکس تصویر را نگه می‌دارد و دلیل‌ها را پاک می‌کند. فایل را می‌توان به کمپیوتر دیگر برد.",
       "drRemixThis": "ریمیکس بساز",
       "drOpenFile": "یک فایل آهنگ باز کن",
+      "lenPickNote": "اول یک نُت را انتخاب کن، بعد یک طول.",
+      "lenNoDot": "اینجا نقطه روی نُتی که کشیده شده کار می‌کند. در آهنگ‌هایی که طول واقعی نُت‌ها را دارند می‌توان آن را به هر نُت افزود.",
+      "lenBeatsDone": "طول: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "میزان آغازین",
       "playPosPickup": "میزان آغازین · ضرب {beat}",
@@ -5256,6 +5277,9 @@
       "drRemixHint": "Remix ibika ishusho ikasiba impamvu. Dosiye ishobora kujya kuri indi mudasobwa.",
       "drRemixThis": "Kora remix",
       "drOpenFile": "Fungura dosiye y'indirimbo",
+      "lenPickNote": "Banza uhitemo inota, hanyuma uburebure.",
+      "lenNoDot": "Hano akadomo gakora ku nota yaramye. Ku ndirimbo zifite uburebure nyakuri bw'inota ushobora kugashyira ku nota iyo ari yo yose.",
+      "lenBeatsDone": "Uburebure: {len}.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Intangiriro",
       "playPosPickup": "Intangiriro · Beat {beat}",
@@ -6043,6 +6067,9 @@
       "drRemixHint": "ሪሚክስ ነቲ ስእሊ የቐምጦ፡ ነቲ ምኽንያት ድማ የጽርዮ። ፋይል ናብ ካልእ ኮምፒተር ክስጋር ይኽእል።",
       "drRemixThis": "ሪሚክስ ግበር",
       "drOpenFile": "ፋይል ደርፊ ክፈት",
+      "lenPickNote": "ቀዳምነት ኖታ ምረጽ፣ ድሕሪኡ ንውሓት።",
+      "lenNoDot": "ኣብዚ ነጥቢ ኣብ ዝተሰሓበ ኖታ ይሰርሕ። ኣብ ሓቀኛ ንውሓት ኖታ ዘለወን ደርፍታት ኣብ ዝኾነ ኖታ ክውሰኽ ይኽእል።",
+      "lenBeatsDone": "ንውሓት: {len}።",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "መእተዊ",
       "playPosPickup": "መእተዊ · ምት {beat}",
