@@ -1,5 +1,7 @@
 // Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
+// Per-kid (alias) cap: 32 piles. Excess oldest piles for that alias go to Lost & Found with "ground full".
 export const DROP_CAP = 256
+export const ALIAS_CAP = 32
 export function lostWhyKey(why) {
   if (why === 'bag') return 'lostWhyBag'
   if (why === 'aside') return 'lostWhyAside'
@@ -29,20 +31,47 @@ export function nearEnough(a, b, r) {
   return dx * dx + dy * dy + dz * dz <= r * r
 }
 
+function countAlias(drops, alias) {
+  if (!alias) return 0
+  return drops.filter(d => d.alias === alias).length
+}
+
+function enforceAliasCap(drops, lost, alias) {
+  if (!alias) return
+  const mine = drops.filter(d => d.alias === alias)
+  if (mine.length <= ALIAS_CAP) return
+  // sort by id (oldest first, since seq increases)
+  mine.sort((a, b) => (a.id || 0) - (b.id || 0))
+  const excess = mine.length - ALIAS_CAP
+  for (let i = 0; i < excess; i++) {
+    const old = mine[i]
+    const idx = drops.indexOf(old)
+    if (idx >= 0) {
+      drops.splice(idx, 1)
+      const pile = lost.find(d => d.item === old.item && d.why === 'ground')
+      if (pile) pile.n += old.n
+      else lost.push({ item: old.item, n: old.n, why: 'ground', alias: old.alias })
+    }
+  }
+}
+
 export function mergeOrAdd(drops, lost, drop) {
   const n = drop.n | 0
   if (!drop.item || n <= 0) return 'skip'
-  const near = drops.find((d) => d.item === drop.item && nearEnough(d, drop, MERGE_R))
+  const alias = drop.alias || ''
+  const near = drops.find((d) => d.item === drop.item && nearEnough(d, drop, MERGE_R) && (!alias || d.alias === alias))
   if (near) { near.n += n; return 'merged' }
   if (drops.length >= DROP_CAP) {
     const pile = lost.find((d) => d.item === drop.item)
     if (pile) {
       pile.n += n
       if (!pile.why) pile.why = drop.why || 'ground'
-    } else lost.push({ item: drop.item, n, why: drop.why || 'ground' })
+    } else lost.push({ item: drop.item, n, why: drop.why || 'ground', alias })
     return 'lost'
   }
-  drops.push({ id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0 })
+  const newDrop = { id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0, alias, why: drop.why }
+  drops.push(newDrop)
+  enforceAliasCap(drops, lost, alias)
   return 'ground'
 }
 
