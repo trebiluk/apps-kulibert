@@ -5,7 +5,8 @@ self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     try {
       const keys = await caches.keys()
-      await Promise.all(keys.map((k) => caches.delete(k)))
+      // Only Bertopia's caches: caches are shared by every app on this origin.
+      await Promise.all(keys.filter((k) => k.indexOf('bloxbert-') === 0).map((k) => caches.delete(k)))
     } catch (e) {}
     try { await self.registration.unregister() } catch (e) {}
     try {
