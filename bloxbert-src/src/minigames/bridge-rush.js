@@ -23,6 +23,7 @@ export function createBridgeRush(api) {
   let mat = 'wood'
   let row = Array.from({ length: GAP }, () => '')
   let spent = 0
+  let lost = 0 // budget spent on blocks the cart broke: not refunded (G7 says nothing about a refund); Clear starts over
   let cart = null
   let run = null // { x (cells, float), falling, vy, result, since }
   let inside = false
@@ -72,7 +73,7 @@ export function createBridgeRush(api) {
       const v = api.getVoxel(cellX(i), deckY(), origin[2])
       row[i] = v === MATS.wood.id ? 'wood' : v === MATS.steel.id ? 'steel' : ''
     }
-    spent = blocksCost(row)
+    spent = blocksCost(row) + lost
   }
 
   // Placement inside the gap comes from the budget, not the bag.
@@ -152,6 +153,7 @@ export function createBridgeRush(api) {
     if (run) return
     if (!confirm(t('brClearAsk', 'Clear the whole bridge?'))) return
     for (let i = 0; i < GAP; i++) if (row[i]) api.edit(cellX(i), deckY(), origin[2], 0)
+    lost = 0
     readRow()
     clearCrack()
     paint()
@@ -190,6 +192,7 @@ export function createBridgeRush(api) {
       if (r.result.broke >= 0 && cell >= r.result.broke) {
         if (!r.crackAt) { r.crackAt = performance.now(); showCrack(r.result.broke); r.x = r.result.broke + 0.5 }
         if (performance.now() - r.crackAt >= BREAK_MS) {
+          lost += MATS[row[r.result.broke]] ? MATS[row[r.result.broke]].cost : 0
           api.edit(cellX(r.result.broke), deckY(), origin[2], 0)
           readRow()
           r.falling = true
