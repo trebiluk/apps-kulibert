@@ -629,15 +629,15 @@ for (const [lang, row] of Object.entries(WN547)) {
 
 // 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
 const WN549 = {
-  en: { whatsNewBody: '2.5.550 — Lighter textures so the world runs smoother.' },
-  simple: { whatsNewBody: '2.5.550 — Lighter textures. The world runs smoother.' },
-  uk: { whatsNewBody: '2.5.550 — Легші текстури, світ працює плавніше.' },
-  ru: { whatsNewBody: '2.5.550 — Более лёгкие текстуры, мир работает плавнее.' },
-  es: { whatsNewBody: '2.5.550 — Texturas más ligeras para que el mundo vaya más fluido.' },
-  ar: { whatsNewBody: '2.5.550 — قوام أخف ليعمل العالم بسلاسة أكبر.' },
-  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر تا جهان روان‌تر کار کند.' },
-  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje kugira ngo isi igende neza.' },
-  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት፡ ዓለም ብልሙጽ ክትከይድ።' },
+  en: { whatsNewBody: '2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle.' },
+  simple: { whatsNewBody: '2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle.' },
+  uk: { whatsNewBody: '2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині.' },
+  ru: { whatsNewBody: '2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре.' },
+  es: { whatsNewBody: '2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro.' },
+  ar: { whatsNewBody: '2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط.' },
+  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط.' },
+  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati.' },
+  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል።' },
 }
 for (const [lang, row] of Object.entries(WN549)) {
   if (STR[lang]) Object.assign(STR[lang], row)

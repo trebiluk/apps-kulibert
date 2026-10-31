@@ -1,15 +1,15 @@
 export const CHANGELOG = [
-  // 2.5.550 lighter textures. rw, ti, and fa-AF are machine drafts.
+  // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
-    en: ['2.5.550 — Lighter textures so the world runs smoother.'],
-    simple: ['2.5.550 — Lighter textures. The world runs smoother.'],
-    uk: ['2.5.550 — Легші текстури, світ працює плавніше.'],
-    ru: ['2.5.550 — Более лёгкие текстуры, мир работает плавнее.'],
-    es: ['2.5.550 — Texturas más ligeras para que el mundo vaya más fluido.'],
-    ar: ['2.5.550 — قوام أخف ليعمل العالم بسلاسة أكبر.'],
-    'fa-AF': ['2.5.550 — بافت‌های سبک‌تر تا جهان روان‌تر کار کند.'],
-    rw: ['2.5.550 — Amashusho yoroheje kugira ngo isi igende neza.'],
-    ti: ['2.5.550 — ፈኲሶም ምስልታት፡ ዓለም ብልሙጽ ክትከይድ።'],
+    en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle.'],
+    simple: ['2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle.'],
+    uk: ['2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині.'],
+    ru: ['2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре.'],
+    es: ['2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro.'],
+    ar: ['2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط.'],
+    'fa-AF': ['2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط.'],
+    rw: ['2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati.'],
+    ti: ['2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል።'],
   } },
   // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.549', date: '2026-10-30', lines: {
