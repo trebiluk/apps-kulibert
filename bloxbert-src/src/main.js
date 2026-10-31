@@ -4921,11 +4921,23 @@ function save() {
 // 0056: saveSoon means "something changed". The first change saves at once; changes after that share one save
 // per 2 s. The chip paints only for a save that really runs, and a failed save shows "Not saved" instead of
 // an unhandled rejection. Nothing here re-queues on its own, so an idle world never saves.
+// 0056 r1: ?debug (or ?smoke=1) exposes window.__btSave = { count, lastAt, failNext() } so ShipCheck can count real
+// world saves and force one failure. Only real saves (bytes >= 0) count; a re-queue (-1) does not.
+const btSave = { count: 0, lastAt: 0, failNext() { btSave._fail = true }, _fail: false }
+if (qs.has('debug') || qs.has('smoke')) window.__btSave = btSave
 const saveQueue = createSaveSoon({
   gapMs: 2000,
-  run: () => save(),
+  run: () => {
+    if (btSave._fail) {
+      btSave._fail = false
+      const err = new Error('debug: failNext')
+      err.code = 'debug'
+      return Promise.reject(err)
+    }
+    return save()
+  },
   onStart: () => paintSaveChip('saving'),
-  onDone: () => paintSaveChip(navigator.onLine ? 'saved' : 'offline'),
+  onDone: () => { btSave.count += 1; btSave.lastAt = Date.now(); paintSaveChip(navigator.onLine ? 'saved' : 'offline') },
   onFail: (e) => {
     const el = $('save-chip')
     if (el) el.hidden = true // not "Saving…" forever
