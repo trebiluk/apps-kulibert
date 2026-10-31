@@ -14,7 +14,7 @@ function padBagAndClampHot(player) {
   if (!Array.isArray(player.bag)) player.bag = []
   while (player.bag.length < 15) player.bag.push(null)
   if (player.bag.length > 15) player.bag = player.bag.slice(0, 15)
-  if (typeof player.hot !== 'number' || player.hot < 0 || player.hot > 14) player.hot = 0
+  if (typeof player.hot !== 'number' || isNaN(player.hot)) player.hot = 0
   else player.hot = Math.min(14, Math.max(0, Math.floor(player.hot)))
   return player
 }
