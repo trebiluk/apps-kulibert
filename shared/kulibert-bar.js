@@ -19,6 +19,11 @@
   var name = (script && script.getAttribute("data-name")) || "";
   var helpSel = (script && script.getAttribute("data-help")) || "";
   var menuSel = (script && script.getAttribute("data-menu")) || "";
+  // Hub rev 2026-10-31-bb-levels: some apps' own menu button is a level list (B&B "Levels"), not a second Menu.
+  // Inside the Hub it stays visible, and the Hub's Menu opens the Hub drawer, so there is still one Menu.
+  var menuKind = (script && script.getAttribute("data-menu-kind")) || "";
+  var LEVEL_MENU_APPS = { pinchy: 1 };
+  function levelMenu() { return !!menuSel && (menuKind === "levels" || !!LEVEL_MENU_APPS[app]); }
   var foundMenu = null;
   var lastReportedMenu = null;
   var menuGen = 0;
@@ -312,12 +317,12 @@
   }
   function dupeSelectors() {
     var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", ".tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "#hi-menu", "header.sticky > button[aria-expanded]", "button.menu-btn[aria-controls='baboo-menu']"];
-    if (menuSel) sels.push(menuSel);
+    if (menuSel && !levelMenu()) sels.push(menuSel);
     return sels;
   }
   function reportFrame() {
     if (!framed()) return;
-    var hasMenu = !!(menuSel || (foundMenu && foundMenu.isConnected));
+    var hasMenu = levelMenu() ? false : !!(menuSel || (foundMenu && foundMenu.isConnected));
     if (lastReportedMenu === hasMenu) return;
     lastReportedMenu = hasMenu;
     postUp({ type: "kb-app", app: app, name: name || app, version: version, help: !!helpSel, menu: hasMenu });
