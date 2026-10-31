@@ -9043,6 +9043,35 @@ function readOldSave() {
     new Promise((r) => setTimeout(() => r(null), 3000)),
   ])
 }
+// 2.5.592 test path for ShipCheck: ?debug=1&seedOldSave=1 writes a small fixture world in the OLD bloxbert storage
+// (IndexedDB kuliblocks-test / worlds / <world>), so "Load my saved world" has something to load. Game data only, no names.
+async function seedOldSave() {
+  const q = location.search
+  if (!/[?&]debug=1(&|$)/.test(q) || !/[?&]seedOldSave=1(&|$)/.test(q)) return false
+  try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {} // skip the boot "Bring my old world?" card so the test uses the button
+  // Two chunks around the town spawn (x 8.5, z 1.5): grass floor, plus a red wool fence 3 high and a blue wool post you see on load.
+  const near = new Uint16Array(S * S * S)
+  const far = new Uint16Array(S * S * S)
+  const at = (x, y, z, id) => { const c = z < 0 ? far : near; c[x * S * S + y * S + (z < 0 ? z + S : z)] = id }
+  for (let x = 0; x < S; x++) for (let z = -S; z < S; z++) { for (let y = 0; y < 4; y++) at(x, y, z, 3); at(x, 4, z, 1) }
+  for (let x = 3; x <= 14; x++) for (let z = -4; z <= 7; z++) if (x === 3 || x === 14 || z === -4 || z === 7) for (let y = 5; y <= 7; y++) at(x, y, z, 15)
+  for (let y = 5; y <= 10; y++) at(12, y, 5, 13)
+  const palette = ['air', 'grass', 'dirt', 'stone', 'slate', 'coal', 'sand', 'gravel', 'brickRed', 'brickGrey', 'planks', 'log', 'leaves', 'woolBlue', 'woolGreen', 'woolRed', 'woolTan', 'snow', 'ice', 'redSand', 'glass', 'coreplate', 'workbench', 'oven', 'vend', 'storeCounter', 'bunk', 'box', 'wheat', 'reed', 'door', 'doorOpen', 'glowPebble']
+  const doc = { format: 'kuliblocks', v: 2, chunkSize: S, palette, chunks: { '0,0,0': await gz(near), '0,0,-1': await gz(far) }, spawn: [8.5, 6, 1.5], player: { mode: 'survival', bag: [], hot: 0 }, fixture: 'seedOldSave' }
+  return new Promise((res) => {
+    const req = indexedDB.open('kuliblocks-test', 1)
+    req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('worlds')) req.result.createObjectStore('worlds') }
+    req.onsuccess = () => {
+      const db = req.result
+      const tx = db.transaction('worlds', 'readwrite')
+      tx.objectStore('worlds').put(doc, WORLD)
+      tx.oncomplete = () => { db.close(); console.info('[bertopia] seedOldSave: fixture written to kuliblocks-test/' + WORLD); res(true) }
+      tx.onerror = tx.onabort = () => { db.close(); res(false) }
+    }
+    req.onerror = () => res(false)
+  })
+}
+window.__bertopiaOldSeed = seedOldSave()
 let bootLoad = Promise.resolve() // set to the first load() below, so an early click waits for it
 async function loadOldClicked() {
   const btn = $('m-load')
@@ -9052,6 +9081,7 @@ async function loadOldClicked() {
   toast(t('oldLoading'))
   markSave(t('oldLoading'))
   try {
+    try { await window.__bertopiaOldSeed } catch (e) {}
     try { await bootLoad } catch (e) {}
     const old = await readOldSave()
     if (!old || old.format !== 'kuliblocks') { toast(t('oldNone')); markSave(t('oldNone')); return false }
