@@ -9,10 +9,17 @@ export function toV2(v1, player, econ, meta) {
     meta: meta || {},
   }
 }
+// 15 hotbar/bag slots, hot slot inside 0-14. Older or hand-made docs may carry fewer.
+export function fitPlayer(p) {
+  const bag = Array.isArray(p.bag) ? p.bag.slice() : []
+  while (bag.length < 15) bag.push(null)
+  const hot = Number.isFinite(p.hot) ? Math.min(14, Math.max(0, Math.trunc(p.hot))) : 0
+  return { ...p, bag, hot }
+}
 export function fromDoc(doc) {
   if (!doc || doc.v === 1) return { player: emptyPlayer('survival'), econ: null, meta: {}, lost: [], drops: [], bots: [] }
   return {
-    player: doc.player || emptyPlayer(doc.player && doc.player.mode),
+    player: fitPlayer(doc.player || emptyPlayer(doc.mode || 'survival')),
     econ: doc.econ || null,
     meta: doc.meta || {},
     lost: doc.lost || [],

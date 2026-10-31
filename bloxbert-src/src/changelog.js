@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.568 load right mode (brief 0057). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.568', date: '2026-10-31', lines: {
+    en: ['2.5.568 — A Creative world always reopens in Creative, your bag always has 15 slots, and the school-sync chip stays after you move between pages.'],
+    simple: ['2.5.568 — A Creative world opens in Creative. Your bag always has 15 slots. The sync chip stays.'],
+    uk: ['2.5.568 — Світ у Творчому режимі завжди відкривається у Творчому, у сумці завжди 15 комірок, а фішка шкільної синхронізації лишається після переходу між сторінками.'],
+    ru: ['2.5.568 — Мир в Творческом режиме всегда открывается в Творческом, в сумке всегда 15 ячеек, а фишка школьной синхронизации остаётся после перехода между страницами.'],
+    es: ['2.5.568 — Un mundo Creativo siempre se abre en Creativo, tu bolsa siempre tiene 15 espacios y la ficha de sincronización escolar se queda al cambiar de página.'],
+    ar: ['2.5.568 — عالم الإبداع يفتح دائماً في وضع الإبداع، وحقيبتك فيها 15 خانة دائماً، وشريحة مزامنة المدرسة تبقى بعد التنقل بين الصفحات.'],
+    'fa-AF': ['2.5.568 — دنیای خلاقانه همیشه در حالت خلاقانه باز می‌شود، کیف تو همیشه ۱۵ خانه دارد و تراشه همگام‌سازی مکتب بعد از جابجایی بین صفحه‌ها می‌ماند.'],
+    rw: ['2.5.568 — Isi ya Creative buri gihe ifungurwa muri Creative, umufuka wawe buri gihe ufite imyanya 15, kandi ikofi yo guhuza n\'ishuri iguma nyuma yo kujya ku rundi rupapuro.'],
+    ti: ['2.5.568 — ዓለም ክሪኤቲቭ ኩሉ ግዜ ኣብ ክሪኤቲቭ ይኽፈት፡ ቦርሳኻ ኩሉ ግዜ 15 ቦታ ኣለዎ፡ ናይ ቤት ትምህርቲ ምውህሃድ ቺፕ ድማ ኣብ መንጎ ገጻት ምስ ተንቀሳቐስካ ይጸንሕ።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
