@@ -27,6 +27,18 @@ export function mountFpsOverlay() {
       const br = bar && bar.getBoundingClientRect()
       if (gr && gr.width) { box.style.left = Math.round(gr.right + 8) + 'px'; box.style.top = Math.round(gr.top) + 'px' }
       else if (br) { box.style.left = '12px'; box.style.top = Math.round(br.bottom + 4) + 'px' }
+      // Slide right past anything it would sit on (Suit pill on sideways phones, the quest card).
+      for (let k = 0; k < 4; k++) {
+        const me = box.getBoundingClientRect()
+        let hit = null
+        for (const id of ['suit-bar', 'path-chip', 'play-chip']) {
+          const el = document.getElementById(id)
+          const r = el && !el.hidden && el.getBoundingClientRect()
+          if (r && r.width && r.left < me.right && r.right > me.left && r.top < me.bottom && r.bottom > me.top) { hit = r; break }
+        }
+        if (!hit) break
+        box.style.left = Math.round(hit.right + 8) + 'px'
+      }
       box.textContent = (1000 / avg).toFixed(0) + ' fps · p95 ' + p95.toFixed(0) + 'ms'
     }
     requestAnimationFrame(frame)
