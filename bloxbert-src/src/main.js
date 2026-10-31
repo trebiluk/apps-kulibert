@@ -7371,7 +7371,7 @@ panels = mountPanels({
   workbenchOn: () => calm.workbenchOn(),
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
-  load: () => load(),
+  load: () => loadOldClicked(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
@@ -9023,7 +9023,55 @@ $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contain
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))
 $('m-save').addEventListener('click', () => { saveClicked() })
-$('m-load').addEventListener('click', () => load())
+// 2.5.592: "Load my saved world" brings in the OLD bloxbert save (IndexedDB kuliblocks-test / worlds, the pre-/bertopia/ door).
+// It used to call load(), which only re-read the current world, so nothing changed and nothing was said.
+function readOldSave() {
+  return Promise.race([
+    new Promise((res) => {
+      let req
+      try { req = indexedDB.open('kuliblocks-test') } catch (e) { res(null); return }
+      req.onupgradeneeded = (e) => { e.target.transaction.abort(); res(null) }
+      req.onsuccess = () => {
+        const db = req.result
+        if (!db.objectStoreNames.contains('worlds')) { db.close(); res(null); return }
+        const g = db.transaction('worlds', 'readonly').objectStore('worlds').get(WORLD)
+        g.onsuccess = () => { db.close(); res(g.result || null) }
+        g.onerror = () => { db.close(); res(null) }
+      }
+      req.onerror = () => res(null)
+    }),
+    new Promise((r) => setTimeout(() => r(null), 3000)),
+  ])
+}
+async function loadOldClicked() {
+  const btn = $('m-load')
+  if (loadOldClicked.busy) return
+  loadOldClicked.busy = true
+  if (btn) btn.setAttribute('aria-busy', 'true')
+  toast(t('oldLoading'))
+  markSave(t('oldLoading'))
+  try {
+    const old = await readOldSave()
+    if (!old || old.format !== 'kuliblocks') { toast(t('oldNone')); markSave(t('oldNone')); return false }
+    try {
+      const now = new Date()
+      await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
+    } catch (e) {}
+    await idbPut(WORLD, old)
+    try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
+    await load()
+    toast(t('oldLoaded'))
+    markSave(t('oldLoaded'))
+    return true
+  } catch (e) {
+    toast(t('saveKept'))
+    return false
+  } finally {
+    loadOldClicked.busy = false
+    if (btn) btn.removeAttribute('aria-busy')
+  }
+}
+$('m-load').addEventListener('click', () => { loadOldClicked() })
 $('m-export').addEventListener('click', () => exportJSON())
 $('m-import').addEventListener('click', () => $('import-file').click())
 $('import-file').addEventListener('change', async (e) => {
