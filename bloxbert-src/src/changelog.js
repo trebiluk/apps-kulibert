@@ -1,4 +1,22 @@
 export const CHANGELOG = [
+  // 2.5.563 debug params for proof runs (sky and sun). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.563', date: '2026-10-31', lines: {
+    en: ['2.5.563 — Behind the scenes: new checking tools for the sky and sun. Your game plays the same.'],
+    simple: ['2.5.563 — New tools to check the sky. Your game is the same.'],
+    uk: ['2.5.563 — За лаштунками: нові інструменти перевірки неба й сонця. Гра працює так само.'],
+    ru: ['2.5.563 — За кулисами: новые инструменты проверки неба и солнца. Игра работает так же.'],
+    es: ['2.5.563 — Detrás de escena: nuevas herramientas para revisar el cielo y el sol. Tu juego sigue igual.'],
+    ar: ['2.5.563 — خلف الكواليس: أدوات جديدة لفحص السماء والشمس. لعبتك تبقى كما هي.'],
+    'fa-AF': ['2.5.563 — پشت صحنه: ابزارهای تازه برای بررسی آسمان و آفتاب. بازی شما همان‌طور است.'],
+    rw: ['2.5.563 — Inyuma y\'amaso: ibikoresho bishya byo kugenzura ikirere n\'izuba. Umukino wawe ni nk\'uko wari uri.'],
+    ti: ['2.5.563 — ድሕሪ መጋረጃ፡ ሰማይን ጸሓይን ንምፍታሽ ሓደሽቲ መሳርሒታት። ጸወታኹም ከምቲ ዝነበሮ እዩ።'],
+  } },
+  // 2.5.552 far horizon. en and simple only for now; other languages follow.
+  { v: '2.5.552', date: '2026-10-31', lines: {
+    en: ['2.5.552 — Sunsets and sunrises look far away now: soft hills on the horizon, and a sky that changes slowly.'],
+    simple: ['2.5.552 — Sunsets and sunrises look far away. You can see soft hills. The sky changes slowly.'],
+  }},
+
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],
