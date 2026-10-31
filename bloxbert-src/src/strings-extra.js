@@ -3760,3 +3760,111 @@ for (const [lang, row] of Object.entries(PAINTER)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.547 Daily Board card. Every non-English line here is a machine DRAFT until a speaker reviews it.
+// rw, ti, and fa-AF are the weakest drafts. Dailies are named by what they are, so the names are drafts too.
+const DAILY547 = {
+  en: {
+    dailyHead: "Today's Daily", dailySurprise: 'Surprise!', dailySoon: 'Coming soon', dailyPlay: 'Play',
+    dailySweep: 'Sweep: {n} of {need} this week', dailyMarkDone: 'done', dailyMarkTodo: 'not yet',
+    wdMon: 'Mon', wdTue: 'Tue', wdWed: 'Wed', wdThu: 'Thu', wdFri: 'Fri',
+    dailyNameMolten: 'Molten Chasm', dailyWhatMolten: 'Build a bridge that holds.',
+    dailyNameCircuit: 'Circuit Fix', dailyWhatCircuit: 'Find the fault and fix the circuit.',
+    dailyNameBertDist: 'Bertapult Distance', dailyWhatBertDist: 'Launch it as far as you can.',
+    dailyNameBertMark: 'Bertapult Mark', dailyWhatBertMark: 'Launch it to hit the mark.',
+    dailyNamePaper: 'PaperLab Fold', dailyWhatPaper: 'Fold the paper to meet the goal.',
+    dailyNameParkour: 'Parkour Rush', dailyWhatParkour: 'Run the course and reach the end.',
+  },
+  simple: {
+    dailyHead: "Today's Daily", dailySurprise: 'Surprise!', dailySoon: 'Coming soon', dailyPlay: 'Play',
+    dailySweep: 'Sweep: {n} of {need} this week', dailyMarkDone: 'done', dailyMarkTodo: 'not yet',
+    wdMon: 'Mon', wdTue: 'Tue', wdWed: 'Wed', wdThu: 'Thu', wdFri: 'Fri',
+    dailyNameMolten: 'Molten Chasm', dailyWhatMolten: 'Build a strong bridge.',
+    dailyNameCircuit: 'Circuit Fix', dailyWhatCircuit: 'Fix the broken circuit.',
+    dailyNameBertDist: 'Bertapult Distance', dailyWhatBertDist: 'Launch it far.',
+    dailyNameBertMark: 'Bertapult Mark', dailyWhatBertMark: 'Launch it at the mark.',
+    dailyNamePaper: 'PaperLab Fold', dailyWhatPaper: 'Fold the paper to reach the goal.',
+    dailyNameParkour: 'Parkour Rush', dailyWhatParkour: 'Run to the end.',
+  },
+  uk: {
+    dailyHead: 'Щоденне завдання', dailySurprise: 'Сюрприз!', dailySoon: 'Скоро буде', dailyPlay: 'Грати',
+    dailySweep: 'Зачистка: {n} з {need} цього тижня', dailyMarkDone: 'зроблено', dailyMarkTodo: 'ще ні',
+    wdMon: 'Пн', wdTue: 'Вт', wdWed: 'Ср', wdThu: 'Чт', wdFri: 'Пт',
+    dailyNameMolten: 'Розплавлена прірва', dailyWhatMolten: 'Збудуй міст, який витримає.',
+    dailyNameCircuit: 'Полагодь схему', dailyWhatCircuit: 'Знайди несправність і полагодь схему.',
+    dailyNameBertDist: 'Бертапульт: відстань', dailyWhatBertDist: 'Запусти якомога далі.',
+    dailyNameBertMark: 'Бертапульт: у ціль', dailyWhatBertMark: 'Запусти так, щоб влучити в ціль.',
+    dailyNamePaper: 'Паперова лабораторія', dailyWhatPaper: 'Склади папір, щоб досягти цілі.',
+    dailyNameParkour: 'Паркур-гонка', dailyWhatParkour: 'Пробіжи трасу до кінця.',
+  },
+  ru: {
+    dailyHead: 'Задание дня', dailySurprise: 'Сюрприз!', dailySoon: 'Скоро будет', dailyPlay: 'Играть',
+    dailySweep: 'Зачистка: {n} из {need} на этой неделе', dailyMarkDone: 'готово', dailyMarkTodo: 'ещё нет',
+    wdMon: 'Пн', wdTue: 'Вт', wdWed: 'Ср', wdThu: 'Чт', wdFri: 'Пт',
+    dailyNameMolten: 'Расплавленная пропасть', dailyWhatMolten: 'Построй мост, который выдержит.',
+    dailyNameCircuit: 'Почини схему', dailyWhatCircuit: 'Найди неисправность и почини схему.',
+    dailyNameBertDist: 'Бертапульт: дальность', dailyWhatBertDist: 'Запусти как можно дальше.',
+    dailyNameBertMark: 'Бертапульт: в цель', dailyWhatBertMark: 'Запусти так, чтобы попасть в цель.',
+    dailyNamePaper: 'Бумажная лаборатория', dailyWhatPaper: 'Сложи бумагу, чтобы достичь цели.',
+    dailyNameParkour: 'Паркур-гонка', dailyWhatParkour: 'Пробеги трассу до конца.',
+  },
+  es: {
+    dailyHead: 'Reto de hoy', dailySurprise: '¡Sorpresa!', dailySoon: 'Muy pronto', dailyPlay: 'Jugar',
+    dailySweep: 'Barrido: {n} de {need} esta semana', dailyMarkDone: 'hecho', dailyMarkTodo: 'aún no',
+    wdMon: 'Lun', wdTue: 'Mar', wdWed: 'Mié', wdThu: 'Jue', wdFri: 'Vie',
+    dailyNameMolten: 'Abismo de lava', dailyWhatMolten: 'Construye un puente que aguante.',
+    dailyNameCircuit: 'Arregla el circuito', dailyWhatCircuit: 'Halla la falla y arregla el circuito.',
+    dailyNameBertDist: 'Bertapult: distancia', dailyWhatBertDist: 'Lánzalo lo más lejos que puedas.',
+    dailyNameBertMark: 'Bertapult: blanco', dailyWhatBertMark: 'Lánzalo para dar en el blanco.',
+    dailyNamePaper: 'Plegado PaperLab', dailyWhatPaper: 'Dobla el papel para lograr la meta.',
+    dailyNameParkour: 'Carrera de parkour', dailyWhatParkour: 'Corre el recorrido y llega al final.',
+  },
+  ar: {
+    dailyHead: 'تحدي اليوم', dailySurprise: 'مفاجأة!', dailySoon: 'قريبًا', dailyPlay: 'العب',
+    dailySweep: 'الكنس: {n} من {need} هذا الأسبوع', dailyMarkDone: 'تم', dailyMarkTodo: 'ليس بعد',
+    wdMon: 'اثن', wdTue: 'ثلا', wdWed: 'أرب', wdThu: 'خمي', wdFri: 'جمع',
+    dailyNameMolten: 'الهوة المنصهرة', dailyWhatMolten: 'ابنِ جسرًا يتحمّل.',
+    dailyNameCircuit: 'إصلاح الدارة', dailyWhatCircuit: 'اعثر على العطل وأصلح الدارة.',
+    dailyNameBertDist: 'بيرتابولت: المسافة', dailyWhatBertDist: 'أطلقه إلى أبعد مسافة ممكنة.',
+    dailyNameBertMark: 'بيرتابولت: الهدف', dailyWhatBertMark: 'أطلقه لتصيب الهدف.',
+    dailyNamePaper: 'مختبر الورق: الطي', dailyWhatPaper: 'اطوِ الورقة لتحقق الهدف.',
+    dailyNameParkour: 'سباق الباركور', dailyWhatParkour: 'اركض في المسار حتى النهاية.',
+  },
+  'fa-AF': {
+    dailyHead: 'چالش امروز', dailySurprise: 'سورپرایز!', dailySoon: 'به‌زودی', dailyPlay: 'بازی',
+    dailySweep: 'جاروب: {n} از {need} این هفته', dailyMarkDone: 'انجام شد', dailyMarkTodo: 'هنوز نه',
+    wdMon: 'دو', wdTue: 'سه', wdWed: 'چها', wdThu: 'پنج', wdFri: 'جمع',
+    dailyNameMolten: 'شکاف مذاب', dailyWhatMolten: 'پلی بساز که تحمل کند.',
+    dailyNameCircuit: 'درست کردن مدار', dailyWhatCircuit: 'خرابی را پیدا کن و مدار را درست کن.',
+    dailyNameBertDist: 'برتاپولت: فاصله', dailyWhatBertDist: 'تا جایی که می‌توانی دور پرتاب کن.',
+    dailyNameBertMark: 'برتاپولت: هدف', dailyWhatBertMark: 'پرتاب کن تا به هدف بخورد.',
+    dailyNamePaper: 'لابراتوار کاغذ', dailyWhatPaper: 'کاغذ را تا کن تا به هدف برسی.',
+    dailyNameParkour: 'مسابقه پارکور', dailyWhatParkour: 'مسیر را بدو تا به پایان برسی.',
+  },
+  rw: {
+    dailyHead: 'Umukino wa none', dailySurprise: 'Igitangaza!', dailySoon: 'Biraza vuba', dailyPlay: 'Kina',
+    dailySweep: 'Isuku: {n} kuri {need} muri iki cyumweru', dailyMarkDone: 'byarangiye', dailyMarkTodo: 'ntibiraba',
+    wdMon: 'Mbe', wdTue: 'Kabi', wdWed: 'Gatu', wdThu: 'Kane', wdFri: 'Gatn',
+    dailyNameMolten: 'Icyuho cy\'umuriro', dailyWhatMolten: 'Ubaka ikiraro gikomeye.',
+    dailyNameCircuit: 'Gukosora umuzenguruko', dailyWhatCircuit: 'Shaka ikibazo ukosore umuzenguruko.',
+    dailyNameBertDist: 'Bertapult: intera', dailyWhatBertDist: 'Wohereze kure uko ushoboye.',
+    dailyNameBertMark: 'Bertapult: intego', dailyWhatBertMark: 'Wohereze ugere ku ntego.',
+    dailyNamePaper: 'Gupfunyika PaperLab', dailyWhatPaper: 'Pfunyika urupapuro ugere ku ntego.',
+    dailyNameParkour: 'Isiganwa rya parkour', dailyWhatParkour: 'Kora inzira ugere ku iherezo.',
+  },
+  ti: {
+    dailyHead: 'ናይ ሎሚ ዕለታዊ', dailySurprise: 'ድንቂ!', dailySoon: 'ይመጽእ ኣሎ', dailyPlay: 'ተጻወት',
+    dailySweep: 'ምጽራግ: {n} ካብ {need} ሰሙን እዚ', dailyMarkDone: 'ተወዲኡ', dailyMarkTodo: 'ገና',
+    wdMon: 'ሰኑ', wdTue: 'ሰሉ', wdWed: 'ረቡ', wdThu: 'ሓሙ', wdFri: 'ዓር',
+    dailyNameMolten: 'ዝፈሰሰ ጉድጓድ', dailyWhatMolten: 'ድልድል ዝጸንዕ ሃንጽ።',
+    dailyNameCircuit: 'ምዕራይ ሰርኪት', dailyWhatCircuit: 'ጌጋ ረኺብካ ሰርኪት ኣዐርዮ።',
+    dailyNameBertDist: 'በርታፑልት: ርሕቀት', dailyWhatBertDist: 'ክሳብ ዝከኣል ርሒቕካ ተኵሶ።',
+    dailyNameBertMark: 'በርታፑልት: ዕላማ', dailyWhatBertMark: 'ዕላማ ክትሃሪም ተኵሶ።',
+    dailyNamePaper: 'ላብ ወረቐት', dailyWhatPaper: 'ወረቐት ደይብ ንዕላማ ንምብጻሕ።',
+    dailyNameParkour: 'ሩጫ ፓርኩር', dailyWhatParkour: 'መስርሕ ሩጽ ክሳብ መወዳእታ።',
+  },
+}
+for (const [lang, row] of Object.entries(DAILY547)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

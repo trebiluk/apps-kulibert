@@ -107,6 +107,26 @@ for (const [lang, row] of Object.entries(WN546)) {
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
 initPainter({ t, toast })
+// 2.5.547 what's new. Locked by ManagerBot. All non-English lines are machine drafts.
+const WN547 = {
+  en: { whatsNewBody: '2.5.547 — Goals now shows today\'s Daily and your Sweep.' },
+  simple: { whatsNewBody: '2.5.547 — Goals shows today\'s Daily and your Sweep.' },
+  uk: { whatsNewBody: '2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.' },
+  ru: { whatsNewBody: '2.5.547 — В Целях теперь видно задание дня и твою зачистку.' },
+  es: { whatsNewBody: '2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.' },
+  ar: { whatsNewBody: '2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.' },
+  'fa-AF': { whatsNewBody: '2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.' },
+  rw: { whatsNewBody: '2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.' },
+  ti: { whatsNewBody: '2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።' },
+}
+for (const [lang, row] of Object.entries(WN547)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+// Daily Board card (2.5.547). Mount only: all logic lives in daily/card.js.
+// Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
+// Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
+// Nothing writes that key yet. A missing or bad value falls back to the defaults.
 // 2.5.549 what's new. rw, ti, and fa-AF are machine drafts.
 const WN549 = {
   en: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.' },
@@ -122,6 +142,19 @@ const WN549 = {
 for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+function dailyOverride() {
+  try {
+    if (!teacherOn()) return undefined
+    const raw = localStorage.getItem('bloxbert-daily-board')
+    return raw ? JSON.parse(raw) : undefined
+  } catch (e) { return undefined }
+}
+function mountDailyCard(g) {
+  try {
+    const ledger = walletReady && session && session.wallet && session.wallet.state ? session.wallet.state.ledger : []
+    paintDailyCard(g, { t, icon: menuIcon, ledger, override: dailyOverride(), search: location.search })
+  } catch (e) { console.warn('daily card', e) }
 }
 function holdWalletChip() {
   const el = document.getElementById('wallet-chip')
@@ -146,6 +179,7 @@ import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { dayCap } from './econ/cogs.js'
+import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
@@ -7358,7 +7392,7 @@ panels = mountPanels({
   paintRewind: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('undoMinutes') })),
   paintSnaps: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('snapshots') })),
   paintTour: (g) => learn.paintTour(g),
-  paintGoals: (g) => learn.paintGoals(g),
+  paintGoals: (g) => { mountDailyCard(g); learn.paintGoals(g) },
   paintA11y: (g) => learn.paintA11y(g),
   paintLog: (g) => {
     const parts = (v) => String(v).split('.').map((n) => parseInt(n, 10) || 0)
