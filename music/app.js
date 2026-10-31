@@ -4838,7 +4838,10 @@
         else { state.cursor = first; if (!state.playing) state.step = first; paintSelection(); paintCount(); }
       }
     }
-    sayScore(grew ? (mu("richBarAdded") || "A new bar is on the score. Every bar is full.") : "That is 32 bars. That is a long song.");
+    // A beat song's new bar is four empty beats, so its line says what to do next; a real-length song's new bar is full of rests.
+    sayScore(!grew ? (mu("barsMax") || "That is 32 bars. That is a long song.")
+      : isRichSong() ? (mu("richBarAdded") || "A new bar is on the score. Every bar is full.")
+      : (mu("beatBarAdded") || "A new bar is on the score. Tap a letter to fill it."));
     // The calm line changes the height of the staff panel, so the scroll comes after it, and once more when the page has settled.
     if (grew) {
       revealNewBar();

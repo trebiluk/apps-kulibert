@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, every dr* key (Score tools drawer words, drWherePickup), lenPickNote, lenNoDot, lenBeatsDone, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.66): laneFor, news23661 to news23666, barsMax, beatBarAdded, drChordsHelp, every dr* key (Score tools drawer words, drWherePickup), lenPickNote, lenNoDot, lenBeatsDone, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -55,6 +55,8 @@
     news23665: "MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside. They work by tap and by keyboard.",
     news23666: "MU 2.36.66 — On a sideways phone, all the note-length buttons now show without swiping. The Score tools drawer speaks your language. Space presses a button when one is in focus.",
     barsMax: "That is 32 bars. That is a long song.",
+    beatBarAdded: "A new bar is on the score. Tap a letter to fill it.",
+    drChordsHelp: "Chords: C, F, G, A minor",
     drMoreNotes: "More note tools",
     drMelodies: "Melody ideas",
     drPicture: "This song's picture",
@@ -843,6 +845,8 @@
     news23665: "MU 2.36.65 — On Score, tap Add a bar. Tap Score tools to see the time signatures.",
     news23666: "MU 2.36.66 — Sideways, the length buttons show without a swipe. The Score tools drawer uses your language. Space presses the button you are on.",
     barsMax: "That is 32 bars. That is enough.",
+    beatBarAdded: "A new bar is here. Tap a letter.",
+    drChordsHelp: "Chords: C, F, G, A minor",
     drMoreNotes: "More note tools",
     drMelodies: "Melody ideas",
     drPicture: "This song's picture",
@@ -1294,6 +1298,8 @@
       "news23665": "MU 2.36.65 — Кнопки «Додати такт» і «Інструменти нот» тепер легко натиснути пальцем або вибрати клавішею Tab. Розміри такту — всередині.",
       "news23666": "MU 2.36.66 — На телефоні, повернутому набік, усі кнопки тривалості нот видно без прокручування. Панель «Інструменти нот» тепер твоєю мовою. Пробіл натискає кнопку, на якій ти стоїш.",
       "barsMax": "Це вже 32 такти. Це довга пісня.",
+      "beatBarAdded": "На нотах з'явився новий такт. Торкнись літери, щоб його заповнити.",
+      "drChordsHelp": "Акорди: C, F, G, A мінор",
       "drMoreNotes": "Більше інструментів для нот",
       "drMelodies": "Ідеї мелодій",
       "drPicture": "Картинка цієї пісні",
@@ -2083,6 +2089,8 @@
       "news23665": "MU 2.36.65 — Кнопки «Добавить такт» и «Инструменты нот» теперь легко нажать пальцем или выбрать клавишей Tab. Размеры такта — внутри.",
       "news23666": "MU 2.36.66 — На телефоне в горизонтальном положении все кнопки длительности нот видны без прокрутки. Панель «Инструменты нот» теперь на твоём языке. Пробел нажимает кнопку, на которой ты стоишь.",
       "barsMax": "Это уже 32 такта. Это длинная песня.",
+      "beatBarAdded": "На нотах появился новый такт. Нажми букву, чтобы его заполнить.",
+      "drChordsHelp": "Аккорды: C, F, G, A минор",
       "drMoreNotes": "Ещё инструменты для нот",
       "drMelodies": "Идеи мелодий",
       "drPicture": "Картинка этой песни",
@@ -2872,6 +2880,8 @@
       "news23665": "MU 2.36.65 — Los botones «Añadir un compás» y «Herramientas de partitura» ya se pueden tocar con el dedo o alcanzar con la tecla Tab. Los tipos de compás están dentro.",
       "news23666": "MU 2.36.66 — En un móvil en horizontal, todos los botones de duración de las notas se ven sin deslizar. El panel de Herramientas de partitura habla tu idioma. La barra espaciadora pulsa el botón en el que estás.",
       "barsMax": "Ya son 32 compases. Es una canción larga.",
+      "beatBarAdded": "Hay un compás nuevo en la partitura. Toca una letra para llenarlo.",
+      "drChordsHelp": "Acordes: C, F, G, A menor",
       "drMoreNotes": "Más herramientas de notas",
       "drMelodies": "Ideas de melodías",
       "drPicture": "La imagen de esta canción",
@@ -3662,6 +3672,8 @@
       "news23665": "MU 2.36.65 — صار الوصول إلى زرّي «أضف مازورة» و«أدوات النوتة» سهلًا باللمس أو بمفتاح Tab. وأنواع الميزان داخل أدوات النوتة.",
       "news23666": "MU 2.36.66 — على الهاتف بوضع أفقي تظهر كل أزرار مدة النوتة دون تمرير. لوحة «أدوات النوتة» بلغتك الآن. مفتاح المسافة يضغط الزر الذي تقف عليه.",
       "barsMax": "وصلت إلى 32 مازورة. هذه أغنية طويلة.",
+      "beatBarAdded": "ظهرت مازورة جديدة في النوتة. المس حرفًا لملئها.",
+      "drChordsHelp": "أكورد: C، F، G، A صغير",
       "drMoreNotes": "المزيد من أدوات النوتة",
       "drMelodies": "أفكار للألحان",
       "drPicture": "صورة هذه الأغنية",
@@ -4452,6 +4464,8 @@
       "news23665": "MU 2.36.65 — دکمه‌های «یک میزان اضافه کن» و «ابزار نت» حالا با لمس یا کلید Tab به آسانی در دسترس‌اند. کسرهای میزان داخل ابزار نت هستند.",
       "news23666": "MU 2.36.66 — روی تلفن در حالت افقی همهٔ دکمه‌های طول نُت بدون کشیدن دیده می‌شوند. بخش «ابزار نت» حالا به زبان تو است. کلید فاصله دکمه‌ای را که رویش هستی فشار می‌دهد.",
       "barsMax": "این 32 میزان است. این آهنگ بلند است.",
+      "beatBarAdded": "یک میزان تازه روی نُت‌ها آمد. برای پر کردنش یک حرف را بزن.",
+      "drChordsHelp": "آکوردها: C، F، G، A مینور",
       "drMoreNotes": "ابزارهای بیشتر نُت",
       "drMelodies": "ایده‌های ملودی",
       "drPicture": "تصویر این آهنگ",
@@ -5242,6 +5256,8 @@
       "news23665": "MU 2.36.65 — Buto «Ongeraho igice» na «Ibikoresho by'inota» ubu biroroshye gukoraho cyangwa guhitamo na Tab. Ibipimo biri imbere.",
       "news23666": "MU 2.36.66 — Kuri telefone iryamye, utubuto twose tw'uburebure bw'inota tugaragara udakurura. Ibikoresho by'inota biri mu rurimi rwawe. Space ikanda akabuto uriho.",
       "barsMax": "Ni ibice 32. Iyi ni indirimbo ndende.",
+      "beatBarAdded": "Umurongo mushya wagiye ku nota. Kanda inyuguti kugira ngo uwuzuze.",
+      "drChordsHelp": "Akorode: C, F, G, A minor",
       "drMoreNotes": "Ibindi bikoresho by'inota",
       "drMelodies": "Ibitekerezo by'injyana",
       "drPicture": "Ishusho y'iyi ndirimbo",
@@ -6032,6 +6048,8 @@
       "news23665": "MU 2.36.65 — ዝቐረቡ መልጠቒታት «ባር ወስኽ» ን «መሳርሒ ነጥቢ» ን ብጣት ወይ ብTab ቀሊል እዮም። መጠናት ባር ኣብ ውሽጦም እዮም።",
       "news23666": "MU 2.36.66 — ኣብ ተመሲሉ ዝተታሕዘ ሞባይል፡ ኩሎም መልጠቒታት ንውሓት ኖታ ከይተሳሕበ ይረኣዩ። መሳርሒ ነጥቢ ብቋንቋኻ እዩ። Space ነቲ ዘለኻዮ መልጠቒ ትጠውቖ።",
       "barsMax": "እዚ 32 ባር እዩ። ነዊሕ ደርፊ እዩ።",
+      "beatBarAdded": "ሓድሽ መስመር ኣብ ነጥብታት ኣሎ። ንምምላእ ፊደል ጠውቕ።",
+      "drChordsHelp": "አኮርድ: C, F, G, A ንኡስ",
       "drMoreNotes": "ተወሳኺ መሳርሒ ኖታ",
       "drMelodies": "ሓሳባት ዜማ",
       "drPicture": "ስእሊ እዚ ደርፊ",
