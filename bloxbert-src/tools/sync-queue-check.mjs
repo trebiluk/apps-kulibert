@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { fromDoc, fitPlayer } from '../src/save.js'
+import { getSyncState, mountSyncChip, setSyncState, onSyncRetry } from '../src/save/sync-chip.js'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const MOD = process.env.SYNC_MODULE ? pathToFileURL(path.resolve(process.env.SYNC_MODULE)).href : pathToFileURL(path.join(HERE, '../src/save/server-sync.js')).href
@@ -87,7 +88,7 @@ globalThis.indexedDB = {
     return r
   },
 }
-const json = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body })
+const json = (status, body, headers = {}) => ({ status, ok: status >= 200 && status < 300, json: async () => body, headers: { get: (k) => headers[String(k).toLowerCase()] ?? null } })
 globalThis.fetch = async (url, opt = {}) => {
   if (String(url).includes('/api/who')) return json(200, { verified: true })
   if (!opt.method || opt.method === 'GET') {
@@ -112,7 +113,7 @@ globalThis.fetch = async (url, opt = {}) => {
   if (net.failPut > 0) { net.failPut--; throw new TypeError('network') }
   if (srv.holdPut) await srv.holdPut
   const forced = srv.putStatus.shift()
-  if (forced) return json(forced, { ok: false })
+  if (forced) return typeof forced === 'number' ? json(forced, { ok: false }) : json(forced.status, { ok: false }, forced.headers)
   if (rec.ifMatch !== srv.rev) return json(409, { ok: false, rev: srv.rev })
   srv.exists = true
   srv.rev += 1
@@ -122,6 +123,7 @@ globalThis.fetch = async (url, opt = {}) => {
   return json(200, { ok: true, rev: srv.rev })
 }
 let logs = []
+Math.random = () => 0.5 // jitter factor 1.0: backoff waits are exactly 2 s, 4 s, 8 s ...
 const realLog = console.log
 console.log = (...a) => { logs.push(a.join(' ')) }
 
@@ -358,6 +360,162 @@ for (const [label, setup] of [
   eq(odd.bag.length === 15 && odd.bag[0].item === 'a' && odd.bag[14] === null && odd.hot === 14, 'short bag padded to 15, hot clamped to 14')
   eq(fitPlayer({ bag: [], hot: -3 }).hot === 0 && fitPlayer({ bag: [], hot: 'x' }).hot === 0 && fitPlayer({ bag: [], hot: 2.9 }).hot === 2, 'hot clamped to 0-14, junk becomes 0')
   eq(fitPlayer({ mode: 'survival', bag: new Array(20).fill(null), hot: 3 }).bag.length === 20, 'longer bags are left alone')
+}
+
+// 18. backoff numbers: 2 s, 4 s, 8 s ... capped at 60 s, +/-25% jitter, Retry-After parsing
+{
+  const { backoffMs, retryAfterMs } = await fresh()
+  const mid = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => backoffMs(n, () => 0.5))
+  eq(JSON.stringify(mid) === JSON.stringify([2000, 4000, 8000, 16000, 32000, 60000, 60000, 60000]), 'backoff 2,4,8,16,32 then capped at 60 s: ' + mid.join(','))
+  eq(backoffMs(1, () => 0) === 1500 && backoffMs(1, () => 1) === 2500, 'jitter is +/-25%')
+  eq(backoffMs(9, () => 1) === 60000, 'never above 60 s')
+  eq(retryAfterMs('7') === 7000 && retryAfterMs(null) === 0 && retryAfterMs('soon') === 0 && retryAfterMs('0') === 0, 'Retry-After seconds, junk and zero')
+  eq(retryAfterMs(new Date(now + 9000).toUTCString()) > 7000 && retryAfterMs(new Date(now + 9000).toUTCString()) <= 9000, 'Retry-After as an HTTP date')
+  eq(retryAfterMs('99999') === 300000, 'Retry-After capped at 5 min')
+}
+
+// 19. 429 with Retry-After: the push waits that long, then lands
+{
+  const { maybePush } = await fresh()
+  srv.putStatus = [{ status: 429, headers: { 'retry-after': '30' } }]
+  maybePush(doc(['a']))
+  await flush()
+  eq(srv.puts.length === 1, '429: first PUT sent')
+  await advance(29000)
+  eq(srv.puts.length === 1, '429 + Retry-After 30: nothing sent at 29 s (puts ' + srv.puts.length + ')')
+  await advance(1500)
+  eq(srv.puts.length === 2 && srv.rev === 1, 'sent right after 30 s and saved')
+  eq(getSyncState() === 'saved', 'chip state saved after the retry (' + getSyncState() + ')')
+}
+
+// 20. 429 without Retry-After uses the backoff (2 s first)
+{
+  const { maybePush } = await fresh()
+  srv.putStatus = [429]
+  maybePush(doc(['a']))
+  await flush()
+  await advance(1500)
+  eq(srv.puts.length === 1, '429 no header: not before 2 s')
+  await advance(1000)
+  eq(srv.puts.length === 2 && srv.rev === 1, '429 no header: retried at about 2 s')
+}
+
+// 21. 409 then success: one school copy, backoff on the repeat 409, no second copy, then saved
+{
+  const { maybePush } = await fresh()
+  serverAt(3, '2026-10-31T09:00:00.000Z')
+  srv.putStatus = [409, 409]
+  maybePush(doc(['mine']))
+  await flush()
+  eq(school.length === 1, '409: both kept once')
+  eq(srv.puts.length === 2, '409: PUT and the keepBoth re-PUT (' + srv.puts.length + ')')
+  await advance(1500)
+  eq(srv.puts.length === 2, '409 again: backs off, no immediate PUT')
+  await advance(1000)
+  eq(srv.puts.length === 3 && srv.rev === 4 && srv.chunks['0,0,0'] === 'mine', '409 then success: saved on the next try')
+  eq(school.length === 1, 'no second school copy on the repeat 409')
+  await advance(60000)
+  eq(srv.puts.length === 3, 'done: nothing more sent')
+}
+
+// 22. 5xx backs off and recovers; a new save during backoff does not jump the queue
+{
+  const { maybePush } = await fresh()
+  srv.putStatus = [503, 500]
+  maybePush(doc(['a']))
+  await flush()
+  maybePush(doc(['a', 'b']))
+  await flush()
+  eq(srv.puts.length === 1, 'new save during backoff does not send straight away')
+  await advance(2100)
+  eq(srv.puts.length === 2, '503: retry at 2 s')
+  await advance(3900)
+  eq(srv.puts.length === 2, '500: second wait is 4 s, not 2')
+  await advance(300)
+  eq(srv.puts.length === 3 && srv.rev === 1 && srv.chunks['0,0,1'] === 'b', 'recovers with the newest doc')
+}
+
+// 23. six failed tries in a row: stop, keep the doc, show failed; Try again resets the count and works
+{
+  const { maybePush, retrySync } = await fresh()
+  srv.putStatus = [503, 503, 503, 503, 503, 503]
+  maybePush(doc(['keep me']))
+  await flush()
+  for (const wait of [2100, 4100, 8100, 16100, 32100]) await advance(wait)
+  eq(srv.puts.length === 6, 'six tries made (' + srv.puts.length + ')')
+  eq(timers.size === 0, 'no timer left after the sixth failure')
+  eq(getSyncState() === 'failed', 'chip state is failed (' + getSyncState() + ')')
+  await advance(300000)
+  eq(srv.puts.length === 6, 'auto-retry stopped for good')
+  maybePush(doc(['keep me', 'newer']))
+  await flush()
+  await advance(120000)
+  eq(srv.puts.length === 6, 'a new save while stopped waits for Try again')
+  retrySync()
+  await flush()
+  eq(srv.puts.length === 7 && srv.rev === 1 && srv.chunks['0,0,1'] === 'newer', 'Try again pushes the newest doc and it lands')
+  eq(getSyncState() === 'saved', 'chip back to saved (' + getSyncState() + ')')
+}
+
+// 24. after Try again the count starts over (fail 6 more times to stop again)
+{
+  const { maybePush, retrySync } = await fresh()
+  srv.putStatus = Array(12).fill(500)
+  maybePush(doc(['a']))
+  await flush()
+  for (const wait of [2100, 4100, 8100, 16100, 32100]) await advance(wait)
+  eq(srv.puts.length === 6 && getSyncState() === 'failed', 'stopped after six')
+  retrySync()
+  await flush()
+  for (const wait of [2100, 4100, 8100, 16100, 32100]) await advance(wait)
+  eq(srv.puts.length === 12 && getSyncState() === 'failed', 'a manual try resets the count: six more tries (' + srv.puts.length + ')')
+}
+
+// 25. network failures count and back off too; going online while backing off pushes at once
+{
+  const { maybePush } = await fresh()
+  net.failPut = 2
+  maybePush(doc(['a']))
+  await flush()
+  await advance(2100)
+  await advance(4100)
+  eq(srv.puts.length === 3 && srv.rev === 1, 'two network failures then success on the 2 s and 4 s waits')
+  const b = await fresh()
+  net.failPut = 1
+  b.maybePush(doc(['a']))
+  await flush()
+  for (const fn of listeners.online || []) fn()
+  await flush()
+  eq(srv.puts.length === 2 && srv.rev === 1, 'online event retries without waiting')
+}
+
+// 26. chip: the Try again button (icon + text, 44 px) shows only in the failed state and calls the registered handler
+{
+  const made = []
+  const el = (tag) => {
+    const e = { tag, style: {}, attrs: {}, handlers: {}, children: [], textContent: '', className: '',
+      setAttribute(k, v) { this.attrs[k] = v }, addEventListener(ev, fn) { this.handlers[ev] = fn },
+      appendChild(c) { this.children.push(c); return c }, querySelector(sel) { return sel.includes('icon') ? (this.icon ||= { textContent: '' }) : (this.live ||= { textContent: '' }) } }
+    made.push(e)
+    return e
+  }
+  globalThis.document = { createElement: el, body: { appendChild() {} } }
+  mountSyncChip()
+  await flush()
+  const retry = made.find((e) => e.className === 'bt-sync-retry')
+  eq(!!retry && retry.style.cssText.includes('min-height:44px') && retry.style.cssText.includes('display:none'), 'Try again button exists, 44 px, hidden at first')
+  eq(retry && retry.innerHTML.includes('↻') && retry.innerHTML.includes('Try again') && retry.attrs['aria-label'] === 'Try again', 'button has icon and text')
+  setSyncState('failed')
+  eq(retry.style.display === 'flex', 'visible in the failed state')
+  const chipEl = made.find((e) => e.className === 'bt-sync-chip')
+  eq(chipEl.live.textContent === 'Not saved to school' && chipEl.icon.textContent === '⚠', 'chip says Not saved to school (' + chipEl.live.textContent + ')')
+  let pressed = 0
+  onSyncRetry(() => { pressed++ })
+  retry.handlers.click()
+  eq(pressed === 1, 'press calls the retry handler')
+  setSyncState('saving')
+  eq(retry.style.display === 'none', 'hidden again once a try is running')
+  delete globalThis.document
 }
 
 console.log = realLog

@@ -6,6 +6,8 @@ const WHO = 'https://tw.kulibert.net/api/who'
 let chip = null
 let live = null
 let current = 'idle'
+let retry = null
+let retryFn = null
 
 function flagOn() {
   try {
@@ -28,7 +30,8 @@ function setText(state, text) {
   live.textContent = text
   chip.setAttribute('aria-label', text)
   const icon = chip.querySelector('.bt-sync-icon')
-  if (icon) icon.textContent = state === 'offline' ? '☁' : (state === 'saving' ? '↻' : '☁')
+  if (icon) icon.textContent = state === 'offline' ? '☁' : (state === 'saving' ? '↻' : (state === 'failed' ? '⚠' : '☁'))
+  if (retry) retry.style.display = state === 'failed' ? 'flex' : 'none'
 }
 
 function explain() {
@@ -37,6 +40,7 @@ function explain() {
     saving: 'Copying your world to the school server…',
     offline: 'You are offline. The world is saved on this Chromebook.',
     nosign: 'Sign in to keep a school copy.',
+    failed: 'Your world is saved on this Chromebook. We could not copy it to the school server yet. Press Try again.',
   }
   const msg = lines[current] || lines.saved
   if (typeof window !== 'undefined' && window.alert) window.alert(msg)
@@ -53,6 +57,14 @@ export function mountSyncChip() {
   chip.addEventListener('click', explain)
   chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); explain() } })
   document.body.appendChild(chip)
+  retry = document.createElement('button')
+  retry.type = 'button'
+  retry.className = 'bt-sync-retry'
+  retry.setAttribute('aria-label', 'Try again')
+  retry.style.cssText = 'position:fixed;top:64px;right:12px;z-index:40;background:#1e293b;color:#e2e8f0;border:1px solid #475569;border-radius:999px;padding:10px 16px;font:14px/1.2 system-ui,sans-serif;min-height:44px;min-width:44px;display:none;align-items:center;gap:8px;cursor:pointer;'
+  retry.innerHTML = '<span aria-hidden="true">↻</span><span>Try again</span>'
+  retry.addEventListener('click', () => { if (retryFn) retryFn() })
+  document.body.appendChild(retry)
   signedIn().then(ok => {
     if (!ok) setText('nosign', 'Not signed in')
     else setText('saved', 'Saved to school')
@@ -63,13 +75,24 @@ export function mountSyncChip() {
   }
 }
 
+// The sync code registers what the Try again button does.
+export function onSyncRetry(fn) {
+  retryFn = typeof fn === 'function' ? fn : null
+}
+
+export function getSyncState() {
+  return current
+}
+
 export function setSyncState(state) {
+  current = state
   if (!chip) return
   const texts = {
     saved: 'Saved to school',
     saving: 'Saving…',
     offline: 'Offline — saved here',
     nosign: 'Not signed in',
+    failed: 'Not saved to school',
   }
   setText(state, texts[state] || texts.saved)
 }

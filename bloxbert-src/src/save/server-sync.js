@@ -1,4 +1,4 @@
-import { setSyncState } from './sync-chip.js'
+import { setSyncState, onSyncRetry } from './sync-chip.js'
 // Server copy for Bertopia worlds. Active only with ?sync=1.
 // Push-only was S2a; this adds pull when local is missing or older.
 // Never throws into the caller. Never loads without ?sync=1 + signed-in.
@@ -22,6 +22,15 @@ const pending = Object.create(null)
 const seqs = Object.create(null)
 const busy = Object.create(null)
 const timers = Object.create(null)
+// Backoff: consecutive failed tries per world, a server Retry-After hint, and the give-up flag.
+const MAX_FAILS = 6
+const BACKOFF_BASE_MS = 2000
+const BACKOFF_MAX_MS = 60000
+const RETRY_AFTER_MAX_MS = 300000
+const fails = Object.create(null)
+const hints = Object.create(null)
+const gaveUp = Object.create(null)
+const kept = Object.create(null) // a school copy already exists for the current conflict
 
 function flagOn() {
   try {
@@ -118,7 +127,7 @@ async function fetchHead(world) {
   const res = await fetch(BASE + '?world=' + encodeURIComponent(world), { credentials: 'include' })
   if (res.status === 404) return null
   if (!res.ok) {
-    if ([401, 413, 429, 503].includes(res.status)) stopped = true
+    if ([401, 413].includes(res.status)) stopped = true
     return null
   }
   const json = await res.json()
@@ -185,6 +194,7 @@ async function keepBoth(localDoc) {
     if (!chunks) return 'retry'
     const school = { ...server.head, chunks, id: world + '-school-copy', title: (server.head.title || 'Bertyville') + ' (school copy)' }
     await withStore((store) => { store.put(school, school.id) })
+    kept[world] = true
     showKeepBothCard()
     // re-push current on top of the server copy we just fetched: its rev, not the one the 409 came from
     const head = { ...localDoc }
@@ -227,6 +237,33 @@ function showKeepBothCard() {
   card.addEventListener('click', (e) => { if (e.target === card) card.remove() })
 }
 
+// 2 s, 4 s, 8 s ... capped at 60 s, with +/-25% jitter.
+export function backoffMs(failCount, rand = Math.random) {
+  const base = BACKOFF_BASE_MS * Math.pow(2, Math.max(0, failCount - 1))
+  return Math.min(BACKOFF_MAX_MS, Math.round(base * (0.75 + 0.5 * rand())))
+}
+
+// Retry-After: seconds or an HTTP date. Returns milliseconds, or 0 when absent or unusable.
+export function retryAfterMs(value) {
+  if (value == null) return 0
+  const text = String(value).trim()
+  let ms = 0
+  if (/^\d+$/.test(text)) ms = Number(text) * 1000
+  else {
+    const at = Date.parse(text)
+    if (Number.isFinite(at)) ms = at - Date.now()
+  }
+  return ms > 0 ? Math.min(RETRY_AFTER_MAX_MS, ms) : 0
+}
+
+function noteRetryAfter(world, res) {
+  try {
+    const v = res && res.headers && typeof res.headers.get === 'function' ? res.headers.get('retry-after') : null
+    const ms = retryAfterMs(v)
+    if (ms) hints[world] = ms
+  } catch (e) {}
+}
+
 // Reads a PUT answer once, for both the normal push and the keepBoth re-push.
 // sentRev is the If-Match rev; the server moves it up by one.
 async function afterPut(putRes, world, doc, sentRev) {
@@ -239,8 +276,9 @@ async function afterPut(putRes, world, doc, sentRev) {
     try { setSyncState('saved') } catch (e) {}
     return 'ok'
   }
-  if ([401, 413, 503].includes(putRes.status)) { stopped = true; return 'drop' }
-  return 'retry' // 429 (server window), 409 again, 5xx: wait and push again
+  if ([401, 413].includes(putRes.status)) { stopped = true; return 'drop' }
+  noteRetryAfter(world, putRes)
+  return 'retry' // 429, 409 again, 5xx: back off and push again
 }
 
 // Best effort: stamp the stored world with what the server now has, if no newer save has replaced it.
@@ -269,7 +307,8 @@ async function pushNow(doc) {
     if (getRes.status === 404) {
       rev = 0
     } else if (!getRes.ok) {
-      if ([401, 413, 429, 503].includes(getRes.status)) { stopped = true; return 'drop' }
+      if ([401, 413].includes(getRes.status)) { stopped = true; return 'drop' }
+      noteRetryAfter(world, getRes)
       return 'retry'
     } else {
       const server = await getRes.json()
@@ -312,6 +351,7 @@ async function pushNow(doc) {
       body: JSON.stringify(body),
     })
     if (putRes.status === 409) {
+      if (kept[world]) { noteRetryAfter(world, putRes); return 'retry' } // already kept both once: just back off
       if (!logged409) { console.log('bt-sync 409'); logged409 = true }
       return await keepBoth(doc)
     }
@@ -331,11 +371,11 @@ function arm(world, ms) {
   timers[world] = setTimeout(() => { delete timers[world]; kick(world) }, Math.max(0, ms) + 50)
 }
 
-// Start a push for this world if none is running and the 20 s window is open.
+// Start a push for this world if none is running, no wake-up timer is set and the 20 s window is open.
 // A busy world keeps its pending doc; finish() pushes again when the running push ends.
 function kick(world) {
   try {
-    if (stopped || busy[world]) return
+    if (stopped || busy[world] || gaveUp[world] || timers[world]) return // a timer means a wake-up is already set
     const doc = pending[world]
     if (!doc) return
     if (typeof navigator !== 'undefined' && navigator.onLine === false) { try { setSyncState('offline') } catch (e) {} return }
@@ -353,10 +393,37 @@ function finish(world, seq, out) {
   busy[world] = false
   // Clear the pending doc only if nothing newer arrived while the push ran.
   const same = seqs[world] === seq
+  if (out === 'ok' || out === 'drop') { fails[world] = 0; delete hints[world]; if (out === 'ok') delete kept[world] }
   if ((out === 'ok' || out === 'drop') && same) delete pending[world]
-  if (out === 'retry') { arm(world, WINDOW_MS); return }
+  if (out === 'retry') {
+    fails[world] = (fails[world] || 0) + 1
+    const hint = hints[world] || 0
+    delete hints[world]
+    if (fails[world] >= MAX_FAILS) {
+      // Stop auto-retry. The local save is untouched; the chip offers Try again.
+      gaveUp[world] = true
+      try { setSyncState('failed') } catch (e) {}
+      return
+    }
+    arm(world, Math.max(backoffMs(fails[world]), hint))
+    return
+  }
   if (pending[world]) kick(world)
 }
+
+// Try again: reset the count and push the newest pending doc of every world now.
+export function retrySync() {
+  try {
+    for (const world of Object.keys(pending)) {
+      fails[world] = 0
+      delete gaveUp[world]
+      delete hints[world]
+      disarm(world)
+      kick(world)
+    }
+  } catch (e) {}
+}
+onSyncRetry(retrySync)
 
 function armOnline() {
   if (onlineHandler || typeof window === 'undefined') return
