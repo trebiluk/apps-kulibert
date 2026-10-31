@@ -12336,7 +12336,8 @@ function setGraphics(q) {
 paintGfx()
 
 const topBar = document.querySelector('.top')
-function refit() {
+// Measure the bars and publish the numbers. Cheap: no engine resize, so a panel can call it the moment it opens.
+function measureBars() {
   const bar = document.querySelector('.kb-bar')
   const kb = bar ? Math.ceil(bar.getBoundingClientRect().height) : 0
   if (kb) document.documentElement.style.setProperty('--kb-h', kb + 'px')
@@ -12346,6 +12347,9 @@ function refit() {
   // 2.5.560: one number for "where the top bars end". Goals, Pause, Full screen, the chip lane and panels all hang from it.
   const hudTop = Math.max(h, Math.ceil(topBar.getBoundingClientRect().bottom), kb)
   document.documentElement.style.setProperty('--hud-top', hudTop + 'px')
+}
+function refit() {
+  measureBars()
   layoutLane()
   noa.rendering.resize()
 }
@@ -12374,7 +12378,9 @@ if (window.MutationObserver) {
   const playWatch = document.getElementById('play-chip')
   if (playWatch) new MutationObserver(() => layoutLane()).observe(playWatch, { attributes: true, attributeFilter: ['hidden'] })
   const sheetWatch = document.getElementById('sheet')
-  if (sheetWatch) new MutationObserver(() => layoutLane()).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
+  // 2.5.560 round 1: opening, closing or switching a panel shows or hides the header. Re-measure in the same task, before the next
+  // paint, so --hud-top is never a frame or two behind (that left Menu on top of the header's second row, and Changelog the same way back).
+  if (sheetWatch) new MutationObserver(() => { measureBars(); layoutLane() }).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
 }
 laneAdd(document.getElementById('save-chip'), 5)
 laneAdd(document.getElementById('inspect-chip'), 3)
