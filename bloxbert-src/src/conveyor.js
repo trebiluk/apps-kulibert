@@ -1,6 +1,7 @@
 // Conveyor lines. One flat loop per tick. State lives in the world meta (facing, held count).
 import { EXTRA } from './strings-extra.js'
 import { RECIPES } from './data/recipes.js'
+import { anyList } from './craft.js' // 0065: one alias table for plankAny / stoneAny / woolAny
 
 const COPY = {
   en: {
@@ -489,10 +490,17 @@ export function createBelts(api) {
   }
 }
 
+function haveOf(have, item) {
+  const list = anyList(item)
+  if (!list) return have[item] || 0
+  let n = 0
+  for (const k of list) n += have[k] || 0
+  return n
+}
 export function beltRecipeOk(bin, recipe) {
   const have = {}
   for (const s of bin || []) if (s && s.n) have[s.item] = (have[s.item] || 0) + s.n
-  return (recipe.in || []).every(([item, n]) => (have[item] || 0) >= n)
+  return (recipe.in || []).every(([item, n]) => haveOf(have, item) >= n)
 }
 
 export function craftOnce(bin, bout, recipes) {
@@ -501,13 +509,26 @@ export function craftOnce(bin, bout, recipes) {
     if (!recipe || (recipe.at !== 'hand' && recipe.at !== 'bench')) continue
     if (!beltRecipeOk(bin, recipe)) continue
     if (!roomFor(bout, recipe.out[0], recipe.out[1])) continue
-    for (const [item, n] of recipe.in) takeStack(bin, item, n)
+    for (const [item, n] of recipe.in) takeAny(bin, item, n)
     addStack(bout, recipe.out[0], recipe.out[1])
     return recipe.id
   }
   return ''
 }
 
+// 0065: an alias input (plankAny...) takes from any of its kinds, in bin order.
+function takeAny(slots, item, n) {
+  const list = anyList(item)
+  if (!list) { takeStack(slots, item, n); return }
+  let left = n
+  for (const k of list) {
+    if (left <= 0) break
+    let have = 0
+    for (const s of slots) if (s && s.item === k) have += s.n
+    const d = Math.min(have, left)
+    if (d > 0) { takeStack(slots, k, d); left -= d }
+  }
+}
 function takeStack(slots, item, n) {
   let left = n
   for (const s of slots) {
