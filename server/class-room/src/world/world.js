@@ -3,9 +3,10 @@
 // the database is synchronous, so two rooms can never interleave a read and a write.
 // An edit says what the client thought was there (b). If that is not what is there, it is
 // refused as 'stale' and the true block comes back. Last writer never silently wins.
-import { locate, validCell, encodeChunk, decodeChunk } from './chunks.js'
+import { cellAt, locate, validCell, encodeChunk, decodeChunk } from './chunks.js'
 import { CATCHUP_MS, STEP_CHUNKS, decodeMachines, encodeMachines, grant, isMachine, machinesIn, stepChunk, touchOps } from './sim.js'
-import { decodeItems, emptySlots, encodeItems, isContainer, isEmpty, put, take, validItem, validMove } from './items.js'
+import { OVEN, decodeItems, emptySlots, encodeItems, isContainer, isEmpty, putInto, take, validItem, validMove } from './items.js'
+import { bake } from './oven.js'
 
 export const KEEP_OPS = 20000
 const MAX_CLEAN = 256
@@ -69,6 +70,20 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
         const [cx, cz] = k.split(',').map(Number)
         const c = load(cx, cz)
         if (c.locked) continue
+        // ovens first: turn the granted time into bakes, on the slots, before the counters move on
+        for (const [idx, row] of c.m) {
+          if (row.id !== OVEN || c.edits.get(idx) !== OVEN) continue
+          const slots = c.items.get(idx)
+          if (!slots) { row.at = nowMs; continue }                          // empty oven: nothing to bake, no time banked
+          const b = bake(slots, row, grant(row.at, nowMs, cap))
+          row.prog = b.st.prog
+          if (b.st.left) row.left = b.st.left; else delete row.left
+          if (b.bakes) {
+            c.items.set(idx, b.slots)
+            const { x, y, z } = cellAt(cx, cz, idx)
+            pending.push({ s: ++wseq, w: 0, x, y, z, b: OVEN, i: OVEN, t: nowMs }); touched++
+          }
+        }
         const r = stepChunk(c.edits, c.m, nowMs, cap)
         c.m = r.m
         c.dirty = true
@@ -98,7 +113,19 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
       const { cx, cz, idx } = locate(x, y, z)
       const c = load(cx, cz)
       if (c.locked) return { ok: false, why: 'chunk-locked' }
-      const r = dir === 'take' ? take(v.slots, item, n) : put(v.slots, item, n)
+      const block = c.edits.has(idx) ? c.edits.get(idx) : gen ? gen(x, y, z) : 0
+      // an oven settles first: bake up to t on the slots it had, so time it spent paused (no fuel, no input,
+      // output full) is never paid out to items put in now, and a take sees everything already baked
+      const row = block === OVEN ? c.m.get(idx) : null
+      if (row) {
+        const b = bake(v.slots, row, grant(row.at, t, CATCHUP_MS))
+        v.slots = b.slots; row.prog = b.st.prog; row.at = Math.max(row.at, t)
+        if (b.st.left) row.left = b.st.left; else delete row.left
+        if (b.bakes) { c.items.set(idx, b.slots); pending.push({ s: ++wseq, w: 0, x, y, z, b: OVEN, i: OVEN, t }) }
+        c.dirty = true
+      }
+      const r = dir === 'take' ? take(v.slots, item, n) : putInto(block, v.slots, item, n)
+      if (r.error) return { ok: false, why: r.error, slots: v.slots }
       const moved = dir === 'take' ? r.got : n - r.left
       if (!moved) return { ok: false, why: dir === 'take' ? 'none' : 'full', slots: v.slots }
       if (isEmpty(r.slots)) c.items.delete(idx); else c.items.set(idx, r.slots)
