@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var APP_VERSION = "1.4.0";
+  var APP_VERSION = "1.5.0";
   var UPPER = 108;
   var FORE = 78;
   var WRIST = 24;
@@ -22,6 +22,10 @@
   var EL_MAX = 105;
   var WR_MIN = -75;
   var WR_MAX = 75;
+  // 1.5.0: Bizzy is a second copy of the rig, 190 to the right of Berty, facing the same way.
+  var BIZZY_X = 190;
+  var HIT_GAP = 11;
+  var PARKED = { base: 0, shoulder: 75, elbow: -120, wrist: 0 };
 
   // Every non-English language is a machine draft (1.3.2): the table marks it and the app shows the badge. ar and fa-AF are RTL.
   var LANGS = [
@@ -255,7 +259,15 @@
       part: copyPart(state.part),
       sorted: state.sorted || 0,
       queue: (state.queue || []).map(copyPart),
-      binned: (state.binned || []).map(copyPart)
+      binned: (state.binned || []).map(copyPart),
+      bizzy: state.bizzy ? copyArm(state.bizzy) : undefined
+    };
+  }
+
+  function copyArm(a) {
+    return {
+      base: a.base, shoulder: a.shoulder, elbow: a.elbow, wrist: a.wrist || 0,
+      open: !!a.open, gap: a.gap == null ? (a.open ? GAP_OPEN : GAP_CLOSED) : a.gap, holding: !!a.holding
     };
   }
 
@@ -442,7 +454,7 @@
       var p = pose(state);
       return spotName(state.base, p.cx) === level.spot && p.cy >= 10 && p.cy <= 52 && !state.holding;
     }
-    if (level.kind === "place" || level.kind === "debug") return !!(state.part && state.part.inBin);
+    if (level.kind === "place" || level.kind === "debug" || level.kind === "handoff") return !!(state.part && state.part.inBin);
     if (level.kind === "pile" || level.kind === "sensor") {
       return (state.sorted || 0) >= (level.need || 1) && !(state.queue && state.queue.length) && !state.holding;
     }
@@ -663,6 +675,11 @@
       if (state.part && state.part.dropped) return "The part missed the bin.";
       return "The pile still has parts out. " + placed + " of " + (level.need || 3) + " are in the bin.";
     }
+    if (level.kind === "handoff") {
+      if (state.holding || (state.bizzy && state.bizzy.holding)) return "The part is still held. Bizzy opens the claw over the bin.";
+      if (state.part && state.part.dropped) return "The part fell before it reached Bizzy's bin.";
+      return "The part is not in Bizzy's bin yet. Berty picks it, Bizzy places it.";
+    }
     if (level.kind === "sensor") {
       if (state.holding) return "The part is still held. Open the claw over the matching bin.";
       if (state.part && state.part.dropped) return "The part missed the matching bin.";
@@ -785,12 +802,38 @@
       broken: ["shoulder-down", "shoulder-down", "elbow-down", "elbow-down", "claw-close", "base-right", "claw-open", "base-right"],
       blocks: ["wrist-up", "wrist-down"].concat(CORE_BLOCKS)
     };
-    return [l1, l2, l3, l4, l5, l6];
+    var t3 = {
+      id: "T3",
+      name: "Hand-off",
+      goal: "Berty picks up the cube and hands it to Bizzy. Bizzy places it in his bin. Use both lanes.",
+      start: { base: 0, shoulder: 45, elbow: -60 },
+      startZ: { base: 0, shoulder: 45, elbow: -60 },
+      kind: "handoff",
+      duo: true,
+      target: null,
+      par: 24,
+      timePar: 14000,
+      part: { base: 0, r: gp.cx, y: gp.cy, hw: 8, hh: 8, inBin: false, dropped: false },
+      bin: null,
+      binZ: { base: 30, r: gp.cx, half: 36, h: 22 },
+      spot: "",
+      blocks: CORE_BLOCKS.slice()
+    };
+    return [l1, l2, l3, l4, l5, l6, t3];
   }
 
   var LEVELS = buildLevels();
 
   function initialState(level) {
+    var s = baseState(level);
+    if (level.duo) {
+      var z = level.startZ || level.start;
+      s.bizzy = { base: z.base, shoulder: z.shoulder, elbow: z.elbow, wrist: z.wrist || 0, open: true, gap: GAP_OPEN, holding: false };
+    }
+    return s;
+  }
+
+  function baseState(level) {
     return {
       base: level.start.base,
       shoulder: level.start.shoulder,
@@ -1007,6 +1050,324 @@
     return { kind: kind, stars: n, words: words, aria: words, status: status };
   }
 
+
+  // ---- two arms (1.5.0). Every lane steps together: tick k runs block k of both lanes. ----
+  function armPivot(who) { return who === "bizzy" ? BIZZY_X : 0; }
+
+  function partToLocal(part, px) {
+    if (!part) return null;
+    var out = copyPart(part);
+    if (!px) return out;
+    var a = part.base * Math.PI / 180;
+    var wx = Math.sin(a) * part.r - px;
+    var wz = Math.cos(a) * part.r;
+    out.base = Math.atan2(wx, wz) * 180 / Math.PI;
+    out.r = Math.hypot(wx, wz);
+    return out;
+  }
+
+  function partFromLocal(part, px) {
+    if (!part) return null;
+    var out = copyPart(part);
+    if (!px) return out;
+    var a = part.base * Math.PI / 180;
+    var wx = Math.sin(a) * part.r + px;
+    var wz = Math.cos(a) * part.r;
+    out.base = Math.atan2(wx, wz) * 180 / Math.PI;
+    out.r = Math.hypot(wx, wz);
+    return out;
+  }
+
+  function armOf(state, who) {
+    return copyArm(who === "bizzy" ? state.bizzy : state);
+  }
+
+  function localView(state, who) {
+    var a = armOf(state, who);
+    a.part = partToLocal(state.part, armPivot(who));
+    a.sorted = 0;
+    a.queue = [];
+    a.binned = [];
+    return a;
+  }
+
+  function duoLevelFor(level, who) {
+    if (who === "bizzy") return { id: level.id, kind: "place", bin: level.binZ };
+    return { id: level.id, kind: "place", bin: null };
+  }
+
+  function putArm(state, who, a) {
+    var dst = who === "bizzy" ? state.bizzy : state;
+    dst.base = a.base;
+    dst.shoulder = a.shoulder;
+    dst.elbow = a.elbow;
+    dst.wrist = a.wrist || 0;
+    dst.open = !!a.open;
+    dst.gap = a.gap == null ? (a.open ? GAP_OPEN : GAP_CLOSED) : a.gap;
+    dst.holding = !!a.holding;
+  }
+
+  function armSegs(arm, who) {
+    var px = armPivot(who);
+    var p = pose(arm);
+    var yaw = arm.base * Math.PI / 180;
+    var sy = Math.sin(yaw);
+    var cy = Math.cos(yaw);
+    var pt = function (r, y) { return [px + sy * r, y, cy * r]; };
+    var segs = [
+      { name: "shoulder", a: pt(0, SY), b: pt(p.ex, p.ey), tip: false },
+      { name: "elbow", a: pt(p.ex, p.ey), b: pt(p.wx, p.wy), tip: false },
+      { name: "wrist", a: pt(p.wx, p.wy), b: pt(p.gx, p.gy), tip: true }
+    ];
+    var half = p.gap / 2;
+    for (var sign = -1; sign <= 1; sign += 2) {
+      var x1 = p.gx + p.nx * sign * half;
+      var y1 = p.gy + p.ny * sign * half;
+      segs.push({ name: "claw", a: pt(x1, y1), b: pt(x1 + p.px * JAW, y1 + p.py * JAW), tip: true });
+    }
+    return segs;
+  }
+
+  function segGap(s, t) {
+    var best = 1e9;
+    var n = Math.max(2, Math.ceil(Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1], s.b[2] - s.a[2]) / 7));
+    var m = Math.max(2, Math.ceil(Math.hypot(t.b[0] - t.a[0], t.b[1] - t.a[1], t.b[2] - t.a[2]) / 7));
+    for (var i = 0; i <= n; i++) {
+      var u = i / n;
+      var ax = s.a[0] + (s.b[0] - s.a[0]) * u;
+      var ay = s.a[1] + (s.b[1] - s.a[1]) * u;
+      var az = s.a[2] + (s.b[2] - s.a[2]) * u;
+      for (var j = 0; j <= m; j++) {
+        var v = j / m;
+        var d = Math.hypot(ax - (t.a[0] + (t.b[0] - t.a[0]) * v), ay - (t.a[1] + (t.b[1] - t.a[1]) * v), az - (t.a[2] + (t.b[2] - t.a[2]) * v));
+        if (d < best) best = d;
+      }
+    }
+    return best;
+  }
+
+  // The two hands (wrist and claw) may touch: that is how the hand-off works. Everything else may not.
+  function armArmHit(berty, bizzy) {
+    var A = armSegs(berty, "berty");
+    var B = armSegs(bizzy, "bizzy");
+    var best = null;
+    for (var i = 0; i < A.length; i++) {
+      for (var j = 0; j < B.length; j++) {
+        if (A[i].tip && B[j].tip) continue;
+        var d = segGap(A[i], B[j]);
+        if (d < HIT_GAP && (!best || d < best.d)) best = { d: d, a: "berty", pa: A[i].name, b: "bizzy", pb: B[j].name };
+      }
+    }
+    return best;
+  }
+
+  function isMoveCmd(c) { return !!JOINTS[c]; }
+
+  function mixArm(a, b, t) {
+    var gb = b.gap == null ? a.gap : b.gap;
+    var out = {
+      base: a.base + (b.base - a.base) * t,
+      shoulder: a.shoulder + (b.shoulder - a.shoulder) * t,
+      elbow: a.elbow + (b.elbow - a.elbow) * t,
+      wrist: (a.wrist || 0) + ((b.wrist || 0) - (a.wrist || 0)) * t,
+      gap: a.gap + (gb - a.gap) * t,
+      holding: a.holding
+    };
+    out.open = out.gap > 22;
+    return out;
+  }
+
+  function duoFail(state, who, msg, extra) {
+    var out = { ok: false, msg: msg, who: who, t: 1, state: state };
+    if (extra) for (var k in extra) out[k] = extra[k];
+    return out;
+  }
+
+  function duoTick(state, cmds, level) {
+    var W = cloneState(state);
+    var whos = ["berty", "bizzy"];
+    var w, c, r;
+    if (W.holding && W.bizzy.holding) {
+      for (var q = 0; q < 2; q++) if (cmds[whos[q]] && isMoveCmd(cmds[whos[q]])) return duoFail(state, whos[q], "both claws hold the part", { bothHold: true });
+    }
+    var res = {};
+    for (var i = 0; i < 2; i++) {
+      w = whos[i];
+      c = cmds[w];
+      if (!c || !isMoveCmd(c)) continue;
+      r = applyCommand(localView(W, w), c, duoLevelFor(level, w));
+      res[w] = r;
+      if (!r.ok) {
+        var stopped = cloneState(W);
+        putArm(stopped, w, r.state);
+        if (r.state.holding) stopped.part = partFromLocal(r.state.part, armPivot(w));
+        return duoFail(stopped, w, r.msg);
+      }
+    }
+    var movers = [];
+    if (res.berty) movers.push("berty");
+    if (res.bizzy) movers.push("bizzy");
+    if (movers.length) {
+      var a0 = armOf(W, "berty");
+      var z0 = armOf(W, "bizzy");
+      var a1 = res.berty ? res.berty.state : a0;
+      var z1 = res.bizzy ? res.bizzy.state : z0;
+      var planned = cloneState(W);
+      for (i = 0; i < movers.length; i++) {
+        putArm(planned, movers[i], res[movers[i]].state);
+        if (res[movers[i]].state.holding) planned.part = partFromLocal(res[movers[i]].state.part, armPivot(movers[i]));
+      }
+      for (var k = 1; k <= 6; k++) {
+        var hit = armArmHit(mixArm(a0, a1, k / 6), mixArm(z0, z1, k / 6));
+        if (hit) {
+          if (movers.length === 1 && movers[0] === "bizzy") hit = { d: hit.d, a: "bizzy", pa: hit.pb, b: "berty", pb: hit.pa };
+          return duoFail(duoView(W, planned, k / 6), hit.a, "arms touched", { armHit: hit });
+        }
+      }
+      for (i = 0; i < movers.length; i++) {
+        w = movers[i];
+        putArm(W, w, res[w].state);
+        if (res[w].state.holding) W.part = partFromLocal(res[w].state.part, armPivot(w));
+      }
+    }
+    var order = [];
+    for (i = 0; i < 2; i++) if (cmds[whos[i]] === "claw-close") order.push(whos[i]);
+    for (i = 0; i < 2; i++) if (cmds[whos[i]] === "claw-open") order.push(whos[i]);
+    var win = false;
+    for (i = 0; i < order.length; i++) {
+      w = order[i];
+      c = cmds[w];
+      var me = armOf(W, w);
+      var other = armOf(W, w === "bizzy" ? "berty" : "bizzy");
+      if (c === "claw-open" && me.holding && other.holding) {
+        me.holding = false;
+        me.open = true;
+        me.gap = GAP_OPEN;
+        putArm(W, w, me);
+        continue;
+      }
+      r = applyCommand(localView(W, w), c, duoLevelFor(level, w));
+      if (!r.ok) {
+        var broken = cloneState(W);
+        putArm(broken, w, r.state);
+        if (r.miss) broken.part = partFromLocal(r.state.part, armPivot(w));
+        return duoFail(broken, w, r.msg, { miss: !!r.miss });
+      }
+      putArm(W, w, r.state);
+      if (r.state.holding || me.holding || r.win) W.part = partFromLocal(r.state.part, armPivot(w));
+      if (r.win) win = true;
+    }
+    return { ok: true, win: win, t: 1, state: W };
+  }
+
+  // Next real block of a lane. Repeat and If blocks take no time, as in one lane.
+  function nextReal(run, state, level) {
+    var guard = 0;
+    while (guard < 300) {
+      guard += 1;
+      if (run.ip >= run.commands.length) return { done: true };
+      var idx = run.ip;
+      var cmd = run.commands[idx];
+      if (isRepeat(cmd) || cmd === "end-repeat" || isIf(cmd) || cmd === "end-if") {
+        var ev = advance(run, state, level);
+        if (!ev.ok) return { err: ev.msg || "program error", index: idx };
+        continue;
+      }
+      run.ip = idx + 1;
+      return { done: false, index: idx, cmd: cmd };
+    }
+    return { err: "program ran too long", index: 0 };
+  }
+
+  function duoAdvance(runs, state, level) {
+    var nb = nextReal(runs.berty, state, level);
+    var nz = nextReal(runs.bizzy, state, level);
+    if (nb.err || nz.err) {
+      var bad = nb.err ? nb : nz;
+      return { done: true, ok: false, msg: bad.err, state: state, index: bad.index, indexZ: -1, cmd: "x", cmdZ: "", t: 0 };
+    }
+    if (nb.done && nz.done) return { done: true, ok: true, state: state, index: -1, indexZ: -1, cmd: "", cmdZ: "", t: 0 };
+    var cmds = { berty: nb.done ? "" : nb.cmd, bizzy: nz.done ? "" : nz.cmd };
+    var r = duoTick(state, cmds, level);
+    return {
+      done: false, ok: r.ok, win: !!r.win, msg: r.msg || "", miss: !!r.miss, armHit: r.armHit || null, bothHold: !!r.bothHold,
+      who: r.who || "", t: r.t, state: r.state, structural: false,
+      index: nb.done ? -1 : nb.index, indexZ: nz.done ? -1 : nz.index, cmd: cmds.berty, cmdZ: cmds.bizzy
+    };
+  }
+
+  function beginDuoRun(cb, cz) {
+    return { berty: beginRun(cb), bizzy: beginRun(cz) };
+  }
+
+  function runAllDuo(level, cb, cz) {
+    var state = initialState(level);
+    var runs = beginDuoRun(cb, cz);
+    var blocks = cb.length + cz.length;
+    var guard = 0;
+    var ticks = 0;
+    while (guard < 400) {
+      guard += 1;
+      var ev = duoAdvance(runs, state, level);
+      if (ev.done && ev.ok) return { win: goalMet(state, level), crash: "", step: ticks, ticks: ticks, state: state, blocks: blocks, end: goalMet(state, level) ? "" : endReason(state, level) };
+      ticks += 1;
+      if (!ev.ok) return { win: false, crash: ev.msg, step: ticks, ticks: ticks, state: ev.state, miss: ev.miss, armHit: ev.armHit, who: ev.who, bothHold: ev.bothHold, blocks: blocks };
+      state = ev.state;
+      if (ev.win || goalMet(state, level)) return { win: true, crash: "", step: ticks, ticks: ticks, state: state, blocks: blocks };
+    }
+    return { win: false, crash: "program ran too long", step: 0, state: state, blocks: blocks };
+  }
+
+  // What the screen draws part-way through a tick: both arms blended, and the cube riding whichever claw holds it.
+  function duoView(start, end, f) {
+    var out = cloneState(end);
+    if (f >= 1) return out;
+    var mb = mixArm(armOf(start, "berty"), armOf(end, "berty"), f);
+    var mz = mixArm(armOf(start, "bizzy"), armOf(end, "bizzy"), f);
+    mb.holding = start.holding || (end.holding && f > 0.92);
+    mz.holding = start.bizzy.holding || (end.bizzy.holding && f > 0.92);
+    out.base = mb.base; out.shoulder = mb.shoulder; out.elbow = mb.elbow; out.wrist = mb.wrist; out.gap = mb.gap; out.open = mb.open; out.holding = mb.holding;
+    out.bizzy = { base: mz.base, shoulder: mz.shoulder, elbow: mz.elbow, wrist: mz.wrist, gap: mz.gap, open: mz.open, holding: mz.holding };
+    var part = copyPart(start.part || end.part);
+    if (part && !end.part.inBin) {
+      part.inBin = false;
+      part.dropped = false;
+      var holder = null;
+      if (mb.holding) holder = "berty";
+      else if (mz.holding) holder = "bizzy";
+      if (holder) {
+        var armNow = holder === "bizzy" ? mz : mb;
+        var p = pose(armNow);
+        var local = { base: armNow.base, r: p.cx, y: p.cy, hw: part.hw, hh: part.hh };
+        var world = partFromLocal(local, armPivot(holder));
+        part.base = world.base;
+        part.r = world.r;
+        part.y = p.cy;
+      } else {
+        part = copyPart(end.part);
+      }
+    } else if (part) {
+      part = copyPart(end.part);
+    }
+    out.part = part;
+    return out;
+  }
+
+  var UI_ARM_WORD = { shoulder: "Shoulder", elbow: "Elbow", wrist: "Wrist", claw: "Claw" };
+  function armHitLine(hit, step, lang) {
+    var code = lang && langMeta(lang).id === lang ? lang : "en";
+    var word = function (k) {
+      var w = uiText(code, UI_ARM_WORD[k]);
+      return code === "en" || code === "es" || code === "uk" || code === "ru" || code === "rw" ? w.toLowerCase() : w;
+    };
+    var name = function (who) { return uiText(code, who === "bizzy" ? "nameBizzy" : "nameBerty"); };
+    return uiText(code, "armHit").replace("{a}", name(hit.a)).replace("{pa}", word(hit.pa)).replace("{b}", name(hit.b)).replace("{pb}", word(hit.pb)).replace("{n}", String(step));
+  }
+  function duoNameOf(who, lang) {
+    var code = lang && langMeta(lang).id === lang ? lang : "en";
+    return uiText(code, who === "bizzy" ? "nameBizzy" : "nameBerty");
+  }
+
   var UI = {
     en: {
       L1: "Move one joint", L2: "Pick and place", L3: "Go to spot", L4: "Sort a pile", L5: "Sensor bins", L6: "Fix the program",
@@ -1038,7 +1399,7 @@
       themeDark: "\u25D0 Dark", themeLight: "\u25D0 Light",
       starRules: "Stars: done, under the block par, under the time par. They stay on this screen only.",
       blocksLine: "Blocks: {n}", swapsLine: "Swaps: {n}", timeNone: "Time: none yet", timeLine: "Time: {n}",
-      menu: "Menu", langAria: "Language", padAria: "Program blocks", hi: "Hi! I'm Berty. I'm Bizzy.", skipHint: "Press any key or tap to skip.", tip1: "Press Run. Watch Berty pick up the cube.", tip2: "Each block turns one joint 15°.", tipClose: "Close tip", tipOff: "Don't show again", helpBtn: "Help", helpTitle: "Help", helpBlocksH: "What each block does", hb1: "Base left and Base right turn the arm left or right.", hb2: "Shoulder up and Shoulder down lift or lower the whole arm.", hb3: "Elbow up and Elbow down bend the middle of the arm.", hb4: "Wrist up and Wrist down tilt the claw.", hb5: "Open claw lets go of the cube. Close claw grabs it.", hb6: "Repeat 2 and Repeat 3 run the blocks up to End repeat again.", hb7: "If red and If blue run the blocks up to End if only when the sensor sees that color and shape.", helpControlsH: "Controls", helpFailH: "Why a run fails", hf1: "The arm hit the table or the part. The note names what it hit, and the step stays outlined.", hf2: "The part did not end in the bin or on the spot. Check the blocks and try again.", hf3: "E-STOP stopped the run. Press Reset, then Run.", hf4: "The program is empty. Add a block first.", resetTips: "Reset tips", helpClose: "Close", tipsBack: "Tips are back.", tagline: "Move a robot arm", v140: "Version 1.4.0", w140a: "Pinchy is now Berty & Bizzy. The old address /pinchy/ sends you here.", w140b: "Berty and Bizzy wave hello once per visit. Tips and a Help button explain the blocks.", draftBadge: "Machine draft.", Target: "Target",
+      menu: "Menu", langAria: "Language", padAria: "Program blocks", hi: "Hi! I'm Berty. I'm Bizzy.", skipHint: "Press any key or tap to skip.", tip1: "Press Run. Watch Berty pick up the cube.", tip2: "Each block turns one joint 15°.", tipClose: "Close tip", tipOff: "Don't show again", helpBtn: "Help", helpTitle: "Help", helpBlocksH: "What each block does", hb1: "Base left and Base right turn the arm left or right.", hb2: "Shoulder up and Shoulder down lift or lower the whole arm.", hb3: "Elbow up and Elbow down bend the middle of the arm.", hb4: "Wrist up and Wrist down tilt the claw.", hb5: "Open claw lets go of the cube. Close claw grabs it.", hb6: "Repeat 2 and Repeat 3 run the blocks up to End repeat again.", hb7: "If red and If blue run the blocks up to End if only when the sensor sees that color and shape.", helpControlsH: "Controls", helpFailH: "Why a run fails", hf1: "The arm hit the table or the part. The note names what it hit, and the step stays outlined.", hf2: "The part did not end in the bin or on the spot. Check the blocks and try again.", hf3: "E-STOP stopped the run. Press Reset, then Run.", hf4: "The program is empty. Add a block first.", resetTips: "Reset tips", helpClose: "Close", tipsBack: "Tips are back.", tagline: "Move a robot arm", v140: "Version 1.4.0", w140a: "Pinchy is now Berty & Bizzy. The old address /pinchy/ sends you here.", w140b: "Berty and Bizzy wave hello once per visit. Tips and a Help button explain the blocks.", nameBerty: "Berty", nameBizzy: "Bizzy", dof: "5 DOF", dofTitle: "Five degrees of freedom: base, shoulder, elbow, wrist, and gripper.", laneAria: "Block lanes", laneNow: "Adding to {name}'s lane.", armHit: "{a}'s {pa} hit {b}'s {pb} (step {n}).", bothHold: "Both claws are holding the part. One must open first.", T3: "Hand-off", "T3-goal": "Berty picks up the cube and hands it to Bizzy. Bizzy places it in his bin. Use both lanes.", legendDuo: "Two arms. Berty is on the left and Bizzy on the right. Each has its own lane of blocks, and both lanes run together, one block at a time. A claw that closes runs before a claw that opens.", hb8: "Two lanes: Berty's blocks and Bizzy's blocks run together, one block each at a time.", hf5: "Berty and Bizzy touched. The note names the two parts, and the step stays outlined.", v150: "Version 1.5.0", w150a: "Bizzy, a second robot arm, joins Berty. Each arm has 5 joints.", w150b: "Level 7, Hand-off: Berty picks up the cube and Bizzy places it. Each arm has its own lane of blocks, and both lanes run together.", w150c: "If the arms touch, the note names the two parts. Levels 1 to 6 play with Berty only.", draftBadge: "Machine draft.", Target: "Target",
       whatsTitle: "What's new", whatsClose: "Close", play: "Play",
       hubLine: "One Menu button in every app. It opens that app's menu.",
       programAria: "Program. Enter adds the picked block.",
@@ -1098,7 +1459,7 @@
       "estop": "■ PARADA DE EMERGENCIA", "clear": "✕ Borrar", "themeDark": "◐ Oscuro",
       "themeLight": "◐ Claro", "starRules": "Estrellas: hecho, menos bloques que el par, menos tiempo que el par. Solo se quedan en esta pantalla.", "blocksLine": "Bloques: {n}",
       "swapsLine": "Cambios: {n}", "timeNone": "Tiempo: aún no", "timeLine": "Tiempo: {n}",
-      "menu": "Menú", "langAria": "Idioma", "padAria": "Bloques del programa", "hi": "¡Hola! Soy Berty. Soy Bizzy.", "skipHint": "Pulsa cualquier tecla o toca para saltar.", "tip1": "Pulsa Ejecutar. Mira cómo Berty recoge el cubo.", "tip2": "Cada bloque gira una articulación 15°.", "tipClose": "Cerrar consejo", "tipOff": "No mostrar más", "helpBtn": "Ayuda", "helpTitle": "Ayuda", "helpBlocksH": "Qué hace cada bloque", "hb1": "Base izquierda y Base derecha giran el brazo a la izquierda o a la derecha.", "hb2": "Hombro arriba y Hombro abajo suben o bajan todo el brazo.", "hb3": "Codo arriba y Codo abajo doblan la mitad del brazo.", "hb4": "Muñeca arriba y Muñeca abajo inclinan la pinza.", "hb5": "Abrir pinza suelta el cubo. Cerrar pinza lo agarra.", "hb6": "Repetir 2 y Repetir 3 ejecutan otra vez los bloques hasta Fin repetir.", "hb7": "Si rojo y Si azul ejecutan los bloques hasta Fin si solo cuando el sensor ve ese color y esa forma.", "helpControlsH": "Controles", "helpFailH": "Por qué falla una ejecución", "hf1": "El brazo chocó con la mesa o con la pieza. La nota dice con qué, y el paso queda marcado.", "hf2": "La pieza no acabó en la cesta o en el punto. Revisa los bloques e inténtalo otra vez.", "hf3": "La parada de emergencia detuvo la ejecución. Pulsa Reiniciar y luego Ejecutar.", "hf4": "El programa está vacío. Añade un bloque primero.", "resetTips": "Restablecer consejos", "helpClose": "Cerrar", "tipsBack": "Los consejos han vuelto.", "tagline": "Mueve un brazo robot", "v140": "Versión 1.4.0", "w140a": "Pinchy ahora es Berty & Bizzy. La dirección antigua /pinchy/ te trae aquí.", "w140b": "Berty y Bizzy saludan una vez por visita. Los consejos y el botón Ayuda explican los bloques.", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
+      "menu": "Menú", "langAria": "Idioma", "padAria": "Bloques del programa", "hi": "¡Hola! Soy Berty. Soy Bizzy.", "skipHint": "Pulsa cualquier tecla o toca para saltar.", "tip1": "Pulsa Ejecutar. Mira cómo Berty recoge el cubo.", "tip2": "Cada bloque gira una articulación 15°.", "tipClose": "Cerrar consejo", "tipOff": "No mostrar más", "helpBtn": "Ayuda", "helpTitle": "Ayuda", "helpBlocksH": "Qué hace cada bloque", "hb1": "Base izquierda y Base derecha giran el brazo a la izquierda o a la derecha.", "hb2": "Hombro arriba y Hombro abajo suben o bajan todo el brazo.", "hb3": "Codo arriba y Codo abajo doblan la mitad del brazo.", "hb4": "Muñeca arriba y Muñeca abajo inclinan la pinza.", "hb5": "Abrir pinza suelta el cubo. Cerrar pinza lo agarra.", "hb6": "Repetir 2 y Repetir 3 ejecutan otra vez los bloques hasta Fin repetir.", "hb7": "Si rojo y Si azul ejecutan los bloques hasta Fin si solo cuando el sensor ve ese color y esa forma.", "helpControlsH": "Controles", "helpFailH": "Por qué falla una ejecución", "hf1": "El brazo chocó con la mesa o con la pieza. La nota dice con qué, y el paso queda marcado.", "hf2": "La pieza no acabó en la cesta o en el punto. Revisa los bloques e inténtalo otra vez.", "hf3": "La parada de emergencia detuvo la ejecución. Pulsa Reiniciar y luego Ejecutar.", "hf4": "El programa está vacío. Añade un bloque primero.", "resetTips": "Restablecer consejos", "helpClose": "Cerrar", "tipsBack": "Los consejos han vuelto.", "tagline": "Mueve un brazo robot", "v140": "Versión 1.4.0", "w140a": "Pinchy ahora es Berty & Bizzy. La dirección antigua /pinchy/ te trae aquí.", "w140b": "Berty y Bizzy saludan una vez por visita. Los consejos y el botón Ayuda explican los bloques.", "nameBerty": "Berty", "nameBizzy": "Bizzy", "dof": "5 GDL", "dofTitle": "Cinco grados de libertad: base, hombro, codo, muñeca y pinza.", "laneAria": "Carriles de bloques", "laneNow": "Añadiendo al carril de {name}.", "armHit": "Choque: {pa} de {a} con {pb} de {b} (paso {n}).", "bothHold": "Las dos pinzas sujetan la pieza. Una debe abrirse primero.", "T3": "Traspaso", "T3-goal": "Berty recoge el cubo y se lo pasa a Bizzy. Bizzy lo coloca en su cesta. Usa los dos carriles.", "legendDuo": "Dos brazos. Berty está a la izquierda y Bizzy a la derecha. Cada uno tiene su carril de bloques y los dos carriles se ejecutan juntos, un bloque cada vez. Una pinza que se cierra actúa antes que una que se abre.", "hb8": "Dos carriles: los bloques de Berty y los de Bizzy se ejecutan juntos, un bloque cada vez.", "hf5": "Berty y Bizzy se tocaron. La nota dice las dos partes y el paso queda marcado.", "v150": "Versión 1.5.0", "w150a": "Bizzy, un segundo brazo robot, se une a Berty. Cada brazo tiene 5 articulaciones.", "w150b": "Nivel 7, Traspaso: Berty recoge el cubo y Bizzy lo coloca. Cada brazo tiene su carril de bloques y los dos se ejecutan juntos.", "w150c": "Si los brazos se tocan, la nota dice las dos partes. Los niveles 1 a 6 se juegan solo con Berty.", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
       "whatsClose": "Cerrar", "play": "Jugar", "hubLine": "Un solo botón Menú en cada aplicación. Abre el menú de esa aplicación.",
       "programAria": "Programa. Enter añade el bloque elegido.", "jointsAria": "Articulaciones", "actionsAria": "Botones del programa",
       "v132": "Versión 1.3.2", "w132a": "Los 8 idiomas ya traducen la línea de estado, la parada de emergencia, Borrar, el resumen de articulaciones, la pinza, las estrellas, bloques y tiempo, la barra superior, el botón de tema y Novedades.", "w132b": "El idioma elegido se guarda y se ve desde la primera pantalla. Las palabras que no están en inglés son un borrador automático.",
@@ -1134,7 +1495,7 @@
       "estop": "■ АВАРІЙНА ЗУПИНКА", "clear": "✕ Очистити", "themeDark": "◐ Темна",
       "themeLight": "◐ Світла", "starRules": "Зірки: виконано, менше за норму блоків, менше за норму часу. Вони лишаються тільки на цьому екрані.", "blocksLine": "Блоків: {n}",
       "swapsLine": "Обмінів: {n}", "timeNone": "Час: ще немає", "timeLine": "Час: {n}",
-      "menu": "Меню", "langAria": "Мова", "padAria": "Блоки програми", "hi": "Привіт! Я Берті. Я Бізі.", "skipHint": "Натисни будь-яку клавішу або торкнись, щоб пропустити.", "tip1": "Натисни «Пуск». Дивись, як Берті підніме кубик.", "tip2": "Кожен блок повертає один суглоб на 15°.", "tipClose": "Закрити підказку", "tipOff": "Більше не показувати", "helpBtn": "Довідка", "helpTitle": "Довідка", "helpBlocksH": "Що робить кожен блок", "hb1": "«Основа ліворуч» і «Основа праворуч» повертають руку вліво або вправо.", "hb2": "«Плече вгору» і «Плече вниз» піднімають або опускають усю руку.", "hb3": "«Лікоть вгору» і «Лікоть вниз» згинають середину руки.", "hb4": "«Зап'ястя вгору» і «Зап'ястя вниз» нахиляють кіготь.", "hb5": "«Відкрити кіготь» відпускає кубик. «Закрити кіготь» хапає його.", "hb6": "«Повтор 2» і «Повтор 3» запускають блоки до «Кінець повтору» ще раз.", "hb7": "«Якщо червоний» і «Якщо синій» запускають блоки до «Кінець якщо», лише коли датчик бачить цей колір і форму.", "helpControlsH": "Керування", "helpFailH": "Чому запуск не вдається", "hf1": "Рука вдарилась об стіл або деталь. Примітка називає, об що, а крок лишається обведеним.", "hf2": "Деталь не опинилась у контейнері чи на точці. Перевір блоки й спробуй ще.", "hf3": "Аварійна зупинка зупинила запуск. Натисни «Скинути», потім «Пуск».", "hf4": "Програма порожня. Спершу додай блок.", "resetTips": "Скинути підказки", "helpClose": "Закрити", "tipsBack": "Підказки знову є.", "tagline": "Керуй рукою робота", "v140": "Версія 1.4.0", "w140a": "Pinchy тепер Берті і Бізі. Стара адреса /pinchy/ перенаправляє сюди.", "w140b": "Берті і Бізі вітаються раз за візит. Підказки й кнопка «Довідка» пояснюють блоки.", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
+      "menu": "Меню", "langAria": "Мова", "padAria": "Блоки програми", "hi": "Привіт! Я Берті. Я Бізі.", "skipHint": "Натисни будь-яку клавішу або торкнись, щоб пропустити.", "tip1": "Натисни «Пуск». Дивись, як Берті підніме кубик.", "tip2": "Кожен блок повертає один суглоб на 15°.", "tipClose": "Закрити підказку", "tipOff": "Більше не показувати", "helpBtn": "Довідка", "helpTitle": "Довідка", "helpBlocksH": "Що робить кожен блок", "hb1": "«Основа ліворуч» і «Основа праворуч» повертають руку вліво або вправо.", "hb2": "«Плече вгору» і «Плече вниз» піднімають або опускають усю руку.", "hb3": "«Лікоть вгору» і «Лікоть вниз» згинають середину руки.", "hb4": "«Зап'ястя вгору» і «Зап'ястя вниз» нахиляють кіготь.", "hb5": "«Відкрити кіготь» відпускає кубик. «Закрити кіготь» хапає його.", "hb6": "«Повтор 2» і «Повтор 3» запускають блоки до «Кінець повтору» ще раз.", "hb7": "«Якщо червоний» і «Якщо синій» запускають блоки до «Кінець якщо», лише коли датчик бачить цей колір і форму.", "helpControlsH": "Керування", "helpFailH": "Чому запуск не вдається", "hf1": "Рука вдарилась об стіл або деталь. Примітка називає, об що, а крок лишається обведеним.", "hf2": "Деталь не опинилась у контейнері чи на точці. Перевір блоки й спробуй ще.", "hf3": "Аварійна зупинка зупинила запуск. Натисни «Скинути», потім «Пуск».", "hf4": "Програма порожня. Спершу додай блок.", "resetTips": "Скинути підказки", "helpClose": "Закрити", "tipsBack": "Підказки знову є.", "tagline": "Керуй рукою робота", "v140": "Версія 1.4.0", "w140a": "Pinchy тепер Берті і Бізі. Стара адреса /pinchy/ перенаправляє сюди.", "w140b": "Берті і Бізі вітаються раз за візит. Підказки й кнопка «Довідка» пояснюють блоки.", "nameBerty": "Берті", "nameBizzy": "Бізі", "dof": "5 СС", "dofTitle": "П'ять ступенів свободи: основа, плече, лікоть, зап'ястя і захват.", "laneAria": "Доріжки блоків", "laneNow": "Додаю на доріжку: {name}.", "armHit": "Дотик: {pa} {a} і {pb} {b} (крок {n}).", "bothHold": "Обидва кігті тримають деталь. Спершу один має відкритися.", "T3": "Передача", "T3-goal": "Берті бере кубик і передає його Бізі. Бізі кладе його у свій контейнер. Використай обидві доріжки.", "legendDuo": "Дві руки. Берті ліворуч, Бізі праворуч. У кожного своя доріжка блоків, і обидві доріжки йдуть разом, по одному блоку. Кіготь, що закривається, діє раніше за кіготь, що відкривається.", "hb8": "Дві доріжки: блоки Берті й блоки Бізі виконуються разом, по одному блоку.", "hf5": "Берті і Бізі торкнулися. Примітка називає дві частини, а крок лишається обведеним.", "v150": "Версія 1.5.0", "w150a": "Бізі, друга рука робота, приєднується до Берті. У кожної руки 5 суглобів.", "w150b": "Рівень 7, «Передача»: Берті бере кубик, а Бізі кладе його. У кожної руки своя доріжка блоків, і обидві йдуть разом.", "w150c": "Якщо руки торкнуться, примітка називає дві частини. Рівні 1–6 грає лише Берті.", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
       "whatsClose": "Закрити", "play": "Грати", "hubLine": "Одна кнопка «Меню» в кожній програмі. Вона відкриває меню цієї програми.",
       "programAria": "Програма. Enter додає вибраний блок.", "jointsAria": "Суглоби", "actionsAria": "Кнопки програми",
       "v132": "Версія 1.3.2", "w132a": "Усі 8 мов тепер перекладають рядок стану, аварійну зупинку, «Очистити», підсумок суглобів, показ кігтя, зірки, блоки й час, верхню панель, кнопку теми та «Що нового».", "w132b": "Вибрана мова зберігається й видна з першого екрана. Слова не англійською — машинна чернетка.",
@@ -1170,7 +1531,7 @@
       "estop": "■ АВАРИЙНЫЙ СТОП", "clear": "✕ Очистить", "themeDark": "◐ Тёмная",
       "themeLight": "◐ Светлая", "starRules": "Звёзды: выполнено, меньше нормы блоков, меньше нормы времени. Они остаются только на этом экране.", "blocksLine": "Блоков: {n}",
       "swapsLine": "Обменов: {n}", "timeNone": "Время: пока нет", "timeLine": "Время: {n}",
-      "menu": "Меню", "langAria": "Язык", "padAria": "Блоки программы", "hi": "Привет! Я Берти. Я Бизи.", "skipHint": "Нажми любую клавишу или коснись, чтобы пропустить.", "tip1": "Нажми «Пуск». Смотри, как Берти возьмёт кубик.", "tip2": "Каждый блок поворачивает один сустав на 15°.", "tipClose": "Закрыть подсказку", "tipOff": "Больше не показывать", "helpBtn": "Справка", "helpTitle": "Справка", "helpBlocksH": "Что делает каждый блок", "hb1": "«Основание влево» и «Основание вправо» поворачивают руку влево или вправо.", "hb2": "«Плечо вверх» и «Плечо вниз» поднимают или опускают всю руку.", "hb3": "«Локоть вверх» и «Локоть вниз» сгибают середину руки.", "hb4": "«Запястье вверх» и «Запястье вниз» наклоняют клешню.", "hb5": "«Открыть клешню» отпускает кубик. «Закрыть клешню» берёт его.", "hb6": "«Повтор 2» и «Повтор 3» запускают блоки до «Конец повтора» ещё раз.", "hb7": "«Если красный» и «Если синий» запускают блоки до «Конец если», только когда датчик видит этот цвет и форму.", "helpControlsH": "Управление", "helpFailH": "Почему запуск не удался", "hf1": "Рука ударилась о стол или деталь. Заметка называет, обо что, а шаг остаётся обведённым.", "hf2": "Деталь не оказалась в корзине или в точке. Проверь блоки и попробуй ещё.", "hf3": "Аварийный стоп остановил запуск. Нажми «Сброс», потом «Пуск».", "hf4": "Программа пуста. Сначала добавь блок.", "resetTips": "Сбросить подсказки", "helpClose": "Закрыть", "tipsBack": "Подсказки снова с нами.", "tagline": "Двигай руку робота", "v140": "Версия 1.4.0", "w140a": "Pinchy теперь Берти и Бизи. Старый адрес /pinchy/ ведёт сюда.", "w140b": "Берти и Бизи здороваются раз за визит. Подсказки и кнопка «Справка» объясняют блоки.", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
+      "menu": "Меню", "langAria": "Язык", "padAria": "Блоки программы", "hi": "Привет! Я Берти. Я Бизи.", "skipHint": "Нажми любую клавишу или коснись, чтобы пропустить.", "tip1": "Нажми «Пуск». Смотри, как Берти возьмёт кубик.", "tip2": "Каждый блок поворачивает один сустав на 15°.", "tipClose": "Закрыть подсказку", "tipOff": "Больше не показывать", "helpBtn": "Справка", "helpTitle": "Справка", "helpBlocksH": "Что делает каждый блок", "hb1": "«Основание влево» и «Основание вправо» поворачивают руку влево или вправо.", "hb2": "«Плечо вверх» и «Плечо вниз» поднимают или опускают всю руку.", "hb3": "«Локоть вверх» и «Локоть вниз» сгибают середину руки.", "hb4": "«Запястье вверх» и «Запястье вниз» наклоняют клешню.", "hb5": "«Открыть клешню» отпускает кубик. «Закрыть клешню» берёт его.", "hb6": "«Повтор 2» и «Повтор 3» запускают блоки до «Конец повтора» ещё раз.", "hb7": "«Если красный» и «Если синий» запускают блоки до «Конец если», только когда датчик видит этот цвет и форму.", "helpControlsH": "Управление", "helpFailH": "Почему запуск не удался", "hf1": "Рука ударилась о стол или деталь. Заметка называет, обо что, а шаг остаётся обведённым.", "hf2": "Деталь не оказалась в корзине или в точке. Проверь блоки и попробуй ещё.", "hf3": "Аварийный стоп остановил запуск. Нажми «Сброс», потом «Пуск».", "hf4": "Программа пуста. Сначала добавь блок.", "resetTips": "Сбросить подсказки", "helpClose": "Закрыть", "tipsBack": "Подсказки снова с нами.", "tagline": "Двигай руку робота", "v140": "Версия 1.4.0", "w140a": "Pinchy теперь Берти и Бизи. Старый адрес /pinchy/ ведёт сюда.", "w140b": "Берти и Бизи здороваются раз за визит. Подсказки и кнопка «Справка» объясняют блоки.", "nameBerty": "Берти", "nameBizzy": "Бизи", "dof": "5 СС", "dofTitle": "Пять степеней свободы: основание, плечо, локоть, запястье и захват.", "laneAria": "Дорожки блоков", "laneNow": "Добавляю на дорожку: {name}.", "armHit": "Касание: {pa} {a} и {pb} {b} (шаг {n}).", "bothHold": "Обе клешни держат деталь. Сначала одна должна открыться.", "T3": "Передача", "T3-goal": "Берти берёт кубик и передаёт его Бизи. Бизи кладёт его в свою корзину. Используй обе дорожки.", "legendDuo": "Две руки. Берти слева, Бизи справа. У каждого своя дорожка блоков, и обе идут вместе, по одному блоку. Клешня, которая закрывается, срабатывает раньше той, что открывается.", "hb8": "Две дорожки: блоки Берти и блоки Бизи выполняются вместе, по одному блоку.", "hf5": "Берти и Бизи соприкоснулись. Заметка называет две части, а шаг остаётся обведённым.", "v150": "Версия 1.5.0", "w150a": "Бизи, вторая рука робота, присоединяется к Берти. У каждой руки 5 суставов.", "w150b": "Уровень 7, «Передача»: Берти берёт кубик, а Бизи кладёт его. У каждой руки своя дорожка блоков, и обе идут вместе.", "w150c": "Если руки соприкоснутся, заметка называет две части. Уровни 1–6 проходит только Берти.", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
       "whatsClose": "Закрыть", "play": "Играть", "hubLine": "Одна кнопка «Меню» в каждом приложении. Она открывает меню этого приложения.",
       "programAria": "Программа. Enter добавляет выбранный блок.", "jointsAria": "Суставы", "actionsAria": "Кнопки программы",
       "v132": "Версия 1.3.2", "w132a": "Все 8 языков теперь переводят строку состояния, аварийный стоп, «Очистить», сводку суставов, показ клешни, звёзды, блоки и время, верхнюю панель, кнопку темы и «Что нового».", "w132b": "Выбранный язык сохраняется и виден с первого экрана. Слова не на английском — машинный черновик.",
@@ -1206,7 +1567,7 @@
       "estop": "■ HAGARARA VUBA", "clear": "✕ Siba", "themeDark": "◐ Umwijima",
       "themeLight": "◐ Urumuri", "starRules": "Inyenyeri: byarangiye, ibibumbe bike, igihe gito. Zigumana kuri iyi ngaruriro gusa.", "blocksLine": "Ibibumbe: {n}",
       "swapsLine": "Impinduka: {n}", "timeNone": "Igihe: nta cyo", "timeLine": "Igihe: {n}",
-      "menu": "Menyu", "langAria": "Ururimi", "padAria": "Ibibumbe bya porogaramu", "hi": "Muraho! Ndi Berty. Ndi Bizzy.", "skipHint": "Kanda ikintu cyose cyangwa ukoreho kugira ngo usimbuke.", "tip1": "Kanda Tangira. Reba Berty afata ikibumbe.", "tip2": "Buri kibumbe gihindura ingingo imwe 15°.", "tipClose": "Funga inama", "tipOff": "Ntongere kubyerekana", "helpBtn": "Ubufasha", "helpTitle": "Ubufasha", "helpBlocksH": "Icyo buri kibumbe gikora", "hb1": "Ikibanza ibumoso n'Ikibanza iburyo bizenguruka ukuboko ibumoso cyangwa iburyo.", "hb2": "Urutugu hejuru n'Urutugu hasi bizamura cyangwa bimanura ukuboko kose.", "hb3": "Inkokora hejuru n'Inkokora hasi bikunja hagati y'ukuboko.", "hb4": "Ikiganza hejuru n'Ikiganza hasi bihengamisha agashumi.", "hb5": "Fungura agashumi kareka ikibumbe. Funga agashumi kagifata.", "hb6": "Subiramo 2 na Subiramo 3 bisubiramo ibibumbe kugeza ku Iherezo ry'isubiramo.", "hb7": "Niba ari umutuku na Niba ari ubururu bikora ibibumbe kugeza ku Iherezo rya Niba gusa iyo sensori ibonye iyo ibara n'ishusho.", "helpControlsH": "Uko bigenzurwa", "helpFailH": "Impamvu gutangira binanirwa", "hf1": "Ukuboko kwakubise ameza cyangwa igice. Inyandiko ivuga icyo cyakubise, kandi intambwe iguma ikikijwe.", "hf2": "Igice ntikigeze mu gikoresho cyangwa ku kibanza. Genzura ibibumbe wongere ugerageze.", "hf3": "Hagarara vuba yahagaritse. Kanda Ongera utangire, hanyuma Tangira.", "hf4": "Porogaramu irimo ubusa. Banza wongereho ikibumbe.", "resetTips": "Subiza inama uko zari ziri", "helpClose": "Funga", "tipsBack": "Inama zagarutse.", "tagline": "Hindura ukuboko kwa robo", "v140": "Verisiyo 1.4.0", "w140a": "Pinchy ubu ni Berty & Bizzy. Aderesi ya kera /pinchy/ ikuzana hano.", "w140b": "Berty na Bizzy bavuga muraho rimwe ku gusura. Inama na buto y'Ubufasha bisobanura ibibumbe.", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
+      "menu": "Menyu", "langAria": "Ururimi", "padAria": "Ibibumbe bya porogaramu", "hi": "Muraho! Ndi Berty. Ndi Bizzy.", "skipHint": "Kanda ikintu cyose cyangwa ukoreho kugira ngo usimbuke.", "tip1": "Kanda Tangira. Reba Berty afata ikibumbe.", "tip2": "Buri kibumbe gihindura ingingo imwe 15°.", "tipClose": "Funga inama", "tipOff": "Ntongere kubyerekana", "helpBtn": "Ubufasha", "helpTitle": "Ubufasha", "helpBlocksH": "Icyo buri kibumbe gikora", "hb1": "Ikibanza ibumoso n'Ikibanza iburyo bizenguruka ukuboko ibumoso cyangwa iburyo.", "hb2": "Urutugu hejuru n'Urutugu hasi bizamura cyangwa bimanura ukuboko kose.", "hb3": "Inkokora hejuru n'Inkokora hasi bikunja hagati y'ukuboko.", "hb4": "Ikiganza hejuru n'Ikiganza hasi bihengamisha agashumi.", "hb5": "Fungura agashumi kareka ikibumbe. Funga agashumi kagifata.", "hb6": "Subiramo 2 na Subiramo 3 bisubiramo ibibumbe kugeza ku Iherezo ry'isubiramo.", "hb7": "Niba ari umutuku na Niba ari ubururu bikora ibibumbe kugeza ku Iherezo rya Niba gusa iyo sensori ibonye iyo ibara n'ishusho.", "helpControlsH": "Uko bigenzurwa", "helpFailH": "Impamvu gutangira binanirwa", "hf1": "Ukuboko kwakubise ameza cyangwa igice. Inyandiko ivuga icyo cyakubise, kandi intambwe iguma ikikijwe.", "hf2": "Igice ntikigeze mu gikoresho cyangwa ku kibanza. Genzura ibibumbe wongere ugerageze.", "hf3": "Hagarara vuba yahagaritse. Kanda Ongera utangire, hanyuma Tangira.", "hf4": "Porogaramu irimo ubusa. Banza wongereho ikibumbe.", "resetTips": "Subiza inama uko zari ziri", "helpClose": "Funga", "tipsBack": "Inama zagarutse.", "tagline": "Hindura ukuboko kwa robo", "v140": "Verisiyo 1.4.0", "w140a": "Pinchy ubu ni Berty & Bizzy. Aderesi ya kera /pinchy/ ikuzana hano.", "w140b": "Berty na Bizzy bavuga muraho rimwe ku gusura. Inama na buto y'Ubufasha bisobanura ibibumbe.", "nameBerty": "Berty", "nameBizzy": "Bizzy", "dof": "5 DOF", "dofTitle": "Ingingo eshanu: ikibanza, urutugu, inkokora, ikiganza n'agashumi.", "laneAria": "Inzira z'ibibumbe", "laneNow": "Nongera ku nzira ya {name}.", "armHit": "Kugongana: {pa} ({a}) na {pb} ({b}) (intambwe {n}).", "bothHold": "Utwumwa twombi dufashe igice. Kimwe kigomba gufungura mbere.", "T3": "Guhererekanya", "T3-goal": "Berty afata ikibumbe akagiha Bizzy. Bizzy akagishyira mu gikoresho cye. Koresha inzira zombi.", "legendDuo": "Amaboko abiri. Berty ari ibumoso na Bizzy iburyo. Buri wese afite inzira ye y'ibibumbe, kandi inzira zombi zikorana, ikibumbe kimwe kimwe. Agashumi gafunga gakora mbere y'agafungura.", "hb8": "Inzira ebyiri: ibibumbe bya Berty n'ibya Bizzy bikorana, ikibumbe kimwe kimwe.", "hf5": "Berty na Bizzy barakoranye. Inyandiko ivuga ibice byombi, kandi intambwe iguma ikikijwe.", "v150": "Verisiyo 1.5.0", "w150a": "Bizzy, ukuboko kwa kabiri kwa robo, ajyanye na Berty. Buri kuboko gufite ingingo 5.", "w150b": "Icyiciro cya 7, Guhererekanya: Berty afata ikibumbe Bizzy akagishyira. Buri kuboko gufite inzira yako, kandi zombi zikorana.", "w150c": "Niba amaboko akoranye, inyandiko ivuga ibice byombi. Ibyiciro 1 kugeza kuri 6 bikinwa na Berty wenyine.", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
       "whatsClose": "Funga", "play": "Gukina", "hubLine": "Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
       "programAria": "Porogaramu. Enter yongeraho ikibumbe cyatoranyijwe.", "jointsAria": "Ingingo", "actionsAria": "Utubuto twa porogaramu",
       "v132": "Verisiyo 1.3.2", "w132a": "Indimi 8 zose zisobanura umurongo w'imiterere, Hagarara vuba, Siba, incamake y'ingingo, agashumi, inyenyeri, ibibumbe n'igihe, umurongo wo hejuru, buto y'ibara, n'Ibishya.", "w132b": "Ururimi uhisemo rurabikwa kandi rugaragara kuva ku ngaruriro ya mbere. Amagambo atari Icyongereza ni inyandiko ya mashini.",
@@ -1242,7 +1603,7 @@
       "estop": "■ ህጹጽ ደው", "clear": "✕ ደምስስ", "themeDark": "◐ ጸሊም",
       "themeLight": "◐ ብሩህ", "starRules": "ኮኸባት፡ ተወዲኡ፣ ካብ ደረጃ ብሎክ ንኽልተ፣ ካብ ደረጃ ግዜ ንኽልተ። ኣብዚ ገጽ ጥራይ ይቕመጡ።", "blocksLine": "ብሎኮታት፡ {n}",
       "swapsLine": "ለውጢ፡ {n}", "timeNone": "ግዜ፡ ገና", "timeLine": "ግዜ፡ {n}",
-      "menu": "ዝርዝር", "langAria": "ቋንቋ", "padAria": "ብሎኮታት መደብ", "hi": "ሰላም! ኣነ በርቲ እየ። ኣነ ቢዚ እየ።", "skipHint": "ዝኾነ መፍትሕ ጠውቕ ወይ ተንከፍ ንምሕላፍ።", "tip1": "ጀምር ጠውቕ። በርቲ ክፋል ክልዕል ርኣይ።", "tip2": "ነፍሲ ወከፍ ብሎክ ሓደ ጉልባብ 15° የዙር።", "tipClose": "ምኽሪ ዕጾ", "tipOff": "ደጊምካ ኣይተርኢ", "helpBtn": "ሓገዝ", "helpTitle": "ሓገዝ", "helpBlocksH": "ነፍሲ ወከፍ ብሎክ እንታይ ይገብር", "hb1": "መሰረት ጸጋምን መሰረት የማንን ኢድ ንጸጋም ወይ ንየማን የዙር።", "hb2": "ትከሻ ላዕሊን ትከሻ ታሕትን ሙሉእ ኢድ የልዕል ወይ የውርድ።", "hb3": "ኩርኩር ላዕሊን ኩርኩር ታሕትን ማእከል ኢድ የጉብጥ።", "hb4": "ኣሰር ላዕሊን ኣሰር ታሕትን ጭንካል የጥምዝ።", "hb5": "ጭንካል ክፈት ክፋል ይለቅቕ። ጭንካል ዓግት ይሕዝ።", "hb6": "ድገም 2 ን ድገም 3 ን ክሳብ መወዳእታ ድገም ብሎኮታት ደጊሞም የሰርሑ።", "hb7": "እንተ ቀይሕን እንተ ሰማያዊን ክሳብ መወዳእታ እንተ ብሎኮታት የሰርሑ፣ ሰንሰር እቲ ቀለምን ቅርጽን ምስ ርእዩ ጥራይ።", "helpControlsH": "ምቁጽጻር", "helpFailH": "ስለምንታይ ምጅማር ይወድቕ", "hf1": "ኢድ ንጠረጴዛ ወይ ንክፋል ተጋጨወ። መመላእታ እንታይ ከም ዝተጋጨወ ትሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ።", "hf2": "ክፋል ኣብ ሳጹን ወይ ኣብ ነጥቢ ኣይወዓለን። ብሎኮታት ርአ ደጊምካ ፈትን።", "hf3": "ህጹጽ ደው ነቲ ምሩጽ ኣቋረጾ። ዳግም ኣዘጋጅ ጠውቕ፣ ድሕሪኡ ጀምር።", "hf4": "መደብ ባዶ እዩ። ቀዳማይ ብሎክ ወስኽ።", "resetTips": "ምኽርታት ዳግም ኣዘጋጅ", "helpClose": "ዕጾ", "tipsBack": "ምኽርታት ተመሊሶም።", "tagline": "ኢድ ሮቦት ኣንቀሳቕስ", "v140": "ዕትም 1.4.0", "w140a": "Pinchy ሕጂ በርቲን ቢዚን እዩ። ናይ ቀደም ኣድራሻ /pinchy/ ናብዚ የምጽኣካ።", "w140b": "በርቲን ቢዚን ሓንሳብ ብሓንሳብ ምብጻሕ ሰላም ይብሉ። ምኽርታትን ቁልፊ ሓገዝን ንብሎኮታት የረድኡ።", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
+      "menu": "ዝርዝር", "langAria": "ቋንቋ", "padAria": "ብሎኮታት መደብ", "hi": "ሰላም! ኣነ በርቲ እየ። ኣነ ቢዚ እየ።", "skipHint": "ዝኾነ መፍትሕ ጠውቕ ወይ ተንከፍ ንምሕላፍ።", "tip1": "ጀምር ጠውቕ። በርቲ ክፋል ክልዕል ርኣይ።", "tip2": "ነፍሲ ወከፍ ብሎክ ሓደ ጉልባብ 15° የዙር።", "tipClose": "ምኽሪ ዕጾ", "tipOff": "ደጊምካ ኣይተርኢ", "helpBtn": "ሓገዝ", "helpTitle": "ሓገዝ", "helpBlocksH": "ነፍሲ ወከፍ ብሎክ እንታይ ይገብር", "hb1": "መሰረት ጸጋምን መሰረት የማንን ኢድ ንጸጋም ወይ ንየማን የዙር።", "hb2": "ትከሻ ላዕሊን ትከሻ ታሕትን ሙሉእ ኢድ የልዕል ወይ የውርድ።", "hb3": "ኩርኩር ላዕሊን ኩርኩር ታሕትን ማእከል ኢድ የጉብጥ።", "hb4": "ኣሰር ላዕሊን ኣሰር ታሕትን ጭንካል የጥምዝ።", "hb5": "ጭንካል ክፈት ክፋል ይለቅቕ። ጭንካል ዓግት ይሕዝ።", "hb6": "ድገም 2 ን ድገም 3 ን ክሳብ መወዳእታ ድገም ብሎኮታት ደጊሞም የሰርሑ።", "hb7": "እንተ ቀይሕን እንተ ሰማያዊን ክሳብ መወዳእታ እንተ ብሎኮታት የሰርሑ፣ ሰንሰር እቲ ቀለምን ቅርጽን ምስ ርእዩ ጥራይ።", "helpControlsH": "ምቁጽጻር", "helpFailH": "ስለምንታይ ምጅማር ይወድቕ", "hf1": "ኢድ ንጠረጴዛ ወይ ንክፋል ተጋጨወ። መመላእታ እንታይ ከም ዝተጋጨወ ትሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ።", "hf2": "ክፋል ኣብ ሳጹን ወይ ኣብ ነጥቢ ኣይወዓለን። ብሎኮታት ርአ ደጊምካ ፈትን።", "hf3": "ህጹጽ ደው ነቲ ምሩጽ ኣቋረጾ። ዳግም ኣዘጋጅ ጠውቕ፣ ድሕሪኡ ጀምር።", "hf4": "መደብ ባዶ እዩ። ቀዳማይ ብሎክ ወስኽ።", "resetTips": "ምኽርታት ዳግም ኣዘጋጅ", "helpClose": "ዕጾ", "tipsBack": "ምኽርታት ተመሊሶም።", "tagline": "ኢድ ሮቦት ኣንቀሳቕስ", "v140": "ዕትም 1.4.0", "w140a": "Pinchy ሕጂ በርቲን ቢዚን እዩ። ናይ ቀደም ኣድራሻ /pinchy/ ናብዚ የምጽኣካ።", "w140b": "በርቲን ቢዚን ሓንሳብ ብሓንሳብ ምብጻሕ ሰላም ይብሉ። ምኽርታትን ቁልፊ ሓገዝን ንብሎኮታት የረድኡ።", "nameBerty": "በርቲ", "nameBizzy": "ቢዚ", "dof": "5 DOF", "dofTitle": "ሓሙሽተ ደረጃ ናጽነት: መሰረት፣ ትከሻ፣ ኩርኩር፣ ኣሰር ከምኡ’ውን መጨበጢ።", "laneAria": "መስመራት ብሎኮታት", "laneNow": "ናብ መስመር {name} የእቱ ኣሎ።", "armHit": "ግጭት: {pa} {a} ምስ {pb} {b} (ስጉምቲ {n})።", "bothHold": "ክልተኦም መንከሳት ክፋል ሕዙ ኣለዉ። ቀዳማይ ሓደ ክኽፈት ኣለዎ።", "T3": "ምልውዋጥ", "T3-goal": "በርቲ ክዕብ ኣልዒሉ ንቢዚ የረክቦ። ቢዚ ኣብ ሳጹኑ የንብሮ። ክልቲኡ መስመራት ተጠቐም።", "legendDuo": "ክልተ ኢድ። በርቲ ጸጋም ቢዚ ድማ የማን። ነፍሲ ወከፍ ናይ ርእሱ መስመር ብሎኮታት ኣለዎ፣ ክልቲኡ መስመራት ድማ ብሓንሳብ ይሰርሑ፣ ሓደ ብሎክ ሓደ ብሎክ። ዝዕጸው መንከስ ቅድሚ ዝኽፈት ይሰርሕ።", "hb8": "ክልተ መስመራት: ብሎኮታት በርቲን ብሎኮታት ቢዚን ብሓንሳብ ይሰርሑ፣ ሓደ ብሎክ ሓደ ብሎክ።", "hf5": "በርቲን ቢዚን ተተንከፉ። መመላእታ ክልቲኡ ክፋላት ትሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ።", "v150": "ዕትም 1.5.0", "w150a": "ቢዚ፣ ካልአይ ኢድ ሮቦት፣ ምስ በርቲ ይሳተፍ። ነፍሲ ወከፍ ኢድ 5 ጉልባባት ኣለዎ።", "w150b": "ደረጃ 7፣ ምልውዋጥ: በርቲ ክዕብ የልዕል ቢዚ ድማ የንብሮ። ነፍሲ ወከፍ ኢድ ናይ ርእሱ መስመር ኣለዎ፣ ክልቲኡ ድማ ብሓንሳብ ይሰርሑ።", "w150c": "ኣእዳው እንተተተንከፋ፣ መመላእታ ክልቲኡ ክፋላት ትሰምዮ። ደረጃታት 1 ክሳብ 6 ብበርቲ ጥራይ ይጻወቱ።", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
       "whatsClose": "ዕጾ", "play": "ተጻወት", "hubLine": "ኣብ ነፍሲ ወከፍ መተግበሪ ሓደ መጠወቒ ዝርዝር ኣሎ። ዝርዝር ናይታ መተግበሪ ይኸፍት።",
       "programAria": "መደብ። Enter ዝተመርጸ ብሎክ የእቱ።", "jointsAria": "ጉልባባት", "actionsAria": "መጠወቕታት መደብ",
       "v132": "ዕትም 1.3.2", "w132a": "ኩለን 8 ቋንቋታት ሕጂ መስመር ኩነታት፣ ህጹጽ ደው፣ ደምስስ፣ ጽሑፍ ጉልባባት፣ ጭንካል፣ ኮኸባት፣ ብሎኮታትን ግዜን፣ ላዕለዋይ መስመር፣ መጠወቒ ገጽ፣ ሓድሽ እንታይ ኣሎን የተርጉማ።", "w132b": "ዝተመርጸ ቋንቋ ይቕመጥ፣ ካብ ቀዳማይ ገጽ ድማ ይርአ። ካብ እንግሊዝኛ ወጻኢ ዝዀኑ ቃላት ናይ ማሽን ረቂቕ እዮም።",
@@ -1287,7 +1648,7 @@
       themeDark: "\u25D0 داكن", themeLight: "\u25D0 فاتح",
       starRules: "النجوم: تم، تحت حد البلوكات، تحت حد الوقت. تبقى على هذه الشاشة فقط.",
       blocksLine: "البلوكات: {n}", swapsLine: "التبديلات: {n}", timeNone: "الوقت: لا شيء بعد", timeLine: "الوقت: {n}",
-      menu: "القائمة", langAria: "اللغة", padAria: "بلوكات البرنامج", hi: "مرحبًا! أنا بيرتي. أنا بيزي.", skipHint: "اضغط أي مفتاح أو المس للتخطي.", tip1: "اضغط تشغيل. شاهد بيرتي يلتقط المكعب.", tip2: "كل بلوك يدير مفصلًا واحدًا 15°.", tipClose: "أغلق التلميح", tipOff: "لا تُظهره مرة أخرى", helpBtn: "مساعدة", helpTitle: "مساعدة", helpBlocksH: "ماذا يفعل كل بلوك", hb1: "القاعدة يسار والقاعدة يمين تديران الذراع يسارًا أو يمينًا.", hb2: "كتف أعلى وكتف أسفل يرفعان الذراع كلها أو يخفضانها.", hb3: "كوع أعلى وكوع أسفل يثنيان وسط الذراع.", hb4: "الرسغ لأعلى والرسغ لأسفل يميلان المخلب.", hb5: "افتح المخلب يترك المكعب. أغلق المخلب يمسكه.", hb6: "كرر 2 وكرر 3 يشغّلان البلوكات حتى نهاية التكرار مرة أخرى.", hb7: "إذا أحمر وإذا أزرق يشغّلان البلوكات حتى نهاية الشرط فقط عندما يرى الحساس هذا اللون والشكل.", helpControlsH: "التحكم", helpFailH: "لماذا يفشل التشغيل", hf1: "اصطدمت الذراع بالطاولة أو القطعة. تذكر الملاحظة ما اصطدمت به وتبقى الخطوة محددة.", hf2: "لم تنتهِ القطعة في الصندوق أو على النقطة. راجع البلوكات وحاول مرة أخرى.", hf3: "إيقاف الطوارئ أوقف التشغيل. اضغط إعادة ثم تشغيل.", hf4: "البرنامج فارغ. أضف بلوكًا أولًا.", resetTips: "أعد التلميحات", helpClose: "إغلاق", tipsBack: "عادت التلميحات.", tagline: "حرّك ذراع روبوت", v140: "الإصدار 1.4.0", w140a: "Pinchy أصبح الآن بيرتي وبيزي. العنوان القديم /pinchy/ يقودك إلى هنا.", w140b: "بيرتي وبيزي يلوّحان بالتحية مرة في كل زيارة. التلميحات وزر المساعدة يشرحان البلوكات.", draftBadge: "مسودة آلية.", Target: "الهدف",
+      menu: "القائمة", langAria: "اللغة", padAria: "بلوكات البرنامج", hi: "مرحبًا! أنا بيرتي. أنا بيزي.", skipHint: "اضغط أي مفتاح أو المس للتخطي.", tip1: "اضغط تشغيل. شاهد بيرتي يلتقط المكعب.", tip2: "كل بلوك يدير مفصلًا واحدًا 15°.", tipClose: "أغلق التلميح", tipOff: "لا تُظهره مرة أخرى", helpBtn: "مساعدة", helpTitle: "مساعدة", helpBlocksH: "ماذا يفعل كل بلوك", hb1: "القاعدة يسار والقاعدة يمين تديران الذراع يسارًا أو يمينًا.", hb2: "كتف أعلى وكتف أسفل يرفعان الذراع كلها أو يخفضانها.", hb3: "كوع أعلى وكوع أسفل يثنيان وسط الذراع.", hb4: "الرسغ لأعلى والرسغ لأسفل يميلان المخلب.", hb5: "افتح المخلب يترك المكعب. أغلق المخلب يمسكه.", hb6: "كرر 2 وكرر 3 يشغّلان البلوكات حتى نهاية التكرار مرة أخرى.", hb7: "إذا أحمر وإذا أزرق يشغّلان البلوكات حتى نهاية الشرط فقط عندما يرى الحساس هذا اللون والشكل.", helpControlsH: "التحكم", helpFailH: "لماذا يفشل التشغيل", hf1: "اصطدمت الذراع بالطاولة أو القطعة. تذكر الملاحظة ما اصطدمت به وتبقى الخطوة محددة.", hf2: "لم تنتهِ القطعة في الصندوق أو على النقطة. راجع البلوكات وحاول مرة أخرى.", hf3: "إيقاف الطوارئ أوقف التشغيل. اضغط إعادة ثم تشغيل.", hf4: "البرنامج فارغ. أضف بلوكًا أولًا.", resetTips: "أعد التلميحات", helpClose: "إغلاق", tipsBack: "عادت التلميحات.", tagline: "حرّك ذراع روبوت", v140: "الإصدار 1.4.0", w140a: "Pinchy أصبح الآن بيرتي وبيزي. العنوان القديم /pinchy/ يقودك إلى هنا.", w140b: "بيرتي وبيزي يلوّحان بالتحية مرة في كل زيارة. التلميحات وزر المساعدة يشرحان البلوكات.", nameBerty: "بيرتي", nameBizzy: "بيزي", dof: "5 درجات حرية", dofTitle: "خمس درجات حرية: القاعدة والكتف والكوع والرسغ والماسك.", laneAria: "مسارات البلوكات", laneNow: "أضيف إلى مسار {name}.", armHit: "اصطدام: {pa} {a} مع {pb} {b} (الخطوة {n}).", bothHold: "كلا المخلبين يمسك القطعة. يجب أن يفتح أحدهما أولًا.", T3: "التسليم", "T3-goal": "بيرتي يلتقط المكعب ويسلّمه لبيزي. بيزي يضعه في صندوقه. استخدم المسارين.", legendDuo: "ذراعان. بيرتي على اليسار وبيزي على اليمين. لكل منهما مسار بلوكات، والمساران يعملان معًا، بلوكًا بلوكًا. المخلب الذي يُغلق يعمل قبل المخلب الذي يُفتح.", hb8: "مساران: بلوكات بيرتي وبلوكات بيزي تعمل معًا، بلوكًا بلوكًا.", hf5: "بيرتي وبيزي تلامسا. تذكر الملاحظة الجزأين وتبقى الخطوة محددة.", v150: "الإصدار 1.5.0", w150a: "بيزي، ذراع روبوت ثانية، ينضم إلى بيرتي. لكل ذراع 5 مفاصل.", w150b: "المستوى 7، التسليم: بيرتي يلتقط المكعب وبيزي يضعه. لكل ذراع مسار بلوكات، والمساران يعملان معًا.", w150c: "إذا تلامست الذراعان تذكر الملاحظة الجزأين. المستويات 1 إلى 6 يلعبها بيرتي وحده.", draftBadge: "مسودة آلية.", Target: "الهدف",
       whatsTitle: "ما الجديد", whatsClose: "إغلاق", play: "العب",
       hubLine: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
       programAria: "البرنامج. Enter يضيف البلوك المختار.",
@@ -1356,7 +1717,7 @@
       themeDark: "\u25D0 تاریک", themeLight: "\u25D0 روشن",
       starRules: "ستاره‌ها: انجام شد، کمتر از حد بلاک، کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
       blocksLine: "بلاک‌ها: {n}", swapsLine: "جابه‌جایی‌ها: {n}", timeNone: "زمان: هنوز هیچ", timeLine: "زمان: {n}",
-      menu: "فهرست", langAria: "زبان", padAria: "بلاک‌های برنامه", hi: "سلام! من برتی هستم. من بیزی هستم.", skipHint: "هر کلیدی را بزن یا لمس کن تا رد شود.", tip1: "اجرا را بزن. ببین برتی مکعب را برمی‌دارد.", tip2: "هر بلاک یک بند را 15° می‌چرخاند.", tipClose: "بستن راهنما", tipOff: "دیگر نشان نده", helpBtn: "کمک", helpTitle: "کمک", helpBlocksH: "هر بلاک چه می‌کند", hb1: "پایه چپ و پایه راست بازو را به چپ یا راست می‌چرخانند.", hb2: "شانه بالا و شانه پایین کل بازو را بالا یا پایین می‌برند.", hb3: "آرنج بالا و آرنج پایین میانه بازو را خم می‌کنند.", hb4: "مچ بالا و مچ پایین چنگال را کج می‌کنند.", hb5: "چنگال باز مکعب را رها می‌کند. چنگال بسته آن را می‌گیرد.", hb6: "تکرار ۲ و تکرار ۳ بلاک‌ها را تا پایان تکرار دوباره اجرا می‌کنند.", hb7: "اگر سرخ و اگر آبی بلاک‌ها را تا پایان اگر فقط وقتی اجرا می‌کنند که حسگر آن رنگ و شکل را ببیند.", helpControlsH: "کنترل", helpFailH: "چرا اجرا ناکام می‌شود", hf1: "بازو به میز یا قطعه خورد. یادداشت می‌گوید به چه خورد و گام در خط‌کشی می‌ماند.", hf2: "قطعه در سطل یا روی نقطه نرسید. بلاک‌ها را ببین و دوباره تلاش کن.", hf3: "ایست اضطراری اجرا را متوقف کرد. بازنشانی را بزن، بعد اجرا.", hf4: "برنامه خالی است. اول یک بلاک اضافه کن.", resetTips: "بازنشانی راهنماها", helpClose: "بستن", tipsBack: "راهنماها برگشتند.", tagline: "یک بازوی ربات را حرکت بده", v140: "نسخه 1.4.0", w140a: "Pinchy حالا برتی و بیزی است. نشانی قدیمی /pinchy/ تو را به اینجا می‌آورد.", w140b: "برتی و بیزی در هر بازدید یک بار سلام می‌کنند. راهنماها و دکمه کمک بلاک‌ها را توضیح می‌دهند.", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
+      menu: "فهرست", langAria: "زبان", padAria: "بلاک‌های برنامه", hi: "سلام! من برتی هستم. من بیزی هستم.", skipHint: "هر کلیدی را بزن یا لمس کن تا رد شود.", tip1: "اجرا را بزن. ببین برتی مکعب را برمی‌دارد.", tip2: "هر بلاک یک بند را 15° می‌چرخاند.", tipClose: "بستن راهنما", tipOff: "دیگر نشان نده", helpBtn: "کمک", helpTitle: "کمک", helpBlocksH: "هر بلاک چه می‌کند", hb1: "پایه چپ و پایه راست بازو را به چپ یا راست می‌چرخانند.", hb2: "شانه بالا و شانه پایین کل بازو را بالا یا پایین می‌برند.", hb3: "آرنج بالا و آرنج پایین میانه بازو را خم می‌کنند.", hb4: "مچ بالا و مچ پایین چنگال را کج می‌کنند.", hb5: "چنگال باز مکعب را رها می‌کند. چنگال بسته آن را می‌گیرد.", hb6: "تکرار ۲ و تکرار ۳ بلاک‌ها را تا پایان تکرار دوباره اجرا می‌کنند.", hb7: "اگر سرخ و اگر آبی بلاک‌ها را تا پایان اگر فقط وقتی اجرا می‌کنند که حسگر آن رنگ و شکل را ببیند.", helpControlsH: "کنترل", helpFailH: "چرا اجرا ناکام می‌شود", hf1: "بازو به میز یا قطعه خورد. یادداشت می‌گوید به چه خورد و گام در خط‌کشی می‌ماند.", hf2: "قطعه در سطل یا روی نقطه نرسید. بلاک‌ها را ببین و دوباره تلاش کن.", hf3: "ایست اضطراری اجرا را متوقف کرد. بازنشانی را بزن، بعد اجرا.", hf4: "برنامه خالی است. اول یک بلاک اضافه کن.", resetTips: "بازنشانی راهنماها", helpClose: "بستن", tipsBack: "راهنماها برگشتند.", tagline: "یک بازوی ربات را حرکت بده", v140: "نسخه 1.4.0", w140a: "Pinchy حالا برتی و بیزی است. نشانی قدیمی /pinchy/ تو را به اینجا می‌آورد.", w140b: "برتی و بیزی در هر بازدید یک بار سلام می‌کنند. راهنماها و دکمه کمک بلاک‌ها را توضیح می‌دهند.", nameBerty: "برتی", nameBizzy: "بیزی", dof: "5 درجه آزادی", dofTitle: "پنج درجه آزادی: پایه، شانه، آرنج، مچ و چنگال.", laneAria: "مسیرهای بلاک", laneNow: "به مسیر {name} اضافه می‌کنم.", armHit: "برخورد: {pa} {a} با {pb} {b} (گام {n}).", bothHold: "هر دو چنگال قطعه را گرفته‌اند. اول یکی باید باز شود.", T3: "تحویل", "T3-goal": "برتی مکعب را برمی‌دارد و به بیزی می‌دهد. بیزی آن را در سطل خودش می‌گذارد. از هر دو مسیر استفاده کن.", legendDuo: "دو بازو. برتی چپ و بیزی راست است. هر کدام مسیر بلاک خودش را دارد و هر دو مسیر با هم اجرا می‌شوند، یک بلاک در هر بار. چنگالی که بسته می‌شود پیش از چنگالی که باز می‌شود عمل می‌کند.", hb8: "دو مسیر: بلاک‌های برتی و بلاک‌های بیزی با هم اجرا می‌شوند، یک بلاک در هر بار.", hf5: "برتی و بیزی به هم خوردند. یادداشت دو بخش را می‌گوید و گام در خط‌کشی می‌ماند.", v150: "نسخه 1.5.0", w150a: "بیزی، بازوی دوم ربات، به برتی می‌پیوندد. هر بازو 5 بند دارد.", w150b: "مرحله 7، تحویل: برتی مکعب را برمی‌دارد و بیزی آن را می‌گذارد. هر بازو مسیر بلاک خودش را دارد و هر دو با هم اجرا می‌شوند.", w150c: "اگر بازوها به هم بخورند یادداشت دو بخش را می‌گوید. مرحله‌های 1 تا 6 فقط با برتی بازی می‌شوند.", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
       whatsTitle: "تازه‌ها", whatsClose: "بستن", play: "بازی",
       hubLine: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
       programAria: "برنامه. Enter بلاک انتخاب‌شده را اضافه می‌کند.",
@@ -1437,7 +1798,8 @@
       baseMin: BASE_MIN, baseMax: BASE_MAX,
       shoulderMin: SH_MIN, shoulderMax: SH_MAX,
       elbowMin: EL_MIN, elbowMax: EL_MAX,
-      wristMin: WR_MIN, wristMax: WR_MAX
+      wristMin: WR_MIN, wristMax: WR_MAX,
+      bizzyX: BIZZY_X
     },
     LANGS: LANGS,
     COLS: COLS,
@@ -1474,6 +1836,20 @@
     uiText: uiText,
     cloneState: cloneState,
     stateKey: stateKey,
-    obstacles: obstacles
+    obstacles: obstacles,
+    duoTick: duoTick,
+    duoAdvance: duoAdvance,
+    beginDuoRun: beginDuoRun,
+    runAllDuo: runAllDuo,
+    duoView: duoView,
+    armHitLine: armHitLine,
+    duoNameOf: duoNameOf,
+    armArmHit: armArmHit,
+    armOf: armOf,
+    armSegs: armSegs,
+    partToLocal: partToLocal,
+    partFromLocal: partFromLocal,
+    PARKED: PARKED,
+    BIZZY_X: BIZZY_X
   };
 });

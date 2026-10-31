@@ -32,9 +32,12 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.4.0");
-assert.equal(G.LEVELS.length, 6);
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
+assert.equal(G.APP_VERSION, "1.5.0");
+assert.equal(G.LEVELS.length, 7);
+assert.equal(G.LEVELS[6].id, "T3");
+assert.ok(G.LEVELS[6].duo);
+for (let i = 0; i < 6; i++) assert.ok(!G.LEVELS[i].duo, "L" + (i + 1) + " stays Berty-only");
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug", "handoff"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -249,7 +252,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.4\.0/);
+assert.match(page, /v1\.5\.0/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -354,7 +357,7 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.4\.0<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.5\.0<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
@@ -374,10 +377,10 @@ console.log("crash", line);
 // 1.3.2: every language names every chrome string the ShipCheck listed, and none falls back to English.
 var CHROME = ["estop", "clear", "themeDark", "themeLight", "Base", "Shoulder", "Elbow", "Wrist", "Claw", "degrees", "clawOpen", "clawShut",
   "OPEN", "SHUT", "No stars yet.", "One star.", "Two stars.", "Three stars.", "Add a block, then press Run.", "Add blocks, then press Run.",
-  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
+  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v150", "w150a", "w150b", "w150c", "nameBerty", "nameBizzy", "dof", "dofTitle", "laneAria", "laneNow", "armHit", "bothHold", "T3", "T3-goal", "legendDuo", "hb8", "hf5", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
   "v131", "w131a", "v130", "w130b", "v122", "w122d", "v121", "w121c", "v120", "w120b", "v110", "w110b", "v100", "w100c"];
 var LANG_IDS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
-var SAME_OK = { "es Base": 1 };
+var SAME_OK = { "es Base": 1, "es nameBerty": 1, "es nameBizzy": 1, "rw nameBerty": 1, "rw nameBizzy": 1, "rw dof": 1, "ti dof": 1 };
 var NO_LATIN = { ar: 1, "fa-AF": 1, ti: 1, uk: 1, ru: 1 };
 for (var li = 0; li < LANG_IDS.length; li++) {
   var code = LANG_IDS[li];
@@ -398,4 +401,44 @@ for (var li = 0; li < LANG_IDS.length; li++) {
 assert.equal(G.uiText("en", "tip1"), "Press Run. Watch Berty pick up the cube.");
 assert.equal(G.uiText("en", "tip2"), "Each block turns one joint 15\u00b0.");
 assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
+
+// 1.5.0: two arms, two lanes, one hand-off level.
+{
+  const T3 = G.LEVELS[6];
+  const rep = (a, n) => Array(n).fill(a);
+  const B = [].concat(rep("shoulder-down", 2), rep("elbow-down", 2), ["claw-close"], rep("base-right", 3), ["claw-open"]);
+  const Z = [].concat(rep("base-left", 3), rep("shoulder-down", 2), rep("elbow-down", 2), ["claw-open", "claw-close"], rep("base-right", 5), ["claw-open"]);
+  const both = G.runAllDuo(T3, B, Z);
+  assert.equal(both.win, true, "hand-off is won with both lanes: " + both.crash);
+  assert.equal(both.ticks, 15);
+  assert.equal(G.runAllDuo(T3, B, []).win, false, "Berty alone cannot win");
+  assert.equal(G.runAllDuo(T3, [], Z).win, false, "Bizzy alone cannot win");
+  // the hand-off needs a claw to close before the other opens in the same tick
+  const swappedOrder = G.runAllDuo(T3, B.slice(0, 8), Z.slice(0, 8).concat(["claw-open"]));
+  assert.equal(swappedOrder.win, false);
+  // arm to arm check: both turn to the middle and Berty's elbow meets Bizzy's wrist at step 3
+  const clash = G.runAllDuo(T3, rep("base-right", 3), rep("base-left", 3));
+  assert.equal(clash.win, false);
+  assert.deepEqual([clash.armHit.a, clash.armHit.pa, clash.armHit.b, clash.armHit.pb], ["berty", "elbow", "bizzy", "wrist"]);
+  assert.equal(clash.step, 3);
+  assert.equal(G.armHitLine(clash.armHit, 3, "en"), "Berty's elbow hit Bizzy's wrist (step 3).");
+  for (const code of LANG_IDS) {
+    const line = G.armHitLine(clash.armHit, 7, code);
+    assert.ok(line.indexOf("{") < 0 && line.indexOf("7") >= 0, code + " armHit line is filled in: " + line);
+    if (code !== "en") assert.notEqual(line, G.armHitLine(clash.armHit, 7, "en"));
+  }
+  // both claws on the part: nobody may move
+  const held = G.initialState(T3);
+  held.holding = true;
+  held.bizzy.holding = true;
+  const stuck = G.duoTick(held, { berty: "base-left", bizzy: "" }, T3);
+  assert.equal(stuck.ok, false);
+  assert.equal(stuck.bothHold, true);
+  // Bizzy is the same rig, mirrored on the right: 5 joints, same limits
+  const z = G.armOf(G.initialState(T3), "bizzy");
+  assert.deepEqual(Object.keys(z).filter(k => ["base", "shoulder", "elbow", "wrist", "gap"].includes(k)).sort(), ["base", "elbow", "gap", "shoulder", "wrist"]);
+  assert.equal(G.LAYOUT.bizzyX, 190);
+  // levels 1 to 6 carry no second arm in their state
+  for (let i = 0; i < 6; i++) assert.equal(G.initialState(G.LEVELS[i]).bizzy, undefined);
+}
 console.log("berty-bizzy win-test ok");

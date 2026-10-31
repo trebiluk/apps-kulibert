@@ -498,6 +498,20 @@ try {
     .viewport { min-height: 0; height: 100%; }
     #view { height: 100%; min-height: 120px; }
   }
+  /* 1.5.0: a short sideways screen gets three columns, so the view and one lane (with Run) are on screen together. */
+  @media (max-height: 520px) and (min-width: 760px) {
+    .stage { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.95fr); grid-template-rows: auto minmax(0, 1fr); height: calc(100vh - 118px); }
+    .controls { display: contents; }
+    .controls .panel:nth-child(1) { grid-column: 1; grid-row: 1; }
+    .controls .panel:nth-child(2) { grid-column: 1; grid-row: 2; }
+    .controls .panel:nth-child(3) { grid-column: 3; grid-row: 1 / span 2; overflow-y: auto; }
+    .scene-col { grid-column: 2; grid-row: 1 / span 2; min-height: 0; display: flex; flex-direction: column; }
+    .scene-col .viewport { flex: 1 1 auto; display: flex; flex-direction: column; }
+    .scene-col .viewport .scene { flex: 1 1 auto; min-height: 0; }
+    .scene-col #view { height: 100%; min-height: 0; }
+    .actions { gap: 4px; }
+    .actions .action, .actions button { min-width: 0; padding-inline: 4px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation: none !important;
@@ -550,11 +564,42 @@ try {
   .bb-help li, .bb-help p { margin: 4px 0; font: 500 15px/1.4 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
   .bb-help button { min-height: 44px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
   @media (prefers-reduced-motion: reduce) { .bb-intro { animation: none; } }
+
+  .scene-labels .chip3d { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; padding: 1px 8px 1px 5px; }
+  .scene-labels .chip3d b { font-weight: 700; }
+  .lane-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 8px; }
+  .lane-tabs[hidden], .lane[hidden] { display: none; }
+  .lane-tab { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; min-width: 44px; padding: 4px 10px; border: 2px solid var(--line); border-radius: 4px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .lane-tab.is-active { background: var(--pz-yellow); color: var(--pz-on-yellow); border-color: var(--pz-on-yellow); border-width: 3px; }
+  .lane-tab .lane-count { font: 600 12px "IBM Plex Mono", ui-monospace, monospace; }
+  .lanes { display: grid; gap: 8px; }
+  .lanes.is-duo { grid-template-columns: 1fr 1fr; }
+  .lanes.is-duo .lane { min-width: 0; }
+  .lanes.is-duo .lane.is-active { outline: 3px solid var(--pz-focus); outline-offset: -3px; }
+  .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: wrap; }
+  #program2 { display: flex; gap: 8px; overflow-x: auto; margin: 0; padding: 4px 2px 8px; list-style: none; min-height: 56px; align-items: center; direction: ltr; }
+  #program-wrap2 { background: var(--blue); border: 2px solid var(--line); border-radius: 4px; padding: 8px; min-height: 56px; overflow: visible; }
+  #program-wrap2 p { margin: 0 0 6px; font-weight: 750; }
+  .lane-name-line { display: flex; align-items: center; gap: 6px; }
+  @media (max-width: 600px) {
+    .lanes.is-duo { grid-template-columns: 1fr; }
+    .lanes.is-duo .lane:not(.is-active) { display: none; }
+    .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: nowrap; }
+    .lanes.is-duo .lane.is-active { outline: none; }
+  }
+  @media (max-height: 520px) {
+    .lanes.is-duo { grid-template-columns: 1fr; }
+    .lanes.is-duo .lane:not(.is-active) { display: none; }
+    .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: nowrap; }
+    .lanes.is-duo .lane.is-active { outline: none; }
+    .lane-tabs { margin: 0 0 3px; gap: 4px; }
+    .lane-tab { min-height: 44px; padding: 2px 6px; font-size: 14px; }
+  }
 </style>
 </head>
 <body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.4.0</span></small></p>
+  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.5.0</span></small></p>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -566,6 +611,12 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v150">Version 1.5.0</p>
+  <ul>
+    <li data-k="w150a">Bizzy, a second robot arm, joins Berty. Each arm has 5 joints.</li>
+    <li data-k="w150b">Level 7, Hand-off: Berty picks up the cube and Bizzy places it. Each arm has its own lane of blocks, and both lanes run together.</li>
+    <li data-k="w150c">If the arms touch, the note names the two parts. Levels 1 to 6 play with Berty only.</li>
+  </ul>
   <p data-k="v140">Version 1.4.0</p>
   <ul>
     <li data-k="w140a">Pinchy is now Berty &amp; Bizzy. The old address /pinchy/ sends you here.</li>
@@ -662,9 +713,19 @@ try {
       <section class="panel">
         <h2 class="panel-label"><span data-ui="PROGRAM">PROGRAM</span><span>P-01</span></h2>
         <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
-        <div id="program-wrap" tabindex="0" aria-label="Program. Enter adds the picked block.">
-          <p id="program-title">Program</p>
-          <ol id="program"></ol>
+        <div id="lane-tabs" class="lane-tabs" role="tablist" aria-label="Block lanes" hidden>
+          <button type="button" role="tab" id="lane-tab-0" class="lane-tab is-active" aria-selected="true" aria-controls="program-wrap" data-lane="0"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M4 20h7M7 20V11l8-5 4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="11" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/></svg><span class="lane-name">Berty</span><span class="lane-count" aria-hidden="true"></span></button>
+          <button type="button" role="tab" id="lane-tab-1" class="lane-tab" aria-selected="false" aria-controls="program-wrap2" data-lane="1"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M13 20h7M17 20V11L9 6 5 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="11" r="1.6" fill="currentColor"/><circle cx="9" cy="6" r="1.6" fill="currentColor"/></svg><span class="lane-name">Bizzy</span><span class="lane-count" aria-hidden="true"></span></button>
+        </div>
+        <div class="lanes" id="lanes">
+          <div id="program-wrap" class="lane is-active" tabindex="0" aria-label="Program. Enter adds the picked block." data-lane="0">
+            <p id="program-title">Program</p>
+            <ol id="program"></ol>
+          </div>
+          <div id="program-wrap2" class="lane" tabindex="0" role="group" data-lane="1" hidden>
+            <p id="program-title2"></p>
+            <ol id="program2"></ol>
+          </div>
         </div>
         <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
       </section>
@@ -740,21 +801,22 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.4.0" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.5.0" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="game.js?v=1.4.0"></script>
-<script src="view3d.js?v=1.4.0"></script>
+<script src="game.js?v=1.5.0"></script>
+<script src="view3d.js?v=1.5.0"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
 var STEP_MS = 520;
 var SNAP_HOLD = 80;
-var session = { level: 0, programs: [], run: [] };
+var session = { level: 0, programs: [], programs2: [], run: [] };
 var world = null;
 var playback = 0;
 var playing = false;
 var reduce = false;
 var focusIndex = 0;
+var activeLane = 0;
 var activeCmd = "";
 var runT0 = 0;
 var lastMs = null;
@@ -855,7 +917,7 @@ var setRun = function (state) {
 
 var updateMetrics = function () {
   var level = PINCHY.LEVELS[session.level];
-  var n = session.programs[session.level].length;
+  var n = session.programs[session.level].length + (isDuo() ? laneList(1).length : 0);
   var runNow = session.run[session.level] || {};
   var shownSwaps = runNow.kind === "running" ? (runNow.scoredSwaps || 0) : (runNow.swaps || 0);
   var fillLine = function (key, n) { return PINCHY.uiText(lang, key).replace("{n}", n); };
@@ -867,9 +929,20 @@ var updateMetrics = function () {
   else timeEl.textContent = fillLine("timeLine", formatMs(lastMs));
 };
 
-var renderProgram = function (now, stop) {
-  var ol = document.getElementById("program");
-  var list = session.programs[session.level];
+var isDuo = function () {
+  var level = PINCHY.LEVELS[session.level];
+  return !!(level && level.duo);
+};
+var laneList = function (lane) {
+  if (lane === 1) {
+    if (!session.programs2[session.level]) session.programs2[session.level] = [];
+    return session.programs2[session.level];
+  }
+  return session.programs[session.level];
+};
+var laneWho = function (lane) { return lane === 1 ? "bizzy" : "berty"; };
+var laneName = function (lane) { return PINCHY.duoNameOf(laneWho(lane), lang); };
+var renderLaneInto = function (ol, list, now, stop, lane) {
   ol.dataset.steps = JSON.stringify(PINCHY.stepList(list));
   ol.replaceChildren();
   if (!list.length) {
@@ -878,12 +951,13 @@ var renderProgram = function (now, stop) {
     ol.appendChild(empty);
     return;
   }
-  var debug = !!(PINCHY.LEVELS[session.level] && PINCHY.LEVELS[session.level].debug);
+  var debug = lane === 0 && !!(PINCHY.LEVELS[session.level] && PINCHY.LEVELS[session.level].debug);
   for (var i = 0; i < list.length; i++) {
     var li = document.createElement(debug ? "button" : "li");
     if (debug) li.type = "button";
     li.className = "chip";
     li.dataset.step = String(i + 1);
+    li.dataset.lane = String(lane);
     if (debug) {
       li.dataset.index = String(i);
       if (i === fixAt && now < 0 && stop < 0) li.classList.add("is-fix");
@@ -907,7 +981,7 @@ var renderProgram = function (now, stop) {
     if (i === now || i === stop) {
       var mark = document.createElement("span");
       mark.className = "mark";
-      mark.textContent = i === stop ? "\u2717" : "\u25B6";
+      mark.textContent = i === stop ? "✗" : "▶";
       li.appendChild(mark);
     }
     var idx = document.createElement("span");
@@ -932,7 +1006,74 @@ var renderProgram = function (now, stop) {
   var current = ol.querySelector(".is-now, .is-stop");
   if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
 };
-
+var renderProgram = function (now, stop, now2, stop2) {
+  renderLaneInto(document.getElementById("program"), session.programs[session.level], now, stop, 0);
+  if (isDuo()) renderLaneInto(document.getElementById("program2"), laneList(1), now2 == null ? -1 : now2, stop2 == null ? -1 : stop2, 1);
+  paintLaneCounts();
+};
+var paintLaneCounts = function () {
+  var duo = isDuo();
+  for (var l = 0; l < 2; l++) {
+    var tab = document.getElementById("lane-tab-" + l);
+    if (!tab) continue;
+    var n = duo ? laneList(l).length : 0;
+    tab.querySelector(".lane-count").textContent = duo ? String(n) : "";
+  }
+};
+// Lanes: Berty alone for levels 1 to 6; Berty and Bizzy on the hand-off level.
+var syncLanes = function () {
+  var duo = isDuo();
+  if (!duo) activeLane = 0;
+  var tabs = document.getElementById("lane-tabs");
+  var lanes = document.getElementById("lanes");
+  var wrap2 = document.getElementById("program-wrap2");
+  if (!tabs) return;
+  tabs.hidden = !duo;
+  wrap2.hidden = !duo;
+  lanes.classList.toggle("is-duo", duo);
+  for (var l = 0; l < 2; l++) {
+    var on = l === activeLane;
+    var tab = document.getElementById("lane-tab-" + l);
+    tab.classList.toggle("is-active", on);
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    document.getElementById(l === 0 ? "program-wrap" : "program-wrap2").classList.toggle("is-active", on);
+  }
+  paintLanes();
+  paintLaneCounts();
+};
+var paintLanes = function () {
+  var duo = isDuo();
+  var rtl = PINCHY.langMeta(lang).rtl;
+  for (var l = 0; l < 2; l++) {
+    var tab = document.getElementById("lane-tab-" + l);
+    if (!tab) continue;
+    tab.querySelector(".lane-name").textContent = laneName(l);
+    tab.lang = lang;
+    tab.dir = rtl ? "rtl" : "ltr";
+  }
+  var tabs = document.getElementById("lane-tabs");
+  if (tabs) tabs.setAttribute("aria-label", PINCHY.uiText(lang, "laneAria"));
+  var t0 = document.getElementById("program-title");
+  var t1 = document.getElementById("program-title2");
+  if (t0) t0.textContent = duo ? laneName(0) : PINCHY.uiText(lang, "Program");
+  if (t1) t1.textContent = laneName(1);
+  var w0 = document.getElementById("program-wrap");
+  var w1 = document.getElementById("program-wrap2");
+  if (w1) w1.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+  if (w0 && duo) w0.setAttribute("aria-label", laneName(0) + ". " + PINCHY.uiText(lang, "programAria"));
+  if (w1 && duo) w1.setAttribute("aria-label", laneName(1) + ". " + PINCHY.uiText(lang, "programAria"));
+  if (w0 && !duo) w0.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+};
+var setLane = function (lane, announce) {
+  if (!isDuo() || lane === activeLane) return;
+  activeLane = lane;
+  syncLanes();
+  if (world) paintGame();
+  if (announce) {
+    var live = document.getElementById("bb-help-live");
+    if (live) live.textContent = PINCHY.uiText(lang, "laneNow").replace("{name}", laneName(lane));
+  }
+};
 var renderLevels = function () {
   var buttons = document.querySelectorAll("#levels button");
   for (var i = 0; i < buttons.length; i++) {
@@ -950,6 +1091,7 @@ var renderLevels = function () {
   if (levelNow.kind === "pile") legendKey = "legendPile";
   else if (levelNow.kind === "sensor") legendKey = "legendSensor";
   else if (levelNow.debug) legendKey = "legendDebug";
+  else if (levelNow.duo) legendKey = "legendDuo";
   legend.textContent = PINCHY.uiText(lang, legendKey);
   markDraft(legend);
   var helpEl = document.getElementById("help");
@@ -1168,6 +1310,7 @@ var paintChrome = function () {
   var levelsGroup = document.getElementById("levels");
   if (levelsGroup) levelsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
   if (typeof bbPaint === "function") bbPaint();
+  if (typeof paintLanes === "function") paintLanes();
 };
 // Saved language: the one shared key, kulibert-prefs-v1 (read and written the same way the top bar does). Pinchy writes nothing else but its theme.
 var readSavedLang = function () {
@@ -1260,7 +1403,7 @@ var addBlock = function (id) {
     setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Swap two steps. Arrows pick a step. Enter swaps it with the next." }));
     return;
   }
-  var list = session.programs[session.level];
+  var list = isDuo() ? laneList(activeLane) : session.programs[session.level];
   if (list.length >= 24) {
     setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Program is full at 24 blocks." }));
     return;
@@ -1281,7 +1424,7 @@ var undo = function () {
       renderProgram(-1, -1);
     }
   } else {
-    var list = session.programs[session.level];
+    var list = isDuo() ? laneList(activeLane) : session.programs[session.level];
     if (list.length) {
       list.pop();
       changed = true;
@@ -1738,7 +1881,8 @@ var paintView = function (canvas, state, level, opts) {
 };
 var paintGame = function () {
   if (!world) return;
-  var angleLine = PINCHY.jointReadout(world, lang);
+  var viewArm = (isDuo() && activeLane === 1 && world.bizzy) ? world.bizzy : world;
+  var angleLine = (isDuo() ? laneName(activeLane) + ": " : "") + PINCHY.jointReadout(viewArm, lang);
   var anglesEl = document.getElementById("angles");
   anglesEl.textContent = angleLine;
   if (isDraftLang()) markDraft(anglesEl);
@@ -1749,12 +1893,12 @@ var paintGame = function () {
     while (fixed[0].length < 3) fixed[0] = "0" + fixed[0];
     return (neg ? "-" : "") + fixed[0] + "." + fixed[1] + "\u00b0";
   };
-  document.getElementById("ro-base").textContent = fmtDeg(world.base);
-  document.getElementById("ro-shoulder").textContent = fmtDeg(world.shoulder);
-  document.getElementById("ro-elbow").textContent = fmtDeg(world.elbow);
-  document.getElementById("ro-wrist").textContent = fmtDeg(world.wrist || 0);
+  document.getElementById("ro-base").textContent = fmtDeg(viewArm.base);
+  document.getElementById("ro-shoulder").textContent = fmtDeg(viewArm.shoulder);
+  document.getElementById("ro-elbow").textContent = fmtDeg(viewArm.elbow);
+  document.getElementById("ro-wrist").textContent = fmtDeg(viewArm.wrist || 0);
   var clawEl = document.getElementById("ro-claw");
-  clawEl.textContent = world.open ? PINCHY.uiText(lang, "OPEN") : PINCHY.uiText(lang, "SHUT");
+  clawEl.textContent = viewArm.open ? PINCHY.uiText(lang, "OPEN") : PINCHY.uiText(lang, "SHUT");
   clawEl.dataset.long = clawEl.textContent.length > 6 ? "1" : "0";
   if (isDraftLang()) markDraft(clawEl);
   else clawEl.removeAttribute("data-draft");
@@ -1887,6 +2031,7 @@ var finishWin = function (blocks, ms) {
   if (level.kind === "spot") note = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "pile") note = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "sensor") note = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "handoff") note = "The hand-off worked. The part is in Bizzy's bin. " + blockWord + ", " + formatMs(ms) + ".";
   if (level.kind === "debug") {
     var swapWord = attemptSwaps === 1 ? "1 swap" : attemptSwaps + " swaps";
     note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
@@ -1898,8 +2043,115 @@ var finishFail = function (msg, step) {
   setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
 };
 
+var finishFailDuo = function (ev) {
+  var text;
+  if (ev.armHit) {
+    var first = ev.armHit.a === "bizzy" ? ev.indexZ : ev.index;
+    if (first < 0) first = ev.armHit.a === "bizzy" ? ev.index : ev.indexZ;
+    text = "\u2717 " + PINCHY.armHitLine(ev.armHit, first + 1, lang);
+  } else if (ev.bothHold) {
+    var at = ev.who === "bizzy" ? ev.indexZ : ev.index;
+    text = "\u2717 " + PINCHY.uiText(lang, "bothHold") + " (" + (at + 1) + ")";
+  } else if (ev.miss) {
+    text = "\u2717 " + PINCHY.crashLine(ev.msg, (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1, lang);
+  } else {
+    var step = (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1;
+    var who = PINCHY.duoNameOf(ev.who || "berty", lang);
+    text = "\u2717 " + (lang === "en" ? PINCHY.crashLine(who + "'s " + ev.msg, step, lang) : who + ": " + PINCHY.crashLine(ev.msg, step, lang));
+  }
+  setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
+};
+var playDuo = async function () {
+  var level = PINCHY.LEVELS[session.level];
+  var cb = laneList(0).slice();
+  var cz = laneList(1).slice();
+  if (!cb.length && !cz.length) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+    return;
+  }
+  var token = ++playback;
+  playing = true;
+  if (typeof bbTipHide === "function") bbTipHide();
+  estopped = false;
+  setBusy(true);
+  world = PINCHY.initialState(level);
+  runT0 = performance.now();
+  lastMs = null;
+  activeCmd = "";
+  renderProgram(-1, -1, -1, -1);
+  updateMetrics();
+  paintGame();
+  var total = cb.length + cz.length;
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "start", note: "Running.", steps: 0 }));
+  var state = world;
+  var runs = PINCHY.beginDuoRun(cb, cz);
+  var guard = 0;
+  var tick = 0;
+  while (guard < 400) {
+    guard += 1;
+    if (token !== playback) return;
+    var ev = PINCHY.duoAdvance(runs, state, level);
+    if (ev.done && ev.ok) break;
+    if (ev.done) {
+      playing = false;
+      setBusy(false);
+      lastMs = performance.now() - runT0;
+      renderProgram(-1, -1, -1, -1);
+      setRun(PINCHY.settleRun(null, { type: "crash", note: "\u2717 " + PINCHY.crashLine(ev.msg, ev.index + 1, lang) }));
+      updateMetrics();
+      return;
+    }
+    tick += 1;
+    activeCmd = ev.cmd || ev.cmdZ;
+    renderProgram(ev.index, -1, ev.indexZ, -1);
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: tick, note: "Running step " + tick + "." }));
+    if (!reduce) {
+      var alive = await glide(STEP_MS, token, function (u) {
+        world = PINCHY.duoView(state, ev.state, u);
+        paintGame();
+      });
+      if (!alive || token !== playback) return;
+    } else {
+      world = PINCHY.cloneState(ev.state);
+      paintGame();
+      var held = await until(SNAP_HOLD, token);
+      if (!held || token !== playback) return;
+    }
+    state = ev.state;
+    world = PINCHY.cloneState(state);
+    activeCmd = "";
+    paintGame();
+    if (!ev.ok || ev.win || PINCHY.goalMet(state, level)) {
+      lastMs = performance.now() - runT0;
+      playing = false;
+      setBusy(false);
+      if (ev.ok) {
+        renderProgram(ev.index, -1, ev.indexZ, -1);
+        finishWin(total, lastMs);
+      } else {
+        renderProgram(-1, ev.index, -1, ev.indexZ);
+        finishFailDuo(ev);
+      }
+      updateMetrics();
+      paintGame();
+      return;
+    }
+  }
+  if (token !== playback) return;
+  lastMs = performance.now() - runT0;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+  renderProgram(-1, -1, -1, -1);
+  if (PINCHY.goalMet(state, level)) finishWin(total, lastMs);
+  else setRun(PINCHY.settleRun(null, { type: "fail", note: PINCHY.endReason(state, level) }));
+  updateMetrics();
+  paintGame();
+};
+
 var play = async function () {
   if (playing || document.getElementById("game").hidden) return;
+  if (PINCHY.LEVELS[session.level].duo) return playDuo();
   var commands = session.programs[session.level].slice();
   if (!commands.length) {
     setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
@@ -2004,6 +2256,7 @@ var clearProgram = function () {
   if (playing) stopPlay();
   estopped = false;
   session.programs[session.level] = [];
+  if (isDuo()) session.programs2[session.level] = [];
   renderProgram(-1, -1);
   setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
   updateMetrics();
@@ -2011,9 +2264,11 @@ var clearProgram = function () {
 };
 var retry = function () {
   var kept = session.programs[session.level].slice();
+  var kept2 = isDuo() ? laneList(1).slice() : null;
   estopped = false;
   stopPlay();
   session.programs[session.level] = kept;
+  if (kept2) session.programs2[session.level] = kept2;
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
   lastMs = null;
   runT0 = 0;
@@ -2026,6 +2281,7 @@ var selectLevel = function (index) {
   if (index === session.level && !playing) return;
   stopPlay();
   session.level = index;
+  activeLane = 0;
   estopped = false;
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;
@@ -2034,6 +2290,7 @@ var selectLevel = function (index) {
   fixAt = 0;
   renderPalette();
   renderLevels();
+  syncLanes();
   renderProgram(-1, -1);
   updateMetrics();
   session.run[index] = PINCHY.settleRun(null, { type: "level" });
@@ -2066,6 +2323,7 @@ var showGame = function () {
   world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
   if (viewCanvas) viewCanvas._glW = 0;
   renderLevels();
+  syncLanes();
   renderProgram(-1, -1);
   updateMetrics();
   renderRun();
@@ -2239,8 +2497,8 @@ var bbPaint = function () {
     ul.replaceChildren();
     keys.forEach(function (k) { var li = document.createElement("li"); li.textContent = t(k); ul.appendChild(li); });
   };
-  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7"]);
-  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4"]);
+  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "hb8"]);
+  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4", "hf5"]);
   var level = PINCHY.LEVELS[session.level];
   var ctl = document.getElementById("bb-help-controls");
   if (ctl) ctl.textContent = PINCHY.helpFor(lang, !!(level && level.debug));
@@ -2288,9 +2546,10 @@ var bbInit = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.4.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.5.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
+    session.programs2.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
     swapHistory.push([]);
   }
@@ -2430,6 +2689,18 @@ var boot = function () {
   retryBtn.querySelector(".name").textContent = "\u21BA Reset";
 
   document.getElementById("play").addEventListener("click", showGame);
+  [0, 1].forEach(function (l) {
+    var tab = document.getElementById("lane-tab-" + l);
+    tab.addEventListener("click", function () { setLane(l, true); });
+    tab.addEventListener("focus", function () { setLane(l, true); });
+    tab.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      e.stopPropagation();
+      var other = document.getElementById("lane-tab-" + (l === 0 ? 1 : 0));
+      if (other && !other.closest("[hidden]")) other.focus();
+    });
+  });
 
   var langNav = document.getElementById("langs");
   PINCHY.LANGS.forEach(function (item) {
@@ -2490,6 +2761,7 @@ var boot = function () {
       doSwap(fixAt);
       return;
     }
+    if ((key === "ArrowLeft" || key === "ArrowRight") && e.target && e.target.classList && e.target.classList.contains("lane-tab")) return;
     if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight") {
       e.preventDefault();
       if (PINCHY.LEVELS[session.level].debug) {
