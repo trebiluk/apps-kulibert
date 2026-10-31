@@ -9,10 +9,20 @@ export function toV2(v1, player, econ, meta) {
     meta: meta || {},
   }
 }
+function padBagAndClampHot(player) {
+  if (!player) return player
+  if (!Array.isArray(player.bag)) player.bag = []
+  while (player.bag.length < 15) player.bag.push(null)
+  if (player.bag.length > 15) player.bag = player.bag.slice(0, 15)
+  if (typeof player.hot !== 'number' || player.hot < 0 || player.hot > 14) player.hot = 0
+  else player.hot = Math.min(14, Math.max(0, Math.floor(player.hot)))
+  return player
+}
 export function fromDoc(doc) {
   if (!doc || doc.v === 1) return { player: emptyPlayer('survival'), econ: null, meta: {}, lost: [], drops: [], bots: [] }
+  const player = padBagAndClampHot(doc.player || emptyPlayer(doc.mode || 'survival'))
   return {
-    player: doc.player || emptyPlayer(doc.player && doc.player.mode),
+    player,
     econ: doc.econ || null,
     meta: doc.meta || {},
     lost: doc.lost || [],
