@@ -2926,3 +2926,91 @@ html body #tex-auto-hint {
 }
 
 
+
+/* ---- Block Painter, part 2 (2.5.546). Dark, no glow, nothing brighter than #EEF3F7. ---- */
+#painter { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; background: rgba(16, 20, 24, 0.94); color: #e6eef2; font: 600 16px/1.3 sans-serif; --cell: 28; }
+#painter[hidden] { display: none; }
+#painter .pt-card { box-sizing: border-box; max-width: 100%; max-height: 100%; overflow: auto; background: #222a31; border: 3px solid #5c656e; border-radius: 12px; padding: 12px; display: grid; gap: 10px 14px; grid-template-columns: 172px auto minmax(0, 360px); grid-template-areas: "head head head" "tools mid side" "foot foot foot"; align-items: start; }
+#painter .pt-head { grid-area: head; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+#painter .pt-head h2 { margin: 0; font: 800 20px/1.2 sans-serif; color: #eef3f7; flex: 1 1 auto; }
+#painter .pt-pickrow { display: inline-flex; align-items: center; gap: 8px; }
+#painter .pt-pickico svg, #painter .pt-btn svg { width: 24px; height: 24px; flex: none; }
+#painter select { min-height: 48px !important; min-width: 120px; padding: 0 10px; font: 700 16px sans-serif; color: #e6eef2 !important; background: #2c333b !important; border: 3px solid #5c656e !important; border-radius: 10px; }
+#painter .pt-tools { grid-area: tools; display: flex; flex-direction: column; gap: 6px; }
+#painter .pt-btn { box-sizing: border-box; min-height: 48px !important; min-width: 48px !important; height: auto; width: auto; margin: 0; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; position: relative; font: 700 16px sans-serif; color: #e6eef2 !important; background: #2c333b !important; border: 3px solid #5c656e !important; border-radius: 10px; box-shadow: none !important; cursor: pointer; text-align: start; text-transform: none; }
+#painter .pt-tool { justify-content: flex-start; }
+#painter .pt-btn[aria-pressed="true"] { background: #3a4048 !important; border-color: #e07a2f !important; box-shadow: inset 0 0 0 1px #e07a2f !important; }
+#painter .pt-btn[aria-pressed="true"]::after { content: "✓"; position: absolute; inset-inline-end: 6px; top: 2px; font-size: 14px; color: #eef3f7; }
+#painter .pt-btn[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+#painter .pt-state { margin-inline-start: auto; font-size: 13px; padding-inline-end: 14px; white-space: nowrap; }
+#painter #pt-mirror { flex-basis: 132px; }
+#painter .pt-use { background: #5a3a1c !important; border-color: #e07a2f !important; }
+#painter .pt-btn:focus-visible, #painter select:focus-visible, #painter .pt-sw:focus-visible, #painter .pt-grid:focus-visible { outline: 3px solid #eef3f7 !important; outline-offset: 2px; box-shadow: 0 0 0 2px #14181c !important; }
+#painter .pt-mid { grid-area: mid; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+#painter .pt-meta { margin: 0; font-size: 14px; min-height: 20px; text-align: center; }
+#painter .pt-grid { position: relative; width: calc(var(--cell) * 16px); height: calc(var(--cell) * 16px); border: 3px solid #5c656e; touch-action: none; user-select: none; cursor: crosshair; --cx: 7; --cy: 7; box-sizing: content-box; }
+#painter .pt-grid canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+#painter .pt-lines { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, rgba(20, 24, 28, 0.45) 1px, transparent 1px), linear-gradient(to bottom, rgba(20, 24, 28, 0.45) 1px, transparent 1px); background-size: calc(var(--cell) * 1px) calc(var(--cell) * 1px); }
+#painter .pt-grid[data-mirror="1"]::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-inline-start: 3px dashed #eef3f7; pointer-events: none; }
+#painter .pt-cursor { position: absolute; left: calc(var(--cx) * var(--cell) * 1px); top: calc(var(--cy) * var(--cell) * 1px); width: calc(var(--cell) * 1px); height: calc(var(--cell) * 1px); box-sizing: border-box; border: 3px solid #eef3f7; box-shadow: inset 0 0 0 2px #14181c, 0 0 0 2px #14181c; pointer-events: none; }
+#painter .pt-side { grid-area: side; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+#painter .pt-palette { display: grid; grid-template-columns: repeat(8, 40px); gap: 4px; }
+#painter .pt-sw { position: relative; box-sizing: border-box; width: 40px; height: 40px; min-width: 40px !important; min-height: 40px !important; padding: 0; margin: 0; border: 2px solid #14181c !important; border-radius: 6px; cursor: pointer; box-shadow: none !important; }
+#painter .pt-sw[aria-pressed="true"] { border: 3px solid #e07a2f !important; box-shadow: 0 0 0 2px #14181c !important; }
+#painter .pt-chk { display: none; position: absolute; inset: 0; margin: auto; width: 22px; height: 22px; border-radius: 50%; background: #14181c; color: #eef3f7; align-items: center; justify-content: center; }
+#painter .pt-sw[aria-pressed="true"] .pt-chk { display: flex; }
+#painter .pt-chk svg { width: 14px; height: 14px; }
+#painter .pt-prev { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+#painter .pt-plabel { margin: 0; font-size: 14px; }
+#painter .pt-stage { width: 132px; height: 120px; display: flex; align-items: center; justify-content: center; perspective: 420px; }
+#painter .pt-cube { --rot: 0; --h: 40px; position: relative; width: calc(var(--h) * 2); height: calc(var(--h) * 2); transform-style: preserve-3d; transform: rotateX(-24deg) rotateY(calc(30deg + var(--rot) * 90deg)); }
+#painter .pt-cube[data-spin="1"] { animation: pt-spin 18s linear infinite; }
+#painter .pt-face { position: absolute; inset: 0; backface-visibility: hidden; }
+#painter .pt-face img { width: 100%; height: 100%; display: block; image-rendering: pixelated; pointer-events: none; }
+#painter .pt-face.front { transform: translateZ(var(--h)); }
+#painter .pt-face.back { transform: rotateY(180deg) translateZ(var(--h)); }
+#painter .pt-face.right { transform: rotateY(90deg) translateZ(var(--h)); filter: brightness(0.82); }
+#painter .pt-face.left { transform: rotateY(-90deg) translateZ(var(--h)); filter: brightness(0.7); }
+#painter .pt-face.top { transform: rotateX(90deg) translateZ(var(--h)); }
+#painter .pt-face.bottom { transform: rotateX(-90deg) translateZ(var(--h)); filter: brightness(0.55); }
+@keyframes pt-spin { from { transform: rotateX(-24deg) rotateY(30deg); } to { transform: rotateX(-24deg) rotateY(390deg); } }
+#painter .pt-foot { grid-area: foot; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+#painter .pt-msg, #painter .pt-errline { margin: 0; flex: 1 1 160px; font-size: 15px; min-height: 20px; }
+#painter .pt-errline { color: #eef3f7; }
+#painter .pt-errline:not(:empty)::before { content: "⚠ "; }
+#painter .pt-acts { display: flex; gap: 10px; margin-inline-start: auto; }
+#painter .pt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.look-pack.pt-open { min-height: 48px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; font: 700 16px sans-serif; border-radius: 10px; }
+.look-pack.pt-open svg { width: 24px; height: 24px; }
+@media (prefers-reduced-motion: reduce) { #painter .pt-cube, #painter .pt-cube[data-spin] { animation: none !important; transition: none !important; } }
+@media (max-width: 760px) {
+  #painter { --cell: 22; align-items: stretch; }
+  #painter .pt-card { width: 100%; border-radius: 0; border-width: 0; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "mid" "tools" "side" "foot"; padding: 6px 8px 0; gap: 6px; }
+  #painter .pt-head { flex-wrap: nowrap; gap: 8px; }
+  #painter .pt-head h2 { font-size: 16px; min-width: 0; }
+  #painter #pt-block-label { display: none; }
+  #painter select { min-width: 96px; max-width: 128px; }
+  #painter .pt-tools { flex-direction: row; flex-wrap: wrap; }
+  #painter .pt-tool { flex: 1 1 88px; padding: 0 8px; gap: 6px; font-size: 15px; }
+  #painter .pt-side { display: contents; }
+  #painter .pt-palette { grid-area: pal; justify-self: center; }
+  #painter .pt-prev { grid-area: prev; flex-direction: row; justify-self: center; gap: 12px; }
+  #painter .pt-card { grid-template-areas: "head" "mid" "tools" "prev" "pal" "foot"; }
+  #painter .pt-stage { width: 64px; height: 56px; }
+  #painter .pt-cube { --h: 22px; }
+  #painter .pt-foot { position: sticky; bottom: 0; background: #222a31; padding: 6px 0 8px; border-top: 3px solid #5c656e; }
+}
+@media (max-height: 500px) and (min-width: 600px) {
+  #painter { --cell: 22; align-items: stretch; }
+  #painter .pt-card { width: 100%; border-radius: 0; border-width: 0; padding: 4px 8px 0; gap: 4px 10px; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "mid head" "mid tools" "mid side" "mid foot"; grid-template-rows: auto auto auto 1fr; }
+  #painter .pt-head { flex-wrap: nowrap; gap: 8px; }
+  #painter .pt-head h2 { font-size: 16px; }
+  #painter #pt-block-label { display: none; }
+  #painter .pt-tools { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  #painter .pt-tool { flex: 1 1 96px; padding: 0 8px; gap: 6px; font-size: 15px; }
+  #painter .pt-side { flex-direction: row; align-items: flex-start; gap: 12px; }
+  #painter .pt-palette { gap: 3px; }
+  #painter .pt-foot { position: sticky; bottom: 0; align-self: end; background: #222a31; padding: 4px 0; border-top: 3px solid #5c656e; }
+  #painter .pt-stage { width: 96px; height: 84px; }
+  #painter .pt-cube { --h: 28px; }
+}

@@ -3662,3 +3662,101 @@ for (const [lang, row] of Object.entries(GOAL522)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.546 Block Painter, part 2. uk, ru, es, ar are reviewed-style drafts; fa-AF, rw, and ti are machine drafts.
+const PAINTER = {
+  en: {
+    ptOpen: 'Paint a block', ptTitle: 'Block Painter', ptBlock: 'Block',
+    ptDirt: 'Dirt', ptStone: 'Stone', ptPlanks: 'Planks', ptSand: 'Sand', ptGrassTop: 'Grass top', ptLeaves: 'Leaves',
+    ptPencil: 'Pencil', ptFill: 'Fill', ptEraser: 'Eraser', ptPickColor: 'Pick color', ptMirror: 'Mirror', ptUndo: 'Undo', ptRedo: 'Redo',
+    ptTools: 'Tools', ptGridHelp: 'Painting grid. Arrow keys move. Space paints.', ptColors: '32 colors', ptColor: 'Color {n}',
+    ptPreview: 'Preview', ptRotate: 'Rotate', ptUse: 'Use it', ptClose: 'Close', ptBack: 'Back to Classic',
+    ptInWorld: 'Your block is in the world ✓', ptClassicBack: 'Classic is back ✓',
+    ptErr: 'This paint cannot be used. Paint the block again.', ptNoSave: 'Could not save on this device.',
+    ptCell: 'Row {r}, column {c}', ptOn: 'On', ptOff: 'Off'
+  },
+  simple: {
+    ptOpen: 'Paint a block', ptTitle: 'Block Painter', ptBlock: 'Block',
+    ptDirt: 'Dirt', ptStone: 'Stone', ptPlanks: 'Planks', ptSand: 'Sand', ptGrassTop: 'Grass top', ptLeaves: 'Leaves',
+    ptPencil: 'Pencil', ptFill: 'Fill', ptEraser: 'Eraser', ptPickColor: 'Pick color', ptMirror: 'Mirror', ptUndo: 'Undo', ptRedo: 'Redo',
+    ptTools: 'Tools', ptGridHelp: 'Paint grid. Arrows move. Space paints.', ptColors: '32 colors', ptColor: 'Color {n}',
+    ptPreview: 'Preview', ptRotate: 'Turn', ptUse: 'Use it', ptClose: 'Close', ptBack: 'Back to Classic',
+    ptInWorld: 'Your block is in the world ✓', ptClassicBack: 'Classic is back ✓',
+    ptErr: 'This paint does not work. Paint the block again.', ptNoSave: 'Could not save here.',
+    ptCell: 'Row {r}, column {c}', ptOn: 'On', ptOff: 'Off'
+  },
+  uk: {
+    ptOpen: 'Намалювати блок', ptTitle: 'Малювання блоків', ptBlock: 'Блок',
+    ptDirt: 'Земля', ptStone: 'Камінь', ptPlanks: 'Дошки', ptSand: 'Пісок', ptGrassTop: 'Верх трави', ptLeaves: 'Листя',
+    ptPencil: 'Олівець', ptFill: 'Заливка', ptEraser: 'Гумка', ptPickColor: 'Взяти колір', ptMirror: 'Дзеркало', ptUndo: 'Скасувати', ptRedo: 'Повторити',
+    ptTools: 'Інструменти', ptGridHelp: 'Сітка малювання. Стрілки рухають. Пробіл малює.', ptColors: '32 кольори', ptColor: 'Колір {n}',
+    ptPreview: 'Перегляд', ptRotate: 'Крутити', ptUse: 'Використати', ptClose: 'Закрити', ptBack: 'Назад до Класичного',
+    ptInWorld: 'Твій блок у світі ✓', ptClassicBack: 'Класичний вигляд повернувся ✓',
+    ptErr: 'Цю фарбу не можна використати. Намалюй блок ще раз.', ptNoSave: 'Не вдалося зберегти на цьому пристрої.',
+    ptCell: 'Рядок {r}, стовпець {c}', ptOn: 'Увімк.', ptOff: 'Вимк.'
+  },
+  ru: {
+    ptOpen: 'Нарисовать блок', ptTitle: 'Рисование блоков', ptBlock: 'Блок',
+    ptDirt: 'Земля', ptStone: 'Камень', ptPlanks: 'Доски', ptSand: 'Песок', ptGrassTop: 'Верх травы', ptLeaves: 'Листва',
+    ptPencil: 'Карандаш', ptFill: 'Заливка', ptEraser: 'Ластик', ptPickColor: 'Взять цвет', ptMirror: 'Зеркало', ptUndo: 'Отменить', ptRedo: 'Повторить',
+    ptTools: 'Инструменты', ptGridHelp: 'Сетка рисования. Стрелки двигают. Пробел рисует.', ptColors: '32 цвета', ptColor: 'Цвет {n}',
+    ptPreview: 'Просмотр', ptRotate: 'Повернуть', ptUse: 'Использовать', ptClose: 'Закрыть', ptBack: 'Назад к Классике',
+    ptInWorld: 'Твой блок в мире ✓', ptClassicBack: 'Классика вернулась ✓',
+    ptErr: 'Эту краску нельзя использовать. Нарисуй блок снова.', ptNoSave: 'Не удалось сохранить на этом устройстве.',
+    ptCell: 'Строка {r}, столбец {c}', ptOn: 'Вкл.', ptOff: 'Выкл.'
+  },
+  es: {
+    ptOpen: 'Pintar un bloque', ptTitle: 'Pintor de bloques', ptBlock: 'Bloque',
+    ptDirt: 'Tierra', ptStone: 'Piedra', ptPlanks: 'Tablas', ptSand: 'Arena', ptGrassTop: 'Césped de arriba', ptLeaves: 'Hojas',
+    ptPencil: 'Lápiz', ptFill: 'Rellenar', ptEraser: 'Borrador', ptPickColor: 'Tomar color', ptMirror: 'Espejo', ptUndo: 'Deshacer', ptRedo: 'Rehacer',
+    ptTools: 'Herramientas', ptGridHelp: 'Cuadrícula de pintura. Las flechas mueven. Espacio pinta.', ptColors: '32 colores', ptColor: 'Tono {n}',
+    ptPreview: 'Vista previa', ptRotate: 'Girar', ptUse: 'Usar', ptClose: 'Cerrar', ptBack: 'Volver a Clásico',
+    ptInWorld: 'Tu bloque está en el mundo ✓', ptClassicBack: 'Volvió el aspecto Clásico ✓',
+    ptErr: 'No se puede usar esta pintura. Pinta el bloque otra vez.', ptNoSave: 'No se pudo guardar en este aparato.',
+    ptCell: 'Fila {r}, columna {c}', ptOn: 'Sí', ptOff: 'No'
+  },
+  ar: {
+    ptOpen: 'ارسم مكعبًا', ptTitle: 'رسّام المكعبات', ptBlock: 'مكعب',
+    ptDirt: 'تراب', ptStone: 'حجر', ptPlanks: 'ألواح', ptSand: 'رمل', ptGrassTop: 'أعلى العشب', ptLeaves: 'أوراق',
+    ptPencil: 'قلم', ptFill: 'تعبئة', ptEraser: 'ممحاة', ptPickColor: 'التقط لونًا', ptMirror: 'مرآة', ptUndo: 'تراجع', ptRedo: 'إعادة',
+    ptTools: 'الأدوات', ptGridHelp: 'شبكة الرسم. الأسهم تحرك. المسافة ترسم.', ptColors: '32 لونًا', ptColor: 'لون {n}',
+    ptPreview: 'معاينة', ptRotate: 'دوّر', ptUse: 'استخدمه', ptClose: 'إغلاق', ptBack: 'العودة إلى الكلاسيكي',
+    ptInWorld: 'مكعبك في العالم ✓', ptClassicBack: 'عاد المظهر الكلاسيكي ✓',
+    ptErr: 'لا يمكن استخدام هذا الرسم. ارسم المكعب من جديد.', ptNoSave: 'تعذّر الحفظ على هذا الجهاز.',
+    ptCell: 'الصف {r}، العمود {c}', ptOn: 'يعمل', ptOff: 'متوقف'
+  },
+  'fa-AF': {
+    ptOpen: 'یک بلاک رنگ کن', ptTitle: 'رنگ‌کننده بلاک', ptBlock: 'بلاک',
+    ptDirt: 'خاک', ptStone: 'سنگ', ptPlanks: 'تخته', ptSand: 'ریگ', ptGrassTop: 'بالای علف', ptLeaves: 'برگ',
+    ptPencil: 'قلم', ptFill: 'پر کردن', ptEraser: 'پاک‌کن', ptPickColor: 'رنگ بگیر', ptMirror: 'آینه', ptUndo: 'برگشت', ptRedo: 'دوباره',
+    ptTools: 'ابزارها', ptGridHelp: 'شبکه رنگ‌کاری. کلیدهای جهت حرکت می‌دهند. فاصله رنگ می‌کند.', ptColors: '۳۲ رنگ', ptColor: 'رنگ {n}',
+    ptPreview: 'پیش‌نمایش', ptRotate: 'بچرخان', ptUse: 'استفاده کن', ptClose: 'بستن', ptBack: 'برگشت به کلاسیک',
+    ptInWorld: 'بلاک تو در جهان است ✓', ptClassicBack: 'نمای کلاسیک برگشت ✓',
+    ptErr: 'این رنگ را نمی‌توان استفاده کرد. بلاک را دوباره رنگ کن.', ptNoSave: 'در این دستگاه ذخیره نشد.',
+    ptCell: 'ردیف {r}، ستون {c}', ptOn: 'روشن', ptOff: 'خاموش'
+  },
+  rw: {
+    ptOpen: 'Shushanya block', ptTitle: 'Gushushanya block', ptBlock: 'Bloki',
+    ptDirt: 'Itaka', ptStone: 'Ibuye', ptPlanks: 'Imbaho', ptSand: 'Umucanga', ptGrassTop: 'Hejuru y\'ibyatsi', ptLeaves: 'Amababi',
+    ptPencil: 'Ikaramu', ptFill: 'Uzuza', ptEraser: 'Gusiba', ptPickColor: 'Fata ibara', ptMirror: 'Indorerwamo', ptUndo: 'Subira inyuma', ptRedo: 'Subiramo',
+    ptTools: 'Ibikoresho', ptGridHelp: 'Urusobe rwo gushushanya. Imyambi irimura. Umwanya ushushanya.', ptColors: 'Amabara 32', ptColor: 'Ibara {n}',
+    ptPreview: 'Reba', ptRotate: 'Zenguruka', ptUse: 'Koresha', ptClose: 'Funga', ptBack: 'Subira kuri Classic',
+    ptInWorld: 'Block yawe iri mu isi ✓', ptClassicBack: 'Classic yagarutse ✓',
+    ptErr: 'Iri bara ntirishobora gukoreshwa. Ongera ushushanye block.', ptNoSave: 'Ntibyabitswe kuri iki gikoresho.',
+    ptCell: 'Umurongo {r}, inkingi {c}', ptOn: 'Bifunguye', ptOff: 'Bifunze'
+  },
+  ti: {
+    ptOpen: 'ብሎክ ቀልሕ', ptTitle: 'ቀላሒ ብሎክ', ptBlock: 'ብሎክ',
+    ptDirt: 'ሓመድ', ptStone: 'እምኒ', ptPlanks: 'ጣውላ', ptSand: 'ሓሸዋ', ptGrassTop: 'ልዕሊ ሳዕሪ', ptLeaves: 'ቆጽሊ',
+    ptPencil: 'ርሳሕ', ptFill: 'ምላእ', ptEraser: 'መደምሰሲ', ptPickColor: 'ሕብሪ ሕረ', ptMirror: 'መስተዋት', ptUndo: 'ምምላስ', ptRedo: 'ዳግም',
+    ptTools: 'መሳርሕታት', ptGridHelp: 'መርበብ ቀለም። ኣሰርቲ የንቀሳቕሱ። ክፍተት ይቀልሕ።', ptColors: '32 ሕብርታት', ptColor: 'ሕብሪ {n}',
+    ptPreview: 'ቅድመ-ርእይ', ptRotate: 'ዙር', ptUse: 'ተጠቐም', ptClose: 'ዕጸው', ptBack: 'ናብ ክላሲክ ተመለስ',
+    ptInWorld: 'ብሎክካ ኣብ ዓለም ኣሎ ✓', ptClassicBack: 'ክላሲክ ተመሊሱ ✓',
+    ptErr: 'እዚ ቀለም ኣይሰርሕን። ነቲ ብሎክ ደጊምካ ቀልሖ።', ptNoSave: 'ኣብዚ መሳርሒ ክሕለው ኣይተኻኣለን።',
+    ptCell: 'ረድፊ {r}፣ ዓምዲ {c}', ptOn: 'ክፉት', ptOff: 'ዕጹው'
+  },
+}
+for (const [lang, row] of Object.entries(PAINTER)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
