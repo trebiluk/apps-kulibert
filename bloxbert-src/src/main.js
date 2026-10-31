@@ -3132,14 +3132,16 @@ function tellNoRoom(key, msg) {
   const el = $('toast')
   if (el) el.classList.add('fx-pop')
 }
+// 2.5.449 (61152a5b) replaced the amber ghost material with blockedMat (red outline, no fill) but left this caller on
+// the removed amberMat, so a blocked Woodshop placement threw "amberMat is not defined". Use the blocked look.
 function showShopAmber(x, y, z, sx, sy, sz) {
-  if (!placeGhost || !amberMat) return
-  placeGhost.material = amberMat
+  if (!placeGhost || !blockedMat) return
+  placeGhost.material = blockedMat
   const lp = noa.globalToLocal([x + 0.5, y + 0.5, z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
   if (placeGhostSide) {
-    placeGhostSide.material = amberMat
+    placeGhostSide.material = blockedMat
     const lp2 = noa.globalToLocal([sx + 0.5, sy + 0.5, sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)

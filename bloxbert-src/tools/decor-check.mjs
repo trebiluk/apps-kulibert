@@ -85,6 +85,9 @@ async function startItems() {
     window.__blocks.give('handSaw', 1)
     window.__blocks.give('hammer', 1)
     window.__blocks.give('ironIngot', 4)
+    // 2.5.571 (6b1fad66) locks the iron lamps until the metal tier (T4) is open. A kid holding ingots has been
+    // through the smelter, so open T4 the way the ladder does.
+    if (s.gate) s.gate('T4')
     window.__blocks.give('glass', 4)
     window.__blocks.give('stick', 4)
     window.__blocks.give('woolBlue', 8)
@@ -137,8 +140,24 @@ async function aimAndClick(cx, cy, cz, button) {
   return spot
 }
 
+// Since 2.5.211 (df9a1a61) a desktop kid's first left click only grabs the mouse ("Your first click just grabs the
+// mouse"); the world click comes after. Do what a kid does: click into play once, then click the block.
+async function enterPlay() {
+  const box = await page.evaluate(() => {
+    if (document.pointerLockElement) return null
+    const c = document.querySelector('#stage canvas')
+    const r = c.getBoundingClientRect()
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  })
+  if (!box) return true
+  await cdpClick(box.x, box.y, 'left')
+  await sleep(300)
+  return page.evaluate(() => !!document.pointerLockElement)
+}
+
 async function openWoodshop() {
   await page.evaluate(() => window.__smoke.plant(60, 5, 60, 69))
+  await enterPlay()
   const spot = await aimAndClick(60, 5, 60, 'left'); console.log('SPOT', JSON.stringify(spot))
   await sleep(500)
   const dbg = await page.evaluate(() => { const s = window.__smoke; return { v: s.voxel(60,5,60), aim: s.aim() } })
@@ -309,7 +328,9 @@ async function rugPickupWalk() {
   return { placed: true, voxels: after.zeros, bag: after.bag, walked, beforeY, afterY }
 }
 
-for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
+// DECOR_SIZES=412x915t,1366x768 runs other sizes ("t" = touch). Default: 1366 desk and 915x412 touch.
+const SIZES = (process.env.DECOR_SIZES || '1366x768,915x412t').split(',').map((v) => { const m = v.match(/(\d+)x(\d+)(t?)/); return [+m[1], +m[2], !!m[3]] })
+for (const [w, h, touch] of SIZES) {
   await boot(w, h, touch)
   const items = await startItems()
   note('items ' + w, items.tools === 1 && items.iron >= 1, JSON.stringify(items))
