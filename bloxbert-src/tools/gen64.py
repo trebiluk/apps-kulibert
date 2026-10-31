@@ -814,11 +814,12 @@ def draw_leaves(px, mystical, under=False):
     if mystical:
         fill_noise(px, [(70, 48, 110), (46, 110, 108), (92, 60, 130), (38, 88, 90), (120, 80, 150)], 8)
     else:
-        fill_noise(px, [(40, 110, 36), (24, 78, 28), (70, 140, 48), (30, 90, 32), (16, 60, 20)], 7)
+        # 2.5.550: canopy lifted off near-black (spec 15-85% luminance, 3-5 tones).
+        fill_noise(px, [(78, 122, 58), (64, 104, 48), (92, 138, 66), (70, 112, 52), (58, 94, 44)], 7)
     # A few darker pockets so the canopy is not a flat slab.
     for y in range(4, 60, 9):
         for x in range(4, 60, 11):
-            col = (30, 20, 48) if mystical else (16, 52, 18)
+            col = (30, 20, 48) if mystical else (50, 82, 40)
             for dy in range(3):
                 for dx in range(3):
                     if dx + dy < 4:
