@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.586', date: '2026-10-31', lines: {
+    en: ["2.5.586 — On phones, the crafting panel opens below the top bar, so its title and Close are easy to reach."],
+    simple: ["2.5.586 — On phones, Crafting opens below the top bar. Close is easy to tap."],
+  } },
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
