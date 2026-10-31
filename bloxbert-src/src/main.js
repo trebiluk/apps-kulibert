@@ -482,8 +482,9 @@ function layoutLane() {
       const gap = 8
       const roomRight = (window.innerWidth - right) - (play.right + gap)
       const roomLeft = (play.left - gap) - left
-      if (roomRight >= 120 || roomRight >= roomLeft) left = Math.max(left, Math.round(play.right) + gap)
-      else right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
+      // 2.5.550: never squeeze the quest card under 220px (412 upright collapsed it to one letter wide).
+      if (roomRight >= 220 && (roomRight >= 120 || roomRight >= roomLeft)) left = Math.max(left, Math.round(play.right) + gap)
+      else if (roomLeft >= 220) right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
     }
   }
   lane.style.left = left + 'px'
