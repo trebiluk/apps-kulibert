@@ -518,8 +518,8 @@ try {
     .scene-col #view { height: 100%; min-height: 0; }
     .actions { gap: 4px; }
     .actions .action, .actions button { min-width: 0; padding-inline: 4px; }
-    /* Sync, Wait and Repeat sit in one scrolling row of full-size (44 px) buttons */
-    #program-pad { display: flex; gap: 4px; overflow-x: auto; padding: 2px 4px; }
+    /* Sync, Wait and Repeat wrap onto more rows of full-size (44 px) buttons, so nothing scrolls or is clipped */
+    #program-pad { display: flex; flex-wrap: wrap; gap: 4px; overflow: visible; padding: 2px 4px; }
     #program-pad button.block { flex: 0 0 auto; min-height: 44px; height: 44px; min-width: 44px; padding: 0 10px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1201,6 +1201,9 @@ var renderLevels = function () {
       actionBtn.appendChild(actionDraft);
     } else {
       actionBtn.removeAttribute("data-draft");
+      // 1.6.1: a draft language sets lang/dir on the button; drop them so it follows the page again
+      actionBtn.removeAttribute("dir");
+      actionBtn.removeAttribute("lang");
     }
   });
 };
