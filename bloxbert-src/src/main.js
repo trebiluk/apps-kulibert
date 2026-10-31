@@ -10315,7 +10315,7 @@ function paintTextOpts(g) {
 function paintPackLook(g) {
   const lookHead = document.createElement('p')
   lookHead.className = 'gnote ghead'
-  lookHead.textContent = 'Look'
+  lookHead.textContent = t('lookHead')
   const packRow = document.createElement('div')
   packRow.className = 'set-line'
   packRow.id = 'look-packs'
@@ -10363,8 +10363,9 @@ function paintPackLook(g) {
     }
     face.src = 'assets/packs/' + pack.id + '/atlas32.png'
     const word = document.createElement('span')
-    word.textContent = pack.name
-    b.setAttribute('aria-label', pack.name)
+    const packName = pack.name === 'Classic Topia' ? t('packClassic') : pack.name === 'Mystical Topia' ? t('packMystical') : pack.name
+    word.textContent = packName
+    b.setAttribute('aria-label', packName)
     b.append(icon, word)
     const choose = () => {
       if (b.dataset.busy === '1') return
