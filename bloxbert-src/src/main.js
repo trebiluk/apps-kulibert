@@ -2609,6 +2609,7 @@ function undo() {
   if (session && !session.beforeUndo()) return false
   const group = edits.undo()
   if (!group) { toast(t('nothingUndo')); return false }
+  unstickSafe()
   if (session) session.afterUndo()
   changeLog.note(group, 'you')
   toast(t('undid').replace('{n}', String(group.n)))
@@ -2618,6 +2619,7 @@ function redo() {
   if (session && !session.beforeRedo()) return false
   const group = edits.redo()
   if (!group) return false
+  unstickSafe()
   if (session) session.afterRedo()
   changeLog.note(group, 'you')
   toast(t('redid').replace('{n}', String(group.n)))
@@ -6601,6 +6603,8 @@ basics = createBasics({
   badge: (text) => showCard(text),
   flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0'; paintDayClock() },
   changed: () => noteMachine(),
+  playerIn: (x, y, z) => playerIn(x, y, z),
+  settled: () => { unstickSafe() },
 })
 if ($('door-auto')) $('door-auto').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
@@ -7826,6 +7830,7 @@ function bindWandPill() {
 bindWandPill()
 let seated = null
 let sleepBusy = false
+let sleepHold = null // 2.5.561: where the player lies while asleep. Nothing moves them until they wake.
 let useTarget = null
 liveNotesReady = true
 let useScanAt = 0
@@ -7960,6 +7965,7 @@ function standUp() {
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (body) body.gravityMultiplier = flying ? 0 : GRAV_MULT
   noa.entities.setPosition(noa.playerEntity, [spot.x + 0.5 + Math.sin(h) * 0.85, spot.y + 0.05, spot.z + 0.5 + Math.cos(h) * 0.85])
+  unstickSafe() // 2.5.561: blocks may have come back where standing up lands (Undo, Redo, a tree or a door while sitting)
   return true
 }
 function sleepNow() {
@@ -7968,6 +7974,8 @@ function sleepNow() {
   if (phase !== 'night') { toast(t('notTired')); return 'day' }
   const fade = $('sleep-fade')
   sleepBusy = true
+  const lying = noa.entities.getPosition(noa.playerEntity)
+  sleepHold = lying ? [lying[0], lying[1], lying[2]] : null
   paintUsePill(null)
   const wake = () => {
     if (basics && basics.skipMorning) basics.skipMorning()
@@ -7975,6 +7983,10 @@ function sleepNow() {
     try { applySky() } catch (e) {}
     paintDayClock()
     sleepBusy = false
+    sleepHold = null
+    const body = noa.ents.getPhysicsBody(noa.playerEntity)
+    if (body && !seated && !tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: a block may have landed on the bed while they slept
   }
   if (!fade) { wake(); return 'night' }
   fade.hidden = false
@@ -9044,6 +9056,7 @@ function setMode(table) {
     noa.camera.zoomDistance = camBehind ? 4 : 0
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: blocks may have come back at the table's spot while it was open
   }
 }
 function armLive(m) {
@@ -9753,6 +9766,123 @@ function wallId(id) {
   if (id === ID.wheat || id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)) return false
   try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
 }
+// 2.5.561: the player's body against the voxel store. undo(), redo(), a growing tree and a closing door can all put a solid block
+// where the player already stands. noa never pushes a body out of a block, so the player is stuck. These move them to clear space.
+const BODY_EPS = 0.02
+let lastUnstickAt = -1e9 // when unstickPlayer last moved the player
+function bodyBox() {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const pd = noa.ents.getPositionData(noa.playerEntity)
+  return { p, w: pd && pd.width > 0 ? pd.width : 0.6, h: pd && pd.height > 0 ? pd.height : 1.8 }
+}
+function solidCell(x, y, z) {
+  const id = getVoxel(x, y, z)
+  if (!id) return false
+  try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
+}
+// True when a body of this size, feet at (px, py, pz), overlaps a solid block. A hair is trimmed so standing on a floor is not an overlap.
+function bodyHitsSolid(px, py, pz, w, h) {
+  const x0 = Math.floor(px - w / 2 + BODY_EPS), x1 = Math.floor(px + w / 2 - BODY_EPS)
+  const y0 = Math.floor(py + BODY_EPS), y1 = Math.floor(py + h - BODY_EPS)
+  const z0 = Math.floor(pz - w / 2 + BODY_EPS), z1 = Math.floor(pz + w / 2 - BODY_EPS)
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) if (solidCell(x, y, z)) return true
+  return false
+}
+// True when the player's body overlaps the cell (x, y, z). basics.js asks this before it grows a tree or shuts a door.
+function playerIn(x, y, z) {
+  if (!noa || !noa.playerEntity) return false
+  const b = bodyBox()
+  if (!b.p) return false
+  return b.p[0] + b.w / 2 - BODY_EPS > x && b.p[0] - b.w / 2 + BODY_EPS < x + 1 &&
+    b.p[1] + b.h - BODY_EPS > y && b.p[1] + BODY_EPS < y + 1 &&
+    b.p[2] + b.w / 2 - BODY_EPS > z && b.p[2] - b.w / 2 + BODY_EPS < z + 1
+}
+// The lowest solid cell the body overlaps in each column it covers: [[x, z, y], ...]
+function overlapRuns(px, py, pz, w, h) {
+  const x0 = Math.floor(px - w / 2 + BODY_EPS), x1 = Math.floor(px + w / 2 - BODY_EPS)
+  const y0 = Math.floor(py + BODY_EPS), y1 = Math.floor(py + h - BODY_EPS)
+  const z0 = Math.floor(pz - w / 2 + BODY_EPS), z1 = Math.floor(pz + w / 2 - BODY_EPS)
+  const runs = []
+  for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) for (let y = y0; y <= y1; y++) if (solidCell(x, y, z)) { runs.push([x, z, y]); break }
+  return runs
+}
+function unstickPlayer() {
+  if (!noa || !noa.playerEntity || tableMode || seated || sleepBusy) return false
+  const { p, w, h } = bodyBox()
+  if (!p || !bodyHitsSolid(p[0], p[1], p[2], w, h)) return false
+  const cx = Math.floor(p[0]), cz = Math.floor(p[2])
+  const fy = Math.floor(p[1] + BODY_EPS)
+  let best = null
+  const take = (x, y, z) => { best = [x, y, z] }
+  // 1. straight up, 1 to 3 blocks, onto whatever is under the player: the block that landed on them, or a stack of up to three.
+  //    Feet land a hair above that block, so gravity settles them. If the climb would pass through air and then a ceiling
+  //    (a low room), it is not a climb, so it falls through to the neighbours below.
+  const runs = overlapRuns(p[0], p[1], p[2], w, h)
+  for (let up = 1; up <= 3 && !best; up++) {
+    const y = fy + up + BODY_EPS
+    if (bodyHitsSolid(p[0], y, p[2], w, h)) continue
+    let solidBelow = true
+    for (const r of runs) for (let cy = r[2]; cy < fy + up; cy++) if (!solidCell(r[0], cy, r[1])) solidBelow = false
+    if (solidBelow) take(p[0], y, p[2])
+  }
+  // 2. the 8 neighbouring cells, nearest first, with ground under the feet. Steps up 0 to 3 are allowed.
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      if (!dx && !dz) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      for (let up = 0; up <= 3; up++) {
+        const y = fy + up + BODY_EPS
+        if (bodyHitsSolid(nx, y, nz, w, h)) continue
+        if (!solidCell(cx + dx, fy + up - 1, cz + dz)) continue
+        const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2]) + up * up * 0.6
+        if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+      }
+    }
+  }
+  // 3. last resorts so nobody stays trapped: a clear neighbour with no ground (a short drop), then the ring two cells out, then higher up.
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      if (!dx && !dz) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      const y = fy + BODY_EPS
+      if (bodyHitsSolid(nx, y, nz, w, h)) continue
+      const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2])
+      if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+    }
+  }
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) {
+      if (Math.max(Math.abs(dx), Math.abs(dz)) !== 2) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      for (let up = 0; up <= 3; up++) {
+        const y = fy + up + BODY_EPS
+        if (bodyHitsSolid(nx, y, nz, w, h)) continue
+        const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2]) + up * up * 0.6
+        if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+      }
+    }
+  }
+  for (let up = 4; up <= 8 && !best; up++) {
+    const y = fy + up + BODY_EPS
+    if (!bodyHitsSolid(p[0], y, p[2], w, h)) take(p[0], y, p[2])
+  }
+  if (!best) return false
+  noa.entities.setPosition(noa.playerEntity, best)
+  lastUnstickAt = performance.now()
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) {
+    body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0
+    if (body.resting) body.resting = [false, false, false]
+  }
+  return true
+}
+// Called from undo, redo, the bot's undo and from basics.js (which runs every frame). A fault here must never stop a frame.
+function unstickSafe() {
+  try { return unstickPlayer() } catch (e) { console.warn('unstick', e); return false }
+}
 function eyeBlocked() {
   if (!noa.camera || tableMode || flying) return false
   const eye = noa.camera.getPosition()
@@ -9939,7 +10069,8 @@ function feelTick(dt) {
         if ((noa.camera.currentZoom || 0) > 0) noa.camera.currentZoom = 0
       } else {
         const eye = noa.camera.getPosition()
-        if (eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
+        // The camera's eye lags the body for a few frames after a move, so right after unstickPlayer it still looks blocked. Wait it out.
+        if (!seated && !sleepBusy && performance.now() - lastUnstickAt > 400 && eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
       }
     }
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
@@ -10069,6 +10200,11 @@ noa.on('tick', (dt) => {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
     noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
     noa.entities.setPosition(noa.playerEntity, [seated.x + 0.5, seated.y + 0.02, seated.z + 0.5])
+  } else if (sleepBusy && sleepHold) {
+    body.gravityMultiplier = 0
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+    noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
+    noa.entities.setPosition(noa.playerEntity, sleepHold)
   } else if (flying) {
     body.gravityMultiplier = 0
     if (body.resting) body.resting = [false, false, false]
@@ -12566,7 +12702,7 @@ if (!__BLOX_STUDENT__) {
     version: VERSION, setQuality, setGraphics, refit, get quality() { return quality }, get graphics() { return gfxLook.name }, get lang() { return LANG },
     rules: Rules,
     effects: Effects,
-    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, showDig: () => paintDigChip(null), importFile, exportDoc: snapshot,
+    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, unstick: unstickPlayer, playerIn, basics, showDig: () => paintDigChip(null), importFile, exportDoc: snapshot,
     applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
     history: (x, y, z) => changeLog.history(x, y, z),
     logPrune: (nowMs) => changeLog.prune(nowMs),
@@ -12786,8 +12922,8 @@ bot = initBot({
   close: () => panels && panels.close(),
   applyEdit: (ops, meta) => edits.applyEdit(ops, meta || { source: 'bot', by: 'bot', cause: 'program' }),
   peekEdit: () => edits.peek(),
-  undoEdit: () => edits.undo(),
-  undoRun: (runId) => edits.undoRun(runId),
+  undoEdit: () => { const g = edits.undo(); unstickSafe(); return g },
+  undoRun: (runId) => { const r = edits.undoRun(runId); unstickSafe(); return r },
   noteEdit: () => { const g = edits.peek(); if (g && g.source === 'bot') changeLog.note(g, 'bot') },
   kept: (x, y, z) => keptCell(x, y, z) || protectedCell(x, y, z, protect),
   heldBlock: () => heldBlockId() || 0,

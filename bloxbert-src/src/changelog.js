@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.561 unstick. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.561', date: '2026-10-31', lines: {
+    en: ['2.5.561 — Undo, Redo, a growing tree or a closing door can no longer trap you inside a block.'],
+    simple: ['2.5.561 — Undo, Redo, trees and doors can not trap you in a block now.'],
+    uk: ['2.5.561 — Скасувати, Повторити, дерево, що росте, чи двері, що зачиняються, більше не зможуть замкнути тебе в блоці.'],
+    ru: ['2.5.561 — Отменить, Повтор, растущее дерево и закрывающаяся дверь больше не могут запереть тебя в блоке.'],
+    es: ['2.5.561 — Deshacer, Rehacer, un árbol que crece o una puerta que se cierra ya no te atrapan dentro de un bloque.'],
+    ar: ['2.5.561 — تراجع وإعادة وشجرة تنمو وباب يُغلق لم تعد تحبسك داخل مكعب.'],
+    'fa-AF': ['2.5.561 — واپس، دوباره، درختی که رشد می‌کند یا دری که بسته می‌شود دیگر تو را در بلاک گیر نمی‌اندازد.'],
+    rw: ['2.5.561 — Subiza inyuma, Ongera, igiti gikura cyangwa urugi rufunga ntibikikugumisha mu block.'],
+    ti: ['2.5.561 — ምለስ፡ ደጊም፡ ዝዓቢ ኦም ወይ ዝዕጾ ማዕጾ ሕጂ ኣብ ብሎክ ኣይሕጽሩኻን።'],
+  }},
+
   // 2.5.560 phone HUD, short-window panels, and What's new that follows the running version. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.560', date: '2026-10-31', lines: {
     en: ['2.5.560 — Phones fit better. The top buttons, Goals and the hotbar no longer cover each other, and Settings always has Close.'],
