@@ -260,8 +260,7 @@
       "comment": "legacy"
     },
     "water": {
-      "all": "ice.png",
-      "comment": "legacy"
+      "all": "water.png"
     },
     "bushYoung": {
       "all": "wrap_bushYoung.png",

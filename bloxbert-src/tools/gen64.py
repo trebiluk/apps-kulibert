@@ -899,6 +899,176 @@ def draw_coal(px, mystical):
                     put(px, x, y, ore)
 
 
+def draw_grass_side(px, mystical):
+    # Top band matches that pack's grass. The rest matches that pack's dirt.
+    # A flat 12px band survives the 32px box-average (6 cells).
+    if mystical:
+        band, body = (0x7F, 0x6E, 0x9E), (0x6E, 0x58, 0x68)
+    else:
+        band, body = (0x3F, 0x7A, 0x32), (0x71, 0x4D, 0x2C)
+    fill_flat(px, body)
+    for y in range(12):
+        for x in range(64):
+            put(px, x, y, band)
+
+
+def _rel_lum(rgb):
+    def f(c):
+        x = c / 255.0
+        return x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
+    r, g, b = rgb[:3]
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+
+def _contrast(a, b):
+    hi, lo = max(_rel_lum(a), _rel_lum(b)), min(_rel_lum(a), _rel_lum(b))
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def _mean_rgb(im):
+    px = im.load()
+    rs = gs = bs = 0
+    n = im.width * im.height
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            rs += r
+            gs += g
+            bs += b
+    return (rs / n, gs / n, bs / n)
+
+
+def _sd_rgb(colors):
+    ys = [0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] for c in colors]
+    mu = sum(ys) / len(ys)
+    return (sum((v - mu) ** 2 for v in ys) / len(ys)) ** 0.5
+
+
+def shift_mean_rgb(im, target_rgb):
+    """Slide every pixel by the same RGB delta so the mean lands on the target.
+
+    A shared add raises lightness and does not push saturation up.
+    """
+    mr, mg, mb = _mean_rgb(im)
+    dr = target_rgb[0] - mr
+    dg = target_rgb[1] - mg
+    db = target_rgb[2] - mb
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            px[x, y] = (
+                max(0, min(255, int(round(r + dr)))),
+                max(0, min(255, int(round(g + dg)))),
+                max(0, min(255, int(round(b + db)))),
+                a,
+            )
+    return (dr, dg, db)
+
+
+def add_rgb(im, delta):
+    dr, dg, db = delta
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            px[x, y] = (
+                max(0, min(255, int(round(r + dr)))),
+                max(0, min(255, int(round(g + dg)))),
+                max(0, min(255, int(round(b + db)))),
+                a,
+            )
+
+
+def compress_rgb(im, limit=2.0, sd_max=18.0):
+    """Pull each pixel toward the tile mean until contrast and speckle are calm.
+
+    The mean itself stays put, so a pack color we just set does not drift.
+    """
+    px = im.load()
+    cols = [px[x, y][:3] for y in range(im.height) for x in range(im.width)]
+    mr, mg, mb = _mean_rgb(im)
+
+    def trial(k):
+        out = []
+        for r, g, b in cols:
+            out.append((
+                max(0, min(255, int(round(mr + (r - mr) * k)))),
+                max(0, min(255, int(round(mg + (g - mg) * k)))),
+                max(0, min(255, int(round(mb + (b - mb) * k)))),
+            ))
+        return out
+
+    lo, hi = 0.0, 1.0
+    best_k = 0.0
+    for _ in range(18):
+        mid = (lo + hi) / 2.0
+        colors = trial(mid)
+        dark = min(colors, key=_rel_lum)
+        light = max(colors, key=_rel_lum)
+        if _contrast(dark, light) <= limit and _sd_rgb(colors) <= sd_max:
+            best_k = mid
+            lo = mid
+        else:
+            hi = mid
+    colors = trial(best_k)
+    i = 0
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b = colors[i]
+            a = px[x, y][3]
+            px[x, y] = (r, g, b, a)
+            i += 1
+    return best_k
+
+
+# Mystical ground lifted off black. Leaves-under uses the same RGB shift as leaves.
+MYST_LIFT = {
+    'grass_top': (0x7F, 0x6E, 0x9E),
+    'leaves': (0x6A, 0x70, 0x96),
+    'dirt': (0x6E, 0x58, 0x68),
+    'stone': (0x7A, 0x76, 0x88),
+}
+CLASSIC_CALM = ('stone', 'dirt', 'grass_top', 'leaves', 'leavesUnder')
+_leaf_shift = [(0.0, 0.0, 0.0)]
+
+
+def tune_face(layer, im, myst):
+    if layer == 'dirt_grass':
+        return im
+    if myst and layer == 'leaves':
+        _leaf_shift[0] = shift_mean_rgb(im, MYST_LIFT['leaves'])
+        compress_rgb(im, 2.0)
+        return im
+    if myst and layer == 'leavesUnder':
+        add_rgb(im, _leaf_shift[0])
+        compress_rgb(im, 2.0)
+        return im
+    if myst and layer in MYST_LIFT:
+        shift_mean_rgb(im, MYST_LIFT[layer])
+        compress_rgb(im, 2.0)
+        return im
+    if (not myst) and layer in CLASSIC_CALM:
+        compress_rgb(im, 2.0)
+    return im
+
+
+def tile_report(name, im):
+    px = im.load()
+    cols = [px[x, y][:3] for y in range(im.height) for x in range(im.width)]
+    dark = min(cols, key=_rel_lum)
+    light = max(cols, key=_rel_lum)
+    mean = _mean_rgb(im)
+    ys = [0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] for c in cols]
+    mu = sum(ys) / len(ys)
+    sd = (sum((v - mu) ** 2 for v in ys) / len(ys)) ** 0.5
+    c = _contrast(dark, light)
+    print('  %s mean=#%02X%02X%02X C=%.2f sd=%.1f' % (
+        name, int(round(mean[0])), int(round(mean[1])), int(round(mean[2])),
+        c, sd))
+    return c, sd, mean
+
+
 def cap_master(im):
     px = im.load()
     for y in range(im.height):
@@ -921,6 +1091,7 @@ MASTERS = {
     'sand': lambda m: draw_sand(m, False),
     'stone_coal': lambda m: draw_coal(m, False),
     'water': lambda m: draw_water(m, False),
+    'dirt_grass': lambda m: draw_grass_side(m, False),
 }
 
 MASTERS_MYST = {
@@ -935,6 +1106,7 @@ MASTERS_MYST = {
     'sand': lambda m: draw_sand(m, True),
     'stone_coal': lambda m: draw_coal(m, True),
     'water': lambda m: draw_water(m, True),
+    'dirt_grass': lambda m: draw_grass_side(m, True),
 }
 
 
@@ -1078,11 +1250,11 @@ def main():
 
     def face_for(layer, myst):
         if layer == 'leavesUnder':
-            return master_image('leaves_under', myst)
+            return tune_face('leavesUnder', master_image('leaves_under', myst), myst)
         if layer.startswith('wrap_'):
             return wraps[layer[5:]]
         if layer in MASTERS:
-            return master_image(layer, myst)
+            return tune_face(layer, master_image(layer, myst), myst)
         if layer in legacy:
             return legacy[layer]
         raise SystemExit('no face for ' + layer)
@@ -1113,6 +1285,25 @@ def main():
         print(pid, 'layers', len(layers), 'folder', folder)
 
     stone_cracks_survive(images_by_pack['classic'][layers.index('stone')])
+    print('tuned faces')
+    calm = ('grass_top', 'dirt', 'stone', 'leaves', 'leavesUnder')
+    for pid in ('classic', 'mystical'):
+        print(pid)
+        for name in ('grass_top', 'dirt_grass', 'dirt', 'stone', 'leaves', 'leavesUnder'):
+            c, sd, mean = tile_report(name, images_by_pack[pid][layers.index(name)])
+            if c > 2.02:
+                raise SystemExit('%s %s contrast %.2f over 2.0' % (pid, name, c))
+            if name in calm and sd > 18.05:
+                raise SystemExit('%s %s std %.1f over 18' % (pid, name, sd))
+        side = images_by_pack[pid][layers.index('dirt_grass')]
+        top = images_by_pack[pid][layers.index('grass_top')]
+        band = side.getpixel((8, 4))
+        body = side.getpixel((8, 40))
+        tmean = _mean_rgb(top)
+        seam = _contrast(band, tmean)
+        print('  side band', band, 'body', body, 'vs top mean C=%.2f' % seam)
+        if seam > 1.2:
+            raise SystemExit('%s grass band vs top %.2f over 1.2' % (pid, seam))
 
     # Block key -> which files. `all` or top/side/bottom.
     # Material used by the block is recorded so the runtime can find a layer.

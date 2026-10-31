@@ -1,4 +1,17 @@
 export const CHANGELOG = [
+  // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.549', date: '2026-10-30', lines: {
+    en: ['2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.'],
+    simple: ['2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.'],
+    uk: ['2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.'],
+    ru: ['2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.'],
+    es: ['2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.'],
+    ar: ['2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.'],
+    'fa-AF': ['2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.'],
+    rw: ['2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.'],
+    ti: ['2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።'],
+  }},
+
   // 2.5.545 texture packs, part 1. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.545', date: '2026-10-30', lines: {
     en: ['2.5.545 — Classic and Mystical looks. Small textures stay sharp.'],

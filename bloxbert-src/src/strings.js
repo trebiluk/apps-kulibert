@@ -608,3 +608,21 @@ for (const [lang, row] of Object.entries(WN542)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.549 what's new. rw, ti, and fa-AF are machine drafts.
+const WN549 = {
+  en: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN549)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
