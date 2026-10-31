@@ -23,6 +23,60 @@ export function makeHistory(db) {
   }
 }
 
+// ---- B20 p1 (2.5.596): "who changed this block", for staff. Read-only over the same 7-day ops log.
+// The log keeps w = h32(ref) only, so "who" is an opaque builder tag "b-<8 hex>", never an alias, ref,
+// name, email, IP or device id. TechWorks (which knows each kid's ref) can turn a tag into an alias for
+// the teacher (B20 p2). w = 0 is the server itself (undo, sim) -> "system". Touch ops (same block in
+// and out: container moves, sim steps) are not block changes and are left out.
+export const HISTORY_LIMIT = 10
+export const builderTag = (w) => (w ? 'b-' + (w >>> 0).toString(16).padStart(8, '0') : 'system')
+export const actionOf = (o) => (o.b === o.i ? null : o.i === 0 ? 'break' : o.b === 0 ? 'place' : 'replace')
+
+// ops: log rows, oldest first. -> [{ who, action, block, t }] newest first, at most `limit`, none older
+// than 7 days at nowMs. block = the block placed (place/replace) or the block broken (break).
+export function historyFrom(ops, x, y, z, limit = HISTORY_LIMIT, nowMs = Date.now(), keepMs = HISTORY_MS) {
+  const out = []
+  for (let k = ops.length - 1; k >= 0 && out.length < limit; k--) {
+    const o = ops[k]
+    if (o.x !== x || o.y !== y || o.z !== z || o.t < nowMs - keepMs) continue
+    const action = actionOf(o)
+    if (action) out.push({ who: builderTag(o.w), action, block: action === 'break' ? o.b : o.i, t: o.t })
+  }
+  return out
+}
+
+// The same query over a world db (memdb/sqldb), for code running next to the log.
+export function historyAt(db, x, y, z, limit = HISTORY_LIMIT, nowMs = Date.now()) {
+  return historyFrom(db.opsSince(0, 100000), x, y, z, limit, nowMs)
+}
+
+// The same query from outside the World object, through its existing since(s, n) RPC only (no new
+// RPC, nothing stored). since(s) answers { resync } when s is older than the oldest kept row, so the
+// oldest seq is found by a binary search first, then the log is read in pages (it holds <= 20000 rows).
+export const PAGE = 1000
+export async function historyVia(since, x, y, z, limit = HISTORY_LIMIT, nowMs = Date.now()) {
+  for (let attempt = 0; attempt < 2; attempt++) {           // a purge between probe and read: try once more
+    const first = await since(0, 1)
+    let s = 0
+    if (first.resync) {
+      let lo = 0, hi = first.head                            // since(hi) is never a resync
+      while (lo < hi) { const mid = Math.floor((lo + hi) / 2); if ((await since(mid, 1)).resync) lo = mid + 1; else hi = mid }
+      s = lo
+    }
+    const ops = []
+    let gap = false
+    for (;;) {
+      const r = await since(s, PAGE)
+      if (r.resync) { gap = true; break }
+      ops.push(...r.ops)
+      if (r.ops.length < PAGE) break
+      s = r.ops[r.ops.length - 1].s
+    }
+    if (!gap) return historyFrom(ops, x, y, z, limit, nowMs)
+  }
+  return null
+}
+
 export const MAX_ENTRIES = 5000
 
 export function makeEditLog(max = MAX_ENTRIES) {
