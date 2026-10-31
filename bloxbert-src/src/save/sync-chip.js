@@ -1,4 +1,4 @@
-// Sync status chip. Only mounts when ?sync=1. DOM, aria-live polite.
+// Sync status chip. Only mounts when ?sync=1 or sessionStorage bt-sync=1. DOM, aria-live polite.
 // States: Saved to school / Saving… / Offline — saved here / Not signed in.
 
 const WHO = 'https://tw.kulibert.net/api/who'
@@ -9,8 +9,10 @@ let current = 'idle'
 
 function flagOn() {
   try {
-    return typeof location !== 'undefined' && /(?:\?|&)sync=1(?:&|$)/.test(location.search)
+    if (typeof location !== 'undefined' && /(?:\?|&)sync=1(?:&|$)/.test(location.search)) return true
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('bt-sync') === '1') return true
   } catch (e) { return false }
+  return false
 }
 
 async function signedIn() {
