@@ -728,7 +728,7 @@ html body #path-chip .path-title {
   position: relative;
   z-index: 2;
   flex: 1 1 auto;
-  min-width: 0;
+  min-width: min(140px, 50vw); /* 2.5.550: was 0, which let the title shrink to ~25px at 412 */
   background: #0B1220;
   color: #F8FAFC;
   line-height: 1.25;
@@ -807,7 +807,7 @@ html body #hub-back {
   html body #path-chip:not([hidden]) {
     z-index: 48 !important;
     display: flex !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important; /* 2.5.550: let Make/close wrap under the title so the quest card never collapses to a 1-letter column */
     align-items: center !important;
     background: #0B1220 !important;
     overflow: visible !important;
