@@ -3132,3 +3132,7 @@ html body #bridge-crack .br-warn { font-size: 20px; }
 @media (max-width: 600px) and (min-height: 501px) {
   html body #bridge-hud { bottom: auto; top: calc(var(--hud-top, 110px) + 104px); }
 }
+/* r4: on wide screens the build bar sat on the deck row at the crosshair; dock it to the right edge as a column. */
+@media (min-width: 601px) and (min-height: 501px) {
+  html body #bridge-hud { left: auto; right: 8px; transform: none; bottom: auto; top: calc(var(--hud-top, 110px) + 60px); max-width: 240px; justify-content: flex-start; }
+}
