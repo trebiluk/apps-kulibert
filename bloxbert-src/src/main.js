@@ -1630,7 +1630,7 @@ const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
 const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
-lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+lampD.emissiveColor = new Color3(0.57, 0.37, 0.07) // 2.5.550: dim lamp, no bloom
 const copperD = dye('shape-copper', 0.78, 0.42, 0.16)
 const copperOn = dye('shape-copper-on', 0.25, 0.9, 0.95)
 copperOn.emissiveColor = new Color3(0.15, 0.75, 0.85)
@@ -1957,7 +1957,8 @@ function plantMat(name, spec) {
   mat.alpha = 1
   mat.backFaceCulling = false
   mat.specularColor = new Color3(0, 0, 0)
-  mat.emissiveColor = new Color3(0.55, 0.55, 0.5)
+  // 2.5.550: flowers lit by the world, not glowing at night.
+  mat.emissiveColor = new Color3(0.28, 0.28, 0.25)
   mat.diffuseColor = new Color3(0.85, 0.9, 0.8)
   return mat
 }
@@ -11180,7 +11181,7 @@ const WOOL_RGB = { woolBlue: [0.25, 0.45, 0.86], woolGreen: [0.22, 0.66, 0.32], 
 const decorTints = []
 for (let i = 0; i < 8; i++) {
   const mat = new StandardMaterial('decor-tint-m' + i, scene)
-  mat.emissiveColor = new Color3(1, 0.9, 0.6)
+  mat.emissiveColor = new Color3(0.6, 0.54, 0.36) // 2.5.550: shade glow capped near #D9C27A
   mat.diffuseColor = new Color3(0, 0, 0)
   mat.specularColor = new Color3(0, 0, 0)
   mat.disableLighting = true
@@ -11237,7 +11238,7 @@ function syncDecorTint(srcs) {
     }
     if (!rgb) continue
     const mesh = decorTints[n++]
-    mesh.material.emissiveColor.set(rgb[0], rgb[1], rgb[2])
+    mesh.material.emissiveColor.set(rgb[0] * 0.6, rgb[1] * 0.6, rgb[2] * 0.6)
     mesh.scaling.set(sc[0] / 0.3, sc[1] / 0.3, sc[2] / 0.3)
     const lp = noa.globalToLocal(spot, null, glowLocal)
     mesh.position.set(lp[0], lp[1], lp[2])
