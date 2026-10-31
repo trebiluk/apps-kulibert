@@ -1,6 +1,8 @@
 # Bertopia class room server (Phase 0: presence only)
 
-**Standalone. Not wired into the game. Not deployed.** Nothing in `bloxbert-src` changes. Design by Claude; Debugzy gates and builds.
+Version: 2.5.569
+
+**Standalone. Not wired into the game. Auto-deploys from `main` via Cloudflare Workers Git integration (worker `bertopia-room-server`, root `server/class-room`, `npx wrangler deploy`).** Nothing in `bloxbert-src` changes. Design by Claude; Debugzy gates and builds.
 
 One Cloudflare Durable Object per room. Up to 30 kids (plus up to 4 staff sockets). Each kid sees the others' **alias nameplates and positions at about 5 Hz**. No typed text, no names, no block edits, no inventory (those are Phase 1+).
 
