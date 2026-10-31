@@ -12558,6 +12558,8 @@ if (!__BLOX_STUDENT__) {
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
     },
     handSwing(kind) { pokeHand(kind) },
+    bridge: () => (bridge ? bridge.state() : null), // PROTO test hook
+    bridgeApi: () => bridge,
     lookHand(patch) {
       if (patch) {
         if (patch.show != null) showHand = !!patch.show

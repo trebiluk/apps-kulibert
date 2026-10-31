@@ -79,7 +79,10 @@ export function createBridgeRush(api) {
   function tryPlace(cell) {
     if (!inside || !cell) return false
     const [x, y, z] = cell
-    if (!inGap(x, y, z)) return false
+    if (!inGap(x, y, z)) {
+      if (inBox(x, y, z)) { api.toast(t('brDeckOnly', 'Build on the bridge row')); return true }
+      return false
+    }
     const m = MATS[mat]
     if (spent + m.cost > BUDGET) { api.toast(t('brNoBudget', 'No blocks left')); return true }
     if (api.getVoxel(x, y, z)) return true
@@ -89,18 +92,36 @@ export function createBridgeRush(api) {
     return true
   }
   function tryBreak(x, y, z) {
-    if (!inside || !inGap(x, y, z)) return false
+    if (!inside) return false
+    if (!inGap(x, y, z)) return inBox(x, y, z) // the arena itself cannot be dug up
     if (!api.getVoxel(x, y, z)) return true
     api.edit(x, y, z, 0)
     readRow()
     paint()
     return true
   }
-  function landing(aimed) { // the cell a placement would land in, from the aimed block and its face normal
+  function landing(aimed) { // the cell a placement would land in
     if (!aimed || !aimed.position) return null
     const p = aimed.position
+    // Aiming anywhere down the gap column (water, pool wall, pool floor) builds the deck cell above it: a kid on
+    // the cliff looks down at the gap and taps; no need to find a side face.
+    if (origin && p[2] === origin[2] && p[0] >= cellX(0) && p[0] <= cellX(GAP - 1) && p[1] < deckY()) return [p[0], deckY(), p[2]]
+    // Aiming at the cliff-top cell right at the edge extends the deck from that edge.
+    if (origin && p[2] === origin[2] && p[1] === deckY() && (p[0] === cellX(0) - 1 || p[0] === cellX(GAP))) return [p[0] === cellX(0) - 1 ? cellX(0) : cellX(GAP - 1), deckY(), p[2]]
     const n = aimed.normal || [0, 1, 0]
+    // Aiming at the top of a deck block extends the deck: the next empty cell toward the far cliff, else the near one.
+    if (inGap(p[0], p[1], p[2]) && n[1] === 1) {
+      const i = p[0] - cellX(0)
+      for (let j = i + 1; j < GAP; j++) if (!row[j]) return [cellX(j), deckY(), origin[2]]
+      for (let j = i - 1; j >= 0; j--) if (!row[j]) return [cellX(j), deckY(), origin[2]]
+      return [p[0], deckY(), p[2]] // full: tryPlace sees it is taken and does nothing
+    }
     return [p[0] + n[0], p[1] + n[1], p[2] + n[2]]
+  }
+  // Inside the arena box, only the deck row takes blocks; anything else is refused with a word, so the pool and the
+  // cliffs stay as built.
+  function inBox(x, y, z) {
+    return origin && x >= origin[0] - 1 && x <= origin[0] + 21 && z >= origin[2] - 3 && z <= origin[2] + 3 && y >= origin[1] - 4 && y <= origin[1] + 6
   }
 
   // Cart
