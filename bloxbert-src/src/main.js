@@ -127,17 +127,17 @@ for (const [lang, row] of Object.entries(WN547)) {
 // Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
 // Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
 // Nothing writes that key yet. A missing or bad value falls back to the defaults.
-// 2.5.549 what's new. rw, ti, and fa-AF are machine drafts.
+// 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
 const WN549 = {
-  en: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.' },
-  simple: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.' },
-  uk: { whatsNewBody: '2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.' },
-  ru: { whatsNewBody: '2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.' },
-  es: { whatsNewBody: '2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.' },
-  ar: { whatsNewBody: '2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.' },
-  'fa-AF': { whatsNewBody: '2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.' },
-  rw: { whatsNewBody: '2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.' },
-  ti: { whatsNewBody: '2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+  en: { whatsNewBody: '2.5.550 — Lighter textures so the world runs smoother.' },
+  simple: { whatsNewBody: '2.5.550 — Lighter textures. The world runs smoother.' },
+  uk: { whatsNewBody: '2.5.550 — Легші текстури, світ працює плавніше.' },
+  ru: { whatsNewBody: '2.5.550 — Более лёгкие текстуры, мир работает плавнее.' },
+  es: { whatsNewBody: '2.5.550 — Texturas más ligeras para que el mundo vaya más fluido.' },
+  ar: { whatsNewBody: '2.5.550 — قوام أخف ليعمل العالم بسلاسة أكبر.' },
+  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر تا جهان روان‌تر کار کند.' },
+  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje kugira ngo isi igende neza.' },
+  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት፡ ዓለም ብልሙጽ ክትከይድ።' },
 }
 for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}

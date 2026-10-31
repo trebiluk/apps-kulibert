@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.550 lighter textures. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.550', date: '2026-10-30', lines: {
+    en: ['2.5.550 — Lighter textures so the world runs smoother.'],
+    simple: ['2.5.550 — Lighter textures. The world runs smoother.'],
+    uk: ['2.5.550 — Легші текстури, світ працює плавніше.'],
+    ru: ['2.5.550 — Более лёгкие текстуры, мир работает плавнее.'],
+    es: ['2.5.550 — Texturas más ligeras para que el mundo vaya más fluido.'],
+    ar: ['2.5.550 — قوام أخف ليعمل العالم بسلاسة أكبر.'],
+    'fa-AF': ['2.5.550 — بافت‌های سبک‌تر تا جهان روان‌تر کار کند.'],
+    rw: ['2.5.550 — Amashusho yoroheje kugira ngo isi igende neza.'],
+    ti: ['2.5.550 — ፈኲሶም ምስልታት፡ ዓለም ብልሙጽ ክትከይድ።'],
+  } },
   // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.549', date: '2026-10-30', lines: {
     en: ['2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.'],
