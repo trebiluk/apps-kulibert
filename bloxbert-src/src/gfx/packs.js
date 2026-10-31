@@ -71,7 +71,8 @@ export function smallTextures() {
   const saved = savedTex()
   if (saved === '0') return false
   if (saved === '1' || q === '32') return true
-  return autoSmall()
+  // 2.5.550 lag test: every device starts on the 36px sheet (32px core). ?tex=64 or the Look toggle opts in to 64.
+  return true
 }
 
 // 32px chosen by the device (Chromebook, phone, or ?tex=32), not by the player.
