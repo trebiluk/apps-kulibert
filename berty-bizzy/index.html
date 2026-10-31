@@ -382,7 +382,9 @@ try {
   }
   #status.is-win { border-width: 3px; }
   #status.is-crash { background: var(--violet-2); }
-  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; min-height: 36px; font-weight: 750; }
+  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; min-height: 44px; font-weight: 750; }
+  .bb-saved { display: flex; align-items: center; gap: 8px; min-height: 44px; margin: 6px 0 0; color: var(--pz-ink); font-weight: 650; }
+  .bb-saved[hidden] { display: none; }
   .star { width: 28px; height: 28px; fill: none; stroke: var(--ink); stroke-width: 1.6; }
   .star.is-on { fill: var(--ember); stroke: var(--ember); }
   #program-wrap {
@@ -640,7 +642,7 @@ try {
 </head>
 <body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.0</span></small></p>
+  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.2</span></small></p>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -652,6 +654,10 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v172">Version 1.7.2</p>
+  <ul>
+    <li data-k="w172a">Your program and stars stay on this Chromebook after a reload.</li>
+  </ul>
   <p data-k="v170">Version 1.7.0</p>
   <ul>
     <li data-k="w170a">Level 11, Touch: a cube rides a belt. The claw has a touch sensor, and there is a new If touch block.</li>
@@ -785,6 +791,7 @@ try {
             <ol id="program2"></ol>
           </div>
         </div>
+        <p id="bb-saved" class="bb-saved" hidden aria-live="polite"><span aria-hidden="true">✓</span><span id="bb-saved-text" data-k="savedNote">Saved on this Chromebook</span></p>
         <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
       </section>
     </div>
@@ -805,7 +812,7 @@ try {
     <svg class="star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
     <span id="star-words">No stars yet.</span>
   </p>
-  <p id="star-rules" data-k="starRules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
+  <p id="star-rules" data-k="starRules">Stars: done, under the block par, under the time par. Progress stays on this Chromebook.</p>
   <p id="metrics">
     <span id="m-blocks">Blocks: 0</span>
     <span id="m-time">Time: none yet</span>
@@ -877,10 +884,10 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.0" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.2" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
 <script src="physics.js?v=1.7.0"></script>
-<script src="game.js?v=1.7.0"></script>
+<script src="game.js?v=1.7.2"></script>
 <script src="view3d.js?v=1.7.0"></script>
 <script>
 "use strict";
@@ -1485,6 +1492,7 @@ var doSwap = function (index) {
   swapped.note = "Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + swapped.swaps + ".";
   setRun(swapped);
   updateMetrics();
+  bbScheduleSave(session.level);
 };
 var addBlock = function (id) {
   if (playing) return;
@@ -1501,6 +1509,7 @@ var addBlock = function (id) {
   renderProgram(-1, -1);
   updateMetrics();
   setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+  bbScheduleSave(session.level);
 };
 var undo = function () {
   if (playing) return;
@@ -1524,6 +1533,7 @@ var undo = function () {
   undone.note = changed && PINCHY.LEVELS[session.level].debug ? "Swap undone. Swaps: " + undone.swaps + "." : "Undone.";
   setRun(undone);
   updateMetrics();
+  if (changed) bbScheduleSave(session.level);
 };
 
 var projector = function (w, h, originX, originY) {
@@ -2180,6 +2190,7 @@ var finishWin = function (blocks, ms) {
     note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
   }
   setRun(PINCHY.settleRun(session.run[session.level], { type: "win", n: earned, note: note, swaps: attemptSwaps, steps: blocks }));
+  bbSaveStars(session.level, earned);
 };
 var finishFail = function (msg, step) {
   var text = "\u2717 " + PINCHY.crashLine(msg, step, lang);
@@ -2447,6 +2458,7 @@ var clearProgram = function () {
   setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
   updateMetrics();
   paintGame();
+  bbScheduleSave(session.level);
 };
 var retry = function () {
   var kept = session.programs[session.level].slice();
@@ -2466,11 +2478,17 @@ var retry = function () {
 var selectLevel = function (index) {
   if (index === session.level && !playing) return;
   stopPlay();
+  bbFlushSave();
   session.level = index;
   activeLane = 0;
-  // every hand-off level starts with two empty lanes
-  if (PINCHY.LEVELS[index].duo) { session.programs[index] = []; session.programs2[index] = []; }
   estopped = false;
+  // Hand-off levels still start empty, then the saved program (if any) is put back.
+  if (PINCHY.LEVELS[index].duo) { session.programs[index] = []; session.programs2[index] = []; }
+  var keptProg = bbReadProg(index);
+  if (keptProg) {
+    session.programs[index] = keptProg.a;
+    session.programs2[index] = keptProg.b;
+  }
   world = PINCHY.initialState(PINCHY.LEVELS[index]);
   lastMs = null;
   runT0 = 0;
@@ -2481,7 +2499,8 @@ var selectLevel = function (index) {
   syncLanes();
   renderProgram(-1, -1);
   updateMetrics();
-  session.run[index] = PINCHY.settleRun(null, { type: "level" });
+  session.run[index] = bbStarsState(index) || PINCHY.settleRun(null, { type: "level" });
+  bbRememberOpen(index);
   renderRun();
   drawLevel();
 };
@@ -2814,19 +2833,158 @@ var bbInit = function () {
   bbIntroStart();
 };
 
+// 1.7.2: the program and the stars for each level stay on this Chromebook.
+var BB_PROG_PREFIX = "bb-prog-v1:";
+var BB_STARS_KEY = "bb-stars-v1";
+var bbSaveTimer = 0;
+var bbPendingLevel = -1;
+var bbBlockIds = null;
+var bbKnownBlock = function (id) {
+  if (!bbBlockIds) {
+    bbBlockIds = {};
+    var blocks = PINCHY.BLOCKS || [];
+    for (var i = 0; i < blocks.length; i++) bbBlockIds[blocks[i].id] = 1;
+  }
+  return typeof id === "string" && !!bbBlockIds[id];
+};
+var bbCleanList = function (list) {
+  var out = [];
+  if (!Array.isArray(list)) return out;
+  for (var i = 0; i < list.length && out.length < 24; i++) {
+    if (bbKnownBlock(list[i])) out.push(list[i]);
+  }
+  return out;
+};
+var bbLevelId = function (index) {
+  var level = PINCHY.LEVELS[index];
+  return level && level.id ? level.id : String(index);
+};
+var bbReadProg = function (index) {
+  var s = bbStore("local");
+  if (!s) return null;
+  var raw = s.getItem(BB_PROG_PREFIX + bbLevelId(index));
+  if (raw == null) return null;
+  try {
+    var v = JSON.parse(raw);
+    if (!v || typeof v !== "object") return null;
+    return { a: bbCleanList(v.a), b: bbCleanList(v.b) };
+  } catch (errProg) { return null; }
+};
+var bbShowSaved = function () {
+  var note = document.getElementById("bb-saved");
+  if (!note) return;
+  var text = document.getElementById("bb-saved-text");
+  if (text) text.textContent = PINCHY.uiText(lang, "savedNote");
+  note.lang = lang;
+  note.dir = PINCHY.langMeta(lang).rtl ? "rtl" : "ltr";
+  markDraft(note);
+  note.hidden = false;
+};
+var bbWriteProgNow = function (index) {
+  var s = bbStore("local");
+  if (!s || index < 0) return;
+  var payload = {
+    a: (session.programs[index] || []).slice(),
+    b: (session.programs2[index] || []).slice()
+  };
+  try {
+    s.setItem(BB_PROG_PREFIX + bbLevelId(index), JSON.stringify(payload));
+    bbShowSaved();
+  } catch (errWrite) {}
+};
+var bbScheduleSave = function (index) {
+  bbPendingLevel = index;
+  if (bbSaveTimer) clearTimeout(bbSaveTimer);
+  bbSaveTimer = setTimeout(function () {
+    bbSaveTimer = 0;
+    var at = bbPendingLevel;
+    bbPendingLevel = -1;
+    bbWriteProgNow(at);
+  }, 500);
+};
+var bbFlushSave = function () {
+  if (bbSaveTimer) {
+    clearTimeout(bbSaveTimer);
+    bbSaveTimer = 0;
+  }
+  if (bbPendingLevel >= 0) {
+    var at = bbPendingLevel;
+    bbPendingLevel = -1;
+    bbWriteProgNow(at);
+  }
+};
+var bbStarsAll = function () {
+  var s = bbStore("local");
+  try {
+    var v = JSON.parse((s && s.getItem(BB_STARS_KEY)) || "{}");
+    return v && typeof v === "object" ? v : {};
+  } catch (errStars) { return {}; }
+};
+var bbRememberOpen = function (index) {
+  var s = bbStore("local");
+  if (!s || index < 0) return;
+  var all = bbStarsAll();
+  var id = bbLevelId(index);
+  if (all.open === id) return;
+  all.open = id;
+  try { s.setItem(BB_STARS_KEY, JSON.stringify(all)); } catch (errOpen) {}
+};
+var bbSaveStars = function (index, n) {
+  var s = bbStore("local");
+  if (!s) return;
+  var all = bbStarsAll();
+  var id = bbLevelId(index);
+  var prev = all[id] && typeof all[id].n === "number" ? all[id].n : 0;
+  var next = Math.max(0, Math.min(3, n | 0));
+  if (next < prev) next = prev;
+  if (all[id] && all[id].n === next && all.open === id) return;
+  all[id] = { n: next };
+  all.open = id;
+  try {
+    s.setItem(BB_STARS_KEY, JSON.stringify(all));
+    bbShowSaved();
+  } catch (errStarSave) {}
+};
+var bbStarsState = function (index) {
+  var rec = bbStarsAll()[bbLevelId(index)];
+  var n = rec && typeof rec.n === "number" ? rec.n : 0;
+  if (n <= 0) return null;
+  return { kind: "won", n: Math.min(3, n), note: "Done.", swaps: 0, steps: 0 };
+};
+var bbRestoreAll = function () {
+  for (var i = 0; i < PINCHY.LEVELS.length; i++) {
+    var saved = bbReadProg(i);
+    if (!saved) continue;
+    session.programs[i] = saved.a;
+    session.programs2[i] = saved.b;
+  }
+  var openId = bbStarsAll().open;
+  if (!openId) return;
+  for (var j = 0; j < PINCHY.LEVELS.length; j++) {
+    if (PINCHY.LEVELS[j].id === openId) session.level = j;
+  }
+};
+var bbApplySavedStars = function () {
+  var st = bbStarsState(session.level);
+  if (st) session.run[session.level] = st;
+};
+
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.2") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.programs2.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
     swapHistory.push([]);
   }
+  bbRestoreAll();
   for (var seed = 0; seed < PINCHY.LEVELS.length; seed++) {
-    if (PINCHY.LEVELS[seed].broken && !session.programs[seed].length) {
+    if (PINCHY.LEVELS[seed].broken && !session.programs[seed].length && !bbReadProg(seed)) {
       session.programs[seed] = PINCHY.LEVELS[seed].broken.slice();
     }
   }
+  bbApplySavedStars();
+  window.addEventListener("pagehide", bbFlushSave);
   document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
   var themeBtn = document.getElementById("theme-btn");
   var applyTheme = function (theme) {
@@ -2914,7 +3072,7 @@ var boot = function () {
   var nav = document.getElementById("levels");
   PINCHY.LEVELS.forEach(function (level, index) {
     var b = makeButton("level", LEVEL_ICON[level.id] || "spot", (index + 1) + " " + (PINCHY.uiText ? PINCHY.uiText(lang, level.id) : level.name), "");
-    b.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+    b.setAttribute("aria-pressed", index === session.level ? "true" : "false");
     b.addEventListener("click", function () { selectLevel(index); });
     nav.appendChild(b);
   });
