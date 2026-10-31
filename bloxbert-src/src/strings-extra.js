@@ -3885,3 +3885,56 @@ for (const [lang, row] of Object.entries(TEX550)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.582 Supply Cache. fa-AF, rw, and ti are machine drafts for WordBot.
+const LOOT582 = {
+  en: {
+    supplyCache: 'Supply Cache', whatsInside: "what's inside", alreadyOpened: 'already opened',
+    rarityCommon: 'common', rarityUncommon: 'uncommon', rarityRare: 'rare', scrap: 'scrap',
+    supplyOpen: 'Open', supplyGot: 'In your bag: {item}',
+  },
+  simple: {
+    supplyCache: 'Supply Cache', whatsInside: "what's inside", alreadyOpened: 'already opened',
+    rarityCommon: 'common', rarityUncommon: 'uncommon', rarityRare: 'rare', scrap: 'scrap',
+    supplyOpen: 'Open', supplyGot: 'In your bag: {item}',
+  },
+  uk: {
+    supplyCache: 'Сховок припасів', whatsInside: 'що всередині', alreadyOpened: 'уже відкрито',
+    rarityCommon: 'звичайне', rarityUncommon: 'незвичайне', rarityRare: 'рідкісне', scrap: 'брухт',
+    supplyOpen: 'Відкрити', supplyGot: 'У твоїй сумці: {item}',
+  },
+  ru: {
+    supplyCache: 'Схрон припасов', whatsInside: 'что внутри', alreadyOpened: 'уже открыто',
+    rarityCommon: 'обычное', rarityUncommon: 'необычное', rarityRare: 'редкое', scrap: 'лом',
+    supplyOpen: 'Открыть', supplyGot: 'В твоей сумке: {item}',
+  },
+  es: {
+    supplyCache: 'Alijo de suministros', whatsInside: 'qué hay dentro', alreadyOpened: 'ya abierto',
+    rarityCommon: 'común', rarityUncommon: 'poco común', rarityRare: 'raro', scrap: 'chatarra',
+    supplyOpen: 'Abrir', supplyGot: 'En tu bolsa: {item}',
+  },
+  ar: {
+    supplyCache: 'مخزن المؤن', whatsInside: 'ماذا بالداخل', alreadyOpened: 'مفتوح من قبل',
+    rarityCommon: 'شائع', rarityUncommon: 'غير شائع', rarityRare: 'نادر', scrap: 'خردة',
+    supplyOpen: 'افتح', supplyGot: 'في حقيبتك: {item}',
+  },
+  'fa-AF': {
+    supplyCache: 'ذخیره تدارک', whatsInside: 'داخلش چیست', alreadyOpened: 'قبلاً باز شده',
+    rarityCommon: 'معمولی', rarityUncommon: 'کمیاب‌تر', rarityRare: 'نادر', scrap: 'قراضه',
+    supplyOpen: 'باز کن', supplyGot: 'در بکس تو: {item}',
+  },
+  rw: {
+    supplyCache: 'Ububiko bw\'ibikoresho', whatsInside: 'ibiri imbere', alreadyOpened: 'byamaze gufungurwa',
+    rarityCommon: 'bisanzwe', rarityUncommon: 'bitari bisanzwe', rarityRare: 'bidasanzwe', scrap: 'ibisigazwa',
+    supplyOpen: 'Fungura', supplyGot: 'Mu gasaho kawe: {item}',
+  },
+  ti: {
+    supplyCache: 'መኽዘን ኣቑሑት', whatsInside: 'እንታይ ኣሎ ውሽጢ', alreadyOpened: 'ቅድሚ ሕጂ ተኸፊቱ',
+    rarityCommon: 'ልሙድ', rarityUncommon: 'ዘይልሙድ', rarityRare: 'ሓደሽቲ', scrap: 'ቁርጽራጽ',
+    supplyOpen: 'ክፈት', supplyGot: 'ኣብ ቦርሳኻ: {item}',
+  },
+}
+for (const [lang, row] of Object.entries(LOOT582)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

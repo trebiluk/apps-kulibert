@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.582 shared loot. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.582', date: '2026-10-31', lines: {
+    en: ['2.5.582 — Supply Caches share one list. Open one and it stays open. A tile shows what\'s inside.'],
+    simple: ['2.5.582 — Supply Caches share one list. Open one, it stays open. See what\'s inside.'],
+    uk: ['2.5.582 — Сховки припасів мають один список. Відкрий один — він лишається відкритим. Плитка показує, що всередині.'],
+    ru: ['2.5.582 — Схроны припасов делят один список. Открой один — он остаётся открытым. Плитка показывает, что внутри.'],
+    es: ['2.5.582 — Los alijos de suministros comparten una lista. Ábrelo y queda abierto. Una ficha muestra qué hay dentro.'],
+    ar: ['2.5.582 — مخازن المؤن تشترك في قائمة واحدة. افتح واحدًا ويبقى مفتوحًا. بطاقة تُظهر ماذا بالداخل.'],
+    'fa-AF': ['2.5.582 — ذخیره‌های تدارک یک فهرست مشترک دارند. یکی را باز کن، باز می‌ماند. یک کاشی نشان می‌دهد داخلش چیست.'],
+    rw: ['2.5.582 — Ububiko bw\'ibikoresho bufite urutonde rumwe. Fungura bumwe, bukomeza gufunguye. Agakaro kerekana ibiri imbere.'],
+    ti: ['2.5.582 — መኽዘን ኣቑሑት ሓደ ዝርዝር የካፍሉ። ሓደ ክፈት፡ ክፉት ይጸንሕ። ንጣፍ እንታይ ከምዘሎ ውሽጢ የርኢ።'],
+  } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],

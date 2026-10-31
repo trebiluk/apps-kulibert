@@ -241,7 +241,7 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   dirty = true
 })
 CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
-import { wildBushLoot } from './drops.js'
+import { rollWildBush, lootLines } from './loot-tables.js'
 import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
@@ -3491,6 +3491,8 @@ function breakAt(x, y, z, hold) {
   }
   if (isShopBlock(id)) return liftShop(x, y, z)
   if (id === ID.box) {
+    const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+    if (rec && rec.kind === 'supply') { toast(t('supplyCache')); return false }
     if (session && session.pickup) session.pickup(x, y, z, id)
     if (getVoxel(x, y, z) === ID.box) edit(x, y, z, 0)
     pokeHand('break')
@@ -3543,6 +3545,195 @@ function useHoldReady(dig, now) {
   if (isDoor(dig.id)) return false
   return now - (dig.t0 || now) >= 500
 }
+function ensureSupplyCaches() {
+  if (!session || !session.meta) return
+  const spots = [[40, 10], [-28, 6], [10, 40]]
+  for (const [x, z] of spots) {
+    if (inTown(x, z)) continue
+    let y = -1
+    for (let yy = 12; yy >= 1; yy--) {
+      const under = getVoxel(x, yy, z) | 0
+      if (under > 0 && under !== WATER) { y = yy + 1; break }
+    }
+    if (y < 1) continue
+    const id = getVoxel(x, y, z) | 0
+    if (id && id !== ID.box) continue
+    const key = x + ',' + y + ',' + z
+    const rec = session.meta.get(key)
+    if (id === ID.box && rec && rec.kind === 'supply') continue
+    if (id !== ID.box && !edit(x, y, z, ID.box)) continue
+    if (!rec || rec.kind !== 'supply') session.meta.set(key, { kind: 'supply', opened: [] })
+  }
+}
+function playAlias() {
+  try {
+    const who = window.KulibertWho
+    const row = who && typeof who.read === 'function' ? who.read() : null
+    if (row && typeof row.alias === 'string' && row.alias) return row.alias.slice(0, 24)
+  } catch (e) {}
+  try {
+    const k = 'bt-play-alias'
+    let a = localStorage.getItem(k)
+    if (!a || a.length > 24) {
+      a = 'p' + ((Math.random() * 1e9) | 0).toString(36)
+      localStorage.setItem(k, a)
+    }
+    return a
+  } catch (e) { return 'p0' }
+}
+function supplyMotionFrames() {
+  try {
+    if (document.documentElement.getAttribute('data-kp-motion') === 'less') return 0
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0
+  } catch (e) {}
+  return 2
+}
+function ensureSupplyStyle() {
+  if (document.getElementById('supply-cache-css')) return
+  const style = document.createElement('style')
+  style.id = 'supply-cache-css'
+  style.textContent = [
+    '#supply-cache{position:fixed;left:8px;right:8px;bottom:96px;z-index:46;max-width:420px;margin:0 auto;background:#1b2433;color:#f3ecdf;border:2px solid #9a917f;border-radius:12px;padding:12px;font:700 16px/1.35 sans-serif;box-shadow:none}',
+    '#supply-cache h2{margin:0 0 8px;font:700 18px/1.3 sans-serif}',
+    '#supply-cache .loot-acts{display:flex;flex-wrap:wrap;gap:8px}',
+    '#supply-cache button{min-height:44px;min-width:44px;padding:8px 12px;font:700 16px/1.2 sans-serif;background:#2c3544;color:#f3ecdf;border:2px solid #9a917f;border-radius:8px;cursor:pointer}',
+    '#supply-cache button:focus-visible{outline:3px solid #f4efe6;outline-offset:2px}',
+    '#supply-cache .loot-lines{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}',
+    '#supply-cache .loot-line{display:flex;align-items:center;gap:8px;min-height:44px;font-size:16px}',
+    '#supply-cache .loot-ico{width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center}',
+    '#supply-cache .loot-ico canvas,#supply-cache .loot-ico img,#supply-cache .loot-ico svg{width:32px;height:32px}',
+    '#supply-cache .loot-gem{width:22px;height:22px;flex:none;display:inline-flex;align-items:center;justify-content:center}',
+    '#supply-cache .loot-gem i{width:16px;height:16px;background:#e7e0d4;display:block}',
+    '#supply-cache .loot-gem[data-shape="round"] i{border-radius:50%}',
+    '#supply-cache .loot-gem[data-shape="square"] i{border-radius:2px}',
+    '#supply-cache .loot-gem[data-shape="diamond"] i{width:12px;height:12px;transform:rotate(45deg)}',
+    '#supply-cache .loot-status{margin:8px 0 0;font-size:16px}',
+    '@media (max-width:430px){#supply-cache{bottom:128px;max-height:calc(100dvh - 220px);overflow:auto}}',
+    '@media (prefers-reduced-motion: reduce){#supply-cache,#supply-cache *{animation:none !important;transition:none !important}}',
+  ].join('')
+  document.head.append(style)
+}
+function rarityWord(rarity) {
+  if (rarity === 'uncommon') return t('rarityUncommon')
+  if (rarity === 'rare') return t('rarityRare')
+  return t('rarityCommon')
+}
+function paintSupplyLines(list) {
+  list.replaceChildren()
+  for (const row of lootLines('supply_chest')) {
+    const li = document.createElement('li')
+    li.className = 'loot-line'
+    const ico = document.createElement('span')
+    ico.className = 'loot-ico'
+    ico.setAttribute('aria-hidden', 'true')
+    const art = slotArt(row.item)
+    if (art) ico.append(art)
+    const gem = document.createElement('span')
+    gem.className = 'loot-gem'
+    gem.dataset.shape = row.shape
+    gem.setAttribute('aria-hidden', 'true')
+    gem.append(document.createElement('i'))
+    const words = document.createElement('span')
+    const name = t(row.item)
+    words.textContent = name + ' · ' + rarityWord(row.rarity) + ' · ' + row.pct + '%'
+    li.append(ico, gem, words)
+    list.append(li)
+  }
+}
+function openNearestSupply() {
+  if (!session || !session.meta || !noa || !noa.playerEntity) return false
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p) return false
+  const x0 = Math.floor(p[0]) - 2
+  const y0 = Math.floor(p[1]) - 1
+  const z0 = Math.floor(p[2]) - 2
+  let best = null
+  let bestD = 9
+  for (let x = x0; x <= x0 + 4; x++) for (let y = y0; y <= y0 + 3; y++) for (let z = z0; z <= z0 + 4; z++) {
+    if ((getVoxel(x, y, z) | 0) !== ID.box) continue
+    const rec = session.meta.get(x + ',' + y + ',' + z)
+    if (!rec || rec.kind !== 'supply') continue
+    const dx = x + 0.5 - p[0]
+    const dy = y + 0.5 - (p[1] + 1)
+    const dz = z + 0.5 - p[2]
+    const d = dx * dx + dy * dy + dz * dz
+    if (d < bestD) { bestD = d; best = [x, y, z] }
+  }
+  if (!best) return false
+  openSupplyPanel(best[0], best[1], best[2])
+  return true
+}
+function openSupplyPanel(x, y, z) {
+  ensureSupplyStyle()
+  let card = document.getElementById('supply-cache')
+  if (!card) {
+    card = document.createElement('div')
+    card.id = 'supply-cache'
+    card.setAttribute('role', 'dialog')
+    card.setAttribute('aria-labelledby', 'supply-cache-title')
+    card.innerHTML = '<h2 id="supply-cache-title"></h2><div class="loot-acts"><button type="button" data-act="inside" aria-expanded="true"></button><button type="button" data-act="open"></button><button type="button" data-act="close"></button></div><ul class="loot-lines"></ul><p class="loot-status" role="status"></p>'
+    document.body.append(card)
+    card.querySelector('[data-act="inside"]').addEventListener('click', () => {
+      const on = card.dataset.inside !== '1'
+      card.dataset.inside = on ? '1' : '0'
+      const list = card.querySelector('.loot-lines')
+      if (list) list.hidden = !on
+      const btn = card.querySelector('[data-act="inside"]')
+      if (btn) btn.setAttribute('aria-expanded', on ? 'true' : 'false')
+    })
+    card.querySelector('[data-act="open"]').addEventListener('click', () => {
+      if (!session || !session.openSupply) return
+      const got = session.openSupply(+card.dataset.x, +card.dataset.y, +card.dataset.z, playAlias())
+      paintSupplyStatus(card, got)
+    })
+    card.querySelector('[data-act="close"]').addEventListener('click', () => { card.hidden = true })
+  }
+  card.dir = document.documentElement.dir || 'ltr'
+  card.hidden = false
+  card.dataset.x = x
+  card.dataset.y = y
+  card.dataset.z = z
+  card.dataset.inside = '1'
+  card.dataset.phase = 'shut'
+  const title = card.querySelector('h2')
+  if (title) title.textContent = t('supplyCache')
+  const inside = card.querySelector('[data-act="inside"]')
+  const openBtn = card.querySelector('[data-act="open"]')
+  const closeBtn = card.querySelector('[data-act="close"]')
+  if (inside) { inside.textContent = t('whatsInside'); inside.setAttribute('aria-expanded', 'true') }
+  if (openBtn) openBtn.textContent = t('supplyOpen')
+  if (closeBtn) closeBtn.textContent = t('close')
+  const list = card.querySelector('.loot-lines')
+  if (list) { paintSupplyLines(list); list.hidden = true }
+  const status = card.querySelector('.loot-status')
+  if (status) { status.hidden = true; status.textContent = '' }
+  const peek = session && session.supplyPeek ? session.supplyPeek(x, y, z, playAlias()) : null
+  const frames = supplyMotionFrames()
+  let left = frames
+  const step = () => {
+    if (card.hidden || card.dataset.x !== String(x)) return
+    if (left > 0) { left -= 1; requestAnimationFrame(step); return }
+    card.dataset.phase = 'open'
+    if (list) list.hidden = card.dataset.inside !== '1'
+    paintSupplyStatus(card, peek && peek.already ? peek : null)
+    if (inside) { try { inside.focus({ preventScroll: true }) } catch (e) { inside.focus() } }
+  }
+  if (frames <= 0) step()
+  else requestAnimationFrame(step)
+}
+function paintSupplyStatus(card, got) {
+  const openBtn = card.querySelector('[data-act="open"]')
+  const status = card.querySelector('.loot-status')
+  const already = !!(got && got.already)
+  const granted = !!(got && got.item && !already)
+  if (openBtn) openBtn.hidden = already || granted
+  if (!status) return
+  status.hidden = false
+  if (already) status.textContent = t('alreadyOpened')
+  else if (granted && got.n > 0) status.textContent = t('supplyGot').replace('{item}', t(got.item))
+  else if (granted) status.textContent = t('alreadyOpened')
+  else status.textContent = ''
+}
 function useAt(hit) {
   // C5 Foundry Console: Override Key on the arena Console
   try {
@@ -3565,6 +3756,14 @@ function useHit(hit) {
   const ax = hit.position[0]
   const ay = hit.position[1]
   const az = hit.position[2]
+  if ((id === ID.box || id === 27) && session && session.meta) {
+    const rec = session.meta.get((ax | 0) + ',' + (ay | 0) + ',' + (az | 0))
+    if (rec && rec.kind === 'supply') {
+      if (!canReach([ax, ay, az])) return true
+      openSupplyPanel(ax | 0, ay | 0, az | 0)
+      return true
+    }
+  }
   if (id === ID.conveyor) {
     if (!canReach([ax, ay, az])) return false
     const spun = belts && belts.rotate(ax, ay, az)
@@ -7011,7 +7210,8 @@ function anyCard() {
   const about = $('about')
   const sheet = $('sheet')
   const cog = document.getElementById('cog-card')
-  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden) || (cog && !cog.hidden))
+  const supply = document.getElementById('supply-cache')
+  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden) || (cog && !cog.hidden) || (supply && !supply.hidden))
 }
 function focusBtn(btn) {
   if (!btn) return
@@ -7841,7 +8041,12 @@ function findUseTarget() {
       if (isDoor(below) && !isDoorTop(below)) { uy = y - 1; uid = below }
     }
     const verb = useVerb(uid) || (isFoundryConsole(uid, ux, uz) ? 'usePress' : '')
-    if (!verb) continue
+    let supplyVerb = verb
+    if (uid === ID.box && session && session.meta) {
+      const rec = session.meta.get(ux + ',' + uy + ',' + uz)
+      if (rec && rec.kind === 'supply') supplyVerb = 'supplyCache'
+    }
+    if (!supplyVerb) continue
     const dx = x + 0.5 - p[0]
     const dy = y + 0.5 - (p[1] + 1.2)
     const dz = z + 0.5 - p[2]
@@ -7851,7 +8056,7 @@ function findUseTarget() {
     if (dot < 0.62) continue
     if (dist < bestD) {
       bestD = dist
-      best = { x: ux, y: uy, z: uz, id: uid, verb, dist }
+      best = { x: ux, y: uy, z: uz, id: uid, verb: supplyVerb, dist }
     }
   }
   return best
@@ -9282,6 +9487,13 @@ window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
   const langList = document.getElementById('lang-list')
   if (langList && !langList.hidden) return
+  const supplyCard = document.getElementById('supply-cache')
+  if (supplyCard && !supplyCard.hidden) {
+    e.preventDefault()
+    e.stopPropagation()
+    supplyCard.hidden = true
+    return
+  }
   const cogCard = document.getElementById('cog-card')
   if (cogCard && !cogCard.hidden) {
     e.preventDefault()
@@ -9424,6 +9636,26 @@ function shutByKey() {
 }
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
+  const supplyCard = document.getElementById('supply-cache')
+  if (supplyCard && !supplyCard.hidden) {
+    if (e.key === 'Escape' || e.key === 'Tab') return
+    if ((e.key === 'i' || e.key === 'I') && !e.repeat) {
+      e.preventDefault()
+      const btn = supplyCard.querySelector('[data-act="inside"]')
+      if (btn) btn.click()
+      return
+    }
+    if ((e.key === 'o' || e.key === 'O') && !e.repeat) {
+      e.preventDefault()
+      const btn = supplyCard.querySelector('[data-act="open"]')
+      if (btn && !btn.hidden) btn.click()
+      return
+    }
+    if (e.key === 'e' || e.key === 'E' || e.key === 'f' || e.key === 'F' || e.key === 'q' || e.key === 'Q') {
+      e.preventDefault()
+      return
+    }
+  }
   if (e.key === 'Escape' || e.key === 'Tab') return
   if (e.key === 'e' || e.key === 'E') { // 2.5.506: E toggles the Bag even while the wand is held
     if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return
@@ -9442,6 +9674,7 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault()
       if (e.repeat) return
       if (usePillOn()) { pressUse(); return }
+      if (openNearestSupply()) return
       useSelected()
       return
     }
@@ -13001,6 +13234,7 @@ load().catch(() => {}).finally(() => {
       } else console.info('[bt-foundry] skipped (safe)')
     }
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
+  try { ensureSupplyCaches() } catch (e) { console.warn('[supply] skip', e && e.message) }
   armClock()
   runBtTest()
   paintDayClock()
@@ -13358,7 +13592,11 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     crops: () => farm.dump(),
     forage: () => forage.dump(),
     bushes: () => starterBushes(),
-    loot: (x, y, z) => wildBushLoot(x, y, z),
+    loot: (x, y, z) => {
+      const drops = rollWildBush(x, y, z)
+      const berry = drops.find((d) => d.item === 'berry')
+      return { berries: berry ? berry.n : 0, sprout: drops.some((d) => d.item === 'bushSprout') }
+    },
     pickN: (x, y, z) => wildPickCount(x, y, z),
     seekForage(ms) {
       const now = Date.now()
