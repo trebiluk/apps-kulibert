@@ -144,14 +144,15 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
-// 2.5.553 what's new. en and simple only for now; other languages follow and still show the older line until then.
-const WN553 = {
-  en: { whatsNewBody: '2.5.553 — Rocks, ores, oak, pine and beds have new hand-drawn looks. Stone has no more grid lines.' },
-  simple: { whatsNewBody: '2.5.553 — New looks for rocks, ores, trees and beds. Stone has no grid.' },
-}
-for (const [lang, row] of Object.entries(WN553)) {
+// 2.5.560 what's new. The line now comes from the running version's own CHANGELOG entry, in every language.
+// The WN5xx chain above only fixed the languages each release remembered to list, so the others kept an older
+// version's number. A language this entry does not have gets the English line of THIS version, never an old one.
+const WN_NOW = CHANGELOG.find((e) => e.v === VERSION) || CHANGELOG[0]
+for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']) {
+  const lines = WN_NOW.lines[lang] && WN_NOW.lines[lang].length ? WN_NOW.lines[lang] : WN_NOW.lines.en
+  if (!lines || !lines.length) continue
   if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
+  EXTRA[lang].whatsNewBody = lines.join(' ')
 }
 function dailyOverride() {
   try {
@@ -447,7 +448,8 @@ function laneRelease(el) {
 function capLane() {
   const lane = document.getElementById('chip-lane')
   if (!lane) return
-  const cap = (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
+  // 2.5.560: on windows 380px tall or less only one chip fits between the bars and the hotbar. The rest wait their turn.
+  const cap = window.innerHeight <= 380 ? 1 : (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
   let n = 0
   for (const el of lane.children) {
     const fading = el.id === 'path-chip' && el.classList.contains('path-out')
@@ -482,6 +484,15 @@ function layoutLane() {
   bump(box('game-menu'))
   bump(box('pause-btn'))
   bump(box('fs-btn'))
+  // 2.5.560: when the lane starts on the same line as Goals (sideways phones), begin after Goals, not under it.
+  const goalsBox = box('goals-hud')
+  if (goalsBox && lane.getBoundingClientRect().top < goalsBox.bottom - 1) bump(goalsBox)
+  // The Suit bar sits in the same band on sideways phones. Start after it when they share rows.
+  const suitBox = box('suit-bar')
+  if (suitBox) {
+    const band = lane.getBoundingClientRect()
+    if (suitBox.top < band.bottom - 1 && suitBox.bottom > band.top + 1 && band.top < suitBox.bottom) bump(suitBox)
+  }
   const play = box('play-chip')
   if (play) {
     const band = lane.getBoundingClientRect()
@@ -12332,12 +12343,27 @@ function refit() {
   const h = Math.ceil(topBar.getBoundingClientRect().height)
   document.documentElement.style.setProperty('--top-h', h + 'px')
   document.documentElement.style.setProperty('--phone-top', h + 'px')
+  // 2.5.560: one number for "where the top bars end". Goals, Pause, Full screen, the chip lane and panels all hang from it.
+  const hudTop = Math.max(h, Math.ceil(topBar.getBoundingClientRect().bottom), kb)
+  document.documentElement.style.setProperty('--hud-top', hudTop + 'px')
   layoutLane()
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)
 const kbWatch = document.querySelector('.kb-bar')
 if (kbWatch) new ResizeObserver(refit).observe(kbWatch)
+else if (window.MutationObserver) {
+  // 2.5.560: the shared bar mounts after this runs on slow phones. Watch for it, then track its height too.
+  const kbFind = new MutationObserver(() => {
+    const late = document.querySelector('.kb-bar')
+    if (!late) return
+    kbFind.disconnect()
+    new ResizeObserver(refit).observe(late)
+    refit()
+  })
+  kbFind.observe(document.body, { childList: true })
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit)
 addEventListener('resize', refit)
 addEventListener('orientationchange', () => { refit(); setTimeout(refit, 300) })
 if (window.visualViewport) visualViewport.addEventListener('resize', refit)
