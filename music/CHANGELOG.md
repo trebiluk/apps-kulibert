@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.67** · 2026-10-31 · channel **draft PR**
 
-MU 2.36.67 — Make a beat is the first big button, Saved is honest, and Help and Teacher hold the long lists.
+MU 2.36.67 r2 — Make a beat is the first big button, Saved is honest, and Help and Teacher hold the long lists. r2: a fresh reload still opens on Songs, so Make a beat stays on screen at phone size.
 
 In kid words: the first time you open DJ Berty you see one big Make a beat button at the top, with a drum picture and its word. Tab lands on it first. "Saved" does not show until your beat really is saved; if the browser cannot keep it, you see "! Not saved yet". Come back later and your beat is there, with "Saved". In the menu, How to use it and What's new open with the Help button. Assign practice and the class file are under a Teacher button at the end of the menu. Swipe hints only show on touch screens. New words fall back to English in the other languages.
 

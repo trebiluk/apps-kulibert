@@ -5525,7 +5525,7 @@
         if (preset === "band" || preset === "sound" || preset === "lights") reopen = tabForMode(preset);
       }
     } catch (errRe) { reopen = ""; }
-    openTab(reopen || (state.hadSave ? "tap" : "songs")); // MU 2.36.67: a fresh start lands on Songs, where Make a beat is the first, biggest button // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
+    openTab(reopen || (state.kept ? "tap" : "songs")); // MU 2.36.67 r2: only a kept song counts; the quiet first-load autosave no longer sends a fresh kid to Tap // MU 2.36.67: a fresh start lands on Songs, where Make a beat is the first, biggest button // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
   }
   if ($("tempo") && state.song && state.song.bpm) {
     $("tempo").value = String(state.song.bpm);
