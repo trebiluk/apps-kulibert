@@ -705,7 +705,7 @@ function guardTest() {
 guardTest()
 const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
-if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
+if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy', true)
 
 function normLang(code) {
   const raw = String(code || '').trim()
