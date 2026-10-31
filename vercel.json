@@ -506,8 +506,8 @@
       "permanent": true
     },
     {
-      "source": "/blocks/:path*",
-      "destination": "/bertopia/:path*",
+      "source": "/blocks/:path((?!sw\\.js$).*)",
+      "destination": "/bertopia/:path",
       "permanent": true
     },
     {
@@ -516,8 +516,8 @@
       "permanent": true
     },
     {
-      "source": "/blocks-test/:path*",
-      "destination": "/bertopia/:path*",
+      "source": "/blocks-test/:path((?!sw\\.js$).*)",
+      "destination": "/bertopia/:path",
       "permanent": true
     }
   ],
@@ -959,6 +959,13 @@
     }
   ],
   "headers": [
+    {
+      "source": "/(blocks|blocks-test)/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
+      ]
+    },
     {
       "source": "/",
       "headers": [
