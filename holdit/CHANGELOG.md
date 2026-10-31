@@ -1,6 +1,10 @@
 **Chip: HI 1.1.23** · 2026-10-30 · channel **live**
 Door: https://apps.kulibert.net/holdit/
 
+## Role line — 2026-10-31
+
+- The design-tool sentence now says Span and Spire are modes in HoldIt. No new chip. rw, ti, and fa-AF lines are draft translations. What's new history is unchanged.
+
 ## 1.1.23 — You can read the menu and the report — 2026-10-30
 
 - What’s new: Menus and Settings are readable. Locked jobs show 🔒 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.
