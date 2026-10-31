@@ -250,7 +250,7 @@ try {
   button:active { background: var(--violet-2); }
   button:disabled { opacity: 0.55; }
   button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
-  #goal, .legend, .help, #angles, #metrics { margin: 8px 0; font-weight: 650; }
+  #goal, .legend, .help, #angles, #touch-line, #metrics { margin: 8px 0; font-weight: 650; }
   #goal { min-height: 1.4em; }
   .stage {
     display: grid;
@@ -469,7 +469,10 @@ try {
     #pz-menu .pz-narrow { display: none; }
   }
   @media (max-height: 520px) {
-    #goal, .legend, #angles, #star-rules, #metrics, #stars { display: none; }
+    .legend, #angles, #star-rules, #metrics, #stars { display: none; }
+    /* 1.7.0: the goal and the Touch line are never hidden on short screens; they are compact instead. */
+    #goal, #touch-line { flex: 0 0 auto; overflow: visible; margin: 2px 0; font-size: 12px; line-height: 1.25; font-weight: 650; }
+    #touch-line[hidden] { display: none; }
     #help { display: block; white-space: normal; overflow: visible; }
     #langs, #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: none; margin: 4px 0; position: static; }
     #view { height: 180px; min-height: 140px; }
@@ -784,6 +787,7 @@ try {
         <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
       </div>
       <p id="goal"></p>
+      <p id="touch-line" hidden></p>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
       <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
     </div>
@@ -1961,7 +1965,13 @@ var paintGame = function () {
   if (!world) return;
   var viewArm = (isDuo() && activeLane === 1 && world.bizzy) ? world.bizzy : world;
   var angleLine = (isDuo() ? laneName(activeLane) + ": " : "") + PINCHY.jointReadout(viewArm, lang);
-  if (PINCHY.LEVELS[session.level].physics) angleLine += " " + PINCHY.uiText(lang, world.touch ? "touchOn" : "touchOff") + ".";
+  var touchEl = document.getElementById("touch-line");
+  if (PINCHY.LEVELS[session.level].physics) {
+    touchEl.hidden = false;
+    touchEl.textContent = PINCHY.uiText(lang, world.touch ? "touchOn" : "touchOff") + ".";
+  } else {
+    touchEl.hidden = true;
+  }
   var anglesEl = document.getElementById("angles");
   anglesEl.textContent = angleLine;
   if (isDraftLang()) markDraft(anglesEl);
