@@ -9463,6 +9463,13 @@ document.addEventListener('keydown', (e) => {
       return
     }
   }
+  if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && $('sheet') && $('sheet').hidden) { // Holo Hand: H shows or hides the hand hologram
+    e.preventDefault()
+    showHand = !showHand
+    applyLook()
+    if (holo) holo.announce(t('showHand') + ': ' + (showHand ? t('switchOn') : t('switchOff')))
+    return
+  }
   if (e.key === 'v' || e.key === 'V') { // 2.5.441: V toggles the camera view
     if (!e.ctrlKey && !e.metaKey && !e.repeat && $('sheet') && $('sheet').hidden) {
       e.preventDefault()
@@ -10430,6 +10437,13 @@ function paintPackLook(g) {
     g.insertBefore(hint, g.firstChild)
   }
 }
+function holoKeyNote() { // Holo Hand: the H key does the same as the Show hand switch
+  const p = document.createElement('p')
+  p.className = 'gnote'
+  p.dataset.holoKey = '1'
+  p.textContent = t('holoKeyHint').replace('{key}', 'H')
+  return p
+}
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')
   const range = document.createElement('input')
@@ -10545,6 +10559,7 @@ function paintLook(g) {
     lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }, '', 'wide'),
     lookPill(t('autoJump'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
     lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
+    ...(TOUCH_UI ? [] : [holoKeyNote()]),
     side,
     cam,
     clothes,
