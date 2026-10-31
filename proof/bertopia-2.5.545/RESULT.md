@@ -21,3 +21,8 @@ Rows: Classic grass, Classic sand, water (old = ice tile, new = water tile), Mys
 ## Not run (npm registry blocked in this cloud session)
 - npm ci / npm run build, full npm test, live screenshots (1366x768, 412x915, 915x412), live 2.5.541 side by side, FPS.
 - bertopia/ and blocks-test/ built copies are NOT rebuilt. Someone with registry access must run `npm run build:test` (and build for bertopia/) before this can be looked at in a browser.
+
+## Water shader (follow-up, Diego approved)
+src/main.js bertWater fragment: colors deep/body/skin made deeper and bluer (top-face "skin" was a pale 0.42,0.68,0.78, now 0.14,0.40,0.66), alpha raised from 0.66/0.44 to 0.90/0.80. waterMat.alpha is unchanged. No white, no animation, brightest channel 0.66.
+Screenshots in shots/ (before = built 2.5.544 page, old art and old shader; after = same page with the new tiles and the patched shader). Same camera, same test pond on a flat platform, headless Chromium (software GL). 1366x768 and 412x915 upright. 0 console errors in all four runs.
+These shots come from a patched copy of the already-built page, not from `npm run build`. 915x412 sideways and FPS still not measured. The "before" is 2.5.544, not live 2.5.541.
