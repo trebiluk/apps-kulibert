@@ -9103,6 +9103,11 @@ if (/[?&]debug=1(&|$)/.test(location.search)) {
   }
   window.__bt = {
     placeAt: btPlaceAt,
+    // blockAt: the block id at that cell (0 = air), or null if x/y/z aren't numbers
+    blockAt(x, y, z) {
+      if (![x, y, z].every(Number.isFinite)) return null
+      return getVoxel(Math.floor(x), Math.floor(y), Math.floor(z)) || 0
+    },
     placeTest(id) {
       const p = noa.entities.getPosition(noa.playerEntity)
       const h = noa.camera ? noa.camera.heading : 0
