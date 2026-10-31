@@ -1,4 +1,10 @@
 export const CHANGELOG = [
+  // 2.5.553 texture pack part 2. en and simple only for now; other languages follow.
+  { v: '2.5.553', date: '2026-10-31', lines: {
+    en: ['2.5.553 — Rocks, ores, oak, pine and beds have new hand-drawn looks. Stone has no more grid lines.'],
+    simple: ['2.5.553 — New looks for rocks, ores, trees and beds. Stone has no grid.'],
+  }},
+
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],

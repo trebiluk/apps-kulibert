@@ -31,11 +31,12 @@ export function leafTint(id, x, z) {
   return null
 }
 
+// Face shading is simple and flat (2.5.553 art rules): top 100%, sides 80%, bottom 60%.
+// The soft argument stays so callers do not change; every look uses the same three values.
 function faceShade(nx, ny, nz, soft) {
   if (ny > 0.5) return 1
-  if (ny < -0.5) return soft ? 0.78 : 0.55
-  if (nx > 0.5 || nz > 0.5) return soft ? 0.9 : 0.8
-  return soft ? 0.86 : 0.7
+  if (ny < -0.5) return 0.6
+  return 0.8
 }
 
 function k3(x, y, z) { return x + ',' + y + ',' + z }
