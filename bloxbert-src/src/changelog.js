@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  // 2.5.587 frame budget panel (B46). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.587', date: '2026-10-31', lines: {
+    en: ['2.5.587 — Teachers: add ?fps=1 to see how many milliseconds chunks, belts, mobs, HUD and drawing take each frame.'],
+    simple: ['2.5.587 — Teachers: add ?fps=1 to see what takes time each frame.'],
+    uk: ['2.5.587 — Для вчителів: додайте ?fps=1, щоб бачити, скільки мілісекунд займають чанки, стрічки, моби, HUD і рендер у кожному кадрі.'],
+    ru: ['2.5.587 — Для учителей: добавьте ?fps=1, чтобы видеть, сколько миллисекунд занимают чанки, ленты, мобы, HUD и рендер в каждом кадре.'],
+    es: ['2.5.587 — Docentes: añadan ?fps=1 para ver cuántos milisegundos tardan bloques, cintas, bichos, HUD y dibujo en cada fotograma.'],
+    ar: ['2.5.587 — للمعلمين: أضف ?fps=1 لترى كم ملي ثانية تأخذ القطع والسيور والكائنات وHUD والرسم في كل إطار.'],
+    'fa-AF': ['2.5.587 — برای معلمان: ?fps=1 را اضافه کنید تا ببینید تکه‌ها، تسمه‌ها، جانوران، HUD و رسم در هر فریم چند میلی‌ثانیه می‌گیرند.'],
+    rw: ['2.5.587 — Abarimu: ongeraho ?fps=1 urebe milisegonda ibice, imikandara, inyamaswa, HUD no gushushanya bifata muri buri shusho.'],
+    ti: ['2.5.587 — ንመምህራን: ?fps=1 ወስኹ እሞ ክፋላት፡ ቀበቶታት፡ እንስሳ፡ HUDን ስእልን ኣብ ነፍሲ ወከፍ ፍሬም ክንደይ ሚሊሰከንድ ከም ዝወስዱ ርኣዩ።'],
+  } },
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
