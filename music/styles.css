@@ -5005,7 +5005,8 @@ body.mu237 #dock-left .tab:focus-visible {
     font-size: 14px !important;
   }
 }
-@media (max-width: 600px) {
+/* Round B: upright phones only. A short sideways screen (568x320) used to get this too, which left the staff 4 px tall. */
+@media (max-width: 600px) and (orientation: portrait), (max-width: 600px) and (min-height: 501px) {
   body.mu237 { --rail: 0px; --tabs: 0px; --player: 176px; }
   body.mu237 .side,
   body.mu237.menu-open .side {
@@ -5579,7 +5580,7 @@ html[data-theme] body.mu237 #viz-mic-status {
 
 
 /* MU 2.36.13 — on a phone, New beat sits fully inside the play bar, 8px above the tab bar. */
-@media (max-width: 600px) {
+@media (max-width: 600px) and (orientation: portrait), (max-width: 600px) and (min-height: 501px) {
   body.mu237 { --player: 236px; }
   body.mu237 .transport,
   body.mu237.playing:not(.show) .transport,
@@ -5660,7 +5661,7 @@ body.mu237 #looks-open:focus-visible { outline: 3px solid #0b1f33; outline-offse
   body.mu237 .looks-drawer { bottom: 64px; inset-inline-start: 208px; }
 }
 
-@media (orientation: landscape) and (max-height: 520px) {
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 700px) {
   body.mu237 { --rail: 200px !important; }
   body.mu237 .side,
   body.mu237.menu-open .side { width: 200px !important; }
@@ -6759,4 +6760,55 @@ body.mu237 #len[hidden] { display: none !important; }
   html[dir="rtl"] body.mu237.tab-score:not(.show):not(.stage-on) .out { right: auto; left: 8px; }
   html body.mu237.tab-score .mu-chip { top: 54px; }
   html.kb-framed body.mu237.tab-score .mu-chip { top: 2px; }
+}
+
+/* Round B: sideways phones narrower than 700 px (568x320, 667x375). The dock is one column of icons (the words are read by a screen reader),
+   so the desk gets the width the note rows need. The drum strip leaves Score here; it is on the Tap tab. */
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 699px) {
+  body.mu237 { --rail: 56px !important; }
+  body.mu237 #dock-left { grid-template-columns: 1fr !important; padding: 2px !important; }
+  body.mu237 #dock-left .tab { width: 48px !important; min-width: 0 !important; }
+  body.mu237 .side, body.mu237.menu-open .side { width: 56px !important; }
+  body.mu237.tab-score .tool-row { padding-block: 0 !important; }
+  body.mu237.tab-score .tool-btn { height: 44px !important; }
+}
+/* Round B: sideways phones narrower than 880 px. The note rows become a block: the eight letters as a 2 x 4 grid on the start side, and beside it the pens
+   on the first line and the five length buttons on the second. Same 92 px height as the 880-and-up layout, so the length row needs no swipe.
+   The drum strip leaves Score at these sizes (it is on the Tap tab) !important; the staff keeps the room. */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 879px) {
+  body.mu237.tab-score .note-row {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    grid-template-rows: 44px 44px !important;
+    gap: 4px 8px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    align-items: stretch !important;
+  }
+  body.mu237.tab-score #inks {
+    grid-row: 1 / span 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 44px) !important;
+    grid-template-rows: 44px 44px !important;
+    gap: 4px !important;
+    width: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+  }
+  body.mu237.tab-score #inks .btn { width: 44px !important; min-width: 44px !important; padding: 0 !important; }
+  body.mu237.tab-score #pen { grid-column: 2 !important; grid-row: 1 !important; width: auto !important; margin: 0 !important; }
+  body.mu237.tab-score #len { grid-column: 2 !important; grid-row: 2 !important; width: auto !important; max-width: none !important; margin: 0 !important; flex: 1 1 auto !important; }
+  body.mu237.tab-score .work { padding-bottom: 2px !important; }
+  body.mu237.tab-score.is-both.rich-edit .note-row #inks, body.mu237.tab-score.is-both.rich-edit .note-row #pen, body.mu237.tab-score.is-both.rich-edit .note-row #len,
+  body.mu237.tab-score .note-row #inks, body.mu237.tab-score .note-row #pen, body.mu237.tab-score .note-row #len { margin-block: 0 !important; }
+  /* icon over the word, no key hint, so a long word (Russian "Четвертная") fits in a 44 px button; a word that still does not fit shows an ellipsis and its full name is the button's aria-label */
+  body.mu237.tab-score #len .btn { flex: 1 1 0 !important; min-width: 0 !important; padding: 2px 3px !important; flex-direction: column !important; gap: 0 !important; font-size: 0.68rem !important; line-height: 1 !important; }
+  body.mu237.tab-score #len .btn .len-icon svg { width: 14px !important; height: 16px !important; }
+  body.mu237.tab-score #len .btn .len-word { max-width: 100% !important; overflow: hidden !important; white-space: normal !important; overflow-wrap: anywhere !important; line-height: 1.02 !important; max-height: 2.1em !important; }
+  body.mu237.tab-score #len kbd { display: none !important; }
+  body.mu237.tab-score #len .btn::after { top: 1px !important; inset-inline-start: 2px !important; font-size: 0.6rem !important; }
+  body.mu237.tab-score #pen .btn { flex: 1 1 0 !important; min-width: 0 !important; padding: 0 4px !important; white-space: normal !important; overflow-wrap: anywhere !important; line-height: 1.05 !important; font-size: 0.82rem !important; height: 44px !important; max-height: 44px !important; overflow: hidden !important; }
+  body.mu237.tab-score #len .btn { height: 44px !important; max-height: 44px !important; overflow: hidden !important; }
+  body.mu237.tab-score.is-both:not(.score-tools-open) #drums-pane { display: none !important; }
+  body.mu237.tab-score.score-tools-open #notes-pane > #song-more { max-height: 48px !important; padding-block: 2px !important; }
 }

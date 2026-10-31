@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61 to 2.36.68): laneFor, news23661 to news23668, barsMax, beatBarAdded, drChordsHelp, every dr* key (Score tools drawer words, drWherePickup), lenPickNote, lenNoDot, lenBeatsDone, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.69): laneFor, news23661 to news23669, barsMax, beatBarAdded, drChordsHelp, every dr* key (Score tools drawer words, drWherePickup), lenPickNote, lenNoDot, lenBeatsDone, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -55,6 +55,7 @@
     news23665: "MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside. They work by tap and by keyboard.",
     news23666: "MU 2.36.66 — On a sideways phone, all the note-length buttons now show without swiping. The Score tools drawer speaks your language. Space presses a button when one is in focus.",
     news23668: "MU 2.36.68 — On a beat song, Add a bar says to tap a letter to fill the new bar. The Chords group names its chords for a screen reader.",
+    news23669: "MU 2.36.69 — On small sideways phones the letters, pens and note lengths all fit with no swipe, and the staff stays readable.",
     barsMax: "That is 32 bars. That is a long song.",
     beatBarAdded: "A new bar is on the score. Tap a letter to fill it.",
     drChordsHelp: "Chords: C, F, G, A minor",
@@ -846,6 +847,7 @@
     news23665: "MU 2.36.65 — On Score, tap Add a bar. Tap Score tools to see the time signatures.",
     news23666: "MU 2.36.66 — Sideways, the length buttons show without a swipe. The Score tools drawer uses your language. Space presses the button you are on.",
     news23668: "MU 2.36.68 — Add a bar on a beat song says: tap a letter. The Chords group says its chords.",
+    news23669: "MU 2.36.69 — On a small sideways phone, all the buttons fit. The staff is easy to see.",
     barsMax: "That is 32 bars. That is enough.",
     beatBarAdded: "A new bar is here. Tap a letter.",
     drChordsHelp: "Chords: C, F, G, A minor",
@@ -1260,8 +1262,8 @@
       "richHelp_rest": "Торкнись ноти, щоб зробити з неї паузу.",
       "richLenGroup": "Тривалість обраної ноти",
       "richLenBtn_1": "Восьма",
-      "richLenBtn_2": "Четвертна",
-      "richLenBtn_4": "Половинна",
+      "richLenBtn_2": "Чверть",
+      "richLenBtn_4": "Половина",
       "richLenBtn_8": "Ціла",
       "richDot": "Крапка",
       "richLen_1": "восьма нота",
@@ -1300,6 +1302,7 @@
       "news23665": "MU 2.36.65 — Кнопки «Додати такт» і «Інструменти нот» тепер легко натиснути пальцем або вибрати клавішею Tab. Розміри такту — всередині.",
       "news23666": "MU 2.36.66 — На телефоні, повернутому набік, усі кнопки тривалості нот видно без прокручування. Панель «Інструменти нот» тепер твоєю мовою. Пробіл натискає кнопку, на якій ти стоїш.",
       "news23668": "MU 2.36.68 — У пісні з долями «Додати такт» каже торкнутися літери, щоб заповнити новий такт. Група «Акорди» називає свої акорди для читача екрана.",
+      "news23669": "MU 2.36.69 — На маленьких телефонах, повернутих набік, літери, пера й тривалості нот уміщаються без прокручування, а нотний стан лишається читабельним.",
       "barsMax": "Це вже 32 такти. Це довга пісня.",
       "beatBarAdded": "На нотах з'явився новий такт. Торкнись літери, щоб його заповнити.",
       "drChordsHelp": "Акорди: C, F, G, A мінор",
@@ -2052,8 +2055,8 @@
       "richHelp_rest": "Коснись ноты, чтобы сделать из неё паузу.",
       "richLenGroup": "Длительность выбранной ноты",
       "richLenBtn_1": "Восьмая",
-      "richLenBtn_2": "Четвертная",
-      "richLenBtn_4": "Половинная",
+      "richLenBtn_2": "Четверть",
+      "richLenBtn_4": "Половина",
       "richLenBtn_8": "Целая",
       "richDot": "Точка",
       "richLen_1": "восьмая нота",
@@ -2092,6 +2095,7 @@
       "news23665": "MU 2.36.65 — Кнопки «Добавить такт» и «Инструменты нот» теперь легко нажать пальцем или выбрать клавишей Tab. Размеры такта — внутри.",
       "news23666": "MU 2.36.66 — На телефоне в горизонтальном положении все кнопки длительности нот видны без прокрутки. Панель «Инструменты нот» теперь на твоём языке. Пробел нажимает кнопку, на которой ты стоишь.",
       "news23668": "MU 2.36.68 — В песне с долями «Добавить такт» просит нажать букву, чтобы заполнить новый такт. Группа «Аккорды» называет свои аккорды для экранного диктора.",
+      "news23669": "MU 2.36.69 — На маленьких телефонах в горизонтальном положении буквы, перья и длительности нот умещаются без прокрутки, а нотный стан остаётся читаемым.",
       "barsMax": "Это уже 32 такта. Это длинная песня.",
       "beatBarAdded": "На нотах появился новый такт. Нажми букву, чтобы его заполнить.",
       "drChordsHelp": "Аккорды: C, F, G, A минор",
@@ -2884,6 +2888,7 @@
       "news23665": "MU 2.36.65 — Los botones «Añadir un compás» y «Herramientas de partitura» ya se pueden tocar con el dedo o alcanzar con la tecla Tab. Los tipos de compás están dentro.",
       "news23666": "MU 2.36.66 — En un móvil en horizontal, todos los botones de duración de las notas se ven sin deslizar. El panel de Herramientas de partitura habla tu idioma. La barra espaciadora pulsa el botón en el que estás.",
       "news23668": "MU 2.36.68 — En una canción por tiempos, Añadir un compás dice que toques una letra para llenarlo. El grupo Acordes nombra sus acordes al lector de pantalla.",
+      "news23669": "MU 2.36.69 — En móviles pequeños en horizontal, las letras, los lápices y las duraciones caben sin deslizar, y el pentagrama se lee bien.",
       "barsMax": "Ya son 32 compases. Es una canción larga.",
       "beatBarAdded": "Hay un compás nuevo en la partitura. Toca una letra para llenarlo.",
       "drChordsHelp": "Acordes: C, F, G, A menor",
@@ -3677,6 +3682,7 @@
       "news23665": "MU 2.36.65 — صار الوصول إلى زرّي «أضف مازورة» و«أدوات النوتة» سهلًا باللمس أو بمفتاح Tab. وأنواع الميزان داخل أدوات النوتة.",
       "news23666": "MU 2.36.66 — على الهاتف بوضع أفقي تظهر كل أزرار مدة النوتة دون تمرير. لوحة «أدوات النوتة» بلغتك الآن. مفتاح المسافة يضغط الزر الذي تقف عليه.",
       "news23668": "MU 2.36.68 — في أغنية بالنبضات، «أضف مازورة» يطلب لمس حرف لملء المازورة الجديدة. مجموعة «أكورد» تسمّي أكوردها لقارئ الشاشة.",
+      "news23669": "MU 2.36.69 — على الهواتف الصغيرة بوضع أفقي تظهر الحروف والأقلام ومدد النوتة كلها دون تمرير، ويبقى المدرّج مقروءًا.",
       "barsMax": "وصلت إلى 32 مازورة. هذه أغنية طويلة.",
       "beatBarAdded": "ظهرت مازورة جديدة في النوتة. المس حرفًا لملئها.",
       "drChordsHelp": "أكورد: C، F، G، A صغير",
@@ -4470,6 +4476,7 @@
       "news23665": "MU 2.36.65 — دکمه‌های «یک میزان اضافه کن» و «ابزار نت» حالا با لمس یا کلید Tab به آسانی در دسترس‌اند. کسرهای میزان داخل ابزار نت هستند.",
       "news23666": "MU 2.36.66 — روی تلفن در حالت افقی همهٔ دکمه‌های طول نُت بدون کشیدن دیده می‌شوند. بخش «ابزار نت» حالا به زبان تو است. کلید فاصله دکمه‌ای را که رویش هستی فشار می‌دهد.",
       "news23668": "MU 2.36.68 — در آهنگ ضربی، «یک میزان اضافه کن» می‌گوید یک حرف را بزن تا میزان تازه پر شود. گروه «آکورد» آکوردهایش را برای صفحه‌خوان نام می‌برد.",
+      "news23669": "MU 2.36.69 — روی تلفن‌های کوچک در حالت افقی، حرف‌ها، قلم‌ها و طول نُت‌ها بدون کشیدن جا می‌شوند و حامل نُت خوانا می‌ماند.",
       "barsMax": "این 32 میزان است. این آهنگ بلند است.",
       "beatBarAdded": "یک میزان تازه روی نُت‌ها آمد. برای پر کردنش یک حرف را بزن.",
       "drChordsHelp": "آکوردها: C، F، G، A مینور",
@@ -5263,6 +5270,7 @@
       "news23665": "MU 2.36.65 — Buto «Ongeraho igice» na «Ibikoresho by'inota» ubu biroroshye gukoraho cyangwa guhitamo na Tab. Ibipimo biri imbere.",
       "news23666": "MU 2.36.66 — Kuri telefone iryamye, utubuto twose tw'uburebure bw'inota tugaragara udakurura. Ibikoresho by'inota biri mu rurimi rwawe. Space ikanda akabuto uriho.",
       "news23668": "MU 2.36.68 — Ku ndirimbo y'imiryango, Ongeraho igice ivuga gukanda inyuguti kugira ngo wuzuze igice gishya. Itsinda Akorode rivuga akorode zaryo ku musomyi wa ekrani.",
+      "news23669": "MU 2.36.69 — Kuri telefone nto iryamye, inyuguti, amakaramu n'uburebure bw'inota byose birajyamo udakurura, kandi imirongo y'inota irasomeka.",
       "barsMax": "Ni ibice 32. Iyi ni indirimbo ndende.",
       "beatBarAdded": "Umurongo mushya wagiye ku nota. Kanda inyuguti kugira ngo uwuzuze.",
       "drChordsHelp": "Akorode: C, F, G, A minor",
@@ -6056,6 +6064,7 @@
       "news23665": "MU 2.36.65 — ዝቐረቡ መልጠቒታት «ባር ወስኽ» ን «መሳርሒ ነጥቢ» ን ብጣት ወይ ብTab ቀሊል እዮም። መጠናት ባር ኣብ ውሽጦም እዮም።",
       "news23666": "MU 2.36.66 — ኣብ ተመሲሉ ዝተታሕዘ ሞባይል፡ ኩሎም መልጠቒታት ንውሓት ኖታ ከይተሳሕበ ይረኣዩ። መሳርሒ ነጥቢ ብቋንቋኻ እዩ። Space ነቲ ዘለኻዮ መልጠቒ ትጠውቖ።",
       "news23668": "MU 2.36.68 — ኣብ ደርፊ ምት፡ ባር ወስኽ ነቲ ሓድሽ ባር ንምምላእ ፊደል ጠውቕ ይብል። ጉጅለ አኮርድ አኮርዳቱ ንኣንባቢ ስክሪን ይሰምዮ።",
+      "news23669": "MU 2.36.69 — ኣብ ንኣሽቱ ተመሲሎም ዝተታሕዙ ሞባይላት፡ ፊደላት፣ ብርዕታትን ንውሓት ኖታን ከይተሳሕቡ ይኣትዉ፡ መስመራት ሙዚቃ ድማ ይንበብ።",
       "barsMax": "እዚ 32 ባር እዩ። ነዊሕ ደርፊ እዩ።",
       "beatBarAdded": "ሓድሽ መስመር ኣብ ነጥብታት ኣሎ። ንምምላእ ፊደል ጠውቕ።",
       "drChordsHelp": "አኮርድ: C, F, G, A ንኡስ",

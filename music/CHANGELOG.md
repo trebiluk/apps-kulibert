@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.69** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.69 — On small sideways phones the letters, pens and note lengths all fit with no swipe, and the staff stays readable.
+
+In kid words: turn a small phone sideways on Score (iPhone size, or even the smallest ones) and the eight letters sit in a little block of two rows, with the pens next to them and the five note lengths under those. Nothing needs a swipe. On the smallest phones the side tabs become icons and the drum strip steps off this screen (it is on Tap), so the staff keeps its room. If a line of music is too tall for the smallest screen, the whole line shrinks a little so every note stays on the screen. A short player bar meant for upright phones used to show up sideways too and squash the staff to 4 pixels; it does not any more. Russian and Ukrainian say четверть / половина (чверть / половина) for the quarter and half notes, the usual short words. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.68** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.68 — On a beat song, Add a bar says to tap a letter to fill the new bar. The Chords group names its chords for a screen reader.
