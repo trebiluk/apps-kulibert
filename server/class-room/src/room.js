@@ -294,6 +294,10 @@ export class Room extends DurableObject {
     const v = checkBlockEdit({ op: f.id === 0 ? 'break' : 'place', x: f.x, y: f.y, z: f.z, id: f.id }, p.pos, null)
     if (!v.ok) return no(v.why)
     const [r] = await this.stub.edit({ ref: p.ref, staff: isStaff(p.role) }, [{ x: f.x, y: f.y, z: f.z, id: f.id, b: f.b }])
+    // A container with items broke: its drops go to the breaker's client only, which drops them through its
+    // existing drop path (bloxbert drops.js; ground cap 256, overflow to Lost & Found). Sent once, here.
+    // Frame: {"t":"dr","x","y","z","s","d":[[id,n],...]}. Everyone (this kid too) still hears the break op.
+    if (r.ok && r.drops && r.drops.length) return this.send(p, { t: 'dr', x: f.x, y: f.y, z: f.z, s: r.s, d: r.drops.map((q) => [q.id, q.n]) })
     if (r.ok) return   // everyone, including this kid, hears it through the world's fan-out
     no(r.why, r.cur === undefined ? {} : { cur: r.cur })
     if (r.strike) this.punish(p, r.why, CLOSE.ABUSE, now)

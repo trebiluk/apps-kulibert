@@ -5,7 +5,7 @@
 // refused as 'stale' and the true block comes back. Last writer never silently wins.
 import { locate, validCell, encodeChunk, decodeChunk } from './chunks.js'
 import { CATCHUP_MS, STEP_CHUNKS, decodeMachines, encodeMachines, grant, isMachine, machinesIn, stepChunk, touchOps } from './sim.js'
-import { decodeItems, emptySlots, encodeItems, isContainer, isEmpty, put, take, validItem, validMove } from './items.js'
+import { BREAK_KEEP, EXPLODE_KEEP, decodeItems, dropsOf, emptySlots, encodeItems, isContainer, isEmpty, put, take, validItem, validMove } from './items.js'
 
 export const KEEP_OPS = 20000
 const MAX_CLEAN = 256
@@ -109,7 +109,10 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
     },
 
     // batch: [{x,y,z,id,b}]  who: small int (room-local player id or 0 for staff)
-    apply(batch, who, t = now()) {
+    // opt.drops: a player is breaking (hub.edit). A container with items then breaks and its result
+    // carries drops: [{id,n}] (80% per stack) for that player's client to drop through its own drop path.
+    // Without it (undo, system) a container with items is still refused 'not-empty': nobody to drop to.
+    apply(batch, who, t = now(), opt = {}) {
       return batch.map((e) => {
         if (!e || !validCell(e.x, e.y, e.z) || !Number.isInteger(e.id) || e.id < 0 || !Number.isInteger(e.b) || e.b < 0) return { ok: false, why: 'shape' }
         const { cx, cz, idx } = locate(e.x, e.y, e.z)
@@ -118,14 +121,45 @@ export function makeWorld(db, { gen, now = Date.now } = {}) {
         const cur = c.edits.has(idx) ? c.edits.get(idx) : gen ? gen(e.x, e.y, e.z) : e.b
         if (cur !== e.b) return { ok: false, why: 'stale', cur }
         if (cur === e.id) return { ok: true, s: wseq, same: true }
-        if (isContainer(cur) && c.items.has(idx)) return { ok: false, why: 'not-empty' }   // empty it first; nothing is ever destroyed
+        let drops
+        if (isContainer(cur) && c.items.has(idx)) {
+          if (!opt.drops) return { ok: false, why: 'not-empty' }
+          drops = dropsOf(c.items.get(idx), BREAK_KEEP)
+          c.items.delete(idx)                     // gone from the world in the same step as the break: no copy left behind
+        }
         c.edits.set(idx, e.id)
         c.dirty = true
         if (isMachine(cur) && !isMachine(e.id)) c.m.delete(idx)   // a broken machine takes its counter with it
         if (isMachine(e.id) || isMachine(cur)) index(cx, cz, c)
         pending.push({ s: ++wseq, w: who, x: e.x, y: e.y, z: e.z, b: cur, i: e.id, t })
-        return { ok: true, s: wseq }
+        return drops ? { ok: true, s: wseq, drops } : { ok: true, s: wseq }
       })
+    },
+
+    // Explosion hook (Diego, Oct 31: an exploded container drops ALL its items). NOT CALLED: Bertopia has
+    // no explosions yet. Each cell becomes air; returns { ok, drops:[{x,y,z,id,n}] } for the caller to drop.
+    // The caller must run the grief rules (claims) for the cause first, like hub.edit does for a break.
+    explode(cells, t = now()) {
+      const drops = []
+      let n = 0
+      for (const p of cells || []) {
+        if (!p || !validCell(p.x, p.y, p.z)) continue
+        const { cx, cz, idx } = locate(p.x, p.y, p.z)
+        const c = load(cx, cz)
+        if (c.locked) continue
+        const cur = c.edits.has(idx) ? c.edits.get(idx) : gen ? gen(p.x, p.y, p.z) : 0
+        if (!cur) continue
+        if (isContainer(cur) && c.items.has(idx)) {
+          for (const d of dropsOf(c.items.get(idx), EXPLODE_KEEP)) drops.push({ x: p.x, y: p.y, z: p.z, ...d })
+          c.items.delete(idx)
+        }
+        c.edits.set(idx, 0)
+        c.dirty = true
+        if (isMachine(cur)) { c.m.delete(idx); index(cx, cz, c) }
+        pending.push({ s: ++wseq, w: 0, x: p.x, y: p.y, z: p.z, b: cur, i: 0, t })
+        n++
+      }
+      return { ok: true, n, drops }
     },
 
     // Ops after s: { ops, head } or { resync:true, head } when s is older than we keep.
