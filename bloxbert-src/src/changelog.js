@@ -1,4 +1,20 @@
 export const CHANGELOG = [
+  { v: '2.5.585', date: '2026-10-31', lines: {
+    en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
+    simple: ["2.5.585 — New worlds start you on the ground."],
+  } },
+  // 2.5.579 worldgen part A. rw, ti, and fa-AF are draft translations.
+  { v: '2.5.579', date: '2026-10-31', lines: {
+    en: ['2.5.579 — Snow sits on high hills. Red sand sits on a deep riverbank. Ice and red brick can be made. Slate is not stone.'],
+    simple: ['2.5.579 — Snow is on high hills. Red sand is on a deep riverbank. You can make ice and red brick. Slate is not stone.'],
+    uk: ['2.5.579 — Сніг лежить на високих пагорбах. Рудий пісок на глибокому березі річки. Можна зробити лід і червону цеглу. Сланець — це не камінь.'],
+    ru: ['2.5.579 — Снег лежит на высоких холмах. Рыжий песок на глубоком берегу реки. Можно сделать лёд и красный кирпич. Сланец — это не камень.'],
+    es: ['2.5.579 — La nieve está en las colinas altas. La arena roja está en la orilla honda del río. Se puede hacer hielo y ladrillo rojo. La pizarra no es piedra.'],
+    ar: ['2.5.579 — الثلج على التلال العالية. الرمل الأحمر على ضفة النهر العميقة. يمكن صنع الجليد والطوب الأحمر. الأردواز ليس حجراً.'],
+    'fa-AF': ['2.5.579 — برف روی تپه‌های بلند است. ریگ سرخ روی لب عمیق دریا است. یخ و خشت سرخ ساخته می‌شود. تخته‌سنگ، سنگ نیست.'],
+    rw: ['2.5.579 — Urubura ruri ku misozi miremire. Umucanga utukura uri ku nkombe y\'uruzi rurerure. Urubura rukomeye n\'itarafuri itukura birashoboka. Slate si ibuye.'],
+    ti: ['2.5.579 — በረድ ኣብ ልዑል ኮረብታ ይርከብ። ቀያሕ ሑጻ ኣብ ዓሚቕ ገምገም ፈለግ ይርከብ። በረድ ዕሩይን ቀይሕ ሽቡክን ይስራሕ። ጽላት እምኒ ኣይኮነን።'],
+  } },
   { v: '2.5.584', date: '2026-10-31', lines: {
     en: ["2.5.584 \u2014 Bertopia no longer keeps an old copy of itself on your device, so you always get the newest version."],
     simple: ["2.5.584 \u2014 No more old copy on your device. You always get the newest version."],

@@ -5286,6 +5286,7 @@ async function resetWorld() {
   clearSpot()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   worldSpawn = SPAWN.slice()
+  holdForSpawnGround() // 2.5.585: SPAWN's y is a guess; place on the real top block once its chunks exist
   spawnSet = false
   protect = { size: 'medium', center: null }
   faceFirstSpawn()
@@ -8314,6 +8315,7 @@ noa.on('tick', () => {
     if (!unpauseFreeze) unpauseSpot = null
     return
   }
+  if (tickSpawnWait()) return
   if (p[1] < -66) { poof(); return }
   const now = performance.now()
   if (!flying && now - buriedCheckAt > 500) {
@@ -8333,6 +8335,63 @@ function freezeAfterUnpause() {
 {
   const rawSetPaused = noa.setPaused.bind(noa)
   noa.setPaused = (v) => { const was = !!noa._paused; rawSetPaused(v); if (!v && was) freezeAfterUnpause() }
+}
+// 2.5.585: a new world spawned at SPAWN's fixed y=8, guessed before the gen 8 chunks existed, so the
+// player could start inside terrain or a tree. Freeze the player until the spawn chunk and its 8
+// neighbours are loaded, then stand on the top solid block (not a tree) with 2 air blocks above.
+let spawnWait = null
+function spawnChunksReady(x, z) {
+  const w = noa.world
+  const ci = Math.floor(x / S), ck = Math.floor(z / S)
+  // the spawn chunk and its 8 neighbours at ground level, plus the chunks right above and below spawn
+  // (noa never loads the far corners above/below, so those are not waited for)
+  for (let di = -1; di <= 1; di++) for (let dk = -1; dk <= 1; dk++) for (let j = -1; j <= 1; j++) {
+    if (j !== 0 && (di || dk)) continue
+    const i = ci + di, k = ck + dk
+    if (!w._storage.getChunkByIndexes(i, j, k)) return false
+    if (w._chunksPending.includes(i, j, k) || w._chunksInvalidated.includes(i, j, k) || w._chunksToRequest.includes(i, j, k)) return false
+  }
+  return true
+}
+function spawnTop(x, z) {
+  for (let y = 2 * S - 1; y > -S; y--) {
+    if (!solidVoxel(x, y, z)) continue
+    if (solidVoxel(x, y + 1, z) || solidVoxel(x, y + 2, z)) return null
+    const id = getVoxel(x, y, z)
+    if (logSets().leaf.has(id)) return null
+    if (logSets().s.has(id)) return null
+    return y
+  }
+  return null
+}
+function holdForSpawnGround() {
+  const at = SPAWN.slice()
+  spawnWait = { at, since: performance.now() }
+  if (playerBody) { playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0; playerBody.gravityMultiplier = 0 }
+}
+function tickSpawnWait() {
+  if (!spawnWait) return false
+  const w = spawnWait
+  if (playerBody) playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
+  noa.entities.setPosition(noa.playerEntity, w.at)
+  const x0 = Math.floor(SPAWN[0]), z0 = Math.floor(SPAWN[2])
+  if (!spawnChunksReady(x0, z0)) return true
+  let spot = null
+  for (let r = 0; r <= 6 && !spot; r++) {
+    for (let dx = -r; dx <= r && !spot; dx++) for (let dz = -r; dz <= r && !spot; dz++) {
+      if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue
+      const y = spawnTop(x0 + dx, z0 + dz)
+      if (y !== null) spot = [x0 + dx + 0.5, y + 1.05, z0 + dz + 0.5]
+    }
+  }
+  if (!spot) return true
+  spawnWait = null
+  noa.entities.setPosition(noa.playerEntity, spot)
+  worldSpawn = spot.slice()
+  if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
+  console.info('[bertopia] spawn on ground ' + spot.join(','))
+  if (dirty) save()
+  return false
 }
 function solidVoxel(x, y, z) {
   try { const id = getVoxel(x, y, z); return !!id && !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
