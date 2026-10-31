@@ -149,3 +149,13 @@
     transition: none;
   }
 }
+
+/* JC 2.4.6 r4: give the Sign in pill room on narrow phones (>=44px target, never truncated). */
+@media (max-width: 440px){
+  .kb-bar .kb-plate{flex:1 1 auto;min-width:0}
+  .kb-bar .kb-alias{
+    flex:0 0 auto;max-width:9rem;min-width:44px;min-height:44px;height:44px;
+    padding:0 .75rem;justify-content:center;margin-inline-start:.35rem;
+    overflow:visible;text-overflow:clip;
+  }
+}
