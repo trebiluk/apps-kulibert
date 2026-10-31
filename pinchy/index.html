@@ -519,6 +519,11 @@ try {
   <p id="draft-note" hidden data-k="draftBadge">Machine draft.</p>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v132">Version 1.3.2</p>
+  <ul>
+    <li data-k="w132a">All 8 languages now translate the status line, E-STOP, Clear, the joint summary, the claw readout, the stars, blocks and time, the top bar, the theme button, and What's new.</li>
+    <li data-k="w132b">The language you pick is kept and shows from the first screen. Words that are not English are a machine draft.</li>
+  </ul>
   <p data-k="v131">Version 1.3.1</p>
   <ul>
     <li data-k="w131a">The arm is printed links, six servos, and a two-jaw gripper.</li>
@@ -635,10 +640,11 @@ try {
   </p>
 </main>
 <noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Pinchy" data-version="1.3.1" data-rtl="1" data-menu="#levels-btn" data-whats-new="One Menu button in every app. It opens that app's menu." defer></script>
+<script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Pinchy" data-version="1.3.2" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="game.js?v=1.3.1"></script>
-<script src="view3d.js?v=1.3.1"></script>
+<script src="game.js?v=1.3.2"></script>
+<script src="view3d.js?v=1.3.2"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -692,11 +698,12 @@ var swapHistory = [];
 
 var lang = "en";
 var estopped = false;
+var isDraftLang = function () { return !!PINCHY.langMeta(lang).draft; };
 var markDraft = function (el) {
   if (!el) return;
   var olds = el.querySelectorAll(".draft-badge");
   for (var d = 0; d < olds.length; d++) olds[d].remove();
-  if (lang === "ar" || lang === "fa-AF") {
+  if (isDraftLang()) {
     el.dataset.draft = "true";
     var note = document.createElement("span");
     note.className = "sr-only draft-badge";
@@ -836,7 +843,7 @@ var renderLevels = function () {
     markDraft(buttons[i]);
   }
   var levelNow = PINCHY.LEVELS[session.level];
-  document.getElementById("goal").textContent = (lang === "ar" || lang === "fa-AF") && PINCHY.uiText(lang, levelNow.id + "-goal") !== levelNow.id + "-goal"
+  document.getElementById("goal").textContent = (isDraftLang()) && PINCHY.uiText(lang, levelNow.id + "-goal") !== levelNow.id + "-goal"
     ? PINCHY.uiText(lang, levelNow.id + "-goal")
     : levelNow.goal;
   var legend = document.getElementById("legend");
@@ -978,7 +985,7 @@ var paintChrome = function () {
     el = nodes[i];
     key = el.getAttribute("data-ui");
     el.textContent = PINCHY.uiText(lang, key);
-    if (lang === "ar" || lang === "fa-AF") markDraft(el);
+    if (isDraftLang()) markDraft(el);
     else el.removeAttribute("data-draft");
   }
   var lamps = document.querySelectorAll(".lamp");
@@ -986,14 +993,14 @@ var paintChrome = function () {
     el = lamps[i];
     key = LAMP_KEY[el.dataset.lamp];
     el.textContent = (LAMP_MARK[el.dataset.lamp] || "") + PINCHY.uiText(lang, key);
-    if (lang === "ar" || lang === "fa-AF") markDraft(el);
+    if (isDraftLang()) markDraft(el);
     else el.removeAttribute("data-draft");
   }
   var levelsBtn = document.getElementById("levels-btn");
   if (levelsBtn) levelsBtn.textContent = "\u2630 " + PINCHY.uiText(lang, "Levels");
   var programTitle = document.getElementById("program-title");
   if (programTitle) programTitle.textContent = PINCHY.uiText(lang, "Program");
-  if (lang === "ar" || lang === "fa-AF") {
+  if (isDraftLang()) {
     markDraft(levelsBtn);
     markDraft(programTitle);
   } else {
@@ -1003,27 +1010,29 @@ var paintChrome = function () {
   var estopBtn = document.getElementById("estop");
   if (estopBtn) {
     estopBtn.textContent = PINCHY.uiText(lang, "estop");
-    if (lang === "ar" || lang === "fa-AF") markDraft(estopBtn);
+    if (isDraftLang()) markDraft(estopBtn);
     else estopBtn.removeAttribute("data-draft");
   }
   var clearBtnNow = document.getElementById("clear");
   if (clearBtnNow) {
     clearBtnNow.textContent = PINCHY.uiText(lang, "clear");
-    if (lang === "ar" || lang === "fa-AF") markDraft(clearBtnNow);
+    if (isDraftLang()) markDraft(clearBtnNow);
     else clearBtnNow.removeAttribute("data-draft");
   }
   var themeBtnNow = document.getElementById("theme-btn");
   if (themeBtnNow) {
     var darkNow = document.documentElement.classList.contains("pz-dark");
     themeBtnNow.textContent = PINCHY.uiText(lang, darkNow ? "themeLight" : "themeDark");
-    if (lang === "ar" || lang === "fa-AF") markDraft(themeBtnNow);
+    if (isDraftLang()) markDraft(themeBtnNow);
     else themeBtnNow.removeAttribute("data-draft");
   }
+  var i18nNodes = document.querySelectorAll("[data-i18n]");
+  for (i = 0; i < i18nNodes.length; i++) i18nNodes[i].textContent = PINCHY.uiText(lang, i18nNodes[i].getAttribute("data-i18n"));
   var copyNodes = document.querySelectorAll("[data-k]");
   for (i = 0; i < copyNodes.length; i++) {
     el = copyNodes[i];
     el.textContent = PINCHY.uiText(lang, el.getAttribute("data-k"));
-    if ((lang === "ar" || lang === "fa-AF") && el.id !== "draft-note") markDraft(el);
+    if (isDraftLang() && el.id !== "draft-note") markDraft(el);
     else el.removeAttribute("data-draft");
   }
   var newsName = document.querySelector("#whats-btn .name");
@@ -1047,14 +1056,32 @@ var paintChrome = function () {
   var levelsGroup = document.getElementById("levels");
   if (levelsGroup) levelsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
 };
-var applyLang = function (code) {
+// The shared top bar draws "Pinchy · version" from a fixed attribute. Swap in the table's name for the current language.
+var patchBarName = function () {
+  var want = PINCHY.langMeta(lang).appName || "Pinchy";
+  if (want === "Pinchy") return;
+  var nodes = document.querySelectorAll(".kb-bar .kb-plate, #kb-drawer .kb-drawer-title");
+  for (var n = 0; n < nodes.length; n++) {
+    var t = nodes[n].textContent;
+    if (t.indexOf("Pinchy") === 0) nodes[n].textContent = want + t.slice(6);
+    var ttl = nodes[n].getAttribute("title");
+    if (ttl && ttl.indexOf("Pinchy") === 0) nodes[n].setAttribute("title", want + ttl.slice(6));
+  }
+};
+var plateWatch = null;
+var watchBar = function () {
+  if (plateWatch || !window.MutationObserver) return;
+  plateWatch = new MutationObserver(function () { patchBarName(); });
+  plateWatch.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+};
+var applyLang = function (code, fromPrefs) {
   var meta = PINCHY.langMeta(code);
   lang = meta.id === code ? code : "en";
   meta = PINCHY.langMeta(lang);
   document.documentElement.lang = lang;
   document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
   var note = document.getElementById("draft-note");
-  note.hidden = !(meta.draft || lang === "ar");
+  note.hidden = !meta.draft;
   var buttons = document.querySelectorAll("#langs button");
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].setAttribute("aria-pressed", buttons[i].dataset.lang === lang ? "true" : "false");
@@ -1066,6 +1093,13 @@ var applyLang = function (code) {
   updateMetrics();
   if (document.getElementById("levels").children.length) renderLevels();
   if (world && typeof paintGame === "function") paintGame();
+  patchBarName();
+  if (!fromPrefs) {
+    try {
+      var kp = window.KulibertPrefs;
+      if (kp && kp.acceptLang && kp.lang !== lang) kp.acceptLang(lang);
+    } catch (errPrefs) {}
+  }
 };
 var doSwap = function (index) {
   if (playing) return;
@@ -1575,7 +1609,7 @@ var paintGame = function () {
   var angleLine = PINCHY.jointReadout(world, lang);
   var anglesEl = document.getElementById("angles");
   anglesEl.textContent = angleLine;
-  if (lang === "ar" || lang === "fa-AF") markDraft(anglesEl);
+  if (isDraftLang()) markDraft(anglesEl);
   else anglesEl.removeAttribute("data-draft");
   var fmtDeg = function (n) {
     var neg = n < 0;
@@ -1589,7 +1623,7 @@ var paintGame = function () {
   document.getElementById("ro-wrist").textContent = fmtDeg(world.wrist || 0);
   var clawEl = document.getElementById("ro-claw");
   clawEl.textContent = world.open ? PINCHY.uiText(lang, "OPEN") : PINCHY.uiText(lang, "SHUT");
-  if (lang === "ar" || lang === "fa-AF") markDraft(clawEl);
+  if (isDraftLang()) markDraft(clawEl);
   else clawEl.removeAttribute("data-draft");
   paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
     level: PINCHY.LEVELS[session.level],
@@ -1907,7 +1941,7 @@ var showGame = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.3.1") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.3.2") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
@@ -2036,7 +2070,7 @@ var boot = function () {
   clearBtn.type = "button";
   clearBtn.className = "action";
   clearBtn.id = "clear";
-  clearBtn.textContent = "\u2715 Clear";
+  clearBtn.textContent = PINCHY.uiText(lang, "clear");
   clearBtn.addEventListener("click", clearProgram);
   clearBtn.addEventListener("keydown", function (e) {
     if (e.key !== "Enter" && e.key !== " ") return;
@@ -2060,18 +2094,27 @@ var boot = function () {
     b.dir = item.rtl ? "rtl" : "ltr";
     b.textContent = item.name;
     b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
-    var draftNote = (item.draft || item.id === "ar") ? ". " + PINCHY.uiText(item.id, "draftBadge") : "";
+    var draftNote = item.draft ? ". " + PINCHY.uiText(item.id, "draftBadge") : "";
     b.setAttribute("aria-label", item.name + draftNote);
     if (item.draft) b.dataset.draft = "true";
     b.addEventListener("click", function () { applyLang(item.id); });
     langNav.appendChild(b);
   });
   var startLang = "en";
+  var knownLang = function (c) { return !!c && PINCHY.langMeta(c).id === c; };
   try {
     var asked = new URLSearchParams(window.location.search).get("lang");
-    if (asked && PINCHY.langMeta(asked).id === asked) startLang = asked;
+    var saved = window.KulibertPrefs && window.KulibertPrefs.lang;
+    if (knownLang(asked)) startLang = asked;
+    else if (knownLang(saved)) startLang = saved;
+    else if (knownLang(document.documentElement.getAttribute("lang"))) startLang = document.documentElement.getAttribute("lang");
   } catch (err) {}
-  if (startLang !== "en") applyLang(startLang);
+  watchBar();
+  applyLang(startLang);
+  window.addEventListener("kulibert-lang", function (ev) {
+    var code = ev && ev.detail && ev.detail.lang;
+    if (knownLang(code) && code !== lang) applyLang(code, true);
+  });
 
   window.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
