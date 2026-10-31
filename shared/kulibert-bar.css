@@ -55,6 +55,7 @@ html.kb-framed [data-kb-levels]{
   font-weight:700;
   color:inherit;
 }
+
 html:not([data-theme="classic"]) .kb-bar .kb-menu{display:inline-flex !important}
 html:not([data-theme="classic"]) #land-menu.kb-menu-dupe{display:none !important}
 .kb-drawer-backdrop{
