@@ -8378,7 +8378,7 @@ function tickSpawnWait() {
   const w = spawnWait
   if (playerBody) playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
   noa.entities.setPosition(noa.playerEntity, w.at)
-  const x0 = Math.floor(SPAWN[0]), z0 = Math.floor(SPAWN[2])
+  const x0 = Math.floor(w.col ? w.col[0] : SPAWN[0]), z0 = Math.floor(w.col ? w.col[1] : SPAWN[2])
   if (!spawnChunksReady(x0, z0)) return true
   let spot = null
   for (let r = 0; r <= 6 && !spot; r++) {
@@ -8391,7 +8391,8 @@ function tickSpawnWait() {
   if (!spot) return true
   spawnWait = null
   noa.entities.setPosition(noa.playerEntity, spot)
-  worldSpawn = spot.slice()
+  if (w.look) setLook(w.look[0], w.look[1]) // debug teleport: face where asked, keep the home spawn
+  else worldSpawn = spot.slice()
   if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
   console.info('[bertopia] spawn on ground ' + spot.join(','))
   if (dirty) save()
@@ -13106,6 +13107,18 @@ load().catch(() => {}).finally(() => {
       console.info('[bt-bridge] arena at', bx, by, bz)
     }
   } catch (e) { console.warn('[bt-bridge] skip', e && e.message) }
+  // PROTO debug: ?debug=1&tp=bridge spawns on the west cliff top facing +x along the deck (both params required)
+  try {
+    const q = new URLSearchParams(location.search)
+    const o = bridge && bridge.origin()
+    if (o && [...q.getAll('debug')].includes('1') && [...q.getAll('tp')].includes('bridge')) {
+      const at = [o[0] + 2.5, o[1] + 2.05, o[2] + 0.5]
+      noa.entities.setPosition(noa.playerEntity, at)
+      spawnWait = { at, col: [o[0] + 2, o[2]], look: [Math.PI / 2, 0.15], since: performance.now() }
+      if (playerBody) playerBody.gravityMultiplier = 0
+      console.info('[bt-bridge] debug tp', at.join(','))
+    }
+  } catch (e) { console.warn('[bt-bridge] tp skip', e && e.message) }
   armClock()
   runBtTest()
   paintDayClock()
