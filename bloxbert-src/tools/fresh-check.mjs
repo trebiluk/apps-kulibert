@@ -91,9 +91,9 @@ const report = await page.evaluate(async () => {
   const made = S.craft('woodTool')
   const toast = S.toast()
   S.emptyBag()
-  B.give('slate', 8)
+  B.give('stone', 8)
   const oven = S.craft('oven')
-  return { before, fresh, classics, opened: !!row, back, craftText, made, toast, oven, slateLeft: S.count('slate'), ovenN: S.count('oven') }
+  return { before, fresh, classics, opened: !!row, back, craftText, made, toast, oven, stoneLeft: S.count('stone'), ovenN: S.count('oven') }
 })
 
 eq(report.before.voxel === 4 && report.before.counts.log === 5 && report.before.cogs === 35, 'setup bag/voxel/cogs ' + JSON.stringify(report.before))
@@ -104,10 +104,10 @@ eq(report.classics.length >= 1, 'archive key exists ' + JSON.stringify(report.cl
 eq(report.opened && report.back && report.back.counts.log === 5 && report.back.counts.stone === 3 && report.back.counts.slate === 8 && report.back.voxel === 4, 'archive restores bag and block ' + JSON.stringify(report.back))
 eq(report.fresh.words.wood === 'Wood Pickaxe' && report.fresh.words.stone === 'Stone Pickaxe' && report.fresh.words.path === 'Make a Wood Pickaxe', 'tool names ' + JSON.stringify(report.fresh.words))
 eq(/old world/i.test(report.fresh.words.fresh) && /menu/i.test(report.fresh.words.fresh), 'confirmFresh ' + report.fresh.words.fresh)
-eq(report.fresh.words.stoneAny === 'Stone or Slate', 'stoneAny label ' + report.fresh.words.stoneAny)
+eq(report.fresh.words.stoneAny === 'Stone', 'stoneAny label ' + report.fresh.words.stoneAny)
 eq(/In bag:\s*2/.test(report.craftText), 'planks shows In bag ' + report.craftText.slice(0, 240))
 eq(report.made && report.made.ok && report.toast === 'Wood Pickaxe - mines stone faster', 'wood pick toast ' + JSON.stringify({ made: report.made, toast: report.toast }))
-eq(report.oven && report.oven.ok && report.ovenN === 1 && report.slateLeft === 0, 'oven from 8 slate ' + JSON.stringify({ oven: report.oven, slate: report.slateLeft, n: report.ovenN }))
+eq(report.oven && report.oven.ok && report.ovenN === 1 && report.stoneLeft === 0, 'oven from 8 stone, not slate ' + JSON.stringify({ oven: report.oven, stone: report.stoneLeft, n: report.ovenN }))
 eq(!errs.length, 'console errors ' + errs.slice(0, 6).join(' | '))
 
 await browser.close()

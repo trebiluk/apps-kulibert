@@ -1,4 +1,40 @@
 export const CHANGELOG = [
+  { v: '2.5.586', date: '2026-10-31', lines: {
+    en: ["2.5.586 — On phones, the crafting panel opens below the top bar, so its title and Close are easy to reach."],
+    simple: ["2.5.586 — On phones, Crafting opens below the top bar. Close is easy to tap."],
+  } },
+  { v: '2.5.585', date: '2026-10-31', lines: {
+    en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
+    simple: ["2.5.585 — New worlds start you on the ground."],
+  } },
+  // 2.5.579 worldgen part A. rw, ti, and fa-AF are draft translations.
+  { v: '2.5.579', date: '2026-10-31', lines: {
+    en: ['2.5.579 — Snow sits on high hills. Red sand sits on a deep riverbank. Ice and red brick can be made. Slate is not stone.'],
+    simple: ['2.5.579 — Snow is on high hills. Red sand is on a deep riverbank. You can make ice and red brick. Slate is not stone.'],
+    uk: ['2.5.579 — Сніг лежить на високих пагорбах. Рудий пісок на глибокому березі річки. Можна зробити лід і червону цеглу. Сланець — це не камінь.'],
+    ru: ['2.5.579 — Снег лежит на высоких холмах. Рыжий песок на глубоком берегу реки. Можно сделать лёд и красный кирпич. Сланец — это не камень.'],
+    es: ['2.5.579 — La nieve está en las colinas altas. La arena roja está en la orilla honda del río. Se puede hacer hielo y ladrillo rojo. La pizarra no es piedra.'],
+    ar: ['2.5.579 — الثلج على التلال العالية. الرمل الأحمر على ضفة النهر العميقة. يمكن صنع الجليد والطوب الأحمر. الأردواز ليس حجراً.'],
+    'fa-AF': ['2.5.579 — برف روی تپه‌های بلند است. ریگ سرخ روی لب عمیق دریا است. یخ و خشت سرخ ساخته می‌شود. تخته‌سنگ، سنگ نیست.'],
+    rw: ['2.5.579 — Urubura ruri ku misozi miremire. Umucanga utukura uri ku nkombe y\'uruzi rurerure. Urubura rukomeye n\'itarafuri itukura birashoboka. Slate si ibuye.'],
+    ti: ['2.5.579 — በረድ ኣብ ልዑል ኮረብታ ይርከብ። ቀያሕ ሑጻ ኣብ ዓሚቕ ገምገም ፈለግ ይርከብ። በረድ ዕሩይን ቀይሕ ሽቡክን ይስራሕ። ጽላት እምኒ ኣይኮነን።'],
+  } },
+  { v: '2.5.584', date: '2026-10-31', lines: {
+    en: ["2.5.584 \u2014 Bertopia no longer keeps an old copy of itself on your device, so you always get the newest version."],
+    simple: ["2.5.584 \u2014 No more old copy on your device. You always get the newest version."],
+  } },
+  // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.571', date: '2026-10-31', lines: {
+    en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.', 'Woodshop floor lamp and wall lamp show Needs metal tier until the smelter tier opens. The rug does not.'],
+    simple: ['2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.', 'The two woodshop lamps stay locked until metal is open. The rug does not.'],
+    uk: ['2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.', 'Торшер і настінна лампа в столярці показують «Потрібен рівень металу», доки не відкриється рівень плавильні. Килим — ні.'],
+    ru: ['2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.', 'Торшер и настенная лампа в столярке показывают «Нужна ступень металла», пока не откроется ступень плавильни. Ковёр — нет.'],
+    es: ['2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.', 'La lámpara de pie y la de pared en el taller muestran Necesita nivel de metal hasta que se abra el nivel de la fundidora. La alfombra no.'],
+    ar: ['2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.', 'مصباح الأرض ومصباح الجدار في ورشة الخشب يظهران «يلزم مستوى المعدن» حتى يُفتح مستوى المصهر. السجادة لا.'],
+    'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.', 'چراغ زمینی و چراغ دیواری در کارگاه چوب «پله فلز لازم است» را نشان می‌دهند تا پله کوره باز شود. قالی نه. (draft translation)'],
+    rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.', 'Itara ryo hasi n\'itara ryo ku rukuta mu muciro w\'imbaho bigaragaza Ikeneye urwego rw\'icyuma kugeza urwego rw\'isaturire rufunguwe. Agatapi ntabwo. (draft translation)'],
+    ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።', 'ናይ መሬት መብራህቲን ናይ ግድሚ መብራህቲን ኣብ ናይ ዕንጨይት ዕዮ ደረጃ ብረት የድሊ የርእዩ፡ መፍለሒ ደረጃ ክሳብ ዝኽፈት። መንጸፍ ኣይኮነን። (draft translation)'],
+  } },
   // 2.5.564 Holo Hand part 1. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.564', date: '2026-10-31', lines: {
     en: ['2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.'],

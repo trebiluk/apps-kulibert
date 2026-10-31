@@ -1,0 +1,3126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<script>
+try {
+  var savedTheme = localStorage.getItem("pinchy-theme");
+  var osDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (savedTheme === "dark" || (savedTheme !== "light" && osDark)) {
+    document.documentElement.classList.add("pz-dark");
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+} catch (e) {}
+</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; connect-src 'self'; script-src 'self' 'unsafe-inline'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:,">
+<title>Berty &amp; Bizzy</title>
+<style>
+  @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-sans-600.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/plex-sans-700.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("fonts/plex-mono-500.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-mono-600.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/plex-mono-700.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Arabic";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("fonts/plex-sans-arabic-600.woff2") format("woff2");
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Arabic";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/plex-sans-arabic-700.woff2") format("woff2");
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  }
+  :root, .pz-light {
+    color-scheme: light;
+    --pz-bg: #F4F0E6;
+    --pz-panel: #FBF8F1;
+    --pz-readout: #EFEADD;
+    --pz-ink: #2A2620;
+    --pz-ink-2: #57504A;
+    --pz-line: #8C8273;
+    --pz-yellow: #E8B400;
+    --pz-on-yellow: #2A2620;
+    --pz-estop: #B3261E;
+    --pz-on-estop: #FBF8F1;
+    --pz-focus: #2A2620;
+    --pz-table: #C9D3DB;
+    --pz-table-line: #A9B5BF;
+    --pz-arm: #3A352E;
+    --pz-arm-link: #E8B400;
+    --pz-shadow: #2A262033;
+    --bg: var(--pz-bg);
+    --panel: var(--pz-panel);
+    --blue: var(--pz-panel);
+    --blue-2: var(--pz-readout);
+    --violet: var(--pz-panel);
+    --violet-2: var(--pz-readout);
+    --ink: var(--pz-ink);
+    --muted: var(--pz-ink-2);
+    --line: var(--pz-line);
+    --ember: var(--pz-focus);
+    --yellow: var(--pz-yellow);
+  }
+  html.pz-dark {
+    color-scheme: dark;
+    --pz-bg: #1E1C19;
+    --pz-panel: #2A2723;
+    --pz-readout: #1E1C19;
+    --pz-ink: #EFE9DC;
+    --pz-ink-2: #BDB4A4;
+    --pz-line: #6E665A;
+    --pz-yellow: #F2C230;
+    --pz-on-yellow: #1E1C19;
+    --pz-estop: #B3261E;
+    --pz-on-estop: #FBF8F1;
+    --pz-focus: #F2C230;
+    --pz-table: #3F4850;
+    --pz-table-line: #535D66;
+    --pz-arm: #D9D2C4;
+    --pz-arm-link: #F2C230;
+    --pz-shadow: #00000066;
+    --bg: var(--pz-bg);
+    --panel: var(--pz-panel);
+    --blue: var(--pz-panel);
+    --blue-2: var(--pz-readout);
+    --violet: var(--pz-panel);
+    --violet-2: var(--pz-readout);
+    --ink: var(--pz-ink);
+    --muted: var(--pz-ink-2);
+    --line: var(--pz-line);
+    --ember: var(--pz-focus);
+    --yellow: var(--pz-yellow);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    min-height: 100vh;
+    font: 600 15px/1.35 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  }
+  button { font: 600 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; color: var(--pz-ink); background: var(--pz-panel); touch-action: manipulation; }
+  button, .ver, .chip, canvas { user-select: none; }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--pz-bg);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-bottom: 3px solid var(--pz-yellow);
+    min-height: 56px;
+  }
+  .brand { margin: 0; font: 700 24px/1 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; letter-spacing: 0.5px; }
+  .brand small { display: block; font: 500 11px/1.2 "IBM Plex Mono", ui-monospace, monospace; color: var(--pz-ink-2); letter-spacing: 0; }
+  .ver {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0 12px;
+    border: 2px solid var(--ember);
+    background: var(--blue);
+    font-weight: 750;
+  }
+  button.tool, button.block, button.action, button.level, button.lang, #play {
+    min-width: 48px;
+    min-height: 48px;
+    border: 2px solid var(--pz-line);
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  button.tool, #play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+  }
+  #whats-new {
+    margin: 8px;
+    padding: 12px;
+    background: var(--violet);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    max-width: 40rem;
+  }
+  #whats-new h2 { margin: 0 0 8px; font: 700 13px/1.2 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--pz-ink); }
+  #whats-new p, #whats-new li { margin: 0 0 8px; }
+  #title-screen, #game { padding: 8px; }
+  #hero {
+    margin: 8px 0 12px;
+    height: 1.05em;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 7vw, 72px);
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+  .scene {
+    position: relative;
+    width: 100%;
+  }
+  #title-arm, #view {
+    width: 100%;
+    display: block;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+  }
+  #title-arm { height: 280px; }
+  #view { height: max(320px, 56vh); min-height: 280px; border-radius: 0; }
+  .scene-labels {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .scene-labels span {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font: 600 14px/1.2 "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 4px;
+    white-space: nowrap;
+  }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; min-height: 64px; }
+  button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
+  #draft-note { margin: 0 0 0 10px; padding: 2px 8px; font: 750 12px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; color: var(--pz-ink, #1d1b16); background: var(--pz-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; max-width: 46vw; }
+  #draft-note[hidden] { display: none; }
+  .levels { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; min-height: 64px; }
+  button.level {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    text-align: left;
+    flex: 1 1 160px;
+  }
+  button.level[aria-pressed="true"] { border-color: var(--pz-ink); background: var(--pz-readout); color: var(--pz-ink); }
+  button:focus-visible, .chip:focus-visible {
+    outline: 3px solid var(--pz-focus);
+    outline-offset: 2px;
+  }
+  button:active { background: var(--violet-2); }
+  button:disabled { opacity: 0.55; }
+  button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
+  #goal, .legend, .help, #angles, #touch-line, #metrics { margin: 8px 0; font-weight: 650; }
+  #goal { min-height: 1.4em; }
+  .stage {
+    display: grid;
+    grid-template-columns: 440px minmax(280px, 1fr);
+    gap: 8px;
+    align-items: start;
+  }
+  .controls, .side { display: flex; flex-direction: column; gap: 8px; }
+  .panel {
+    border: 2px solid var(--pz-line);
+    background: var(--pz-panel);
+    padding: 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .panel-label {
+    margin: 0;
+    background: var(--pz-yellow);
+    color: var(--pz-on-yellow);
+    font: 700 13px/1 "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .panel .body, .panel-body { padding: 8px; display: grid; gap: 6px; }
+  .viewport {
+    position: relative;
+    border: 2px solid var(--pz-line);
+    background: var(--pz-panel);
+    padding: 0;
+    min-height: 280px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .gizmo {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: 64px;
+    height: 64px;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .pid { float: inline-end; margin-inline-start: 8px; font-variant: normal; letter-spacing: 0.04em; }
+  .palette, .actions { display: grid; gap: 8px; }
+  .palette { grid-template-columns: 1fr 1fr; }
+  .actions { grid-template-columns: 1fr 1fr 1fr; }
+  button.block, button.action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 8px;
+    text-align: center;
+    border-radius: 4px;
+    background: var(--pz-panel);
+    color: var(--pz-ink);
+    border: 2px solid var(--pz-line);
+    font-size: 13px;
+  }
+  .joint {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 78px 92px 78px;
+    gap: 6px;
+    align-items: center;
+  }
+  .joint b { font-weight: 600; }
+  .ro {
+    font: 600 18px/1 "IBM Plex Mono", ui-monospace, monospace;
+    background: var(--pz-readout);
+    border: 2px solid var(--pz-line);
+    border-radius: 4px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 8px;
+    direction: ltr;
+    unicode-bidi: isolate;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .ro[data-long="1"] { font-size: 11px; padding: 0 2px; justify-content: center; text-align: center; white-space: normal; overflow-wrap: anywhere; line-height: 1.05; }
+  .haz { height: 8px; background: repeating-linear-gradient(-45deg, var(--pz-yellow) 0 10px, var(--pz-on-yellow) 10px 20px); }
+  .estop-row { display: grid; grid-template-columns: 1fr 130px; gap: 8px; padding: 8px; border-top: 2px solid var(--pz-line); }
+  #estop {
+    background: var(--pz-estop);
+    color: var(--pz-on-estop);
+    border-color: var(--pz-estop);
+    font-size: 18px;
+    min-height: 56px;
+    justify-content: center;
+    box-shadow: 3px 3px 0 var(--pz-shadow);
+  }
+  #retry { min-height: 56px; justify-content: center; }
+  .lamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  .lamp {
+    border: 2px solid var(--pz-ink-2);
+    color: var(--pz-ink-2);
+    background: transparent;
+    padding: 6px 8px;
+    font: 600 13px/1.2 "IBM Plex Mono", ui-monospace, monospace;
+    border-radius: 4px;
+  }
+  .lamp.is-on { color: var(--pz-bg); border-color: var(--pz-ink); background: var(--pz-ink); }
+  .readouts, .mode-row { display: none; }
+  button .name { flex: 1 1 auto; line-height: 1.15; }
+  kbd {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px 5px;
+    background: var(--violet-2);
+    font: 700 12px/1.2 system-ui, sans-serif;
+  }
+  #status {
+    margin: 8px 0;
+    min-height: 72px;
+    padding: 8px 10px;
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    background: var(--pz-readout);
+    font-weight: 600;
+    white-space: normal;
+    overflow: visible;
+  }
+  #status.is-win { border-width: 3px; }
+  #status.is-crash { background: var(--violet-2); }
+  #stars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; min-height: 36px; font-weight: 750; }
+  .star { width: 28px; height: 28px; fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  .star.is-on { fill: var(--ember); stroke: var(--ember); }
+  #program-wrap {
+    background: var(--blue);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 56px;
+    overflow: visible;
+  }
+  #program-wrap p { margin: 0 0 6px; font-weight: 750; }
+  /* 1.7.0: a long program scrolls inside its box instead of widening the page (412 upright) */
+  .lanes, #program-wrap, #program-wrap2 { min-width: 0; max-width: 100%; }
+  #program {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0;
+    padding: 4px 2px 8px;
+    list-style: none;
+    min-height: 56px;
+    align-items: center;
+    direction: ltr;
+  }
+  .chip, button.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 4px 8px;
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    background: var(--pz-panel);
+    font: 600 13px/1.2 "IBM Plex Mono", ui-monospace, monospace;
+    white-space: nowrap;
+    border-inline-start: 6px solid var(--pz-yellow);
+  }
+  .chip.is-now, .chip.is-stop {
+    border-color: var(--pz-ink);
+    border-inline-start-color: var(--pz-ink);
+  }
+  .chip.is-fix { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
+  .chip .mark { font-weight: 750; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #levels-btn.kb-menu-dupe,
+  html body #levels-btn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 7;
+    width: auto !important;
+    height: auto !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    overflow: visible !important;
+    clip: auto !important;
+  }
+  #pz-menu { display: none; position: absolute; z-index: 6; top: 60px; inset-inline-end: 8px; width: min(360px, calc(100vw - 16px)); max-height: calc(100vh - 72px); overflow: auto; background: var(--pz-panel); border: 2px solid var(--pz-line); border-radius: 4px; padding: 8px; }
+  #pz-menu.is-open { display: grid; gap: 8px; }
+  #pz-menu .levels { margin: 0; }
+  .help { white-space: normal; overflow: visible; }
+  .hub-line { margin: 0; font: 600 13px/1.35 "IBM Plex Mono", ui-monospace, monospace; }
+  @media (max-width: 600px) {
+    .stage { grid-template-columns: 1fr; }
+    .scene-col { order: -1; }
+    #view { height: 280px; min-height: 280px; }
+    #title-arm { height: 220px; }
+    #langs, #levels { min-height: 0; }
+    .top .pz-wide { display: none; }
+    .joint { grid-template-columns: minmax(0, 1fr) 70px 84px 70px; }
+  }
+  @media (min-width: 601px) and (min-height: 521px) {
+    #pz-menu .pz-narrow { display: none; }
+  }
+  @media (max-height: 520px) {
+    .legend, #angles, #star-rules, #metrics, #stars { display: none; }
+    /* 1.7.0: the goal and the Touch line are never hidden on short screens; they are compact instead. */
+    #goal, #touch-line { flex: 0 0 auto; overflow: visible; margin: 2px 0; font-size: 12px; line-height: 1.25; font-weight: 650; }
+    #touch-line[hidden] { display: none; }
+    #help { display: block; white-space: normal; overflow: visible; }
+    #langs, #levels { flex-wrap: nowrap; overflow-x: auto; min-height: 0; max-height: none; margin: 4px 0; position: static; }
+    #view { height: 180px; min-height: 140px; }
+    #status { min-height: 0; max-height: none; overflow: visible; white-space: normal; }
+  }
+  @media (max-height: 520px) and (min-width: 601px) {
+    body { overflow: hidden; }
+    /* 1.7.0 round 2: the title screen is compact here so Play is on screen on first load (no scrolling needed) */
+    #title-screen { padding: 2px 8px; }
+    #hero { font-size: 30px; line-height: 1.1; margin: 0 0 4px; }
+    #title-screen .scene { margin: 0; }
+    #title-arm { height: 150px; min-height: 0; }
+    #title-screen p { margin: 4px 0 0; }
+    #play { min-height: 44px; }
+    .top { flex-wrap: nowrap; min-height: 40px; padding: 2px 8px; }
+    .brand { font-size: 18px; }
+    .brand small { display: none; }
+    #game { padding: 4px; }
+    .stage { height: calc(100vh - 96px); gap: 6px; align-items: stretch; }
+    .controls { gap: 4px; max-height: none; overflow: visible; }
+    .controls .panel { flex: 0 0 auto; }
+    .panel .body { padding: 3px 4px; gap: 2px; }
+    .panel-label { padding: 1px 8px; }
+    .lamps { gap: 3px; margin: 0; }
+    .lamp { padding: 1px 4px; font-size: 11px; }
+    /* The status line is never hidden: here it is compact (small text, two lines) and still aria-live. */
+    #status { display: block; margin: 0; min-height: 0; max-height: 53px; padding: 3px 6px; border-width: 1px; font-size: 12px; line-height: 1.25; overflow-y: auto; }
+    .haz { height: 4px; }
+    .estop-row { padding: 3px; gap: 4px; }
+    #estop, #retry { min-height: 44px; height: 44px; font-size: 13px; }
+    .joint { grid-template-columns: minmax(72px, 1fr) 64px 72px 64px; gap: 2px; }
+    button.block { min-height: 44px; height: 44px; padding: 0 2px; font-size: 12px; }
+    .ro { height: 44px; font-size: 13px; padding: 0 4px; }
+    .ro[data-long="1"] { font-size: 9px; padding: 0 2px; }
+    #draft-note { position: fixed; inset-inline-start: 6px; bottom: 4px; margin: 0; z-index: 20; font-size: 11px; padding: 1px 6px; }
+    .viewport { min-height: 0; height: 100%; }
+    #view { height: 100%; min-height: 120px; }
+  }
+  @media (max-height: 520px) and (min-width: 601px) and (max-width: 759px) {
+    .controls { max-height: calc(100vh - 108px); overflow-y: auto; }
+  }
+  /* 1.5.0: a short sideways screen gets three columns, so the view and one lane (with Run) are on screen together. */
+  @media (max-height: 520px) and (min-width: 760px) {
+    /* joints | view with the status line and E-STOP under it | program */
+    .stage { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.95fr); grid-template-rows: minmax(0, 1fr) auto; height: calc(100vh - 108px); }
+    .controls { display: contents; }
+    .controls .panel:nth-child(1) { grid-column: 2; grid-row: 2; }
+    .controls .panel:nth-child(2) { grid-column: 1; grid-row: 1 / span 2; overflow-y: auto; }
+    .controls .panel:nth-child(3) { grid-column: 3; grid-row: 1 / span 2; overflow-y: auto; }
+    .scene-col { grid-column: 2; grid-row: 1; min-height: 0; display: flex; flex-direction: column; }
+    .scene-col .viewport { flex: 1 1 auto; display: flex; flex-direction: column; }
+    .scene-col .viewport .scene { flex: 1 1 auto; min-height: 0; }
+    .scene-col #view { height: 100%; min-height: 0; }
+    .actions { gap: 4px; }
+    .actions .action, .actions button { min-width: 0; padding-inline: 4px; }
+    /* Sync, Wait and Repeat wrap onto more rows of full-size (44 px) buttons, so nothing scrolls or is clipped */
+    #program-pad { display: flex; flex-wrap: wrap; gap: 4px; overflow: visible; padding: 2px 4px; }
+    #program-pad button.block { flex: 0 0 auto; min-height: 44px; height: 44px; min-width: 44px; padding: 0 10px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  @media (forced-colors: active) {
+    button, .chip, .ver, #view, #title-arm, #status, #program-wrap, #whats-new {
+      border: 2px solid ButtonText;
+    }
+  }
+
+  #help-btn { min-width: 44px; min-height: 44px; font-weight: 700; font-size: 18px; }
+  .bb-intro {
+    position: fixed; inset: 0; z-index: 60;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: var(--pz-bg);
+    opacity: 0.97;
+    animation: bb-intro-out 0.3s ease 1.4s forwards;
+    cursor: pointer;
+  }
+  .bb-intro[hidden] { display: none; }
+  .bb-intro.is-still { animation: none; }
+  .bb-intro svg { width: min(86vw, 420px); height: auto; }
+  .bb-intro-text { margin: 0; font: 700 22px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; text-align: center; padding: 0 16px; }
+  .bb-intro-skip { margin: 0; font: 500 13px/1.2 "IBM Plex Mono", ui-monospace, monospace; color: var(--pz-ink-2); text-align: center; padding: 0 16px; }
+  @keyframes bb-intro-out { to { opacity: 0; } }
+  .bb-tip {
+    position: relative; z-index: 4; width: auto; max-width: 360px; margin: 14px 8px 8px;
+    display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start;
+    padding: 10px 10px 8px; background: var(--pz-yellow); color: var(--pz-on-yellow);
+    border: 3px solid var(--pz-on-yellow); border-radius: 8px;
+  }
+  .bb-tip[hidden] { display: none; }
+  .bb-tip::before { content: ""; position: absolute; top: -12px; inset-inline-start: var(--bb-nub, 24px); border: 6px solid transparent; border-bottom: 6px solid var(--pz-on-yellow); border-top-width: 0; border-width: 0 9px 9px 9px; border-color: transparent transparent var(--pz-on-yellow) transparent; margin-top: -3px; }
+  .bb-tip.no-nub::before { display: none; }
+  .bb-tip.is-docked { margin-top: 8px; }
+  .bb-tip-icon { grid-row: 1; margin-top: 2px; }
+  .bb-tip-text { margin: 0; font: 700 15px/1.3 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; align-self: center; }
+  .bb-tip-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
+  .bb-tip button { min-height: 44px; min-width: 44px; padding: 0 10px; background: var(--pz-panel); color: var(--pz-ink); border: 2px solid var(--pz-on-yellow); border-radius: 6px; font: 700 14px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-tip button:focus-visible, #help-btn:focus-visible, .bb-help button:focus-visible { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
+  .bb-help { position: fixed; inset: var(--bb-bar, 56px) 0 0 0; z-index: 70; background: var(--pz-bg); overflow-y: auto; padding: 0 12px 12px; }
+  .bb-help[hidden] { display: none; }
+  .bb-help-card { max-width: 640px; margin: 0 auto; background: var(--pz-panel); border: 2px solid var(--pz-line); border-radius: 8px; padding: 12px 14px 14px; }
+  .bb-help-card { margin-top: 12px; }
+  .bb-help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: 0; z-index: 2; background: var(--pz-panel); padding: 4px 0 6px; margin: -2px 0 0; border-bottom: 2px solid var(--pz-line); }
+  .bb-help h2 { margin: 0; font: 700 22px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-help h3 { margin: 14px 0 4px; font: 700 15px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); padding: 3px 8px; border-radius: 4px; }
+  .bb-help ul { margin: 0; padding-inline-start: 20px; }
+  .bb-help li, .bb-help p { margin: 4px 0; font: 500 15px/1.4 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-help button { min-height: 44px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .bb-intro { animation: none; } }
+
+  .scene-labels .chip3d { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; padding: 1px 8px 1px 5px; }
+  .scene-labels .chip3d b { font-weight: 700; }
+  .lane-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 8px; }
+  .lane-tabs[hidden], .lane[hidden] { display: none; }
+  .lane-tab { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; min-width: 44px; padding: 4px 10px; border: 2px solid var(--line); border-radius: 4px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .lane-tab.is-active { background: var(--pz-yellow); color: var(--pz-on-yellow); border-color: var(--pz-on-yellow); border-width: 3px; }
+  .lane-tab .lane-count { font: 600 12px "IBM Plex Mono", ui-monospace, monospace; }
+  .lanes { display: grid; gap: 8px; }
+  .lanes.is-duo { grid-template-columns: 1fr 1fr; }
+  .lanes.is-duo .lane { min-width: 0; }
+  .lanes.is-duo .lane.is-active { outline: 3px solid var(--pz-focus); outline-offset: -3px; }
+  .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: wrap; }
+  #program2 { display: flex; gap: 8px; overflow-x: auto; margin: 0; padding: 4px 2px 8px; list-style: none; min-height: 56px; align-items: center; direction: ltr; }
+  #program-wrap2 { background: var(--blue); border: 2px solid var(--line); border-radius: 4px; padding: 8px; min-height: 56px; overflow: visible; }
+  #program-wrap2 p { margin: 0 0 6px; font-weight: 750; }
+  .lane-name-line { display: flex; align-items: center; gap: 6px; }
+  @media (max-width: 600px) {
+    .lanes.is-duo { grid-template-columns: 1fr; }
+    .lanes.is-duo .lane:not(.is-active) { display: none; }
+    .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: nowrap; }
+    .lanes.is-duo .lane.is-active { outline: none; }
+  }
+  @media (max-height: 520px) {
+    .lanes.is-duo { grid-template-columns: 1fr; }
+    .lanes.is-duo .lane:not(.is-active) { display: none; }
+    .lanes.is-duo #program, .lanes.is-duo #program2 { flex-wrap: nowrap; }
+    .lanes.is-duo .lane.is-active { outline: none; }
+    .lane-tabs { margin: 0 0 3px; gap: 4px; }
+    .lane-tab { min-height: 44px; padding: 2px 6px; font-size: 14px; }
+  }
+
+  .chip.is-wait { border-style: dashed; border-width: 3px; }
+  #program .chip, #program2 .chip { flex: 0 0 auto; }
+  html .kb-bar .kb-plate { margin-inline-end: 8px; }
+  .bb-card { position: fixed; inset: 0; z-index: 65; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--pz-bg); overflow-y: auto; }
+  .bb-card[hidden] { display: none; }
+  .bb-card-box { width: min(440px, 100%); background: var(--pz-panel); border: 3px solid var(--pz-on-yellow); border-radius: 8px; padding: 0 0 14px; }
+  .bb-card-head { margin: 0; padding: 8px 14px; background: var(--pz-yellow); color: var(--pz-on-yellow); font: 700 20px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; border-radius: 4px 4px 0 0; }
+  .bb-card-new { display: inline-block; margin: 10px 14px 0; padding: 4px 12px; border: 3px solid var(--pz-on-yellow); border-radius: 999px; background: var(--pz-yellow); color: var(--pz-on-yellow); font: 700 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-new[hidden] { display: none; }
+  .bb-card-rows { margin: 8px 14px 0; display: grid; gap: 6px; }
+  .bb-card-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--pz-line); font: 600 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-row b { font: 700 24px "IBM Plex Mono", ui-monospace, monospace; direction: ltr; unicode-bidi: isolate; }
+  .bb-card-actions { margin: 14px 14px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .bb-card-actions button { flex: 1 1 120px; min-height: 48px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 16px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-card-actions button[hidden] { display: none; }
+  .bb-card-actions button.is-primary { background: var(--pz-yellow); color: var(--pz-on-yellow); border-color: var(--pz-on-yellow); }
+  .bb-card-actions button:focus-visible { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
+  @media (max-height: 520px) { .bb-card-rows { grid-template-columns: 1fr 1fr; column-gap: 14px; } .bb-card-row b { font-size: 20px; } .bb-card-head { font-size: 17px; padding: 5px 12px; } .bb-card-box { padding-bottom: 8px; } .bb-card-actions { margin-top: 8px; } }
+</style>
+</head>
+<body class="pz-light">
+<header class="top">
+  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.0</span></small></p>
+  <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
+  <span class="sp" style="flex:1"></span>
+  <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
+  <button type="button" class="tool" id="levels-btn" aria-expanded="false" aria-controls="pz-menu">☰ Levels</button>
+  <span id="chrome-slot" class="pz-wide"></span>
+</header>
+<div id="pz-menu" aria-label="Levels">
+  <div id="chrome-narrow" class="pz-narrow"></div>
+  <div class="levels" id="levels" role="group" aria-label="Levels"></div>
+<section id="whats-new" hidden>
+  <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v170">Version 1.7.0</p>
+  <ul>
+    <li data-k="w170a">Level 11, Touch: a cube rides a belt. The claw has a touch sensor, and there is a new If touch block.</li>
+    <li data-k="w170b">Close the claw without touch and the cube slips. A cube set down off-center tips over, and a stack can fall. The note names the step.</li>
+    <li data-k="w170c">The cube now moves by physics in fixed 1/120 s steps, so a run takes the same time on every screen.</li>
+  </ul>
+  <p data-k="v161">Version 1.6.1</p>
+  <ul>
+    <li data-k="w161a">Every old /pinchy/ address now opens Berty &amp; Bizzy.</li>
+    <li data-k="w161b">The tips sit under what they point at, so they never cover other text.</li>
+  </ul>
+  <p data-k="v160">Version 1.6.0</p>
+  <ul>
+    <li data-k="w160a">Sync A, B and C make the faster arm wait for the other arm. There are also Wait for other arm and Wait 0.5 s.</li>
+    <li data-k="w160b">A result card shows cycle time, blocks used and parts moved, and your best on this device.</li>
+    <li data-k="w160c">Three new levels: Sync it, Other way and Two cubes.</li>
+  </ul>
+  <p data-k="v150">Version 1.5.0</p>
+  <ul>
+    <li data-k="w150a">Bizzy, a second robot arm, joins Berty. Each arm has 5 joints.</li>
+    <li data-k="w150b">Level 7, Hand-off: Berty picks up the cube and Bizzy places it. Each arm has its own lane of blocks, and both lanes run together.</li>
+    <li data-k="w150c">If the arms touch, the note names the two parts. Levels 1 to 6 play with Berty only.</li>
+  </ul>
+  <p data-k="v140">Version 1.4.0</p>
+  <ul>
+    <li data-k="w140a">Pinchy is now Berty &amp; Bizzy. The old address /pinchy/ sends you here.</li>
+    <li data-k="w140b">Berty and Bizzy wave hello once per visit. Tips and a Help button explain the blocks.</li>
+  </ul>
+  <p data-k="v132">Version 1.3.2</p>
+  <ul>
+    <li data-k="w132a">All 8 languages now translate the status line, E-STOP, Clear, the joint summary, the claw readout, the stars, blocks and time, the top bar, the theme button, and What's new.</li>
+    <li data-k="w132b">The language you pick is kept and shows from the first screen. Words that are not English are a machine draft.</li>
+  </ul>
+  <p data-k="v131">Version 1.3.1</p>
+  <ul>
+    <li data-k="w131a">The arm is printed links, six servos, and a two-jaw gripper.</li>
+    <li data-k="w131b">One Menu button in every app. It opens that app's menu.</li>
+  </ul>
+  <p data-k="v130">Version 1.3.0</p>
+  <ul>
+    <li data-k="w130a">Move a robot arm.</li>
+    <li data-k="w130b">Paper pendant: warm paper, charcoal ink, and mustard only on the header bars, the arm, and the E-STOP band.</li>
+    <li data-k="w130c">One Menu button in every app. It opens that app's menu.</li>
+  </ul>
+  <p data-k="v122">Version 1.2.2</p>
+  <ul>
+    <li data-k="w122a">Move a robot arm.</li>
+    <li data-k="w122b">The empty gap above the status line is gone.</li>
+    <li data-k="w122c">On a short sideways screen the level names stay whole, and the program stays on screen.</li>
+    <li data-k="w122d">Spanish, Arabic, and Dari name the blocks and the help. Those words are a machine draft.</li>
+  </ul>
+  <p data-k="v121">Version 1.2.1</p>
+  <ul>
+    <li data-k="w121a">Move a robot arm.</li>
+    <li data-k="w121b">The 3D scene fills the width, and the labels on it are large enough to read.</li>
+    <li data-k="w121c">Base left and Base right have Spanish, Arabic, and Dari names. Those names are a machine draft.</li>
+    <li data-k="w121d">Retry clears the stars on the row and in the words.</li>
+  </ul>
+  <p data-k="v120">Version 1.2.0</p>
+  <ul>
+    <li data-k="w120a">Move a robot arm.</li>
+    <li data-k="w120b">The arm is drawn in 3D from a fixed camera, so the base can turn.</li>
+    <li data-k="w120c">Levels 1 to 6 are unchanged. Stars stay on this screen only.</li>
+  </ul>
+  <p data-k="v110">Version 1.1.0</p>
+  <ul>
+    <li data-k="w110a">Move a robot arm.</li>
+    <li data-k="w110b">Level 4 sorts a pile with Repeat. Level 5 sends a red square to bin A and a blue circle to bin B. Level 6 fixes a broken program with swaps.</li>
+    <li data-k="w110c">Wrist up and Wrist down are in the later levels. A crash names the wrist.</li>
+    <li data-k="w110d">Stars mean done, under the block par, and under the time par. They stay on this screen only.</li>
+  </ul>
+  <p data-k="v100">Version 1.0.0</p>
+  <ul>
+    <li data-k="w100a">Pinchy McPinchface is the arm game.</li>
+    <li data-k="w100b">Level 1 moves one joint. Level 2 picks up a part and places it. Level 3 goes to a spot from A1 to C3.</li>
+    <li data-k="w100c">If the arm hits something, the note names the part and the step stays outlined. Retry keeps your program.</li>
+  </ul>
+  <button type="button" class="tool" id="whats-close">Close</button>
+</section>
+  <button type="button" class="tool" id="whats-btn" aria-expanded="false" aria-controls="whats-new">What's new</button>
+  <p class="help" id="help">Arrow keys pick a block. Enter adds it. Q turns the base left in 3D. E turns the base right in 3D. R runs. Z undoes. Retry keeps the program.</p>
+  <p class="hub-line" data-k="hubLine">One Menu button in every app. It opens that app's menu.</p>
+  <button type="button" id="kb-menu" class="kb-menu" aria-expanded="false" aria-controls="hub-drawer"><span aria-hidden="true">☰ </span><span data-i18n="menu">Menu</span></button>
+</div>
+<button type="button" class="tool" id="theme-btn" aria-pressed="false">◐ Dark</button>
+<nav class="langs" id="langs" aria-label="Language"></nav>
+<section id="title-screen">
+  <h1 id="hero" translate="no">Berty &amp; Bizzy</h1>
+  <div class="scene"><canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas></div>
+  <p><button type="button" id="play">Play</button></p>
+</section>
+<main id="game" hidden>
+  <div class="stage">
+    <div class="controls">
+      <section class="panel">
+        <h2 class="panel-label"><span data-ui="STATUS">STATUS</span><span>S-01</span></h2>
+        <div class="body">
+          <div class="lamps" id="lamps">
+            <span class="lamp is-on" data-lamp="ready">● READY</span>
+            <span class="lamp" data-lamp="moving">▲ MOVING</span>
+            <span class="lamp" data-lamp="stopped">■ STOPPED</span>
+            <span class="lamp" data-lamp="crash">◆ CRASH</span>
+          </div>
+          <p id="status" role="status" aria-live="assertive">Add a block, then press Run.</p>
+        </div>
+        <div class="haz"></div>
+        <div class="estop-row">
+          <button type="button" id="estop">■ E-STOP</button>
+          <span id="reset-slot"></span>
+        </div>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label"><span data-ui="JOINTS">JOINTS</span><span>J-01</span></h2>
+        <div class="body" id="joint-pad" role="group" aria-label="Joints"></div>
+        <div id="base-pad" hidden></div>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label"><span data-ui="PROGRAM">PROGRAM</span><span>P-01</span></h2>
+        <div class="palette" id="program-pad" role="group" aria-label="Program blocks"></div>
+        <div id="lane-tabs" class="lane-tabs" role="tablist" aria-label="Block lanes" hidden>
+          <button type="button" role="tab" id="lane-tab-0" class="lane-tab is-active" aria-selected="true" aria-controls="program-wrap" data-lane="0"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M4 20h7M7 20V11l8-5 4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="11" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/></svg><span class="lane-name">Berty</span><span class="lane-count" aria-hidden="true"></span></button>
+          <button type="button" role="tab" id="lane-tab-1" class="lane-tab" aria-selected="false" aria-controls="program-wrap2" data-lane="1"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M13 20h7M17 20V11L9 6 5 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="11" r="1.6" fill="currentColor"/><circle cx="9" cy="6" r="1.6" fill="currentColor"/></svg><span class="lane-name">Bizzy</span><span class="lane-count" aria-hidden="true"></span></button>
+        </div>
+        <div class="lanes" id="lanes">
+          <div id="program-wrap" class="lane is-active" tabindex="0" aria-label="Program. Enter adds the picked block." data-lane="0">
+            <p id="program-title">Program</p>
+            <ol id="program"></ol>
+          </div>
+          <div id="program-wrap2" class="lane" tabindex="0" role="group" data-lane="1" hidden>
+            <p id="program-title2"></p>
+            <ol id="program2"></ol>
+          </div>
+        </div>
+        <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
+      </section>
+    </div>
+    <div class="scene-col">
+      <div class="viewport">
+        <h2 class="panel-label"><span data-ui="VIEW">VIEW</span> · <span data-ui="CELL">CELL</span> 01</h2>
+        <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
+      </div>
+      <p id="goal"></p>
+      <p id="touch-line" hidden></p>
+      <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
+      <p class="legend" id="legend">The 3D arm turns on its base. Spots A1 to C3 and the bins sit on the table. A block is the part. A thick mark means go here.</p>
+    </div>
+  </div>
+  <p id="stars" aria-label="No stars yet.">
+    <svg class="star" id="star-1" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
+    <svg class="star" id="star-2" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
+    <svg class="star" id="star-3" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2.5 14.8,8.6 21.4,9.2 16.4,13.6 17.9,20.1 12,16.8 6.1,20.1 7.6,13.6 2.6,9.2 9.2,8.6"/></svg>
+    <span id="star-words">No stars yet.</span>
+  </p>
+  <p id="star-rules" data-k="starRules">Stars: done, under the block par, under the time par. They stay on this screen only.</p>
+  <p id="metrics">
+    <span id="m-blocks">Blocks: 0</span>
+    <span id="m-time">Time: none yet</span>
+  </p>
+</main>
+<noscript><p>Berty &amp; Bizzy needs JavaScript. It does not use the network.</p></noscript>
+<div id="bb-intro" class="bb-intro" hidden>
+  <svg id="bb-intro-art" viewBox="0 0 320 170" role="img" aria-hidden="true" focusable="false">
+    <rect x="0" y="150" width="320" height="4" fill="var(--pz-line)"/>
+    <g id="bb-berty">
+      <rect x="40" y="132" width="64" height="18" rx="3" fill="var(--pz-arm)"/>
+      <rect x="64" y="86" width="16" height="48" rx="3" fill="var(--pz-arm-link)" stroke="var(--pz-arm)" stroke-width="3"/>
+      <circle cx="72" cy="86" r="8" fill="var(--pz-arm)"/>
+      <g id="bb-berty-fore">
+        <rect x="64" y="38" width="16" height="50" rx="3" fill="var(--pz-arm-link)" stroke="var(--pz-arm)" stroke-width="3"/>
+        <path d="M62 38 L66 22 M82 38 L78 22" stroke="var(--pz-arm)" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+    <g id="bb-bizzy">
+      <rect x="216" y="132" width="64" height="18" rx="3" fill="var(--pz-arm)"/>
+      <rect x="240" y="86" width="16" height="48" rx="3" fill="var(--pz-panel)" stroke="var(--pz-arm)" stroke-width="3"/>
+      <circle cx="248" cy="86" r="8" fill="var(--pz-arm)"/>
+      <g id="bb-bizzy-fore">
+        <rect x="240" y="38" width="16" height="50" rx="3" fill="var(--pz-panel)" stroke="var(--pz-arm)" stroke-width="3"/>
+        <path d="M238 38 L242 22 M258 38 L254 22" stroke="var(--pz-arm)" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+  </svg>
+  <p id="bb-intro-text" class="bb-intro-text" aria-live="polite"></p>
+  <p id="bb-intro-skip" class="bb-intro-skip"></p>
+</div>
+<aside id="bb-tip" class="bb-tip" role="note" hidden>
+  <svg class="bb-tip-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M9 21h6M10 17h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <p id="bb-tip-text" class="bb-tip-text"></p>
+  <div class="bb-tip-actions">
+    <button type="button" id="bb-tip-off" class="bb-tip-off"></button>
+    <button type="button" id="bb-tip-close" class="bb-tip-close"><span aria-hidden="true">&#x2715;</span></button>
+  </div>
+</aside>
+<section id="bb-card" class="bb-card" role="dialog" aria-modal="false" aria-labelledby="bb-card-head" hidden>
+  <div class="bb-card-box">
+    <h2 id="bb-card-head" class="bb-card-head"></h2>
+    <p id="bb-card-new" class="bb-card-new" hidden></p>
+    <div class="bb-card-rows">
+      <div class="bb-card-row"><span id="bb-card-l-cycle"></span><b id="bb-card-cycle"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-blocks"></span><b id="bb-card-blocks"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-parts"></span><b id="bb-card-parts"></b></div>
+      <div class="bb-card-row"><span id="bb-card-l-best"></span><b id="bb-card-best"></b></div>
+    </div>
+    <div class="bb-card-actions">
+      <button type="button" id="bb-card-next" class="is-primary"></button>
+      <button type="button" id="bb-card-try"></button>
+      <button type="button" id="bb-card-close"></button>
+    </div>
+  </div>
+</section>
+<section id="bb-help" class="bb-help" role="dialog" aria-modal="true" aria-labelledby="bb-help-title" hidden>
+  <div class="bb-help-card">
+    <div class="bb-help-head">
+      <h2 id="bb-help-title"></h2>
+      <button type="button" id="bb-help-close" class="bb-help-close"></button>
+    </div>
+    <h3 id="bb-help-blocks-h"></h3>
+    <ul id="bb-help-blocks"></ul>
+    <h3 id="bb-help-controls-h"></h3>
+    <p id="bb-help-controls"></p>
+    <h3 id="bb-help-fail-h"></h3>
+    <ul id="bb-help-fail"></ul>
+    <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
+  </div>
+</section>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.0" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="vendor/three.min.js"></script>
+<script src="physics.js?v=1.7.0"></script>
+<script src="game.js?v=1.7.0"></script>
+<script src="view3d.js?v=1.7.0"></script>
+<script>
+"use strict";
+var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
+var STEP_MS = 520;
+var SNAP_HOLD = 80;
+var session = { level: 0, programs: [], programs2: [], run: [] };
+var world = null;
+var playback = 0;
+var playing = false;
+var reduce = false;
+var focusIndex = 0;
+var activeLane = 0;
+var activeCmd = "";
+var runT0 = 0;
+var lastMs = null;
+var physMs = 0;
+var physTicks = 0;
+var titleOn = true;
+var waveGen = 0;
+var viewCanvas = null;
+var titleCanvas = null;
+
+var svg = function (body) {
+  return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">' + body + "</svg>";
+};
+var ST = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+var ICONS = {
+  "base-left": svg('<path d="M16 12 a6 6 0 1 0 -2 4" ' + ST + '/><path d="M8 10 H4 v4" ' + ST + '/>'),
+  "base-right": svg('<path d="M8 12 a6 6 0 1 1 2 4" ' + ST + '/><path d="M16 10 h4 v4" ' + ST + '/>'),
+  "shoulder-up": svg('<circle cx="6" cy="18" r="1.6" ' + ST + '/><path d="M8 16 L15 7" ' + ST + '/><path d="M11 7 h5 v5" ' + ST + '/>'),
+  "shoulder-down": svg('<circle cx="6" cy="6" r="1.6" ' + ST + '/><path d="M8 8 L15 17" ' + ST + '/><path d="M11 17 h5 v-5" ' + ST + '/>'),
+  "elbow-up": svg('<path d="M3 17 H10 L17 8" ' + ST + '/><path d="M13 8 h5 v5" ' + ST + '/>'),
+  "elbow-down": svg('<path d="M3 7 H10 L17 16" ' + ST + '/><path d="M13 16 h5 v-5" ' + ST + '/>'),
+  "wrist-up": svg('<circle cx="7" cy="17" r="2" ' + ST + '/><path d="M9 15 L16 8" ' + ST + '/><path d="M12 8 h6 v6" ' + ST + '/>'),
+  "wrist-down": svg('<circle cx="7" cy="7" r="2" ' + ST + '/><path d="M9 9 L16 16" ' + ST + '/><path d="M12 16 h6 v-6" ' + ST + '/>'),
+  "claw-open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
+  "claw-close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
+  "repeat-3": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "repeat-2": svg('<path d="M16 8 a5 5 0 1 0 -1 4" ' + ST + '/><path d="M8 8 H5 v4" ' + ST + '/>'),
+  "end-repeat": svg('<path d="M5 7 h14 M5 12 h14 M5 17 h10" ' + ST + '/>'),
+  "if-red-square": svg('<rect x="4" y="4" width="16" height="16" ' + ST + '/><path d="M7 12 h10" ' + ST + '/>'),
+  "if-blue-circle": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><circle cx="12" cy="12" r="2" fill="currentColor"/>'),
+  "if-touch": svg('<path d="M8 20 V8 a2 2 0 0 1 4 0 V13 M12 11 a2 2 0 0 1 4 0 V13 M16 12 a2 2 0 0 1 4 0 V16 c0 3 -2 4 -5 4 H11 c-2 0 -3 -1 -4 -3 L5 14 a2 2 0 0 1 3 -2" ' + ST + '/>'),
+  "end-if": svg('<path d="M6 7 h12 M6 12 h8 M6 17 h12" ' + ST + '/>'),
+  "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
+  "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
+  "undo": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
+  "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>'),
+  "sync-a": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><path d="M7 12 H17 M14 9 l3 3 l-3 3 M10 9 l-3 3 l3 3" ' + ST + '/>'),
+  "sync-b": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><path d="M7 9 H17 M7 15 H17" ' + ST + '/>'),
+  "sync-c": svg('<path d="M4 5 V19 M20 5 V19" ' + ST + '/><circle cx="12" cy="12" r="3" ' + ST + '/>'),
+  "wait-other": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><path d="M12 7 V12 L15 14" ' + ST + '/>'),
+  "wait-half": svg('<path d="M7 4 H17 M7 20 H17 M8 4 C8 10 16 10 16 4 M8 20 C8 14 16 14 16 20" ' + ST + '/>'),
+  "swap": svg('<path d="M7 8 h10" ' + ST + '/><path d="M14 5 l3 3 l-3 3" ' + ST + '/><path d="M17 16 H7" ' + ST + '/><path d="M10 13 l-3 3 l3 3" ' + ST + '/>'),
+  "note": svg('<path d="M6 4 h9 l3 3 v13 H6 z" ' + ST + '/><path d="M8 11 h8 M8 15 h6" ' + ST + '/>')
+};
+var LEVEL_ICON = { L1: "shoulder-up", L2: "claw-close", L3: "spot", L4: "repeat-3", L5: "if-red-square", L6: "swap", T3: "sync-a", T4: "sync-a", T5: "sync-a", T6: "repeat-2", P7: "if-touch" };
+var fixAt = 0;
+var swapHistory = [];
+
+var lang = "en";
+var estopped = false;
+var isDraftLang = function () { return !!PINCHY.langMeta(lang).draft; };
+var markDraft = function (el) {
+  if (!el) return;
+  var olds = el.querySelectorAll(".draft-badge");
+  for (var d = 0; d < olds.length; d++) olds[d].remove();
+  if (isDraftLang()) {
+    el.dataset.draft = "true";
+    var note = document.createElement("span");
+    note.className = "sr-only draft-badge";
+    note.textContent = PINCHY.uiText(lang, "draftBadge");
+    el.appendChild(note);
+  } else el.removeAttribute("data-draft");
+};
+var labelOf = function (id) {
+  return PINCHY.labelFor(id, lang);
+};
+var angleText = function (id) {
+  var block = PINCHY.blockById(id);
+  if (!block) return "";
+  if (block.joint === "claw") return block.angle + "\u00b0";
+  if (block.delta == null) return "";
+  return (block.delta > 0 ? "+" : "") + block.delta + "\u00b0";
+};
+var formatMs = function (ms) {
+  return (Math.max(0, ms) / 1000).toFixed(1) + " s";
+};
+
+var renderRun = function () {
+  var state = session.run[session.level] || PINCHY.settleRun(null, { type: "level" });
+  var view = PINCHY.runView(state, lang);
+  var i;
+  for (i = 1; i <= 3; i++) {
+    var star = document.getElementById("star-" + i);
+    star.classList.toggle("is-on", i <= view.stars);
+  }
+  document.getElementById("star-words").textContent = view.words;
+  document.getElementById("stars").setAttribute("aria-label", view.aria);
+  markDraft(document.getElementById("star-words"));
+  var el = document.getElementById("status");
+  el.textContent = view.status;
+  el.classList.remove("is-win", "is-crash");
+  if (view.kind === "won") el.classList.add("is-win");
+  if (view.kind === "crashed") el.classList.add("is-crash");
+  markDraft(el);
+  var lamp = "ready";
+  if (view.kind === "running") lamp = "moving";
+  else if (view.kind === "crashed") lamp = "crash";
+  else if (estopped || view.kind === "failed") lamp = "stopped";
+  var lamps = document.querySelectorAll(".lamp");
+  for (i = 0; i < lamps.length; i++) lamps[i].classList.toggle("is-on", lamps[i].dataset.lamp === lamp);
+};
+var setRun = function (state) {
+  session.run[session.level] = state;
+  renderRun();
+};
+
+var updateMetrics = function () {
+  var level = PINCHY.LEVELS[session.level];
+  var n = session.programs[session.level].length + (isDuo() ? laneList(1).length : 0);
+  var runNow = session.run[session.level] || {};
+  var shownSwaps = runNow.kind === "running" ? (runNow.scoredSwaps || 0) : (runNow.swaps || 0);
+  var fillLine = function (key, n) { return PINCHY.uiText(lang, key).replace("{n}", n); };
+  if (level && level.metric === "swaps") document.getElementById("m-blocks").textContent = fillLine("swapsLine", shownSwaps);
+  else document.getElementById("m-blocks").textContent = fillLine("blocksLine", n);
+  var timeEl = document.getElementById("m-time");
+  if (playing && runT0) timeEl.textContent = fillLine("timeLine", formatMs(level && level.physics ? physMs : performance.now() - runT0));
+  else if (lastMs == null) timeEl.textContent = PINCHY.uiText(lang, "timeNone");
+  else timeEl.textContent = fillLine("timeLine", formatMs(lastMs));
+};
+
+var isDuo = function () {
+  var level = PINCHY.LEVELS[session.level];
+  return !!(level && level.duo);
+};
+var laneList = function (lane) {
+  if (lane === 1) {
+    if (!session.programs2[session.level]) session.programs2[session.level] = [];
+    return session.programs2[session.level];
+  }
+  return session.programs[session.level];
+};
+var laneWho = function (lane) { return lane === 1 ? "bizzy" : "berty"; };
+var laneName = function (lane) { return PINCHY.duoNameOf(laneWho(lane), lang); };
+var renderLaneInto = function (ol, list, now, stop, lane, waiting) {
+  ol.dataset.steps = JSON.stringify(PINCHY.stepList(list));
+  ol.replaceChildren();
+  if (!list.length) {
+    var empty = document.createElement("li");
+    empty.textContent = PINCHY.uiText ? PINCHY.uiText(lang, "No blocks yet.") : "No blocks yet.";
+    ol.appendChild(empty);
+    return;
+  }
+  var debug = lane === 0 && !!(PINCHY.LEVELS[session.level] && PINCHY.LEVELS[session.level].debug);
+  for (var i = 0; i < list.length; i++) {
+    var li = document.createElement(debug ? "button" : "li");
+    if (debug) li.type = "button";
+    li.className = "chip";
+    li.dataset.step = String(i + 1);
+    li.dataset.lane = String(lane);
+    if (debug) {
+      li.dataset.index = String(i);
+      if (i === fixAt && now < 0 && stop < 0) li.classList.add("is-fix");
+      if (playing) li.disabled = true;
+      li.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        e.stopPropagation();
+        doSwap(Number(this.dataset.index));
+      });
+      li.addEventListener("click", function (ev) {
+        if (ev.detail === 0) return;
+        doSwap(Number(this.dataset.index));
+      });
+    }
+    if (i === now) {
+      li.classList.add("is-now");
+      li.setAttribute("aria-current", "step");
+      if (waiting) li.classList.add("is-wait");
+    }
+    if (i === stop) li.classList.add("is-stop");
+    if (i === now || i === stop) {
+      var mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = i === stop ? "✗" : (waiting && i === now ? "⏸" : "▶");
+      li.appendChild(mark);
+    }
+    var idx = document.createElement("span");
+    idx.textContent = String(i + 1);
+    li.appendChild(idx);
+    var holder = document.createElement("span");
+    holder.innerHTML = ICONS[list[i]] || "";
+    if (holder.firstChild) li.appendChild(holder.firstChild);
+    var name = document.createElement("span");
+    name.textContent = labelOf(list[i]);
+    if (String(list[i]).indexOf("wrist") === 0) {
+      var wristMeta = PINCHY.langMeta(lang);
+      name.lang = lang;
+      name.dir = wristMeta.rtl ? "rtl" : "ltr";
+    }
+    li.appendChild(name);
+    var deg = document.createElement("span");
+    deg.textContent = angleText(list[i]);
+    li.appendChild(deg);
+    ol.appendChild(li);
+  }
+  var current = ol.querySelector(".is-now, .is-stop");
+  if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+};
+var renderProgram = function (now, stop, now2, stop2, wait1, wait2) {
+  renderLaneInto(document.getElementById("program"), session.programs[session.level], now, stop, 0, !!wait1);
+  if (isDuo()) renderLaneInto(document.getElementById("program2"), laneList(1), now2 == null ? -1 : now2, stop2 == null ? -1 : stop2, 1, !!wait2);
+  paintLaneCounts();
+};
+var paintLaneCounts = function () {
+  var duo = isDuo();
+  for (var l = 0; l < 2; l++) {
+    var tab = document.getElementById("lane-tab-" + l);
+    if (!tab) continue;
+    var n = duo ? laneList(l).length : 0;
+    tab.querySelector(".lane-count").textContent = duo ? String(n) : "";
+  }
+};
+// Lanes: Berty alone for levels 1 to 6; Berty and Bizzy on the hand-off level.
+var syncLanes = function () {
+  var duo = isDuo();
+  if (!duo) activeLane = 0;
+  var tabs = document.getElementById("lane-tabs");
+  var lanes = document.getElementById("lanes");
+  var wrap2 = document.getElementById("program-wrap2");
+  if (!tabs) return;
+  tabs.hidden = !duo;
+  wrap2.hidden = !duo;
+  lanes.classList.toggle("is-duo", duo);
+  for (var l = 0; l < 2; l++) {
+    var on = l === activeLane;
+    var tab = document.getElementById("lane-tab-" + l);
+    tab.classList.toggle("is-active", on);
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    document.getElementById(l === 0 ? "program-wrap" : "program-wrap2").classList.toggle("is-active", on);
+  }
+  paintLanes();
+  paintLaneCounts();
+};
+var paintLanes = function () {
+  var duo = isDuo();
+  var rtl = PINCHY.langMeta(lang).rtl;
+  for (var l = 0; l < 2; l++) {
+    var tab = document.getElementById("lane-tab-" + l);
+    if (!tab) continue;
+    tab.querySelector(".lane-name").textContent = laneName(l);
+    tab.lang = lang;
+    tab.dir = rtl ? "rtl" : "ltr";
+  }
+  var tabs = document.getElementById("lane-tabs");
+  if (tabs) tabs.setAttribute("aria-label", PINCHY.uiText(lang, "laneAria"));
+  var t0 = document.getElementById("program-title");
+  var t1 = document.getElementById("program-title2");
+  if (t0) t0.textContent = duo ? laneName(0) : PINCHY.uiText(lang, "Program");
+  if (t1) t1.textContent = laneName(1);
+  var w0 = document.getElementById("program-wrap");
+  var w1 = document.getElementById("program-wrap2");
+  if (w1) w1.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+  if (w0 && duo) w0.setAttribute("aria-label", laneName(0) + ". " + PINCHY.uiText(lang, "programAria"));
+  if (w1 && duo) w1.setAttribute("aria-label", laneName(1) + ". " + PINCHY.uiText(lang, "programAria"));
+  if (w0 && !duo) w0.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+};
+var setLane = function (lane, announce) {
+  if (!isDuo() || lane === activeLane) return;
+  activeLane = lane;
+  syncLanes();
+  if (world) paintGame();
+  if (announce) {
+    var live = document.getElementById("bb-help-live");
+    if (live) live.textContent = PINCHY.uiText(lang, "laneNow").replace("{name}", laneName(lane));
+  }
+};
+var renderLevels = function () {
+  var buttons = document.querySelectorAll("#levels button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
+    var nameEl = buttons[i].querySelector(".name");
+    if (nameEl && PINCHY.uiText) nameEl.textContent = (i + 1) + " " + PINCHY.uiText(lang, PINCHY.LEVELS[i].id);
+    markDraft(buttons[i]);
+  }
+  var levelNow = PINCHY.LEVELS[session.level];
+  document.getElementById("goal").textContent = (isDraftLang()) && PINCHY.uiText(lang, levelNow.id + "-goal") !== levelNow.id + "-goal"
+    ? PINCHY.uiText(lang, levelNow.id + "-goal")
+    : levelNow.goal;
+  var legend = document.getElementById("legend");
+  var legendKey = "legend";
+  if (levelNow.kind === "pile") legendKey = "legendPile";
+  else if (levelNow.kind === "sensor") legendKey = "legendSensor";
+  else if (levelNow.debug) legendKey = "legendDebug";
+  else if (levelNow.duo) legendKey = "legendDuo";
+  legend.textContent = PINCHY.uiText(lang, legendKey);
+  markDraft(legend);
+  var helpEl = document.getElementById("help");
+  var helpText = PINCHY.helpFor(lang, !!levelNow.debug);
+  var helpMeta = PINCHY.langMeta(lang);
+  helpEl.replaceChildren(document.createTextNode(helpText));
+  helpEl.lang = lang;
+  helpEl.dir = helpMeta.rtl ? "rtl" : "ltr";
+  if (helpMeta.blocksDraft && (levelNow.debug ? helpMeta.helpDebug : helpMeta.help)) {
+    helpEl.dataset.draft = "true";
+    var helpDraft = document.createElement("span");
+    helpDraft.className = "sr-only draft-badge";
+    helpDraft.textContent = PINCHY.uiText(lang, "draftBadge");
+    helpEl.appendChild(helpDraft);
+  } else {
+    helpEl.removeAttribute("data-draft");
+  }
+  ["run", "undo", "retry"].forEach(function (actionId) {
+    var actionBtn = document.getElementById(actionId);
+    if (!actionBtn) return;
+    var actionName = actionBtn.querySelector(".name");
+    if (actionName) actionName.textContent = PINCHY.actionLabel(actionId, lang);
+      var oldDraft = actionBtn.querySelector(".draft-badge");
+    if (oldDraft) oldDraft.remove();
+    if (helpMeta.blocksDraft && helpMeta.actions && helpMeta.actions[actionId]) {
+      actionBtn.dataset.draft = "true";
+      actionBtn.lang = lang;
+      actionBtn.dir = helpMeta.rtl ? "rtl" : "ltr";
+      var actionDraft = document.createElement("span");
+      actionDraft.className = "sr-only draft-badge";
+      actionDraft.textContent = PINCHY.uiText(lang, "draftBadge");
+      actionBtn.appendChild(actionDraft);
+    } else {
+      actionBtn.removeAttribute("data-draft");
+      // 1.6.1: a draft language sets lang/dir on the button; drop them so it follows the page again
+      actionBtn.removeAttribute("dir");
+      actionBtn.removeAttribute("lang");
+    }
+  });
+};
+
+var setBusy = function (busy) {
+  var nodes = document.querySelectorAll(".controls button.block, #run, #undo, #levels button");
+  for (var i = 0; i < nodes.length; i++) nodes[i].disabled = busy;
+  document.getElementById("retry").disabled = false;
+};
+
+var JOINT_ROWS = [
+  { key: "Base", glyph: "\u27F3", lo: "base-left", hi: "base-right", loWord: "Left", hiWord: "Right", read: "ro-base", arrows: true },
+  { key: "Shoulder", glyph: "\u2934", lo: "shoulder-down", hi: "shoulder-up", loWord: "Down", hiWord: "Up", read: "ro-shoulder" },
+  { key: "Elbow", glyph: "\u2197", lo: "elbow-down", hi: "elbow-up", loWord: "Down", hiWord: "Up", read: "ro-elbow" },
+  { key: "Wrist", glyph: "\u21BB", lo: "wrist-down", hi: "wrist-up", loWord: "Down", hiWord: "Up", read: "ro-wrist" },
+  { key: "Claw", glyph: "\u270B", lo: "claw-close", hi: "claw-open", loWord: "Close", hiWord: "Open", read: "ro-claw", claw: true }
+];
+var glyphWord = function (side, word) {
+  var rtl = document.documentElement.dir === "rtl";
+  var left = side === "lo";
+  if (left) return rtl ? word + " \u25C0" : "\u25C0 " + word;
+  return rtl ? "\u25B6 " + word : word + " \u25B6";
+};
+var vertWord = function (down, word) {
+  var rtl = document.documentElement.dir === "rtl";
+  if (down) return rtl ? word + " \u25BC" : "\u25BC " + word;
+  return rtl ? "\u25B2 " + word : word + " \u25B2";
+};
+var renderPalette = function () {
+  var jointPad = document.getElementById("joint-pad");
+  var programPad = document.getElementById("program-pad");
+  var ids = PINCHY.blocksFor(PINCHY.LEVELS[session.level]);
+  var allowed = {};
+  var i;
+  for (i = 0; i < ids.length; i++) allowed[ids[i]] = true;
+  jointPad.replaceChildren();
+  programPad.replaceChildren();
+  var focusButtons = [];
+  var addFocus = function (b) {
+    b.addEventListener("focus", function () {
+      var nodes = document.querySelectorAll(".controls button.block");
+      for (var n = 0; n < nodes.length; n++) if (nodes[n] === this) focusIndex = n;
+    });
+    focusButtons.push(b);
+  };
+  for (i = 0; i < JOINT_ROWS.length; i++) {
+    var row = JOINT_ROWS[i];
+    var line = document.createElement("div");
+    line.className = "joint";
+    var name = document.createElement("b");
+    name.textContent = row.glyph + " " + (PINCHY.uiText ? PINCHY.uiText(lang, row.key) : row.key);
+    line.appendChild(name);
+    var makeSide = function (id, word, down) {
+      var label = row.arrows ? glyphWord(down ? "lo" : "hi", PINCHY.uiText ? PINCHY.uiText(lang, word) : word) : vertWord(down, PINCHY.uiText ? PINCHY.uiText(lang, word) : word);
+      if (row.claw) label = (down ? "\u270A " : "\u270B ") + (PINCHY.uiText ? PINCHY.uiText(lang, word) : word);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "block";
+      b.dataset.cmd = id;
+      b.textContent = label;
+      b.disabled = !allowed[id];
+      if (id === "base-left") b.setAttribute("aria-keyshortcuts", "Q");
+      if (id === "base-right") b.setAttribute("aria-keyshortcuts", "E");
+      b.addEventListener("click", function () { if (!this.disabled) addBlock(this.dataset.cmd); });
+      addFocus(b);
+      return b;
+    };
+    line.appendChild(makeSide(row.lo, row.loWord, true));
+    var ro = document.createElement("div");
+    ro.className = "ro";
+    ro.id = row.read;
+    ro.textContent = row.claw
+      ? ((world && world.open) ? PINCHY.uiText(lang, "OPEN") : (world ? PINCHY.uiText(lang, "SHUT") : PINCHY.uiText(lang, "OPEN")))
+      : "000.0\u00b0";
+    line.appendChild(ro);
+    line.appendChild(makeSide(row.hi, row.hiWord, false));
+    jointPad.appendChild(line);
+  }
+  for (i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    if (id.indexOf("repeat") === -1 && id.indexOf("if") === -1 && id !== "end-repeat" && id !== "end-if" && id.indexOf("sync-") !== 0 && id.indexOf("wait-") !== 0) continue;
+    var b = makeButton("block", id, PINCHY.labelFor(id, lang), "");
+    b.dataset.cmd = id;
+    b.addEventListener("click", function () { addBlock(this.dataset.cmd); });
+    addFocus(b);
+    programPad.appendChild(b);
+  }
+  if (focusIndex >= focusButtons.length) focusIndex = 0;
+  var blocks = jointPad.querySelectorAll("button.block");
+  for (i = 0; i < blocks.length; i++) blocks[i].tabIndex = i === focusIndex ? 0 : -1;
+};
+var LAMP_MARK = { ready: "\u25CF ", moving: "\u25B2 ", stopped: "\u25A0 ", crash: "\u25C6 " };
+var LAMP_KEY = { ready: "READY", moving: "MOVING", stopped: "STOPPED", crash: "CRASH" };
+var paintChrome = function () {
+  var nodes = document.querySelectorAll("[data-ui]");
+  var i, el, key;
+  for (i = 0; i < nodes.length; i++) {
+    el = nodes[i];
+    key = el.getAttribute("data-ui");
+    el.textContent = PINCHY.uiText(lang, key);
+    if (isDraftLang()) markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+  var lamps = document.querySelectorAll(".lamp");
+  for (i = 0; i < lamps.length; i++) {
+    el = lamps[i];
+    key = LAMP_KEY[el.dataset.lamp];
+    el.textContent = (LAMP_MARK[el.dataset.lamp] || "") + PINCHY.uiText(lang, key);
+    if (isDraftLang()) markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+  var levelsBtn = document.getElementById("levels-btn");
+  if (levelsBtn) levelsBtn.textContent = "\u2630 " + PINCHY.uiText(lang, "Levels");
+  var programTitle = document.getElementById("program-title");
+  if (programTitle) programTitle.textContent = PINCHY.uiText(lang, "Program");
+  if (isDraftLang()) {
+    markDraft(levelsBtn);
+    markDraft(programTitle);
+  } else {
+    if (levelsBtn) levelsBtn.removeAttribute("data-draft");
+    if (programTitle) programTitle.removeAttribute("data-draft");
+  }
+  var estopBtn = document.getElementById("estop");
+  if (estopBtn) {
+    estopBtn.textContent = PINCHY.uiText(lang, "estop");
+    if (isDraftLang()) markDraft(estopBtn);
+    else estopBtn.removeAttribute("data-draft");
+  }
+  var clearBtnNow = document.getElementById("clear");
+  if (clearBtnNow) {
+    clearBtnNow.textContent = PINCHY.uiText(lang, "clear");
+    if (isDraftLang()) markDraft(clearBtnNow);
+    else clearBtnNow.removeAttribute("data-draft");
+  }
+  var themeBtnNow = document.getElementById("theme-btn");
+  if (themeBtnNow) {
+    var darkNow = document.documentElement.classList.contains("pz-dark");
+    themeBtnNow.textContent = PINCHY.uiText(lang, darkNow ? "themeLight" : "themeDark");
+    if (isDraftLang()) markDraft(themeBtnNow);
+    else themeBtnNow.removeAttribute("data-draft");
+  }
+  var metaNow = PINCHY.langMeta(lang);
+  var gameName = metaNow.gameName || "Berty & Bizzy";
+  var brandName = document.getElementById("brand-name");
+  if (brandName) brandName.textContent = (metaNow.appName || "Berty & Bizzy").toUpperCase();
+  var brandFull = document.getElementById("brand-full");
+  if (brandFull) brandFull.textContent = PINCHY.uiText(lang, "tagline");
+  var heroEl = document.getElementById("hero");
+  if (heroEl) heroEl.textContent = gameName;
+  document.title = gameName;
+  var langNavEl = document.getElementById("langs");
+  if (langNavEl) langNavEl.setAttribute("aria-label", PINCHY.uiText(lang, "langAria"));
+  var padEl = document.getElementById("program-pad");
+  if (padEl) padEl.setAttribute("aria-label", PINCHY.uiText(lang, "padAria"));
+  var i18nNodes = document.querySelectorAll("[data-i18n]");
+  for (i = 0; i < i18nNodes.length; i++) i18nNodes[i].textContent = PINCHY.uiText(lang, i18nNodes[i].getAttribute("data-i18n"));
+  var copyNodes = document.querySelectorAll("[data-k]");
+  for (i = 0; i < copyNodes.length; i++) {
+    el = copyNodes[i];
+    el.textContent = PINCHY.uiText(lang, el.getAttribute("data-k"));
+    if (isDraftLang() && el.id !== "draft-note") markDraft(el);
+    else el.removeAttribute("data-draft");
+  }
+  var newsName = document.querySelector("#whats-btn .name");
+  if (newsName) newsName.textContent = PINCHY.uiText(lang, "whatsTitle");
+  var closeName = document.querySelector("#whats-close .name");
+  if (closeName) closeName.textContent = PINCHY.uiText(lang, "whatsClose");
+  else {
+    var closeBtn = document.getElementById("whats-close");
+    if (closeBtn) closeBtn.textContent = PINCHY.uiText(lang, "whatsClose");
+  }
+  var playName = document.querySelector("#play .name");
+  if (playName) playName.textContent = PINCHY.uiText(lang, "play");
+  var jointPad = document.getElementById("joint-pad");
+  if (jointPad) jointPad.setAttribute("aria-label", PINCHY.uiText(lang, "jointsAria"));
+  var programWrap = document.getElementById("program-wrap");
+  if (programWrap) programWrap.setAttribute("aria-label", PINCHY.uiText(lang, "programAria"));
+  var actionsGroup = document.getElementById("actions");
+  if (actionsGroup) actionsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "actionsAria"));
+  var menuEl = document.getElementById("pz-menu");
+  if (menuEl) menuEl.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
+  var levelsGroup = document.getElementById("levels");
+  if (levelsGroup) levelsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
+  if (typeof bbPaint === "function") bbPaint();
+  if (typeof paintLanes === "function") paintLanes();
+};
+// Saved language: the one shared key, kulibert-prefs-v1 (read and written the same way the top bar does). Pinchy writes nothing else but its theme.
+var readSavedLang = function () {
+  try {
+    var raw = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "null");
+    return raw && typeof raw === "object" ? String(raw.lang || "") : "";
+  } catch (errRead) { return ""; }
+};
+var saveLang = function (code, dir) {
+  var changed = false;
+  try {
+    var cur = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "{}");
+    if (!cur || typeof cur !== "object") cur = {};
+    if (cur.lang !== code) {
+      cur.lang = code;
+      cur.v = 1;
+      localStorage.setItem("kulibert-prefs-v1", JSON.stringify(cur));
+      changed = true;
+    }
+  } catch (errSave) {}
+  if (changed) {
+    try { window.dispatchEvent(new CustomEvent("kulibert-lang", { detail: { lang: code, dir: dir } })); } catch (errEvt) {}
+  }
+};
+// The shared top bar draws "Berty & Bizzy · version" from a fixed attribute. Swap in the table's name for the current language.
+var BAR_NAME = "Berty & Bizzy";
+var patchBarName = function () {
+  var want = PINCHY.langMeta(lang).appName || BAR_NAME;
+  if (want === BAR_NAME) return;
+  var nodes = document.querySelectorAll(".kb-bar .kb-plate, #kb-drawer .kb-drawer-title");
+  for (var n = 0; n < nodes.length; n++) {
+    var t = nodes[n].textContent;
+    if (t.indexOf(BAR_NAME) === 0) nodes[n].textContent = want + t.slice(BAR_NAME.length);
+    var ttl = nodes[n].getAttribute("title");
+    if (ttl && ttl.indexOf(BAR_NAME) === 0) nodes[n].setAttribute("title", want + ttl.slice(BAR_NAME.length));
+  }
+};
+var plateWatch = null;
+var watchBar = function () {
+  if (plateWatch || !window.MutationObserver) return;
+  plateWatch = new MutationObserver(function () { patchBarName(); });
+  plateWatch.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+};
+var applyLang = function (code, fromPrefs) {
+  var meta = PINCHY.langMeta(code);
+  lang = meta.id === code ? code : "en";
+  meta = PINCHY.langMeta(lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = meta.rtl ? "rtl" : "ltr";
+  var note = document.getElementById("draft-note");
+  note.hidden = !meta.draft;
+  var buttons = document.querySelectorAll("#langs button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", buttons[i].dataset.lang === lang ? "true" : "false");
+  }
+  renderPalette();
+  renderProgram(-1, -1);
+  paintChrome();
+  renderRun();
+  updateMetrics();
+  if (document.getElementById("levels").children.length) renderLevels();
+  if (world && typeof paintGame === "function") paintGame();
+  patchBarName();
+  if (!fromPrefs) saveLang(lang, meta.rtl ? "rtl" : "ltr");
+};
+var doSwap = function (index) {
+  if (playing) return;
+  var level = PINCHY.LEVELS[session.level];
+  if (!level || !level.debug) return;
+  var list = session.programs[session.level];
+  if (index < 0 || index >= list.length - 1) return;
+  if (list[index] === list[index + 1]) {
+    fixAt = index;
+    renderProgram(-1, -1);
+    return;
+  }
+  if (!swapHistory[session.level]) swapHistory[session.level] = [];
+  swapHistory[session.level].push(list.slice());
+  session.programs[session.level] = PINCHY.swapSteps(list, index);
+  fixAt = index;
+  renderProgram(-1, -1);
+  var swapped = PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 1 });
+  swapped.note = "Swapped step " + (index + 1) + " with step " + (index + 2) + ". Swaps: " + swapped.swaps + ".";
+  setRun(swapped);
+  updateMetrics();
+};
+var addBlock = function (id) {
+  if (playing) return;
+  if (PINCHY.LEVELS[session.level].debug) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Swap two steps. Arrows pick a step. Enter swaps it with the next." }));
+    return;
+  }
+  var list = isDuo() ? laneList(activeLane) : session.programs[session.level];
+  if (list.length >= 24) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Program is full at 24 blocks." }));
+    return;
+  }
+  list.push(id);
+  renderProgram(-1, -1);
+  updateMetrics();
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+};
+var undo = function () {
+  if (playing) return;
+  var changed = false;
+  if (PINCHY.LEVELS[session.level].debug) {
+    var hist = swapHistory[session.level] || [];
+    if (hist.length) {
+      session.programs[session.level] = hist.pop();
+      changed = true;
+      renderProgram(-1, -1);
+    }
+  } else {
+    var list = isDuo() ? laneList(activeLane) : session.programs[session.level];
+    if (list.length) {
+      list.pop();
+      changed = true;
+      renderProgram(-1, -1);
+    }
+  }
+  var undone = PINCHY.settleRun(session.run[session.level], { type: "undo", delta: changed ? -1 : 0 });
+  undone.note = changed && PINCHY.LEVELS[session.level].debug ? "Swap undone. Swaps: " + undone.swaps + "." : "Undone.";
+  setRun(undone);
+  updateMetrics();
+};
+
+var projector = function (w, h, originX, originY) {
+  var worldW = VIEW.x1 - VIEW.x0;
+  var worldH = VIEW.y1 - VIEW.y0;
+  var s = Math.min(w / worldW, h / worldH);
+  var ox = originX + (w - worldW * s) / 2;
+  var oy = originY + (h - worldH * s) / 2;
+  return {
+    s: s,
+    x: function (wx) { return ox + (wx - VIEW.x0) * s; },
+    y: function (wy) { return oy + (VIEW.y1 - wy) * s; }
+  };
+};
+
+var roundRect = function (c, x, y, w, h, r) {
+  var rr = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  c.beginPath();
+  c.moveTo(x + rr, y);
+  c.arcTo(x + w, y, x + w, y + h, rr);
+  c.arcTo(x + w, y + h, x, y + h, rr);
+  c.arcTo(x, y + h, x, y, rr);
+  c.arcTo(x, y, x + w, y, rr);
+  c.closePath();
+};
+
+var labelQueue = [];
+var artBoxes = [];
+var tag = function (text, wx, wy) {
+  labelQueue.push({ text: text, wx: wx, wy: wy });
+};
+var rectsHit = function (a, b, pad) {
+  var p = pad || 0;
+  return a.x < b.x + b.w + p && a.x + a.w + p > b.x && a.y < b.y + b.h + p && a.y + a.h + p > b.y;
+};
+var markArt = function (sx, sy, pad) {
+  artBoxes.push({ x: sx - pad, y: sy - pad, w: pad * 2, h: pad * 2 });
+};
+var markBone = function (x1, y1, x2, y2, radius) {
+  var n = 8;
+  var i;
+  for (i = 0; i <= n; i++) {
+    var t = i / n;
+    markArt(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, radius);
+  }
+};
+var paintTags = function (ctx, P, bounds) {
+  ctx.font = "600 13px system-ui, sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  var placed = [];
+  var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
+  var i, item, tw, pad, w, h, ax, ay, step, d, x, y, rect, bad, j, found;
+  for (i = 0; i < labelQueue.length; i++) {
+    item = labelQueue[i];
+    tw = ctx.measureText(item.text).width;
+    pad = 4;
+    w = tw + pad * 2;
+    h = 18;
+    ax = P.x(item.wx);
+    ay = P.y(item.wy);
+    found = null;
+    for (step = 0; step <= 160 && !found; step += 16) {
+      var ring = step === 0 ? [[0, 0]] : dirs;
+      for (d = 0; d < ring.length && !found; d++) {
+        x = ax + ring[d][0] * step - w / 2;
+        y = ay + ring[d][1] * step - h / 2;
+        if (x < bounds.x + 2 || y < bounds.y + 2 || x + w > bounds.x + bounds.w - 2 || y + h > bounds.y + bounds.h - 2) continue;
+        rect = { x: x, y: y, w: w, h: h };
+        bad = false;
+        for (j = 0; j < artBoxes.length; j++) if (rectsHit(rect, artBoxes[j], 4)) bad = true;
+        for (j = 0; j < placed.length; j++) if (rectsHit(rect, placed[j], 4)) bad = true;
+        if (!bad) found = rect;
+      }
+    }
+    if (!found) {
+      x = Math.max(bounds.x + 2, Math.min(ax - w / 2, bounds.x + bounds.w - w - 2));
+      y = Math.max(bounds.y + 2, Math.min(ay - h / 2, bounds.y + bounds.h - h - 2));
+      found = { x: x, y: y, w: w, h: h };
+    }
+    placed.push(found);
+    ctx.fillStyle = "#16325C";
+    roundRect(ctx, found.x, found.y, found.w, found.h, 4);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#8EA0BE";
+    ctx.stroke();
+    ctx.fillStyle = "#F3EEE4";
+    ctx.fillText(item.text, found.x + pad, found.y + 13);
+  }
+  labelQueue = [];
+  artBoxes = [];
+};
+
+var strokeBone = function (ctx, P, x1, y1, x2, y2, color, width) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(P.x(x1), P.y(y1));
+  ctx.lineTo(P.x(x2), P.y(y2));
+  ctx.stroke();
+};
+
+var drawArm = function (ctx, P, state, opts) {
+  var layout = PINCHY.LAYOUT;
+  var p = PINCHY.pose(state);
+  var wide = Math.max(18, P.s * 16);
+  if (opts.ghost) {
+    ctx.save();
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#C5CEDA";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(P.x(0), P.y(layout.sy));
+    ctx.lineTo(P.x(p.ex), P.y(p.ey));
+    ctx.lineTo(P.x(p.wx), P.y(p.wy));
+    ctx.lineTo(P.x(p.gx), P.y(p.gy));
+    ctx.stroke();
+    ctx.restore();
+    tag("Mark", p.cx, p.cy);
+    return;
+  }
+  strokeBone(ctx, P, 0, layout.sy, p.ex, p.ey, "#A8AEB6", wide);
+  strokeBone(ctx, P, p.ex, p.ey, p.wx, p.wy, "#8E949C", Math.max(14, P.s * 12));
+  strokeBone(ctx, P, p.wx, p.wy, p.gx, p.gy, "#9AA1A8", Math.max(12, P.s * 10));
+  markBone(P.x(0), P.y(layout.sy), P.x(p.ex), P.y(p.ey), wide / 2 + 6);
+  markBone(P.x(p.ex), P.y(p.ey), P.x(p.wx), P.y(p.wy), Math.max(14, P.s * 12) / 2 + 6);
+  markBone(P.x(p.wx), P.y(p.wy), P.x(p.gx), P.y(p.gy), Math.max(12, P.s * 10) / 2 + 6);
+  var half = p.gap / 2;
+  var thick = 9 / Math.max(P.s, 0.25);
+  ctx.fillStyle = "#22D3EE";
+  for (var sign = -1; sign <= 1; sign += 2) {
+    var x1 = p.gx + p.nx * sign * half;
+    var y1 = p.gy + p.ny * sign * half;
+    var x2 = x1 + p.px * layout.jaw;
+    var y2 = y1 + p.py * layout.jaw;
+    var tx = p.nx * thick;
+    var ty = p.ny * thick;
+    ctx.beginPath();
+    ctx.moveTo(P.x(x1), P.y(y1));
+    ctx.lineTo(P.x(x2), P.y(y2));
+    ctx.lineTo(P.x(x2 + tx), P.y(y2 + ty));
+    ctx.lineTo(P.x(x1 + tx), P.y(y1 + ty));
+    ctx.closePath();
+    ctx.fill();
+  }
+  var joint = function (wx, wy, hot) {
+    ctx.beginPath();
+    ctx.fillStyle = "#3E4650";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(6, P.s * 7), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#D5D8DC";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(2.4, P.s * 2.5), 0, Math.PI * 2);
+    ctx.fill();
+    if (hot) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#F3EEE4";
+      ctx.lineWidth = 2;
+      ctx.arc(P.x(wx), P.y(wy), Math.max(10, P.s * 11), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  };
+  var cmd = opts.cmd || "";
+  joint(0, layout.sy, cmd.indexOf("shoulder") === 0);
+  joint(p.ex, p.ey, cmd.indexOf("elbow") === 0);
+  joint(p.wx, p.wy, cmd.indexOf("wrist") === 0);
+  joint(p.gx, p.gy, cmd.indexOf("claw") === 0);
+  markArt(P.x(p.gx), P.y(p.gy), Math.max(16, P.s * 12));
+  markArt(P.x(p.cx), P.y(p.cy), Math.max(14, P.s * 10));
+  for (sign = -1; sign <= 1; sign += 2) {
+    var jx = p.gx + p.nx * sign * half + p.px * layout.jaw;
+    var jy = p.gy + p.ny * sign * half + p.py * layout.jaw;
+    markArt(P.x(jx), P.y(jy), Math.max(12, P.s * 8));
+    markArt(P.x((p.gx + jx) / 2), P.y((p.gy + jy) / 2), Math.max(10, P.s * 7));
+  }
+  markArt(P.x((p.wx + p.gx) / 2), P.y((p.wy + p.gy) / 2), Math.max(12, P.s * 8));
+  tag("Shoulder " + Math.round(state.shoulder) + "\u00b0", 0, layout.sy);
+  tag("Elbow " + Math.round(state.elbow) + "\u00b0", p.ex, p.ey);
+  tag("Wrist " + Math.round(state.wrist || 0) + "\u00b0", p.wx, p.wy);
+  tag("Claw", p.gx, p.gy);
+};
+
+var drawScene = function (canvas, state, opts) {
+  if (!canvas || !state) return;
+  var w = canvas._cssW;
+  var h = canvas._cssH;
+  var dpr = canvas._dpr || 1;
+  if (!w || !h) return;
+  var ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#06122B";
+  ctx.fillRect(0, 0, w, h);
+  labelQueue = [];
+  artBoxes = [];
+  var showGrid = opts.showGrid !== false;
+  var gridH = 0;
+  if (showGrid) {
+    gridH = Math.max(154, Math.min(168, Math.round(h * 0.42)));
+    if (h < 260) gridH = Math.max(120, h - 96);
+  }
+  var sideH = h - gridH;
+  var P = projector(w, sideH, 0, 0);
+  var layout = PINCHY.LAYOUT;
+  var tableY = P.y(0);
+  ctx.fillStyle = "#10243F";
+  ctx.fillRect(0, tableY, w, Math.max(0, sideH - tableY));
+  ctx.strokeStyle = "#8EA0BE";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, tableY);
+  ctx.lineTo(w, tableY);
+  ctx.stroke();
+  tag("Table", VIEW.x0 + 28, -8);
+
+  var level = opts.level || null;
+  var bins = level ? PINCHY.binsOf(level) : [];
+  for (var bi = 0; bi < bins.length; bi++) {
+    var bin = bins[bi];
+    if (!(level.bins && level.bins.length > 1) && Math.abs(state.base - bin.base) > 7) continue;
+    var xL = P.x(bin.r - bin.half);
+    var xR = P.x(bin.r + bin.half);
+    var y0 = P.y(0);
+    var yH = P.y(bin.h);
+    ctx.strokeStyle = "#C9D2E2";
+    ctx.lineWidth = Math.max(3, P.s * layout.thick * 0.7);
+    ctx.beginPath();
+    ctx.moveTo(xL, yH);
+    ctx.lineTo(xL, y0);
+    ctx.lineTo(xR, y0);
+    ctx.lineTo(xR, yH);
+    ctx.stroke();
+    var binName = bin.id ? "Bin " + bin.id : "Bin";
+    if (bin.mark) binName += " " + bin.mark;
+    tag(binName, bin.r, bin.h);
+  }
+
+  var bx = P.x(-26);
+  var by = P.y(layout.sy);
+  var bw = P.x(26) - bx;
+  var bh = P.y(0) - by;
+  ctx.fillStyle = "#7E868E";
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = "#3E4650";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(bx, by, bw, bh);
+  var dialX = P.x(0);
+  var dialY = P.y(28);
+  var dialR = Math.max(8, P.s * 12);
+  ctx.beginPath();
+  ctx.arc(dialX, dialY, dialR, 0, Math.PI * 2);
+  ctx.stroke();
+  var dial = state.base * Math.PI / 180;
+  ctx.beginPath();
+  ctx.moveTo(dialX, dialY);
+  ctx.lineTo(dialX + Math.sin(dial) * dialR, dialY - Math.cos(dial) * dialR);
+  ctx.stroke();
+  if ((opts.cmd || "").indexOf("base") === 0) {
+    ctx.beginPath();
+    ctx.strokeStyle = "#F3EEE4";
+    ctx.lineWidth = 2;
+    ctx.arc(dialX, dialY, dialR + 4, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  artBoxes.push({ x: bx - 3, y: by - 3, w: bw + 6, h: bh + 6 });
+  artBoxes.push({ x: dialX - dialR - 8, y: dialY - dialR - 8, w: (dialR + 8) * 2, h: (dialR + 8) * 2 });
+  tag("Base " + Math.round(state.base) + "\u00b0", 0, 28);
+
+  if (level && level.kind === "match" && level.target) {
+    drawArm(ctx, P, {
+      base: level.target.base,
+      shoulder: level.target.shoulder,
+      elbow: level.target.elbow,
+      open: true,
+      gap: layout.gapOpen
+    }, { ghost: true });
+  }
+
+  var part = state.part;
+  if (part && !part.inBin && (state.holding || Math.abs(state.base - part.base) <= 7)) {
+    var px = P.x(part.r - part.hw);
+    var py = P.y(part.y + part.hh);
+    var pw = P.x(part.r + part.hw) - px;
+    var ph = P.y(part.y - part.hh) - py;
+    if (part.shape === "circle") {
+      ctx.beginPath();
+      ctx.fillStyle = "#8EA0BE";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(4, Math.abs(pw) / 2), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#F3EEE4";
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.fillStyle = "#06122B";
+      ctx.arc(P.x(part.r), P.y(part.y), Math.max(2, Math.abs(pw) / 5), 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = "#C5CEDA";
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = part.color === "red" ? "#C45A4A" : "#3E4650";
+      ctx.lineWidth = part.shape === "square" ? 3 : 2;
+      ctx.strokeRect(px, py, pw, ph);
+      if (part.shape === "square") {
+        ctx.beginPath();
+        ctx.moveTo(px + 3, py + 3);
+        ctx.lineTo(px + pw - 3, py + ph - 3);
+        ctx.moveTo(px + pw - 3, py + 3);
+        ctx.lineTo(px + 3, py + ph - 3);
+        ctx.stroke();
+      }
+    }
+    var pileN = 1 + ((state.queue || []).length);
+    if (pileN > 1) {
+      ctx.fillStyle = "#8EA0BE";
+      ctx.fillRect(px + 8, py - 8, pw, ph);
+      ctx.strokeStyle = "#3E4650";
+      ctx.strokeRect(px + 8, py - 8, pw, ph);
+      tag("Pile " + pileN, part.r, part.y);
+    } else if (part.shape === "square" && part.color === "red") tag("Red square \u25a0", part.r, part.y);
+    else if (part.shape === "circle" && part.color === "blue") tag("Blue circle \u25cf", part.r, part.y);
+    else tag("Part", part.r, part.y);
+  } else if (part && part.inBin && level && level.bin) {
+    var ix = P.x(part.r - part.hw);
+    var iy = P.y(part.hh * 2);
+    var iw = P.x(part.r + part.hw) - ix;
+    var ih = P.y(0) - iy;
+    ctx.fillStyle = "#C5CEDA";
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.strokeStyle = "#3E4650";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ix, iy, iw, ih);
+    tag("Part", part.r, part.hh);
+  }
+
+  drawArm(ctx, P, state, { cmd: opts.cmd || "" });
+  paintTags(ctx, P, { x: 0, y: 0, w: w, h: Math.max(0, sideH - 6) });
+
+  if (!showGrid) return;
+  var box = { x: 8, y: sideH + 8, w: w - 16, h: gridH - 16 };
+  ctx.fillStyle = "#1A3058";
+  ctx.fillRect(box.x, box.y, box.w, box.h);
+  var cols = PINCHY.COLS;
+  var rows = PINCHY.ROWS;
+  var poseNow = PINCHY.pose(state);
+  var here = level && level.kind === "spot" ? level.spot : "";
+  ctx.font = "600 12px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  var c, r;
+  for (c = 0; c < cols.length; c++) {
+    for (r = 0; r < rows.length; r++) {
+      var cellX = box.x + (c * box.w) / 3;
+      var cellY = box.y + ((2 - r) * box.h) / 3;
+      var cellW = box.w / 3;
+      var cellH = box.h / 3;
+      var name = cols[c][0] + rows[r][0];
+      ctx.fillStyle = "#24386A";
+      ctx.fillRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
+      ctx.lineWidth = name === here ? 3 : 1;
+      ctx.strokeStyle = name === here ? "#22D3EE" : "#B7C4EA";
+      ctx.strokeRect(cellX + 2, cellY + 2, cellW - 4, cellH - 4);
+      ctx.fillStyle = "#F3EEE4";
+      var midX = cellX + cellW / 2;
+      var extra = "";
+      if (part && !part.inBin && PINCHY.spotName(part.base, part.r) === name) extra = "Part";
+      if (level && level.bin && PINCHY.spotName(level.bin.base, level.bin.r) === name) extra = extra ? extra + " / Bin" : "Bin";
+      if (level && level.bins) {
+        for (var bn = 0; bn < level.bins.length; bn++) {
+          var gridBin = level.bins[bn];
+          var colI = 0;
+          var colD = Infinity;
+          var ci;
+          for (ci = 0; ci < cols.length; ci++) {
+            var dist = Math.abs(gridBin.base - cols[ci][1]);
+            if (dist < colD - 0.5 || (Math.abs(dist - colD) <= 0.5 && Math.abs(cols[ci][1]) > Math.abs(cols[colI][1]))) {
+              colI = ci;
+              colD = dist;
+            }
+          }
+          var rowI = 0;
+          var rowD = Infinity;
+          for (ci = 0; ci < rows.length; ci++) {
+            var rd = Math.abs(gridBin.r - rows[ci][1]);
+            if (rd < rowD) { rowI = ci; rowD = rd; }
+          }
+          if (cols[colI][0] + rows[rowI][0] === name) {
+            var gridWord = "Bin " + gridBin.id + (gridBin.mark ? " " + gridBin.mark : "");
+            extra = extra ? extra + " / " + gridWord : gridWord;
+          }
+        }
+      }
+      if (name === here) extra = extra ? extra + " / Go here" : "Go here";
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(cellX + 3, cellY + 3, cellW - 6, cellH - 6);
+      ctx.clip();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (extra && cellH >= 40) {
+        ctx.fillText(name, midX, cellY + cellH * 0.32);
+        ctx.fillText(extra, midX, cellY + cellH * 0.72);
+      } else if (extra) {
+        ctx.fillText(name + " " + extra, midX, cellY + cellH / 2);
+      } else {
+        ctx.fillText(name, midX, cellY + cellH / 2);
+      }
+      ctx.restore();
+    }
+  }
+  var u = Math.max(0.04, Math.min(0.96, (state.base + 45) / 90));
+  var v = Math.max(0.06, Math.min(0.94, (poseNow.cx - 80) / 96));
+  var dotX = box.x + u * box.w;
+  var dotY = box.y + box.h - v * box.h;
+  ctx.fillStyle = "#F3EEE4";
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#3E4650";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+};
+
+var fit = function (canvas) {
+  if (!canvas) return;
+  var rect = canvas.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var cssW = Math.max(1, Math.round(rect.width));
+  var cssH = Math.max(1, Math.round(rect.height));
+  if (canvas._cssW === cssW && canvas._cssH === cssH && canvas._dpr === dpr) return;
+  canvas._cssW = cssW;
+  canvas._cssH = cssH;
+  canvas._dpr = dpr;
+  canvas.width = Math.max(1, Math.round(cssW * dpr));
+  canvas.height = Math.max(1, Math.round(cssH * dpr));
+};
+
+var paintView = function (canvas, state, level, opts) {
+  if (window.PINCHY_VIEW && PINCHY_VIEW.frame(canvas, state, level, opts)) return;
+  fit(canvas);
+  drawScene(canvas, state, opts);
+};
+var paintGame = function () {
+  if (!world) return;
+  var viewArm = (isDuo() && activeLane === 1 && world.bizzy) ? world.bizzy : world;
+  var angleLine = (isDuo() ? laneName(activeLane) + ": " : "") + PINCHY.jointReadout(viewArm, lang);
+  var touchEl = document.getElementById("touch-line");
+  if (PINCHY.LEVELS[session.level].physics) {
+    touchEl.hidden = false;
+    touchEl.textContent = PINCHY.uiText(lang, world.touch ? "touchOn" : "touchOff") + ".";
+  } else {
+    touchEl.hidden = true;
+  }
+  var anglesEl = document.getElementById("angles");
+  anglesEl.textContent = angleLine;
+  if (isDraftLang()) markDraft(anglesEl);
+  else anglesEl.removeAttribute("data-draft");
+  var fmtDeg = function (n) {
+    var neg = n < 0;
+    var fixed = Math.abs(n).toFixed(1).split(".");
+    while (fixed[0].length < 3) fixed[0] = "0" + fixed[0];
+    return (neg ? "-" : "") + fixed[0] + "." + fixed[1] + "\u00b0";
+  };
+  document.getElementById("ro-base").textContent = fmtDeg(viewArm.base);
+  document.getElementById("ro-shoulder").textContent = fmtDeg(viewArm.shoulder);
+  document.getElementById("ro-elbow").textContent = fmtDeg(viewArm.elbow);
+  document.getElementById("ro-wrist").textContent = fmtDeg(viewArm.wrist || 0);
+  var clawEl = document.getElementById("ro-claw");
+  clawEl.textContent = viewArm.open ? PINCHY.uiText(lang, "OPEN") : PINCHY.uiText(lang, "SHUT");
+  clawEl.dataset.long = clawEl.textContent.length > 6 ? "1" : "0";
+  if (isDraftLang()) markDraft(clawEl);
+  else clawEl.removeAttribute("data-draft");
+  paintView(viewCanvas, world, PINCHY.LEVELS[session.level], {
+    level: PINCHY.LEVELS[session.level],
+    cmd: activeCmd,
+    showGrid: true,
+    world: true
+  });
+};
+var drawLevel = function () {
+  if (!viewCanvas || !world) return;
+  viewCanvas._cssW = 0;
+  viewCanvas._glW = 0;
+  paintGame();
+  requestAnimationFrame(function () {
+    if (!viewCanvas || !world) return;
+    viewCanvas._cssW = 0;
+    viewCanvas._glW = 0;
+    paintGame();
+  });
+};
+
+var titleState = function (shoulder) {
+  return {
+    base: 0,
+    shoulder: shoulder,
+    elbow: -40,
+    open: true,
+    gap: PINCHY.LAYOUT.gapOpen,
+    holding: false,
+    part: null
+  };
+};
+var paintTitle = function (shoulder) {
+  paintView(titleCanvas, titleState(shoulder), null, { showGrid: false, level: null, cmd: "", world: false });
+};
+var startWave = function () {
+  var gen = ++waveGen;
+  if (titleCanvas) titleCanvas._glW = 0;
+  if (!titleOn) return;
+  if (reduce) {
+    paintTitle(32);
+    return;
+  }
+  var t0 = performance.now();
+  var frame = function (now) {
+    if (gen !== waveGen || !titleOn) return;
+    paintTitle(32 + Math.sin((now - t0) / 700) * 14);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+};
+
+var blend = function (start, result, f) {
+  if (f >= 1) return PINCHY.cloneState(result.state);
+  var gap1 = result.state.gap == null ? start.gap : result.state.gap;
+  var vis = {
+    base: start.base + (result.state.base - start.base) * f,
+    shoulder: start.shoulder + (result.state.shoulder - start.shoulder) * f,
+    elbow: start.elbow + (result.state.elbow - start.elbow) * f,
+    wrist: (start.wrist || 0) + ((result.state.wrist || 0) - (start.wrist || 0)) * f,
+    gap: start.gap + (gap1 - start.gap) * f,
+    open: false,
+    holding: !!(start.holding || (result.state.holding && f > 0.92)),
+    part: null
+  };
+  vis.open = vis.gap > 22;
+  vis.queue = (result.state.queue || start.queue || []).slice();
+  vis.binned = (result.state.binned || start.binned || []).slice();
+  vis.sorted = result.state.sorted || start.sorted || 0;
+  var source = start.part || (result.state.holding ? result.state.part : null);
+  if (source) {
+    vis.part = {
+      base: source.base, r: source.r, y: source.y, hw: source.hw, hh: source.hh,
+      shape: source.shape || "", color: source.color || "", mark: source.mark || "",
+      inBin: false, dropped: false
+    };
+    if (vis.holding) {
+      var p = PINCHY.pose(vis);
+      vis.part.base = vis.base;
+      vis.part.r = p.cx;
+      vis.part.y = p.cy;
+    }
+  }
+  return vis;
+};
+
+var until = function (ms, token) {
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      if (playing && runT0) updateMetrics();
+      if (now - t0 >= ms) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+var glide = function (ms, token, onFrame) {
+  if (reduce || ms <= 0) {
+    onFrame(1);
+    return until(SNAP_HOLD, token);
+  }
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      var t = Math.min(1, (now - t0) / ms);
+      onFrame(t);
+      if (playing && runT0) updateMetrics();
+      if (t >= 1) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+
+// 1.7.0: the touch level plays back fixed 1/120 s sim frames. The accumulator hands out at most 4 per display frame,
+// and the result time comes from the sim ticks, so 30, 60 and 120 fps give the same run.
+var blendPhys = function (start, ev, fr) {
+  var vis = blend(start, { state: ev.state }, fr[0]);
+  vis.touch = !!fr[4];
+  if (fr[5]) {
+    vis.holding = true;
+    var p = PINCHY.pose(vis);
+    vis.part = { base: vis.base, r: p.cx, y: p.cy, hw: 8, hh: 8, ang: 0, shape: "", color: "", mark: "", inBin: false, dropped: false };
+  } else {
+    vis.holding = false;
+    vis.part = { base: ev.state.part ? ev.state.part.base : 0, r: fr[1], y: fr[2], hw: 8, hh: 8, ang: fr[3], shape: "", color: "", mark: "", inBin: false, dropped: false };
+  }
+  return vis;
+};
+var playFrames = function (ev, start, token) {
+  var frames = ev.frames || [];
+  if (reduce || !frames.length) {
+    world = PINCHY.cloneState(ev.state);
+    paintGame();
+    return until(SNAP_HOLD, token);
+  }
+  return new Promise(function (resolve) {
+    var pace = PINCHY.PHYS.pacer();
+    var played = 0;
+    var last = null;
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      var dt = last == null ? PINCHY.PHYS.STEP : (now - last) / 1000;
+      last = now;
+      var n = pace.steps(dt);
+      if (n) {
+        played = Math.min(frames.length, played + n);
+        physTicks += n;
+        physMs = Math.round(physTicks * PINCHY.PHYS.STEP * 1000);
+        world = blendPhys(start, ev, frames[played - 1]);
+        paintGame();
+      }
+      if (playing && runT0) updateMetrics();
+      if (played >= frames.length) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+
+var finishWin = function (blocks, ms) {
+  var level = PINCHY.LEVELS[session.level];
+  var runNow = session.run[session.level] || {};
+  var attemptSwaps = runNow.scoredSwaps != null ? runNow.scoredSwaps : (runNow.swaps || 0);
+  var score = level.metric === "swaps" ? attemptSwaps : blocks;
+  var earned = PINCHY.starsFor(true, score, ms, level);
+  var blockWord = blocks === 1 ? "1 block" : blocks + " blocks";
+  var note = "Done. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "place") note = "The part is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "match") note = "The shoulder matches the mark. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "spot") note = "The claw is on spot " + level.spot + ". " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "pile") note = "The pile is in the bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "sensor") note = "Each part is in the matching bin. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "handoff") note = "The hand-off worked. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "touch") note = "The cube is stacked. " + blockWord + ", " + formatMs(ms) + ".";
+  if (level.kind === "debug") {
+    var swapWord = attemptSwaps === 1 ? "1 swap" : attemptSwaps + " swaps";
+    note = "The program works. " + swapWord + ", " + formatMs(ms) + ".";
+  }
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "win", n: earned, note: note, swaps: attemptSwaps, steps: blocks }));
+};
+var finishFail = function (msg, step) {
+  var text = "\u2717 " + PINCHY.crashLine(msg, step, lang);
+  setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
+};
+
+var finishFailDuo = function (ev) {
+  var text;
+  if (ev.armHit) {
+    var first = ev.armHit.a === "bizzy" ? ev.indexZ : ev.index;
+    if (first < 0) first = ev.armHit.a === "bizzy" ? ev.index : ev.indexZ;
+    text = "\u2717 " + PINCHY.armHitLine(ev.armHit, first + 1, lang);
+  } else if (ev.bothHold) {
+    var at = (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1;
+    var stepWord = lang === "en" ? " (step " + at + ")" : PINCHY.uiText(lang, "stepSuffix").replace("{n}", String(at));
+    var endMark = lang === "ti" ? "\u1362" : ".";
+    text = "\u2717 " + PINCHY.uiText(lang, "bothHold").replace(/[.\u1362]$/, "") + stepWord + endMark;
+  } else if (ev.miss) {
+    text = "\u2717 " + PINCHY.crashLine(ev.msg, (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1, lang);
+  } else {
+    var step = (ev.who === "bizzy" ? ev.indexZ : ev.index) + 1;
+    var who = PINCHY.duoNameOf(ev.who || "berty", lang);
+    text = "\u2717 " + (lang === "en" ? PINCHY.crashLine(who + "'s " + ev.msg, step, lang) : who + ": " + PINCHY.crashLine(ev.msg, step, lang));
+  }
+  setRun(PINCHY.settleRun(null, { type: "crash", note: text }));
+};
+var duoStopStep = function (who, index) {
+  // the stopped step goes in the lane of the arm that was named; the other lane shows no stop
+  return who === "bizzy" ? [-1, -1, -1, index] : [-1, index, -1, -1];
+};
+var playDuo = async function () {
+  var level = PINCHY.LEVELS[session.level];
+  var cb = laneList(0).slice();
+  var cz = laneList(1).slice();
+  if (!cb.length && !cz.length) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+    return;
+  }
+  var lone = PINCHY.syncCheck(cb, cz);
+  if (lone) {
+    var at = duoStopStep(lone.who, lone.index);
+    renderProgram(at[0], at[1], at[2], at[3]);
+    setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.syncLoneLine(lone, lang) }));
+    return;
+  }
+  var token = ++playback;
+  playing = true;
+  if (typeof bbTipHide === "function") bbTipHide();
+  if (typeof bbCardHide === "function") bbCardHide();
+  estopped = false;
+  setBusy(true);
+  world = PINCHY.initialState(level);
+  runT0 = performance.now();
+  lastMs = null;
+  activeCmd = "";
+  renderProgram(-1, -1, -1, -1);
+  updateMetrics();
+  paintGame();
+  var total = cb.length + cz.length;
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "start", note: "Running.", steps: 0 }));
+  var state = world;
+  var runs = PINCHY.beginDuoRun(cb, cz);
+  var guard = 0;
+  var finishWon = function () {
+    var cycle = PINCHY.cycleSeconds(runs);
+    lastMs = cycle * 1000;
+    playing = false;
+    activeCmd = "";
+    setBusy(false);
+    finishWin(total, lastMs);
+    if (typeof bbCardShow === "function") bbCardShow(level, total, cycle, state.sorted || 0);
+    updateMetrics();
+    paintGame();
+  };
+  while (guard < 900) {
+    guard += 1;
+    if (token !== playback) return;
+    var ev = PINCHY.duoAdvance(runs, state, level);
+    if (ev.done && ev.ok) break;
+    if (ev.done) {
+      playing = false;
+      setBusy(false);
+      lastMs = performance.now() - runT0;
+      if (ev.stuck) {
+        var st = duoStopStep(ev.stuck.who, ev.stuck.index);
+        renderProgram(st[0], st[1], st[2], st[3]);
+        setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.syncStuckLine(ev.stuck, lang) }));
+      } else {
+        renderProgram(-1, -1, -1, -1);
+        setRun(PINCHY.settleRun(null, { type: "crash", note: "✗ " + PINCHY.crashLine(ev.msg, ev.index + 1, lang) }));
+      }
+      updateMetrics();
+      paintGame();
+      return;
+    }
+    if (ev.release) {
+      // both arms are at the same Sync: highlight both for a moment, then let them go (no time of its own)
+      renderProgram(ev.index, -1, ev.indexZ, -1);
+      var rel = await until(reduce ? SNAP_HOLD : 220, token);
+      if (!rel || token !== playback) return;
+      continue;
+    }
+    activeCmd = ev.cmd || ev.cmdZ;
+    renderProgram(ev.index, -1, ev.indexZ, -1, ev.waitB, ev.waitZ);
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: ev.beat, note: "Running step " + ev.beat + "." }));
+    if (!reduce) {
+      var alive = await glide(STEP_MS, token, function (u) {
+        world = PINCHY.duoView(state, ev.state, u);
+        paintGame();
+      });
+      if (!alive || token !== playback) return;
+    } else {
+      world = PINCHY.cloneState(ev.state);
+      paintGame();
+      var held = await until(SNAP_HOLD, token);
+      if (!held || token !== playback) return;
+    }
+    state = ev.state;
+    world = PINCHY.cloneState(state);
+    activeCmd = "";
+    paintGame();
+    if (!ev.ok || ev.win || PINCHY.goalMet(state, level)) {
+      if (ev.ok) {
+        renderProgram(ev.index, -1, ev.indexZ, -1);
+        finishWon();
+      } else {
+        lastMs = performance.now() - runT0;
+        playing = false;
+        setBusy(false);
+        renderProgram(-1, ev.index, -1, ev.indexZ);
+        finishFailDuo(ev);
+        updateMetrics();
+        paintGame();
+      }
+      return;
+    }
+  }
+  if (token !== playback) return;
+  lastMs = performance.now() - runT0;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+  renderProgram(-1, -1, -1, -1);
+  if (PINCHY.goalMet(state, level)) { finishWon(); return; }
+  setRun(PINCHY.settleRun(null, { type: "fail", note: PINCHY.endReason(state, level) }));
+  updateMetrics();
+  paintGame();
+};
+
+var play = async function () {
+  if (playing || document.getElementById("game").hidden) return;
+  if (PINCHY.LEVELS[session.level].duo) return playDuo();
+  var commands = session.programs[session.level].slice();
+  if (!commands.length) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+    return;
+  }
+  var token = ++playback;
+  playing = true;
+  if (typeof bbTipHide === "function") bbTipHide();
+  estopped = false;
+  setBusy(true);
+  var level = PINCHY.LEVELS[session.level];
+  world = PINCHY.initialState(level);
+  runT0 = performance.now();
+  lastMs = null;
+  activeCmd = "";
+  renderProgram(-1, -1);
+  updateMetrics();
+  paintGame();
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "start", note: "Running.", steps: 0 }));
+  var state = world;
+  var startHit = PINCHY.collide(state, level);
+  if (startHit) {
+    playing = false;
+    setBusy(false);
+    lastMs = performance.now() - runT0;
+    finishFail(startHit, 0);
+    updateMetrics();
+    return;
+  }
+  var run = PINCHY.beginRun(commands);
+  var guard = 0;
+  physMs = 0;
+  physTicks = 0;
+  while (guard < 500) {
+    guard += 1;
+    if (token !== playback) return;
+    var ev = PINCHY.advance(run, state, level);
+    if (ev.done && !ev.cmd) break;
+    var stepNo = ev.index + 1;
+    activeCmd = ev.cmd;
+    renderProgram(ev.index, -1);
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "start", steps: stepNo, note: "Running step " + stepNo + " of " + commands.length + ": " + labelOf(ev.cmd) + "." }));
+    var moved = ev.t > 0 && !ev.structural;
+    if (level.physics && ev.frames && !ev.structural) {
+      var okp = await playFrames(ev, state, token);
+      if (!okp || token !== playback) return;
+      if (reduce) { physTicks += ev.frames.length; physMs = Math.round(physTicks * PINCHY.PHYS.STEP * 1000); }
+    } else if (moved && !reduce) {
+      var alive = await glide(Math.max(180, STEP_MS * ev.t), token, function (u) {
+        world = blend(state, { state: ev.state }, u);
+        paintGame();
+      });
+      if (!alive || token !== playback) return;
+    } else {
+      world = PINCHY.cloneState(ev.state);
+      paintGame();
+      var hold = ev.structural ? (reduce ? SNAP_HOLD : 180) : (reduce ? SNAP_HOLD : 0);
+      var held = await until(hold, token);
+      if (!held || token !== playback) return;
+    }
+    state = ev.state;
+    world = PINCHY.cloneState(state);
+    activeCmd = "";
+    paintGame();
+    if (!ev.ok || ev.win || (!ev.structural && PINCHY.goalMet(state, level))) {
+      lastMs = level.physics ? PINCHY.simMsOf(state) : performance.now() - runT0;
+      playing = false;
+      setBusy(false);
+      if (ev.ok && (ev.win || PINCHY.goalMet(state, level))) {
+        renderProgram(ev.index, -1);
+        finishWin(commands.length, lastMs);
+      } else {
+        renderProgram(-1, ev.failStep ? ev.failStep - 1 : ev.index);
+        finishFail(ev.msg, ev.failStep || stepNo);
+      }
+      updateMetrics();
+      paintGame();
+      return;
+    }
+  }
+  if (token !== playback) return;
+  lastMs = level.physics ? PINCHY.simMsOf(state) : performance.now() - runT0;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+  renderProgram(-1, -1);
+  var why = PINCHY.endReason(state, level);
+  if (PINCHY.goalMet(state, level)) finishWin(commands.length, lastMs);
+  else setRun(PINCHY.settleRun(null, { type: "fail", note: why }));
+  updateMetrics();
+  paintGame();
+};
+
+var stopPlay = function () {
+  playback += 1;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+};
+var estop = function () {
+  stopPlay();
+  estopped = true;
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Stopped." }));
+  renderProgram(-1, -1);
+  paintGame();
+};
+var clearProgram = function () {
+  if (playing) stopPlay();
+  estopped = false;
+  session.programs[session.level] = [];
+  if (isDuo()) session.programs2[session.level] = [];
+  renderProgram(-1, -1);
+  setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Add a block, then press Run." }));
+  updateMetrics();
+  paintGame();
+};
+var retry = function () {
+  var kept = session.programs[session.level].slice();
+  var kept2 = isDuo() ? laneList(1).slice() : null;
+  estopped = false;
+  stopPlay();
+  session.programs[session.level] = kept;
+  if (kept2) session.programs2[session.level] = kept2;
+  world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
+  lastMs = null;
+  runT0 = 0;
+  setRun(PINCHY.settleRun(null, { type: "retry" }));
+  renderProgram(-1, -1);
+  updateMetrics();
+  paintGame();
+};
+var selectLevel = function (index) {
+  if (index === session.level && !playing) return;
+  stopPlay();
+  session.level = index;
+  activeLane = 0;
+  // every hand-off level starts with two empty lanes
+  if (PINCHY.LEVELS[index].duo) { session.programs[index] = []; session.programs2[index] = []; }
+  estopped = false;
+  world = PINCHY.initialState(PINCHY.LEVELS[index]);
+  lastMs = null;
+  runT0 = 0;
+  focusIndex = 0;
+  fixAt = 0;
+  renderPalette();
+  renderLevels();
+  syncLanes();
+  renderProgram(-1, -1);
+  updateMetrics();
+  session.run[index] = PINCHY.settleRun(null, { type: "level" });
+  renderRun();
+  drawLevel();
+};
+
+var makeButton = function (className, icon, label, keyText) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = className;
+  b.innerHTML = ICONS[icon] || "";
+  var name = document.createElement("span");
+  name.className = "name";
+  name.textContent = label;
+  b.appendChild(name);
+  if (keyText) {
+    var k = document.createElement("kbd");
+    k.textContent = keyText;
+    b.appendChild(k);
+  }
+  return b;
+};
+
+var showGame = function () {
+  titleOn = false;
+  waveGen += 1;
+  document.getElementById("title-screen").hidden = true;
+  document.getElementById("game").hidden = false;
+  world = PINCHY.initialState(PINCHY.LEVELS[session.level]);
+  if (viewCanvas) viewCanvas._glW = 0;
+  renderLevels();
+  syncLanes();
+  renderProgram(-1, -1);
+  updateMetrics();
+  renderRun();
+  drawLevel();
+  var first = document.querySelector(".controls button.block");
+  if (first && first.focus) first.focus({ preventScroll: true });
+  if (typeof bbTipsStart === "function") bbTipsStart();
+};
+
+
+// ---- Berty & Bizzy 1.4.0: wave intro, anchored tips, Help ----
+var BB_TIPS = [
+  { id: "run", key: "tip1", anchor: "run", host: "actions" },
+  { id: "joint", key: "tip2", anchor: "joint-pad", host: "joint-pad" }
+];
+var bbStore = function (kind) {
+  try { return kind === "session" ? window.sessionStorage : window.localStorage; } catch (errStore) { return null; }
+};
+var bbTipsOff = function () {
+  var s = bbStore("local");
+  try {
+    var v = JSON.parse((s && s.getItem("bb-tips-off")) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch (errOff) { return []; }
+};
+var bbTipsClosed = {};
+var bbTipNow = null;
+// The tip sits in the page flow, right under the thing it is about, so it takes its own space and covers nothing.
+// On a short sideways screen (three columns) both tips dock under Run in the program column.
+var bbTipSideways = function () {
+  return !!(window.matchMedia && window.matchMedia("(max-height: 520px) and (min-width: 760px)").matches);
+};
+var bbTipAnchor = function () {
+  var tip = document.getElementById("bb-tip");
+  if (!bbTipNow || tip.hidden) return;
+  var target = document.getElementById(bbTipNow.anchor);
+  if (!target || !target.offsetParent) { tip.hidden = true; return; }
+  var host = document.getElementById(bbTipSideways() ? "actions" : (bbTipNow.host || bbTipNow.anchor));
+  if (host && tip.previousElementSibling !== host) host.after(tip);
+  var t = target.getBoundingClientRect();
+  var r = tip.getBoundingClientRect();
+  var below = t.bottom <= r.top + 2;
+  var nub = t.left + t.width / 2 - r.left - 9;
+  tip.classList.toggle("is-docked", bbTipSideways());
+  tip.style.setProperty("--bb-nub", Math.max(12, Math.min(r.width - 36, nub)) + "px");
+  tip.classList.toggle("is-above", false);
+  tip.classList.toggle("no-nub", !below || bbTipSideways());
+};
+var bbTipPaintText = function () {
+  if (!bbTipNow) return;
+  document.getElementById("bb-tip-text").textContent = PINCHY.uiText(lang, bbTipNow.key);
+  var off = document.getElementById("bb-tip-off");
+  off.textContent = PINCHY.uiText(lang, "tipOff");
+  var close = document.getElementById("bb-tip-close");
+  close.setAttribute("aria-label", PINCHY.uiText(lang, "tipClose"));
+  var tip = document.getElementById("bb-tip");
+  tip.lang = lang;
+  tip.dir = PINCHY.langMeta(lang).rtl ? "rtl" : "ltr";
+};
+var bbTipHide = function () {
+  var tip = document.getElementById("bb-tip");
+  if (tip) tip.hidden = true;
+};
+var bbTipNext = function () {
+  var intro = document.getElementById("bb-intro");
+  var help = document.getElementById("bb-help");
+  if ((intro && !intro.hidden) || (help && !help.hidden)) return;
+  if (document.getElementById("game").hidden || playing) { bbTipHide(); return; }
+  var off = bbTipsOff();
+  bbTipNow = null;
+  for (var i = 0; i < BB_TIPS.length; i++) {
+    if (off.indexOf(BB_TIPS[i].id) < 0 && !bbTipsClosed[BB_TIPS[i].id]) { bbTipNow = BB_TIPS[i]; break; }
+  }
+  var tip = document.getElementById("bb-tip");
+  if (!bbTipNow) { tip.hidden = true; return; }
+  bbTipPaintText();
+  tip.dataset.anchor = bbTipNow.anchor;
+  tip.hidden = false;
+  bbTipAnchor();
+  var tr = tip.getBoundingClientRect();
+  if (tr.top < 0 || tr.bottom > window.innerHeight) tip.scrollIntoView({ block: "nearest", inline: "nearest" });
+};
+var bbTipsStart = function () { bbTipNext(); };
+var bbTipsReset = function () {
+  var s = bbStore("local");
+  try { if (s) s.removeItem("bb-tips-off"); } catch (errReset) {}
+  bbTipsClosed = {};
+};
+// The shared top bar is fixed above the page; Help starts right under it so its title and Close are never covered.
+var bbBarGap = function () {
+  var bar = document.querySelector(".kb-bar");
+  var bottom = bar ? Math.ceil(bar.getBoundingClientRect().bottom) : 0;
+  document.documentElement.style.setProperty("--bb-bar", Math.max(bottom, 0) + "px");
+};
+var bbHelpOpen = function () {
+  var box = document.getElementById("bb-help");
+  bbBarGap();
+  box.hidden = false;
+  document.getElementById("help-btn").setAttribute("aria-expanded", "true");
+  bbTipHide();
+  bbPaint();
+  document.getElementById("bb-help-close").focus();
+};
+var bbHelpClose = function () {
+  var box = document.getElementById("bb-help");
+  if (box.hidden) return;
+  box.hidden = true;
+  var btn = document.getElementById("help-btn");
+  btn.setAttribute("aria-expanded", "false");
+  btn.focus();
+  bbTipNext();
+};
+var bbIntroDone = true;
+var bbIntroTimer = 0;
+var bbIntroEnd = function () {
+  if (bbIntroDone) return;
+  bbIntroDone = true;
+  clearTimeout(bbIntroTimer);
+  var intro = document.getElementById("bb-intro");
+  intro.hidden = true;
+  bbTipNext();
+};
+var bbIntroStart = function () {
+  var seen = false;
+  var ss = bbStore("session");
+  try { seen = !!(ss && ss.getItem("bb-intro-seen") === "1"); } catch (errSeen) {}
+  if (seen) return;
+  try { if (ss) ss.setItem("bb-intro-seen", "1"); } catch (errMark) {}
+  var intro = document.getElementById("bb-intro");
+  var still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  intro.classList.toggle("is-still", still);
+  var fores = [["bb-berty-fore", "72 88", -1], ["bb-bizzy-fore", "248 88", 1]];
+  fores.forEach(function (f) {
+    var g = document.getElementById(f[0]);
+    while (g.querySelector("animateTransform")) g.removeChild(g.querySelector("animateTransform"));
+    g.setAttribute("transform", "rotate(" + (still ? f[2] * 14 : 0) + " " + f[1] + ")");
+    if (!still) {
+      var a = document.createElementNS(g.namespaceURI, "animateTransform");
+      a.setAttribute("attributeName", "transform");
+      a.setAttribute("type", "rotate");
+      a.setAttribute("dur", "1.3s");
+      a.setAttribute("fill", "freeze");
+      a.setAttribute("values", [0, f[2] * 22, f[2] * -8, f[2] * 22, f[2] * -8, 0].map(function (d) { return d + " " + f[1]; }).join(";"));
+      g.appendChild(a);
+    }
+  });
+  bbIntroDone = false;
+  bbPaint();
+  intro.hidden = false;
+  // Start the clock when the first frame is drawn, so a slow first paint does not eat the greeting.
+  var armTimer = function () { clearTimeout(bbIntroTimer); bbIntroTimer = setTimeout(bbIntroEnd, still ? 500 : 1700); };
+  if (window.requestAnimationFrame) window.requestAnimationFrame(function () { window.requestAnimationFrame(armTimer); });
+  else armTimer();
+  bbIntroTimer = setTimeout(bbIntroEnd, 6000);
+};
+
+// ---- Result card and personal best (this device only) ----
+var BB_BEST_KEY = "bb-best-v1";
+var bbBestAll = function () {
+  var s = bbStore("local");
+  try {
+    var v = JSON.parse((s && s.getItem(BB_BEST_KEY)) || "{}");
+    return v && typeof v === "object" ? v : {};
+  } catch (errBest) { return {}; }
+};
+var bbBestSave = function (id, entry) {
+  var s = bbStore("local");
+  var all = bbBestAll();
+  all[id] = entry;
+  try { if (s) s.setItem(BB_BEST_KEY, JSON.stringify(all)); } catch (errSaveBest) {}
+};
+var bbCardState = null;
+var bbCardHide = function () {
+  var card = document.getElementById("bb-card");
+  if (card && !card.hidden) card.hidden = true;
+};
+var bbCardPaint = function () {
+  var c = bbCardState;
+  var t = function (k) { return PINCHY.uiText(lang, k); };
+  var box = document.getElementById("bb-card");
+  if (!box) return;
+  box.lang = lang;
+  box.dir = PINCHY.langMeta(lang).rtl ? "rtl" : "ltr";
+  document.getElementById("bb-card-l-cycle").textContent = t("cardCycle");
+  document.getElementById("bb-card-l-blocks").textContent = t("cardBlocks");
+  document.getElementById("bb-card-l-parts").textContent = t("cardParts");
+  document.getElementById("bb-card-l-best").textContent = t("cardBest");
+  document.getElementById("bb-card-try").textContent = t("cardTry");
+  document.getElementById("bb-card-next").textContent = t("cardNext");
+  document.getElementById("bb-card-close").textContent = t("cardClose");
+  box.setAttribute("aria-label", t("cardAria"));
+  if (!c) return;
+  document.getElementById("bb-card-head").textContent = t("cardDone") + " " + t(c.id);
+  var badge = document.getElementById("bb-card-new");
+  badge.textContent = t("cardNew");
+  badge.hidden = !c.isNew;
+  document.getElementById("bb-card-cycle").textContent = c.cycle.toFixed(1) + " s";
+  document.getElementById("bb-card-blocks").textContent = String(c.blocks);
+  document.getElementById("bb-card-parts").textContent = String(c.parts);
+  document.getElementById("bb-card-best").textContent = c.best.time.toFixed(1) + " s · " + c.best.blocks;
+};
+var bbCardShow = function (level, blocks, cycle, parts) {
+  var index = PINCHY.LEVELS.indexOf(level);
+  var all = bbBestAll();
+  var prev = all[level.id];
+  var better = !prev || cycle < prev.time || (cycle === prev.time && blocks < prev.blocks);
+  var best = better ? { time: cycle, blocks: blocks } : prev;
+  if (better) bbBestSave(level.id, best);
+  bbCardState = { id: level.id, index: index, cycle: cycle, blocks: blocks, parts: parts, isNew: better, best: best };
+  bbCardPaint();
+  var next = document.getElementById("bb-card-next");
+  next.hidden = index + 1 >= PINCHY.LEVELS.length;
+  document.getElementById("bb-card").hidden = false;
+  (next.hidden ? document.getElementById("bb-card-try") : next).focus();
+};
+var bbCardWire = function () {
+  var back = function () { bbCardHide(); var run = document.getElementById("run"); if (run) run.focus(); };
+  document.getElementById("bb-card-close").addEventListener("click", back);
+  document.getElementById("bb-card-try").addEventListener("click", function () { bbCardHide(); retry(); var run = document.getElementById("run"); if (run) run.focus(); });
+  document.getElementById("bb-card-next").addEventListener("click", function () {
+    bbCardHide();
+    if (bbCardState && bbCardState.index + 1 < PINCHY.LEVELS.length) selectLevel(bbCardState.index + 1);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("bb-card").hidden) { e.preventDefault(); e.stopPropagation(); back(); }
+  }, true);
+};
+var bbPaint = function () {
+  var t = function (k) { return PINCHY.uiText(lang, k); };
+  var rtl = PINCHY.langMeta(lang).rtl;
+  var helpBtn = document.getElementById("help-btn");
+  if (helpBtn) helpBtn.setAttribute("aria-label", t("helpBtn"));
+  var intro = document.getElementById("bb-intro");
+  if (intro) {
+    intro.lang = lang;
+    intro.dir = rtl ? "rtl" : "ltr";
+    document.getElementById("bb-intro-text").textContent = t("hi");
+    document.getElementById("bb-intro-skip").textContent = t("skipHint");
+  }
+  var set = function (id, key) { var el = document.getElementById(id); if (el) el.textContent = t(key); };
+  set("bb-help-title", "helpTitle");
+  set("bb-help-blocks-h", "helpBlocksH");
+  set("bb-help-controls-h", "helpControlsH");
+  set("bb-help-fail-h", "helpFailH");
+  set("bb-help-reset", "resetTips");
+  set("bb-help-close", "helpClose");
+  var fill = function (id, keys) {
+    var ul = document.getElementById(id);
+    if (!ul) return;
+    ul.replaceChildren();
+    keys.forEach(function (k) { var li = document.createElement("li"); li.textContent = t(k); ul.appendChild(li); });
+  };
+  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "hb8", "hb9", "hb10"]);
+  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4", "hf5", "hf6", "hf7"]);
+  if (typeof bbCardPaint === "function") bbCardPaint();
+  var level = PINCHY.LEVELS[session.level];
+  var ctl = document.getElementById("bb-help-controls");
+  if (ctl) ctl.textContent = PINCHY.helpFor(lang, !!(level && level.debug));
+  var help = document.getElementById("bb-help");
+  if (help) { help.lang = lang; help.dir = rtl ? "rtl" : "ltr"; }
+  bbTipPaintText();
+  bbTipAnchor();
+};
+var bbInit = function () {
+  var intro = document.getElementById("bb-intro");
+  var skip = function () { bbIntroEnd(); };
+  intro.addEventListener("pointerdown", function (e) { e.preventDefault(); skip(); });
+  intro.addEventListener("click", skip);
+  document.addEventListener("keydown", function (e) {
+    if (bbIntroDone) return;
+    var chord = e.ctrlKey || e.metaKey || e.altKey;
+    if (!chord && e.key !== "Tab" && e.key !== "Shift") { e.preventDefault(); e.stopPropagation(); }
+    skip();
+  }, true);
+  document.getElementById("bb-tip-close").addEventListener("click", function () {
+    if (bbTipNow) bbTipsClosed[bbTipNow.id] = true;
+    bbTipNext();
+  });
+  document.getElementById("bb-tip-off").addEventListener("click", function () {
+    if (!bbTipNow) return;
+    var list = bbTipsOff();
+    if (list.indexOf(bbTipNow.id) < 0) list.push(bbTipNow.id);
+    var s = bbStore("local");
+    try { if (s) s.setItem("bb-tips-off", JSON.stringify(list)); } catch (errOffSave) {}
+    bbTipNext();
+  });
+  document.getElementById("help-btn").addEventListener("click", function () {
+    if (document.getElementById("bb-help").hidden) bbHelpOpen(); else bbHelpClose();
+  });
+  document.getElementById("bb-help-close").addEventListener("click", bbHelpClose);
+  document.getElementById("bb-help-reset").addEventListener("click", function () {
+    bbTipsReset();
+    document.getElementById("bb-help-live").textContent = PINCHY.uiText(lang, "tipsBack");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("bb-help").hidden) { e.preventDefault(); e.stopPropagation(); bbHelpClose(); }
+  }, true);
+  window.addEventListener("resize", function () { bbTipAnchor(); bbBarGap(); });
+  bbCardWire();
+  bbIntroStart();
+};
+
+var boot = function () {
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.0") return;
+  while (session.programs.length < PINCHY.LEVELS.length) {
+    session.programs.push([]);
+    session.programs2.push([]);
+    session.run.push(PINCHY.settleRun(null, { type: "level" }));
+    swapHistory.push([]);
+  }
+  for (var seed = 0; seed < PINCHY.LEVELS.length; seed++) {
+    if (PINCHY.LEVELS[seed].broken && !session.programs[seed].length) {
+      session.programs[seed] = PINCHY.LEVELS[seed].broken.slice();
+    }
+  }
+  document.getElementById("app-version").textContent = "v" + PINCHY.APP_VERSION;
+  var themeBtn = document.getElementById("theme-btn");
+  var applyTheme = function (theme) {
+    var dark = theme === "dark";
+    document.documentElement.classList.toggle("pz-dark", dark);
+    document.body.classList.toggle("pz-dark", dark);
+    document.body.classList.toggle("pz-light", !dark);
+    if (dark) document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("pinchy-theme", dark ? "dark" : "light"); } catch (err) {}
+    themeBtn.textContent = PINCHY.uiText(lang, dark ? "themeLight" : "themeDark");
+    themeBtn.setAttribute("aria-pressed", dark ? "true" : "false");
+    if (viewCanvas) viewCanvas._glW = 0;
+    if (titleCanvas) titleCanvas._glW = 0;
+    if (world) paintGame();
+    else if (titleOn) paintTitle(32);
+  };
+  themeBtn.addEventListener("click", function () {
+    applyTheme(document.documentElement.classList.contains("pz-dark") ? "light" : "dark");
+  });
+  viewCanvas = document.getElementById("view");
+  titleCanvas = document.getElementById("title-arm");
+  applyTheme(document.documentElement.classList.contains("pz-dark") ? "dark" : "light");
+  var placeChrome = function () {
+    var narrow = window.matchMedia("(max-width: 600px), (max-height: 520px)").matches;
+    var slot = document.getElementById(narrow ? "chrome-narrow" : "chrome-slot");
+    if (!slot) return;
+    if (themeBtn.parentNode !== slot) slot.appendChild(themeBtn);
+    var langNav = document.getElementById("langs");
+    if (langNav && langNav.parentNode !== slot) slot.appendChild(langNav);
+  };
+  placeChrome();
+  var levelsBtn = document.getElementById("levels-btn");
+  var menu = document.getElementById("pz-menu");
+  levelsBtn.addEventListener("click", function () {
+    var open = !menu.classList.contains("is-open");
+    menu.classList.toggle("is-open", open);
+    levelsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  levelsBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    levelsBtn.click();
+  });
+  document.getElementById("kb-menu").addEventListener("click", function () {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "kb-menu" }, "*");
+        return;
+      }
+    } catch (err) {}
+    window.location.href = "/";
+  });
+  document.getElementById("estop").addEventListener("click", estop);
+  document.getElementById("estop").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    estop();
+  });
+  var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  reduce = !!(mq && mq.matches);
+  var onMotion = function () {
+    reduce = !!(mq && mq.matches);
+    if (titleOn) startWave();
+  };
+  if (mq && mq.addEventListener) mq.addEventListener("change", onMotion);
+  else if (mq && mq.addListener) mq.addListener(onMotion);
+
+  var news = document.getElementById("whats-new");
+  var newsBtn = document.getElementById("whats-btn");
+  newsBtn.innerHTML = ICONS.note + '<span class="name">What\'s new</span>';
+  document.getElementById("play").innerHTML = ICONS.run + '<span class="name">Play</span>';
+  document.getElementById("whats-close").innerHTML = '<span class="name">Close</span>';
+  var toggleNews = function (open) {
+    news.hidden = !open;
+    newsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  newsBtn.addEventListener("click", function () { toggleNews(news.hidden); });
+  document.getElementById("whats-close").addEventListener("click", function () {
+    toggleNews(false);
+    newsBtn.focus();
+  });
+
+  var nav = document.getElementById("levels");
+  PINCHY.LEVELS.forEach(function (level, index) {
+    var b = makeButton("level", LEVEL_ICON[level.id] || "spot", (index + 1) + " " + (PINCHY.uiText ? PINCHY.uiText(lang, level.id) : level.name), "");
+    b.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+    b.addEventListener("click", function () { selectLevel(index); });
+    nav.appendChild(b);
+  });
+
+  renderPalette();
+
+  var actions = document.getElementById("actions");
+  var runBtn = makeButton("action", "run", "Run", "R");
+  runBtn.id = "run";
+  runBtn.setAttribute("aria-keyshortcuts", "R");
+  runBtn.addEventListener("click", function () { play(); });
+  var undoBtn = makeButton("action", "undo", "Undo", "Z");
+  undoBtn.id = "undo";
+  undoBtn.setAttribute("aria-keyshortcuts", "Z");
+  undoBtn.addEventListener("click", function () { undo(); });
+  var retryBtn = makeButton("action", "retry", "Reset", "");
+  retryBtn.id = "retry";
+  retryBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    retry();
+  });
+  retryBtn.addEventListener("click", function () { retry(); });
+  actions.appendChild(runBtn);
+  actions.appendChild(undoBtn);
+  var clearBtn = document.createElement("button");
+  clearBtn.type = "button";
+  clearBtn.className = "action";
+  clearBtn.id = "clear";
+  clearBtn.textContent = PINCHY.uiText(lang, "clear");
+  clearBtn.addEventListener("click", clearProgram);
+  clearBtn.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    clearProgram();
+  });
+  actions.appendChild(clearBtn);
+  document.getElementById("reset-slot").appendChild(retryBtn);
+  retryBtn.querySelector(".name").textContent = "\u21BA Reset";
+
+  document.getElementById("play").addEventListener("click", showGame);
+  [0, 1].forEach(function (l) {
+    var tab = document.getElementById("lane-tab-" + l);
+    tab.addEventListener("click", function () { setLane(l, true); });
+    tab.addEventListener("focus", function () { setLane(l, true); });
+    tab.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      e.stopPropagation();
+      var other = document.getElementById("lane-tab-" + (l === 0 ? 1 : 0));
+      if (other && !other.closest("[hidden]")) other.focus();
+    });
+  });
+
+  var langNav = document.getElementById("langs");
+  PINCHY.LANGS.forEach(function (item) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lang";
+    b.dataset.lang = item.id;
+    b.lang = item.id;
+    b.dir = item.rtl ? "rtl" : "ltr";
+    b.textContent = item.name;
+    b.setAttribute("aria-pressed", item.id === "en" ? "true" : "false");
+    var draftNote = item.draft ? ". " + PINCHY.uiText(item.id, "draftBadge") : "";
+    b.setAttribute("aria-label", item.name + draftNote);
+    if (item.draft) b.dataset.draft = "true";
+    b.addEventListener("click", function () { applyLang(item.id); });
+    langNav.appendChild(b);
+  });
+  var startLang = "en";
+  var knownLang = function (c) { return !!c && PINCHY.langMeta(c).id === c; };
+  try {
+    var asked = new URLSearchParams(window.location.search).get("lang");
+    var saved = readSavedLang();
+    if (knownLang(asked)) startLang = asked;
+    else if (knownLang(saved)) startLang = saved;
+    else if (knownLang(document.documentElement.getAttribute("lang"))) startLang = document.documentElement.getAttribute("lang");
+  } catch (err) {}
+  watchBar();
+  applyLang(startLang);
+  bbInit();
+  window.addEventListener("kulibert-lang", function (ev) {
+    var code = ev && ev.detail && ev.detail.lang;
+    if (knownLang(code) && code !== lang) applyLang(code, true);
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      var drawer = document.getElementById("pz-menu");
+      var levelsButton = document.getElementById("levels-btn");
+      if (drawer && drawer.classList.contains("is-open")) {
+        e.preventDefault();
+        drawer.classList.remove("is-open");
+        if (levelsButton) {
+          levelsButton.setAttribute("aria-expanded", "false");
+          levelsButton.focus();
+        }
+        return;
+      }
+    }
+    if (document.getElementById("game").hidden) return;
+    var key = e.key;
+    if (key === "Enter" && PINCHY.LEVELS[session.level].debug) {
+      var target = e.target;
+      var onButton = target && target.closest && target.closest("button");
+      var inProgram = target && target.closest && target.closest("#program");
+      if (onButton && !inProgram) return;
+      if (inProgram) return;
+      e.preventDefault();
+      doSwap(fixAt);
+      return;
+    }
+    if ((key === "ArrowLeft" || key === "ArrowRight") && e.target && e.target.classList && e.target.classList.contains("lane-tab")) return;
+    if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight") {
+      e.preventDefault();
+      if (PINCHY.LEVELS[session.level].debug) {
+        if (playing) return;
+        var steps = session.programs[session.level];
+        var maxAt = Math.max(0, steps.length - 2);
+        if (key === "ArrowLeft" || key === "ArrowUp") fixAt -= 1;
+        if (key === "ArrowRight" || key === "ArrowDown") fixAt += 1;
+        if (fixAt < 0) fixAt = 0;
+        if (fixAt > maxAt) fixAt = maxAt;
+        renderProgram(-1, -1);
+        var picked = document.querySelectorAll("#program button.chip")[fixAt];
+        if (picked && picked.focus) picked.focus();
+        return;
+      }
+      var buttons = document.querySelectorAll(".controls button.block");
+      if (!buttons.length || playing) return;
+      var cols = 2;
+      var maxRow = Math.max(0, Math.ceil(buttons.length / cols) - 1);
+      var row = Math.floor(focusIndex / cols);
+      var col = focusIndex % cols;
+      if (key === "ArrowUp") row -= 1;
+      if (key === "ArrowDown") row += 1;
+      if (key === "ArrowLeft") col -= 1;
+      if (key === "ArrowRight") col += 1;
+      row = Math.max(0, Math.min(maxRow, row));
+      col = Math.max(0, Math.min(cols - 1, col));
+      focusIndex = Math.min(buttons.length - 1, row * cols + col);
+      buttons[focusIndex].focus();
+      return;
+    }
+    if ((key === "q" || key === "Q") && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      if (!playing && !PINCHY.LEVELS[session.level].debug) addBlock("base-left");
+      return;
+    }
+    if ((key === "e" || key === "E") && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      if (!playing && !PINCHY.LEVELS[session.level].debug) addBlock("base-right");
+      return;
+    }
+    if (key === "z" || key === "Z") {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      undo();
+      return;
+    }
+    if (key === "r" || key === "R") {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      play();
+      return;
+    }
+    if (key === "Enter") {
+      var target = e.target;
+      if (target && target.closest && target.closest("button")) return;
+      e.preventDefault();
+      var blocks = document.querySelectorAll(".controls button.block");
+      if (blocks[focusIndex]) blocks[focusIndex].click();
+    }
+  });
+
+  var queued = false;
+  window.addEventListener("resize", function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () {
+      queued = false;
+      if (titleOn) {
+        if (titleCanvas) titleCanvas._glW = 0;
+        paintTitle(32);
+      }
+      placeChrome();
+      if (!document.getElementById("game").hidden) {
+        if (viewCanvas) viewCanvas._glW = 0;
+        paintGame();
+        var current = document.querySelector("#program .is-now, #program .is-stop");
+        if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+      }
+    });
+  });
+
+  world = PINCHY.initialState(PINCHY.LEVELS[0]);
+  paintChrome();
+  startWave();
+  var playBtn = document.getElementById("play");
+  if (playBtn && playBtn.focus) playBtn.focus({ preventScroll: true });
+};
+
+if (typeof document !== "undefined") boot();
+</script>
+</body>
+</html>
