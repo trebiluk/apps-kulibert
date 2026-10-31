@@ -169,6 +169,7 @@ import { initBot } from './bot/bot.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
+import { mountFpsOverlay } from './fps-overlay.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -13796,3 +13797,4 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
 
 repaintBlocks()
 void T0
+;mountFpsOverlay()
