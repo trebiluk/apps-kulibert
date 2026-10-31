@@ -197,7 +197,7 @@ import { nearestTree, fellCells, takeHit, TREE_NEAR, TREE_LOOK, TREE_HITS } from
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
-import { maybePush, maybePull } from './save/server-sync.js'
+import { maybePush, maybePull, setSyncDb, syncMark } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
@@ -4328,6 +4328,7 @@ noa.inputs.down.on('alt-fire', () => {
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
+setSyncDb(DB)
 const STORE = 'worlds'
 function staffOn() {
   try { return !!(window.HubStaffAuth && window.HubStaffAuth.isUnlocked()) } catch (e) { return false }
@@ -4798,7 +4799,7 @@ async function snapshot() {
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], look: [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
-    chunks, updatedAt: new Date().toISOString(), tabId,
+    chunks, updatedAt: new Date().toISOString(), tabId, ...syncMark(WORLD),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     creativeBar: paletteIds.slice(0, CREATIVE_HOT), // 2.5.506: Creative hotbar order, per world
     stations: stations.dump(),

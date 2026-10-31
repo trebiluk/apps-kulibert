@@ -11,7 +11,9 @@ let stopped = false
 let logged409 = false
 let verified = null
 const lastPush = Object.create(null)
-const lastPushedAt = Object.create(null)
+// Which server rev this device last synced, and which local save that was (updatedAt as an opaque id, never compared by order).
+const marks = Object.create(null)
+let dbName = 'kuliblocks'
 let onlineHandler = null
 // Push queue, one lane per world. pending[w] is the newest doc the server has not confirmed.
 // busy[w] is true while a push runs. timers[w] is the single wake-up for a throttled or failed push.
@@ -40,6 +42,62 @@ async function sha256Hex(text) {
   let hex = ''
   for (const b of new Uint8Array(buf)) hex += b.toString(16).padStart(2, '0')
   return hex
+}
+
+// The main app tells us which IndexedDB it uses (student door vs test page), so backups never touch the other one.
+export function setSyncDb(name) {
+  if (typeof name === 'string' && name) dbName = name
+}
+
+// Persisted onto each saved world so a reload knows what the server already has.
+export function syncMark(world) {
+  const m = marks[world]
+  return m ? { syncRev: m.syncRev, syncedAt: m.syncedAt } : {}
+}
+
+function seedMark(world, doc) {
+  if (!doc || typeof doc.syncRev !== 'number') return
+  const cur = marks[world]
+  if (!cur || cur.syncRev < doc.syncRev) marks[world] = { syncRev: doc.syncRev, syncedAt: doc.syncedAt }
+}
+
+function isDirty(doc) {
+  // Saved since the last sync = its updatedAt is not the one we last pushed or pulled. Equality only, no clocks.
+  return !doc || typeof doc.syncRev !== 'number' || doc.syncedAt !== doc.updatedAt
+}
+
+// Open the app's own database. Same shape as main's idb(): version 1, a 'worlds' store.
+function openDb() {
+  return new Promise((res, rej) => {
+    let r
+    try { r = indexedDB.open(dbName, 1) } catch (e) { rej(e); return }
+    r.onupgradeneeded = () => {
+      try { if (!r.result.objectStoreNames.contains('worlds')) r.result.createObjectStore('worlds') } catch (e) {}
+    }
+    r.onblocked = () => rej(new Error('blocked'))
+    r.onsuccess = () => res(r.result)
+    r.onerror = () => rej(r.error || new Error('open'))
+  })
+}
+
+// One readwrite step on the 'worlds' store. fn(store) may call store.get/put; the promise settles on commit, abort or a throw.
+async function withStore(fn) {
+  const db = await openDb()
+  try {
+    return await new Promise((res, rej) => {
+      let tx
+      let out
+      try {
+        tx = db.transaction('worlds', 'readwrite')
+        out = fn(tx.objectStore('worlds'))
+      } catch (e) { rej(e); return }
+      tx.oncomplete = () => res(out)
+      tx.onerror = () => rej(tx.error || new Error('tx'))
+      tx.onabort = () => rej(tx.error || new Error('abort'))
+    })
+  } finally {
+    try { db.close() } catch (e) {}
+  }
 }
 
 async function isVerified() {
@@ -84,41 +142,31 @@ async function fetchChunks(world, keys) {
 async function backupBefore(doc) {
   if (!doc) return
   try {
-    const DB = 'kuliblocks'
-    const STORE = 'worlds'
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
     const rec = { name: 'before-server-load', at: Date.now(), bytes: 0, doc, kind: '' }
     try { rec.bytes = JSON.stringify(doc).length } catch (e) {}
-    await new Promise((res, rej) => {
-      const r = indexedDB.open(DB, 1)
-      r.onsuccess = () => {
-        const db = r.result
-        const tx = db.transaction(STORE, 'readwrite')
-        tx.objectStore(STORE).put(rec, (doc.id || 'bertyville-survival') + '-backup-' + id)
-        tx.oncomplete = () => { try { db.close() } catch (e) {}; res() }
-        tx.onerror = () => rej(tx.error)
-      }
-      r.onerror = () => rej(r.error)
-    })
+    await withStore((store) => { store.put(rec, (doc.id || 'bertyville-survival') + '-backup-' + id) })
   } catch (e) {}
 }
 
 export async function maybePull(worldId, localDoc) {
   try {
+    seedMark(worldId, localDoc)
     if (!flagOn() || stopped || !(await isVerified())) return null
     const server = await fetchHead(worldId)
     if (!server || !server.head) return null
-    const head = server.head
-    const serverAt = head.updatedAt || ''
-    const localAt = (localDoc && localDoc.updatedAt) || ''
-    const lastPushAt = lastPushedAt[worldId] || ''
-    const localNewerOrUnsaved = localDoc && (localAt > serverAt || (localAt && lastPushAt && localAt > lastPushAt))
-    if (localDoc && localNewerOrUnsaved) return null
-    if (localDoc) await backupBefore(localDoc)
+    const serverRev = typeof server.rev === 'number' ? server.rev : 0
+    if (localDoc) {
+      // A device that saved since its last sync keeps its own world, whatever the clocks say; the push below sends it.
+      if (isDirty(localDoc)) { maybePush(localDoc); return null }
+      if (serverRev <= localDoc.syncRev) return null
+    }
     const keys = Object.keys(server.chunks || {})
     const chunks = keys.length ? await fetchChunks(worldId, keys) : {}
     if (chunks === null) return null
-    const doc = { ...head, chunks, id: worldId }
+    if (localDoc) await backupBefore(localDoc)
+    const doc = { ...server.head, chunks, id: worldId, syncRev: serverRev, syncedAt: server.head.updatedAt }
+    marks[worldId] = { syncRev: serverRev, syncedAt: server.head.updatedAt }
     return doc
   } catch (e) {
     return null
@@ -136,17 +184,7 @@ async function keepBoth(localDoc) {
     const chunks = keys.length ? await fetchChunks(world, keys) : {}
     if (!chunks) return 'retry'
     const school = { ...server.head, chunks, id: world + '-school-copy', title: (server.head.title || 'Bertyville') + ' (school copy)' }
-    await new Promise((res, rej) => {
-      const r = indexedDB.open('kuliblocks', 1)
-      r.onsuccess = () => {
-        const db = r.result
-        const tx = db.transaction('worlds', 'readwrite')
-        tx.objectStore('worlds').put(school, school.id)
-        tx.oncomplete = () => { try { db.close() } catch (e) {}; res() }
-        tx.onerror = () => rej(tx.error)
-      }
-      r.onerror = () => rej(r.error)
-    })
+    await withStore((store) => { store.put(school, school.id) })
     showKeepBothCard()
     // re-push current on top of the server copy we just fetched: its rev, not the one the 409 came from
     const head = { ...localDoc }
@@ -161,7 +199,7 @@ async function keepBoth(localDoc) {
       headers: { 'Content-Type': 'application/json', 'If-Match': String(server.rev || 0) },
       body: JSON.stringify(body),
     })
-    return afterPut(res, world, localDoc)
+    return afterPut(res, world, localDoc, server.rev || 0)
   } catch (e) {
     return 'retry'
   }
@@ -190,15 +228,31 @@ function showKeepBothCard() {
 }
 
 // Reads a PUT answer once, for both the normal push and the keepBoth re-push.
-function afterPut(putRes, world, doc) {
+// sentRev is the If-Match rev; the server moves it up by one.
+async function afterPut(putRes, world, doc, sentRev) {
   if (putRes.ok) {
+    let rev = sentRev + 1
+    try { const j = await putRes.json(); if (j && typeof j.rev === 'number') rev = j.rev } catch (e) {}
     lastPush[world] = Date.now()
-    lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
+    marks[world] = { syncRev: rev, syncedAt: doc.updatedAt }
+    storeMark(world, doc, rev)
     try { setSyncState('saved') } catch (e) {}
     return 'ok'
   }
   if ([401, 413, 503].includes(putRes.status)) { stopped = true; return 'drop' }
   return 'retry' // 429 (server window), 409 again, 5xx: wait and push again
+}
+
+// Best effort: stamp the stored world with what the server now has, if no newer save has replaced it.
+function storeMark(world, doc, rev) {
+  if (!doc.updatedAt) return
+  withStore((store) => {
+    const g = store.get(world)
+    g.onsuccess = () => {
+      const rec = g.result
+      if (rec && rec.updatedAt === doc.updatedAt) store.put({ ...rec, syncRev: rev, syncedAt: doc.updatedAt }, world)
+    }
+  }).catch(() => {})
 }
 
 async function pushNow(doc) {
@@ -261,7 +315,7 @@ async function pushNow(doc) {
       if (!logged409) { console.log('bt-sync 409'); logged409 = true }
       return await keepBoth(doc)
     }
-    return afterPut(putRes, world, doc)
+    return afterPut(putRes, world, doc, rev)
   } catch (e) {
     return 'retry' // offline or network
   }
