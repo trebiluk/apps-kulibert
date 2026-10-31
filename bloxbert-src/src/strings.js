@@ -590,3 +590,57 @@ for (const [lang, row] of Object.entries(WN541)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.545 what's new. rw, ti, and fa-AF are machine drafts.
+const WN542 = {
+  en: { whatsNewBody: '2.5.545 — Classic and Mystical looks. Small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN542)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.547 what's new. Locked by ManagerBot. All non-English lines are machine drafts.
+const WN547 = {
+  en: { whatsNewBody: '2.5.547 — Goals now shows today\'s Daily and your Sweep.' },
+  simple: { whatsNewBody: '2.5.547 — Goals shows today\'s Daily and your Sweep.' },
+  uk: { whatsNewBody: '2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.' },
+  ru: { whatsNewBody: '2.5.547 — В Целях теперь видно задание дня и твою зачистку.' },
+  es: { whatsNewBody: '2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.' },
+  ar: { whatsNewBody: '2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.' },
+  'fa-AF': { whatsNewBody: '2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.' },
+  rw: { whatsNewBody: '2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.' },
+  ti: { whatsNewBody: '2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።' },
+}
+for (const [lang, row] of Object.entries(WN547)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.549 what's new. rw, ti, and fa-AF are machine drafts.
+const WN549 = {
+  en: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN549)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

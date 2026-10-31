@@ -1,4 +1,56 @@
 export const CHANGELOG = [
+  // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.549', date: '2026-10-30', lines: {
+    en: ['2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.'],
+    simple: ['2.5.549 — Grass sides match the top. The ground is softer. Small textures stay sharp.'],
+    uk: ['2.5.549 — Боки трави збігаються з верхом. Земля м’якша, малі текстури лишаються чіткими.'],
+    ru: ['2.5.549 — Бока травы совпадают с верхом. Земля мягче, маленькие текстуры остаются чёткими.'],
+    es: ['2.5.549 — Los lados del césped coinciden con la tapa. El suelo es más suave y las texturas pequeñas siguen nítidas.'],
+    ar: ['2.5.549 — جوانب العشب تطابق السطح. الأرض أهدأ، والقوام الصغير يبقى حادًا.'],
+    'fa-AF': ['2.5.549 — پهلوهای چمن با رویه یکی است. زمین نرم‌تر است و بافت کوچک تیز می‌ماند.'],
+    rw: ['2.5.549 — Impande z\'ibyatsi zihura n\'uruhande rwo hejuru. Isi iroroshye, amashusho mato aguma yagaragara.'],
+    ti: ['2.5.549 — ጎኒ ሳዕሪ ምስ ላዕሊ ይሰማማዕ። መሬት ለውዋጥ እዩ፡ ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።'],
+  }},
+
+  // Locked 2.5.547 (ManagerBot). Daily Board card v1. All non-English lines are machine drafts; rw, ti, and fa-AF are the weakest.
+  { v: '2.5.547', date: '2026-10-30', lines: {
+    en: ['2.5.547 — Goals now shows today\'s Daily and your Sweep.'],
+    simple: ['2.5.547 — Goals shows today\'s Daily and your Sweep.'],
+    uk: ['2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.'],
+    ru: ['2.5.547 — В Целях теперь видно задание дня и твою зачистку.'],
+    es: ['2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.'],
+    ar: ['2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.'],
+    'fa-AF': ['2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.'],
+    rw: ['2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.'],
+    ti: ['2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።'],
+  }},
+
+  // 2.5.546 Block Painter, part 2. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.546', date: '2026-10-30', lines: {
+    en: ['2.5.546 — Paint a block in Settings > Look and see it in your world.'],
+    simple: ['2.5.546 — Paint a block in Settings. See it in your world.'],
+    uk: ['2.5.546 — Намалюй блок у Налаштуваннях > Вигляд і побач його у своєму світі.'],
+    ru: ['2.5.546 — Нарисуй блок в Настройках > Вид и увидь его в своём мире.'],
+    es: ['2.5.546 — Pinta un bloque en Ajustes > Aspecto y velo en tu mundo.'],
+    ar: ['2.5.546 — ارسم مكعبًا في الإعدادات > المظهر وشاهده في عالمك.'],
+    'fa-AF': ['2.5.546 — در تنظیمات > نما یک بلاک رنگ کن و آن را در جهانت ببین.'],
+    rw: ['2.5.546 — Shushanya block muri Igenamiterere > Isura urebe mu isi yawe.'],
+    ti: ['2.5.546 — ኣብ ቅጥዕታት > መልክዕ ብሎክ ቀልሕ ኣብ ዓለምካ ርኣዮ።'],
+  }},
+
+  // 2.5.545 texture packs, part 1. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.545', date: '2026-10-30', lines: {
+    en: ['2.5.545 — Classic and Mystical looks. Small textures stay sharp.'],
+    simple: ['2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.'],
+    uk: ['2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.'],
+    ru: ['2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.'],
+    es: ['2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.'],
+    ar: ['2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.'],
+    'fa-AF': ['2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.'],
+    rw: ['2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.'],
+    ti: ['2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።'],
+  }},
+
   // Locked 2.5.534 was already below main (2.5.540), so this is 2.5.541. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.541', date: '2026-10-28', lines: {
     en: ['2.5.541 — The Menu opens on the first click and speaks your language.'],

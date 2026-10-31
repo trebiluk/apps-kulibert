@@ -21,7 +21,7 @@ export const BASE_BLOCKS = [
   [9, 'brickGrey', 'brick_grey', 'Bg', 'brick_grey'],
   [10, 'planks', 'wood', 'P', 'wood'],
   [11, 'log', ['trunk_top', 'trunk_top', 'trunk_side'], 'L', 'trunk_side'],
-  [12, 'leaves', 'leaves', 'Lv', 'leaves'],
+  [12, 'leaves', ['leaves', 'leavesUnder', 'leaves'], 'Lv', 'leaves'],
   [13, 'woolBlue', 'cotton_blue', 'Wb', 'cotton_blue'],
   [14, 'woolGreen', 'cotton_green', 'Wg', 'cotton_green'],
   [15, 'woolRed', 'cotton_red', 'Wr', 'cotton_red'],

@@ -2,7 +2,7 @@
 import { getBlockWrap, WRAPS } from './pixel-art.js';
 import '../packs/flora/art.js';
 
-const BLOCK_WRAPS = [
+export const BLOCK_WRAPS = [
   'doorGlass', 'doorGlassOpen', 'doorGlassTop', 'doorGlassTopOpen',
   'doorSliding', 'doorSlidingOpen', 'doorSlidingTop', 'doorSlidingTopOpen',
   'cropSprout', 'cropLeafy', 'cropTall', 'cropRipe',
