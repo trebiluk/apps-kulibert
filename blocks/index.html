@@ -204,6 +204,7 @@ body.stick-right #t-bonk:not([hidden]){right:auto;left:calc(100% + 12px)}
 
 #suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
 @media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
+@media (max-height:500px){body:not(.stick-right) #suit-bar{left:160px}} /* 2.5.550: sideways phones, Suit sits right of Goals, not under it */
 body.stick-right #suit-bar{left:auto;right:10px}
 body.touch #pick-chip{right:calc(16px + 64px + 12px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h, var(--hud-lift)) + 12px + 56px + 16px)}
 body.touch.stick-right #pick-chip{right:auto;left:calc(16px + 64px + 12px + env(safe-area-inset-left))}
@@ -285,7 +286,7 @@ html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 80px
 #path-chip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px;max-width:100%;overflow:visible;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--gold);border-radius:12px;padding:6px 8px 6px 12px;font-size:15px;line-height:1.15;text-align:start;opacity:1;transition:opacity .4s ease}
 #path-chip[hidden]{display:none !important}
 #path-chip.path-out{opacity:0;pointer-events:none}
-#path-chip .path-title{min-width:0;flex:1 1 auto}
+#path-chip .path-title{min-width:min(140px,50vw);flex:1 1 auto}
 #path-chip .path-x{flex:0 0 auto;margin-inline-start:auto;display:grid;place-items:center;width:var(--ks-touch);height:var(--ks-touch);min-width:44px;min-height:44px;border-radius:8px;background:rgba(255,255,255,.1);font-size:16px}
 #path-chip.path-corner{background:#0E1A22;color:#E6EEF2;border:0;outline:0;box-shadow:none;font-size:16px;line-height:1.25;pointer-events:none;flex-wrap:nowrap;align-items:center;width:max-content;max-width:40vw}
 #path-chip.path-corner *{pointer-events:none}
