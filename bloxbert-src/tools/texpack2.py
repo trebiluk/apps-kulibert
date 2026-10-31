@@ -191,21 +191,23 @@ def cobble_tile(myst, seed=7):
 # Every ore has its own chunk shape, so they differ without color: coal = blocks, iron = steps,
 # copper = plus and arrow, zinc = bars. Never round.
 SHAPES = {
-    # coal: chunky blocks with a cut corner. iron: diagonal steps. copper: plus and tripod. zinc: bars.
+    # coal: chunky blocks with a cut corner. iron: thick diagonal steps. copper: plus and tripod. zinc: bars.
     'coal': [[(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (0, 2), (1, 2)],
              [(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (1, 2), (2, 2)]],
-    'iron': [[(0, 0), (1, 0), (1, 1), (2, 1), (2, 2)], [(2, 0), (1, 0), (1, 1), (0, 1), (0, 2)]],
+    'iron': [[(0, 0), (1, 0), (0, 1), (1, 1), (2, 1), (1, 2), (2, 2)], [(1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (0, 2), (1, 2)]],  # thick diagonal steps
     'copper': [[(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)], [(1, 0), (0, 1), (1, 1), (2, 1), (0, 2), (2, 2)]],
     'zinc': [[(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1)], [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]],
 }
 SPOTS = [(1, 1), (9, 1), (5, 7), (12, 8), (1, 12)]
 
+# Ores must tell apart WITHOUT color (color-blind and low-vision kids): each has its own chunk shape AND its own brightness step.
+# Stone is about lum 123. Coal is darkest, then copper, then stone, then iron, then zinc, each at least 30 apart (tools/texpack-audit.py checks it).
 ORES = {
-    # name: (body, light edge, shade, accent). Muted hues from the StyleBot art rules.
-    'coal': ((52, 52, 56), (92, 92, 98), (40, 40, 44), None),
-    'iron': ((201, 162, 126), (222, 190, 154), (158, 122, 92), None),
-    'copper': ((184, 107, 69), (208, 140, 98), (140, 80, 52), (82, 146, 124)),
-    'zinc': ((150, 170, 188), (186, 204, 218), (112, 130, 148), None),
+    # name: (body, light edge on top, shade underneath, accent)
+    'coal': ((40, 40, 44), (58, 58, 64), (38, 38, 42), None),
+    'copper': ((118, 64, 40), (146, 86, 54), (88, 48, 28), None),
+    'iron': ((200, 164, 128), (222, 190, 152), (190, 154, 118), None),
+    'zinc': ((206, 218, 230), (206, 218, 230), (190, 204, 218), None),
 }
 
 
@@ -236,8 +238,6 @@ def ore_tile(kind, myst, rot=0):
             tile.set(cx, cy, col)
         if accent and k % 2 == 1:
             tile.set(cells[-1][0], cells[-1][1], accent)
-        if myst and kind == 'coal' and k % 2 == 0:
-            tile.set(left, top, (66, 118, 116))
     # Chunks must not touch each other (a one texel gap keeps each shape readable).
     for (x, y), k in mine.items():
         for dx in (-1, 0, 1):
