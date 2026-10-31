@@ -9,7 +9,7 @@
     "build:test": "node build.mjs --out ../blocks-test",
     "build:dist": "node build.mjs --out dist",
     "serve": "node tools/serve.mjs dist 8870",
-    "test": "node tools/pack-check.mjs && node tools/decor-check.mjs && node tools/clock-check.mjs && node tools/hands-check.mjs && node tools/pack-save-check.mjs && node tools/polish-check.mjs && node tools/backups-check.mjs && node tools/archive-check.mjs && python3 tools/check-atlas.py && node tools/classnet-all.mjs && node tools/cogs-check.mjs && node tools/daily-board-check.mjs && node tools/daily-card-check.mjs", "check:atlas": "python3 tools/check-atlas.py"
+    "test": "node tools/pack-check.mjs && node tools/decor-check.mjs && node tools/clock-check.mjs && node tools/hands-check.mjs && node tools/pack-save-check.mjs && node tools/polish-check.mjs && node tools/backups-check.mjs && node tools/archive-check.mjs && python3 tools/check-atlas.py && node tools/classnet-all.mjs && node tools/cogs-check.mjs && node tools/daily-board-check.mjs && node tools/daily-card-check.mjs && node tools/sync-queue-check.mjs", "check:atlas": "python3 tools/check-atlas.py"
   },
   "dependencies": {
     "@babylonjs/core": "6.49.0",

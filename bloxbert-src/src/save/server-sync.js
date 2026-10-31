@@ -12,8 +12,14 @@ let logged409 = false
 let verified = null
 const lastPush = Object.create(null)
 const lastPushedAt = Object.create(null)
-let pendingDoc = null
 let onlineHandler = null
+// Push queue, one lane per world. pending[w] is the newest doc the server has not confirmed.
+// busy[w] is true while a push runs. timers[w] is the single wake-up for a throttled or failed push.
+const WINDOW_MS = 20000
+const pending = Object.create(null)
+const seqs = Object.create(null)
+const busy = Object.create(null)
+const timers = Object.create(null)
 
 function flagOn() {
   try {
@@ -120,14 +126,15 @@ export async function maybePull(worldId, localDoc) {
 }
 
 
-async function keepBoth(localDoc, serverRev) {
+// Outcome of a push: 'ok' (on the server), 'retry' (try again later), 'drop' (give up: stopped or signed out).
+async function keepBoth(localDoc) {
   try {
     const world = localDoc.id
     const server = await fetchHead(world)
-    if (!server || !server.head) return
+    if (!server || !server.head) return stopped ? 'drop' : 'retry'
     const keys = Object.keys(server.chunks || {})
     const chunks = keys.length ? await fetchChunks(world, keys) : {}
-    if (!chunks) return
+    if (!chunks) return 'retry'
     const school = { ...server.head, chunks, id: world + '-school-copy', title: (server.head.title || 'Bertyville') + ' (school copy)' }
     await new Promise((res, rej) => {
       const r = indexedDB.open('kuliblocks', 1)
@@ -141,20 +148,23 @@ async function keepBoth(localDoc, serverRev) {
       r.onerror = () => rej(r.error)
     })
     showKeepBothCard()
-    // re-push current with server rev
+    // re-push current on top of the server copy we just fetched: its rev, not the one the 409 came from
     const head = { ...localDoc }
     delete head.chunks
     if (!head.format) head.format = 'kuliblocks'
     if (head.v == null) head.v = 2
     if (typeof head.schema !== 'number') head.schema = 2
     const body = { head, chunks: localDoc.chunks || {}, drop: [] }
-    await fetch(BASE + '?world=' + encodeURIComponent(world), {
+    const res = await fetch(BASE + '?world=' + encodeURIComponent(world), {
       method: 'PUT',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', 'If-Match': String(serverRev) },
+      headers: { 'Content-Type': 'application/json', 'If-Match': String(server.rev || 0) },
       body: JSON.stringify(body),
     })
-  } catch (e) {}
+    return afterPut(res, world, localDoc)
+  } catch (e) {
+    return 'retry'
+  }
 }
 
 function showKeepBothCard() {
@@ -179,13 +189,23 @@ function showKeepBothCard() {
   card.addEventListener('click', (e) => { if (e.target === card) card.remove() })
 }
 
-async function pushNow(doc) {
-  if (stopped || !doc || !doc.id) return
-  const world = doc.id
-  const now = Date.now()
-  if (lastPush[world] && now - lastPush[world] < 20000) return
+// Reads a PUT answer once, for both the normal push and the keepBoth re-push.
+function afterPut(putRes, world, doc) {
+  if (putRes.ok) {
+    lastPush[world] = Date.now()
+    lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
+    try { setSyncState('saved') } catch (e) {}
+    return 'ok'
+  }
+  if ([401, 413, 503].includes(putRes.status)) { stopped = true; return 'drop' }
+  return 'retry' // 429 (server window), 409 again, 5xx: wait and push again
+}
 
-  if (!(await isVerified())) { try { setSyncState("nosign") } catch (e) {} return }
+async function pushNow(doc) {
+  if (stopped || !doc || !doc.id) return 'drop'
+  const world = doc.id
+
+  if (!(await isVerified())) { try { setSyncState("nosign") } catch (e) {} return 'drop' }
   try { setSyncState("saving") } catch (e) {}
 
   let rev = 0
@@ -195,16 +215,16 @@ async function pushNow(doc) {
     if (getRes.status === 404) {
       rev = 0
     } else if (!getRes.ok) {
-      if ([401, 413, 429, 503].includes(getRes.status)) stopped = true
-      return
+      if ([401, 413, 429, 503].includes(getRes.status)) { stopped = true; return 'drop' }
+      return 'retry'
     } else {
       const server = await getRes.json()
-      if (!server || !server.ok) return
+      if (!server || !server.ok) return 'retry'
       rev = server.rev || 0
       serverChunks = server.chunks || {}
     }
   } catch (e) {
-    return
+    return 'retry'
   }
 
   const head = { ...doc }
@@ -239,31 +259,56 @@ async function pushNow(doc) {
     })
     if (putRes.status === 409) {
       if (!logged409) { console.log('bt-sync 409'); logged409 = true }
-      keepBoth(doc, rev).catch(() => {})
-      return
+      return await keepBoth(doc)
     }
-    if ([401, 413, 429, 503].includes(putRes.status)) {
-      stopped = true
-      return
-    }
-    if (putRes.ok) {
-      lastPush[world] = Date.now()
-      lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
-      try { setSyncState("saved") } catch (e) {}
-    }
+    return afterPut(putRes, world, doc)
   } catch (e) {
-    // offline or network — keep pending
+    return 'retry' // offline or network
   }
+}
+
+function disarm(world) {
+  if (timers[world]) { clearTimeout(timers[world]); delete timers[world] }
+}
+
+// One timer per world. It pushes whatever is pending when it fires.
+function arm(world, ms) {
+  if (timers[world]) return
+  timers[world] = setTimeout(() => { delete timers[world]; kick(world) }, Math.max(0, ms) + 50)
+}
+
+// Start a push for this world if none is running and the 20 s window is open.
+// A busy world keeps its pending doc; finish() pushes again when the running push ends.
+function kick(world) {
+  try {
+    if (stopped || busy[world]) return
+    const doc = pending[world]
+    if (!doc) return
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) { try { setSyncState('offline') } catch (e) {} return }
+    const wait = lastPush[world] ? lastPush[world] + WINDOW_MS - Date.now() : 0
+    if (wait > 0) { arm(world, wait); return }
+    busy[world] = true
+    const seq = seqs[world]
+    pushNow(doc).catch(() => 'retry').then((out) => finish(world, seq, out))
+  } catch (e) {
+    busy[world] = false
+  }
+}
+
+function finish(world, seq, out) {
+  busy[world] = false
+  // Clear the pending doc only if nothing newer arrived while the push ran.
+  const same = seqs[world] === seq
+  if ((out === 'ok' || out === 'drop') && same) delete pending[world]
+  if (out === 'retry') { arm(world, WINDOW_MS); return }
+  if (pending[world]) kick(world)
 }
 
 function armOnline() {
   if (onlineHandler || typeof window === 'undefined') return
   onlineHandler = () => {
-    if (pendingDoc && !stopped) {
-      const d = pendingDoc
-      pendingDoc = null
-      pushNow(d).catch(() => {})
-    }
+    if (stopped) return
+    for (const world of Object.keys(pending)) { disarm(world); kick(world) }
   }
   window.addEventListener('online', onlineHandler)
 }
@@ -276,9 +321,10 @@ export function maybePush(doc) {
       persistFlag()
       armOnline()
     }
-    if (stopped || !doc) return
-    pendingDoc = doc
+    if (stopped || !doc || !doc.id) return
+    pending[doc.id] = doc
+    seqs[doc.id] = (seqs[doc.id] || 0) + 1
     if (typeof navigator !== 'undefined' && !navigator.onLine) { try { setSyncState('offline') } catch (e) {} return }
-    pushNow(doc).catch(() => {})
+    kick(doc.id)
   } catch (e) {}
 }
