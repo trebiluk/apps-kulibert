@@ -6403,16 +6403,35 @@ body.mu237 #len .btn[aria-pressed="true"] {
   overflow-wrap: anywhere;
 }
 body.mu237.tab-score #notes-pane > #score-note:not([hidden]) { display: block !important; }
+/* The picked note: a solid box (a shape) AND a bolder note (a thicker stroke), so it never relies on colour. Both use the staff ink, which is the dark
+   #0E1A22 in the light and the dark theme, because the staff paper is light in both (16.4:1 on #F4F7F8, 13.8:1 on the dark theme's #D9E2E7).
+   It used to be var(--text), which is light in the dark theme: 1.12:1 on that paper. No hue, no glow. */
 #staff .sel-box {
-  fill: none !important;
-  stroke: var(--text);
+  fill: rgba(14, 26, 34, 0.08) !important;
+  stroke: var(--ink);
   stroke-width: 3px;
-  stroke-dasharray: 7 4;
+  stroke-dasharray: none;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
+/* scrollIntoView leaves a little air round the note, so its box is never cut by the edge of the panel */
+#staff .abcjs-note, #staff .abcjs-rest { scroll-margin: 12px; }
+#staff .abcjs-note.picked:not(.now) path,
+#staff .abcjs-rest.picked:not(.now) path {
+  stroke: var(--ink);
+  stroke-width: 1.7px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+/* Beat-cell songs: the staff panel was clipped (overflow hidden, 40% high) inside a pane that scrolls, so bars past the first rows could not be reached,
+   by a swipe or by Add a bar. The panel now grows with the staff and the pane is the one thing that scrolls (one scroller, so a swipe never fights a
+   second one). The sideways strip keeps its own sideways scroll. */
+@media not all and (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score.is-both:not(.rich-edit) .staff-wrap { overflow: visible !important; max-height: none !important; }
+}
 @media (forced-colors: active) {
-  #staff .sel-box { stroke: Highlight; }
+  #staff .sel-box { stroke: Highlight; fill: none !important; }
+  #staff .abcjs-note.picked:not(.now) path, #staff .abcjs-rest.picked:not(.now) path { stroke: CanvasText; }
 }
 body.mu237 .staff-wrap:focus-visible { outline: 3px solid var(--active); outline-offset: -3px; }
 @media (orientation: landscape) and (max-height: 500px) {
@@ -6477,7 +6496,7 @@ body.mu237.tab-score.is-both.rich-edit #len { margin-block: 0.1rem !important; }
 }
 /* the check mark that every pressed button shows sits in the corner, so the pressed length is not taller than the others */
 body.mu237 #len .btn::after { position: absolute; top: 3px; inset-inline-start: 5px; font-size: 0.75rem; line-height: 1.25; }
-/* abcjs paints a tapped note red. The picked note already has its dashed box, so the note itself keeps the normal ink (one cue, and no red). */
+/* abcjs paints a tapped note red. The picked note already has its box and bolder stroke, so the note itself keeps the normal ink (no red). */
 #staff .abcjs-note_selected path, #staff .abcjs-rest_selected path { fill: currentColor !important; }
 /* the pen and length rows clip anything drawn outside a button, so their focus ring is drawn inside it, in the text colour (light and dark themes) */
 body.mu237 #len .btn:focus-visible,

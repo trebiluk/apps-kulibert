@@ -971,7 +971,9 @@
     const svg = document.querySelector("#staff svg");
     if (!svg) return;
     svg.querySelectorAll(".sel-box").forEach((n) => n.remove());
-    if (!isRichSong()) return;
+    svg.querySelectorAll(".picked").forEach((n) => n.classList.remove("picked"));
+    // MU 2.36.65 round 1: every song shows the picked note (the one a letter or a length changes), not only the real-length songs.
+    // The box is a shape and the note itself gets a thicker stroke (see styles.css), so it never depends on colour.
     const ev = pickedEv();
     const node = ev && svg.querySelectorAll(".abcjs-note, .abcjs-rest")[ev.glyph];
     if (!node) return;
@@ -987,6 +989,7 @@
     rect.setAttribute("rx", "3");
     rect.setAttribute("aria-hidden", "true");
     node.appendChild(rect);
+    node.classList.add("picked");
     followNote(node); // keep the picked note inside the staff panel after the staff is drawn again
   }
   // Everything the staff needs after it is drawn: the length row, the picked-note box, and a place the keyboard can land.
@@ -4701,6 +4704,21 @@
       setScoreTools(false, inside || document.activeElement === document.body ? "key" : "tap");
     });
   }
+  // MU 2.36.65 round 1: the first note of the newest bar, and a scroll that brings it into the staff panel. "nearest" moves nothing when it is
+  // already in view; the motion is instant when the reader asked for reduced motion.
+  function newBarMark() {
+    const evs = Song.events(state.song);
+    const last = state.song.measures.length - 1;
+    const first = evs.find((ev) => ev.measure === last);
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    return (first && marks[first.glyph != null ? first.glyph : evs.indexOf(first)]) || marks[marks.length - 1] || null;
+  }
+  function revealNewBar() {
+    const mark = newBarMark();
+    if (!mark || !mark.scrollIntoView) return;
+    const calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    mark.scrollIntoView({ block: "nearest", inline: "nearest", behavior: calm ? "auto" : "smooth" });
+  }
   function addBarNow() {
     const before = state.song.measures.length;
     Song.addMeasure(state.song);
@@ -4713,12 +4731,20 @@
       paintRichEdit();
     }
     // MU 2.36.65: the line under the staff answers on every song, and the picked note moves to the new bar so the keys go there.
-    if (grew && isRichSong() && Song.events) {
+    if (grew && Song.events) {
       const evs = Song.events(state.song);
       const first = evs.findIndex((ev) => ev.measure === state.song.measures.length - 1);
-      if (first >= 0) moveCursor(first);
+      if (first >= 0) {
+        if (isRichSong()) moveCursor(first);
+        else { state.cursor = first; if (!state.playing) state.step = first; paintSelection(); paintCount(); }
+      }
     }
     sayScore(grew ? (mu("richBarAdded") || "A new bar is on the score. Every bar is full.") : "That is 32 bars. That is a long song.");
+    // The calm line changes the height of the staff panel, so the scroll comes after it, and once more when the page has settled.
+    if (grew) {
+      revealNewBar();
+      window.requestAnimationFrame(revealNewBar);
+    }
     $("lesson").textContent = grew
       ? "A new bar is on the score. It is saved."
       : "That is 32 bars. That is a long song.";
