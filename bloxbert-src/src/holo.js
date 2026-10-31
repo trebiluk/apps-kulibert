@@ -240,6 +240,19 @@ export function createHolo(opts) {
       return true
     }
     const full = Math.round(Math.max(44, Math.min(120, H * 0.12)))
+    // r1: phone held upright, Left: the thumb stick and hotbar fill the corner itself, so dock the hand flush left
+    // directly on top of the stick (the lowest left spot that covers nothing) before searching anywhere else.
+    if (left && H > W && W <= 600) {
+      const stick = document.getElementById('stick-pad')
+      const sr = stick && stick.offsetWidth ? stick.getBoundingClientRect() : null
+      if (sr && sr.height) {
+        for (const s of [full, Math.round(full * 0.8), Math.max(44, Math.round(full * 0.65))]) {
+          const x = 8
+          const y = Math.round(sr.top - GAP - s)
+          if (y > H * 0.4 && clear(x, y, s)) { spot = { x, y, s }; apply(); return }
+        }
+      }
+    }
     for (const s of [full, Math.round(full * 0.8), Math.max(44, Math.round(full * 0.65))]) {
       const edge = 8
       for (let y = H - s - edge; y >= H * 0.4; y -= 6) {
