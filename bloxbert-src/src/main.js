@@ -9043,6 +9043,7 @@ function readOldSave() {
     new Promise((r) => setTimeout(() => r(null), 3000)),
   ])
 }
+let bootLoad = Promise.resolve() // set to the first load() below, so an early click waits for it
 async function loadOldClicked() {
   const btn = $('m-load')
   if (loadOldClicked.busy) return
@@ -9051,6 +9052,7 @@ async function loadOldClicked() {
   toast(t('oldLoading'))
   markSave(t('oldLoading'))
   try {
+    try { await bootLoad } catch (e) {}
     const old = await readOldSave()
     if (!old || old.format !== 'kuliblocks') { toast(t('oldNone')); markSave(t('oldNone')); return false }
     try {
@@ -9058,8 +9060,11 @@ async function loadOldClicked() {
       await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
     } catch (e) {}
     await idbPut(WORLD, old)
+    try { localStorage.removeItem(SPOT_KEY) } catch (e) {} // stand where the old world left you, not where this one did
     try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
-    await load()
+    try { await saveChain } catch (e) {}
+    const ok = await load()
+    if (!ok) { toast(t('saveKept')); return false }
     toast(t('oldLoaded'))
     markSave(t('oldLoaded'))
     return true
@@ -13031,7 +13036,7 @@ window.__bertopiaRotateCheck = function () {
     resetCount: bertRotateResets,
   }
 }
-load().catch(() => {}).finally(() => {
+;(bootLoad = load()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
   if (allowSave) window.__bertOpen = true
