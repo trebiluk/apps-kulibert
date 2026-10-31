@@ -4,6 +4,7 @@ import './packs/farm/pack.js'
 import './packs/flora/pack.js'
 import './packs/tech/pack.js'
 import './packs/decor/pack.js'
+import { OUTFIT_STR } from './outfits-strings.js'
 export const EXTRA = {
   en: {
     changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', helpLamps: 'Get a Floor Lamp or Wall Lamp at the Woodshop. Hold it and tap the ground or a wall to place it. Tap it again to turn it on.', helpWoodshop: 'Tap a Woodshop to open it. Hang your 4 tools, then make a lamp or a Bed.', helpUpdate: 'A short note shows once when Bertopia updates.', language: 'Language', pickLanguage: 'Pick', suitText: 'Suit {n}/{max}', backToHub: 'Back to the Hub', pvpOn: 'PvP: ON', pvpOff: 'PvP: OFF', keepStuffOn: 'Keep my stuff: ON', keepStuffOff: 'Keep my stuff: OFF', kitPvpOn: 'Kit PvP: ON', kitPvpOff: 'Kit PvP: OFF', select: 'Select', option: 'Option', phase1: 'Stamp coming', phase2: 'Conveyor', phase3: 'Vent left', rustbotNear: 'Rustbot nearby, hit its back', slam: 'Slam!', dexPage: 'New Bertodex page', badgeGot: 'Badge', scrapperTook: 'Scrapper took your item', zap: 'Zap!', rebooted: 'Rebooted!', pvpHint: 'Bertopia favors teaming up; PvP only if both players say yes. You keep your stuff in the main world.', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
@@ -1164,6 +1165,8 @@ const LESSONS = {
 }
 for (const [lang, row] of Object.entries(LESSONS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(packStrings())) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+// 2.5.555 Avatar Outfits: My Look names, tabs and buttons.
+for (const [lang, row] of Object.entries(OUTFIT_STR)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 const FARM_NEWS = {
   en: { whatsNewBody: 'A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.' },
   uk: { whatsNewBody: 'Дотик до ліжка, печі, скрині, прилавка чи майстерні відкриває їх. Присядь, щоб будувати поруч, і ліжко на 3 зірки зберігає свій вигляд.' },

@@ -1,4 +1,10 @@
 export const CHANGELOG = [
+  // 2.5.555 Avatar Outfits part 1. en and simple only for now; other languages follow.
+  { v: '2.5.555', date: '2026-10-31', lines: {
+    en: ['2.5.555 — Dress your android in My Look: pick a hat, top, pants, shoes and extras in muted colors and patterns.'],
+    simple: ['2.5.555 — Pick clothes for your android in My Look. Hats, tops, pants, shoes and extras.'],
+  }},
+
   // 2.5.549 look fix. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.549', date: '2026-10-30', lines: {
     en: ['2.5.549 — Grass sides match the top. The ground is softer, and small textures stay sharp.'],

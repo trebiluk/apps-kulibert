@@ -143,6 +143,15 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.555 what's new. en and simple only for now; other languages follow and still show the older line until then.
+const WN555 = {
+  en: { whatsNewBody: '2.5.555 — Dress your android in My Look: pick a hat, top, pants, shoes and extras in muted colors and patterns.' },
+  simple: { whatsNewBody: '2.5.555 — Pick clothes for your android in My Look. Hats, tops, pants, shoes and extras.' },
+}
+for (const [lang, row] of Object.entries(WN555)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
@@ -250,6 +259,8 @@ import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
 import { initBot } from './bot/bot.js'
+import * as outfitsLib from './outfits.js'
+import { mountMyLook } from './outfits-ui.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
@@ -7378,6 +7389,7 @@ panels = mountPanels({
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
   paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintMyLook: (g) => mountMyLook(g, { O: outfitsLib, store: outfitStore, t, toast, reduced: () => REDUCE || document.documentElement.getAttribute('data-kp-motion') === 'less', onSave: () => buildOutfitRig() }), // 2.5.555
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -11482,6 +11494,66 @@ function makeArm(name, x) {
 }
 const armL = makeArm('berty-arm-l', -0.28)
 const armR = makeArm('berty-arm-r', 0.28)
+// 2.5.555 Avatar Outfits (single player, cosmetic only). The old berty box figure stays as the carrier (same position, same hitbox)
+// but is hidden. The android and its five slots are ONE merged mesh built from outfitsLib.partsFor() and parented to it,
+// so the draw count stays the same. The look is saved as ids only, in its own local key. Arms take the Top color.
+const outfitStore = outfitsLib.createStore({ storage: (() => { try { return localStorage } catch (e) { return null } })(), key: 'bloxbert-outfit' })
+const outfitMat = noa.rendering.makeStandardMaterial('outfit-mat') // matte: no emissive, no specular, so nothing glows
+outfitMat.diffuseColor = new Color3(0.78, 0.78, 0.78)
+outfitMat.ambientColor = new Color3(0.55, 0.55, 0.55)
+const outfitAtlas = new DynamicTexture('outfit-atlas', { width: outfitsLib.TILE * outfitsLib.PATTERNS.length, height: outfitsLib.TILE }, scene, false, Texture.NEAREST_SAMPLINGMODE)
+{
+  const g = outfitAtlas.getContext()
+  for (let p = 0; p < outfitsLib.PATTERNS.length; p++) {
+    for (let y = 0; y < outfitsLib.TILE; y++) {
+      for (let x = 0; x < outfitsLib.TILE; x++) {
+        const v = Math.round(255 * outfitsLib.patternValue(outfitsLib.PATTERNS[p], x, y))
+        g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')'
+        g.fillRect(p * outfitsLib.TILE + x, y, 1, 1)
+      }
+    }
+  }
+  outfitAtlas.update()
+}
+outfitMat.diffuseTexture = outfitAtlas
+let outfitMesh = null
+function outfitArms() {
+  const c = outfitsLib.armRgb(outfitStore.saved())
+  armMat.diffuseColor.set(c[0] * 0.9, c[1] * 0.9, c[2] * 0.9)
+  armMat.emissiveColor.set(0, 0, 0)
+}
+function buildOutfitRig() {
+  const parts = outfitsLib.partsFor(outfitStore.saved())
+  const boxes = []
+  for (const part of parts) {
+    const m = CreateBox('outfit-part', { width: part.s[0], height: part.s[1], depth: part.s[2] }, scene)
+    m.position.set(part.p[0], part.p[1], part.p[2])
+    m.computeWorldMatrix(true)
+    const n = m.getTotalVertices()
+    const cols = new Float32Array(n * 4)
+    for (let i = 0; i < n; i++) { cols[i * 4] = part.rgb[0]; cols[i * 4 + 1] = part.rgb[1]; cols[i * 4 + 2] = part.rgb[2]; cols[i * 4 + 3] = 1 }
+    m.setVerticesData(VertexBuffer.ColorKind, cols)
+    const uv = m.getVerticesData(VertexBuffer.UVKind)
+    if (uv) {
+      for (let i = 0; i < uv.length; i += 2) uv[i] = (part.pat + uv[i]) / outfitsLib.PATTERNS.length
+      m.setVerticesData(VertexBuffer.UVKind, uv)
+    }
+    m.isPickable = false
+    boxes.push(m)
+  }
+  const merged = Mesh.MergeMeshes(boxes, true, true)
+  merged.name = 'outfit-rig'
+  merged.material = outfitMat
+  merged.isPickable = false
+  merged.parent = berty
+  merged.alwaysSelectAsActiveMesh = true
+  noa.rendering.addMeshToScene(merged, false) // noa only draws meshes it knows about, even children of the player mesh
+  if (outfitMesh) outfitMesh.dispose()
+  outfitMesh = merged
+  berty.isVisible = false
+  outfitArms()
+}
+buildOutfitRig()
 function paintBertySuit() {
   const suit = SUITS[suitId] || SUITS.berty
   const colors = berty.getVerticesData(VertexBuffer.ColorKind)
@@ -11505,6 +11577,7 @@ function paintBertySuit() {
   armMat.diffuseColor.set(suit.shirt[0], suit.shirt[1], suit.shirt[2])
   armMat.emissiveColor.set(suit.shirt[0] * 0.34, suit.shirt[1] * 0.34, suit.shirt[2] * 0.34)
   if (hands && hands.tint) hands.tint(suit.hand)
+  outfitArms() // 2.5.555: sleeves follow the Top color
 }
 paintBertySuit()
 const heldMat = new StandardMaterial('berty-held-mat', scene)
