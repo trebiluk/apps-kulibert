@@ -200,6 +200,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull, setSyncDb, syncMark } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { pickLoaded, describeWorld, worldLine as worldLineText, worldAttrs } from './save/world-id.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -4930,6 +4931,25 @@ function keepSaved(err) {
   markSave(t('saveKept'))
   return err
 }
+// 2.5.557 round 1: say which world opened and where it came from. Data attributes on <html> and window.__bertopiaWorld() carry the
+// facts for a script; Menu > World shows the same facts as a line, and "Load my saved world" toasts it.
+let worldNow = null
+function clockText(iso) {
+  try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } catch (e) { return '' }
+}
+function noteWorld(doc, from, mismatch) {
+  try {
+    const custom = isMakerPreset(makerLive.preset) ? makerName(makerLive) : ''
+    const seed = custom ? (makerLive.seed | 0) : (doc && Number.isFinite(+doc.seed) ? +doc.seed : 1)
+    worldNow = describeWorld({ id: WORLD, doc, from, customName: custom, seed, mismatch })
+    const attrs = worldAttrs(worldNow)
+    for (const k of Object.keys(attrs)) document.documentElement.dataset[k] = attrs[k]
+    const live = document.getElementById('world-now')
+    if (live) live.textContent = worldLineNow()
+  } catch (e) { console.warn('noteWorld', e) }
+}
+function worldLineNow() { return worldNow ? worldLineText(worldNow, t, clockText) : '' }
+window.__bertopiaWorld = () => (worldNow ? { ...worldNow } : null)
 async function load() {
   spotReady = false
   const bootSpot = readSpot()
@@ -4944,14 +4964,17 @@ async function load() {
       })
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    let pick = { doc, from: doc ? 'device' : 'new', mismatch: false }
     try {
       const pulled = await Promise.race([
         maybePull(WORLD, doc),
         new Promise(r => setTimeout(() => r(null), 4000))
       ])
-      if (pulled) doc = pulled
+      pick = pickLoaded(WORLD, doc, pulled) // 2.5.557 round 1: a pulled copy that names another world is never opened
+      doc = pick.doc
     } catch (e) {}
     if (__BLOX_STUDENT__ && !doc && localStorage.getItem('bert-oldworld-done') !== '1') { // 2.5.474: old world card
       try {
@@ -4986,7 +5009,7 @@ async function load() {
             bringBtn.focus() // 2.5.475: focus the first button
           })
           localStorage.setItem('bert-oldworld-done', '1')
-          if (bring) { doc = old; idbPut(WORLD, doc) }
+          if (bring) { doc = old; idbPut(WORLD, doc); pick = { doc, from: 'old', mismatch: false } }
         }
       } catch (e) {}
     }
@@ -5017,18 +5040,22 @@ async function load() {
       }
       spotReady = true
       writeSpot()
+      noteWorld(null, 'new')
       return false
     }
     if (doc.format !== 'kuliblocks') {
       keepSaved(doc)
+      noteWorld(null, 'error')
       return false
     }
     try {
       await applyDoc(doc, bootSpot)
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    noteWorld(doc, pick.from, pick.mismatch)
     const pinned = mergePin(doc)
     if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
     allowSave = !readOnlySave && !savePaused
@@ -7351,7 +7378,8 @@ panels = mountPanels({
   workbenchOn: () => calm.workbenchOn(),
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
-  load: () => load(),
+  load: async () => { const ok = await load(); if (ok && worldNow) toast(worldLineNow()); return ok },
+  worldLine: () => worldLineNow(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
