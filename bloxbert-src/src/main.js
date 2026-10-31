@@ -200,6 +200,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { createSaveSoon } from './save/save-soon.js' // 0056
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -4901,14 +4902,24 @@ function save() {
   saveChain = job.catch(() => {})
   return job
 }
+// 0056: saveSoon means "something changed". The first change saves at once; changes after that share one save
+// per 2 s. The chip paints only for a save that really runs, and a failed save shows "Not saved" instead of
+// an unhandled rejection. Nothing here re-queues on its own, so an idle world never saves.
+const saveQueue = createSaveSoon({
+  gapMs: 2000,
+  run: () => save(),
+  onStart: () => paintSaveChip('saving'),
+  onDone: () => paintSaveChip(navigator.onLine ? 'saved' : 'offline'),
+  onFail: (e) => {
+    const el = $('save-chip')
+    if (el) el.hidden = true // not "Saving…" forever
+    if (e && e.code === 'paused') { pauseOtherTab(); return }
+    showNotSavedChip()
+  },
+})
 saveSoon = () => {
   dirty = true
-  paintSaveChip('saving')
-  return save().then((bytes) => {
-    if (!(bytes >= 0)) return bytes
-    paintSaveChip(navigator.onLine ? 'saved' : 'offline')
-    return bytes
-  })
+  return saveQueue.note()
 }
 async function saveClicked() {
   paintSaveChip('saving')
