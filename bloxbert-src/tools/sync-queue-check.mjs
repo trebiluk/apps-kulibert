@@ -6,6 +6,9 @@ import { createHash } from 'node:crypto'
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { fromDoc, fitPlayer } from '../src/save.js'
+import { readFileSync } from 'node:fs'
+import { EXTRA } from '../src/strings-extra.js'
+import { flagOn } from '../src/save/sync-flag.js'
 import { getSyncState, mountSyncChip, setSyncState, onSyncRetry } from '../src/save/sync-chip.js'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -499,16 +502,43 @@ for (const [label, setup] of [
     made.push(e)
     return e
   }
-  globalThis.document = { createElement: el, body: { appendChild() {} } }
+  // a fake Tech Room bar for the placement checks: 48 px (one row) or 101 px (phone, two rows)
+  let barH = 48
+  const aliasEl = { hidden: false, getBoundingClientRect: () => ({ left: 1289, width: 71 }) }
+  const barEl = { getBoundingClientRect: () => ({ top: 0, height: barH }), querySelector: (sel) => (sel === '.kb-alias' ? aliasEl : null) }
+  globalThis.document = { createElement: el, body: { appendChild() {} }, querySelector: (sel) => (sel === '.kb-bar' ? barEl : null) }
+  window.innerWidth = 1366
+  // item 3: the chip follows the same on/off source as the sync code (URL or sessionStorage)
+  globalThis.location = { search: '' }
+  let store = {}
+  globalThis.sessionStorage = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v) } }
+  eq(flagOn() === false, 'flag off with no URL flag and no session flag')
+  mountSyncChip()
+  eq(made.length === 0, 'sync off: no chip')
+  store['bt-sync'] = '1'
+  eq(flagOn() === true, 'flag on through sessionStorage alone (after a reload)')
   mountSyncChip()
   await flush()
+  eq(made.some((e) => e.className === 'bt-sync-chip'), 'chip mounts when sync is on through sessionStorage only')
+  const src = (f) => readFileSync(new URL('../src/save/' + f, import.meta.url), 'utf8')
+  eq(src('sync-chip.js').includes("from './sync-flag.js'") && src('server-sync.js').includes("from './sync-flag.js'"), 'chip and sync code import the same flag module')
+  eq(!/function flagOn\(/.test(src('sync-chip.js')) && !/function flagOn\(/.test(src('server-sync.js')), 'no second copy of the flag check')
+  // placement: never under the bar's Sign in button
+  const wrapEl = made.find((e) => e.className === 'bt-sync-wrap')
+  eq(wrapEl && wrapEl.style.zIndex === undefined && /z-index:92/.test(wrapEl.style.cssText), 'chip sits above the bar (z-index 92 over 90)')
+  setSyncState('saved')
+  eq(wrapEl.style.top === '2px' && wrapEl.style.right === '85px' && wrapEl.style.left === 'auto', 'wide bar: chip left of Sign in, inside the bar band (' + wrapEl.style.top + ',' + wrapEl.style.right + ')')
+  barH = 101
+  setSyncState('saving')
+  eq(wrapEl.style.top === '54px' && wrapEl.style.left === '8px' && wrapEl.style.right === 'auto', 'phone bar: chip on the second row, left (' + wrapEl.style.top + ',' + wrapEl.style.left + ')')
+  barH = 48
   const retry = made.find((e) => e.className === 'bt-sync-retry')
   eq(!!retry && retry.style.cssText.includes('min-height:44px') && retry.style.cssText.includes('display:none'), 'Try again button exists, 44 px, hidden at first')
   eq(retry && retry.innerHTML.includes('↻') && retry.innerHTML.includes('Try again') && retry.attrs['aria-label'] === 'Try again', 'button has icon and text')
   setSyncState('failed')
   eq(retry.style.display === 'flex', 'visible in the failed state')
   const chipEl = made.find((e) => e.className === 'bt-sync-chip')
-  eq(chipEl.live.textContent === 'Not saved to school' && chipEl.icon.textContent === '⚠', 'chip says Not saved to school (' + chipEl.live.textContent + ')')
+  eq(chipEl.live.textContent === 'Not saved' && chipEl.icon.textContent === '⚠', 'chip says Not saved (' + chipEl.live.textContent + ')')
   let pressed = 0
   onSyncRetry(() => { pressed++ })
   retry.handlers.click()
@@ -516,6 +546,26 @@ for (const [label, setup] of [
   setSyncState('saving')
   eq(retry.style.display === 'none', 'hidden again once a try is running')
   delete globalThis.document
+  delete globalThis.sessionStorage
+  globalThis.location = { search: '?sync=1' }
+}
+
+// 27. the shared sign-in popup keys exist in every language, so the page never shows a raw key
+{
+  for (const lang of ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']) {
+    const row = EXTRA[lang] || {}
+    eq(typeof row.signOptional === 'string' && row.signOptional.length > 20 && row.signOptional !== 'signOptional', lang + ': signOptional is a real sentence')
+    eq(typeof row.signOut === 'string' && row.signOut.length > 1 && row.signOut !== 'signOut', lang + ': signOut is a real word')
+    eq(typeof row.codeHint === 'string' && row.codeHint.length > 1 && row.codeHint !== 'codeHint', lang + ': code placeholder is real text')
+    eq(typeof row.pinHint === 'string' && row.pinHint.length > 1 && row.pinHint !== 'pinHint', lang + ': PIN placeholder is real text')
+    if (lang !== 'en') eq(row.codeHint !== EXTRA.en.codeHint && row.pinHint !== EXTRA.en.pinHint, lang + ': placeholders are not the English text')
+  }
+  eq(/Tap Sign in/.test(EXTRA.en.signOptional), 'English sentence reads right')
+  eq(EXTRA.en.codeHint === '5 characters' && EXTRA.en.pinHint === 'From your teacher', 'English placeholders unchanged')
+  // main.js applies the placeholder attribute and checks it for drift (source-level check; the page needs a build)
+  const mainSrc = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8')
+  eq(/querySelectorAll\('\[data-i18n-placeholder\]'\)\) el\.setAttribute\('placeholder', t\(el\.dataset\.i18nPlaceholder\)\)/.test(mainSrc), 'applyI18n sets the placeholder attribute')
+  eq(/getAttribute\('placeholder'\) !== t\(el\.dataset\.i18nPlaceholder\)/.test(mainSrc), 'drift check covers placeholders')
 }
 
 console.log = realLog
