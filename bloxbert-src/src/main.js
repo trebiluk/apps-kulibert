@@ -534,6 +534,8 @@ function seatToasts() {
   try {
     const floor = Math.round(Math.max(
       shownBottom(document.querySelector('header.top')),
+      shownBottom(document.querySelector('.kb-bar')), // 2.5.592 r2: the shared top bar and the game HUD row too
+      shownBottom(document.getElementById('top')),
       shownBottom(document.getElementById('chip-lane')),
       shownBottom(document.getElementById('boss-bar'))
     ) + 8)
@@ -9080,13 +9082,28 @@ async function loadOldClicked() {
   if (loadOldClicked.busy) return
   loadOldClicked.busy = true
   if (btn) btn.setAttribute('aria-busy', 'true')
-  toast(t('oldLoading'))
+  // 2.5.592 r2: each of these stays at least 4 s, so a kid can read it
+  const say = (key) => { showToast(t(key), { ms: 4500 }); seatToasts() }
+  // The toast can wait in line behind another one, so count the 4 s from when it is really on screen.
+  let shownAt = 0
+  const t0 = performance.now()
+  const watch = setInterval(() => {
+    const el = document.getElementById('toast')
+    if (!shownAt && el && !el.hidden && (el.textContent || '').indexOf(t('oldLoading')) !== -1) shownAt = performance.now()
+    if (shownAt || performance.now() - t0 > 6000) clearInterval(watch)
+  }, 50)
+  const after4 = async () => {
+    while (!shownAt && performance.now() - t0 < 6000) await new Promise((r) => setTimeout(r, 50))
+    const from = shownAt || t0
+    await new Promise((r) => setTimeout(r, Math.max(0, 4300 - (performance.now() - from)))) // 4 s readable plus the fade-in
+  }
+  say('oldLoading')
   markSave(t('oldLoading'))
   try {
     try { await window.__bertopiaOldSeed } catch (e) {}
     try { await bootLoad } catch (e) {}
     const old = await readOldSave()
-    if (!old || old.format !== 'kuliblocks') { toast(t('oldNone')); markSave(t('oldNone')); return false }
+    if (!old || old.format !== 'kuliblocks') { await after4(); say('oldNone'); markSave(t('oldNone')); return false }
     try {
       const now = new Date()
       await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
@@ -9097,12 +9114,13 @@ async function loadOldClicked() {
     try { localStorage.removeItem(SPOT_KEY) } catch (e) {} // stand where the old world left you, not where this one did
     try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
     const ok = await load()
-    if (!ok) { toast(t('saveKept')); return false }
-    toast(t('oldLoaded'))
+    await after4()
+    if (!ok) { say('saveKept'); return false }
+    say('oldLoaded')
     markSave(t('oldLoaded'))
     return true
   } catch (e) {
-    toast(t('saveKept'))
+    say('saveKept')
     return false
   } finally {
     oldSwap = false
