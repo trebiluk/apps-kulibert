@@ -677,6 +677,27 @@
       parent.add(zgroup);
       addLabel(parent, "Bin", new THREE.Vector3(zx - 30, bz.h + 24, zz + 18), 36, 8);
     }
+    if (level.physics) {
+      var ph = level.physics;
+      var byaw = ph.belt.base * Math.PI / 180;
+      var rig = new THREE.Group();
+      rig.rotation.y = byaw;
+      var slab = new THREE.Mesh(new THREE.BoxGeometry(34, 3, ph.belt.r1 - ph.belt.r0), MATS.table);
+      slab.position.set(0, ph.belt.top - 1.5, (ph.belt.r0 + ph.belt.r1) / 2);
+      rig.add(slab);
+      var stopper = new THREE.Mesh(new THREE.BoxGeometry(34, ph.stop.top - ph.belt.top + 3, ph.stop.hw * 2), MATS.joint);
+      stopper.position.set(0, (ph.stop.top + ph.belt.top - 3) / 2, ph.stop.r);
+      rig.add(stopper);
+      parent.add(rig);
+      addLabel(parent, "Belt \u2192", vec((ph.belt.r0 + ph.belt.r1) / 2 - 40, ph.belt.top + 22, ph.belt.base), 36, 8);
+      if (ph.target) {
+        var tg = ph.target;
+        var tm = new THREE.Mesh(new THREE.BoxGeometry(tg.hw * 2, tg.hh * 2, tg.hw * 2), MATS.part);
+        tm.position.copy(vec(tg.r, tg.hh, tg.base));
+        tm.rotation.y = tg.base * Math.PI / 180;
+        parent.add(tm);
+      }
+    }
     function addPart(part) {
       if (!part) return;
       var y = part.inBin ? part.hh : part.y;
@@ -689,6 +710,7 @@
         mesh = new THREE.Mesh(new THREE.BoxGeometry(part.hw * 2, part.hh * 2, part.hw * 2), colorMat);
       }
       mesh.position.copy(pos);
+      if (part.ang) { mesh.rotation.order = "YXZ"; mesh.rotation.y = part.base * Math.PI / 180; mesh.rotation.x = -part.ang; }
       parent.add(mesh);
       var tagAt = pos.clone().add(new THREE.Vector3(-28, 22, 16));
       if (part.shape === "square" && part.color === "red") addLabel(parent, "Red square \u25a0", tagAt, 40, 9);

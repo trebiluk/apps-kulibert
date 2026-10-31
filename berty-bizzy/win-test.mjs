@@ -32,12 +32,12 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.6.1");
-assert.equal(G.LEVELS.length, 10);
+assert.equal(G.APP_VERSION, "1.7.0");
+assert.equal(G.LEVELS.length, 11);
 assert.equal(G.LEVELS[6].id, "T3");
 assert.ok(G.LEVELS[6].duo);
 for (let i = 0; i < 6; i++) assert.ok(!G.LEVELS[i].duo, "L" + (i + 1) + " stays Berty-only");
-assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug", "handoff", "handoff", "handoff", "handoff"]);
+assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug", "handoff", "handoff", "handoff", "handoff", "touch"]);
 assert.equal(G.spotName(-30, 96), "A1");
 assert.equal(G.spotName(0, 128), "B2");
 assert.equal(G.spotName(30, 162), "C3");
@@ -253,7 +253,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.6\.1/);
+assert.match(page, /v1\.7\.0/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -359,7 +359,7 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.6\.1<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.7\.0<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
@@ -563,3 +563,89 @@ assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
   }
 }
 console.log("berty-bizzy win-test ok");
+
+// ---- 1.7.0: touch sensor, If touch, fixed-step physics ----
+{
+  const P7 = G.LEVELS[10];
+  const W = ["repeat-3", "wait-half", "if-touch", "claw-close", "end-if", "end-repeat", "base-right", "base-right", "claw-open"];
+  const run = (c) => G.runAll(P7, c);
+  assert.ok(G.BLOCKS.some((b) => b.id === "if-touch" && b.joint === "if"), "If touch lives in the If family");
+  assert.ok(P7.blocks.includes("if-touch") && P7.blocks.includes("end-if"));
+  for (const code of ["en", "es", "uk", "ru", "rw", "ti", "ar", "fa-AF"]) {
+    assert.ok(G.labelFor("if-touch", code), "If touch label " + code);
+    for (const k of ["P7", "P7-goal", "v170", "w170a", "w170b", "w170c", "hb10", "hf7", "touchOn", "touchOff"]) {
+      assert.ok(G.uiText(code, k) && G.uiText(code, k) !== k, k + " in " + code);
+    }
+    for (const m of ["the claw closed without touch, so the cube slipped", "the cube tipped over", "the stack fell"]) {
+      assert.match(G.crashLine(m, 5, code), /5/, "step number in " + code);
+    }
+    if (code !== "en") assert.notEqual(G.labelFor("if-touch", code), "If touch", "If touch translated " + code);
+  }
+  // older levels do not have a sensor: If touch is never true there
+  assert.equal(G.sensorMatch(G.initialState(G.LEVELS[4]), "if-touch"), false);
+  // with If touch the level passes; the same moves without it fail
+  const win = run(W);
+  assert.equal(win.win, true, "touch level passes with If touch");
+  assert.equal(win.simMs, 3500);
+  const slip = run(["wait-half", "claw-close", "base-right", "base-right", "claw-open"]);
+  assert.equal(slip.win, false);
+  assert.equal(slip.crash, "the claw closed without touch, so the cube slipped");
+  assert.equal(slip.step, 2, "slip names the step of the early Close claw");
+  assert.match(G.crashLine(slip.crash, slip.step, "en"), /at step 2\.$/);
+  const early = run(["claw-close", "base-right", "base-right", "claw-open"]);
+  assert.equal(early.win, false);
+  // stacking off-center: the stack falls, with the step of the release
+  const fell = run(W.slice(0, 6).concat(["wrist-up", "base-right", "base-right", "claw-open"]));
+  assert.equal(fell.win, false);
+  assert.equal(fell.crash, "the stack fell");
+  assert.equal(fell.step, 10);
+  // tipping: a cube set down half on a bin wall tips over
+  {
+    const P = G.PHYS;
+    const sim = P.create(P7);
+    const L = P7.physics;
+    sim.cube.mode = "free"; sim.cube.base = 30; sim.cube.vx = 0; sim.cube.vy = 0;
+    sim.cube.r = L.bin.r + L.bin.half + 8 + 3; sim.cube.y = 60;
+    for (let i = 0; i < 600 && sim.cube.mode !== "rest"; i++) P.step(sim, P7, null);
+    assert.equal(sim.fail, "tip", "a cube half on a wall tips over");
+  }
+  // determinism: no Math.random, same result twice, same time at 30 / 60 / 120 fps
+  assert.ok(!/Math\.random/.test(fs.readFileSync(new URL("./physics.js", import.meta.url), "utf8")), "no Math.random in physics.js");
+  assert.ok(!/Math\.random/.test(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8")), "no Math.random in game.js");
+  assert.deepEqual(run(W).state.phys, win.state.phys);
+  const P = G.PHYS;
+  assert.equal(P.STEP, 1 / 120);
+  assert.equal(P.MAX_SUB, 4);
+  assert.ok(P.MAX_BODIES <= 12 && P.MAX_ARMS <= 2);
+  const playAt = (fps) => {
+    const pace = P.pacer();
+    let st = G.initialState(P7);
+    const r = G.beginRun(W);
+    let ticks = 0;
+    let worst = 0;
+    for (let g = 0; g < 500; g++) {
+      const ev = G.advance(r, st, P7);
+      if (ev.done && !ev.cmd) break;
+      st = ev.state;
+      if (ev.frames) {
+        let played = 0;
+        while (played < ev.frames.length) {
+          const n = pace.steps(1 / fps);
+          worst = Math.max(worst, n);
+          played += n;
+        }
+        ticks += ev.frames.length;
+      }
+      if (ev.win || G.goalMet(st, P7)) break;
+    }
+    return { ticks, ms: G.simMsOf(st), win: G.goalMet(st, P7), worst };
+  };
+  const a30 = playAt(30), a60 = playAt(60), a120 = playAt(120);
+  assert.deepEqual([a30.ticks, a30.ms, a30.win], [a60.ticks, a60.ms, a60.win]);
+  assert.deepEqual([a60.ticks, a60.ms, a60.win], [a120.ticks, a120.ms, a120.win]);
+  assert.ok(a30.worst <= 4 && P.pacer().steps(1.0) <= 4, "at most 4 substeps per frame");
+  // the page loads the sim before the engine and carries the 1.7.0 notes
+  assert.match(page, /physics\.js\?v=1\.7\.0/);
+  assert.match(page, /data-k="w170a"/);
+  console.log("ok 1.7.0 touch + physics: pass at", win.simMs, "ms; 30/60/120 fps ticks", a30.ticks, a60.ticks, a120.ticks);
+}
