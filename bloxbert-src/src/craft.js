@@ -33,6 +33,12 @@ export function needsMetal(recipe, recipes) {
   return hit
 }
 export function resetMetalMemo() { metalMemo.clear() }
+// Woodshop floor lamp and wall lamp are not in the Crafting book. One check on the DECOR inputs:
+// any metal ingredient stays locked until T4 opens. Rug inputs are wool, so they stay out of this.
+export function decorMetalLocked(ins, creative) {
+  if (gateOpen('T4', !!creative)) return false
+  return Array.isArray(ins) && ins.some((row) => row && METAL.indexOf(row[0]) >= 0)
+}
 export function countOf(bag, item) {
   if (!bag || !bag.count) return 0
   const list = anyList(item)

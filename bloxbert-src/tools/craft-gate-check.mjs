@@ -1,5 +1,5 @@
 // Brief 0065: metal recipes show locked (not "almost") until T4 opens; belt benches accept plankAny/stoneAny/woolAny.
-import { craftStatus, needsMetal, anyList } from '../src/craft.js'
+import { craftStatus, needsMetal, anyList, decorMetalLocked } from '../src/craft.js'
 import { RECIPES } from '../src/data/recipes.js'
 import { beltRecipeOk, craftOnce } from '../src/conveyor.js'
 import { setGate } from '../src/data/gates.js'
@@ -51,5 +51,21 @@ ok('mixed planks + sticks bin crafts a stick recipe', craftOnce(bin2, out2, [byI
 // 6) recipes list intact
 ok('RECIPES has no duplicate ids', new Set(RECIPES.map((r) => r.id)).size === RECIPES.length)
 ok('pack recipes mounted (hoe, flour, techLine)', ['hoe', 'flour', 'techLine'].every(byId))
+
+// 7) woodshop DECOR: one condition locks both lamps, not the rug
+const floorIns = [['ironIngot', 1], ['glass', 1], ['stick', 1]]
+const wallIns = [['ironIngot', 1], ['glass', 1]]
+const rugIns = [['woolBlue', 4], ['woolGreen', 4], ['woolRed', 4], ['woolTan', 4]]
+ok('decor floorLamp locked in survival', decorMetalLocked(floorIns, false))
+ok('decor wallLamp locked in survival', decorMetalLocked(wallIns, false))
+ok('decor rug not metal-locked', !decorMetalLocked(rugIns, false))
+ok('decor lamps open in creative', !decorMetalLocked(floorIns, true) && !decorMetalLocked(wallIns, true))
+setGate('T4', true)
+ok('decor lamps open when T4 is open', !decorMetalLocked(floorIns, false) && !decorMetalLocked(wallIns, false))
+setGate('T4', false)
+ok('decor lamps lock again after T4 closes', decorMetalLocked(floorIns, false) && decorMetalLocked(wallIns, false))
+const lampBook = { id: 'floorLamp', at: 'woodshop', in: floorIns, out: ['floorLamp', 1] }
+const lampSt = craftStatus(lampBook, bagOf({ ironIngot: 64, glass: 64, stick: 64 }), near, false)
+ok('floorLamp book row is gated metal, never almost', lampSt.gate === 'metal' && lampSt.group === 'gated' && !lampSt.ok, lampSt.gate + '/' + lampSt.group)
 console.log(fails ? 'craft-gate: ' + fails + ' FAIL' : 'craft-gate: all PASS')
 process.exit(fails ? 1 : 0)

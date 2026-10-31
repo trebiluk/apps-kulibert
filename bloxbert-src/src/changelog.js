@@ -1,15 +1,15 @@
 export const CHANGELOG = [
   // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
   { v: '2.5.571', date: '2026-10-31', lines: {
-    en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.'],
-    simple: ['2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.'],
-    uk: ['2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.'],
-    ru: ['2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.'],
-    es: ['2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.'],
-    ar: ['2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.'],
-    'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.'],
-    rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.'],
-    ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።'],
+    en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.', 'Woodshop floor lamp and wall lamp show Needs metal tier until the smelter tier opens. The rug does not.'],
+    simple: ['2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.', 'The two woodshop lamps stay locked until metal is open. The rug does not.'],
+    uk: ['2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.', 'Торшер і настінна лампа в столярці показують «Потрібен рівень металу», доки не відкриється рівень плавильні. Килим — ні.'],
+    ru: ['2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.', 'Торшер и настенная лампа в столярке показывают «Нужна ступень металла», пока не откроется ступень плавильни. Ковёр — нет.'],
+    es: ['2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.', 'La lámpara de pie y la de pared en el taller muestran Necesita nivel de metal hasta que se abra el nivel de la fundidora. La alfombra no.'],
+    ar: ['2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.', 'مصباح الأرض ومصباح الجدار في ورشة الخشب يظهران «يلزم مستوى المعدن» حتى يُفتح مستوى المصهر. السجادة لا.'],
+    'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.', 'چراغ زمینی و چراغ دیواری در کارگاه چوب «پله فلز لازم است» را نشان می‌دهند تا پله کوره باز شود. قالی نه. (draft translation)'],
+    rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.', 'Itara ryo hasi n\'itara ryo ku rukuta mu muciro w\'imbaho bigaragaza Ikeneye urwego rw\'icyuma kugeza urwego rw\'isaturire rufunguwe. Agatapi ntabwo. (draft translation)'],
+    ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።', 'ናይ መሬት መብራህቲን ናይ ግድሚ መብራህቲን ኣብ ናይ ዕንጨይት ዕዮ ደረጃ ብረት የድሊ የርእዩ፡ መፍለሒ ደረጃ ክሳብ ዝኽፈት። መንጸፍ ኣይኮነን። (draft translation)'],
   } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
