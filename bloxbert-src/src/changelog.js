@@ -1,15 +1,26 @@
 export const CHANGELOG = [
   // 2.5.565 Holo Hand parts 1 and 2. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.565', date: '2026-10-31', lines: {
-    en: ['2.5.565 — Your hand is now a small amber hologram of what you hold. A thin beam points at what you mine, place or open. Settings > Controls: Main hand Left or Right, and H hides the hologram.'],
-    simple: ['2.5.565 — Your hand is a small amber picture of what you hold. A thin line points at what you dig, put or open. Settings > Controls: Left or Right hand. H hides it.'],
-    uk: ['2.5.565 — Рука тепер — маленька бурштинова голограма того, що тримаєш. Тонкий промінь показує, що копаєш, ставиш або відкриваєш. Налаштування > Керування: ліва чи права рука, H ховає голограму.'],
-    ru: ['2.5.565 — Рука теперь — маленькая янтарная голограмма того, что держишь. Тонкий луч показывает, что копаешь, ставишь или открываешь. Настройки > Управление: левая или правая рука, H прячет голограмму.'],
-    es: ['2.5.565 — Tu mano ahora es un pequeño holograma ámbar de lo que llevas. Un rayo fino señala lo que picas, pones o abres. Ajustes > Controles: mano izquierda o derecha, y H oculta el holograma.'],
-    ar: ['2.5.565 — يدك الآن صورة مجسّمة كهرمانية صغيرة لما تحمله. شعاع رفيع يشير إلى ما تعدّنه أو تضعه أو تفتحه. الإعدادات > التحكم: اليد اليسرى أو اليمنى، و H يخفي الصورة.'],
-    'fa-AF': ['2.5.565 — دست تو حالا یک هولوگرام کهربایی کوچک از چیزی است که در دست داری. یک پرتو نازک به چیزی که می‌کنی، می‌گذاری یا باز می‌کنی اشاره می‌کند. تنظیمات > کنترول‌ها: دست چپ یا راست، و H هولوگرام را پنهان می‌کند.'],
-    rw: ['2.5.565 — Ukuboko kwawe ubu ni ishusho nto y\'umuhondo w\'icyo ufashe. Umurongo muto werekana icyo ucukura, ushyiraho cyangwa ufungura. Igenamiterere > Igenzura: ukuboko kw\'ibumoso cyangwa iburyo, H ihisha ishusho.'],
-    ti: ['2.5.565 — ኢድካ ሕጂ ንእሽቶ ሆሎግራም ኣምበር ናይቲ ዝሓዝካዮ እዩ። ቀጢን ጩራ ናብቲ እትኹዕቶ፡ እተቐምጦ ወይ እትኸፍቶ የመልክት። ቅጥዒ > መቆጻጸሪ: ጸጋማይ ወይ የማናይ ኢድ፡ H ነቲ ሆሎግራም ይሓብእ።'],
+    en: ['2.5.565 — A thin amber beam now points from your hand to what you mine, place or open, with words like Mining 60% and Place. Broken blocks fade away instead of flashing.'],
+    simple: ['2.5.565 — A thin line goes from your hand to what you dig, put or open. It says Digging 60% or Put block. No flash when a block breaks.'],
+    uk: ['2.5.565 — Тонкий бурштиновий промінь тепер іде від руки до того, що копаєш, ставиш або відкриваєш, зі словами як «Копаю 60%» і «Поставити». Розбиті блоки зникають плавно, без спалаху.'],
+    ru: ['2.5.565 — Тонкий янтарный луч теперь идёт от руки к тому, что копаешь, ставишь или открываешь, со словами как «Копаю 60%» и «Поставить». Разбитые блоки исчезают плавно, без вспышки.'],
+    es: ['2.5.565 — Un rayo ámbar fino va de tu mano a lo que picas, pones o abres, con palabras como Picando 60% y Poner. Los bloques rotos se desvanecen en vez de destellar.'],
+    ar: ['2.5.565 — شعاع كهرماني رفيع يمتد الآن من يدك إلى ما تعدّنه أو تضعه أو تفتحه، مع كلمات مثل «تعدين 60٪» و«ضع». الكتل المكسورة تتلاشى بدلاً من أن تومض.'],
+    'fa-AF': ['2.5.565 — یک پرتو کهربایی نازک حالا از دست تو به چیزی که می‌کنی، می‌گذاری یا باز می‌کنی می‌رود، با کلماتی مثل «کندن ۶۰٪» و «بگذار». بلاک‌های شکسته به جای چشمک زدن محو می‌شوند.'],
+    rw: ['2.5.565 — Umurongo muto w\'umuhondo ubu uva ku kuboko kwawe ugana ku cyo ucukura, ushyiraho cyangwa ufungura, hamwe n\'amagambo nka Gucukura 60% na Shyiraho. Amabuye yamenetse arashira aho kumurika.'],
+    ti: ['2.5.565 — ቀጢን ጩራ ኣምበር ሕጂ ካብ ኢድካ ናብቲ እትኹዕቶ፡ እተቐምጦ ወይ እትኸፍቶ ይኸይድ፡ ከም «ምኹዓት 60%» ን «ኣቐምጥ» ዝኣመሰሉ ቃላት ኣለዉዎ። ዝተሰብሩ ብሎካት ኣብ ክንዲ ምብልጭላጭ ይጠፍኡ።'],
+  // 2.5.564 Holo Hand part 1. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.564', date: '2026-10-31', lines: {
+    en: ['2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.'],
+    simple: ['2.5.564 — Your hand is a small amber picture of what you hold. Settings: pick Left or Right hand.'],
+    uk: ['2.5.564 — Рука тепер маленька бурштинова голограма того, що ти тримаєш. У Налаштуваннях є Керування з кнопками Ліва і Права для головної руки.'],
+    ru: ['2.5.564 — Рука теперь маленькая янтарная голограмма того, что ты держишь. В Настройках есть Управление с кнопками Левая и Правая для главной руки.'],
+    es: ['2.5.564 — Tu mano ahora es un pequeño holograma ámbar de lo que sostienes. Ajustes tiene Controles, con botones Izquierda y Derecha para tu mano principal.'],
+    ar: ['2.5.564 — يدك الآن صورة مجسمة كهرمانية صغيرة لما تحمله. في الإعدادات قسم التحكم، مع زري يسار ويمين ليدك الرئيسية.'],
+    'fa-AF': ['2.5.564 — دست شما حالا یک هولوگرام کوچک کهربایی از چیزی است که در دست دارید. در تنظیمات بخش کنترول‌ها با دکمه‌های چپ و راست برای دست اصلی هست.'],
+    rw: ['2.5.564 — Ukuboko kwawe ubu ni ishusho ntoya y\'umuhondo y\'icyo ufashe. Igenamiterere rifite Igenzura, n\'utubuto Ibumoso n\'Iburyo ku kuboko kwawe nyamukuru.'],
+    ti: ['2.5.564 — ኢድካ ሕጂ ናይቲ ሒዝካዮ ዘለኻ ንእሽቶ ቡናዊ ሆሎግራም እያ። ኣብ ቅጥዕታት መቆጻጸሪ ኣሎ፡ ንቀንዲ ኢድካ ጸጋምን የማንን መጠወቒታት።'],
   } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
