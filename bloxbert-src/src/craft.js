@@ -1,7 +1,7 @@
 import { gateOpen } from './data/gates.js'
 import { ITEMS } from './data/items.js'
 const WOOL = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
-const STONE = ['stone', 'slate', 'coal']
+const STONE = ['stone', 'coal']
 const PLANKS = ['planks', 'birchPlanks', 'pinePlanks']
 export function isWool(item) { return WOOL.indexOf(item) >= 0 }
 export function isStone(item) { return STONE.indexOf(item) >= 0 }
