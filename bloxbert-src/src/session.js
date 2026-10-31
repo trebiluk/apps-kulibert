@@ -1737,7 +1737,7 @@ export function createSession(api) {
         trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
       } else if (need === 'stoneAny') {
         let left = takeN
-        for (const c of ['stone', 'slate', 'coal']) {
+        for (const c of ['stone', 'coal']) {
           const d = Math.min(bag.count(c), left)
           if (d > 0 && bag.take(c, d)) {
             trayWool[i] = mixAdd(trayWool[i], c, d)
@@ -2714,7 +2714,7 @@ export function createSession(api) {
   }
   function takeNamed(item, n) {
     if (item !== 'woolAny' && item !== 'stoneAny' && item !== 'plankAny') return bag.take(item, n)
-    const order = item === 'stoneAny' ? ['stone', 'slate', 'coal'] : item === 'plankAny' ? ['planks', 'birchPlanks', 'pinePlanks'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+    const order = item === 'stoneAny' ? ['stone', 'coal'] : item === 'plankAny' ? ['planks', 'birchPlanks', 'pinePlanks'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
     let left = n
     const spent = []
     for (const c of order) {
