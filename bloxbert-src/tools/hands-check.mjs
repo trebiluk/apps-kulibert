@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url'
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(process.env.BLOX_ROOT || path.resolve(__dir, '../../blocks-test'))
 const sharedRoot = path.resolve(process.env.BLOX_SHARED || path.resolve(__dir, '../../shared'))
-const out = '/tmp/hands-check'
+const out = process.env.HANDS_OUT || '/tmp/hands-check'
 mkdirSync(out, { recursive: true })
 const chrome = ['/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => existsSync(p))
 if (!chrome) { console.error('No Chrome/Chromium found.'); process.exit(1) }
@@ -83,10 +83,20 @@ async function look(page) {
       if (r.width && q.right > r.left && q.left < r.right && q.bottom > r.top && q.top < r.bottom) covers.push(e.id || String(e.className).slice(0, 24) || e.tagName)
     }
     let bright = 0
+    let vis = 0
+    let fillRatio = 0
     const c = el.querySelector('canvas')
     try {
       const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
-      for (let i = 0; i < d.length; i += 4) if (d[i + 3]) bright = Math.max(bright, d[i], d[i + 1], d[i + 2])
+      let y0 = c.height, y1 = -1, x0 = c.width, x1 = -1, n = 0
+      for (let i = 0; i < d.length; i += 4) {
+        if (!d[i + 3]) continue
+        bright = Math.max(bright, d[i], d[i + 1], d[i + 2])
+        const p = i / 4, x = p % c.width, y = (p / c.width) | 0
+        n++; if (y < y0) y0 = y; if (y > y1) y1 = y; if (x < x0) x0 = x; if (x > x1) x1 = x
+      }
+      // r1: the drawn picture's own height on screen, not the box's
+      if (y1 >= 0) { vis = Math.round(Math.max(y1 - y0 + 1, x1 - x0 + 1) / c.height * r.height); fillRatio = n / ((y1 - y0 + 1) * (x1 - x0 + 1)) }
     } catch (e) {}
     return {
       hand: h,
@@ -95,6 +105,8 @@ async function look(page) {
       covers,
       anim: getComputedStyle(el.querySelector('.holo-bob')).animationName,
       bright,
+      vis,
+      fillRatio,
       vw: innerWidth,
       vh: innerHeight,
     }
@@ -110,6 +122,7 @@ for (const [w, h, touch] of [[1366, 768, false], [412, 915, true], [915, 412, tr
   note(tag + ' covers no control', a.covers.length === 0, a.covers.join(','))
   note(tag + ' lower half, main-hand side', a.rect[1] > a.vh * 0.4 && a.rect[0] + a.rect[2] / 2 > a.vw / 2, JSON.stringify(a.rect))
   note(tag + ' size about 12% of height', a.rect[3] >= 44 && a.rect[3] <= Math.max(44, a.vh * 0.12) + 1, a.rect[3] + 'px')
+  note(tag + ' drawn hand is about 12% of height (r1)', a.vis >= Math.min(a.vh * 0.11, a.rect[3]) && a.vis <= a.vh * 0.12 + 2, a.vis + 'px of ' + a.vh + ' = ' + (a.vis / a.vh * 100).toFixed(1) + '%')
   note(tag + ' no mesh (0 tris)', a.hand && a.hand.tris === 0)
   note(tag + ' not near white', a.bright > 0 && a.bright <= 0xEE, 'max channel ' + a.bright)
   note(tag + ' bobs', a.anim === 'holo-bob', a.anim)
@@ -118,6 +131,34 @@ for (const [w, h, touch] of [[1366, 768, false], [412, 915, true], [915, 412, tr
   await sleep(600)
   const k2 = (await look(page)).hand.key
   note(tag + ' follows the held item', k1 && k2 && k1 !== k2, k1 + ' -> ' + k2)
+  {
+    // r1: Sapling shows its own sprite (a cube tile read as a tan square: almost every pixel of its box filled)
+    const slot = await page.evaluate(() => {
+      window.__blocks.mode('survival'); window.__blocks.give('sapling', 1)
+      const b = window.__blocks.bag(); const list = Array.isArray(b) ? b : (b && b.slots) || []
+      for (let i = 0; i < 9; i++) { const s = list[i]; if (s && (s.item || s.id || s.key) === 'sapling') return i }
+      return -1
+    })
+    if (slot >= 0) { await page.keyboard.press(String(slot + 1)); await sleep(900) }
+    const sp = await look(page)
+    await page.screenshot({ path: path.join(out, tag + '-sapling.png') })
+    note(tag + ' Sapling uses its sprite, not a square (r1)', slot >= 0 && sp.hand && /^block:|sapling/.test(sp.hand.key || '') && sp.shown && sp.fillRatio < 0.8, 'slot ' + slot + ' key ' + (sp.hand && sp.hand.key) + ' fill ' + sp.fillRatio.toFixed(2))
+    await page.evaluate(() => window.__blocks.mode('creative'))
+    await sleep(400)
+  }
+  {
+    // r1: Left at every size; at 412 upright it sits in the lower-left corner
+    await page.evaluate(() => window.__blocks.lookHand({ show: true, side: 'left' }))
+    await sleep(1300)
+    const l = await look(page)
+    await page.screenshot({ path: path.join(out, tag + '-left.png') })
+    // 412 upright: the stick pad and hotbar fill the corner itself, so "lower-left corner" = flush left, right on top of the stick
+    const stickTop = await page.evaluate(() => { const e = document.getElementById('stick-pad'); return e && e.offsetWidth ? Math.round(e.getBoundingClientRect().top) : -1 })
+    const corner = l.rect[0] <= 12 && stickTop > 0 && stickTop - (l.rect[1] + l.rect[3]) >= 0 && stickTop - (l.rect[1] + l.rect[3]) <= 16
+    note(tag + ' Left: lower-left corner, covers nothing (r1)', l.shown && l.covers.length === 0 && (w !== 412 || corner) && l.rect[0] + l.rect[2] / 2 < l.vw / 2, JSON.stringify(l.rect) + ' bottom ' + ((l.rect[1] + l.rect[3]) / l.vh * 100).toFixed(0) + '%')
+    await page.evaluate(() => window.__blocks.lookHand({ show: true, side: 'right' }))
+    await sleep(800)
+  }
   if (w === 1366) {
     await page.evaluate(() => window.__blocks.lookHand({ show: false }))
     await sleep(300)
