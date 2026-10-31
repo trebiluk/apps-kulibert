@@ -1,0 +1,151 @@
+/* Hub Menu row. Copy this file with hub-menu.js. Self-contained. */
+
+.hub-menu-block {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.35rem 0.5rem 0.5rem;
+  overflow-x: hidden;
+  font-family: Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif;
+  color: #e8f7ff;
+}
+
+.hub-menu-row,
+.hub-menu-link,
+.hub-menu-langs button {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #24506d;
+  border-radius: 12px;
+  background: #0b152c;
+  color: #e8f7ff;
+  font: 700 0.95rem/1.3 Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.hub-menu-row {
+  justify-content: flex-start;
+}
+
+.hub-menu-label,
+.hub-menu-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hub-menu-icon {
+  flex: 0 0 auto;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.hub-menu-chevron {
+  flex: 0 0 auto;
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 160ms ease;
+}
+
+.hub-menu-row[aria-expanded="true"] .hub-menu-chevron {
+  transform: rotate(90deg);
+}
+
+[dir="rtl"] .hub-menu-row[aria-expanded="false"] .hub-menu-chevron {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .hub-menu-row[aria-expanded="true"] .hub-menu-chevron {
+  transform: rotate(90deg);
+}
+
+.hub-menu-panel {
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: min(60dvh, 26rem);
+  margin-top: 0.35rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.hub-menu-panel[hidden],
+.hub-menu-langs[hidden],
+.hub-menu-block[hidden],
+.hub-menu-block[hidden] .hub-menu-row {
+  display: none !important;
+}
+
+.hub-menu-link {
+  margin-top: 0.35rem;
+}
+
+.hub-menu-news {
+  box-sizing: border-box;
+  margin: 0.35rem 0 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #24506d;
+  border-radius: 12px;
+  background: #12203a;
+  color: #e8f7ff;
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.hub-menu-kicker {
+  font-weight: 750;
+}
+
+/* Beat an app rule such as `.sheet-card p { color: #3a342c }` so the line stays light on navy. */
+.hub-menu-block .hub-menu-news,
+.hub-menu-block .hub-menu-kicker,
+.hub-menu-block .hub-menu-line {
+  color: #e8f7ff;
+}
+
+.hub-menu-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.hub-menu-langs button {
+  width: auto;
+  flex: 1 1 auto;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.hub-menu-langs button[aria-pressed="true"] {
+  border-width: 2px;
+  font-weight: 800;
+}
+
+.hub-menu-row:focus-visible,
+.hub-menu-link:focus-visible,
+.hub-menu-langs button:focus-visible,
+.hub-menu-line:focus-visible {
+  outline: 3px solid #ffe08a;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-menu-chevron {
+    transition: none;
+  }
+}

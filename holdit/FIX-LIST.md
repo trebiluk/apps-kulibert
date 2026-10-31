@@ -3,15 +3,15 @@ Read this first on every HoldIt ship. In the same commit, tick `[x]` on each ite
 Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; it may lag anything shipped after them.
 
 ## 1. Live now
-- Live title: **HoldIt · HI 1.1.22** (`/holdit/` on apps.kulibert.net).
-- Latest proof on file: `proof/holdit-1.1.18/RESULT.md`: Verdict: FAIL (P1). The 1.1.18 tower/full-screen items pass on first load; turning the phone, the Report table, drawer contrast and editor taps fail.
+- Live title: **HoldIt · HI 1.1.23** (`/holdit/` on apps.kulibert.net).
+- Latest proof on file: `proof/holdit-1.1.18/RESULT.md`: Verdict: FAIL (P1). The 1.1.18 tower/full-screen items pass on first load; turning the phone, the Report table, drawer contrast and editor taps fail. HI 1.1.23 clears the drawer, the Member report, and the editor taps. The turn rows below stay open.
 
 ## 2. Open fixes (FAIL rows from the latest proof)
 - [ ] Tower stays in view after a turn · FAIL: 412x915→915x412 board 113 px, ground off-screen (band −2.12); 360x740→740x360 65 px (−2.99); turning back stays squeezed (534 vs 742) · shots/matrix-412x915-en
 - [ ] Turn card clear of controls · FAIL at 915x412 after a failed Test (covers FS bottom / Back) · shots/matrix-915x412-en-default-06-t01-result.png
-- [ ] Menu drawer / Settings ≥4.5:1 · FAIL: selects 1.41, Larger type/Read 1.79, Teacher 2.29, locked lobby cards 1.7–1.98 · shots/*-02-drawer.png, *-03-settings.png
-- [ ] Member envelope (Report) · FAIL (Diego): grey on wood, faint headers, picked row unreadable, all 0.00/— before Test, help strip shows through · diego/1024x547-member-envelope.png
-- [ ] Editor taps ≥44 · FAIL (brief 19 items still open) · crops/
+- [x] Menu drawer / Settings ≥4.5:1 · HI 1.1.23 bd7f57f61ea3161cada4484f07bd92af724ee85a · was selects 1.41, Larger type/Read about 1.8, Teacher 3.47, locked cards 2.50. Paper fill, dark type, lock icon plus the word.
+- [x] Member envelope (Report) · HI 1.1.23 44cb02ada5e225afe51b8595932a2a6a2917613e · was wood, 11px, headers 3.47:1, hover bar 1.41:1, overlay 0.80. Light table, 14px, light bold row, overlay 0.92, help strip hidden.
+- [x] Editor taps ≥44 · HI 1.1.23 5cba8c3af566f3ca5ec36d79d2f2ec649dc7b036 · was Report 36px, side actions 36px tall, section chips about 40px wide. Dock stays on screen at 412 and 915.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
 - [ ] `briefs/fixq/holdit-1119-envelope-chips.md`: HoldIt HI 1.1.19: a Member report a kid can read (colour chips, not a table), towers stay in view after a turn, readable menus, and editor taps ≥44 (P…

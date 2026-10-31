@@ -590,3 +590,57 @@ for (const [lang, row] of Object.entries(WN541)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.545 what's new. rw, ti, and fa-AF are machine drafts.
+const WN542 = {
+  en: { whatsNewBody: '2.5.545 — Classic and Mystical looks. Small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN542)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.547 what's new. Locked by ManagerBot. All non-English lines are machine drafts.
+const WN547 = {
+  en: { whatsNewBody: '2.5.547 — Goals now shows today\'s Daily and your Sweep.' },
+  simple: { whatsNewBody: '2.5.547 — Goals shows today\'s Daily and your Sweep.' },
+  uk: { whatsNewBody: '2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.' },
+  ru: { whatsNewBody: '2.5.547 — В Целях теперь видно задание дня и твою зачистку.' },
+  es: { whatsNewBody: '2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.' },
+  ar: { whatsNewBody: '2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.' },
+  'fa-AF': { whatsNewBody: '2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.' },
+  rw: { whatsNewBody: '2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.' },
+  ti: { whatsNewBody: '2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።' },
+}
+for (const [lang, row] of Object.entries(WN547)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
+const WN549 = {
+  en: { whatsNewBody: '2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.' },
+  simple: { whatsNewBody: '2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle. Farther fog. New birch trees.' },
+  uk: { whatsNewBody: '2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині. Туман далі, берези намальовані заново.' },
+  ru: { whatsNewBody: '2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре. Туман дальше, берёзы нарисованы заново.' },
+  es: { whatsNewBody: '2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro. La niebla queda más lejos y los abedules son nuevos.' },
+  ar: { whatsNewBody: '2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط. الضباب أبعد، وأشجار البتولا جديدة.' },
+  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط. مه دورتر است و درختان توس تازه شده‌اند.' },
+  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati. Igihu kiri kure, ibiti bishya bya birch.' },
+  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል። ግመ ርሒቑ፡ ኦም በርች ሓድሽ።' },
+}
+for (const [lang, row] of Object.entries(WN549)) {
+  if (STR[lang]) Object.assign(STR[lang], row)
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

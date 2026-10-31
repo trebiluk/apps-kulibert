@@ -81,7 +81,18 @@ cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
 const version = JSON.parse(readFileSync('package.json', 'utf8')).version
 writeFileSync(OUT + '/sw.js', readFileSync('sw.js', 'utf8').replaceAll('__BLOX_VERSION__', version))
 scanMarkers([OUT + '/index.html', OUT + '/sw.js', OUT + '/app.js'])
-for (const f of readdirSync('assets').filter((f) => f.endsWith('.png') || f.endsWith('.txt') || f.endsWith('.json'))) cpSync('assets/' + f, OUT + '/assets/' + f)
+function copyAssetTree(src, dst) {
+  for (const f of readdirSync(src, { withFileTypes: true })) {
+    if (f.name.startsWith('.')) continue
+    const from = src + '/' + f.name
+    const to = dst + '/' + f.name
+    if (f.isDirectory()) {
+      mkdirSync(to, { recursive: true })
+      copyAssetTree(from, to)
+    } else if (/\.(png|txt|json)$/.test(f.name)) cpSync(from, to)
+  }
+}
+copyAssetTree('assets', OUT + '/assets')
 let raw = 0, gz = 0
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(d + '/' + e.name) : [d + '/' + e.name])
 for (const f of walk(OUT).filter((f) => !f.endsWith('.txt'))) {

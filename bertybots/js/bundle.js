@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.40 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.41 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.40";
+const APP_VERSION = "0.19.41";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.40";
-const APP_BUILT = "2026-10-24";
+const APP_CHIP = "BB 0.19.41";
+const APP_BUILT = "2026-10-30";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;

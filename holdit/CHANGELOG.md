@@ -1,5 +1,9 @@
-**Chip: HI 1.1.22** · 2026-10-10 · channel **live**
+**Chip: HI 1.1.23** · 2026-10-30 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.23 — You can read the menu and the report — 2026-10-30
+
+- What’s new: Menus and Settings are readable. Locked jobs show 🔒 and the word Locked. The Member report is bigger. Every build button is at least 44 pixels.
 
 ## 1.1.22 — The language stays — 2026-10-10
 

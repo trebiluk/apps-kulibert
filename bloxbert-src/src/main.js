@@ -1,3 +1,4 @@
+import '@babylonjs/core/Rendering/edgesRenderer' // side effect: enables mesh.enableEdgesRendering() for the place ghost outline
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
@@ -22,7 +23,8 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import ATLAS from '../assets/atlas.json'
 import { BLOCKS } from './data/blocks-list.js';
-import { registerWrapMaterials } from "./gfx/tile-wraps.js";
+import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
+import { initPainter, addPaintButton } from './gfx/painter.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 // 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
@@ -73,6 +75,88 @@ for (const [lang, row] of Object.entries(WN541)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.545 what's new. rw, ti, and fa-AF are machine drafts.
+const WN542 = {
+  en: { whatsNewBody: '2.5.545 — Classic and Mystical looks. Small textures stay sharp.' },
+  simple: { whatsNewBody: '2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.' },
+  uk: { whatsNewBody: '2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.' },
+  ru: { whatsNewBody: '2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.' },
+  es: { whatsNewBody: '2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.' },
+  ar: { whatsNewBody: '2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.' },
+  'fa-AF': { whatsNewBody: '2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.' },
+  rw: { whatsNewBody: '2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.' },
+  ti: { whatsNewBody: '2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
+}
+for (const [lang, row] of Object.entries(WN542)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+// 2.5.546 what's new. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+const WN546 = {
+  en: { whatsNewBody: '2.5.546 — Paint a block in Settings > Look and see it in your world.' },
+  simple: { whatsNewBody: '2.5.546 — Paint a block in Settings. See it in your world.' },
+  uk: { whatsNewBody: '2.5.546 — Намалюй блок у Налаштуваннях > Вигляд і побач його у своєму світі.' },
+  ru: { whatsNewBody: '2.5.546 — Нарисуй блок в Настройках > Вид и увидь его в своём мире.' },
+  es: { whatsNewBody: '2.5.546 — Pinta un bloque en Ajustes > Aspecto y velo en tu mundo.' },
+  ar: { whatsNewBody: '2.5.546 — ارسم مكعبًا في الإعدادات > المظهر وشاهده في عالمك.' },
+  'fa-AF': { whatsNewBody: '2.5.546 — در تنظیمات > نما یک بلاک رنگ کن و آن را در جهانت ببین.' },
+  rw: { whatsNewBody: '2.5.546 — Shushanya block muri Igenamiterere > Isura urebe mu isi yawe.' },
+  ti: { whatsNewBody: '2.5.546 — ኣብ ቅጥዕታት > መልክዕ ብሎክ ቀልሕ ኣብ ዓለምካ ርኣዮ።' },
+}
+for (const [lang, row] of Object.entries(WN546)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+initPainter({ t, toast })
+// 2.5.547 what's new. Locked by ManagerBot. All non-English lines are machine drafts.
+const WN547 = {
+  en: { whatsNewBody: '2.5.547 — Goals now shows today\'s Daily and your Sweep.' },
+  simple: { whatsNewBody: '2.5.547 — Goals shows today\'s Daily and your Sweep.' },
+  uk: { whatsNewBody: '2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.' },
+  ru: { whatsNewBody: '2.5.547 — В Целях теперь видно задание дня и твою зачистку.' },
+  es: { whatsNewBody: '2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.' },
+  ar: { whatsNewBody: '2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.' },
+  'fa-AF': { whatsNewBody: '2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.' },
+  rw: { whatsNewBody: '2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.' },
+  ti: { whatsNewBody: '2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።' },
+}
+for (const [lang, row] of Object.entries(WN547)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+// Daily Board card (2.5.547). Mount only: all logic lives in daily/card.js.
+// Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
+// Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
+// Nothing writes that key yet. A missing or bad value falls back to the defaults.
+// 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
+const WN549 = {
+  en: { whatsNewBody: '2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.' },
+  simple: { whatsNewBody: '2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle. Farther fog. New birch trees.' },
+  uk: { whatsNewBody: '2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині. Туман далі, берези намальовані заново.' },
+  ru: { whatsNewBody: '2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре. Туман дальше, берёзы нарисованы заново.' },
+  es: { whatsNewBody: '2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro. La niebla queda más lejos y los abedules son nuevos.' },
+  ar: { whatsNewBody: '2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط. الضباب أبعد، وأشجار البتولا جديدة.' },
+  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط. مه دورتر است و درختان توس تازه شده‌اند.' },
+  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati. Igihu kiri kure, ibiti bishya bya birch.' },
+  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል። ግመ ርሒቑ፡ ኦም በርች ሓድሽ።' },
+}
+for (const [lang, row] of Object.entries(WN549)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
+function dailyOverride() {
+  try {
+    if (!teacherOn()) return undefined
+    const raw = localStorage.getItem('bloxbert-daily-board')
+    return raw ? JSON.parse(raw) : undefined
+  } catch (e) { return undefined }
+}
+function mountDailyCard(g) {
+  try {
+    const ledger = walletReady && session && session.wallet && session.wallet.state ? session.wallet.state.ledger : []
+    paintDailyCard(g, { t, icon: menuIcon, ledger, override: dailyOverride(), search: location.search })
+  } catch (e) { console.warn('daily card', e) }
+}
 function holdWalletChip() {
   const el = document.getElementById('wallet-chip')
   if (!el || el.dataset.cogReady === '1') return
@@ -96,6 +180,7 @@ import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { dayCap } from './econ/cogs.js'
+import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
@@ -161,6 +246,7 @@ import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
+import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder'
 import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
@@ -169,6 +255,7 @@ import { initBot } from './bot/bot.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
+import { mountFpsOverlay } from './fps-overlay.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -395,8 +482,9 @@ function layoutLane() {
       const gap = 8
       const roomRight = (window.innerWidth - right) - (play.right + gap)
       const roomLeft = (play.left - gap) - left
-      if (roomRight >= 120 || roomRight >= roomLeft) left = Math.max(left, Math.round(play.right) + gap)
-      else right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
+      // 2.5.550: never squeeze the quest card under 220px (412 upright collapsed it to one letter wide).
+      if (roomRight >= 220 && (roomRight >= 120 || roomRight >= roomLeft)) left = Math.max(left, Math.round(play.right) + gap)
+      else if (roomLeft >= 220) right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
     }
   }
   lane.style.left = left + 'px'
@@ -1468,8 +1556,6 @@ noa.inputs.bind('alt-fire', 'Mouse3')
 noa.inputs.unbind('mid-fire')
 noa.inputs.bind('mid-fire', 'Mouse2')
 
-const tile = (n) => ({ textureURL: 'assets/atlas.png', atlasIndex: ATLAS[n] })
-// 36px layers: 2px copied gutter around the original 32. Sample the core, nearest, no mipmaps.
 const _rawArray = engine.createRawTexture2DArray.bind(engine)
 engine.createRawTexture2DArray = (data, w, h, depth, format, _mip, invertY, sampling, ...rest) =>
   _rawArray(data, w, h, depth, format, false, invertY, Texture.NEAREST_SAMPLINGMODE, ...rest)
@@ -1496,7 +1582,7 @@ const crispAtlas = () => {
           out[k] = typeof v === 'string'
             ? v.replace(
               'baseColor = texture(atlasTexture, vec3(vDiffuseUV, texAtlasIndex));',
-              'vec2 crispF = fract(vDiffuseUV); baseColor = texture(atlasTexture, vec3((crispF * 32.0 + 2.0) / 36.0, texAtlasIndex));'
+              'vec2 crispF = fract(vDiffuseUV); baseColor = texture(atlasTexture, vec3((crispF * ' + (window.__bertTexCore || 32) + '.0 + 2.0) / ' + ((window.__bertTexCore || 32) + 4) + '.0, texAtlasIndex));'
             )
             : v
         }
@@ -1507,27 +1593,9 @@ const crispAtlas = () => {
   }
 }
 noa.rendering.scene.onBeforeRenderObservable.add(crispAtlas)
-const mats = [
-  'grass_top', 'dirt_grass', 'dirt', 'stone', 'greystone', 'stone_coal', 'sand', 'gravel_stone',
-  'brick_red', 'brick_grey', 'wood', 'trunk_top', 'trunk_side', 'leaves', 'cotton_blue',
-  'cotton_green', 'cotton_red', 'cotton_tan', 'snow', 'ice', 'redsand',
-]
-mats.forEach((m) => noa.registry.registerMaterial(m, tile(m)))
+window.__bertTexCore = smallTextures() ? 32 : 64
+installPacks(noa, gfxLook)
 noa.registry.registerMaterial('glass', { textureURL: 'assets/glass.png', texHasAlpha: true })
-
-noa.registry.registerMaterial('coreplate', tile('coreplate'))
-noa.registry.registerMaterial('workbench', tile('workbench'))
-noa.registry.registerMaterial('benchTop', tile('workbench'))
-noa.registry.registerMaterial('benchSide', tile('benchSide'))
-noa.registry.registerMaterial('ovenBrick', tile('ovenBrick'))
-noa.registry.registerMaterial('ovenFront', tile('ovenFront'))
-noa.registry.registerMaterial('oven', tile('ovenFront'))
-noa.registry.registerMaterial('vend', tile('vend'))
-noa.registry.registerMaterial('store', tile('store'))
-noa.registry.registerMaterial('bunk', tile('bunk'))
-// Pixel-art wrap materials for batch 1
-const wrapIx = registerWrapMaterials(noa);
-gfxLook.setLeaves({ oak: ATLAS.leaves, birch: wrapIx.birchLeaves, pine: wrapIx.pineNeedles })
 const shapeScene = noa.rendering.scene
 function dye(name, r, g, b, a) {
   const mat = noa.rendering.makeStandardMaterial(name)
@@ -1565,7 +1633,7 @@ const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
 const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
-lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+lampD.emissiveColor = new Color3(0.57, 0.37, 0.07) // 2.5.550: dim lamp, no bloom
 const copperD = dye('shape-copper', 0.78, 0.42, 0.16)
 const copperOn = dye('shape-copper-on', 0.25, 0.9, 0.95)
 copperOn.emissiveColor = new Color3(0.15, 0.75, 0.85)
@@ -1768,7 +1836,7 @@ function farmlandWetMesh() {
 const waterDye = dye('shape-water', 0.16, 0.42, 0.78, 0.55)
 waterDye.backFaceCulling = true
 Effect.ShadersStore.bertWaterVertexShader = 'precision highp float;attribute vec3 position;attribute vec3 normal;uniform mat4 worldViewProjection;varying vec3 vN;void main(){vN=normal;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertWaterFragmentShader = 'precision highp float;varying vec3 vN;void main(){float up=clamp(normalize(vN).y,0.0,1.0);vec3 deep=vec3(0.04,0.16,0.34);vec3 body=vec3(0.10,0.34,0.56);vec3 skin=vec3(0.42,0.68,0.78);vec3 col=mix(deep,body,0.6);col=mix(col,skin,smoothstep(0.22,0.9,up));float a=mix(0.66,0.44,up);gl_FragColor=vec4(col,a);}'
+Effect.ShadersStore.bertWaterFragmentShader = 'precision highp float;varying vec3 vN;void main(){float up=clamp(normalize(vN).y,0.0,1.0);vec3 deep=vec3(0.03,0.13,0.30);vec3 body=vec3(0.08,0.30,0.54);vec3 skin=vec3(0.14,0.40,0.66);vec3 col=mix(deep,body,0.6);col=mix(col,skin,smoothstep(0.22,0.9,up));float a=mix(0.90,0.80,up);gl_FragColor=vec4(col,a);}'
 const waterMat = new ShaderMaterial('bert-water', shapeScene, { vertex: 'bertWater', fragment: 'bertWater' }, { attributes: ['position', 'normal'], uniforms: ['worldViewProjection'] })
 waterMat.alpha = 0.55
 waterMat.backFaceCulling = false
@@ -1892,7 +1960,8 @@ function plantMat(name, spec) {
   mat.alpha = 1
   mat.backFaceCulling = false
   mat.specularColor = new Color3(0, 0, 0)
-  mat.emissiveColor = new Color3(0.55, 0.55, 0.5)
+  // 2.5.550: flowers lit by the world, not glowing at night.
+  mat.emissiveColor = new Color3(0.28, 0.28, 0.25)
   mat.diffuseColor = new Color3(0.85, 0.9, 0.8)
   return mat
 }
@@ -7313,7 +7382,7 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -7328,7 +7397,7 @@ panels = mountPanels({
   paintRewind: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('undoMinutes') })),
   paintSnaps: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('snapshots') })),
   paintTour: (g) => learn.paintTour(g),
-  paintGoals: (g) => learn.paintGoals(g),
+  paintGoals: (g) => { mountDailyCard(g); learn.paintGoals(g) },
   paintA11y: (g) => learn.paintA11y(g),
   paintLog: (g) => {
     const parts = (v) => String(v).split('.').map((n) => parseInt(n, 10) || 0)
@@ -10241,6 +10310,109 @@ function paintTextOpts(g) {
     lookPill(t('dyslexiaFont'), () => dyslexiaFont, () => { dyslexiaFont = !dyslexiaFont; applyLook() }, 'dyslexia', ''),
   )
 }
+function paintPackLook(g) {
+  const lookHead = document.createElement('p')
+  lookHead.className = 'gnote ghead'
+  lookHead.textContent = 'Look'
+  const packRow = document.createElement('div')
+  packRow.className = 'set-line'
+  packRow.id = 'look-packs'
+  packRow.style.flexWrap = 'wrap'
+  packRow.style.gap = '8px'
+  const packBtns = []
+  const paintPackBtns = () => {
+    const id = currentPackId()
+    for (const b of packBtns) {
+      const on = b.dataset.pack === id
+      b.setAttribute('aria-pressed', on ? 'true' : 'false')
+      b.style.setProperty('background', on ? '#3a4048' : '#2c333b', 'important')
+      b.style.setProperty('color', '#e6eef2', 'important')
+      b.style.setProperty('border', on ? '3px solid #e07a2f' : '3px solid #5c656e', 'important')
+      b.style.setProperty('box-shadow', on ? 'inset 0 0 0 1px #e07a2f' : 'none', 'important')
+    }
+  }
+  for (const pack of packList()) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'look-pack'
+    b.dataset.pack = pack.id
+    b.style.setProperty('min-height', '48px', 'important')
+    b.style.setProperty('height', '48px', 'important')
+    b.style.setProperty('min-width', '48px', 'important')
+    b.style.setProperty('padding', '0 12px 0 6px', 'important')
+    b.style.setProperty('display', 'inline-flex', 'important')
+    b.style.setProperty('align-items', 'center', 'important')
+    b.style.setProperty('gap', '8px', 'important')
+    b.style.setProperty('border-radius', '10px', 'important')
+    b.style.setProperty('font', '700 16px sans-serif', 'important')
+    b.style.setProperty('cursor', 'pointer', 'important')
+    const icon = document.createElement('canvas')
+    icon.width = 32
+    icon.height = 32
+    icon.setAttribute('aria-hidden', 'true')
+    icon.style.width = '32px'
+    icon.style.height = '32px'
+    icon.style.imageRendering = 'pixelated'
+    const face = new Image()
+    face.onload = () => {
+      const ctx = icon.getContext('2d')
+      ctx.imageSmoothingEnabled = false
+      ctx.drawImage(face, 2, 2, 32, 32, 0, 0, 32, 32)
+    }
+    face.src = 'assets/packs/' + pack.id + '/atlas32.png'
+    const word = document.createElement('span')
+    word.textContent = pack.name
+    b.setAttribute('aria-label', pack.name)
+    b.append(icon, word)
+    const choose = () => {
+      if (b.dataset.busy === '1') return
+      b.dataset.busy = '1'
+      setPack(pack.id).then(() => { b.dataset.busy = ''; paintPackBtns() })
+    }
+    b.addEventListener('click', choose)
+    b.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return
+      e.preventDefault()
+      e.stopPropagation()
+      choose()
+    })
+    packBtns.push(b)
+    packRow.append(b)
+  }
+  paintPackBtns()
+  const smallBtn = document.createElement('button')
+  smallBtn.type = 'button'
+  smallBtn.className = 'look-pack'
+  smallBtn.dataset.small = '1'
+  smallBtn.style.setProperty('min-height', '48px', 'important')
+  smallBtn.style.setProperty('height', '48px', 'important')
+  smallBtn.style.setProperty('min-width', '48px', 'important')
+  smallBtn.style.setProperty('padding', '0 14px', 'important')
+  smallBtn.style.setProperty('border-radius', '10px', 'important')
+  smallBtn.style.setProperty('font', '700 16px sans-serif', 'important')
+  smallBtn.style.setProperty('width', 'auto', 'important')
+  smallBtn.style.setProperty('align-self', 'flex-start', 'important')
+  const paintSmall = () => {
+    const on = smallTextures()
+    smallBtn.textContent = on ? t('texSmallOn') : t('texSmallOff')
+    smallBtn.setAttribute('aria-pressed', on ? 'true' : 'false')
+    smallBtn.style.setProperty('background', on ? '#3a4048' : '#2c333b', 'important')
+    smallBtn.style.setProperty('color', '#e6eef2', 'important')
+    smallBtn.style.setProperty('border', on ? '3px solid #e07a2f' : '3px solid #5c656e', 'important')
+  }
+  paintSmall()
+  smallBtn.addEventListener('click', () => setSmallTextures(!smallTextures()))
+  g.append(lookHead, packRow, smallBtn)
+  addPaintButton(g)
+  if (smallTextures()) {
+    const hint = document.createElement('p')
+    hint.className = 'gnote'
+    hint.id = 'tex-auto-hint'
+    hint.textContent = t('texSmallHint')
+    smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
+    g.insertBefore(hint, g.firstChild)
+  }
+}
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')
   const range = document.createElement('input')
@@ -10867,7 +11039,7 @@ sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
 function skyDisc(name, rgb, local) {
-  const mesh = CreatePlane(name, { size: 4.5 }, scene)
+  const mesh = CreateDisc(name, { radius: 2.25, tessellation: 32 }, scene) // 2.5.550: round sun and moon
   const mat = new StandardMaterial(name + '-m', scene)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
   mat.disableLighting = true
@@ -10974,17 +11146,6 @@ for (let i = 0; i < 4; i++) {
   lampLights.push(L)
 }
 const flies = []
-for (let i = 0; i < 6; i++) {
-  const m = CreateSphere('fly' + i, { diameter: 0.1, segments: 3 }, scene)
-  const mat = new StandardMaterial('flym' + i, scene)
-  mat.emissiveColor = new Color3(0.75, 0.95, 0.35)
-  mat.disableLighting = true
-  m.material = mat
-  m.isPickable = false
-  m.setEnabled(false)
-  noa.rendering.addMeshToScene(m, false)
-  flies.push(m)
-}
 const glowMeshes = new Map()
 const glowLocal = [0, 0, 0]
 const poolTex = new DynamicTexture('lamp-pool', readCanvas(64, 64), scene, false)
@@ -11023,7 +11184,7 @@ const WOOL_RGB = { woolBlue: [0.25, 0.45, 0.86], woolGreen: [0.22, 0.66, 0.32], 
 const decorTints = []
 for (let i = 0; i < 8; i++) {
   const mat = new StandardMaterial('decor-tint-m' + i, scene)
-  mat.emissiveColor = new Color3(1, 0.9, 0.6)
+  mat.emissiveColor = new Color3(0.6, 0.54, 0.36) // 2.5.550: shade glow capped near #D9C27A
   mat.diffuseColor = new Color3(0, 0, 0)
   mat.specularColor = new Color3(0, 0, 0)
   mat.disableLighting = true
@@ -11080,7 +11241,7 @@ function syncDecorTint(srcs) {
     }
     if (!rgb) continue
     const mesh = decorTints[n++]
-    mesh.material.emissiveColor.set(rgb[0], rgb[1], rgb[2])
+    mesh.material.emissiveColor.set(rgb[0] * 0.6, rgb[1] * 0.6, rgb[2] * 0.6)
     mesh.scaling.set(sc[0] / 0.3, sc[1] / 0.3, sc[2] / 0.3)
     const lp = noa.globalToLocal(spot, null, glowLocal)
     mesh.position.set(lp[0], lp[1], lp[2])
@@ -11534,9 +11695,10 @@ function ghostCell() {
   if (!tableMode) {
     if (!canReach([spot.x, spot.y, spot.z])) return null
     const p = noa.entities.getPosition(noa.playerEntity)
-    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return null
+    // 2.5.550: blocked cells still get a ghost, drawn red with a reason (was hidden, so red never showed).
+    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return Object.assign({}, spot, { why: 'standing' })
   }
-  if (getVoxel(spot.x, spot.y, spot.z)) return null
+  if (getVoxel(spot.x, spot.y, spot.z)) return Object.assign({}, spot, { why: 'noRoom' })
   return spot
 }
 function ghostBedScale(on) {
@@ -11632,9 +11794,9 @@ function syncPlaceGhost() {
   }
   const id = heldBlockId()
   let side = null
-  let amber = false
+  let amber = !!spot.why
   let bunkWhy = ''
-  if (id === ID.woodshop || id === ID.bunk) {
+  if (!amber && (id === ID.woodshop || id === ID.bunk)) {
     side = shopSpan(spot.x, spot.y, spot.z)
     if (id === ID.bunk) {
       bunkWhy = bedBlockReason(spot.x, spot.y, spot.z, side)
@@ -11652,7 +11814,7 @@ function syncPlaceGhost() {
     ghostEdge(placeGhost, [0.9, 0.15, 0.15])
     ghostEdge(placeGhostSide, [0.9, 0.15, 0.15])
     outline.color.set(0.9, 0.15, 0.15)
-    paintCue('no', id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
+    paintCue('no', spot.why ? t(spot.why) : id === ID.bunk ? (bunkWhy === 'far' ? t('tooFar') : t(bunkWhy || 'bedFloor')) : t('noRoom'))
   } else {
     placeGhost.material = tealMat
     placeGhostSide.material = tealMat
@@ -12749,7 +12911,12 @@ load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
   if (allowSave) window.__bertOpen = true
-  if (location.search.includes('smoke=1')) window.__bloxReady = true
+  if (location.search.includes('smoke=1')) {
+    window.__noa = noa
+    const markReady = () => { window.__bloxReady = true }
+    if (window.__bertPackReady) markReady()
+    else window.addEventListener('bertopia-pack-ready', markReady, { once: true })
+  }
   paintModeChip()
   function runBtTest() {
     if (!window.__btTestPending || !window.__btTestPending.isTest) return
@@ -13796,3 +13963,4 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
 
 repaintBlocks()
 void T0
+mountFpsOverlay()
