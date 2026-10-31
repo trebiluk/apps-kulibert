@@ -2,7 +2,8 @@
    Each note is  pitch + length in eighths:  C2 = quarter, C4 = half, C3 = dotted quarter, C6 = dotted half, C8 = whole, C1 = eighth.  z4 = half rest.
    Pitches: C D E F G A B  c (high C)  d (high D)  G, (low G).  The key signature does the sharps and flats (Happy Birthday in F: B is B flat).
    A bar string is one bar. "pickup" is the number of eighths in the short first bar; the last bar holds what is left of a full bar.
-   These tunes are public domain. Sources are in the PR description and in `source` below. Part 2 moves the other 16 songs here. */
+   These tunes are public domain. Sources are in the PR description and in `source` below.
+   MU 2.36.63 wrote the first six. MU 2.36.64 adds Sakura, Frere Jacques, La Cucaracha, Simple Gifts and Amazing Grace. The songs not listed here still use beat cells. */
 (function (root) {
   var SONGS = {
     "Twinkle": {
@@ -34,6 +35,31 @@
       place: "India", key: "C", meter: "4/4", bpm: 86, pickup: 0,
       source: "A new warm-up written for DJ Berty on the sargam scale: Sa Re Ga Ma Pa Dha Ni Sa = C D E F G A B c. No source tune; the half rests are the echo.",
       bars: ["C2 D2 E2 F2", "G4 z4", "G2 A2 B2 c2", "c4 z4", "c2 B2 A2 G2", "F4 z4", "F2 E2 D2 C2", "C4 z4"]
+    }
+    ,"Sakura": {
+      place: "Japan", key: "C", meter: "4/4", bpm: 80, pickup: 0,
+      source: "Sakura Sakura, Japanese folk song (earliest English-language print: Izawa, Collection of Japanese Koto Music, 1888, per Flutopedia). Notes from the Musica Viva transcription (Frank Nordberg) and John Chambers' Japan/Sakura_Am file, which agree; the Essen Folksong Collection tune I0001 has the same pitches. The tune is in A minor and needs no sharps or flats, so it is written with the C key. The last phrase (E F B A F E) follows Chambers and Essen; Musica Viva adds a D before it.",
+      bars: ["A2 A2 B4", "A2 A2 B4", "A2 B2 c2 B2", "A2 B1 A1 F4", "E2 C2 E2 F2", "E2 E1 C1 B,4", "A2 B2 c2 B2", "A2 B1 A1 F4", "E2 C2 E2 F2", "E2 E1 C1 B,4", "A2 A2 B4", "A2 A2 B4", "E2 F2 B1 A1 F2", "E4 z4"]
+    }
+    ,"Frere Jacques": {
+      place: "France", key: "C", meter: "4/4", bpm: 96, pickup: 0,
+      source: "Frere Jacques, traditional French round. Notes from the Musica Viva transcription (Frank Nordberg, in D) moved to C. It matches the Digital Tradition ABC (in C) and the BBC Singing Together, Summer 1951 (in G, listed at folkinfo.org). G, is the low G under the staff.",
+      bars: ["C2 D2 E2 C2", "C2 D2 E2 C2", "E2 F2 G4", "E2 F2 G4", "G1 A1 G1 F1 E2 C2", "G1 A1 G1 F1 E2 C2", "C2 G,2 C4", "C2 G,2 C4"]
+    }
+    ,"La Cucaracha": {
+      place: "Mexico", key: "F", meter: "4/4", bpm: 116, pickup: 0,
+      source: "La Cucaracha, Mexican folk song of the late 1800s. Tune only, no words. Notes from Jack Campin's Nine-Note Tunebook (ABC, in F), checked against Johan Ronstrom's FolkWiki transcription and the Musica Viva transcription (Frank Nordberg), both in D: the same pitches. The printed tune starts and ends with half-bar rests that join up, so here they close bar 16 and every bar adds up to a full bar. B is B flat in the F key.",
+      bars: ["z1 C2 C1 F1 F1 A1 A1", "c3 A1- A2 z2", "z1 c2 d1 c1 B1 A1 c1", "B2 G2 z4", "z1 C2 C1 E1 E1 G1 G1", "B3 G1- G2 z2", "z1 c2 d1 c1 B1 A1 G1", "F4 z1 C1 C1 C1", "F3 A1 z1 C1 C1 C1", "F3 A1 z4", "z1 F1 F1 F1 E1 E1 D1 D1", "C4 z1 C1 C1 C1", "E3 G1 z1 C1 C1 C1", "E3 G1 z4", "z1 c2 d1 c1 B1 A1 G1", "F4 z4"]
+    }
+    ,"Simple Gifts": {
+      place: "United States", key: "G", meter: "4/4", bpm: 96, pickup: 4,
+      source: "Simple Gifts, Shaker dance song by Elder Joseph Brackett, 1848. Notes from the manuscript of Mary Hazzard (New Lebanon Shaker community), as transcribed by John Chambers for the Traditional Tune Archive (in C). The same 16 bars are the 'original C major form' on The Session. Moved from C down to G so every note fits the DJ Berty range (D to high D). F is F sharp in the G key. The first two notes are the 4-eighth pickup.",
+      bars: ["D2 D2", "G2 G1 A1 B1 G1 B1 c1", "d2 d1 d1 B2 A1 G1", "A2 A2 A2 A2", "A1 B1 A1 F1 D2 D2", "G1 F1 G1 A1 B2 A1 A1", "B2 c2 d3 d1", "A2 A1 B1 A2 G1 G1", "A2 G1 F1 G4", "d4 B3 A1", "B1 c1 B1 A1 G3 A1", "B2 B1 c1 d2 B2", "A2 A1 B1 A3 D1", "G4 G3 A1", "B2 B1 c1 d2 d1 d1", "A2 A2 B2 B1 A1", "G2 G2 G4"]
+    }
+    ,"Amazing Grace": {
+      place: "many places", key: "G", meter: "3/4", bpm: 72, pickup: 2,
+      source: "Amazing Grace, the tune New Britain / Harmony Grove (first printed in The Columbian Harmony, 1829, per Flutopedia). Melody only, no words. Notes follow the John Chambers collection file Amazing_Grace_1.abc (credited to Carrell and Clayton, The Virginia Harmony, 1831). The pitches agree with the Musica Viva transcription (Frank Nordberg), Nigel Gatherer's tune book (tb15) and Soodlum's Irish Tin Whistle Book. The little three-note ornament in some copies is left out. The first note is a one-beat pickup; the last bar is the short bar that completes it.",
+      bars: ["D2", "G4 B1 G1", "B4 A2", "G4 E2", "D4 D2", "G4 B1 G1", "B4 A1 B1", "d6-", "d2 z2 B2", "d4 B1 G1", "B4 A2", "G4 E2", "D4 D2", "G4 B1 G1", "B4 A2", "G6-", "G4"]
     }
   };
 

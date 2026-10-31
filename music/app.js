@@ -102,6 +102,7 @@
   function richToSong(rich) {
     return { bpm: rich.bpm, meter: rich.meter, key: rich.key, pickup: rich.pickup, measures: rich.measures };
   }
+  let songRev = 0; // MU 2.36.64: bumps on every edit to a real-length song, so Play re-reads the song
   let songCatalog = [];
   let openTune = function () {};
   let libraryFilter = "all";
@@ -612,6 +613,7 @@
       b.className = "btn" + (state.song.meter === meter ? " on" : "");
       b.textContent = meter;
       b.addEventListener("click", () => {
+        if (isRichSong()) { sayScore(mu("richMeterStays")); return; }
         Song.setMeter(state.song, meter);
         state.cursor = 0;
         keep();
@@ -643,6 +645,7 @@
   }
   function writeAt(ev, pitch) {
     if (!ev) return;
+    if (isRichSong()) { richWrite(ev, pitch); return; }
     const pen = state.pen || "quarter";
     if (pen === "eighth" && Song.setEighths) Song.setEighths(state.song, ev.measure, ev.beat, pitch);
     else if (pen === "tie" && Song.toggleTie) Song.toggleTie(state.song, ev.measure, ev.beat);
@@ -701,6 +704,10 @@
             tie: mu("lessonPenTie"),
             rest: mu("lessonPenRest"),
           };
+          if (isRichSong()) {
+            sayScore(mu("richHelp_" + id) || "");
+            return;
+          }
           $("lesson").textContent = help[id] || "";
         });
         pen.appendChild(b);
@@ -758,7 +765,7 @@
     if (pen) {
       [...pen.children].forEach((btn) => {
         if (!btn.dataset.pen) return;
-        const word = mu("pen_" + btn.dataset.pen);
+        const word = isRichSong() && btn.dataset.pen === "quarter" ? mu("richPenNote") : mu("pen_" + btn.dataset.pen);
         if (word) btn.textContent = word;
       });
     }
@@ -790,6 +797,230 @@
       });
     });
   }
+
+  // MU 2.36.64: editing real note lengths (Score tab). A note is picked (the dashed box), then a length, a rest, a tie or a letter
+  // changes it. Every change keeps the bar exactly as long as it was. When it cannot fit, nothing changes and a calm line says why.
+  function isRichSong() {
+    return !!(Song.isRich && Song.isRich(state.song));
+  }
+  function sayScore(text) {
+    const box = $("score-note");
+    if (!box) return;
+    box.textContent = text || "";
+    box.hidden = !text || !isRichSong();
+  }
+  function lenWord(d, rest) {
+    return mu((rest ? "richRest_" : "richLen_") + d) || "";
+  }
+  function describeAt(i) {
+    const evs = Song.events(state.song);
+    const ev = evs[i];
+    if (!ev) return "";
+    const where = ev.bar === 0 ? (mu("pickupWord") || "Pickup") : mu("richWhere", { bar: ev.bar });
+    let n = 0;
+    for (let j = 0; j <= i; j++) if (evs[j].measure === ev.measure) n += 1;
+    const len = lenWord(ev.dur, ev.rest);
+    const what = ev.rest ? len : (ev.label ? ev.label + ", " : "") + len;
+    return mu("richNoteSay", { where: where, n: n, what: what });
+  }
+  function clampCursor() {
+    const n = Song.events(state.song).length;
+    state.cursor = Math.max(0, Math.min(Math.max(0, n - 1), state.cursor || 0));
+    return state.cursor;
+  }
+  function failText(r, ev) {
+    if (r.why === "overflow") {
+      let fit = 0;
+      (Song.LENGTHS || []).forEach((L) => { if (L <= r.room) fit = L; });
+      if (ev && fit > ev.dur) return mu("richNoRoomMax", { len: lenWord(fit, ev.rest) });
+      return mu("richNoRoom");
+    }
+    return mu({ noDot: "richNoDot", tieEnd: "richNoTieEnd", tieDiff: "richNoTieDiff", tieRest: "richNoTieRest", rest: "richRestFirst", top: "richTop", bottom: "richBottom" }[r.why] || "richNoRoom");
+  }
+  // Run one edit. A refused edit leaves the song as it was; an accepted one is saved, drawn, and heard on the next note.
+  function finishEdit(r, doneKey, ev) {
+    if (!r || !r.ok) {
+      sayScore(failText(r || { why: "" }, ev));
+      paintSelection();
+      return false;
+    }
+    if (r.index != null) state.cursor = r.index;
+    clampCursor();
+    if (!state.playing) state.step = state.cursor;
+    songRev += 1;
+    keep();
+    renderStaff();
+    paintInks();
+    paintKeypad();
+    paintCount();
+    paintPlayPos();
+    const now = Song.events(state.song)[state.cursor];
+    const said = doneKey === "len" && now ? mu("richLenDone", { len: lenWord(now.dur, now.rest) })
+      : doneKey === "rest" ? mu("richRestDone")
+      : doneKey === "tie" ? mu(r.tied ? "richTieOn" : "richTieOff")
+      : doneKey === "split" ? mu(r.advanced ? "richSplit" : "richLenDone", { len: lenWord(1, false) })
+      : mu("lessonSaved");
+    sayScore(said + " " + describeAt(state.cursor));
+    return true;
+  }
+  function pickedEv() {
+    return Song.events(state.song)[clampCursor()];
+  }
+  function richWrite(ev, pitch) {
+    const idx = ev.glyph != null ? ev.glyph : Song.events(state.song).indexOf(ev);
+    state.cursor = idx;
+    const pen = state.pen || "quarter";
+    if (pen === "eighth") finishEdit(Song.splitEighthIdx(state.song, idx, pitch), "split", ev);
+    else if (pen === "tie") finishEdit(Song.toggleTieIdx(state.song, idx), "tie", ev);
+    else if (pen === "rest") finishEdit(Song.setRestIdx(state.song, idx), "rest", ev);
+    else if (pen === "quarter") finishEdit(ev.pitch === pitch ? Song.setRestIdx(state.song, idx) : Song.setPitchIdx(state.song, idx, pitch), ev.pitch === pitch ? "rest" : "pitch", ev);
+    else sayScore(mu("richNoMark"));
+  }
+  function editLength(d) {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (!ev) return;
+    finishEdit(Song.setLengthIdx(state.song, state.cursor, d), "len", ev);
+  }
+  function editDot() {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (!ev) return;
+    finishEdit(Song.toggleDotIdx(state.song, state.cursor), "len", ev);
+  }
+  function editRest() {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (ev) finishEdit(Song.setRestIdx(state.song, state.cursor), "rest", ev);
+  }
+  function moveCursor(i) {
+    const n = Song.events(state.song).length;
+    state.cursor = Math.max(0, Math.min(n - 1, i));
+    if (!state.playing) state.step = state.cursor;
+    paintSelection();
+    paintLen();
+    paintCount();
+    sayScore(describeAt(state.cursor));
+    const mark = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest")[(pickedEv() || {}).glyph];
+    if (mark) followNote(mark);
+  }
+  // The length row: Eighth, Quarter, Half, Whole and a Dot. It shows the length of the picked note.
+  const LEN_ICON = {
+    1: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 7 18)"/><path d="M11.4 17V3M11.4 3c1 4 6 5 6 10" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    2: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 7 18)"/><path d="M11.4 17V3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    4: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="4.3" ry="3" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-20 7 18)"/><path d="M11.4 17V3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    8: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="10" cy="12" rx="6.5" ry="4.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    dot: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><circle cx="10" cy="12" r="3.4" fill="currentColor"/></svg>',
+  };
+  function paintLen() {
+    const host = $("len");
+    if (!host) return;
+    const rich = isRichSong();
+    host.hidden = !rich;
+    if (!rich) return;
+    if (!host.childElementCount) {
+      [[1, "1"], [2, "2"], [4, "3"], [8, "4"], ["dot", "."]].forEach(([d, hint]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.len = String(d);
+        b.addEventListener("click", () => (d === "dot" ? editDot() : editLength(d)));
+        const icon = document.createElement("span");
+        icon.className = "len-icon";
+        icon.innerHTML = LEN_ICON[d];
+        const word = document.createElement("span");
+        word.className = "len-word";
+        const key = document.createElement("kbd");
+        key.textContent = hint;
+        b.append(icon, word, key);
+        host.appendChild(b);
+      });
+    }
+    host.setAttribute("aria-label", mu("richLenGroup") || "Length of the picked note");
+    const ev = pickedEv();
+    const d = ev ? ev.dur : 0;
+    const base = d === 3 ? 2 : d === 6 ? 4 : d;
+    [...host.children].forEach((b) => {
+      const kind = b.dataset.len;
+      const word = kind === "dot" ? (mu("richDot") || "Dot") : (mu("richLenBtn_" + kind) || kind);
+      b.querySelector(".len-word").textContent = word;
+      const on = kind === "dot" ? (d === 3 || d === 6) : Number(kind) === base;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-label", kind === "dot" ? word : (mu("richLen_" + kind) || word));
+      b.setAttribute("aria-keyshortcuts", kind === "dot" ? "." : ({ 1: "1", 2: "2", 4: "3", 8: "4" })[kind]);
+    });
+  }
+  // The picked note gets a dashed box (a shape, so it is not shown by colour alone). It sits inside the staff picture, so it scrolls with it.
+  function paintSelection() {
+    const svg = document.querySelector("#staff svg");
+    if (!svg) return;
+    svg.querySelectorAll(".sel-box").forEach((n) => n.remove());
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    const node = ev && svg.querySelectorAll(".abcjs-note, .abcjs-rest")[ev.glyph];
+    if (!node) return;
+    let box;
+    try { box = node.getBBox(); } catch (err) { return; }
+    if (!box || !box.width) return;
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("class", "sel-box");
+    rect.setAttribute("x", String(box.x - 3));
+    rect.setAttribute("y", String(box.y - 3));
+    rect.setAttribute("width", String(box.width + 6));
+    rect.setAttribute("height", String(box.height + 6));
+    rect.setAttribute("rx", "3");
+    rect.setAttribute("aria-hidden", "true");
+    node.appendChild(rect);
+    followNote(node); // keep the picked note inside the staff panel after the staff is drawn again
+  }
+  // Everything the staff needs after it is drawn: the length row, the picked-note box, and a place the keyboard can land.
+  function paintRichEdit() {
+    const rich = isRichSong();
+    document.body.classList.toggle("rich-edit", rich);
+    const wrap = document.querySelector("#notes-pane .staff-wrap");
+    if (wrap) {
+      if (rich) {
+        wrap.setAttribute("tabindex", "0");
+        wrap.setAttribute("role", "group");
+        wrap.setAttribute("aria-label", mu("richStaffLabel") || "Staff");
+        wrap.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight ArrowUp ArrowDown 1 2 3 4 . Delete");
+      } else {
+        ["tabindex", "role", "aria-label", "aria-keyshortcuts"].forEach((a) => wrap.removeAttribute(a));
+      }
+    }
+    if (!rich) sayScore("");
+    paintLen();
+    paintSelection();
+    paintKeypad();
+  }
+  // Keys on the Score tab, for songs with real note lengths. They work with the staff or any Score control in focus.
+  function scoreKeys(e) {
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!document.body.classList.contains("tab-score") || !isRichSong()) return;
+    const t = e.target;
+    const tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
+    const here = !t || t === document.body || t === document.documentElement || (t.closest && t.closest("#notes-pane"));
+    if (!here) return;
+    if (document.body.classList.contains("menu-open") || ($("looks-drawer") && !$("looks-drawer").hidden)) return;
+    const n = Song.events(state.song).length;
+    if (!n) return;
+    const at = clampCursor();
+    const k = e.key;
+    let used = true;
+    if (k === "ArrowLeft") moveCursor(at - 1);
+    else if (k === "ArrowRight") moveCursor(at + 1);
+    else if (k === "Home") moveCursor(0);
+    else if (k === "End") moveCursor(n - 1);
+    else if (k === "ArrowUp" || k === "ArrowDown") finishEdit(Song.stepPitchIdx(state.song, at, k === "ArrowUp" ? 1 : -1), "pitch", pickedEv());
+    else if (k === "1" || k === "2" || k === "3" || k === "4") editLength({ 1: 1, 2: 2, 3: 4, 4: 8 }[k]);
+    else if (k === "." || e.code === "NumpadDecimal") editDot();
+    else if (k === "Delete" || k === "Backspace") editRest();
+    else used = false;
+    if (used) e.preventDefault();
+  }
+  window.addEventListener("keydown", scoreKeys);
 
   // MU 2.36.62: spread the bars evenly over the lines, so the last line is never one lonely bar.
   function balanceAbc(abc, wide, oneLine) {
@@ -858,6 +1089,7 @@
       }
     }
     nameLooseSvgs();
+    paintRichEdit();
   }
 
   // MU 2.36.62: the note that is playing lights up on the staff (it only did after you tapped a note, never during Play).
@@ -902,6 +1134,15 @@
       });
     }
     const ev = evs.find((item) => item.glyph === glyph) || evs[Math.min(glyph, evs.length - 1)];
+    if (isRichSong() && (state.pen || "quarter") === "quarter" && marks[glyph]) {
+      // MU 2.36.64: a tap on the note itself only picks it, so you can then give it a length. A tap beside it writes the letter.
+      const r = marks[glyph].getBoundingClientRect();
+      const pad = 8;
+      if (e.clientX >= r.left - pad && e.clientX <= r.right + pad && e.clientY >= r.top - pad && e.clientY <= r.bottom + pad) {
+        moveCursor(evs.indexOf(ev));
+        return;
+      }
+    }
     const box = (host.querySelector(".abcjs-staff") || svg).getBoundingClientRect();
     const top = box.top - box.height * 0.15;
     const span = Math.max(1, box.height * 1.5);
@@ -1614,7 +1855,7 @@
         const freq = ev.freq || (Song.freqOf ? Song.freqOf(ev.pitch, state.song.key) : null);
         const hold = (60 / Math.max(70, state.song.bpm || 96)) * Math.max(0.35, ev.durBeats || 1);
         if (state.orch !== "beep") sectionTone(freq, hold, state.orch, ev.dyn || state.dyn, when);
-        else tone(freq, Math.min(0.45, hold), state.wave, 0.22 * side("notes"), when);
+        else tone(freq, Math.min(ev.at != null ? 3 : 0.45, hold), state.wave, 0.22 * side("notes"), when);
       }
     }
     if ((state.bass || state.parts.bass) && state.drums.kick && state.drums.kick[grid]) {
@@ -1823,14 +2064,28 @@
     // MU 2.36.63: every note has its own start. A song with real note lengths (events carry `at`, in eighths) places a note
     // where it is written, so half notes, dotted notes, rests and a pickup bar last as long as they should.
     // Beat-cell songs keep one event per beat, exactly as before (event i starts at step i * spe).
-    const evList = Song.events(state.song);
-    const songN = Math.max(1, evList.length);
-    const timed = evList.length > 0 && evList[0].at != null;
+    let evList = Song.events(state.song);
+    let songN = Math.max(1, evList.length);
+    let timed = evList.length > 0 && evList[0].at != null;
     const startOf = (i) => (timed ? evList[i].at * 2 : i * spe);
-    const totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
+    let totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
+    let seenRev = songRev;
     state.plan = [];
     const schedule = () => {
       if (gen !== playGen || !state.playing || !ctx) return;
+      if (seenRev !== songRev) {
+        // MU 2.36.64: the song was edited while it plays. Read it again and carry on from the same spot in time.
+        seenRev = songRev;
+        evList = Song.events(state.song);
+        songN = Math.max(1, evList.length);
+        timed = evList.length > 0 && evList[0].at != null;
+        totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
+        const here = tick % totalSteps;
+        let first = 0;
+        while (first < evList.length && startOf(first) < here) first += 1;
+        ev = evList.length ? first % songN : 0;
+        sounding = Math.min(songN - 1, Math.max(0, first - 1));
+      }
       const horizon = ctx.currentTime + 0.12;
       while (next < horizon) {
         const melody = evList.length > 0 && startOf(ev) === tick % totalSteps;
@@ -4365,7 +4620,7 @@
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
       // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip")) return;
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len")) return;
       e.preventDefault();
       $("play-btn").click();
     }
@@ -4399,6 +4654,11 @@
     keep();
     renderStaff();
     paintCount();
+    if (isRichSong()) {
+      songRev += 1;
+      paintRichEdit();
+      sayScore(state.song.measures.length === before ? "That is 32 bars. That is a long song." : mu("richBarAdded"));
+    }
     $("lesson").textContent = state.song.measures.length === before
       ? "That is 32 bars. That is a long song."
       : "A new bar is on the score. It is saved.";
@@ -5872,7 +6132,7 @@
           ["Shosholoza", "Southern Africa", ["C", "E", "E", "E", "G", "G", "E", "D", "C", "E", "E", "E", "G", "E", "D", "C"], 108],
         ]],
         ["East Asia", [
-          ["Sakura", "Japan", ["A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "D", "C", "A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "C", null], 80],
+          ["Sakura", "Japan", null, 80],
           ["Arirang", "Korea", ["G", "A", "c", "A", "G", "E", "E", "D", "E", "G", "A", "G", "E", "D", "C", null], 88],
           ["Jasmine Flower", "China", ["E", "G", "A", "G", "E", "D", "C", null, "D", "E", "G", "A", "G", "E", "D", "C"], 84],
         ]],
@@ -5882,15 +6142,15 @@
         ["Europe", [
           ["Ode to Joy", "Germany", null, 104],
           ["Korobeiniki", "Russia", ["E", "G", "A", "c", "A", "G", "F", "E", "D", "F", "G", "B", "G", "F", "E", "D", "C", "E", "F", "A", "G", "F", "E", "D", "C", null, null, null], 120],
-          ["Frere Jacques", "France", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null], 96],
+          ["Frere Jacques", "France", null, 96],
           ["Scarborough Fair", "England", ["A", "A", "E", "F", "E", "D", "C", null, "D", "E", "F", "E", "D", "A", "A", null], 76],
         ]],
         ["Americas", [
           ["Happy Birthday", "United States", null, 90],
           ["The Saints", "United States", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null], 112],
-          ["La Cucaracha", "Mexico", ["C", "C", "C", "F", "A", "A", "A", null, "F", "F", "F", "A", "c", "c", "c", null, "G", "G", "G", "B", "c", "A", "F", null], 116],
+          ["La Cucaracha", "Mexico", null, 116],
           ["Cielito Lindo", "Mexico", ["C", "E", "G", "G", "A", "G", "E", "C", "D", "E", "F", "E", "D", "C", null, null], 100],
-          ["Simple Gifts", "United States", ["C", "C", "D", "E", "G", "E", null, null, "D", "E", "F", "E", "D", "C", null, null, "C", "C", "D", "E", "G", "E", "D", "C", "D", "E", "C", null], 96],
+          ["Simple Gifts", "United States", null, 96],
         ]],
         ["Islands and more", [
           ["Aloha Oe", "Hawaiʻi", ["C", "E", "G", "A", "G", "E", "C", null, "E", "G", "A", "G", "E", "D", "C", null], 84],
@@ -5900,7 +6160,7 @@
         ["Lullabies", [
           ["Twinkle", "many places", null, 96],
           ["Little Lamb", "United States", null, 96],
-          ["Amazing Grace", "many places", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null], 72],
+          ["Amazing Grace", "many places", null, 72],
           ["Jingle Bells", "United States", null, 120],
         ]],
       ];

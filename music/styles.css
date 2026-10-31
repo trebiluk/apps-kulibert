@@ -6333,3 +6333,156 @@ html body.mu237.tab-score #drums {
 html body.mu237.tab-score #drums { scroll-snap-type: y proximity; }
 html body.mu237.tab-score #drums .drum-row,
 html body.mu237.tab-score #drums .bar-label { scroll-snap-align: start; }
+
+/* MU 2.36.64: editing real note lengths on Score. The length row, the picked-note box, the calm message line and the staff focus ring.
+   The picked note is a dashed box (a shape). The pressed length has a thick bar under it and bold words. Neither is colour alone. */
+#len[hidden], #score-note[hidden] { display: none !important; }
+body.mu237 #len {
+  display: flex !important;
+  flex-wrap: nowrap;
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  margin: 0.15rem 0 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden !important;
+}
+body.mu237 #len .btn {
+  position: relative;
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 52px !important;
+  min-height: 56px !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 6px 4px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  border-inline-end: 1px solid var(--border) !important;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  font-weight: 700;
+  white-space: nowrap !important;
+}
+body.mu237 #len .btn:last-child { border-inline-end: 0 !important; }
+body.mu237 #len .btn[aria-pressed="true"] {
+  font-weight: 900;
+  box-shadow: inset 0 -5px 0 var(--accent) !important;
+}
+#len .len-icon { display: block; line-height: 0; }
+#len .len-icon svg { width: 18px; height: 22px; display: block; }
+#len kbd {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 4px;
+  min-width: 1.05em;
+  padding: 0 3px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font: 700 0.66rem/1.25 ui-monospace, Consolas, monospace;
+  text-align: center;
+  opacity: 0.9;
+}
+.score-note {
+  flex: 0 0 auto;
+  margin: 0.35rem 0 0.1rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  border-inline-start: 5px solid var(--accent);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+body.mu237.tab-score #notes-pane > #score-note:not([hidden]) { display: block !important; }
+#staff .sel-box {
+  fill: none !important;
+  stroke: var(--text);
+  stroke-width: 3px;
+  stroke-dasharray: 7 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+@media (forced-colors: active) {
+  #staff .sel-box { stroke: Highlight; }
+}
+body.mu237 .staff-wrap:focus-visible { outline: 3px solid var(--active); outline-offset: -3px; }
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score #len {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-height: 44px;
+  }
+  body.mu237.tab-score #len .btn { min-height: 44px !important; flex: 0 0 auto !important; flex-direction: row; gap: 4px; padding: 0 0.6rem !important; }
+  body.mu237.tab-score #len kbd { position: static; }
+  body.mu237.tab-score .score-note { font-size: 0.8rem; padding: 0.2rem 0.5rem; margin: 0.15rem 0 0; }
+}
+
+/* MU 2.36.64: Score layout for songs with real note lengths (not the sideways phone, which keeps its one-line strip).
+   The staff scrolls in the middle; the letters, pens, lengths and the message stay in view under it. The beat grid becomes a short strip you can still scroll. */
+@media not all and (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score.is-both.rich-edit #notes-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+  }
+  body.mu237.tab-score.is-both.rich-edit #notes-pane .staff-wrap {
+    flex: 1 1 0 !important;
+    height: auto !important;
+    min-height: 84px !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  body.mu237.tab-score.is-both.rich-edit #notes-pane .note-row,
+  body.mu237.tab-score.is-both.rich-edit #notes-pane #score-note { flex: 0 0 auto !important; }
+  body.mu237.tab-score.is-both.rich-edit #drums-pane {
+    flex: 0 0 auto !important;
+    height: 112px !important;
+    min-height: 0 !important;
+    max-height: 112px !important;
+    overflow: auto !important;
+  }
+}
+@media (min-width: 900px) and (min-height: 501px) {
+  body.mu237.tab-score.is-both.rich-edit .note-row { flex-wrap: wrap; align-items: stretch; gap: 0.4rem 0.6rem; }
+  body.mu237.tab-score.is-both.rich-edit #inks { flex: 1 1 360px !important; width: auto !important; }
+  body.mu237.tab-score.is-both.rich-edit #pen { flex: 0 1 auto !important; width: auto !important; }
+  body.mu237.tab-score.is-both.rich-edit #len { flex: 0 1 auto !important; width: auto !important; }
+  body.mu237.tab-score.is-both.rich-edit #len .btn { flex: 0 0 auto !important; min-width: 74px !important; }
+}
+body.mu237 #len { align-self: flex-start; align-items: flex-start; align-content: flex-start; height: auto !important; }
+body.mu237.tab-score.is-both.rich-edit .note-row { align-content: flex-start; row-gap: 0.2rem; }
+body.mu237.tab-score.is-both.rich-edit #inks,
+body.mu237.tab-score.is-both.rich-edit #pen,
+body.mu237.tab-score.is-both.rich-edit #len { margin-block: 0.1rem !important; }
+@media (max-width: 480px) {
+  body.mu237.tab-score.is-both.rich-edit #drums-pane { height: 96px !important; max-height: 96px !important; }
+  body.mu237.tab-score.is-both.rich-edit #notes-pane { overflow-y: auto !important; }
+  body.mu237.tab-score.is-both.rich-edit #notes-pane .staff-wrap { min-height: 72px !important; }
+  body.mu237.tab-score.is-both.rich-edit .score-note { margin: 0.15rem 0 0.1rem; padding: 0.3rem 0.5rem; font-size: 0.84rem; line-height: 1.3; }
+}
+/* the check mark that every pressed button shows sits in the corner, so the pressed length is not taller than the others */
+body.mu237 #len .btn::after { position: absolute; top: 3px; inset-inline-start: 5px; font-size: 0.75rem; line-height: 1.25; }
+/* abcjs paints a tapped note red. The picked note already has its dashed box, so the note itself keeps the normal ink (one cue, and no red). */
+#staff .abcjs-note_selected path, #staff .abcjs-rest_selected path { fill: currentColor !important; }
+/* the pen and length rows clip anything drawn outside a button, so their focus ring is drawn inside it, in the text colour (light and dark themes) */
+body.mu237 #len .btn:focus-visible,
+body.mu237 #pen .btn:focus-visible {
+  outline: 3px solid var(--text) !important;
+  outline-offset: -6px !important;
+  z-index: 2;
+}
