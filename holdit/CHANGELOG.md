@@ -1,5 +1,9 @@
-**Chip: HI 1.1.23** · 2026-10-30 · channel **live**
+**Chip: HI 1.1.24** · 2026-10-31 · channel **branch**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.24 — Test stays clear — 2026-10-31
+
+- What’s new: Test stays clear. Sign in and Home are in the menu. Debug stays off unless a teacher asks.
 
 ## 1.1.23 — You can read the menu and the report — 2026-10-30
 
