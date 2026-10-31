@@ -76,7 +76,7 @@ export function createHolo(opts) {
       const c = document.createElement('canvas')
       c.width = c.height = PIC
       try { c.getContext('2d', { willReadFrequently: true }).drawImage(img, 0, 0, PIC, PIC) } catch (e) { done(null); return }
-      done(c)
+      done(fill(c))
     }
     if (src.getContext && src.width) { draw(src); return }
     if (src.tagName === 'IMG') {
@@ -101,6 +101,32 @@ export function createHolo(opts) {
     img.onload = () => { URL.revokeObjectURL(url); draw(img) }
     img.onerror = () => { URL.revokeObjectURL(url); done(null) }
     img.src = url
+  }
+
+  // r1: crop to the item's visible pixels and scale them up to the full picture, so the hologram itself
+  // (not just its box) is about 12% of the screen height. Keeps the shape's aspect, centred.
+  function fill(c) {
+    let d
+    try { d = c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, PIC, PIC).data } catch (e) { return c }
+    let x0 = PIC, y0 = PIC, x1 = -1, y1 = -1
+    for (let y = 0; y < PIC; y++) for (let x = 0; x < PIC; x++) {
+      if (d[(y * PIC + x) * 4 + 3] < 80) continue
+      if (x < x0) x0 = x
+      if (x > x1) x1 = x
+      if (y < y0) y0 = y
+      if (y > y1) y1 = y
+    }
+    if (x1 < 0) return c
+    const w = x1 - x0 + 1
+    const h = y1 - y0 + 1
+    if (w >= PIC - 1 && h >= PIC - 1) return c
+    const k = PIC / Math.max(w, h)
+    const out = document.createElement('canvas')
+    out.width = out.height = PIC
+    const g = out.getContext('2d', { willReadFrequently: true })
+    g.imageSmoothingEnabled = false
+    g.drawImage(c, x0, y0, w, h, (PIC - w * k) / 2, (PIC - h * k) / 2, w * k, h * k)
+    return out
   }
 
   // Recolour to one matte amber: darker parts of the item stay darker, so the shape still reads in grayscale.
