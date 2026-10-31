@@ -1,7 +1,7 @@
 // ?fps=1 only: small corner readout of fps and slowest-5% frame time. Off by default.
 export function mountFpsOverlay() {
   let on = false
-  try { on = new URLSearchParams(location.search).get('fps') === '1' } catch (e) {}
+  try { on = /[?&]fps=1(&|$)/.test(location.search) } catch (e) {}
   if (!on) return
   const box = document.createElement('div')
   box.id = 'fps-overlay'
