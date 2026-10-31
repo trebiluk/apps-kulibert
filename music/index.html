@@ -637,7 +637,6 @@
       <p id="now-line" class="now" aria-live="polite">Press Play. You can leave the sound off.</p>
       <div id="lane" class="lane" role="group" aria-label="The eight beats"></div>
       <p id="lesson" class="lesson" hidden>Tap a pad. It stays on that beat.</p>
-      <p id="saved-line" class="saved" aria-live="polite"></p>
       <button type="button" id="undo-clear" class="btn undo" hidden data-mu="bringBack">Bring it back</button>
     </section>
     </div>
@@ -673,6 +672,7 @@
       <strong id="songbar-name"><bdi></bdi></strong>
       <button type="button" id="new-beat" class="btn new-beat" data-mu="newBeat">New beat</button>
       <span id="play-pos">Bar 1 · Beat 1</span>
+      <span id="saved-line" class="saved" role="status"></span><!-- MU 2.36.67: the save line sits in the player bar so it shows on every tab -->
     </div>
     <button type="button" id="play-btn" class="play" aria-label="Play" title="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word" class="ctl-word">Play</span></button>
     <label class="tempo fader-row"><svg class="tempo-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8l-2.2-17h-3.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 15.5l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tempo">Tempo</span> <output id="tempo-read" for="tempo">104</output>
