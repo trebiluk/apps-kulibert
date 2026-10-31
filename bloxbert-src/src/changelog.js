@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.589', date: '2026-10-31', lines: {
+    en: ["2.5.589 — Every save reaches the server or shows Not saved. Quick edits are no longer lost, and no fake Two copies found card."],
+    simple: ["2.5.589 — Saves always reach the server, or you see Not saved."],
+  } },
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
