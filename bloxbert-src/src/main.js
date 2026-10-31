@@ -1035,6 +1035,8 @@ function applyI18n() {
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  // Bertopia-only keys: data-bt, so the shared /shared/ painter never sees them.
+  for (const el of document.querySelectorAll('[data-bt]')) el.textContent = t(el.dataset.bt)
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -8928,8 +8930,8 @@ function mountGoalsHud() {
   const b = document.createElement('button')
   b.type = 'button'
   b.id = 'goals-hud'
-  b.dataset.i18n = 'goals'
-  b.dataset.i18nLabel = 'goals'
+  b.dataset.bt = 'goals'
+  b.dataset.btLabel = 'goals'
   b.textContent = t('goals')
   b.setAttribute('aria-label', t('goals'))
   const menu = document.getElementById('game-menu')
