@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.550</title>
+<title>Bertopia 2.5.562</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.541">
 <link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.541">
 <style>
@@ -939,6 +939,10 @@ body[data-glasses="1"] .cross{box-shadow:none}
 #sheet[data-panel=settings] .set-val{flex:0 0 auto;white-space:nowrap}
 #sheet[data-panel=settings] .ggrid,#sheet[data-panel=settings] .sheet-qset,#sheet[data-panel=settings] input[type=range]{max-width:100%;min-width:0;box-sizing:border-box}
 #sheet[data-panel=settings] #sheet-body{overflow-x:hidden}
+#sheet[data-panel=settings] #sheet-body{padding-bottom:16px}
+#sheet[data-panel=settings] .sheet-qset .qbtn small{white-space:normal;overflow-wrap:anywhere}
+#sheet[data-panel=settings] .sheet-qset .qbtn{padding-bottom:12px}
+#sheet[data-panel=settings] .sheet-qset .qbtn small{line-height:1.5}
 /* G2-13: readable slot labels and search hint (#9FB0C6 = --muted, 8.49:1 on #08131A) */
 html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-size:max(12px,var(--ks-fs-xs, 12px))}
 #sheet .ks-inputs .ks-slot,#sheet .ks-outputs .ks-slot{position:relative;overflow:hidden}
@@ -1186,7 +1190,7 @@ body.tip-on #held-chip{display:none!important}
 #soil-tip .mark{width:22px;height:22px;flex:0 0 22px;display:block}
 #place-cue-live{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="read.css?v=2.5.550">
+<link rel="stylesheet" href="read.css?v=2.5.562">
 </head>
 <body>
 <div id="stage"></div>
@@ -1204,7 +1208,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.550</span>
+      <span class="ver" id="ver-plate">2.5.562</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1215,7 +1219,7 @@ body.tip-on #held-chip{display:none!important}
   <button class="tool" id="undo-btn" aria-label="Undo" data-i18n-label="undo" disabled><span class="ti"></span><span class="tl" data-i18n="undo">Undo</span></button>
   <button class="tool" id="redo-btn" aria-label="Redo" data-i18n-label="redo" disabled><span class="ti"></span><span class="tl" data-i18n="redo">Redo</span></button>
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti"></span><span class="tl" data-i18n="save">Save</span></button>
-  <a class="tool" id="hub-back" href="https://apps.kulibert.net/" data-i18n-label="backToHub" aria-label="Back to the Hub"><span class="ti" aria-hidden="true"></span><span class="tl" data-i18n="backToHub">Back to the Hub</span></a>
+  <a class="tool" id="hub-back" href="https://apps.kulibert.net/" data-bt-label="backToHub" aria-label="Back to the Hub"><span class="ti" aria-hidden="true"></span><span class="tl" data-bt="backToHub">Back to the Hub</span></a>
   </div>
 </header>
 <div id="day-tip" class="kd-tip" role="tooltip" hidden></div>
@@ -1249,7 +1253,7 @@ body.tip-on #held-chip{display:none!important}
 <div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
 <div class="keys" id="keys-wrap">
-  <button type="button" class="keys-chip" id="keys-chip" data-i18n="keysChip" aria-expanded="false" aria-controls="keys-pop">? KEYS</button>
+  <button type="button" class="keys-chip" id="keys-chip" data-bt="keysChip" aria-expanded="false" aria-controls="keys-pop">? KEYS</button>
   <button type="button" class="view-chip" id="view-chip" aria-pressed="false"><span class="view-eye" aria-hidden="true">👁</span> <span id="view-chip-word">V: change view</span></button>
   <p id="keys-pop" class="keys-pop" hidden data-i18n="keysLine">WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops · E bag · R wand · Esc menu</p>
 </div>
@@ -1257,7 +1261,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.562 — Menus, the Look list and the language list now show in your language. Arabic shows clearly in the language list.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1268,7 +1272,7 @@ body.tip-on #held-chip{display:none!important}
     <button class="row" id="m-reset"><span class="ic" data-ico="spark"></span><span data-i18n="freshWorld">Fresh world</span></button>
     <button class="row" id="m-old" type="button" hidden><span class="ic" data-ico="back"></span><span data-i18n="openOld">Open my old world</span></button>
     <div id="m-old-list" hidden></div>
-    <button class="row" id="m-hub"><span class="ic" data-ico="home"></span><span data-i18n="backToHub">Back to the Hub</span></button>
+    <button class="row" id="m-hub"><span class="ic" data-ico="home"></span><span data-bt="backToHub">Back to the Hub</span></button>
     <button class="row" id="m-inspect"><span class="ic" data-ico="lens"></span><span data-i18n="inspect">Inspect</span></button>
   </div>
   <div class="sec"><h3 data-i18n="mode">Mode</h3>
@@ -1303,17 +1307,17 @@ body.tip-on #held-chip{display:none!important}
   </div>
   <div class="sec"><h3 data-i18n="help">Help</h3>
     <p class="help" data-i18n="keysHint">WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one.</p>
-    <p class="help" data-i18n="keysAgain">Press ? to see the keys again.</p>
+    <p class="help" data-bt="keysAgain">Press ? to see the keys again.</p>
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
     <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">2.5.550</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.5.562</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-bt="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card kd-card" role="dialog" aria-labelledby="about-title">
     <h2 id="about-title" data-i18n="about">About</h2>
     <p data-i18n="aboutBody">Bertopia is a Solvay Tech Room build lab. The 3D engine is noa (MIT) and Babylon.js (Apache-2.0). Block art is the Kenney Voxel Pack (CC0).</p>
-    <p class="help">noa-engine · MIT · fenomas/noa<br>Babylon.js · Apache-2.0<br>Kenney Voxel Pack · CC0<br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span></p>
+    <p class="help">noa-engine · MIT · fenomas/noa<br>Babylon.js · Apache-2.0<br>Kenney Voxel Pack · CC0<br><span data-bt="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span></p>
     <p><a href="THIRD-PARTY.txt" target="_blank" rel="noopener">THIRD-PARTY.txt</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">KENNEY-LICENSE.txt</a> · <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL.txt</a></p>
     <button class="row kd-key" id="about-close" type="button" data-i18n="close">Close</button>
   </div>
@@ -1423,8 +1427,8 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/kulibert-slots.js?v=2.5.541"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.550" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.550" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.562" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.562" defer></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
