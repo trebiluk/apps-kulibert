@@ -1285,6 +1285,7 @@
   function bindPad(el, id) {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
+      try { el.focus({ preventScroll: true }); } catch (err) { /* the tap still plays */ }
       state.held[id] = true;
       try { el.setPointerCapture(e.pointerId); } catch (err) { /* a tap still counts */ }
       strike(id, el);
@@ -1303,9 +1304,7 @@
       b.textContent = word;
       b.setAttribute("aria-label", word);
       b.setAttribute("data-mu", "drum_" + id);
-      b.setAttribute("data-i18n", "drum_" + id);
       b.setAttribute("data-mu-label", "drum_" + id);
-      b.setAttribute("data-i18n-label", "drum_" + id);
       bindPad(b, id);
       box.appendChild(b);
     });
@@ -3893,6 +3892,18 @@
     }
   }
   paintTheme(document.documentElement.getAttribute("data-theme"), false);
+  // MU 2.36.62: until the kid flips the switch, the theme follows the computer's light/dark setting, live.
+  try {
+    const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
+    const followScheme = (e) => {
+      let saved = "";
+      try { saved = localStorage.getItem("kulibert.music.theme") || ""; } catch (err) { saved = ""; }
+      if (saved === "dark" || saved === "calm") return;
+      paintTheme(e.matches ? "dark" : "calm", false);
+    };
+    if (darkMq.addEventListener) darkMq.addEventListener("change", followScheme);
+    else if (darkMq.addListener) darkMq.addListener(followScheme);
+  } catch (eMq) { /* the switch still works */ }
   const themeBtn = $("theme-switch");
   if (themeBtn) themeBtn.addEventListener("click", () => {
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
@@ -4403,7 +4414,11 @@
     const name = $("songbar-name");
     const meta = $("songbar-meta");
     const cover = $("song-cover");
-    if (name) setBdi(name, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
+    if (name) {
+      const full = songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song);
+      setBdi(name, full);
+      name.title = full; // a long name is cut with an ellipsis in the bar; the whole name shows on hover and to a screen reader
+    }
     if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
     document.documentElement.classList.add("tempo-known");
     if (cover) {
@@ -5344,6 +5359,8 @@
       btn.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         hitPad(btn.dataset.pad, btn);
+        // preventDefault stops the browser from focusing the pad, so Tab would start again at the top (the menu and the bottom nav).
+        try { btn.focus({ preventScroll: true }); } catch (err) { /* the tap still played */ }
       });
       // Space or Enter on a focused pad: pointer taps already played on pointerdown (detail > 0).
       btn.addEventListener("click", (e) => {
@@ -5377,7 +5394,12 @@
   }
   bootTapWrite();
   function fitTapRows() {
-    if (!document.body.classList.contains("tab-tap")) return;
+    if (!document.body.classList.contains("tab-tap")) {
+      // MU 2.36.62: the Tap sizes must not stay on #drums after you leave Tap, or the Score beat grid cannot scroll and runs under the player bar.
+      const loose = $("drums");
+      if (loose && loose.style.length) ["flex", "height", "max-height"].forEach((prop) => loose.style.removeProperty(prop));
+      return;
+    }
     const box = $("drums");
     const pane = $("drums-pane");
     if (!box || !pane) return;
@@ -5449,7 +5471,11 @@
   }
   keep();
 
+  // MU 2.36.62: music's own words first (strings.js). The shared pack is only a fallback for a key music does not own,
+  // so a failed shared fetch no longer logs one "missing" warning per drum word.
   function i18nWord(key, fallback) {
+    const own = mu(key);
+    if (own) return own;
     try {
       const api = window.KulibertI18n;
       if (api && api.t) {
@@ -5457,7 +5483,7 @@
         if (v && v !== key) return v;
       }
     } catch (err) { /* music words still work */ }
-    return mu(key) || fallback || "";
+    return fallback || "";
   }
   function paintClick() {
     const btn = $("click-btn");
@@ -5500,7 +5526,7 @@
       slider.max = "100";
       slider.value = String(state.mix[id] || 0);
       slider.setAttribute("data-drum", id);
-      slider.setAttribute("data-i18n-label", "loud_" + id);
+      slider.setAttribute("data-mu-label", "loud_" + id);
       slider.setAttribute("aria-label", label + " loudness");
       const read = document.createElement("b");
       read.textContent = slider.value;

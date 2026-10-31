@@ -7,6 +7,20 @@
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
+    /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/en.json. */
+    helpMix: "🎚 Each loudness slider says the drum name.",
+    blendAria: "Drums or score",
+    seeAria: "What you see",
+    loud_kick: "Kick loudness",
+    loud_snare: "Snare loudness",
+    loud_hat: "Hat loudness",
+    loud_clap: "Clap loudness",
+    loud_tom: "Tom loudness",
+    loud_shaker: "Shaker loudness",
+    loud_rim: "Rim loudness",
+    loud_bell: "Bell loudness",
+    loud_tamb: "Tamb loudness",
+    loud_crash: "Crash loudness",
     makeBeat: "Make a beat",
     menuEvery: "Menu opens from the left on every screen.",
     listsEasy: "Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.",
@@ -690,6 +704,21 @@
     news23662: "MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on the staff are big enough to see."
   };
   var SIMPLE = {
+    /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/simple.json. */
+    helpMix: "🎚 The sliders say how loud each drum is.",
+    blendAria: "Drums or notes",
+    seeAria: "What you see",
+    vizHelp: "Pick a look. Press Play. Tap the mic lights.",
+    loud_kick: "Kick volume",
+    loud_snare: "Snare volume",
+    loud_hat: "Hat volume",
+    loud_clap: "Clap volume",
+    loud_tom: "Tom volume",
+    loud_shaker: "Shaker volume",
+    loud_rim: "Rim volume",
+    loud_bell: "Bell volume",
+    loud_tamb: "Tamb volume",
+    loud_crash: "Crash volume",
     scoreDrums: "Notes and drums",
     listenTurn: "Listen. Then me.",
     pressPlay: "Press {play}. Sound can stay off.",
@@ -1035,6 +1064,20 @@
   /* filled below */
   var MORE = {
     "uk": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/uk.json. */
+      "helpMix": "🎚 Повзунок гучності називає барабан.",
+      "blendAria": "Барабани чи ноти",
+      "seeAria": "Те, що бачиш",
+      "loud_kick": "Бочка · гучність",
+      "loud_snare": "Малий · гучність",
+      "loud_hat": "Хет · гучність",
+      "loud_clap": "Оплеск · гучність",
+      "loud_tom": "Том · гучність",
+      "loud_shaker": "Шейкер · гучність",
+      "loud_rim": "Обідок · гучність",
+      "loud_bell": "Дзвін · гучність",
+      "loud_tamb": "Бубон · гучність",
+      "loud_crash": "Креш · гучність",
       "makeBeat": "Зроби біт",
       "menuEvery": "Меню відкривається зліва на кожному екрані.",
       "listsEasy": "Списки легко читати, підказки не закривають кнопки, а телефон боком займає весь екран.",
@@ -1719,6 +1762,20 @@
       "news23662": "MU 2.36.62 — У темній темі видно слова на всіх нижніх кнопках, а ноти на нотному стані стали більшими."
     },
     "ru": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ru.json. */
+      "helpMix": "🎚 Ползунок громкости называет барабан.",
+      "blendAria": "Барабаны или ноты",
+      "seeAria": "То, что видишь",
+      "loud_kick": "Бочка · громкость",
+      "loud_snare": "Малый · громкость",
+      "loud_hat": "Хет · громкость",
+      "loud_clap": "Хлопок · громкость",
+      "loud_tom": "Том · громкость",
+      "loud_shaker": "Шейкер · громкость",
+      "loud_rim": "Обод · громкость",
+      "loud_bell": "Колокол · громкость",
+      "loud_tamb": "Бубен · громкость",
+      "loud_crash": "Крэш · громкость",
       "makeBeat": "Сделай бит",
       "menuEvery": "Меню открывается слева на каждом экране.",
       "listsEasy": "Списки легко читать, подсказки не закрывают кнопки, а телефон боком занимает весь экран.",
@@ -2403,6 +2460,20 @@
       "news23662": "MU 2.36.62 — В тёмной теме видны слова на всех нижних кнопках, а ноты на нотном стане стали крупнее."
     },
     "es": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/es.json. */
+      "helpMix": "🎚 Cada control de volumen dice el nombre del tambor.",
+      "blendAria": "Batería o partitura",
+      "seeAria": "Lo que ves",
+      "loud_kick": "Bombo · volumen",
+      "loud_snare": "Caja · volumen",
+      "loud_hat": "Charles · volumen",
+      "loud_clap": "Palma · volumen",
+      "loud_tom": "Timbal · volumen",
+      "loud_shaker": "Maracas · volumen",
+      "loud_rim": "Aro · volumen",
+      "loud_bell": "Campana · volumen",
+      "loud_tamb": "Pandero · volumen",
+      "loud_crash": "Platillo · volumen",
       "makeBeat": "Haz un ritmo",
       "menuEvery": "El menú se abre desde la izquierda en cada pantalla.",
       "listsEasy": "Las listas se leen bien, los avisos no tapan los botones, y un teléfono de lado usa toda la pantalla.",
@@ -3088,6 +3159,20 @@
       "news23662": "MU 2.36.62 — En el tema oscuro se leen todos los botones de abajo, y las notas del pentagrama son más grandes."
     },
     "ar": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ar.json. */
+      "helpMix": "🎚 شريط العلو يقول اسم الطبلة.",
+      "blendAria": "الطبول أو النوتة",
+      "seeAria": "ما تراه",
+      "loud_kick": "كبيرة · علو",
+      "loud_snare": "صغيرة · علو",
+      "loud_hat": "هاي هات · علو",
+      "loud_clap": "تصفيق · علو",
+      "loud_tom": "توم · علو",
+      "loud_shaker": "شيكر · علو",
+      "loud_rim": "حافة · علو",
+      "loud_bell": "جرس · علو",
+      "loud_tamb": "دف · علو",
+      "loud_crash": "كراش · علو",
       "makeBeat": "اصنع إيقاعًا",
       "menuEvery": "القائمة تفتح من اليسار في كل شاشة.",
       "listsEasy": "القوائم سهلة القراءة، والتنبيهات لا تغطي الأزرار، والهاتف بالعرض يستخدم الشاشة كلها.",
@@ -3773,6 +3858,20 @@
       "news23662": "MU 2.36.62 — في الوضع الداكن تظهر كلمات كل الأزرار السفلية، وصارت النوتات على المدرج أكبر."
     },
     "fa-AF": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/fa-AF.json. */
+      "helpMix": "🎚 نوار بلندی نام طبل را می‌گوید.",
+      "blendAria": "طبل‌ها یا نت",
+      "seeAria": "آنچه می‌بینی",
+      "loud_kick": "باس · بلندی",
+      "loud_snare": "اسنر · بلندی",
+      "loud_hat": "هت · بلندی",
+      "loud_clap": "کف · بلندی",
+      "loud_tom": "تام · بلندی",
+      "loud_shaker": "شیکر · بلندی",
+      "loud_rim": "لبه · بلندی",
+      "loud_bell": "زنگ · بلندی",
+      "loud_tamb": "دف · بلندی",
+      "loud_crash": "کرش · بلندی",
       "makeBeat": "یک بیت بساز",
       "menuEvery": "فهرست از چپ در هر صفحه باز می‌شود.",
       "listsEasy": "فهرست‌ها آسان خوانده می‌شوند، نکته‌ها روی دکمه‌ها نمی‌آیند، و تلفن به پهلو همهٔ صفحه را می‌گیرد.",
@@ -4458,6 +4557,20 @@
       "news23662": "MU 2.36.62 — در حالت تاریک کلمات همهٔ دکمه‌های پایین دیده می‌شود و نت‌ها روی خطوط بزرگ‌تر شده‌اند."
     },
     "rw": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/rw.json. */
+      "helpMix": "🎚 Umuzingo w'amajwi uvuga izina ry'ingoma.",
+      "blendAria": "Ingoma cyangwa amanota",
+      "seeAria": "Ibyo ubona",
+      "loud_kick": "Nini · amajwi",
+      "loud_snare": "Nto · amajwi",
+      "loud_hat": "Hihati · amajwi",
+      "loud_clap": "Amaraso · amajwi",
+      "loud_tom": "Tomu · amajwi",
+      "loud_shaker": "Ishakeri · amajwi",
+      "loud_rim": "Urutuba · amajwi",
+      "loud_bell": "Inzogera · amajwi",
+      "loud_tamb": "Ingoma nto · amajwi",
+      "loud_crash": "Ikirashe · amajwi",
       "makeBeat": "Kora umurya",
       "menuEvery": "Menyu ifunguka ibumoso kuri buri gice.",
       "listsEasy": "Urutonde rusomeka neza, inama ntizikubita buto, kandi telefoni itwikiriye ikoresha ecran yose.",
@@ -5143,6 +5256,20 @@
       "news23662": "MU 2.36.62 — Mu buryo bwijimye, amagambo y'utubuto two hasi yose arigaragara, kandi inoti ku murongo ziraruta."
     },
     "ti": {
+      /* MU 2.36.62: the words the Mix, Show and Help screens asked the shared pack for. Same words as shared/i18n/ti.json. */
+      "helpMix": "🎚 መቆጻጸሪ ድምጺ ስም ከበሮ ይብል።",
+      "blendAria": "ከበሮ ወይ ነቶ",
+      "seeAria": "እቲ ትርእዮ",
+      "loud_kick": "ዓቢ · ድምጺ",
+      "loud_snare": "ንእሽቶ · ድምጺ",
+      "loud_hat": "ሃት · ድምጺ",
+      "loud_clap": "ምጭብጣብ · ድምጺ",
+      "loud_tom": "ቶም · ድምጺ",
+      "loud_shaker": "ሸከር · ድምጺ",
+      "loud_rim": "ገምጋም · ድምጺ",
+      "loud_bell": "ደወል · ድምጺ",
+      "loud_tamb": "ከበሮ ንእሽቶ · ድምጺ",
+      "loud_crash": "ክራሽ · ድምጺ",
       "makeBeat": "ምት ግበር",
       "menuEvery": "ዝርዝር ካብ ጸጋም ኣብ ነፍሲ ወከፍ ገጽ ይኽፈት።",
       "listsEasy": "ዝርዝራት ቀሊል እዮም፣ መዘኻኸሪ ኣብ ልዕሊ መጠወቒ ኣይወድቕን፣ ስልኪ ብጎኒ ኩሉ ገጽ ይጥቀም።",

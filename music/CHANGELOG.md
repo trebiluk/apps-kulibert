@@ -6,6 +6,8 @@ MU 2.36.62 — Every bottom button has its word in the dark theme, and notes on 
 
 In kid words: in the dark theme the buttons along the bottom (New beat, Record, Perform, More) and the song name were dark letters on a dark bar, so they looked blank. They are light letters now. The piano keys show their letters, and Octave down and Octave up say so. On Score the notes keep their real size (they were squeezed to about 4 pixels), the note that is playing gets a ring, and the lines of music are balanced.
 
+Round 1 fixes (still 2.36.62): the dark theme is a real dark theme now (it follows the computer's light or dark setting until you flip the switch). Tempo has an icon, "Bar 5 · Beat 1" stays on one line, and the Score beat grid scrolls above the bottom bar instead of running under it. Tab from a pad goes to the next pad, then the steps. The five tabs fit in one row on a phone. Play has a thick teal ring. Fewer console warnings when words load slowly.
+
 ## Earlier
 
 **Chip: MU 2.36.61** · 2026-10-30 · channel **draft PR**

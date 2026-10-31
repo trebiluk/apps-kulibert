@@ -160,10 +160,10 @@
         <li><span data-mu="helpSide">Swipe up on the row under the picture to find the Sound buttons.</span></li>
         <li><span data-mu="helpRow">Swipe the row of pictures sideways to see them all.</span></li>
         <li><span data-mu="helpCode">🧩 Pick the Code look. Then you can change its folds and size.</span></li>
-        <li><span data-mu="helpStart" data-i18n="helpStart">▶ Press Play. The picture waits, then your music becomes light.</span></li>
-        <li><span data-mu="helpPulse" data-i18n="helpPulse">🖼 The frame glows a little with the kick. It stays still if motion is reduced.</span></li>
+        <li><span data-mu="helpStart">▶ Press Play. The picture waits, then your music becomes light.</span></li>
+        <li><span data-mu="helpPulse">🖼 The frame glows a little with the kick. It stays still if motion is reduced.</span></li>
         <li><span data-mu="helpDrop">⚡ When the beat drops, the picture jumps to your next look for one bar, then comes back. Drop swap can turn it off. It stays still if motion is reduced.</span></li>
-        <li><span data-i18n="helpMix">🎚 Each loudness slider says the drum name.</span></li>
+        <li><span data-mu="helpMix">🎚 Each loudness slider says the drum name.</span></li>
         <li><span data-mu="helpScore">📝 The Score tab teaches you in your language.</span></li>
         <li><span data-mu="helpBeatSwipe">Swipe the beat boxes sideways to reach the last beats.</span></li>
         <li><span data-mu="helpTap">🥁 The Tap tab teaches you in your language.</span></li>
@@ -284,7 +284,7 @@
     <section class="group">
       <h2 data-mu="blend">Blend</h2>
       <label class="tempo"><span data-mu="blend">Blend</span> <b id="blend-read" data-mu="both">Both</b>
-        <input id="blend" type="range" min="0" max="100" value="50" data-i18n-label="blendAria" aria-label="Drums or score"/>
+        <input id="blend" type="range" min="0" max="100" value="50" data-mu-label="blendAria" aria-label="Drums or score"/>
       </label>
       <p class="hint" data-mu="blendHint">Left is the drums. Right is the score. The middle plays both.</p>
     </section>
@@ -366,7 +366,7 @@
       <span id="songbar-meta"></span>
     </div>
     <section class="work" id="work">
-      <div class="kit" id="kit" data-mu-label="tapFinger" data-i18n-label="tapFinger" aria-label="Tap with a finger"></div>
+      <div class="kit" id="kit" data-mu-label="tapFinger" aria-label="Tap with a finger"></div>
       <div id="notes-pane">
         <div class="staff-wrap"><div id="staff"></div></div>
         <p id="teach" class="teach-line" hidden>Tap a letter under the staff.</p>
@@ -433,26 +433,28 @@
           <i id="count-dot" class="count-dot" aria-hidden="true"></i>
         </div>
         <div id="tap-pads" class="tap-pads" aria-label="Pads" data-mu-label="padsName">
-          <button type="button" class="pad" data-pad="kick" data-mu-label="drum_kick" data-i18n-label="drum_kick" aria-label="Kick" aria-pressed="false"><kbd class="key-hint">A</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg><span class="pad-word" data-mu="drum_kick" data-i18n="drum_kick">Kick</span></button>
-          <button type="button" class="pad" data-pad="snare" data-mu-label="drum_snare" data-i18n-label="drum_snare" aria-label="Snare" aria-pressed="false"><kbd class="key-hint">S</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M6 12h12" stroke="currentColor" stroke-width="2"/></svg><span class="pad-word" data-mu="drum_snare" data-i18n="drum_snare">Snare</span></button>
-          <button type="button" class="pad" data-pad="hat" data-mu-label="drum_hat" data-i18n-label="drum_hat" aria-label="Hat" aria-pressed="false"><kbd class="key-hint">D</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 9h18M4 15h16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_hat" data-i18n="drum_hat">Hat</span></button>
-          <button type="button" class="pad" data-pad="clap" data-mu-label="drum_clap" data-i18n-label="drum_clap" aria-label="Clap" aria-pressed="false"><kbd class="key-hint">F</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 16c2 3 6 3 8 0M7 12V7M12 12V5M17 12V7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_clap" data-i18n="drum_clap">Clap</span></button>
-          <button type="button" class="pad" data-pad="tom" data-mu-label="drum_tom" data-i18n-label="drum_tom" aria-label="Tom" aria-pressed="false"><kbd class="key-hint">G</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="7" ry="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M5 8v8c0 1.7 3.1 3 7 3s7-1.3 7-3V8" fill="none" stroke="currentColor" stroke-width="2.4"/></svg><span class="pad-word" data-mu="drum_tom" data-i18n="drum_tom">Tom</span></button>
-          <button type="button" class="pad" data-pad="shaker" data-mu-label="drum_shaker" data-i18n-label="drum_shaker" aria-label="Shaker" aria-pressed="false"><kbd class="key-hint">H</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="18" rx="3" transform="rotate(35 12 12)" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="10" cy="11" r="1.1" fill="currentColor"/><circle cx="14" cy="13" r="1.1" fill="currentColor"/></svg><span class="pad-word" data-mu="drum_shaker" data-i18n="drum_shaker">Shaker</span></button>
-          <button type="button" class="pad" data-pad="rim" data-mu-label="drum_rim" data-i18n-label="drum_rim" aria-label="Rim" aria-pressed="false"><kbd class="key-hint">J</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 18L18 6M8 20L20 10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_rim" data-i18n="drum_rim">Rim</span></button>
-          <button type="button" class="pad" data-pad="bell" data-mu-label="drum_bell" data-i18n-label="drum_bell" aria-label="Bell" aria-pressed="false"><kbd class="key-hint">K</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 17c1-2 1.5-4 1.5-7a4.5 4.5 0 019 0c0 3 .5 5 1.5 7zM10 20h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="pad-word" data-mu="drum_bell" data-i18n="drum_bell">Bell</span></button>
+          <button type="button" class="pad" data-pad="kick" data-mu-label="drum_kick" aria-label="Kick" aria-pressed="false"><kbd class="key-hint">A</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg><span class="pad-word" data-mu="drum_kick">Kick</span></button>
+          <button type="button" class="pad" data-pad="snare" data-mu-label="drum_snare" aria-label="Snare" aria-pressed="false"><kbd class="key-hint">S</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M6 12h12" stroke="currentColor" stroke-width="2"/></svg><span class="pad-word" data-mu="drum_snare">Snare</span></button>
+          <button type="button" class="pad" data-pad="hat" data-mu-label="drum_hat" aria-label="Hat" aria-pressed="false"><kbd class="key-hint">D</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 9h18M4 15h16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_hat">Hat</span></button>
+          <button type="button" class="pad" data-pad="clap" data-mu-label="drum_clap" aria-label="Clap" aria-pressed="false"><kbd class="key-hint">F</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 16c2 3 6 3 8 0M7 12V7M12 12V5M17 12V7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_clap">Clap</span></button>
+          <button type="button" class="pad" data-pad="tom" data-mu-label="drum_tom" aria-label="Tom" aria-pressed="false"><kbd class="key-hint">G</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="7" ry="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M5 8v8c0 1.7 3.1 3 7 3s7-1.3 7-3V8" fill="none" stroke="currentColor" stroke-width="2.4"/></svg><span class="pad-word" data-mu="drum_tom">Tom</span></button>
+          <button type="button" class="pad" data-pad="shaker" data-mu-label="drum_shaker" aria-label="Shaker" aria-pressed="false"><kbd class="key-hint">H</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="18" rx="3" transform="rotate(35 12 12)" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="10" cy="11" r="1.1" fill="currentColor"/><circle cx="14" cy="13" r="1.1" fill="currentColor"/></svg><span class="pad-word" data-mu="drum_shaker">Shaker</span></button>
+          <button type="button" class="pad" data-pad="rim" data-mu-label="drum_rim" aria-label="Rim" aria-pressed="false"><kbd class="key-hint">J</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 18L18 6M8 20L20 10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span class="pad-word" data-mu="drum_rim">Rim</span></button>
+          <button type="button" class="pad" data-pad="bell" data-mu-label="drum_bell" aria-label="Bell" aria-pressed="false"><kbd class="key-hint">K</kbd><svg class="pad-ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 17c1-2 1.5-4 1.5-7a4.5 4.5 0 019 0c0 3 .5 5 1.5 7zM10 20h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="pad-word" data-mu="drum_bell">Bell</span></button>
         </div>
-        <p id="guide-line" class="guide-line">Next: Kick</p>
-        <p id="playhead-read" class="playhead-read" aria-live="polite">Beat 1</p>
         <div id="tap-strip" class="tap-strip" role="group" aria-label="Beat lane"></div>
-        <div class="tap-actions">
+        <div class="tap-side" id="tap-side">
+          <p id="guide-line" class="guide-line">Next: Kick</p>
+          <p id="playhead-read" class="playhead-read" aria-live="polite">Beat 1</p>
+          <div class="tap-actions">
           <button type="button" id="tap-undo" class="btn" data-mu="undo" data-i18n="undo" data-mu-label="undo" data-i18n-label="undo">Undo</button>
           <button type="button" id="tap-next" class="btn" data-mu="nextStep">Next</button>
         </div>
-        <div class="tap-tiles">
+          <div class="tap-tiles">
           <button type="button" id="stage-toggle" class="btn" aria-pressed="false" title="Picture"><span class="ctl-word" data-mu="showPicture">Picture</span></button>
           <button type="button" id="turn-btn" class="btn" data-mu="listenTurn">Listen, then my turn</button>
           <button type="button" id="along-btn" class="btn" aria-pressed="false" data-mu="playAlong">Play along</button>
+        </div>
         </div>
         <div class="style-row" id="style-row" aria-label="Styles"></div>
         <div class="cast" id="cast" aria-label="Layers" hidden></div>
@@ -460,7 +462,7 @@
         <p class="beat-speak" id="beat-speak"><span id="beat-line" class="beat-line" aria-live="polite" data-mu="pressPlay">Press Play. You can leave the sound off.</span>
           <button type="button" id="read-lesson" class="btn read-me" aria-label="Read it to me" data-mu-label="readMe">🔊</button></p>
         <p class="hint" id="step-hint" hidden data-mu="stepHint">Tap a pad. It stays on that step.</p>
-        <div id="drums" class="drums" data-mu-label="drumsGroup" data-i18n-label="drumsGroup" aria-label="Drums"></div>
+        <div id="drums" class="drums" data-mu-label="drumsGroup" aria-label="Drums"></div>
         <button type="button" id="more-drums" class="btn" aria-expanded="false" title="More drums"><span class="ctl-word" data-mu="moreDrums">More drums</span></button>
         <details class="more-box">
           <summary data-mu="extraDrums">Extra drums (Tom, Shaker…)</summary>
@@ -511,32 +513,32 @@
       </div>
       <div id="lights-pane">
         <div id="scenes" class="looks" aria-label="Pictures"></div>
-        <p id="viz-help" class="hint" data-mu="vizHelp" data-i18n="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
-        <button type="button" id="looks-open" class="btn" aria-expanded="false" aria-controls="looks-drawer" data-mu="looksOpen" data-i18n="looksOpen">🎨 Looks</button>
+        <p id="viz-help" class="hint" data-mu="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
+        <button type="button" id="looks-open" class="btn" aria-expanded="false" aria-controls="looks-drawer" data-mu="looksOpen">🎨 Looks</button>
         <div id="looks-drawer" class="looks-drawer" hidden role="dialog" aria-labelledby="looks-title">
           <div class="looks-drawer-bar">
-            <h2 id="looks-title" data-mu="looksOpen" data-i18n="looksOpen">🎨 Looks</h2>
+            <h2 id="looks-title" data-mu="looksOpen">🎨 Looks</h2>
             <button type="button" id="looks-close" class="btn" data-i18n="close">Close</button>
           </div>
-          <p class="looks-group"><span data-mu="groupLooks" data-i18n="groupLooks">🎨 Looks</span></p>
-          <div id="look-grid" class="look-grid" role="group" data-mu-label="groupLooks" data-i18n-label="groupLooks" aria-label="Looks"></div>
+          <p class="looks-group"><span data-mu="groupLooks">🎨 Looks</span></p>
+          <div id="look-grid" class="look-grid" role="group" data-mu-label="groupLooks" aria-label="Looks"></div>
           <div id="viz-recipe" class="viz-recipe" hidden></div>
-          <p class="looks-group"><span data-mu="groupColors" data-i18n="groupColors">🎨 Colors</span></p>
-          <div id="color-grid" class="look-grid" role="group" data-mu-label="groupColors" data-i18n-label="groupColors" aria-label="Colors"></div>
-          <p class="looks-group"><span data-mu="groupWall" data-i18n="groupWall">🧱 Wall</span></p>
-          <div id="wall-grid" class="look-grid" role="group" data-mu-label="groupWall" data-i18n-label="groupWall" aria-label="Wall"></div>
-          <p class="looks-group"><span data-mu="groupFrame" data-i18n="groupFrame">🖼 Frame</span></p>
-          <div id="frame-grid" class="look-grid" role="group" data-mu-label="groupFrame" data-i18n-label="groupFrame" aria-label="Frame"></div>
-          <button type="button" id="surprise-btn" class="btn surprise-btn" data-mu="surpriseMe" data-i18n="surpriseMe">🎲 Surprise me</button>
+          <p class="looks-group"><span data-mu="groupColors">🎨 Colors</span></p>
+          <div id="color-grid" class="look-grid" role="group" data-mu-label="groupColors" aria-label="Colors"></div>
+          <p class="looks-group"><span data-mu="groupWall">🧱 Wall</span></p>
+          <div id="wall-grid" class="look-grid" role="group" data-mu-label="groupWall" aria-label="Wall"></div>
+          <p class="looks-group"><span data-mu="groupFrame">🖼 Frame</span></p>
+          <div id="frame-grid" class="look-grid" role="group" data-mu-label="groupFrame" aria-label="Frame"></div>
+          <button type="button" id="surprise-btn" class="btn surprise-btn" data-mu="surpriseMe">🎲 Surprise me</button>
           <div class="gizmos">
-            <label class="fader-row"><span data-mu="gearSize" data-i18n="gearSize">Size</span><output id="n-zoom" for="g-zoom">110</output><input id="g-zoom" type="range" min="40" max="160" value="110" data-mu-label="gearSize" data-i18n-label="gearSize" aria-label="Size"/></label>
-            <label class="fader-row"><span data-mu="spinWord" data-i18n="spinWord">Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" data-mu-label="spinWord" data-i18n-label="spinWord" aria-label="Spin"/></label>
-            <label class="fader-row"><span data-mu="glowWord" data-i18n="glowWord">Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" data-mu-label="glowWord" data-i18n-label="glowWord" aria-label="Glow"/></label>
-            <label class="fader-row"><span data-mu="gearThick" data-i18n="gearThick">Thick</span><output id="n-thick" for="g-thick">4</output><input id="g-thick" type="range" min="1" max="12" value="4" data-mu-label="gearThick" data-i18n-label="gearThick" aria-label="Thick"/></label>
-            <label class="fader-row"><span data-mu="gearCount" data-i18n="gearCount">How many</span><output id="n-count" for="g-count">24</output><input id="g-count" type="range" min="4" max="32" value="24" data-mu-label="gearCount" data-i18n-label="gearCount" aria-label="How many"/></label>
-            <label class="fader-row"><span data-mu="gearTrails" data-i18n="gearTrails">Trails</span><output id="n-trail" for="g-trail">22</output><input id="g-trail" type="range" min="0" max="70" value="22" data-mu-label="gearTrails" data-i18n-label="gearTrails" aria-label="Trails"/></label>
-            <label class="fader-row"><span data-mu="gearBounce" data-i18n="gearBounce">Bounce</span><output id="n-bounce" for="g-bounce">100</output><input id="g-bounce" type="range" min="0" max="100" value="100" data-mu-label="gearBounce" data-i18n-label="gearBounce" aria-label="Bounce"/></label>
-            <label class="fader-row"><span data-mu="gearWild" data-i18n="gearWild">Wild</span><output id="n-wild" for="g-wild">55</output><input id="g-wild" type="range" min="0" max="100" value="55" data-mu-label="gearWild" data-i18n-label="gearWild" aria-label="Wild"/></label>
+            <label class="fader-row"><span data-mu="gearSize">Size</span><output id="n-zoom" for="g-zoom">110</output><input id="g-zoom" type="range" min="40" max="160" value="110" data-mu-label="gearSize" aria-label="Size"/></label>
+            <label class="fader-row"><span data-mu="spinWord">Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" data-mu-label="spinWord" aria-label="Spin"/></label>
+            <label class="fader-row"><span data-mu="glowWord">Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" data-mu-label="glowWord" aria-label="Glow"/></label>
+            <label class="fader-row"><span data-mu="gearThick">Thick</span><output id="n-thick" for="g-thick">4</output><input id="g-thick" type="range" min="1" max="12" value="4" data-mu-label="gearThick" aria-label="Thick"/></label>
+            <label class="fader-row"><span data-mu="gearCount">How many</span><output id="n-count" for="g-count">24</output><input id="g-count" type="range" min="4" max="32" value="24" data-mu-label="gearCount" aria-label="How many"/></label>
+            <label class="fader-row"><span data-mu="gearTrails">Trails</span><output id="n-trail" for="g-trail">22</output><input id="g-trail" type="range" min="0" max="70" value="22" data-mu-label="gearTrails" aria-label="Trails"/></label>
+            <label class="fader-row"><span data-mu="gearBounce">Bounce</span><output id="n-bounce" for="g-bounce">100</output><input id="g-bounce" type="range" min="0" max="100" value="100" data-mu-label="gearBounce" aria-label="Bounce"/></label>
+            <label class="fader-row"><span data-mu="gearWild">Wild</span><output id="n-wild" for="g-wild">55</output><input id="g-wild" type="range" min="0" max="100" value="55" data-mu-label="gearWild" aria-label="Wild"/></label>
           </div>
         </div>
         <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
@@ -587,11 +589,11 @@
       </div>
     </section>
 
-    <section class="out" data-i18n-label="seeAria" aria-label="What you see">
+    <section class="out" data-mu-label="seeAria" aria-label="What you see">
       <div class="stage-wrap">
         <button type="button" id="perform-exit" class="perform-exit" hidden data-mu="exitShow"><svg class="mu-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span data-mu="exitShow">Exit</span></button>
         <canvas id="viz" width="640" height="280" aria-label="Live music picture" data-mu-label="vizName"></canvas>
-        <p id="viz-start" class="viz-start"><span data-mu="vizStart" data-i18n="vizStart">Tap ▶ to start — watch your music become light.</span></p>
+        <p id="viz-start" class="viz-start"><span data-mu="vizStart">Tap ▶ to start — watch your music become light.</span></p>
         <i id="berty-bob" class="berty-bob" aria-hidden="true"></i>
         <canvas id="confetti" class="confetti" hidden></canvas>
         <div id="curtain" class="curtain" hidden>
@@ -653,7 +655,7 @@
       <span id="play-pos">Bar 1 · Beat 1</span>
     </div>
     <button type="button" id="play-btn" class="play" aria-label="Play" title="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word" class="ctl-word">Play</span></button>
-    <label class="tempo fader-row"><span data-mu="tempo">Tempo</span> <output id="tempo-read" for="tempo">104</output>
+    <label class="tempo fader-row"><svg class="tempo-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8l-2.2-17h-3.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 15.5l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tempo">Tempo</span> <output id="tempo-read" for="tempo">104</output>
       <input id="tempo" type="range" min="70" max="160" value="104" aria-label="Tempo" data-mu-label="tempo"/>
     </label>
     <button type="button" id="rec-btn" class="btn rec" aria-pressed="false" aria-label="Record" title="Record"><span class="ctl-word" data-mu="record">Record</span></button>
