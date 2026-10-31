@@ -523,10 +523,6 @@
   ],
   "rewrites": [
     {
-      "source": "/bertopia/",
-      "destination": "/blocks/index.html"
-    },
-    {
       "source": "/holdit/play/:levelId",
       "destination": "/holdit/index.html"
     },
@@ -960,10 +956,6 @@
     {
       "source": "/bistro/:path*",
       "destination": "https://bearcat-bistro.vercel.app/bistro/:path*"
-    },
-    {
-      "source": "/bertopia/:path*",
-      "destination": "/blocks/:path*"
     }
   ],
   "headers": [
