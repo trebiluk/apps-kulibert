@@ -17,7 +17,7 @@ try {
 </script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; connect-src 'self'; script-src 'self' 'unsafe-inline'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'">
 <link rel="icon" href="data:,">
-<title>Pinchy McPinchface</title>
+<title>Berty &amp; Bizzy</title>
 <style>
   @font-face {
     font-family: "IBM Plex Sans";
@@ -510,13 +510,54 @@ try {
       border: 2px solid ButtonText;
     }
   }
+
+  #help-btn { min-width: 44px; min-height: 44px; font-weight: 700; font-size: 18px; }
+  .bb-intro {
+    position: fixed; inset: 0; z-index: 60;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: var(--pz-bg);
+    opacity: 0.97;
+    animation: bb-intro-out 0.3s ease 1.4s forwards;
+    cursor: pointer;
+  }
+  .bb-intro[hidden] { display: none; }
+  .bb-intro.is-still { animation: none; }
+  .bb-intro svg { width: min(86vw, 420px); height: auto; }
+  .bb-intro-text { margin: 0; font: 700 22px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; text-align: center; padding: 0 16px; }
+  .bb-intro-skip { margin: 0; font: 500 13px/1.2 "IBM Plex Mono", ui-monospace, monospace; color: var(--pz-ink-2); text-align: center; padding: 0 16px; }
+  @keyframes bb-intro-out { to { opacity: 0; } }
+  .bb-tip {
+    position: absolute; z-index: 40; width: min(320px, calc(100vw - 16px));
+    display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start;
+    padding: 10px 10px 8px; background: var(--pz-yellow); color: var(--pz-on-yellow);
+    border: 3px solid var(--pz-on-yellow); border-radius: 8px;
+  }
+  .bb-tip[hidden] { display: none; }
+  .bb-tip::before { content: ""; position: absolute; top: -12px; inset-inline-start: var(--bb-nub, 24px); border: 6px solid transparent; border-bottom: 6px solid var(--pz-on-yellow); border-top-width: 0; border-width: 0 9px 9px 9px; border-color: transparent transparent var(--pz-on-yellow) transparent; margin-top: -3px; }
+  .bb-tip.is-above::before { top: auto; bottom: -12px; border-width: 9px 9px 0 9px; border-color: var(--pz-on-yellow) transparent transparent transparent; margin-top: 0; margin-bottom: -3px; }
+  .bb-tip-icon { grid-row: 1; margin-top: 2px; }
+  .bb-tip-text { margin: 0; font: 700 15px/1.3 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; align-self: center; }
+  .bb-tip-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
+  .bb-tip button { min-height: 44px; min-width: 44px; padding: 0 10px; background: var(--pz-panel); color: var(--pz-ink); border: 2px solid var(--pz-on-yellow); border-radius: 6px; font: 700 14px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-tip button:focus-visible, #help-btn:focus-visible, .bb-help button:focus-visible { outline: 3px solid var(--pz-focus); outline-offset: 2px; }
+  .bb-help { position: fixed; inset: 0; z-index: 70; background: var(--pz-bg); overflow-y: auto; padding: 12px; }
+  .bb-help[hidden] { display: none; }
+  .bb-help-card { max-width: 640px; margin: 0 auto; background: var(--pz-panel); border: 2px solid var(--pz-line); border-radius: 8px; padding: 12px 14px 14px; }
+  .bb-help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .bb-help h2 { margin: 0; font: 700 22px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-help h3 { margin: 14px 0 4px; font: 700 15px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); padding: 3px 8px; border-radius: 4px; }
+  .bb-help ul { margin: 0; padding-inline-start: 20px; }
+  .bb-help li, .bb-help p { margin: 4px 0; font: 500 15px/1.4 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  .bb-help button { min-height: 44px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .bb-intro { animation: none; } }
 </style>
 </head>
 <body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no"><span id="brand-name">PINCHY</span><small><span id="brand-full">Pinchy McPinchface</span> · <span id="app-version">v1.3.0</span></small></p>
+  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.4.0</span></small></p>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
+  <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
   <button type="button" class="tool" id="levels-btn" aria-expanded="false" aria-controls="pz-menu">☰ Levels</button>
   <span id="chrome-slot" class="pz-wide"></span>
 </header>
@@ -525,6 +566,11 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v140">Version 1.4.0</p>
+  <ul>
+    <li data-k="w140a">Pinchy is now Berty &amp; Bizzy. The old address /pinchy/ sends you here.</li>
+    <li data-k="w140b">Berty and Bizzy wave hello once per visit. Tips and a Help button explain the blocks.</li>
+  </ul>
   <p data-k="v132">Version 1.3.2</p>
   <ul>
     <li data-k="w132a">All 8 languages now translate the status line, E-STOP, Clear, the joint summary, the claw readout, the stars, blocks and time, the top bar, the theme button, and What's new.</li>
@@ -584,7 +630,7 @@ try {
 <button type="button" class="tool" id="theme-btn" aria-pressed="false">◐ Dark</button>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <section id="title-screen">
-  <h1 id="hero" translate="no">Pinchy McPinchface</h1>
+  <h1 id="hero" translate="no">Berty &amp; Bizzy</h1>
   <div class="scene"><canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas></div>
   <p><button type="button" id="play">Play</button></p>
 </section>
@@ -645,11 +691,59 @@ try {
     <span id="m-time">Time: none yet</span>
   </p>
 </main>
-<noscript><p>Pinchy McPinchface needs JavaScript. It does not use the network.</p></noscript>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Pinchy" data-version="1.3.2" data-rtl="1" data-menu="#levels-btn" defer></script>
+<noscript><p>Berty &amp; Bizzy needs JavaScript. It does not use the network.</p></noscript>
+<div id="bb-intro" class="bb-intro" hidden>
+  <svg id="bb-intro-art" viewBox="0 0 320 170" role="img" aria-hidden="true" focusable="false">
+    <rect x="0" y="150" width="320" height="4" fill="var(--pz-line)"/>
+    <g id="bb-berty">
+      <rect x="40" y="132" width="64" height="18" rx="3" fill="var(--pz-arm)"/>
+      <rect x="64" y="86" width="16" height="48" rx="3" fill="var(--pz-arm-link)" stroke="var(--pz-arm)" stroke-width="3"/>
+      <circle cx="72" cy="86" r="8" fill="var(--pz-arm)"/>
+      <g id="bb-berty-fore">
+        <rect x="64" y="38" width="16" height="50" rx="3" fill="var(--pz-arm-link)" stroke="var(--pz-arm)" stroke-width="3"/>
+        <path d="M62 38 L66 22 M82 38 L78 22" stroke="var(--pz-arm)" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+    <g id="bb-bizzy">
+      <rect x="216" y="132" width="64" height="18" rx="3" fill="var(--pz-arm)"/>
+      <rect x="240" y="86" width="16" height="48" rx="3" fill="var(--pz-panel)" stroke="var(--pz-arm)" stroke-width="3"/>
+      <circle cx="248" cy="86" r="8" fill="var(--pz-arm)"/>
+      <g id="bb-bizzy-fore">
+        <rect x="240" y="38" width="16" height="50" rx="3" fill="var(--pz-panel)" stroke="var(--pz-arm)" stroke-width="3"/>
+        <path d="M238 38 L242 22 M258 38 L254 22" stroke="var(--pz-arm)" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+  </svg>
+  <p id="bb-intro-text" class="bb-intro-text" aria-live="polite"></p>
+  <p id="bb-intro-skip" class="bb-intro-skip"></p>
+</div>
+<aside id="bb-tip" class="bb-tip" role="note" hidden>
+  <svg class="bb-tip-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M9 21h6M10 17h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <p id="bb-tip-text" class="bb-tip-text"></p>
+  <div class="bb-tip-actions">
+    <button type="button" id="bb-tip-off" class="bb-tip-off"></button>
+    <button type="button" id="bb-tip-close" class="bb-tip-close"><span aria-hidden="true">&#x2715;</span></button>
+  </div>
+</aside>
+<section id="bb-help" class="bb-help" role="dialog" aria-modal="true" aria-labelledby="bb-help-title" hidden>
+  <div class="bb-help-card">
+    <div class="bb-help-head">
+      <h2 id="bb-help-title"></h2>
+      <button type="button" id="bb-help-close" class="bb-help-close"></button>
+    </div>
+    <h3 id="bb-help-blocks-h"></h3>
+    <ul id="bb-help-blocks"></ul>
+    <h3 id="bb-help-controls-h"></h3>
+    <p id="bb-help-controls"></p>
+    <h3 id="bb-help-fail-h"></h3>
+    <ul id="bb-help-fail"></ul>
+    <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
+  </div>
+</section>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.4.0" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="game.js?v=1.3.2"></script>
-<script src="view3d.js?v=1.3.2"></script>
+<script src="game.js?v=1.4.0"></script>
+<script src="view3d.js?v=1.4.0"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -1032,11 +1126,11 @@ var paintChrome = function () {
     else themeBtnNow.removeAttribute("data-draft");
   }
   var metaNow = PINCHY.langMeta(lang);
-  var gameName = metaNow.gameName || "Pinchy McPinchface";
+  var gameName = metaNow.gameName || "Berty & Bizzy";
   var brandName = document.getElementById("brand-name");
-  if (brandName) brandName.textContent = (metaNow.appName || "Pinchy").toUpperCase();
+  if (brandName) brandName.textContent = (metaNow.appName || "Berty & Bizzy").toUpperCase();
   var brandFull = document.getElementById("brand-full");
-  if (brandFull) brandFull.textContent = gameName;
+  if (brandFull) brandFull.textContent = PINCHY.uiText(lang, "tagline");
   var heroEl = document.getElementById("hero");
   if (heroEl) heroEl.textContent = gameName;
   document.title = gameName;
@@ -1073,6 +1167,7 @@ var paintChrome = function () {
   if (menuEl) menuEl.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
   var levelsGroup = document.getElementById("levels");
   if (levelsGroup) levelsGroup.setAttribute("aria-label", PINCHY.uiText(lang, "Levels"));
+  if (typeof bbPaint === "function") bbPaint();
 };
 // Saved language: the one shared key, kulibert-prefs-v1 (read and written the same way the top bar does). Pinchy writes nothing else but its theme.
 var readSavedLang = function () {
@@ -1097,16 +1192,17 @@ var saveLang = function (code, dir) {
     try { window.dispatchEvent(new CustomEvent("kulibert-lang", { detail: { lang: code, dir: dir } })); } catch (errEvt) {}
   }
 };
-// The shared top bar draws "Pinchy · version" from a fixed attribute. Swap in the table's name for the current language.
+// The shared top bar draws "Berty & Bizzy · version" from a fixed attribute. Swap in the table's name for the current language.
+var BAR_NAME = "Berty & Bizzy";
 var patchBarName = function () {
-  var want = PINCHY.langMeta(lang).appName || "Pinchy";
-  if (want === "Pinchy") return;
+  var want = PINCHY.langMeta(lang).appName || BAR_NAME;
+  if (want === BAR_NAME) return;
   var nodes = document.querySelectorAll(".kb-bar .kb-plate, #kb-drawer .kb-drawer-title");
   for (var n = 0; n < nodes.length; n++) {
     var t = nodes[n].textContent;
-    if (t.indexOf("Pinchy") === 0) nodes[n].textContent = want + t.slice(6);
+    if (t.indexOf(BAR_NAME) === 0) nodes[n].textContent = want + t.slice(BAR_NAME.length);
     var ttl = nodes[n].getAttribute("title");
-    if (ttl && ttl.indexOf("Pinchy") === 0) nodes[n].setAttribute("title", want + ttl.slice(6));
+    if (ttl && ttl.indexOf(BAR_NAME) === 0) nodes[n].setAttribute("title", want + ttl.slice(BAR_NAME.length));
   }
 };
 var plateWatch = null;
@@ -1811,6 +1907,7 @@ var play = async function () {
   }
   var token = ++playback;
   playing = true;
+  if (typeof bbTipHide === "function") bbTipHide();
   estopped = false;
   setBusy(true);
   var level = PINCHY.LEVELS[session.level];
@@ -1975,10 +2072,223 @@ var showGame = function () {
   drawLevel();
   var first = document.querySelector(".controls button.block");
   if (first && first.focus) first.focus({ preventScroll: true });
+  if (typeof bbTipsStart === "function") bbTipsStart();
+};
+
+
+// ---- Berty & Bizzy 1.4.0: wave intro, anchored tips, Help ----
+var BB_TIPS = [
+  { id: "run", key: "tip1", anchor: "run" },
+  { id: "joint", key: "tip2", anchor: "joint-pad" }
+];
+var bbStore = function (kind) {
+  try { return kind === "session" ? window.sessionStorage : window.localStorage; } catch (errStore) { return null; }
+};
+var bbTipsOff = function () {
+  var s = bbStore("local");
+  try {
+    var v = JSON.parse((s && s.getItem("bb-tips-off")) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch (errOff) { return []; }
+};
+var bbTipsClosed = {};
+var bbTipNow = null;
+var bbTipAnchor = function () {
+  var tip = document.getElementById("bb-tip");
+  if (!bbTipNow || tip.hidden) return;
+  var target = document.getElementById(bbTipNow.anchor);
+  if (!target || !target.offsetParent) { tip.hidden = true; return; }
+  var r = target.getBoundingClientRect();
+  var sx = window.pageXOffset || 0;
+  var sy = window.pageYOffset || 0;
+  var w = tip.offsetWidth;
+  var h = tip.offsetHeight;
+  var left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2));
+  var below = r.bottom + 14 + h <= window.innerHeight || r.top - 14 - h < 0;
+  var top = below ? r.bottom + 14 : r.top - 14 - h;
+  tip.classList.toggle("is-above", !below);
+  tip.style.left = (left + sx) + "px";
+  tip.style.top = (top + sy) + "px";
+  tip.style.setProperty("--bb-nub", Math.max(12, Math.min(w - 36, r.left + r.width / 2 - left - 9)) + "px");
+};
+var bbTipPaintText = function () {
+  if (!bbTipNow) return;
+  document.getElementById("bb-tip-text").textContent = PINCHY.uiText(lang, bbTipNow.key);
+  var off = document.getElementById("bb-tip-off");
+  off.textContent = PINCHY.uiText(lang, "tipOff");
+  var close = document.getElementById("bb-tip-close");
+  close.setAttribute("aria-label", PINCHY.uiText(lang, "tipClose"));
+  var tip = document.getElementById("bb-tip");
+  tip.lang = lang;
+  tip.dir = PINCHY.langMeta(lang).rtl ? "rtl" : "ltr";
+};
+var bbTipHide = function () {
+  var tip = document.getElementById("bb-tip");
+  if (tip) tip.hidden = true;
+};
+var bbTipNext = function () {
+  var intro = document.getElementById("bb-intro");
+  var help = document.getElementById("bb-help");
+  if ((intro && !intro.hidden) || (help && !help.hidden)) return;
+  if (document.getElementById("game").hidden || playing) { bbTipHide(); return; }
+  var off = bbTipsOff();
+  bbTipNow = null;
+  for (var i = 0; i < BB_TIPS.length; i++) {
+    if (off.indexOf(BB_TIPS[i].id) < 0 && !bbTipsClosed[BB_TIPS[i].id]) { bbTipNow = BB_TIPS[i]; break; }
+  }
+  var tip = document.getElementById("bb-tip");
+  if (!bbTipNow) { tip.hidden = true; return; }
+  bbTipPaintText();
+  tip.dataset.anchor = bbTipNow.anchor;
+  tip.hidden = false;
+  var target = document.getElementById(bbTipNow.anchor);
+  if (target) {
+    var tr = target.getBoundingClientRect();
+    if (tr.top < 8 || tr.bottom + tip.offsetHeight + 24 > window.innerHeight) target.scrollIntoView({ block: "center", inline: "nearest" });
+  }
+  bbTipAnchor();
+};
+var bbTipsStart = function () { bbTipNext(); };
+var bbTipsReset = function () {
+  var s = bbStore("local");
+  try { if (s) s.removeItem("bb-tips-off"); } catch (errReset) {}
+  bbTipsClosed = {};
+};
+var bbHelpOpen = function () {
+  var box = document.getElementById("bb-help");
+  box.hidden = false;
+  document.getElementById("help-btn").setAttribute("aria-expanded", "true");
+  bbTipHide();
+  bbPaint();
+  document.getElementById("bb-help-close").focus();
+};
+var bbHelpClose = function () {
+  var box = document.getElementById("bb-help");
+  if (box.hidden) return;
+  box.hidden = true;
+  var btn = document.getElementById("help-btn");
+  btn.setAttribute("aria-expanded", "false");
+  btn.focus();
+  bbTipNext();
+};
+var bbIntroDone = true;
+var bbIntroTimer = 0;
+var bbIntroEnd = function () {
+  if (bbIntroDone) return;
+  bbIntroDone = true;
+  clearTimeout(bbIntroTimer);
+  var intro = document.getElementById("bb-intro");
+  intro.hidden = true;
+  bbTipNext();
+};
+var bbIntroStart = function () {
+  var seen = false;
+  var ss = bbStore("session");
+  try { seen = !!(ss && ss.getItem("bb-intro-seen") === "1"); } catch (errSeen) {}
+  if (seen) return;
+  try { if (ss) ss.setItem("bb-intro-seen", "1"); } catch (errMark) {}
+  var intro = document.getElementById("bb-intro");
+  var still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  intro.classList.toggle("is-still", still);
+  var fores = [["bb-berty-fore", "72 88", -1], ["bb-bizzy-fore", "248 88", 1]];
+  fores.forEach(function (f) {
+    var g = document.getElementById(f[0]);
+    while (g.querySelector("animateTransform")) g.removeChild(g.querySelector("animateTransform"));
+    g.setAttribute("transform", "rotate(" + (still ? f[2] * 14 : 0) + " " + f[1] + ")");
+    if (!still) {
+      var a = document.createElementNS(g.namespaceURI, "animateTransform");
+      a.setAttribute("attributeName", "transform");
+      a.setAttribute("type", "rotate");
+      a.setAttribute("dur", "1.3s");
+      a.setAttribute("fill", "freeze");
+      a.setAttribute("values", [0, f[2] * 22, f[2] * -8, f[2] * 22, f[2] * -8, 0].map(function (d) { return d + " " + f[1]; }).join(";"));
+      g.appendChild(a);
+    }
+  });
+  bbIntroDone = false;
+  bbPaint();
+  intro.hidden = false;
+  // Start the clock when the first frame is drawn, so a slow first paint does not eat the greeting.
+  var armTimer = function () { clearTimeout(bbIntroTimer); bbIntroTimer = setTimeout(bbIntroEnd, still ? 500 : 1700); };
+  if (window.requestAnimationFrame) window.requestAnimationFrame(function () { window.requestAnimationFrame(armTimer); });
+  else armTimer();
+  bbIntroTimer = setTimeout(bbIntroEnd, 6000);
+};
+var bbPaint = function () {
+  var t = function (k) { return PINCHY.uiText(lang, k); };
+  var rtl = PINCHY.langMeta(lang).rtl;
+  var helpBtn = document.getElementById("help-btn");
+  if (helpBtn) helpBtn.setAttribute("aria-label", t("helpBtn"));
+  var intro = document.getElementById("bb-intro");
+  if (intro) {
+    intro.lang = lang;
+    intro.dir = rtl ? "rtl" : "ltr";
+    document.getElementById("bb-intro-text").textContent = t("hi");
+    document.getElementById("bb-intro-skip").textContent = t("skipHint");
+  }
+  var set = function (id, key) { var el = document.getElementById(id); if (el) el.textContent = t(key); };
+  set("bb-help-title", "helpTitle");
+  set("bb-help-blocks-h", "helpBlocksH");
+  set("bb-help-controls-h", "helpControlsH");
+  set("bb-help-fail-h", "helpFailH");
+  set("bb-help-reset", "resetTips");
+  set("bb-help-close", "helpClose");
+  var fill = function (id, keys) {
+    var ul = document.getElementById(id);
+    if (!ul) return;
+    ul.replaceChildren();
+    keys.forEach(function (k) { var li = document.createElement("li"); li.textContent = t(k); ul.appendChild(li); });
+  };
+  fill("bb-help-blocks", ["hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7"]);
+  fill("bb-help-fail", ["hf1", "hf2", "hf3", "hf4"]);
+  var level = PINCHY.LEVELS[session.level];
+  var ctl = document.getElementById("bb-help-controls");
+  if (ctl) ctl.textContent = PINCHY.helpFor(lang, !!(level && level.debug));
+  var help = document.getElementById("bb-help");
+  if (help) { help.lang = lang; help.dir = rtl ? "rtl" : "ltr"; }
+  bbTipPaintText();
+  bbTipAnchor();
+};
+var bbInit = function () {
+  var intro = document.getElementById("bb-intro");
+  var skip = function () { bbIntroEnd(); };
+  intro.addEventListener("pointerdown", function (e) { e.preventDefault(); skip(); });
+  intro.addEventListener("click", skip);
+  document.addEventListener("keydown", function (e) {
+    if (bbIntroDone) return;
+    var chord = e.ctrlKey || e.metaKey || e.altKey;
+    if (!chord && e.key !== "Tab" && e.key !== "Shift") { e.preventDefault(); e.stopPropagation(); }
+    skip();
+  }, true);
+  document.getElementById("bb-tip-close").addEventListener("click", function () {
+    if (bbTipNow) bbTipsClosed[bbTipNow.id] = true;
+    bbTipNext();
+  });
+  document.getElementById("bb-tip-off").addEventListener("click", function () {
+    if (!bbTipNow) return;
+    var list = bbTipsOff();
+    if (list.indexOf(bbTipNow.id) < 0) list.push(bbTipNow.id);
+    var s = bbStore("local");
+    try { if (s) s.setItem("bb-tips-off", JSON.stringify(list)); } catch (errOffSave) {}
+    bbTipNext();
+  });
+  document.getElementById("help-btn").addEventListener("click", function () {
+    if (document.getElementById("bb-help").hidden) bbHelpOpen(); else bbHelpClose();
+  });
+  document.getElementById("bb-help-close").addEventListener("click", bbHelpClose);
+  document.getElementById("bb-help-reset").addEventListener("click", function () {
+    bbTipsReset();
+    document.getElementById("bb-help-live").textContent = PINCHY.uiText(lang, "tipsBack");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("bb-help").hidden) { e.preventDefault(); e.stopPropagation(); bbHelpClose(); }
+  }, true);
+  window.addEventListener("resize", bbTipAnchor);
+  bbIntroStart();
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.3.2") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.4.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.run.push(PINCHY.settleRun(null, { type: "level" }));
@@ -2148,6 +2458,7 @@ var boot = function () {
   } catch (err) {}
   watchBar();
   applyLang(startLang);
+  bbInit();
   window.addEventListener("kulibert-lang", function (ev) {
     var code = ev && ev.detail && ev.detail.lang;
     if (knownLang(code) && code !== lang) applyLang(code, true);

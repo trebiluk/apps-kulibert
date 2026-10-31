@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var APP_VERSION = "1.3.2";
+  var APP_VERSION = "1.4.0";
   var UPPER = 108;
   var FORE = 78;
   var WRIST = 24;
@@ -25,8 +25,8 @@
 
   // Every non-English language is a machine draft (1.3.2): the table marks it and the app shows the badge. ar and fa-AF are RTL.
   var LANGS = [
-    { id: "en", name: "English", draft: false, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Wrist up", down: "Wrist down", part: "wrist" },
-    { id: "uk", name: "Українська", draft: true, rtl: false, appName: "Пінчі", gameName: "Пінчі Макпінчфейс", up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя", blocksDraft: true,
+    { id: "en", name: "English", draft: false, rtl: false, appName: "Berty & Bizzy", gameName: "Berty & Bizzy", up: "Wrist up", down: "Wrist down", part: "wrist" },
+    { id: "uk", name: "Українська", draft: true, rtl: false, appName: "Берті і Бізі", gameName: "Берті і Бізі", up: "Зап'ястя вгору", down: "Зап'ястя вниз", part: "зап'ястя", blocksDraft: true,
       blocks: {
         "base-left": "Основа ліворуч",
         "base-right": "Основа праворуч",
@@ -47,7 +47,7 @@
       help: "Стрілки вибирають блок. Enter додає його. Q повертає основу ліворуч у 3D. E повертає основу праворуч у 3D. R запускає. Z скасовує. Скидання зберігає програму.",
       helpDebug: "Стрілки вибирають крок. Enter міняє його з наступним. 3D-рука повертається на основі під час запуску. R запускає. Z скасовує."
     },
-    { id: "ru", name: "Русский", draft: true, rtl: false, appName: "Пинчи", gameName: "Пинчи Макпинчфейс", up: "Запястье вверх", down: "Запястье вниз", part: "запястье", blocksDraft: true,
+    { id: "ru", name: "Русский", draft: true, rtl: false, appName: "Берти и Бизи", gameName: "Берти и Бизи", up: "Запястье вверх", down: "Запястье вниз", part: "запястье", blocksDraft: true,
       blocks: {
         "base-left": "Основание влево",
         "base-right": "Основание вправо",
@@ -68,7 +68,7 @@
       help: "Стрелки выбирают блок. Enter добавляет его. Q поворачивает основание влево в 3D. E поворачивает основание вправо в 3D. R запускает. Z отменяет. Сброс сохраняет программу.",
       helpDebug: "Стрелки выбирают шаг. Enter меняет его со следующим. 3D-рука поворачивается на основании при запуске. R запускает. Z отменяет."
     },
-    { id: "es", name: "Español", draft: true, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
+    { id: "es", name: "Español", draft: true, rtl: false, appName: "Berty & Bizzy", gameName: "Berty & Bizzy", up: "Muñeca arriba", down: "Muñeca abajo", part: "muñeca", baseLeft: "Base izquierda", baseRight: "Base derecha", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "Base izquierda", "base-right": "Base derecha",
         "shoulder-up": "Hombro arriba", "shoulder-down": "Hombro abajo",
@@ -81,7 +81,7 @@
       help: "Las flechas eligen un bloque. Enter lo agrega. Q gira la base a la izquierda en 3D. E gira la base a la derecha en 3D. R ejecuta. Z deshace. Reintentar conserva el programa.",
       helpDebug: "Las flechas eligen un paso. Enter lo cambia con el siguiente. El brazo 3D gira sobre su base al ejecutar. R ejecuta. Z deshace."
     },
-    { id: "ar", name: "العربية", draft: true, rtl: true, appName: "بينشي", gameName: "بينشي ماكبينشفيس", up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
+    { id: "ar", name: "العربية", draft: true, rtl: true, appName: "بيرتي وبيزي", gameName: "بيرتي وبيزي", up: "الرسغ لأعلى", down: "الرسغ لأسفل", part: "الرسغ", baseLeft: "القاعدة يسار", baseRight: "القاعدة يمين", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "القاعدة يسار", "base-right": "القاعدة يمين",
         "shoulder-up": "كتف أعلى", "shoulder-down": "كتف أسفل",
@@ -94,7 +94,7 @@
       help: "الأسهم تختار بلوكًا. Enter يضيفه. Q تدير القاعدة يسارًا في 3D. E تدير القاعدة يمينًا في 3D. R يشغّل. Z يتراجع. إعادة المحاولة تبقي البرنامج.",
       helpDebug: "الأسهم تختار خطوة. Enter تبدلها مع التالية. الذراع 3D يدور على قاعدته عند التشغيل. R يشغّل. Z يتراجع."
     },
-    { id: "fa-AF", name: "دری", draft: true, rtl: true, appName: "پینچی", gameName: "پینچی مک‌پینچ‌فیس", up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
+    { id: "fa-AF", name: "دری", draft: true, rtl: true, appName: "برتی و بیزی", gameName: "برتی و بیزی", up: "مچ بالا", down: "مچ پایین", part: "مچ", baseLeft: "پایه چپ", baseRight: "پایه راست", baseDraft: true, blocksDraft: true,
       blocks: {
         "base-left": "پایه چپ", "base-right": "پایه راست",
         "shoulder-up": "شانه بالا", "shoulder-down": "شانه پایین",
@@ -107,7 +107,7 @@
       help: "تیرها یک بلاک را انتخاب می‌کنند. Enter آن را اضافه می‌کند. Q پایه را در 3D به چپ می‌چرخاند. E پایه را در 3D به راست می‌چرخاند. R اجرا می‌کند. Z برمی‌گرداند. تلاش دوباره برنامه را نگه می‌دارد.",
       helpDebug: "تیرها یک گام را انتخاب می‌کنند. Enter آن را با گام بعدی عوض می‌کند. بازوی 3D هنگام اجرا روی پایه می‌چرخد. R اجرا می‌کند. Z برمی‌گرداند."
     },
-    { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, appName: "Pinchy", gameName: "Pinchy McPinchface", up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza", blocksDraft: true,
+    { id: "rw", name: "Ikinyarwanda", draft: true, rtl: false, appName: "Berty & Bizzy", gameName: "Berty & Bizzy", up: "Ikiganza hejuru", down: "Ikiganza hasi", part: "ikiganza", blocksDraft: true,
       blocks: {
         "base-left": "Ikibanza ibumoso",
         "base-right": "Ikibanza iburyo",
@@ -128,7 +128,7 @@
       help: "Imyambi ihitamo ikibumbe. Enter kikongeraho. Q izenguruka ikibanza ibumoso muri 3D. E izenguruka ikibanza iburyo muri 3D. R itangira. Z isubiza inyuma. Kongera gutangira bibika porogaramu.",
       helpDebug: "Imyambi ihitamo intambwe. Enter iyihindura n'ikurikira. Ukuboko kwa 3D kuzenguruka ku kibanza iyo gutangiye. R itangira. Z isubiza inyuma."
     },
-    { id: "ti", name: "ትግርኛ", draft: true, rtl: false, appName: "ፒንቺ", gameName: "ፒንቺ ማክፒንችፌስ", up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ", blocksDraft: true,
+    { id: "ti", name: "ትግርኛ", draft: true, rtl: false, appName: "በርቲን ቢዚን", gameName: "በርቲን ቢዚን", up: "ሰለፍ ናብ ላዕሊ", down: "ሰለፍ ናብ ታሕቲ", part: "ሰለፍ", blocksDraft: true,
       blocks: {
         "base-left": "መሰረት ጸጋም",
         "base-right": "መሰረት የማን",
@@ -1038,7 +1038,7 @@
       themeDark: "\u25D0 Dark", themeLight: "\u25D0 Light",
       starRules: "Stars: done, under the block par, under the time par. They stay on this screen only.",
       blocksLine: "Blocks: {n}", swapsLine: "Swaps: {n}", timeNone: "Time: none yet", timeLine: "Time: {n}",
-      menu: "Menu", langAria: "Language", padAria: "Program blocks", draftBadge: "Machine draft.", Target: "Target",
+      menu: "Menu", langAria: "Language", padAria: "Program blocks", hi: "Hi! I'm Berty. I'm Bizzy.", skipHint: "Press any key or tap to skip.", tip1: "Press Run. Watch Berty pick up the cube.", tip2: "Each block turns one joint 15°.", tipClose: "Close tip", tipOff: "Don't show again", helpBtn: "Help", helpTitle: "Help", helpBlocksH: "What each block does", hb1: "Base left and Base right turn the arm left or right.", hb2: "Shoulder up and Shoulder down lift or lower the whole arm.", hb3: "Elbow up and Elbow down bend the middle of the arm.", hb4: "Wrist up and Wrist down tilt the claw.", hb5: "Open claw lets go of the cube. Close claw grabs it.", hb6: "Repeat 2 and Repeat 3 run the blocks up to End repeat again.", hb7: "If red and If blue run the blocks up to End if only when the sensor sees that color and shape.", helpControlsH: "Controls", helpFailH: "Why a run fails", hf1: "The arm hit the table or the part. The note names what it hit, and the step stays outlined.", hf2: "The part did not end in the bin or on the spot. Check the blocks and try again.", hf3: "E-STOP stopped the run. Press Reset, then Run.", hf4: "The program is empty. Add a block first.", resetTips: "Reset tips", helpClose: "Close", tipsBack: "Tips are back.", tagline: "Move a robot arm", v140: "Version 1.4.0", w140a: "Pinchy is now Berty & Bizzy. The old address /pinchy/ sends you here.", w140b: "Berty and Bizzy wave hello once per visit. Tips and a Help button explain the blocks.", draftBadge: "Machine draft.", Target: "Target",
       whatsTitle: "What's new", whatsClose: "Close", play: "Play",
       hubLine: "One Menu button in every app. It opens that app's menu.",
       programAria: "Program. Enter adds the picked block.",
@@ -1098,7 +1098,7 @@
       "estop": "■ PARADA DE EMERGENCIA", "clear": "✕ Borrar", "themeDark": "◐ Oscuro",
       "themeLight": "◐ Claro", "starRules": "Estrellas: hecho, menos bloques que el par, menos tiempo que el par. Solo se quedan en esta pantalla.", "blocksLine": "Bloques: {n}",
       "swapsLine": "Cambios: {n}", "timeNone": "Tiempo: aún no", "timeLine": "Tiempo: {n}",
-      "menu": "Menú", "langAria": "Idioma", "padAria": "Bloques del programa", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
+      "menu": "Menú", "langAria": "Idioma", "padAria": "Bloques del programa", "hi": "¡Hola! Soy Berty. Soy Bizzy.", "skipHint": "Pulsa cualquier tecla o toca para saltar.", "tip1": "Pulsa Ejecutar. Mira cómo Berty recoge el cubo.", "tip2": "Cada bloque gira una articulación 15°.", "tipClose": "Cerrar consejo", "tipOff": "No mostrar más", "helpBtn": "Ayuda", "helpTitle": "Ayuda", "helpBlocksH": "Qué hace cada bloque", "hb1": "Base izquierda y Base derecha giran el brazo a la izquierda o a la derecha.", "hb2": "Hombro arriba y Hombro abajo suben o bajan todo el brazo.", "hb3": "Codo arriba y Codo abajo doblan la mitad del brazo.", "hb4": "Muñeca arriba y Muñeca abajo inclinan la pinza.", "hb5": "Abrir pinza suelta el cubo. Cerrar pinza lo agarra.", "hb6": "Repetir 2 y Repetir 3 ejecutan otra vez los bloques hasta Fin repetir.", "hb7": "Si rojo y Si azul ejecutan los bloques hasta Fin si solo cuando el sensor ve ese color y esa forma.", "helpControlsH": "Controles", "helpFailH": "Por qué falla una ejecución", "hf1": "El brazo chocó con la mesa o con la pieza. La nota dice con qué, y el paso queda marcado.", "hf2": "La pieza no acabó en la cesta o en el punto. Revisa los bloques e inténtalo otra vez.", "hf3": "La parada de emergencia detuvo la ejecución. Pulsa Reiniciar y luego Ejecutar.", "hf4": "El programa está vacío. Añade un bloque primero.", "resetTips": "Restablecer consejos", "helpClose": "Cerrar", "tipsBack": "Los consejos han vuelto.", "tagline": "Mueve un brazo robot", "v140": "Versión 1.4.0", "w140a": "Pinchy ahora es Berty & Bizzy. La dirección antigua /pinchy/ te trae aquí.", "w140b": "Berty y Bizzy saludan una vez por visita. Los consejos y el botón Ayuda explican los bloques.", "draftBadge": "Borrador automático.", "Target": "Objetivo", "whatsTitle": "Novedades",
       "whatsClose": "Cerrar", "play": "Jugar", "hubLine": "Un solo botón Menú en cada aplicación. Abre el menú de esa aplicación.",
       "programAria": "Programa. Enter añade el bloque elegido.", "jointsAria": "Articulaciones", "actionsAria": "Botones del programa",
       "v132": "Versión 1.3.2", "w132a": "Los 8 idiomas ya traducen la línea de estado, la parada de emergencia, Borrar, el resumen de articulaciones, la pinza, las estrellas, bloques y tiempo, la barra superior, el botón de tema y Novedades.", "w132b": "El idioma elegido se guarda y se ve desde la primera pantalla. Las palabras que no están en inglés son un borrador automático.",
@@ -1134,7 +1134,7 @@
       "estop": "■ АВАРІЙНА ЗУПИНКА", "clear": "✕ Очистити", "themeDark": "◐ Темна",
       "themeLight": "◐ Світла", "starRules": "Зірки: виконано, менше за норму блоків, менше за норму часу. Вони лишаються тільки на цьому екрані.", "blocksLine": "Блоків: {n}",
       "swapsLine": "Обмінів: {n}", "timeNone": "Час: ще немає", "timeLine": "Час: {n}",
-      "menu": "Меню", "langAria": "Мова", "padAria": "Блоки програми", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
+      "menu": "Меню", "langAria": "Мова", "padAria": "Блоки програми", "hi": "Привіт! Я Берті. Я Бізі.", "skipHint": "Натисни будь-яку клавішу або торкнись, щоб пропустити.", "tip1": "Натисни «Пуск». Дивись, як Берті підніме кубик.", "tip2": "Кожен блок повертає один суглоб на 15°.", "tipClose": "Закрити підказку", "tipOff": "Більше не показувати", "helpBtn": "Довідка", "helpTitle": "Довідка", "helpBlocksH": "Що робить кожен блок", "hb1": "«Основа ліворуч» і «Основа праворуч» повертають руку вліво або вправо.", "hb2": "«Плече вгору» і «Плече вниз» піднімають або опускають усю руку.", "hb3": "«Лікоть вгору» і «Лікоть вниз» згинають середину руки.", "hb4": "«Зап'ястя вгору» і «Зап'ястя вниз» нахиляють кіготь.", "hb5": "«Відкрити кіготь» відпускає кубик. «Закрити кіготь» хапає його.", "hb6": "«Повтор 2» і «Повтор 3» запускають блоки до «Кінець повтору» ще раз.", "hb7": "«Якщо червоний» і «Якщо синій» запускають блоки до «Кінець якщо», лише коли датчик бачить цей колір і форму.", "helpControlsH": "Керування", "helpFailH": "Чому запуск не вдається", "hf1": "Рука вдарилась об стіл або деталь. Примітка називає, об що, а крок лишається обведеним.", "hf2": "Деталь не опинилась у контейнері чи на точці. Перевір блоки й спробуй ще.", "hf3": "Аварійна зупинка зупинила запуск. Натисни «Скинути», потім «Пуск».", "hf4": "Програма порожня. Спершу додай блок.", "resetTips": "Скинути підказки", "helpClose": "Закрити", "tipsBack": "Підказки знову є.", "tagline": "Керуй рукою робота", "v140": "Версія 1.4.0", "w140a": "Pinchy тепер Берті і Бізі. Стара адреса /pinchy/ перенаправляє сюди.", "w140b": "Берті і Бізі вітаються раз за візит. Підказки й кнопка «Довідка» пояснюють блоки.", "draftBadge": "Машинна чернетка.", "Target": "Ціль", "whatsTitle": "Що нового",
       "whatsClose": "Закрити", "play": "Грати", "hubLine": "Одна кнопка «Меню» в кожній програмі. Вона відкриває меню цієї програми.",
       "programAria": "Програма. Enter додає вибраний блок.", "jointsAria": "Суглоби", "actionsAria": "Кнопки програми",
       "v132": "Версія 1.3.2", "w132a": "Усі 8 мов тепер перекладають рядок стану, аварійну зупинку, «Очистити», підсумок суглобів, показ кігтя, зірки, блоки й час, верхню панель, кнопку теми та «Що нового».", "w132b": "Вибрана мова зберігається й видна з першого екрана. Слова не англійською — машинна чернетка.",
@@ -1170,7 +1170,7 @@
       "estop": "■ АВАРИЙНЫЙ СТОП", "clear": "✕ Очистить", "themeDark": "◐ Тёмная",
       "themeLight": "◐ Светлая", "starRules": "Звёзды: выполнено, меньше нормы блоков, меньше нормы времени. Они остаются только на этом экране.", "blocksLine": "Блоков: {n}",
       "swapsLine": "Обменов: {n}", "timeNone": "Время: пока нет", "timeLine": "Время: {n}",
-      "menu": "Меню", "langAria": "Язык", "padAria": "Блоки программы", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
+      "menu": "Меню", "langAria": "Язык", "padAria": "Блоки программы", "hi": "Привет! Я Берти. Я Бизи.", "skipHint": "Нажми любую клавишу или коснись, чтобы пропустить.", "tip1": "Нажми «Пуск». Смотри, как Берти возьмёт кубик.", "tip2": "Каждый блок поворачивает один сустав на 15°.", "tipClose": "Закрыть подсказку", "tipOff": "Больше не показывать", "helpBtn": "Справка", "helpTitle": "Справка", "helpBlocksH": "Что делает каждый блок", "hb1": "«Основание влево» и «Основание вправо» поворачивают руку влево или вправо.", "hb2": "«Плечо вверх» и «Плечо вниз» поднимают или опускают всю руку.", "hb3": "«Локоть вверх» и «Локоть вниз» сгибают середину руки.", "hb4": "«Запястье вверх» и «Запястье вниз» наклоняют клешню.", "hb5": "«Открыть клешню» отпускает кубик. «Закрыть клешню» берёт его.", "hb6": "«Повтор 2» и «Повтор 3» запускают блоки до «Конец повтора» ещё раз.", "hb7": "«Если красный» и «Если синий» запускают блоки до «Конец если», только когда датчик видит этот цвет и форму.", "helpControlsH": "Управление", "helpFailH": "Почему запуск не удался", "hf1": "Рука ударилась о стол или деталь. Заметка называет, обо что, а шаг остаётся обведённым.", "hf2": "Деталь не оказалась в корзине или в точке. Проверь блоки и попробуй ещё.", "hf3": "Аварийный стоп остановил запуск. Нажми «Сброс», потом «Пуск».", "hf4": "Программа пуста. Сначала добавь блок.", "resetTips": "Сбросить подсказки", "helpClose": "Закрыть", "tipsBack": "Подсказки снова с нами.", "tagline": "Двигай руку робота", "v140": "Версия 1.4.0", "w140a": "Pinchy теперь Берти и Бизи. Старый адрес /pinchy/ ведёт сюда.", "w140b": "Берти и Бизи здороваются раз за визит. Подсказки и кнопка «Справка» объясняют блоки.", "draftBadge": "Машинный черновик.", "Target": "Цель", "whatsTitle": "Что нового",
       "whatsClose": "Закрыть", "play": "Играть", "hubLine": "Одна кнопка «Меню» в каждом приложении. Она открывает меню этого приложения.",
       "programAria": "Программа. Enter добавляет выбранный блок.", "jointsAria": "Суставы", "actionsAria": "Кнопки программы",
       "v132": "Версия 1.3.2", "w132a": "Все 8 языков теперь переводят строку состояния, аварийный стоп, «Очистить», сводку суставов, показ клешни, звёзды, блоки и время, верхнюю панель, кнопку темы и «Что нового».", "w132b": "Выбранный язык сохраняется и виден с первого экрана. Слова не на английском — машинный черновик.",
@@ -1206,7 +1206,7 @@
       "estop": "■ HAGARARA VUBA", "clear": "✕ Siba", "themeDark": "◐ Umwijima",
       "themeLight": "◐ Urumuri", "starRules": "Inyenyeri: byarangiye, ibibumbe bike, igihe gito. Zigumana kuri iyi ngaruriro gusa.", "blocksLine": "Ibibumbe: {n}",
       "swapsLine": "Impinduka: {n}", "timeNone": "Igihe: nta cyo", "timeLine": "Igihe: {n}",
-      "menu": "Menyu", "langAria": "Ururimi", "padAria": "Ibibumbe bya porogaramu", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
+      "menu": "Menyu", "langAria": "Ururimi", "padAria": "Ibibumbe bya porogaramu", "hi": "Muraho! Ndi Berty. Ndi Bizzy.", "skipHint": "Kanda ikintu cyose cyangwa ukoreho kugira ngo usimbuke.", "tip1": "Kanda Tangira. Reba Berty afata ikibumbe.", "tip2": "Buri kibumbe gihindura ingingo imwe 15°.", "tipClose": "Funga inama", "tipOff": "Ntongere kubyerekana", "helpBtn": "Ubufasha", "helpTitle": "Ubufasha", "helpBlocksH": "Icyo buri kibumbe gikora", "hb1": "Ikibanza ibumoso n'Ikibanza iburyo bizenguruka ukuboko ibumoso cyangwa iburyo.", "hb2": "Urutugu hejuru n'Urutugu hasi bizamura cyangwa bimanura ukuboko kose.", "hb3": "Inkokora hejuru n'Inkokora hasi bikunja hagati y'ukuboko.", "hb4": "Ikiganza hejuru n'Ikiganza hasi bihengamisha agashumi.", "hb5": "Fungura agashumi kareka ikibumbe. Funga agashumi kagifata.", "hb6": "Subiramo 2 na Subiramo 3 bisubiramo ibibumbe kugeza ku Iherezo ry'isubiramo.", "hb7": "Niba ari umutuku na Niba ari ubururu bikora ibibumbe kugeza ku Iherezo rya Niba gusa iyo sensori ibonye iyo ibara n'ishusho.", "helpControlsH": "Uko bigenzurwa", "helpFailH": "Impamvu gutangira binanirwa", "hf1": "Ukuboko kwakubise ameza cyangwa igice. Inyandiko ivuga icyo cyakubise, kandi intambwe iguma ikikijwe.", "hf2": "Igice ntikigeze mu gikoresho cyangwa ku kibanza. Genzura ibibumbe wongere ugerageze.", "hf3": "Hagarara vuba yahagaritse. Kanda Ongera utangire, hanyuma Tangira.", "hf4": "Porogaramu irimo ubusa. Banza wongereho ikibumbe.", "resetTips": "Subiza inama uko zari ziri", "helpClose": "Funga", "tipsBack": "Inama zagarutse.", "tagline": "Hindura ukuboko kwa robo", "v140": "Verisiyo 1.4.0", "w140a": "Pinchy ubu ni Berty & Bizzy. Aderesi ya kera /pinchy/ ikuzana hano.", "w140b": "Berty na Bizzy bavuga muraho rimwe ku gusura. Inama na buto y'Ubufasha bisobanura ibibumbe.", "draftBadge": "Inyandiko ya mashini.", "Target": "Intego", "whatsTitle": "Ibishya",
       "whatsClose": "Funga", "play": "Gukina", "hubLine": "Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
       "programAria": "Porogaramu. Enter yongeraho ikibumbe cyatoranyijwe.", "jointsAria": "Ingingo", "actionsAria": "Utubuto twa porogaramu",
       "v132": "Verisiyo 1.3.2", "w132a": "Indimi 8 zose zisobanura umurongo w'imiterere, Hagarara vuba, Siba, incamake y'ingingo, agashumi, inyenyeri, ibibumbe n'igihe, umurongo wo hejuru, buto y'ibara, n'Ibishya.", "w132b": "Ururimi uhisemo rurabikwa kandi rugaragara kuva ku ngaruriro ya mbere. Amagambo atari Icyongereza ni inyandiko ya mashini.",
@@ -1242,7 +1242,7 @@
       "estop": "■ ህጹጽ ደው", "clear": "✕ ደምስስ", "themeDark": "◐ ጸሊም",
       "themeLight": "◐ ብሩህ", "starRules": "ኮኸባት፡ ተወዲኡ፣ ካብ ደረጃ ብሎክ ንኽልተ፣ ካብ ደረጃ ግዜ ንኽልተ። ኣብዚ ገጽ ጥራይ ይቕመጡ።", "blocksLine": "ብሎኮታት፡ {n}",
       "swapsLine": "ለውጢ፡ {n}", "timeNone": "ግዜ፡ ገና", "timeLine": "ግዜ፡ {n}",
-      "menu": "ዝርዝር", "langAria": "ቋንቋ", "padAria": "ብሎኮታት መደብ", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
+      "menu": "ዝርዝር", "langAria": "ቋንቋ", "padAria": "ብሎኮታት መደብ", "hi": "ሰላም! ኣነ በርቲ እየ። ኣነ ቢዚ እየ።", "skipHint": "ዝኾነ መፍትሕ ጠውቕ ወይ ተንከፍ ንምሕላፍ።", "tip1": "ጀምር ጠውቕ። በርቲ ክፋል ክልዕል ርኣይ።", "tip2": "ነፍሲ ወከፍ ብሎክ ሓደ ጉልባብ 15° የዙር።", "tipClose": "ምኽሪ ዕጾ", "tipOff": "ደጊምካ ኣይተርኢ", "helpBtn": "ሓገዝ", "helpTitle": "ሓገዝ", "helpBlocksH": "ነፍሲ ወከፍ ብሎክ እንታይ ይገብር", "hb1": "መሰረት ጸጋምን መሰረት የማንን ኢድ ንጸጋም ወይ ንየማን የዙር።", "hb2": "ትከሻ ላዕሊን ትከሻ ታሕትን ሙሉእ ኢድ የልዕል ወይ የውርድ።", "hb3": "ኩርኩር ላዕሊን ኩርኩር ታሕትን ማእከል ኢድ የጉብጥ።", "hb4": "ኣሰር ላዕሊን ኣሰር ታሕትን ጭንካል የጥምዝ።", "hb5": "ጭንካል ክፈት ክፋል ይለቅቕ። ጭንካል ዓግት ይሕዝ።", "hb6": "ድገም 2 ን ድገም 3 ን ክሳብ መወዳእታ ድገም ብሎኮታት ደጊሞም የሰርሑ።", "hb7": "እንተ ቀይሕን እንተ ሰማያዊን ክሳብ መወዳእታ እንተ ብሎኮታት የሰርሑ፣ ሰንሰር እቲ ቀለምን ቅርጽን ምስ ርእዩ ጥራይ።", "helpControlsH": "ምቁጽጻር", "helpFailH": "ስለምንታይ ምጅማር ይወድቕ", "hf1": "ኢድ ንጠረጴዛ ወይ ንክፋል ተጋጨወ። መመላእታ እንታይ ከም ዝተጋጨወ ትሰምዮ፣ ስጉምቲ ድማ ኣብ ዙርያ ይተርፍ።", "hf2": "ክፋል ኣብ ሳጹን ወይ ኣብ ነጥቢ ኣይወዓለን። ብሎኮታት ርአ ደጊምካ ፈትን።", "hf3": "ህጹጽ ደው ነቲ ምሩጽ ኣቋረጾ። ዳግም ኣዘጋጅ ጠውቕ፣ ድሕሪኡ ጀምር።", "hf4": "መደብ ባዶ እዩ። ቀዳማይ ብሎክ ወስኽ።", "resetTips": "ምኽርታት ዳግም ኣዘጋጅ", "helpClose": "ዕጾ", "tipsBack": "ምኽርታት ተመሊሶም።", "tagline": "ኢድ ሮቦት ኣንቀሳቕስ", "v140": "ዕትም 1.4.0", "w140a": "Pinchy ሕጂ በርቲን ቢዚን እዩ። ናይ ቀደም ኣድራሻ /pinchy/ ናብዚ የምጽኣካ።", "w140b": "በርቲን ቢዚን ሓንሳብ ብሓንሳብ ምብጻሕ ሰላም ይብሉ። ምኽርታትን ቁልፊ ሓገዝን ንብሎኮታት የረድኡ።", "draftBadge": "ናይ ማሽን ረቂቕ።", "Target": "ዕላማ", "whatsTitle": "ሓድሽ እንታይ ኣሎ",
       "whatsClose": "ዕጾ", "play": "ተጻወት", "hubLine": "ኣብ ነፍሲ ወከፍ መተግበሪ ሓደ መጠወቒ ዝርዝር ኣሎ። ዝርዝር ናይታ መተግበሪ ይኸፍት።",
       "programAria": "መደብ። Enter ዝተመርጸ ብሎክ የእቱ።", "jointsAria": "ጉልባባት", "actionsAria": "መጠወቕታት መደብ",
       "v132": "ዕትም 1.3.2", "w132a": "ኩለን 8 ቋንቋታት ሕጂ መስመር ኩነታት፣ ህጹጽ ደው፣ ደምስስ፣ ጽሑፍ ጉልባባት፣ ጭንካል፣ ኮኸባት፣ ብሎኮታትን ግዜን፣ ላዕለዋይ መስመር፣ መጠወቒ ገጽ፣ ሓድሽ እንታይ ኣሎን የተርጉማ።", "w132b": "ዝተመርጸ ቋንቋ ይቕመጥ፣ ካብ ቀዳማይ ገጽ ድማ ይርአ። ካብ እንግሊዝኛ ወጻኢ ዝዀኑ ቃላት ናይ ማሽን ረቂቕ እዮም።",
@@ -1287,7 +1287,7 @@
       themeDark: "\u25D0 داكن", themeLight: "\u25D0 فاتح",
       starRules: "النجوم: تم، تحت حد البلوكات، تحت حد الوقت. تبقى على هذه الشاشة فقط.",
       blocksLine: "البلوكات: {n}", swapsLine: "التبديلات: {n}", timeNone: "الوقت: لا شيء بعد", timeLine: "الوقت: {n}",
-      menu: "القائمة", langAria: "اللغة", padAria: "بلوكات البرنامج", draftBadge: "مسودة آلية.", Target: "الهدف",
+      menu: "القائمة", langAria: "اللغة", padAria: "بلوكات البرنامج", hi: "مرحبًا! أنا بيرتي. أنا بيزي.", skipHint: "اضغط أي مفتاح أو المس للتخطي.", tip1: "اضغط تشغيل. شاهد بيرتي يلتقط المكعب.", tip2: "كل بلوك يدير مفصلًا واحدًا 15°.", tipClose: "أغلق التلميح", tipOff: "لا تُظهره مرة أخرى", helpBtn: "مساعدة", helpTitle: "مساعدة", helpBlocksH: "ماذا يفعل كل بلوك", hb1: "القاعدة يسار والقاعدة يمين تديران الذراع يسارًا أو يمينًا.", hb2: "كتف أعلى وكتف أسفل يرفعان الذراع كلها أو يخفضانها.", hb3: "كوع أعلى وكوع أسفل يثنيان وسط الذراع.", hb4: "الرسغ لأعلى والرسغ لأسفل يميلان المخلب.", hb5: "افتح المخلب يترك المكعب. أغلق المخلب يمسكه.", hb6: "كرر 2 وكرر 3 يشغّلان البلوكات حتى نهاية التكرار مرة أخرى.", hb7: "إذا أحمر وإذا أزرق يشغّلان البلوكات حتى نهاية الشرط فقط عندما يرى الحساس هذا اللون والشكل.", helpControlsH: "التحكم", helpFailH: "لماذا يفشل التشغيل", hf1: "اصطدمت الذراع بالطاولة أو القطعة. تذكر الملاحظة ما اصطدمت به وتبقى الخطوة محددة.", hf2: "لم تنتهِ القطعة في الصندوق أو على النقطة. راجع البلوكات وحاول مرة أخرى.", hf3: "إيقاف الطوارئ أوقف التشغيل. اضغط إعادة ثم تشغيل.", hf4: "البرنامج فارغ. أضف بلوكًا أولًا.", resetTips: "أعد التلميحات", helpClose: "إغلاق", tipsBack: "عادت التلميحات.", tagline: "حرّك ذراع روبوت", v140: "الإصدار 1.4.0", w140a: "Pinchy أصبح الآن بيرتي وبيزي. العنوان القديم /pinchy/ يقودك إلى هنا.", w140b: "بيرتي وبيزي يلوّحان بالتحية مرة في كل زيارة. التلميحات وزر المساعدة يشرحان البلوكات.", draftBadge: "مسودة آلية.", Target: "الهدف",
       whatsTitle: "ما الجديد", whatsClose: "إغلاق", play: "العب",
       hubLine: "زر قائمة واحد في كل تطبيق. يفتح قائمة هذا التطبيق.",
       programAria: "البرنامج. Enter يضيف البلوك المختار.",
@@ -1356,7 +1356,7 @@
       themeDark: "\u25D0 تاریک", themeLight: "\u25D0 روشن",
       starRules: "ستاره‌ها: انجام شد، کمتر از حد بلاک، کمتر از حد زمان. فقط روی همین صفحه می‌مانند.",
       blocksLine: "بلاک‌ها: {n}", swapsLine: "جابه‌جایی‌ها: {n}", timeNone: "زمان: هنوز هیچ", timeLine: "زمان: {n}",
-      menu: "فهرست", langAria: "زبان", padAria: "بلاک‌های برنامه", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
+      menu: "فهرست", langAria: "زبان", padAria: "بلاک‌های برنامه", hi: "سلام! من برتی هستم. من بیزی هستم.", skipHint: "هر کلیدی را بزن یا لمس کن تا رد شود.", tip1: "اجرا را بزن. ببین برتی مکعب را برمی‌دارد.", tip2: "هر بلاک یک بند را 15° می‌چرخاند.", tipClose: "بستن راهنما", tipOff: "دیگر نشان نده", helpBtn: "کمک", helpTitle: "کمک", helpBlocksH: "هر بلاک چه می‌کند", hb1: "پایه چپ و پایه راست بازو را به چپ یا راست می‌چرخانند.", hb2: "شانه بالا و شانه پایین کل بازو را بالا یا پایین می‌برند.", hb3: "آرنج بالا و آرنج پایین میانه بازو را خم می‌کنند.", hb4: "مچ بالا و مچ پایین چنگال را کج می‌کنند.", hb5: "چنگال باز مکعب را رها می‌کند. چنگال بسته آن را می‌گیرد.", hb6: "تکرار ۲ و تکرار ۳ بلاک‌ها را تا پایان تکرار دوباره اجرا می‌کنند.", hb7: "اگر سرخ و اگر آبی بلاک‌ها را تا پایان اگر فقط وقتی اجرا می‌کنند که حسگر آن رنگ و شکل را ببیند.", helpControlsH: "کنترل", helpFailH: "چرا اجرا ناکام می‌شود", hf1: "بازو به میز یا قطعه خورد. یادداشت می‌گوید به چه خورد و گام در خط‌کشی می‌ماند.", hf2: "قطعه در سطل یا روی نقطه نرسید. بلاک‌ها را ببین و دوباره تلاش کن.", hf3: "ایست اضطراری اجرا را متوقف کرد. بازنشانی را بزن، بعد اجرا.", hf4: "برنامه خالی است. اول یک بلاک اضافه کن.", resetTips: "بازنشانی راهنماها", helpClose: "بستن", tipsBack: "راهنماها برگشتند.", tagline: "یک بازوی ربات را حرکت بده", v140: "نسخه 1.4.0", w140a: "Pinchy حالا برتی و بیزی است. نشانی قدیمی /pinchy/ تو را به اینجا می‌آورد.", w140b: "برتی و بیزی در هر بازدید یک بار سلام می‌کنند. راهنماها و دکمه کمک بلاک‌ها را توضیح می‌دهند.", draftBadge: "پیش‌نویس ماشینی.", Target: "هدف",
       whatsTitle: "تازه‌ها", whatsClose: "بستن", play: "بازی",
       hubLine: "در هر برنامه یک دکمه فهرست است. فهرست همان برنامه را باز می‌کند.",
       programAria: "برنامه. Enter بلاک انتخاب‌شده را اضافه می‌کند.",

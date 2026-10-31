@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.3.2");
+assert.equal(G.APP_VERSION, "1.4.0");
 assert.equal(G.LEVELS.length, 6);
 assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
@@ -239,7 +239,8 @@ assert.match(line, new RegExp("at step " + crash.step));
 
 const page = fs.readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const hub = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
-assert.match(page, /Pinchy McPinchface/);
+assert.match(page, /Berty &amp; Bizzy/);
+assert.doesNotMatch(page.replace(/data-k="w100a">[^<]*/, ""), /Pinchy McPinchface/);
 assert.match(page, /translate="no"/);
 assert.match(page, /IBM Plex Sans/);
 assert.match(page, /#F4F0E6/);
@@ -248,7 +249,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.3\.0/);
+assert.match(page, /v1\.4\.0/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -335,9 +336,11 @@ assert.match(page, /document\.documentElement\.lang = lang/);
 assert.doesNotMatch(page, /fa-AF" \? "fa"/);
 assert.match(page, /e\.stopPropagation\(\)/);
 assert.match(page, /e\.key !== "Enter" && e\.key !== " "/);
-const stored = page.replace(/localStorage\.(get|set)Item\("(pinchy-theme|kulibert-prefs-v1)"[^)]*\)/g, "");
+const stored = page.replace(/(localStorage|\bs)\.(get|set|remove)Item\("(pinchy-theme|kulibert-prefs-v1|bb-tips-off|bb-intro-seen)"[^)]*\)/g, "").replace(/window\.(sessionStorage|localStorage)/g, "").replace(/bbStore\("(session|local)"\)/g, "");
 assert.doesNotMatch(page, /access-v1|kulibert-prefs\.js/);
 assert.doesNotMatch(stored, /localStorage|sessionStorage|indexedDB/);
+assert.match(page, /bb-tips-off/);
+assert.match(page, /bb-intro-seen/);
 assert.match(page, /pinchy-theme/);
 assert.doesNotMatch(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8"), /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /prefers-reduced-motion/);
@@ -350,8 +353,15 @@ assert.doesNotMatch(page, /butter/i);
 assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.equal((page.match(/box-shadow/g) || []).length, 1);
-assert.match(hub, /href="\/pinchy\/"/);
-assert.match(hub, /translate="no">Pinchy<\/span>/);
+assert.match(hub, /href="\/berty-bizzy\/"/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.4\.0<\/strong>/);
+assert.doesNotMatch(hub, /href="\/pinchy\/"/);
+const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
+for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
+  const r = vj.redirects.find(x => x.source === src);
+  assert.ok(r && r.permanent === true && /^\/berty-bizzy\//.test(r.destination), "308 redirect for " + src);
+}
+assert.match(hub, /translate="no">Berty &amp; Bizzy<\/span>/);
 
 console.log("L1", l1win.join(" > "));
 console.log("L2", l2win.join(" > "));
@@ -364,7 +374,7 @@ console.log("crash", line);
 // 1.3.2: every language names every chrome string the ShipCheck listed, and none falls back to English.
 var CHROME = ["estop", "clear", "themeDark", "themeLight", "Base", "Shoulder", "Elbow", "Wrist", "Claw", "degrees", "clawOpen", "clawShut",
   "OPEN", "SHUT", "No stars yet.", "One star.", "Two stars.", "Three stars.", "Add a block, then press Run.", "Add blocks, then press Run.",
-  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v132", "w132a", "w132b",
+  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v140", "w140a", "w140b", "v132", "w132a", "w132b", "hi", "skipHint", "tip1", "tip2", "tipClose", "tipOff", "helpBtn", "helpTitle", "helpBlocksH", "hb1", "hb2", "hb3", "hb4", "hb5", "hb6", "hb7", "helpControlsH", "helpFailH", "hf1", "hf2", "hf3", "hf4", "resetTips", "helpClose", "tipsBack", "tagline",
   "v131", "w131a", "v130", "w130b", "v122", "w122d", "v121", "w121c", "v120", "w120b", "v110", "w110b", "v100", "w100c"];
 var LANG_IDS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
 var SAME_OK = { "es Base": 1 };
@@ -385,4 +395,7 @@ for (var li = 0; li < LANG_IDS.length; li++) {
   if (code !== "en") assert.ok(G.starWords(0, code) !== "No stars yet.");
 }
 
-console.log("pinchy win-test ok");
+assert.equal(G.uiText("en", "tip1"), "Press Run. Watch Berty pick up the cube.");
+assert.equal(G.uiText("en", "tip2"), "Each block turns one joint 15\u00b0.");
+assert.equal(G.uiText("en", "hi"), "Hi! I'm Berty. I'm Bizzy.");
+console.log("berty-bizzy win-test ok");
