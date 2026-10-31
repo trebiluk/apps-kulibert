@@ -8327,7 +8327,10 @@ let spawnWait = null
 function spawnChunksReady(x, z) {
   const w = noa.world
   const ci = Math.floor(x / S), ck = Math.floor(z / S)
+  // the spawn chunk and its 8 neighbours at ground level, plus the chunks right above and below spawn
+  // (noa never loads the far corners above/below, so those are not waited for)
   for (let di = -1; di <= 1; di++) for (let dk = -1; dk <= 1; dk++) for (let j = -1; j <= 1; j++) {
+    if (j !== 0 && (di || dk)) continue
     const i = ci + di, k = ck + dk
     if (!w._storage.getChunkByIndexes(i, j, k)) return false
     if (w._chunksPending.includes(i, j, k) || w._chunksInvalidated.includes(i, j, k) || w._chunksToRequest.includes(i, j, k)) return false
