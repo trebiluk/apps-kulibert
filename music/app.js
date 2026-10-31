@@ -302,6 +302,7 @@
     if (Array.isArray(saved.chairs) && saved.chairs.length === 8) state.chairs = saved.chairs;
     if (saved.bpm) state.song.bpm = saved.bpm;
     state.touched = saved.touched === true;
+    state.kept = saved.kept === true || state.touched;
     return true;
   }
   function readBox(key) {
@@ -311,6 +312,9 @@
   const openedBak = openedMain ? false : applySaved(readBox(BACKUP));
   state.restored = openedBak;
   state.hadSave = !!(openedMain || openedBak);
+  // MU 2.36.74: load-time marker. boxOwned = this page has seen the save key (at load or after its own write).
+  let boxOwned = false;
+  try { boxOwned = localStorage.getItem(KEY) !== null; } catch (err) { boxOwned = false; }
   if (!openedMain && !openedBak) {
     state.song.bpm = 104;
     state.song.tempo = 104;
@@ -530,14 +534,30 @@
     src.stop(t + dur + 0.02);
   }
 
-  function paintSaved(ok) {
+  // MU 2.36.67: an honest save line. "none" = nothing to say yet (fresh start), "saved" = this beat really is in storage,
+  // "unsaved" = there are changes the browser could not keep. Icon + text, never colour alone.
+  function paintSaved(status) {
     const line = $("saved-line");
     if (!line) return;
-    line.classList.toggle("bad", !ok);
-    line.textContent = ok ? "Saved" : "Not saved. Open the menu and tap Save a file.";
+    state.saveStatus = status;
+    line.classList.toggle("bad", status === "unsaved");
+    line.textContent = "";
+    if (status !== "saved" && status !== "unsaved") return;
+    const ico = document.createElement("span");
+    ico.className = "saved-ico";
+    ico.setAttribute("aria-hidden", "true");
+    ico.textContent = status === "saved" ? "\u2713" : "!";
+    const word = document.createElement("span");
+    word.textContent = status === "saved" ? (mu("saved") || "Saved") : (mu("notSavedYet") || "Not saved yet");
+    line.appendChild(ico);
+    line.appendChild(word);
   }
-  function keep() {
+  // keep({ quiet: true }) is the start-up write: it stores the starter song but does not claim the kid saved anything.
+  function keep(opts) {
+    const quiet = !!(opts && opts.quiet);
+    if (!quiet) state.kept = true;
     const body = JSON.stringify({
+      kept: state.kept === true,
       song: JSON.parse(Song.serialize(state.song)),
       drums: state.drums,
       look: state.look,
@@ -566,13 +586,17 @@
     let ok = false;
     try {
       const prev = localStorage.getItem(KEY);
+      // MU 2.36.74: the quiet unload write must not bring back a save that was cleared while the page was open.
+      if (quiet && boxOwned && (prev === null || localStorage.length === 0)) return;
       if (prev && prev !== body) localStorage.setItem(BACKUP, prev);
       localStorage.setItem(KEY, body);
-      ok = true;
+      ok = localStorage.getItem(KEY) === body; // MU 2.36.74: Saved only after a read-back proves the write
+      if (ok) boxOwned = true;
     } catch (err) {
       ok = false;
     }
-    paintSaved(ok);
+    if (ok) paintSaved(state.kept ? "saved" : "none");
+    else paintSaved(quiet && !state.kept ? "none" : "unsaved");
     paintCount();
     paintSongBar();
     const beat = Song.toBeat(state.song);
@@ -4090,6 +4114,22 @@
     });
   });
   if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
+  // MU 2.36.67: the shared top bar is position:fixed, so its DOM spot does not move it on screen. Put it after #home
+  // so the first Tab lands on Make a beat first by plain DOM order (no tabindex).
+  (function barAfterHome() {
+    const home = $("home");
+    if (!home) return;
+    const move = () => {
+      const bar = document.querySelector("body > .kb-bar");
+      if (bar && home.parentNode === document.body && bar.nextElementSibling !== home.nextElementSibling && bar.previousElementSibling !== home) {
+        document.body.insertBefore(bar, home.nextSibling);
+      }
+      return !!bar;
+    };
+    if (move()) return;
+    const mo = new MutationObserver(() => { if (move()) mo.disconnect(); });
+    mo.observe(document.body, { childList: true });
+  })();
   if ($("new-beat")) $("new-beat").addEventListener("click", makeBeat);
   if ($("my-songs")) $("my-songs").addEventListener("click", () => {
     resetScroll();
@@ -4210,10 +4250,21 @@
   if (themeBtn) themeBtn.addEventListener("click", () => {
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
   });
+  if ($("teacher-toggle")) {
+    $("teacher-toggle").addEventListener("click", () => {
+      const box = $("teacher-box");
+      if (!box) return;
+      box.hidden = !box.hidden;
+      $("teacher-toggle").setAttribute("aria-expanded", box.hidden ? "false" : "true");
+    });
+  }
   if ($("menu-help")) {
+    // MU 2.36.67: How to use it and What's new sit behind Help, so the menu opens on a short list.
     $("menu-help").addEventListener("click", () => {
-      const go = document.querySelector('#drawer h2[data-mu="go"]');
-      if (go && go.scrollIntoView) go.scrollIntoView({ block: "start" });
+      const box = $("help-box");
+      if (!box) return;
+      box.hidden = !box.hidden;
+      $("menu-help").setAttribute("aria-expanded", box.hidden ? "false" : "true");
     });
   }
   $("tempo").addEventListener("input", (e) => {
@@ -4365,7 +4416,7 @@
       localStorage.setItem(SHELF, body);
       if (localStorage.getItem(SHELF) !== body) throw new Error("short");
     } catch (err) {
-      paintSaved(false);
+      paintSaved("unsaved");
       return false;
     }
     paintShelf();
@@ -4639,12 +4690,12 @@
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
       // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
-      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more, #make-beat, #menu-help, #teacher-toggle")) return; // MU 2.36.65: the Score tools buttons take Space too; MU 2.36.67: so do Make a beat, Help and Teacher
       e.preventDefault();
       $("play-btn").click();
     }
   });
-  window.addEventListener("pagehide", () => { keep(); releaseMic(); forgetClip(); });
+  window.addEventListener("pagehide", () => { keep({ quiet: true }); releaseMic(); forgetClip(); });
 
   const Titles = window.KulibertTitles;
   if (Titles && $("title-lists")) {
@@ -5480,7 +5531,7 @@
         if (preset === "band" || preset === "sound" || preset === "lights") reopen = tabForMode(preset);
       }
     } catch (errRe) { reopen = ""; }
-    openTab(reopen || "tap"); // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
+    openTab(reopen || (state.kept ? "tap" : "songs")); // MU 2.36.67 r2: only a kept song counts; the quiet first-load autosave no longer sends a fresh kid to Tap // MU 2.36.67: a fresh start lands on Songs, where Make a beat is the first, biggest button // MU 2.36.58: a saved Band, Piano, or Viz tab comes back; everything else still opens Tap
   }
   if ($("tempo") && state.song && state.song.bpm) {
     $("tempo").value = String(state.song.bpm);
@@ -5846,7 +5897,8 @@
       }
     }, 0);
   }
-  keep();
+  keep({ quiet: true });
+  window.addEventListener("kulibert-lang", () => { try { paintSaved(state.saveStatus || "none"); } catch (eSv) {} });
 
   // MU 2.36.62: music's own words first (strings.js). The shared pack is only a fallback for a key music does not own,
   // so a failed shared fetch no longer logs one "missing" warning per drum word.

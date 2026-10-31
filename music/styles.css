@@ -6684,3 +6684,28 @@ body.mu237.tab-score #staff.staff-strip {
 @media (orientation: landscape) and (max-height: 500px) {
   html[dir="rtl"] body.mu237.tab-score .tool-row { padding-left: 98px; padding-right: 10px; }
 }
+
+/* MU 2.36.67: Make a beat carries an icon with its word; Help hides the long how-to list. Layout only. */
+.make-beat { display: flex; align-items: center; justify-content: center; gap: 0.5em; min-height: max(48px, 22vh); }
+.make-beat .mb-ico { width: 1.1em; height: 1.1em; flex: none; }
+.make-beat:focus-visible, .help-toggle:focus-visible, .teacher-toggle:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.help-toggle, .teacher-toggle { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; }
+.help-box[hidden], .teacher-box[hidden] { display: none !important; }
+body.mu237 #make-beat { font-size: clamp(1.4rem, 3vw, 2.2rem) !important; }
+body.mu237 #make-beat .mb-ico { width: 1.2em; height: 1.2em; }
+/* MU 2.36.67: swipe hints are for touch screens only; a mouse and keyboard never see them. */
+@media not (pointer: coarse) { .touch-only { display: none !important; } }
+/* MU 2.36.67: the save line lives in the player bar next to Bar · Beat, so a kid sees it on every tab. Empty means nothing to say. */
+body.mu237 .songbar-copy #saved-line:not(:empty) { display: inline-flex !important; align-items: center; gap: 0.25rem; margin: 0 0 0 0.5rem; position: static !important; white-space: nowrap; }
+body.mu237 .songbar-copy #saved-line:empty { display: none !important; }
+/* MU 2.36.67 r1: Make a beat first is the one main button: its word takes the button size, heavier edge. Layout/weight only. */
+body.mu237 #make-beat > span { font-size: inherit !important; font-weight: 800; letter-spacing: normal; }
+body.mu237 #make-beat { min-height: max(56px, 22vh); border-width: 3px; }
+/* MU 2.36.67 r1: the drum pad grid keeps a side gutter so the edge pads (Bell, Clap) never touch the screen edge and get cut. Layout only. */
+@media (max-width: 600px) {
+  body.mu237 #tap-pads { box-sizing: border-box; width: 100%; max-width: 100%; padding-inline: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+/* MU 2.36.67 r1: the save line keeps its spot even when empty (hidden, not removed), so Saved appearing never moves the bar. */
+body.mu237 .songbar-copy #saved-line,
+body.mu237 .songbar-copy #saved-line:empty { display: inline-flex !important; align-items: center; gap: 0.25rem; margin: 0 0 0 0.5rem !important; position: static !important; visibility: visible; box-sizing: border-box; min-width: 9em; height: 1.4em; line-height: 1.4em; white-space: nowrap; vertical-align: middle; }
+body.mu237 .songbar-copy #saved-line:empty { visibility: hidden; }
