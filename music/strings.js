@@ -3,7 +3,7 @@
    Song titles stay English. Note letters stay C D E G A.
    NEEDS NATIVE CHECK: every fa-AF, rw, and ti line in PACKS below.
    fa-AF is Dari (Afghan), not Iranian Persian. Do not ship these three as verified.
-   DRAFT (MU 2.36.61 to 2.36.64): laneFor, news23661 to news23664, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
+   DRAFT (MU 2.36.61 to 2.36.65): laneFor, news23661 to news23665, barsMax, pickupWord, playPosPickup, tapNowPickup and every rich* key (note-length editing) in uk, ru, es, ar, fa-AF, rw, ti are unchecked drafts. */
 (function (root) {
   var OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var EN = {
@@ -52,6 +52,8 @@
     richMeterStays: "The time signature stays with this song.",
     richStaffLabel: "Staff. Left and right pick a note. Up and down change its letter. Keys 1 to 4 set its length. Dot adds a dot. Delete or Backspace makes a rest. Space plays.",
     news23664: "MU 2.36.64 — On songs with real note lengths you can now change how long a note lasts, add a dot, a tie or a rest. Every bar stays full. Five more songs have real notation.",
+    news23665: "MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside. They work by tap and by keyboard.",
+    barsMax: "That is 32 bars. That is a long song.",
     /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
     pickupWord: "Pickup",
     playPosPickup: "Pickup · Beat {beat}",
@@ -799,6 +801,8 @@
     richMeterStays: "This song keeps its time signature.",
     richStaffLabel: "Staff. Left and right pick a note. Up and down change the letter. Keys 1 to 4 set the length. Dot adds a dot. Delete or Backspace makes a rest. Space plays.",
     news23664: "MU 2.36.64 — On songs with real note lengths, change how long a note lasts. Add a dot, a tie or a rest. Every bar stays full. Five more songs have real notation.",
+    news23665: "MU 2.36.65 — On Score, tap Add a bar. Tap Score tools to see the time signatures.",
+    barsMax: "That is 32 bars. That is enough.",
     /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
     pickupWord: "Pickup",
     playPosPickup: "Pickup · Beat {beat}",
@@ -1209,6 +1213,8 @@
       "richMeterStays": "Розмір залишається таким, як у цієї пісні.",
       "richStaffLabel": "Нотний стан. Ліворуч і праворуч обирають ноту. Вгору й вниз змінюють літеру. Цифри від 1 до 4 задають тривалість. Крапка додає крапку. Delete або Backspace робить паузу. Пробіл вмикає звук.",
       "news23664": "MU 2.36.64 — У піснях зі справжньою тривалістю нот можна змінювати довжину ноти, додавати крапку, лігу або паузу. Кожен такт залишається повним. Ще п'ять пісень мають справжні ноти.",
+      "news23665": "MU 2.36.65 — Кнопки «Додати такт» і «Інструменти нот» тепер легко натиснути пальцем або вибрати клавішею Tab. Розміри такту — всередині.",
+      "barsMax": "Це вже 32 такти. Це довга пісня.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Затакт",
       "playPosPickup": "Затакт · Доля {beat}",
@@ -1957,6 +1963,8 @@
       "richMeterStays": "Размер остаётся таким, как у этой песни.",
       "richStaffLabel": "Нотный стан. Влево и вправо выбирают ноту. Вверх и вниз меняют букву. Цифры от 1 до 4 задают длительность. Точка добавляет точку. Delete или Backspace делает паузу. Пробел запускает звук.",
       "news23664": "MU 2.36.64 — В песнях с настоящей длительностью нот можно менять длину ноты, добавлять точку, лигу или паузу. Каждый такт остаётся полным. Ещё пять песен с настоящими нотами.",
+      "news23665": "MU 2.36.65 — Кнопки «Добавить такт» и «Инструменты нот» теперь легко нажать пальцем или выбрать клавишей Tab. Размеры такта — внутри.",
+      "barsMax": "Это уже 32 такта. Это длинная песня.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Затакт",
       "playPosPickup": "Затакт · Доля {beat}",
@@ -2705,6 +2713,8 @@
       "richMeterStays": "La indicación de compás se queda como está en esta canción.",
       "richStaffLabel": "Pentagrama. Izquierda y derecha eligen una nota. Arriba y abajo cambian su letra. Del 1 al 4 fijan su duración. El punto añade un puntillo. Suprimir o Retroceso la convierte en silencio. Espacio reproduce.",
       "news23664": "MU 2.36.64 — En las canciones con duraciones reales puedes cambiar lo que dura una nota, añadir un puntillo, una ligadura o un silencio. Todos los compases siguen completos. Cinco canciones más tienen notación real.",
+      "news23665": "MU 2.36.65 — Los botones «Añadir un compás» y «Herramientas de partitura» ya se pueden tocar con el dedo o alcanzar con la tecla Tab. Los tipos de compás están dentro.",
+      "barsMax": "Ya son 32 compases. Es una canción larga.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Anacrusa",
       "playPosPickup": "Anacrusa · Tiempo {beat}",
@@ -3454,6 +3464,8 @@
       "richMeterStays": "الميزان يبقى كما هو في هذه الأغنية.",
       "richStaffLabel": "المدرّج الموسيقي. السهمان الأيمن والأيسر يختاران نوتة. السهمان الأعلى والأسفل يغيّران حرفها. الأرقام من 1 إلى 4 تحدد مدتها. النقطة تضيف نقطة. Delete أو Backspace يحوّلها إلى سكتة. المسافة تشغّل الصوت.",
       "news23664": "MU 2.36.64 — في الأغاني ذات المدد الحقيقية يمكنك تغيير مدة النوتة وإضافة نقطة أو رباط أو سكتة. تبقى كل مازورة كاملة. خمس أغانٍ أخرى لها كتابة موسيقية حقيقية.",
+      "news23665": "MU 2.36.65 — صار الوصول إلى زرّي «أضف مازورة» و«أدوات النوتة» سهلًا باللمس أو بمفتاح Tab. وأنواع الميزان داخل أدوات النوتة.",
+      "barsMax": "وصلت إلى 32 مازورة. هذه أغنية طويلة.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "مازورة تمهيدية",
       "playPosPickup": "مازورة تمهيدية · نبضة {beat}",
@@ -4203,6 +4215,8 @@
       "richMeterStays": "کسر میزان این آهنگ همان می‌ماند.",
       "richStaffLabel": "حامل نُت. چپ و راست یک نُت را انتخاب می‌کنند. بالا و پایین حرف آن را عوض می‌کنند. شماره‌های ۱ تا ۴ طول آن را تعیین می‌کنند. نقطه یک نقطه می‌افزاید. Delete یا Backspace آن را سکوت می‌کند. فاصله صدا را پخش می‌کند.",
       "news23664": "MU 2.36.64 — در آهنگ‌هایی که طول واقعی نُت‌ها را دارند می‌توانی طول نُت را عوض کنی و نقطه، اتصال یا سکوت بگذاری. هر میزان پُر می‌ماند. پنج آهنگ دیگر نُت‌نویسی واقعی دارند.",
+      "news23665": "MU 2.36.65 — دکمه‌های «یک میزان اضافه کن» و «ابزار نت» حالا با لمس یا کلید Tab به آسانی در دسترس‌اند. کسرهای میزان داخل ابزار نت هستند.",
+      "barsMax": "این 32 میزان است. این آهنگ بلند است.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "میزان آغازین",
       "playPosPickup": "میزان آغازین · ضرب {beat}",
@@ -4952,6 +4966,8 @@
       "richMeterStays": "Igipimo cy'iyi ndirimbo kiguma uko kiri.",
       "richStaffLabel": "Imirongo y'inota. Ibumoso n'iburyo bitoranya inota. Hejuru no hasi bihindura inyuguti yayo. Imibare 1 kugeza 4 igena uburebure. Akadomo kongeraho akadomo. Delete cyangwa Backspace iyigira kiruhuko. Space irakina.",
       "news23664": "MU 2.36.64 — Ku ndirimbo zifite uburebure nyakuri bw'inota, ushobora guhindura igihe inota imara, kongeraho akadomo, ihuza cyangwa kiruhuko. Buri murongo uguma wuzuye. Izindi ndirimbo eshanu zifite inota nyazo.",
+      "news23665": "MU 2.36.65 — Buto «Ongeraho igice» na «Ibikoresho by'inota» ubu biroroshye gukoraho cyangwa guhitamo na Tab. Ibipimo biri imbere.",
+      "barsMax": "Ni ibice 32. Iyi ni indirimbo ndende.",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "Intangiriro",
       "playPosPickup": "Intangiriro · Beat {beat}",
@@ -5701,6 +5717,8 @@
       "richMeterStays": "መጠን እዚ ደርፊ ከምዘሎ ይጸንሕ።",
       "richStaffLabel": "መስመራት ሙዚቃ። ጸጋምን የማንን ኖታ ይመርጽ። ላዕልን ታሕትን ፊደላ ይቕይር። ቁጽሪ 1 ክሳብ 4 ንውሓት የቐምጥ። ነጥቢ ነጥቢ ይውስኽ። Delete ወይ Backspace ዕረፍቲ የገብር። Space የጻውት።",
       "news23664": "MU 2.36.64 — ኣብ ደርፍታት ብሓቂ ንውሓት ኖታ ዘለወን፡ ንውሓት ኖታ ምቅያር፣ ነጥቢ፣ ምትእስሳር ወይ ዕረፍቲ ምውሳኽ ትኽእል። ኩሉ መስመር ምሉእ ይጸንሕ። ሓሙሽተ ተወሳኺ ደርፍታት ብሓቂ ኖታ ኣለዎም።",
+      "news23665": "MU 2.36.65 — ዝቐረቡ መልጠቒታት «ባር ወስኽ» ን «መሳርሒ ነጥቢ» ን ብጣት ወይ ብTab ቀሊል እዮም። መጠናት ባር ኣብ ውሽጦም እዮም።",
+      "barsMax": "እዚ 32 ባር እዩ። ነዊሕ ደርፊ እዩ።",
       /* MU 2.36.63: pickup and song-news words (non-English are drafts). */
       "pickupWord": "መእተዊ",
       "playPosPickup": "መእተዊ · ምት {beat}",

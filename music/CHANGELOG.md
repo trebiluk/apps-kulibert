@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.36.65** · 2026-10-31 · channel **draft PR**
+
+MU 2.36.65 — On Score, Add a bar and the Score tools button are in plain reach, with the time signatures inside.
+
+In kid words: above the staff there is now a row with two big buttons, Add a bar and Score tools. Tap Add a bar and a new full bar appears, the first note of it is picked, and a line under the staff says so. Tap Score tools and a small drawer opens where the drums were. It shows the time signatures (2/4, 3/4, 4/4, 6/8, each with its beat dots and its numbers) and then the other tools, and you can scroll it. The staff and the note-length row stay on the screen. On a keyboard, Tab reaches both buttons and the time signatures, each shows a thick ring, and Esc closes the drawer. On these buttons the Space key presses the button (it used to start Play). On a sideways phone you can now swipe the staff to see every bar. A song with real note lengths keeps its own time signature, and a calm line says so. Other songs and saved songs are unchanged. New words are drafts in the non-English languages.
+
+## Earlier
+
 **Chip: MU 2.36.64** · 2026-10-31 · channel **draft PR**
 
 MU 2.36.64 — On songs with real note lengths you can change how long a note lasts, add a dot, a tie or a rest. Five more songs have real notation.
