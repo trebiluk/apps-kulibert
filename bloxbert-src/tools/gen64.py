@@ -664,7 +664,7 @@ def draw_grass(px, mystical):
         base, root, body, tip = (96, 62, 128), (74, 46, 104), (108, 72, 140), (128, 92, 158)
         fleck_a, fleck_b = (46, 130, 124), (38, 112, 108)
     else:
-        base, root, body, tip = (60, 132, 46), (36, 94, 34), (72, 148, 52), (98, 170, 66)
+        base, root, body, tip = (94, 138, 62), (78, 120, 52), (88, 132, 58), (114, 160, 74)
     fill_flat(px, base)
     for sy in range(8):
         for sx in range(8):
@@ -1310,7 +1310,7 @@ def main():
         # 2.5.553 part 2: hand-drawn 16 x 16 tiles for these layers (tools/texpack2.py).
         p2 = texpack2.face(layer, myst)
         if p2 is not None:
-            if layer == 'stone':
+            if layer in ('stone', 'dirt'):
                 return tune_face(layer, p2, myst)
             if layer in ('leaves', 'leavesUnder'):
                 compress_rgb(p2, 2.0)  # the calm check below holds these two to contrast 2.0
@@ -1322,11 +1322,13 @@ def main():
         if layer == 'wrap_birchLeaves':
             im = new_image(); draw_birch_leaves(im.load(), myst); return im
         if layer.startswith('wrap_'):
-            return wraps[layer[5:]]
+            return texpack2.calm(wraps[layer[5:]])
         if layer in MASTERS:
             return tune_face(layer, master_image(layer, myst), myst)
         if layer in legacy:
-            return legacy[layer]
+            if layer in texpack2.CALM_SKIP:
+                return legacy[layer]
+            return texpack2.calm(legacy[layer], layer in texpack2.CALM_FLAT, hash_key(layer) & 255)
         raise SystemExit('no face for ' + layer)
 
     # File names written into each pack folder.
@@ -1361,8 +1363,9 @@ def main():
         print(pid)
         for name in ('grass_top', 'dirt_grass', 'dirt', 'stone', 'leaves', 'leavesUnder'):
             c, sd, mean = tile_report(name, images_by_pack[pid][layers.index(name)])
-            if c > 2.02:
-                raise SystemExit('%s %s contrast %.2f over 2.0' % (pid, name, c))
+            # The grass side needs a clear fringe against the dirt, so it gets a wider limit.
+            if c > (3.6 if name == 'dirt_grass' else 2.02):
+                raise SystemExit('%s %s contrast %.2f over the limit' % (pid, name, c))
             if name in calm and sd > 18.05:
                 raise SystemExit('%s %s std %.1f over 18' % (pid, name, sd))
         side = images_by_pack[pid][layers.index('dirt_grass')]

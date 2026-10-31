@@ -2083,17 +2083,27 @@ function techButtonMesh(on) {
   const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
   return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
 }
+// 2.5.553: the bed is muted and patterned, not a flat bright fill. Light shows about 1.3x the dye value,
+// so these dyes land near #3E6FA8 (blanket) and a cream pillow. The pattern is geometry (quilt ridges, a fold,
+// a pillow seam), so it reads without color and needs nothing the engine does not already do.
 function bedMesh() {
-  const wool = dye('bed-wool', 0.2, 0.46, 0.78)
-  const pillow = dye('bed-pillow', 0.94, 0.95, 0.97)
+  const wool = dye('bed-wool', 0.19, 0.32, 0.55)
+  const ridge = dye('bed-ridge', 0.25, 0.41, 0.66)
+  const fold = dye('bed-fold', 0.13, 0.23, 0.42)
+  const pillow = dye('bed-pillow', 0.63, 0.61, 0.55)
+  const seam = dye('bed-seam', 0.47, 0.45, 0.4)
   const legs = [
     [-0.36, -0.34], [0.36, -0.34], [-0.36, 1.22], [0.36, 1.22],
   ].map(([lx, lz], i) => part('bed-leg-' + i, 0.08, 0.16, 0.08, lx, 0.08, lz, 0, woodD))
   const frame = part('bed-frame', 0.88, 0.08, 1.78, 0, 0.2, 0.44, 0, woodD)
   const mattress = part('bed-mat', 0.78, 0.14, 1.62, 0, 0.31, 0.4, 0, wool)
+  // Quilt ridges across the blanket and a darker fold near the pillow.
+  const ridges = [-0.06, 0.2, 0.46].map((rz, i) => part('bed-ridge-' + i, 0.78, 0.018, 0.07, 0, 0.386, rz, 0, ridge))
+  const foldBand = part('bed-fold', 0.78, 0.02, 0.1, 0, 0.387, 0.72, 0, fold)
   const board = part('bed-board', 0.86, 0.22, 0.08, 0, 0.42, 1.22, 0, woodD)
   const pill = part('bed-pill', 0.46, 0.12, 0.26, 0, 0.49, 1.05, 0, pillow)
-  return mergeMats('bunk', legs.concat([frame, mattress, board, pill]))
+  const pillSeam = part('bed-seam', 0.46, 0.124, 0.03, 0, 0.49, 1.05, 0, seam)
+  return mergeMats('bunk', legs.concat([frame, mattress], ridges, [foldBand, board, pill, pillSeam]))
 }
 function chairMesh() {
   const pad = dye('chair-pad', 0.16, 0.55, 0.72)

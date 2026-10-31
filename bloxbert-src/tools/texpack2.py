@@ -97,14 +97,14 @@ def stone_tile(myst, seed=3, base_only=False):
                 tile.set(x, y, t['light'])
     if base_only:
         return tile
-    # Short chips: two pixels on a diagonal, scattered, never in rows.
-    spots = [(2, 3), (11, 1), (6, 8), (13, 10), (3, 13), (9, 14)]
-    for i, (x, y) in enumerate(spots):
-        tile.set(x, y, t['chip'])
-        if i % 2 == 0:
-            tile.set(x + 1, y + 1, t['chip'])
-        else:
-            tile.set(x + 1, y, t['chip'])
+    # Irregular cracks (short zigzags, not lines across the tile) and a few pebbles. No mortar, no grid.
+    for cx, cy, run in ((2, 2, 4), (10, 5, 3), (4, 11, 4), (13, 12, 3)):
+        for i in range(run):
+            tile.set(cx + i // 2 + (i % 2), cy + i, t['chip'])
+    for px_, py_ in ((8, 1), (1, 7), (7, 13)):
+        tile.set(px_, py_, t['light'])
+        tile.set(px_ + 1, py_, t['light'])
+        tile.set(px_ + 1, py_ + 1, t['chip'])
     if myst:
         # A few teal flecks in pairs. No glow.
         for x, y in ((5, 2), (12, 6), (1, 9), (8, 12)):
@@ -141,8 +141,8 @@ def deep_tile(myst):
 
 # Cobble: rounded stones with dark gaps. Nine cells on a wrapping 3 x 3 grid.
 COBBLE = {
-    False: dict(gap=(84, 90, 98), tones=[(126, 132, 138), (110, 116, 124), (142, 148, 152)], hi=(166, 172, 176)),
-    True: dict(gap=(78, 74, 98), tones=[(124, 118, 140), (108, 102, 126), (140, 134, 158)], hi=(164, 158, 182)),
+    False: dict(gap=(92, 82, 72), tones=[(152, 142, 128), (138, 128, 116), (166, 156, 142)], hi=(188, 178, 162)),
+    True: dict(gap=(88, 80, 84), tones=[(150, 140, 142), (136, 126, 130), (164, 154, 156)], hi=(186, 176, 178)),
 }
 
 
@@ -187,53 +187,64 @@ def cobble_tile(myst, seed=7):
 
 
 # ---- ores ----------------------------------------------------------------
-# Angular chunks (squares, steps, diamonds) on the same stone base. Never round.
-
-SHAPES = [
-    [(0, 0), (1, 0), (0, 1), (1, 1)],
-    [(0, 0), (1, 0), (2, 0), (0, 1), (1, 1)],
-    [(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)],
-    [(0, 0), (0, 1), (1, 1), (1, 2)],
-    [(0, 0), (1, 0), (1, 1), (2, 1)],
-]
-# Chunk anchors on the 16 grid. Spacing is checked below so chunks never touch.
-SPOTS = [(1, 1, 0), (8, 0, 2), (4, 5, 1), (11, 6, 3), (0, 9, 4), (7, 10, 0), (12, 12, 1)]
+# A stone base plus 4 angular chunks, 2-3 texels each, with a 1-texel light edge on the top and left.
+# Every ore has its own chunk shape, so they differ without color: coal = blocks, iron = steps,
+# copper = plus and arrow, zinc = bars. Never round.
+SHAPES = {
+    # coal: chunky blocks with a cut corner. iron: diagonal steps. copper: plus and tripod. zinc: bars.
+    'coal': [[(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (0, 2), (1, 2)],
+             [(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (1, 2), (2, 2)]],
+    'iron': [[(0, 0), (1, 0), (1, 1), (2, 1), (2, 2)], [(2, 0), (1, 0), (1, 1), (0, 1), (0, 2)]],
+    'copper': [[(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)], [(1, 0), (0, 1), (1, 1), (2, 1), (0, 2), (2, 2)]],
+    'zinc': [[(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1)], [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]],
+}
+SPOTS = [(1, 1), (9, 1), (5, 7), (12, 8), (1, 12)]
 
 ORES = {
-    # name: (body, facet, edge, accent)
-    'coal': ((56, 56, 62), (88, 88, 96), (44, 44, 50), None),
-    'iron': ((196, 150, 112), (222, 184, 146), (150, 106, 76), None),
-    'copper': ((200, 120, 72), (226, 156, 104), (150, 84, 50), (80, 150, 126)),
-    'zinc': ((156, 178, 196), (192, 210, 222), (116, 138, 158), None),
+    # name: (body, light edge, shade, accent). Muted hues from the StyleBot art rules.
+    'coal': ((52, 52, 56), (92, 92, 98), (40, 40, 44), None),
+    'iron': ((201, 162, 126), (222, 190, 154), (158, 122, 92), None),
+    'copper': ((184, 107, 69), (208, 140, 98), (140, 80, 52), (82, 146, 124)),
+    'zinc': ((150, 170, 188), (186, 204, 218), (112, 130, 148), None),
 }
 
 
 def ore_tile(kind, myst, rot=0):
-    body, facet, edge, accent = ORES[kind]
+    body, light, shade, accent = ORES[kind]
     tile = stone_tile(myst, base_only=True)
-    taken = set()
-    for k, (ax, ay, si) in enumerate(SPOTS):
-        shape = SHAPES[(si + rot) % len(SHAPES)]
+    shapes = SHAPES[kind]
+    mine = {}
+    for k, (ax, ay) in enumerate(SPOTS):
+        if kind == 'coal' and k == 4:
+            continue  # coal reads best with 4
+        shape = shapes[(k + rot) % len(shapes)]
         cells = [((ax + dx) % N, (ay + dy) % N) for dx, dy in shape]
         for c in cells:
-            if c in taken:
+            if c in mine:
                 raise SystemExit('ore chunks overlap at %s' % (c,))
-        # Keep a one-pixel gap between chunks.
-        for cx, cy in cells:
-            taken.add((cx, cy))
+            mine[c] = k
+        have = set(cells)
         top = min(c[1] for c in cells)
         left = min(c[0] for c in cells)
         for cx, cy in cells:
-            col = body
-            if cy == top and cx == min(c[0] for c in cells if c[1] == top):
-                col = facet
-            elif cy == max(c[1] for c in cells):
-                col = edge
+            if (cx, cy - 1) not in have:
+                col = light      # 1 texel light edge along the top
+            elif (cx, cy + 1) not in have:
+                col = shade
+            else:
+                col = body
             tile.set(cx, cy, col)
-        if accent and k % 3 == 1:
+        if accent and k % 2 == 1:
             tile.set(cells[-1][0], cells[-1][1], accent)
         if myst and kind == 'coal' and k % 2 == 0:
             tile.set(left, top, (66, 118, 116))
+    # Chunks must not touch each other (a one texel gap keeps each shape readable).
+    for (x, y), k in mine.items():
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                o = mine.get(((x + dx) % N, (y + dy) % N))
+                if o is not None and o != k:
+                    raise SystemExit('%s chunks %d and %d touch at %s' % (kind, k, o, (x, y)))
     return tile
 
 
@@ -434,24 +445,28 @@ def birch_leaves(myst):
 def bed_tile(myst):
     wood = (118, 82, 52)
     wood_d = (88, 60, 38)
-    pillow = (214, 206, 186)
-    pillow_d = (184, 176, 158)
-    blanket = (72, 106, 152) if not myst else (92, 86, 140)
-    blanket_l = (96, 130, 176) if not myst else (116, 110, 164)
-    blanket_d = (56, 86, 128) if not myst else (72, 66, 112)
+    pillow = (210, 202, 182)
+    pillow_d = (180, 172, 154)
+    blanket = (62, 111, 168) if not myst else (92, 86, 140)
+    blanket_l = (84, 134, 190) if not myst else (116, 110, 164)
+    blanket_d = (50, 92, 142) if not myst else (72, 66, 112)
     tile = Tile(blanket)
+    # Fabric weave on the blanket: alternate texels of two close tones.
+    for y in range(N):
+        for x in range(N):
+            tile.set(x, y, blanket_d if (x + y) % 2 else blanket)
     for i in range(N):
         tile.set(i, 0, wood)
         tile.set(i, 15, wood_d)
         tile.set(0, i, wood)
         tile.set(15, i, wood_d)
-    # Pillow at the head: rounded rectangle, shaded underneath.
+    # Pillow at the head: rounded rectangle with its own weave, shaded underneath.
     for y in range(2, 6):
         for x in range(2, 14):
             if (x in (2, 13)) and (y in (2, 5)):
                 continue
-            tile.set(x, y, pillow_d if y == 5 else pillow)
-    # Blanket fold, then stitched stripes (dashes, so it reads without color).
+            tile.set(x, y, pillow_d if y == 5 else (pillow if (x + y) % 2 else (200, 192, 172)))
+    # Blanket fold, then stitched dashes (readable without color).
     for x in range(1, 15):
         tile.set(x, 7, blanket_l)
         tile.set(x, 8, blanket_d)
@@ -460,6 +475,222 @@ def bed_tile(myst):
             if (x + y) % 3 != 0:
                 tile.set(x, y, blanket_l)
     return tile
+
+
+# ---- dirt, grass side, log, planks, sand, wool (classic rules, 2.5.553) ----
+DIRT = {
+    False: dict(base=(122, 85, 52), dark=(102, 70, 42), light=(140, 101, 64), speck=(86, 58, 34), pebble=(156, 134, 104)),
+    True: dict(base=(110, 82, 100), dark=(92, 66, 84), light=(126, 98, 116), speck=(74, 52, 68), pebble=(146, 134, 158)),
+}
+
+
+def dirt_tile(myst):
+    t = DIRT[myst]
+    tile = Tile(t['base'])
+    for y in range(N):
+        for x in range(N):
+            n = vnoise(x, y, 17, 4)
+            if n < 0.36:
+                tile.set(x, y, t['dark'])
+            elif n > 0.66:
+                tile.set(x, y, t['light'])
+    for x, y in ((2, 1), (7, 3), (12, 2), (4, 6), (10, 8), (1, 10), (14, 11), (6, 12), (11, 14), (3, 15)):
+        tile.set(x, y, t['speck'])
+    # A few tiny pebbles: two light texels with a dark one under.
+    for x, y in ((8, 6), (2, 13), (13, 9)):
+        tile.set(x, y, t['pebble'])
+        tile.set(x + 1, y, t['pebble'])
+        tile.set(x + 1, y + 1, t['speck'])
+    if myst:
+        for x, y in ((5, 4), (12, 12)):
+            tile.set(x, y, (54, 112, 110))
+    return tile
+
+
+FRINGE = {
+    False: dict(top=(114, 160, 74), mid=(94, 138, 62), low=(78, 120, 52)),
+    True: dict(top=(146, 128, 176), mid=(127, 110, 158), low=(104, 88, 134)),  # matches the lifted Mystical grass top
+}
+
+
+def grass_side(myst):
+    tile = dirt_tile(myst)
+    f = FRINGE[myst]
+    for x in range(N):
+        h = 3 + int(rnd(x, 3, 61) * 2)  # 3 or 4 texels, ragged
+        for y in range(h):
+            if y == 0:
+                c = f['top'] if rnd(x, 0, 62) < 0.5 else f['mid']
+            elif y == h - 1:
+                c = f['low']
+            else:
+                c = f['mid']
+            tile.set(x, y, c)
+    return tile
+
+
+def oak_side_classic():
+    base, dark, light, groove = (107, 74, 46), (92, 62, 38), (124, 88, 56), (70, 48, 30)
+    tile = Tile(base)
+    for x in range(N):
+        tone = (dark, base, light, base, dark)[int(rnd(x, 1, 71) * 5) % 5]
+        for y in range(N):
+            tile.set(x, y, tone)
+    for x in (1, 5, 8, 12, 14):
+        y = int(rnd(x, 2, 72) * 5)
+        while y < N + 6:
+            ln = 3 + int(rnd(x, y, 73) * 4)
+            for i in range(ln):
+                tile.set(x, y + i, groove)
+            y += ln + 2 + int(rnd(x, y, 74) * 3)
+    return tile
+
+
+def oak_top_classic():
+    ring_a, ring_b, core, edge = (176, 138, 90), (150, 114, 70), (112, 80, 50), (88, 60, 38)
+    tile = Tile(ring_b)
+    for y in range(N):
+        for x in range(N):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if r > 7.2:
+                c = edge
+            elif r < 1.7:
+                c = core
+            elif int((r - 1.7) * 0.8) % 2 == 0:
+                c = ring_a
+            else:
+                c = ring_b
+            tile.set(x, y, c)
+    return tile
+
+
+PLANK = {
+    False: dict(tones=[(165, 124, 78), (150, 112, 70), (180, 138, 90)], seam=(112, 80, 48), grain=(188, 148, 100)),
+    True: dict(tones=[(120, 92, 138), (106, 80, 124), (134, 106, 152)], seam=(80, 60, 100), grain=(150, 124, 168)),
+}
+
+
+def planks_tile(myst):
+    t = PLANK[myst]
+    tile = Tile(t['tones'][0])
+    for band in range(4):
+        y0 = band * 4
+        for y in range(y0, y0 + 3):
+            for x in range(N):
+                tile.set(x, y, t['tones'][(band + (x + band * 3) // 6) % 3])
+        for x in range(N):
+            tile.set(x, y0 + 3, t['seam'])
+        jx = (band * 5 + 3) % N
+        for y in range(y0, y0 + 3):
+            tile.set(jx, y, t['seam'])
+        gx = (band * 7 + 2) % N
+        for i in range(3):
+            tile.set(gx + i, y0 + 1, t['grain'])
+    return tile
+
+
+def sand_tile():
+    base, dark, light, speck = (198, 178, 132), (186, 166, 122), (210, 190, 142), (160, 140, 100)
+    tile = Tile(base)
+    for y in range(N):
+        for x in range(N):
+            n = vnoise(x, y, 23, 8)
+            if n < 0.38:
+                tile.set(x, y, dark)
+            elif n > 0.64:
+                tile.set(x, y, light)
+    for x, y in ((1, 2), (6, 1), (11, 3), (14, 6), (3, 7), (9, 8), (5, 11), (12, 12), (2, 14), (8, 15), (15, 9)):
+        tile.set(x, y, speck)
+    return tile
+
+
+WOOL = {
+    'cotton_blue': (62, 111, 168),
+    'cotton_green': (76, 126, 84),
+    'cotton_red': (164, 80, 72),
+    'cotton_tan': (200, 178, 134),
+}
+
+
+def wool_tile(key):
+    base = WOOL[key]
+    dark = tuple(int(c * 0.86) for c in base)
+    light = tuple(min(210, int(c * 1.10)) for c in base)
+    tile = Tile(base)
+    # Fabric weave: a 2 x 2 over-under pattern, plus a stitched dash every fourth row.
+    for y in range(N):
+        for x in range(N):
+            if (x // 2 + y // 2) % 2 == 0:
+                tile.set(x, y, dark if (x + y) % 2 else base)
+            else:
+                tile.set(x, y, light if (x + y) % 2 else base)
+    return tile
+
+
+BRICK = {
+    'brick_red': dict(tones=[(164, 92, 72), (150, 80, 62), (176, 104, 82)], mortar=(120, 100, 88)),
+    'brick_grey': dict(tones=[(146, 136, 124), (132, 122, 112), (158, 148, 136)], mortar=(92, 84, 76)),
+}
+
+
+def brick_tile(key):
+    t = BRICK[key]
+    tile = Tile(t['mortar'])
+    for row in range(4):
+        y0 = row * 4
+        off = 4 if row % 2 else 0
+        for b in range(2):
+            x0 = off + b * 8
+            tone = t['tones'][(row * 2 + b) % 3]
+            for y in range(y0, y0 + 3):
+                for x in range(x0, x0 + 7):
+                    tile.set(x, y, tone)
+            # one chip per brick so no two look the same
+            tile.set(x0 + 1 + (row + b) % 4, y0 + 1, t['tones'][(row + b + 1) % 3])
+    return tile
+
+
+# ---- calm pass for the older tiles ------------------------------------------
+
+def _hls_clamp(c, smax, lmin, lmax):
+    import colorsys
+    r, g, b = [v / 255.0 for v in c]
+    h, l, sat = colorsys.rgb_to_hls(r, g, b)
+    sat = min(sat, smax)
+    r, g, b = [int(round(v * 255)) for v in colorsys.hls_to_rgb(h, l, sat)]
+    y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    if y > lmax:
+        k = lmax / y
+        r, g, b = int(r * k), int(g * k), int(b * k)
+    elif y < lmin:
+        add = lmin - y
+        r, g, b = min(255, int(r + add)), min(255, int(g + add)), min(255, int(b + add))
+    return r, g, b
+
+
+def calm(im, texturize=False, seed=1):
+    """Cap saturation near 55%, keep luminance 15-85%, and (if asked) add soft 16-grid texture to a flat tile."""
+    src = im.convert('RGB')
+    out = Image.new('RGBA', src.size)
+    px = src.load()
+    op = out.load()
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b = _hls_clamp(px[x, y], 0.52, 44, 214)
+            op[x, y] = (r, g, b, 255)
+    if texturize:
+        step = src.width // N
+        for i in range(26):
+            tx, ty = int(rnd(i, seed, 81) * N), int(rnd(i, seed, 82) * N)
+            sign = 1 if rnd(i, seed, 83) < 0.5 else -1
+            for dx in range(2 if i % 3 == 0 else 1):
+                gx = (tx + dx) % N
+                for yy in range(step):
+                    for xx in range(step):
+                        r, g, b, a = op[gx * step + xx, ty * step + yy]
+                        d = sign * 14
+                        op[gx * step + xx, ty * step + yy] = _hls_clamp((max(0, min(255, r + d)), max(0, min(255, g + d)), max(0, min(255, b + d))), 0.52, 44, 214) + (255,)
+    return out
 
 
 # ---- entry point used by gen64.py -----------------------------------------
@@ -473,8 +704,18 @@ def _by_layer(myst):
         'wrap_ironOre': lambda: ore_tile('iron', myst, 1),
         'wrap_copperOre': lambda: ore_tile('copper', myst, 2),
         'wrap_zincOre': lambda: ore_tile('zinc', myst, 3),
-        'trunk_side': (lambda: oak_side(True)) if myst else None,
-        'trunk_top': (lambda: oak_top(True)) if myst else None,
+        'trunk_side': (lambda: oak_side(True)) if myst else oak_side_classic,
+        'trunk_top': (lambda: oak_top(True)) if myst else oak_top_classic,
+        'dirt': lambda: dirt_tile(myst),
+        'dirt_grass': lambda: grass_side(myst),
+        'wood': lambda: planks_tile(myst),
+        'sand': (lambda: sand_tile()) if not myst else None,
+        'cotton_blue': lambda: wool_tile('cotton_blue'),
+        'cotton_green': lambda: wool_tile('cotton_green'),
+        'cotton_red': lambda: wool_tile('cotton_red'),
+        'cotton_tan': lambda: wool_tile('cotton_tan'),
+        'brick_red': lambda: brick_tile('brick_red'),
+        'brick_grey': lambda: brick_tile('brick_grey'),
         'leaves': (lambda: oak_leaves(True)) if myst else None,
         'leavesUnder': (lambda: oak_leaves(True, True)) if myst else None,
         'wrap_pineLog': lambda: pine_log(myst),
@@ -489,7 +730,8 @@ def _by_layer(myst):
 # Layers this part redraws, for the PR sheet and the pack check.
 LAYERS = ['stone', 'greystone', 'gravel_stone', 'stone_coal', 'wrap_ironOre', 'wrap_copperOre', 'wrap_zincOre',
           'trunk_side', 'trunk_top', 'leaves', 'leavesUnder', 'wrap_pineLog', 'wrap_pineNeedles',
-          'wrap_pinePlanks', 'wrap_birchPlanks', 'wrap_birchLeaves', 'bunk']
+          'wrap_pinePlanks', 'wrap_birchPlanks', 'wrap_birchLeaves', 'bunk', 'dirt', 'dirt_grass', 'wood', 'sand',
+          'cotton_blue', 'cotton_green', 'cotton_red', 'cotton_tan', 'brick_red', 'brick_grey']
 
 
 def face(layer, myst):
@@ -498,3 +740,8 @@ def face(layer, myst):
     if fn is None:
         return None
     return fn().image()
+
+
+# Older tiles that only need the calm pass, and the ones that are flat and need a little texture too.
+CALM_FLAT = ('coreplate', 'vend', 'store', 'snow', 'ice')
+CALM_SKIP = ('glass', 'wrap_doorGlass', 'water')
