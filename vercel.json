@@ -502,8 +502,23 @@
     },
     {
       "source": "/blocks",
-      "destination": "/blocks/",
-      "permanent": false
+      "destination": "/bertopia/",
+      "permanent": true
+    },
+    {
+      "source": "/blocks/:path*",
+      "destination": "/bertopia/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/blocks-test",
+      "destination": "/bertopia/",
+      "permanent": true
+    },
+    {
+      "source": "/blocks-test/:path*",
+      "destination": "/bertopia/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
