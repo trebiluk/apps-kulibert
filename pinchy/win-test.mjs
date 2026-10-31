@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.3.1");
+assert.equal(G.APP_VERSION, "1.3.2");
 assert.equal(G.LEVELS.length, 6);
 assert.deepEqual(G.LEVELS.map(function (level) { return level.kind; }), ["match", "place", "spot", "pile", "sensor", "debug"]);
 assert.equal(G.spotName(-30, 96), "A1");
@@ -87,9 +87,11 @@ for (let i = 0; i < langs.length; i++) {
 assert.equal(G.langMeta("fa-AF").draft, true);
 assert.equal(G.langMeta("rw").draft, true);
 assert.equal(G.langMeta("ti").draft, true);
-assert.equal(G.langMeta("ar").draft, false);
+assert.equal(G.langMeta("ar").draft, true);
 assert.equal(G.langMeta("en").draft, false);
-assert.equal(G.langMeta("uk").draft, false);
+assert.equal(G.langMeta("uk").draft, true);
+assert.equal(G.langMeta("ru").draft, true);
+assert.equal(G.langMeta("es").draft, true);
 assert.equal(G.langMeta("ar").rtl, true);
 assert.equal(G.langMeta("fa-AF").rtl, true);
 assert.equal(G.langMeta("en").rtl, false);
@@ -333,7 +335,8 @@ assert.match(page, /document\.documentElement\.lang = lang/);
 assert.doesNotMatch(page, /fa-AF" \? "fa"/);
 assert.match(page, /e\.stopPropagation\(\)/);
 assert.match(page, /e\.key !== "Enter" && e\.key !== " "/);
-const stored = page.replace(/localStorage\.(get|set)Item\("pinchy-theme"[^)]*\)/g, "");
+const stored = page.replace(/localStorage\.(get|set)Item\("(pinchy-theme|kulibert-prefs-v1)"[^)]*\)/g, "");
+assert.doesNotMatch(page, /access-v1|kulibert-prefs\.js/);
 assert.doesNotMatch(stored, /localStorage|sessionStorage|indexedDB/);
 assert.match(page, /pinchy-theme/);
 assert.doesNotMatch(fs.readFileSync(new URL("./game.js", import.meta.url), "utf8"), /localStorage|sessionStorage|indexedDB/);
@@ -357,4 +360,29 @@ console.log("L4", l4win.join(" > "));
 console.log("L5", l5win.join(" > "));
 console.log("L6", l6fixed.join(" > "));
 console.log("crash", line);
+
+// 1.3.2: every language names every chrome string the ShipCheck listed, and none falls back to English.
+var CHROME = ["estop", "clear", "themeDark", "themeLight", "Base", "Shoulder", "Elbow", "Wrist", "Claw", "degrees", "clawOpen", "clawShut",
+  "OPEN", "SHUT", "No stars yet.", "One star.", "Two stars.", "Three stars.", "Add a block, then press Run.", "Add blocks, then press Run.",
+  "starRules", "blocksLine", "timeNone", "timeLine", "swapsLine", "draftBadge", "whatsTitle", "whatsClose", "hubLine", "menu", "v132", "w132a", "w132b",
+  "v131", "w131a", "v130", "w130b", "v122", "w122d", "v121", "w121c", "v120", "w120b", "v110", "w110b", "v100", "w100c"];
+var LANG_IDS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
+var SAME_OK = { "es Base": 1 };
+var NO_LATIN = { ar: 1, "fa-AF": 1, ti: 1, uk: 1, ru: 1 };
+for (var li = 0; li < LANG_IDS.length; li++) {
+  var code = LANG_IDS[li];
+  assert.equal(G.langMeta(code).id, code);
+  assert.ok(G.langMeta(code).appName, code + " has an app name");
+  for (var ci = 0; ci < CHROME.length; ci++) {
+    var got = G.uiText(code, CHROME[ci]);
+    assert.ok(got && (code === "en" || SAME_OK[code + " " + CHROME[ci]] || got !== CHROME[ci]), code + " " + CHROME[ci] + " resolves");
+    if (code !== "en" && !SAME_OK[code + " " + CHROME[ci]]) assert.notEqual(got, G.uiText("en", CHROME[ci]), code + " " + CHROME[ci] + " is not English");
+  }
+  if (code !== "en") assert.equal(G.langMeta(code).draft, true, code + " is a machine draft");
+  var jline = G.jointReadout({ base: 0, shoulder: 0, elbow: 0, wrist: 0, open: true }, code);
+  if (NO_LATIN[code]) assert.ok(!/[A-Za-z]/.test(jline.replace(/\{n\}/g, "")), code + " joint summary has no English: " + jline);
+  if (code !== "en") assert.ok(G.runView({ kind: "idle", note: "Add blocks, then press Run." }, code).status !== "Add blocks, then press Run.");
+  if (code !== "en") assert.ok(G.starWords(0, code) !== "No stars yet.");
+}
+
 console.log("pinchy win-test ok");
