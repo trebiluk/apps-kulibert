@@ -112,6 +112,7 @@ export function mountPanels(api) {
       sheet.style.top = ''
       body.style.overflow = ''
     }
+    craftBelowBar(id)
     lastFill = fill
     dress(id)
     if (api.paintBack) api.paintBack()
@@ -121,6 +122,16 @@ export function mountPanels(api) {
     armSlide(id)
     openedAt = performance.now()
   }
+  // 2.5.586: the crafting panel starts below the shared top bar, measured live, because on phones the
+  // bar wraps to two rows (about 100px at 412) and covered the panel's title and Close.
+  function craftBelowBar(id) {
+    if (id !== 'crafting') { sheet.style.removeProperty('top'); return }
+    const bar = document.querySelector('.kb-bar')
+    const r = bar ? bar.getBoundingClientRect() : null
+    const h = r && r.height ? Math.ceil(r.bottom) : 48
+    sheet.style.setProperty('top', h + 'px', 'important')
+  }
+  window.addEventListener('resize', () => { if (!sheet.hidden && sheet.dataset.panel === 'crafting') craftBelowBar('crafting') })
   let openedAt = 0
   let lastFill = null
   function freshSlots() {

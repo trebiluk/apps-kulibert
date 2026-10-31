@@ -688,7 +688,7 @@ const SHOP = {
     woodshop: 'Woodshop Bench', woodshopSide: 'Woodshop Bench',
     clay: 'Clay', clayGuide: 'Clay is very fine soil. Fired in a kiln it turns hard.',
     safetyGlasses: 'Safety Glasses', measuringTape: 'Measuring Tape', handSaw: 'Hand Saw', hammer: 'Hammer',
-    noRoom: 'No room', woolAny: 'Wool', stoneAny: 'Stone or Slate',
+    noRoom: 'No room', woolAny: 'Wool', stoneAny: 'Stone',
     inBag: 'In bag: {n}', woodPickToast: 'Wood Pickaxe - mines stone faster', digOutside: 'dig outside town',
     openOld: 'Open my old world', openDated: 'Open · {date}', archiveOpen: 'Old world open',
     archiveFresh: 'Fresh start', archiveSwap: 'Swapped out', archiveBlocks: '{n} blocks', archiveBag: 'Bag {n}', oldestWorld: 'Oldest old world removed',
@@ -721,7 +721,7 @@ const SHOP = {
     woodshop: 'Верстат', woodshopSide: 'Верстат',
     clay: 'Глина', clayGuide: 'Глина — дуже дрібний ґрунт. У печі вона стає твердою.',
     safetyGlasses: 'Захисні окуляри', measuringTape: 'Рулетка', handSaw: 'Ножівка', hammer: 'Молоток',
-    noRoom: 'Немає місця', woolAny: 'Вовна', stoneAny: 'Камінь або сланець',
+    noRoom: 'Немає місця', woolAny: 'Вовна', stoneAny: 'Камінь',
     inBag: 'У сумці: {n}', woodPickToast: 'Дерев’яне кайло — копає камінь швидше', digOutside: 'копай поза містом',
     openOld: 'Відкрити мій старий світ', openDated: 'Відкрити · {date}', archiveOpen: 'Старий світ відкрито',
     archiveFresh: 'Новий старт', archiveSwap: 'Поміняно', archiveBlocks: '{n} блоків', archiveBag: 'Сумка {n}', oldestWorld: 'Найстаріший старий світ знято',
@@ -754,7 +754,7 @@ const SHOP = {
     woodshop: 'Верстак', woodshopSide: 'Верстак',
     clay: 'Глина', clayGuide: 'Глина — очень мелкая почва. В печи она становится твёрдой.',
     safetyGlasses: 'Защитные очки', measuringTape: 'Рулетка', handSaw: 'Ножовка', hammer: 'Молоток',
-    noRoom: 'Нет места', woolAny: 'Шерсть', stoneAny: 'Камень или сланец',
+    noRoom: 'Нет места', woolAny: 'Шерсть', stoneAny: 'Камень',
     inBag: 'В сумке: {n}', woodPickToast: 'Деревянная кирка — копает камень быстрее', digOutside: 'копай за городом',
     openOld: 'Открыть мой старый мир', openDated: 'Открыть · {date}', archiveOpen: 'Старый мир открыт',
     archiveFresh: 'Новый старт', archiveSwap: 'Заменён', archiveBlocks: '{n} блоков', archiveBag: 'Сумка {n}', oldestWorld: 'Самый старый мир снят',
@@ -787,7 +787,7 @@ const SHOP = {
     woodshop: 'Banco de madera', woodshopSide: 'Banco de madera',
     clay: 'Arcilla', clayGuide: 'La arcilla es un suelo muy fino. Cocida en un horno se vuelve dura.',
     safetyGlasses: 'Gafas de seguridad', measuringTape: 'Cinta métrica', handSaw: 'Serrucho', hammer: 'Martillo',
-    noRoom: 'No hay sitio', woolAny: 'Lana', stoneAny: 'Piedra o pizarra',
+    noRoom: 'No hay sitio', woolAny: 'Lana', stoneAny: 'Piedra',
     inBag: 'En la bolsa: {n}', woodPickToast: 'Pico de madera: mina piedra más rápido', digOutside: 'cava fuera del pueblo',
     openOld: 'Abrir mi mundo viejo', openDated: 'Abrir · {date}', archiveOpen: 'Mundo viejo abierto',
     archiveFresh: 'Inicio nuevo', archiveSwap: 'Se cambió', archiveBlocks: '{n} bloques', archiveBag: 'Bolsa {n}', oldestWorld: 'Se quitó el mundo viejo más antiguo',
@@ -820,7 +820,7 @@ const SHOP = {
     woodshop: 'منضدة الخشب', woodshopSide: 'منضدة الخشب',
     clay: 'طين', clayGuide: 'الطين تربة ناعمة جداً. إذا أُحرق في الفرن يصير صلباً.',
     safetyGlasses: 'نظارة أمان', measuringTape: 'شريط قياس', handSaw: 'منشار يد', hammer: 'مطرقة',
-    noRoom: 'لا مكان', woolAny: 'صوف', stoneAny: 'حجر أو أردواز',
+    noRoom: 'لا مكان', woolAny: 'صوف', stoneAny: 'حجر',
     inBag: 'في الحقيبة: {n}', woodPickToast: 'معول خشب - يستخرج الحجر أسرع', digOutside: 'احفر خارج البلدة',
     openOld: 'افتح عالمي القديم', openDated: 'افتح · {date}', archiveOpen: 'العالم القديم مفتوح',
     archiveFresh: 'بداية جديدة', archiveSwap: 'بُدّل', archiveBlocks: '{n} مكعبات', archiveBag: 'الحقيبة {n}', oldestWorld: 'أُزيل أقدم عالم قديم',
@@ -853,7 +853,7 @@ const SHOP = {
     woodshop: 'میز نجاری', woodshopSide: 'میز نجاری',
     clay: 'گل رس', clayGuide: 'گل رس خاک بسیار نرم است. در کوره که پخته شود سخت می‌شود.',
     safetyGlasses: 'عینک ایمنی', measuringTape: 'متر', handSaw: 'اره دستی', hammer: 'چکش',
-    noRoom: 'جا نیست', woolAny: 'پشم', stoneAny: 'سنگ یا سنگ‌لوح',
+    noRoom: 'جا نیست', woolAny: 'پشم', stoneAny: 'سنگ',
     inBag: 'در کیف: {n}', woodPickToast: 'کلنگ چوبی - سنگ را تندتر می‌کند', digOutside: 'بیرون شهر بکن',
     openOld: 'جهان کهنه‌ام را باز کن', openDated: 'باز کن · {date}', archiveOpen: 'جهان کهنه باز شد',
     archiveFresh: 'شروع تازه', archiveSwap: 'عوض شد', archiveBlocks: '{n} بلاک', archiveBag: 'بکس {n}', oldestWorld: 'کهنه‌ترین جهان کهنه برداشته شد',
@@ -886,7 +886,7 @@ const SHOP = {
     woodshop: 'Intebe y\'ububaji', woodshopSide: 'Intebe y\'ububaji',
     clay: 'Ibumba', clayGuide: 'Ibumba ni ubutaka bworoshye cyane. Iyo bwashyushye mu ziko buba inkome.',
     safetyGlasses: 'Amararo y\'umutekano', measuringTape: 'Umugozi wo gupima', handSaw: 'Urubanza', hammer: 'Inyundo',
-    noRoom: 'Nta mwanya', woolAny: 'Ubwoya', stoneAny: 'Ibuye cyangwa slate',
+    noRoom: 'Nta mwanya', woolAny: 'Ubwoya', stoneAny: 'Ibuye',
     inBag: 'Mu gasakoshi: {n}', woodPickToast: 'Icyuma cy\'ibiti - ivuna ibuye vuba', digOutside: 'kora hanze y\'umujyi',
     openOld: 'Fungura isi yanjye ya kera', openDated: 'Fungura · {date}', archiveOpen: 'Isi ya kera irafunguye',
     archiveFresh: 'Gutangira bushya', archiveSwap: 'Cyahinduwe', archiveBlocks: 'amabuye {n}', archiveBag: 'Agasaho {n}', oldestWorld: 'Isi ya kera cyane yakuweho',
@@ -919,7 +919,7 @@ const SHOP = {
     woodshop: 'መደብ ዕንጨይቲ', woodshopSide: 'መደብ ዕንጨይቲ',
     clay: 'ሸክላ', clayGuide: 'ሸክላ ብጣዕሚ ደቂቕ ሓመድ እዩ። ኣብ እቶን ምስ ተነድደ ይደርቕ።',
     safetyGlasses: 'መነጽር ድሕንነት', measuringTape: 'መለክዒ', handSaw: 'መጋዝ ኢድ', hammer: 'መጥሓን',
-    noRoom: 'ቦታ የለን', woolAny: 'ጥምጢ', stoneAny: 'እምኒ ወይ ስሌት',
+    noRoom: 'ቦታ የለን', woolAny: 'ጥምጢ', stoneAny: 'እምኒ',
     inBag: 'ኣብ ሳንጣ: {n}', woodPickToast: 'ናይ ዕንጨይቲ መኮፍ - እምኒ ብቐልጢፍ ይኮፍ', digOutside: 'ካብ ከተማ ወጻኢ እኸድ',
     openOld: 'ናተይ ናይ ቀደም ዓለም ክፈት', openDated: 'ክፈት · {date}', archiveOpen: 'ናይ ቀደም ዓለም ተኸፊቱ',
     archiveFresh: 'ሓድሽ ጅማረ', archiveSwap: 'ተቐይሩ', archiveBlocks: '{n} ብሎክ', archiveBag: 'ቦርሳ {n}', oldestWorld: 'ዝኸበረ ናይ ቀደም ዓለም ተደምሲሱ',
@@ -3882,6 +3882,23 @@ const TEX550 = {
   ti: { texSmallOn: 'ንኣሽቱ ምስልታት: ይሰርሕ (ቅልጡፍ)', texSmallOff: 'ንኣሽቱ ምስልታት: ኣይሰርሕን (ብሩህ)', texSmallHint: 'ንዝበለጸ ብሩህነት ኣጥፍኦ።' },
 }
 for (const [lang, row] of Object.entries(TEX550)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
+const CRAFT065 = {
+  en: { needsMetal: '🔒 Needs metal tier' },
+  simple: { needsMetal: '🔒 Needs metal' },
+  uk: { needsMetal: '🔒 Потрібен рівень металу' },
+  ru: { needsMetal: '🔒 Нужна ступень металла' },
+  es: { needsMetal: '🔒 Necesita nivel de metal' },
+  ar: { needsMetal: '🔒 يلزم مستوى المعدن' },
+  'fa-AF': { needsMetal: '🔒 پله فلز لازم است' },
+  rw: { needsMetal: '🔒 Ikeneye urwego rw\'icyuma' },
+  ti: { needsMetal: '🔒 ደረጃ ብረት የድሊ' },
+}
+for (const [lang, row] of Object.entries(CRAFT065)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
