@@ -9,7 +9,7 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { slotArt, menuIcon } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot, tagAlias, restoreDrop } from './drops.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots, closeTip } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
@@ -191,9 +191,23 @@ export function createSession(api) {
     wallet.state.found.push(item)
     if (api.found) api.found(item)
   }
+  function breakerAlias() {
+    try {
+      if (api && typeof api.alias === 'function') {
+        const named = tagAlias(api.alias())
+        if (named) return named
+      }
+      const who = typeof window !== 'undefined' && window.KulibertWho
+      const row = who && typeof who.read === 'function' ? who.read() : null
+      const named = row && tagAlias(row.alias)
+      if (named) return named
+    } catch (e) {}
+    return 'you'
+  }
   function spawnDrop(item, n, x, y, z, why) {
-    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground' })
+    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground', alias: breakerAlias() })
     if (where === 'lost') api.toast(t('lostFound'))
+    else if (where === 'trimmed') api.toast(t('groundFull'))
     else if (why === 'q') api.toast(t('dropped'))
     else if (why === 'full') api.toast(t('bagFull'))
     if (api.markDirty) api.markDirty()
@@ -1049,6 +1063,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'keycap lost-row'
+      b.style.minWidth = '44px'
+      b.style.minHeight = '44px'
       b.textContent = text
       b.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
       g.append(b)
@@ -3537,7 +3553,7 @@ export function createSession(api) {
       },
       econ: wallet.dump(),
       meta: m,
-      drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })),
+      drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at, alias: d.alias || '' })),
       lost: lost.map((d) => ({ item: d.item, n: d.n, why: d.why || 'ground' })),
     }
   }
@@ -3575,8 +3591,10 @@ export function createSession(api) {
     lost.length = 0
     for (const d of doc.drops || []) {
       if (!d || !ITEMS[d.item] || !(d.n > 0)) continue
-      ground.push({ id: d.id || ground.length + 1, x: +d.x || 0, y: +d.y || 0, z: +d.z || 0, item: d.item, n: d.n | 0, at: d.at || 0 })
-      noteId(d.id || 0)
+      const row = restoreDrop(d)
+      if (!row.id) row.id = ground.length + 1
+      ground.push(row)
+      noteId(row.id)
     }
     for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0, why: d.why === 'ground' || d.why === 'bag' || d.why === 'aside' ? d.why : 'ground' })
     for (const s of extra) if (s && ITEMS[s.item] && s.n > 0) {

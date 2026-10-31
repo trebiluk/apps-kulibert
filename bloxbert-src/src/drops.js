@@ -1,7 +1,7 @@
-// Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
-// Per-kid (alias) cap: 32 piles. Excess oldest piles for that alias go to Lost & Found with "ground full".
+// Loose drops. They never despawn. Each alias keeps 32 piles; the oldest past that
+// wait in Lost & Found ("ground full"). The ground never draws more than 256 piles.
 export const DROP_CAP = 256
-export const ALIAS_CAP = 32
+export const KID_CAP = 32
 export function lostWhyKey(why) {
   if (why === 'bag') return 'lostWhyBag'
   if (why === 'aside') return 'lostWhyAside'
@@ -24,6 +24,26 @@ export const MAGNET_SPEED = 6
 let seq = 1
 export function noteId(id) { if (id >= seq) seq = id + 1 }
 
+// Alias only. Empty means an old or mob pile, which does not use a kid's 32.
+export function tagAlias(alias) {
+  if (alias == null) return ''
+  const s = String(alias).trim().slice(0, 24)
+  return s
+}
+
+export function restoreDrop(d) {
+  return {
+    id: d.id || 0,
+    x: +d.x || 0,
+    y: +d.y || 0,
+    z: +d.z || 0,
+    item: d.item,
+    n: d.n | 0,
+    at: d.at || 0,
+    alias: tagAlias(d.alias),
+  }
+}
+
 export function nearEnough(a, b, r) {
   const dx = a.x - b.x
   const dy = a.y - b.y
@@ -32,47 +52,50 @@ export function nearEnough(a, b, r) {
 }
 
 function countAlias(drops, alias) {
-  if (!alias) return 0
-  return drops.filter(d => d.alias === alias).length
+  let n = 0
+  for (const d of drops) if (tagAlias(d.alias) === alias) n++
+  return n
 }
 
-function enforceAliasCap(drops, lost, alias) {
-  if (!alias) return
-  const mine = drops.filter(d => d.alias === alias)
-  if (mine.length <= ALIAS_CAP) return
-  // sort by id (oldest first, since seq increases)
-  mine.sort((a, b) => (a.id || 0) - (b.id || 0))
-  const excess = mine.length - ALIAS_CAP
-  for (let i = 0; i < excess; i++) {
-    const old = mine[i]
-    const idx = drops.indexOf(old)
-    if (idx >= 0) {
-      drops.splice(idx, 1)
-      const pile = lost.find(d => d.item === old.item && d.why === 'ground')
-      if (pile) pile.n += old.n
-      else lost.push({ item: old.item, n: old.n, why: 'ground', alias: old.alias })
-    }
+function oldestOf(drops, alias) {
+  let best = null
+  for (const d of drops) {
+    if (tagAlias(d.alias) !== alias) continue
+    if (!best || (d.at || 0) < (best.at || 0) || ((d.at || 0) === (best.at || 0) && (d.id || 0) < (best.id || 0))) best = d
   }
+  return best
+}
+
+function park(lost, item, n, why) {
+  const pile = lost.find((d) => d.item === item && (d.why || 'ground') === why)
+  if (pile) {
+    pile.n += n
+    if (!pile.why) pile.why = why
+  } else lost.push({ item, n, why })
 }
 
 export function mergeOrAdd(drops, lost, drop) {
   const n = drop.n | 0
   if (!drop.item || n <= 0) return 'skip'
-  const alias = drop.alias || ''
-  const near = drops.find((d) => d.item === drop.item && nearEnough(d, drop, MERGE_R) && (!alias || d.alias === alias))
+  const alias = tagAlias(drop.alias)
+  const near = drops.find((d) => d.item === drop.item && tagAlias(d.alias) === alias && nearEnough(d, drop, MERGE_R))
   if (near) { near.n += n; return 'merged' }
+  let trimmed = false
+  if (alias && countAlias(drops, alias) >= KID_CAP) {
+    const old = oldestOf(drops, alias)
+    if (old) {
+      const i = drops.indexOf(old)
+      if (i >= 0) drops.splice(i, 1)
+      park(lost, old.item, old.n, 'ground')
+      trimmed = true
+    }
+  }
   if (drops.length >= DROP_CAP) {
-    const pile = lost.find((d) => d.item === drop.item)
-    if (pile) {
-      pile.n += n
-      if (!pile.why) pile.why = drop.why || 'ground'
-    } else lost.push({ item: drop.item, n, why: drop.why || 'ground', alias })
+    park(lost, drop.item, n, drop.why || 'ground')
     return 'lost'
   }
-  const newDrop = { id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0, alias, why: drop.why }
-  drops.push(newDrop)
-  enforceAliasCap(drops, lost, alias)
-  return 'ground'
+  drops.push({ id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0, alias })
+  return trimmed ? 'trimmed' : 'ground'
 }
 
 export function canPick(drop, now) {
