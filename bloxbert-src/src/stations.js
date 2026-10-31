@@ -53,6 +53,7 @@ export function createStations(api) {
     }
     if (!(rec.left > 0) || !(rec.fuelN > 0)) { rec.fuelItem = ''; rec.fuelN = 0; rec.fuelSpent = 0 }
     touch()
+    startFromBelt(rec) // 0066: a belt-fed oven keeps going while it has input and fuel
   }
   function tick() {
     for (const rec of map.values()) finish(rec)
@@ -120,7 +121,7 @@ export function createStations(api) {
     const secs = r.secs || 5
     const left = r.until ? Math.max(0, Math.ceil((r.until - Date.now()) / 1000)) : 0
     const ring = r.until ? (secs - left) / secs : 0
-    return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left }
+    return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left, beltIn: r.beltIn ? { ...r.beltIn } : null }
   }
   function itemName(item) { return api.name ? api.name(item) : item }
   function bakesItem(item) { return OVEN.some((recipe) => recipe.in.some(([it]) => it === item)) }
@@ -1199,6 +1200,59 @@ export function createStations(api) {
     }
     return out
   }
+  // 0066: belts feed the oven without a kid's bag. Fuel goes to the fuel slot (one kind at a time, up to FUEL_CAP
+  // items); a bakeable item waits in a belt-in slot (one kind, up to 64) and starts a single-input bake as soon as
+  // there is enough of it, fuel is loaded and nothing is baking. Returns false when the oven cannot take the item,
+  // which the belt shows as Full until it can.
+  const FUEL_CAP = 64
+  function singleRecipe(item) {
+    return OVEN.find((recipe) => recipe.in.length === 1 && recipe.in[0][0] === item) || null
+  }
+  function startFromBelt(r) {
+    if (!r || r.kind !== 'oven' || r.until || !(r.left > 0)) return false
+    const b = r.beltIn
+    if (!b || !b.item || !(b.n > 0)) return false
+    const recipe = singleRecipe(b.item)
+    if (!recipe) return false
+    const need = recipe.in[0][1]
+    if (b.n < need) return false
+    b.n -= need
+    if (b.n <= 0) r.beltIn = null
+    r.picking = false
+    r.pick = recipe.id
+    r.input = [b.item]
+    r.inputN = need
+    r.pending = recipe.out[0]
+    r.secs = recipe.secs || 5
+    r.until = Date.now() + r.secs * 1000
+    r.staged = null
+    touch()
+    return true
+  }
+  function pushIn(key, item) {
+    if (!item) return false
+    const r = get(key, 'oven')
+    if (BAKES[item]) {
+      if (r.fuelItem && r.fuelItem !== item && r.fuelN > 0) return false
+      if ((r.fuelN || 0) >= FUEL_CAP) return false
+      r.fuelItem = item
+      r.fuelN = (r.fuelN || 0) + 1
+      r.left = (r.left || 0) + BAKES[item]
+      r.fuel = r.left
+      r.fuelNote = ''
+      startFromBelt(r)
+      touch()
+      return true
+    }
+    if (!singleRecipe(item)) return false
+    const b = r.beltIn
+    if (b && b.item && b.item !== item && b.n > 0) return false
+    if (b && b.n >= 64) return false
+    r.beltIn = b && b.item === item ? { item, n: b.n + 1 } : { item, n: 1 }
+    startFromBelt(r)
+    touch()
+    return true
+  }
   function pullOut(key) {
     const r = map.get(key)
     if (!r || !r.output || !r.output.length) return ''
@@ -1207,10 +1261,10 @@ export function createStations(api) {
   function slotCounts(key) {
     const r = map.get(key)
     if (!r) return { inn: 0, outn: 0 }
-    const inn = r.input && r.input.length ? (r.inputN || r.input.length) : 0
+    const inn = (r.input && r.input.length ? (r.inputN || r.input.length) : 0) + (r.beltIn && r.beltIn.n > 0 ? r.beltIn.n : 0)
     return { inn, outn: r.output ? r.output.length : 0 }
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, pullOut, slotCounts, dump: () => {
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, pullOut, pushIn, slotCounts, dump: () => {
     const out = {}
     for (const [k, v] of map) out[k] = JSON.parse(JSON.stringify(v))
     return out
