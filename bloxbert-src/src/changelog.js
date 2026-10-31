@@ -1,4 +1,10 @@
 export const CHANGELOG = [
+  // 2.5.552 far horizon. en and simple only for now; other languages follow.
+  { v: '2.5.552', date: '2026-10-31', lines: {
+    en: ['2.5.552 — Sunsets and sunrises look far away now: soft hills on the horizon, and a sky that changes slowly.'],
+    simple: ['2.5.552 — Sunsets and sunrises look far away. You can see soft hills. The sky changes slowly.'],
+  }},
+
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],

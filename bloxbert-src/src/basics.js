@@ -307,6 +307,8 @@ export function createBasics(api) {
     get always() { return always },
     get bright() { return bright },
     lum() { const v = lumNow(); return Number.isFinite(v) ? v : 1 },
+    // Cycle position in ms, or null when a rule or Always Day locks the sky. The horizon blends colors from this.
+    clockMs() { if (always || skyRule() !== 'cycle') return null; const c = cycleMs(); return ((now() % c) + c) % c },
     phase() { const v = phaseNow(); return v === 'night' || v === 'day' || v === 'dusk' || v === 'dawn' ? v : 'day' },
     clock(n) { if (!Number.isFinite(n)) return; ms += n; applyLights(n); lastT = now(); flush() },
     seek(n) { if (!Number.isFinite(n)) return; placeInDay(n) },
