@@ -1,4 +1,8 @@
-// Worker entry. One public endpoint: GET /rt/ws (WebSocket upgrade).
+// Worker entry. Public endpoints: GET /rt/ws (WebSocket upgrade), GET /rt/health, and (2.5.596,
+// B20 p1) GET /rt/history?x=&y=&z= for staff: "who changed this block" from the 7-day log.
+// /rt/history takes the same signed join ticket, as "Authorization: Bearer <ticket>". Only a staff
+// ticket (teacher/admin, passkey amr, checked by verifyToken) for a shared world gets an answer, and
+// only about its own world; a kid ticket gets 403. Read-only: nothing is stored or changed.
 //
 // Transport: WSS only. TLS is Cloudflare's; there is no custom crypto and no homemade
 // encryption anywhere in this package. The Worker refuses a socket that did not arrive
@@ -16,6 +20,8 @@
 import { PROTOCOL } from './protocol.js'
 import { verifyToken } from './token.js'
 import { logFailure } from './guard.js'
+import { isStaff } from './protocol.js'
+import { historyVia } from './editlog.js'
 
 export { Room } from './room.js'
 export { World } from './world-do.js'
@@ -47,14 +53,48 @@ async function ipTag(request, secret) {
   return [...new Uint8Array(d).slice(0, 8)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-const text = (body, status) =>
-  new Response(body, { status, headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' } })
+const text = (body, status, extra = {}) =>
+  new Response(body, { status, headers: { 'content-type': 'text/plain', 'cache-control': 'no-store', ...extra } })
+
+// CORS for the staff console: only an allowed Origin is echoed. A request with no Origin (curl) is fine,
+// the ticket is the check; a request from any other Origin is refused.
+function cors(request, env) {
+  const origin = request.headers.get('Origin')
+  if (!origin) return {}
+  if (!originAllowed(request, env)) return null
+  return { 'access-control-allow-origin': origin, 'access-control-allow-headers': 'authorization', 'access-control-allow-methods': 'GET', vary: 'Origin' }
+}
+
+const cellParam = (v) => (v !== null && /^-?\d{1,7}$/.test(v) ? Number(v) : null)
+
+async function history(request, env, url) {
+  const h = cors(request, env)
+  if (!h) { logFailure(null, 'origin'); return text('forbidden', 403) }
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...h, 'access-control-max-age': '600' } })
+  if (request.method !== 'GET') return text('method', 405, h)
+  if (env.REQUIRE_TLS !== '0' && !overTls(request, url)) return text('https only', 403, h)
+  if (!env.ROOM_JOIN_SECRET || !env.WORLDS) return text('not configured', 503, h)
+  const m = /^Bearer (\S+)$/.exec(request.headers.get('Authorization') || '')
+  if (!m) { logFailure(null, 'no-ticket'); return text('unauthorized', 401, h) }
+  const v = await verifyToken(m[1], [env.ROOM_JOIN_SECRET, env.ROOM_JOIN_SECRET_PREV])
+  if (!v.ok) { logFailure(null, 'ticket-' + v.why); return text('unauthorized', 401, h) }
+  const c = v.claims
+  if (!isStaff(c.role) || !c.world) { logFailure(c.alias, 'history-not-staff'); return text('forbidden', 403, h) }
+  const [x, y, z] = ['x', 'y', 'z'].map((k) => cellParam(url.searchParams.get(k)))
+  if (x === null || y === null || z === null) return text('bad cell', 400, h)
+  const w = env.WORLDS.get(env.WORLDS.idFromName(c.world))
+  const entries = await historyVia((s, n) => w.since(s, n), x, y, z)
+  if (!entries) return text('busy, try again', 503, h)
+  // aliases-only law: the body is cell + [{who (builder tag), action, block, t}], nothing else
+  return new Response(JSON.stringify({ x, y, z, entries }), { status: 200, headers: { 'content-type': 'application/json', 'cache-control': 'no-store', ...h } })
+}
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
 
     if (url.pathname === '/rt/health') return text('ok', 200)
+    if (url.pathname === '/rt/history') return history(request, env, url)
     if (url.pathname !== '/rt/ws') return text('not found', 404)
     if (request.method !== 'GET' || request.headers.get('Upgrade') !== 'websocket') return text('expected websocket', 426)
     if (env.REQUIRE_TLS !== '0' && !overTls(request, url)) return text('https only', 403)
