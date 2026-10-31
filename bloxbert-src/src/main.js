@@ -11115,7 +11115,7 @@ function skyDisc(name, rgb, size, core) {
   const mat = new StandardMaterial(name + '-m', scene)
   const tex = discTexture(name + '-t', core)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
-  mat.emissiveTexture = tex
+  // Not mat.emissiveTexture: Babylon ADDS an emissive texture to emissiveColor, so the white gradient made the disc white (#FCFBFB).
   mat.opacityTexture = tex
   mat.disableLighting = true
   mat.backFaceCulling = false

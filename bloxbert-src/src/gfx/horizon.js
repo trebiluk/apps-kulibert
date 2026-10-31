@@ -12,9 +12,9 @@ const MIN = 60 * 1000
 // glowAmt: how strong that glow is (0 to 1). Every channel stays at or under about 0.90 (#E6).
 export const PALETTE = {
   day: { zenith: [0.20, 0.38, 0.62], horizon: [0.70, 0.80, 0.86], hill: [0.27, 0.41, 0.37], glow: [0.90, 0.82, 0.58], glowAmt: 0.16, stars: 0 },
-  dusk: { zenith: [0.15, 0.24, 0.46], horizon: [0.80, 0.58, 0.42], hill: [0.20, 0.20, 0.30], glow: [0.90, 0.62, 0.32], glowAmt: 0.50, stars: 0.3 },
+  dusk: { zenith: [0.15, 0.24, 0.46], horizon: [0.72, 0.60, 0.52], hill: [0.20, 0.20, 0.30], glow: [0.88, 0.66, 0.40], glowAmt: 0.42, stars: 0.3 },
   night: { zenith: [0.03, 0.05, 0.13], horizon: [0.10, 0.14, 0.28], hill: [0.04, 0.06, 0.12], glow: [0.45, 0.55, 0.80], glowAmt: 0.22, stars: 1 },
-  dawn: { zenith: [0.24, 0.22, 0.44], horizon: [0.82, 0.62, 0.48], hill: [0.22, 0.21, 0.31], glow: [0.90, 0.68, 0.40], glowAmt: 0.45, stars: 0.12 },
+  dawn: { zenith: [0.24, 0.22, 0.44], horizon: [0.76, 0.64, 0.56], hill: [0.22, 0.21, 0.31], glow: [0.88, 0.70, 0.46], glowAmt: 0.40, stars: 0.12 },
 }
 
 // Where each look sits in the 20 minute cycle. Each ramp is at least 40 s long, so nothing jumps.
