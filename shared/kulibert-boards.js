@@ -10,6 +10,24 @@
   var NOTES = "kulibert-boards-notes";
   var API = "https://tw.kulibert.net/api/boards";
   var MAX = 400;
+  var API_ORIGINS = ["https://apps.kulibert.net"];
+
+  /* The boards API only allows these origins (CORS). Elsewhere (previews,
+     localhost) skip it and keep scores on this Chromebook. */
+  function apiOn() {
+    try { return API_ORIGINS.indexOf(root.location.origin) >= 0; } catch (e) { return false; }
+  }
+
+  /* One try plus at most one retry. Never throws, never logs. */
+  function quietFetch(url, opts) {
+    if (!apiOn()) return Promise.resolve(null);
+    function once() {
+      try { return fetch(url, opts); } catch (e) { return Promise.reject(e); }
+    }
+    return once().catch(function () {
+      return once();
+    }).catch(function () { return null; });
+  }
 
   var ADJ = ["Swift", "Bright", "Calm", "Keen", "Bold", "Quiet", "Rapid", "Solid"];
   var ANIMAL = ["Otter", "Robin", "Panda", "Fox", "Whale", "Heron", "Gopher", "Beetle"];
@@ -235,13 +253,11 @@
       writeNotes(pack);
     }
     try { root.dispatchEvent(new CustomEvent("kulibert-boards", { detail: row })); } catch (e) {}
-    try {
-      fetch(API, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(row)
-      }).catch(function () {});
-    } catch (e2) {}
+    quietFetch(API, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(row)
+    });
     return row;
   }
 
@@ -313,10 +329,10 @@
   }
 
   function pull() {
-    if (!API || API.charAt(0) === "/") return Promise.resolve(null);
+    if (!API || !apiOn()) return Promise.resolve(null);
     var cls = classCode();
-    return fetch(API + "?class=" + encodeURIComponent(cls), { credentials: "omit" }).then(function (res) {
-      if (!res.ok) return null;
+    return quietFetch(API + "?class=" + encodeURIComponent(cls), { credentials: "omit" }).then(function (res) {
+      if (!res || !res.ok) return null;
       return res.json();
     }).then(function (pack) {
       if (!pack || !Array.isArray(pack.rows)) return null;
