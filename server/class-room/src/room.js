@@ -26,6 +26,8 @@
 //                     {"t":"s","k":812,"f":0,"p":[[id,x,y,z,r,f], ...]}   snapshot; "f":1 = full resync
 //                     {"t":"pong","n":7}
 //                     {"t":"fix","x":1,"y":64,"z":2}   the server refused a move: go back here
+//                     {"t":"bud","area":[6,10],"you":[3,10],"lag":[212,400]}   high-tick and lag budget after placing or breaking a belt/oven
+//                     {"t":"no","c":"hightick"|"lag",...,"bud":{...}}           a placement the World refused, with the numbers
 //                     {"t":"frz","on":1}               freeze on/off (everyone)
 //                     {"t":"ok","a":"kick"}  {"t":"err","c":"..."}   (err is followed by a close for protocol errors)
 //                     {"t":"full","max":30}            then the socket closes with code 4001
@@ -280,8 +282,9 @@ export class Room extends DurableObject {
     const v = checkBlockEdit({ op: f.id === 0 ? 'break' : 'place', x: f.x, y: f.y, z: f.z, id: f.id }, p.pos, null)
     if (!v.ok) return no(v.why)
     const [r] = await this.stub.edit({ ref: p.ref, staff: isStaff(p.role) }, [{ x: f.x, y: f.y, z: f.z, id: f.id, b: f.b }])
-    if (r.ok) return   // everyone, including this kid, hears it through the world's fan-out
-    no(r.why, r.cur === undefined ? {} : { cur: r.cur })
+    // Relay only: the World decided and sent its numbers; the room passes them to this kid.
+    if (r.ok) return r.budget ? this.send(p, { t: 'bud', ...r.budget }) : undefined   // the block itself arrives through the fan-out
+    no(r.why, { ...(r.cur === undefined ? {} : { cur: r.cur }), ...(r.budget ? { bud: r.budget } : {}) })
     if (r.strike) this.punish(p, r.why, CLOSE.ABUSE, now)
   }
 

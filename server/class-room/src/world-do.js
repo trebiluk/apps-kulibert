@@ -88,4 +88,5 @@ export class World extends DurableObject {
   chunk(cx, cz) { return this.hub.chunk(cx, cz) }
   since(s, n) { return this.hub.since(s, n) }
   worldClock() { return this.hub.clock() }
+  budget(ref, x, z) { return this.hub.budget(ref, x, z) }
 }

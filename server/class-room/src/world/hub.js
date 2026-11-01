@@ -47,7 +47,7 @@ export function makeHub({ db, send, gen, now = Date.now }) {
         if (c.ok) ok.push(e)
         return c.ok ? null : c
       })
-      const res = world.apply(ok, who, t)
+      const res = world.apply(ok, who, t, { staff: !!actor.staff })
       let i = 0
       return out.map((c) => c || res[i++])
     },
@@ -61,6 +61,7 @@ export function makeHub({ db, send, gen, now = Date.now }) {
     sim: (t = now()) => world.sim(t),
     clock: () => world.clock(),
     simAt: () => world.simAt(),
+    budget: (ref, x, z) => world.budgetAt(h32(ref), x, z),
     who: h32,
   }
 }
