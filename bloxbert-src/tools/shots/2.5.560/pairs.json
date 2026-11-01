@@ -1,0 +1,208 @@
+{
+ "1366x768-en-survival": {
+  "before": [],
+  "after": []
+ },
+ "1366x768-en-creative": {
+  "before": [],
+  "after": []
+ },
+ "412x915-en-survival": {
+  "before": [
+   "play-chip~suit-bar 90x6",
+   "stick-pad~hotbar 120x78",
+   "stick-pad~slot 48x39",
+   "stick-pad~slot 38x35"
+  ],
+  "after": []
+ },
+ "412x915-en-creative": {
+  "before": [
+   "stick-pad~hotbar 120x78",
+   "stick-pad~slot 48x39",
+   "stick-pad~slot 38x35"
+  ],
+  "after": []
+ },
+ "915x412-en-survival": {
+  "before": [
+   "top~jump-col 64x22",
+   "top~t-crouch 56x22",
+   "goals-hud~stick-pad 40x46",
+   "pause-btn~jump-col 12x48",
+   "pause-btn~t-crouch 8x26",
+   "pause-btn~jump 12x6",
+   "fs-btn~jump-col 44x48",
+   "fs-btn~t-crouch 40x26",
+   "fs-btn~jump 44x6",
+   "hotbar~safe-chip 191x7"
+  ],
+  "after": []
+ },
+ "915x412-en-creative": {
+  "before": [
+   "top~jump-col 64x22",
+   "top~pick-chip 88x6",
+   "top~t-crouch 56x22",
+   "goals-hud~stick-pad 40x46",
+   "pause-btn~jump-col 12x48",
+   "pause-btn~pick-chip 24x34",
+   "pause-btn~t-crouch 8x26",
+   "pause-btn~jump 12x6",
+   "fs-btn~jump-col 44x48",
+   "fs-btn~t-crouch 40x26",
+   "fs-btn~jump 44x6",
+   "suit-bar~safe-chip 72x30"
+  ],
+  "after": []
+ },
+ "740x360-en-survival": {
+  "before": [
+   "play-chip~path-chip 137x42",
+   "top~stick-pad 104x42",
+   "top~jump-col 64x74",
+   "top~suit-bar 217x42",
+   "top~t-crouch 56x56",
+   "goals-hud~stick-pad 40x48",
+   "pause-btn~jump-col 12x48",
+   "pause-btn~jump 12x48",
+   "fs-btn~jump-col 44x48",
+   "fs-btn~jump 44x48",
+   "stick-pad~undo-btn 40x36",
+   "stick-pad~redo-btn 47x36",
+   "stick-pad~save-btn 5x36",
+   "jump-col~wallet-chip 64x6",
+   "suit-bar~hub-back 119x36",
+   "hotbar~path-chip 221x6",
+   "hotbar~safe-chip 257x32",
+   "wallet-chip~t-crouch 56x6"
+  ],
+  "after": [
+   "play-chip~path-chip 10x41"
+  ]
+ },
+ "740x360-en-creative": {
+  "before": [
+   "top~stick-pad 104x42",
+   "top~jump-col 64x74",
+   "top~pick-chip 88x48",
+   "top~suit-bar 217x42",
+   "top~t-crouch 56x56",
+   "goals-hud~stick-pad 40x48",
+   "pause-btn~jump-col 12x48",
+   "pause-btn~jump 12x48",
+   "fs-btn~jump-col 44x48",
+   "fs-btn~jump 44x48",
+   "stick-pad~undo-btn 40x36",
+   "stick-pad~redo-btn 47x36",
+   "stick-pad~save-btn 5x36",
+   "jump-col~wallet-chip 64x6",
+   "suit-bar~hub-back 119x36",
+   "wallet-chip~t-crouch 56x6"
+  ],
+  "after": []
+ },
+ "915x240-en-survival": {
+  "before": [
+   "kb-bar~stick-pad 104x40",
+   "kb-bar~jump-col 64x48",
+   "kb-bar~suit-bar 217x40",
+   "kb-bar~t-crouch 56x32",
+   "play-chip~top 137x44",
+   "top~stick-pad 104x64",
+   "top~jump-col 64x64",
+   "top~suit-bar 217x4",
+   "top~hotbar 534x54",
+   "top~jump 64x64",
+   "top~slot 48x15",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "stick-pad~kb-menu 73x38",
+   "stick-pad~kb-home 26x38",
+   "stick-pad~mode-survival 71x44",
+   "stick-pad~mode-creative 25x44",
+   "jump-col~kb-alias 61x44",
+   "hotbar~path-chip 221x54",
+   "hotbar~hub-back 92x44",
+   "path-chip~slot 29x29",
+   "path-chip~slot 48x29",
+   "path-chip~slot 48x29",
+   "path-chip~slot 48x29",
+   "path-chip~slot 33x29",
+   "kb-alias~t-crouch 56x31",
+   "hub-back~slot 48x9",
+   "hub-back~slot 31x5"
+  ],
+  "after": [
+   "play-chip~top 137x44",
+   "suit-bar~hotbar 217x44",
+   "suit-bar~slot 44x11",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 14x7"
+  ]
+ },
+ "915x240-en-creative": {
+  "before": [
+   "kb-bar~stick-pad 104x40",
+   "kb-bar~jump-col 64x48",
+   "kb-bar~pick-chip 88x40",
+   "kb-bar~suit-bar 217x40",
+   "kb-bar~t-crouch 56x32",
+   "top~stick-pad 104x64",
+   "top~jump-col 64x64",
+   "top~suit-bar 217x4",
+   "top~hotbar 586x54",
+   "top~jump 64x64",
+   "top~slot 48x15",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "top~slot 48x11",
+   "stick-pad~kb-menu 73x38",
+   "stick-pad~kb-home 26x38",
+   "stick-pad~mode-survival 71x44",
+   "stick-pad~mode-creative 25x44",
+   "jump-col~kb-alias 61x44",
+   "hotbar~safe-chip 257x32",
+   "hotbar~hub-back 118x44",
+   "safe-chip~slot 21x29",
+   "safe-chip~slot 48x29",
+   "safe-chip~slot 48x29",
+   "safe-chip~slot 48x29",
+   "safe-chip~slot 48x29",
+   "safe-chip~slot 25x29",
+   "kb-alias~t-crouch 56x31",
+   "hub-back~slot 48x9",
+   "hub-back~slot 48x5",
+   "hub-back~slot 5x5"
+  ],
+  "after": [
+   "goals-hud~hotbar 29x48",
+   "goals-hud~slot 20x15",
+   "pick-chip~hotbar 67x48",
+   "pick-chip~slot 6x23",
+   "pick-chip~slot 48x23",
+   "suit-bar~hotbar 217x44",
+   "suit-bar~slot 18x11",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 48x7",
+   "suit-bar~slot 40x7"
+  ]
+ }
+}

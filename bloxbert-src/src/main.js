@@ -204,6 +204,15 @@ const WN568 = {
 for (const [lang, row] of Object.entries(WN568)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
+// 2.5.560 what's new. The line now comes from the running version's own CHANGELOG entry, in every language.
+// The WN5xx chain above only fixed the languages each release remembered to list, so the others kept an older
+// version's number. A language this entry does not have gets the English line of THIS version, never an old one.
+const WN_NOW = CHANGELOG.find((e) => e.v === VERSION) || CHANGELOG[0]
+for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']) {
+  const lines = WN_NOW.lines[lang] && WN_NOW.lines[lang].length ? WN_NOW.lines[lang] : WN_NOW.lines.en
+  if (!lines || !lines.length) continue
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = lines.join(' ')
 }
 function dailyOverride() {
   try {
@@ -503,7 +512,8 @@ function laneRelease(el) {
 function capLane() {
   const lane = document.getElementById('chip-lane')
   if (!lane) return
-  const cap = (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
+  // 2.5.560: on windows 380px tall or less only one chip fits between the bars and the hotbar. The rest wait their turn.
+  const cap = window.innerHeight <= 380 ? 1 : (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
   let n = 0
   for (const el of lane.children) {
     const fading = el.id === 'path-chip' && el.classList.contains('path-out')
@@ -538,6 +548,15 @@ function layoutLane() {
   bump(box('game-menu'))
   bump(box('pause-btn'))
   bump(box('fs-btn'))
+  // 2.5.560: when the lane starts on the same line as Goals (sideways phones), begin after Goals, not under it.
+  const goalsBox = box('goals-hud')
+  if (goalsBox && lane.getBoundingClientRect().top < goalsBox.bottom - 1) bump(goalsBox)
+  // The Suit bar sits in the same band on sideways phones. Start after it when they share rows.
+  const suitBox = box('suit-bar')
+  if (suitBox) {
+    const band = lane.getBoundingClientRect()
+    if (suitBox.top < band.bottom - 1 && suitBox.bottom > band.top + 1 && band.top < suitBox.bottom) bump(suitBox)
+  }
   const play = box('play-chip')
   if (play) {
     const band = lane.getBoundingClientRect()
@@ -1730,7 +1749,7 @@ function shape(name, parts, mat) {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const woodD = dye('shape-wood', 0.72, 0.48, 0.24)
+const woodD = dye('shape-wood', 0.45, 0.355, 0.25) // 2.5.553: was 0.72, 0.48, 0.24, which lit to a bright orange; now lights to about the planks tone (#A57C4E)
 const glassD = dye('shape-glass', 0.55, 0.86, 0.95, 0.45)
 const metalD = dye('shape-metal', 0.55, 0.6, 0.66)
 const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
@@ -2179,17 +2198,27 @@ function techButtonMesh(on) {
   const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
   return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
 }
+// 2.5.553: the bed is muted and patterned, not a flat bright fill. Light shows about 1.3x the dye value,
+// so these dyes land near #3E6FA8 (blanket) and a cream pillow. The pattern is geometry (quilt ridges, a fold,
+// a pillow seam), so it reads without color and needs nothing the engine does not already do.
 function bedMesh() {
-  const wool = dye('bed-wool', 0.2, 0.46, 0.78)
-  const pillow = dye('bed-pillow', 0.94, 0.95, 0.97)
+  const wool = dye('bed-wool', 0.19, 0.32, 0.55)
+  const ridge = dye('bed-ridge', 0.25, 0.41, 0.66)
+  const fold = dye('bed-fold', 0.13, 0.23, 0.42)
+  const pillow = dye('bed-pillow', 0.63, 0.61, 0.55)
+  const seam = dye('bed-seam', 0.47, 0.45, 0.4)
   const legs = [
     [-0.36, -0.34], [0.36, -0.34], [-0.36, 1.22], [0.36, 1.22],
   ].map(([lx, lz], i) => part('bed-leg-' + i, 0.08, 0.16, 0.08, lx, 0.08, lz, 0, woodD))
   const frame = part('bed-frame', 0.88, 0.08, 1.78, 0, 0.2, 0.44, 0, woodD)
   const mattress = part('bed-mat', 0.78, 0.14, 1.62, 0, 0.31, 0.4, 0, wool)
+  // Quilt ridges across the blanket and a darker fold near the pillow.
+  const ridges = [-0.06, 0.2, 0.46].map((rz, i) => part('bed-ridge-' + i, 0.78, 0.018, 0.07, 0, 0.386, rz, 0, ridge))
+  const foldBand = part('bed-fold', 0.78, 0.02, 0.1, 0, 0.387, 0.72, 0, fold)
   const board = part('bed-board', 0.86, 0.22, 0.08, 0, 0.42, 1.22, 0, woodD)
   const pill = part('bed-pill', 0.46, 0.12, 0.26, 0, 0.49, 1.05, 0, pillow)
-  return mergeMats('bunk', legs.concat([frame, mattress, board, pill]))
+  const pillSeam = part('bed-seam', 0.46, 0.124, 0.03, 0, 0.49, 1.05, 0, seam)
+  return mergeMats('bunk', legs.concat([frame, mattress], ridges, [foldBand, board, pill, pillSeam]))
 }
 function chairMesh() {
   const pad = dye('chair-pad', 0.16, 0.55, 0.72)
@@ -12773,19 +12802,38 @@ function setGraphics(q) {
 paintGfx()
 
 const topBar = document.querySelector('.top')
-function refit() {
+// Measure the bars and publish the numbers. Cheap: no engine resize, so a panel can call it the moment it opens.
+function measureBars() {
   const bar = document.querySelector('.kb-bar')
   const kb = bar ? Math.ceil(bar.getBoundingClientRect().height) : 0
   if (kb) document.documentElement.style.setProperty('--kb-h', kb + 'px')
   const h = Math.ceil(topBar.getBoundingClientRect().height)
   document.documentElement.style.setProperty('--top-h', h + 'px')
   document.documentElement.style.setProperty('--phone-top', h + 'px')
+  // 2.5.560: one number for "where the top bars end". Goals, Pause, Full screen, the chip lane and panels all hang from it.
+  const hudTop = Math.max(h, Math.ceil(topBar.getBoundingClientRect().bottom), kb)
+  document.documentElement.style.setProperty('--hud-top', hudTop + 'px')
+}
+function refit() {
+  measureBars()
   layoutLane()
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)
 const kbWatch = document.querySelector('.kb-bar')
 if (kbWatch) new ResizeObserver(refit).observe(kbWatch)
+else if (window.MutationObserver) {
+  // 2.5.560: the shared bar mounts after this runs on slow phones. Watch for it, then track its height too.
+  const kbFind = new MutationObserver(() => {
+    const late = document.querySelector('.kb-bar')
+    if (!late) return
+    kbFind.disconnect()
+    new ResizeObserver(refit).observe(late)
+    refit()
+  })
+  kbFind.observe(document.body, { childList: true })
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit)
 addEventListener('resize', refit)
 addEventListener('orientationchange', () => { refit(); setTimeout(refit, 300) })
 if (window.visualViewport) visualViewport.addEventListener('resize', refit)
@@ -12796,7 +12844,9 @@ if (window.MutationObserver) {
   const playWatch = document.getElementById('play-chip')
   if (playWatch) new MutationObserver(() => layoutLane()).observe(playWatch, { attributes: true, attributeFilter: ['hidden'] })
   const sheetWatch = document.getElementById('sheet')
-  if (sheetWatch) new MutationObserver(() => layoutLane()).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
+  // 2.5.560 round 1: opening, closing or switching a panel shows or hides the header. Re-measure in the same task, before the next
+  // paint, so --hud-top is never a frame or two behind (that left Menu on top of the header's second row, and Changelog the same way back).
+  if (sheetWatch) new MutationObserver(() => { measureBars(); layoutLane() }).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
 }
 laneAdd(document.getElementById('save-chip'), 5)
 laneAdd(document.getElementById('inspect-chip'), 3)

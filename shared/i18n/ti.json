@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt ድልድል",
   "helpHoldItSpan": "HoldIt ድልድል ናይ ድልድል ፈተና እዩ። HoldIt ናይ ዲዛይን መሳርሒ እዩ።",
   "helpGateConflict": "ኩሉ push ናይ Hub ፍተሻ ይሰርሕ፡ ኮድ፡ ናይ ግጭት ምልክታት፡ ከምኡውን /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "ናይ Hub ስሪት ኣብ ታሕቲ ይረአ ኣብ ዝፍቱ ሰራሕተኛታት."
+  "helpHideDevRev": "ናይ Hub ስሪት ኣብ ታሕቲ ይረአ ኣብ ዝፍቱ ሰራሕተኛታት.",
+  "goals": "ዕላማታት",
+  "keysChip": "? መጠወቒ",
+  "keysAgain": "? ጠውቕ መጠወቒታት ዳግማይ ንምርኣይ።",
+  "creditDyslexia": "ቅርጺ ፊደል ንጸገም ንባብ: OpenDyslexic (OFL 1.1)."
 }

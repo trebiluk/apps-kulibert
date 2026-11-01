@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt Span",
   "helpHoldItSpan": "HoldIt Span is the bridge challenge. HoldIt is the design tool.",
   "helpGateConflict": "Every push runs the Hub check: code, conflict marks, and /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "The Hub rev shows at the bottom when staff unlock."
+  "helpHideDevRev": "The Hub rev shows at the bottom when staff unlock.",
+  "goals": "Goals",
+  "keysChip": "? KEYS",
+  "keysAgain": "Press ? to see the keys again.",
+  "creditDyslexia": "Dyslexia font: OpenDyslexic (OFL 1.1)."
 }

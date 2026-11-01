@@ -106,6 +106,25 @@ export const CHANGELOG = [
     rw: ['2.5.562 — Menu, urutonde rw\'Isura n\'urutonde rw\'indimi ubu biri mu rurimi rwawe. Icyarabu kigaragara neza ku rutonde rw\'indimi.'],
     ti: ['2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።'],
   } },
+  // 2.5.560 phone HUD, short-window panels, and What's new that follows the running version. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.560', date: '2026-10-31', lines: {
+    en: ['2.5.560 — Phones fit better. The top buttons, Goals and the hotbar no longer cover each other, and Settings always has Close.'],
+    simple: ['2.5.560 — Better on phones. Buttons do not cover each other. Settings always has Close.'],
+    uk: ['2.5.560 — Краще на телефонах. Верхні кнопки, Цілі й панель більше не перекривають одне одного, а в Налаштуваннях завжди є Закрити.'],
+    ru: ['2.5.560 — Лучше на телефонах. Верхние кнопки, Цели и панель больше не закрывают друг друга, а в Настройках всегда есть Закрыть.'],
+    es: ['2.5.560 — Mejor en teléfonos. Los botones de arriba, Metas y la barra ya no se tapan, y Ajustes siempre tiene Cerrar.'],
+    ar: ['2.5.560 — أفضل على الهواتف. أزرار الأعلى والأهداف والشريط لم تعد تغطي بعضها، وفي الإعدادات يوجد دائمًا زر إغلاق.'],
+    'fa-AF': ['2.5.560 — بهتر روی تلفون. دکمه‌های بالا، هدف‌ها و نوار دیگر روی هم نمی‌افتند و در تنظیمات همیشه بستن هست.'],
+    rw: ['2.5.560 — Biroroshye kuri telefoni. Utubuto two hejuru, Intego n\'umukandara ntibigipfukanwa, kandi Igenamiterere ihora ifite Funga.'],
+    ti: ['2.5.560 — ኣብ ቴለፎን ዝሓሸ። ላዕለዋይ ዝርዝራት፡ ዕላማታትን መስመርን ኣይሕዙን፡ ኣብ ቅጥዕታት ድማ ኩሉ ጊዜ ዕጸው ኣሎ።'],
+  }},
+
+  // 2.5.553 texture pack part 2. en and simple only for now; other languages follow.
+  { v: '2.5.553', date: '2026-10-31', lines: {
+    en: ['2.5.553 — Rocks, ores, oak, pine and beds have new hand-drawn looks. Stone has no more grid lines.'],
+    simple: ['2.5.553 — New looks for rocks, ores, trees and beds. Stone has no grid.'],
+  }},
+
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],

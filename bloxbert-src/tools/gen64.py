@@ -11,6 +11,7 @@ import json
 import math
 import os
 from PIL import Image
+import texpack2
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -663,7 +664,7 @@ def draw_grass(px, mystical):
         base, root, body, tip = (96, 62, 128), (74, 46, 104), (108, 72, 140), (128, 92, 158)
         fleck_a, fleck_b = (46, 130, 124), (38, 112, 108)
     else:
-        base, root, body, tip = (60, 132, 46), (36, 94, 34), (72, 148, 52), (98, 170, 66)
+        base, root, body, tip = (94, 138, 62), (78, 120, 52), (88, 132, 58), (114, 160, 74)
     fill_flat(px, base)
     for sy in range(8):
         for sx in range(8):
@@ -1227,21 +1228,45 @@ def build_strip(images, core):
     return strip
 
 
-def stone_cracks_survive(im64):
+def stone_pattern_survives(im64):
+    """2.5.553: stone has no crack grid. Its patches must still show at 32: not flat, not busy."""
     small = box_avg(im64)
     px = small.load()
     lums = []
     for y in range(32):
         for x in range(32):
             r, g, b, a = px[x, y]
-            lums.append((r + g + b) / 3)
-    lums.sort()
-    med = lums[len(lums) // 2]
-    dark = lums[max(1, len(lums) // 20)]
-    # Cracks must stay about 25% darker than the stone body after the average.
-    if dark > med * 0.78:
-        raise SystemExit('classic stone cracks vanished at 32 (dark %s med %s)' % (dark, med))
-    print('stone 32 dark', round(dark, 1), 'median', round(med, 1))
+            lums.append(0.2126 * r + 0.7152 * g + 0.0722 * b)
+    mu = sum(lums) / len(lums)
+    sd = (sum((v - mu) ** 2 for v in lums) / len(lums)) ** 0.5
+    if sd < 4.0:
+        raise SystemExit('classic stone is flat at 32 (sd %.1f)' % sd)
+    # No crack grid: a dark pixel is "line" if it sits in a run of 8+ that is 2 px thick or less.
+    cut = mu - 1.2 * sd
+    dark = [[lums[y * 32 + x] < cut for x in range(32)] for y in range(32)]
+
+    def run(x, y, dx, dy):
+        n = 1
+        for sign in (1, -1):
+            cx, cy = x + sign * dx, y + sign * dy
+            while 0 <= cx < 32 and 0 <= cy < 32 and dark[cy][cx]:
+                n += 1
+                cx += sign * dx
+                cy += sign * dy
+        return n
+
+    line = 0
+    for y in range(32):
+        for x in range(32):
+            if not dark[y][x]:
+                continue
+            h, v = run(x, y, 1, 0), run(x, y, 0, 1)
+            if (h >= 8 and v <= 2) or (v >= 8 and h <= 2):
+                line += 1
+    worst = line
+    if line > 20:
+        raise SystemExit('classic stone has %d crack-like dark pixels at 32 (crack grid?)' % line)
+    print('stone 32 sd', round(sd, 1), 'crack-like pixels', worst)
 
 
 def parse_block_faces():
@@ -1282,6 +1307,14 @@ def main():
         alias['wrap_' + key] = 'wrap_' + src
 
     def face_for(layer, myst):
+        # 2.5.553 part 2: hand-drawn 16 x 16 tiles for these layers (tools/texpack2.py).
+        p2 = texpack2.face(layer, myst)
+        if p2 is not None:
+            if layer in ('stone', 'dirt'):
+                return tune_face(layer, p2, myst)
+            if layer in ('leaves', 'leavesUnder'):
+                compress_rgb(p2, 2.0)  # the calm check below holds these two to contrast 2.0
+            return p2
         if layer == 'leavesUnder':
             return tune_face('leavesUnder', master_image('leaves_under', myst), myst)
         if layer == 'wrap_birchLog':
@@ -1289,11 +1322,13 @@ def main():
         if layer == 'wrap_birchLeaves':
             im = new_image(); draw_birch_leaves(im.load(), myst); return im
         if layer.startswith('wrap_'):
-            return wraps[layer[5:]]
+            return texpack2.calm(wraps[layer[5:]])
         if layer in MASTERS:
             return tune_face(layer, master_image(layer, myst), myst)
         if layer in legacy:
-            return legacy[layer]
+            if layer in texpack2.CALM_SKIP:
+                return legacy[layer]
+            return texpack2.calm(legacy[layer], layer in texpack2.CALM_FLAT, hash_key(layer) & 255)
         raise SystemExit('no face for ' + layer)
 
     # File names written into each pack folder.
@@ -1321,15 +1356,16 @@ def main():
         build_strip(images, 32).save(os.path.join(folder, 'atlas32.png'), 'PNG', optimize=True)
         print(pid, 'layers', len(layers), 'folder', folder)
 
-    stone_cracks_survive(images_by_pack['classic'][layers.index('stone')])
+    stone_pattern_survives(images_by_pack['classic'][layers.index('stone')])
     print('tuned faces')
     calm = ('grass_top', 'dirt', 'stone', 'leaves', 'leavesUnder')
     for pid in ('classic', 'mystical'):
         print(pid)
         for name in ('grass_top', 'dirt_grass', 'dirt', 'stone', 'leaves', 'leavesUnder'):
             c, sd, mean = tile_report(name, images_by_pack[pid][layers.index(name)])
-            if c > 2.02:
-                raise SystemExit('%s %s contrast %.2f over 2.0' % (pid, name, c))
+            # The grass side needs a clear fringe against the dirt, so it gets a wider limit.
+            if c > (3.6 if name == 'dirt_grass' else 2.02):
+                raise SystemExit('%s %s contrast %.2f over the limit' % (pid, name, c))
             if name in calm and sd > 18.05:
                 raise SystemExit('%s %s std %.1f over 18' % (pid, name, sd))
         side = images_by_pack[pid][layers.index('dirt_grass')]
