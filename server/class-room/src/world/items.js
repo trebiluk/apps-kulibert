@@ -71,6 +71,21 @@ export function take(slots, id, n) {
 export const count = (slots, id) => slots.reduce((a, s) => a + (s && s.id === id ? s.n : 0), 0)
 export const isEmpty = (slots) => slots.every((s) => !s)
 
+// Breaking a container that holds items (Diego, Oct 31; replaces the part 1 'not-empty' refusal):
+// a player break or wrench drops 80% of each stack, rounded per stack (the other 20% is lost); an
+// explosion drops everything. -> [{ id, n }] one entry per non-empty stack that keeps at least one item.
+export const BREAK_KEEP = 0.8
+export const EXPLODE_KEEP = 1
+export function dropsOf(slots, keep) {
+  const out = []
+  for (const s of slots || []) {
+    if (!s) continue
+    const n = Math.round(s.n * keep)
+    if (n > 0) out.push({ id: s.id, n })
+  }
+  return out
+}
+
 // Save rows: [[idx, [[slot, id, n], ...]], ...]  sparse, only cells with something in them.
 export function encodeItems(items) {
   const rows = []

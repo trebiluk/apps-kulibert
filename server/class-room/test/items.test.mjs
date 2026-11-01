@@ -89,15 +89,58 @@ test('world: refusals write nothing: not a container, wrong oven slot, full, non
   assert.equal(world.since(head, 10).ops.length, 1, 'only the one fuel put moved anything')
 })
 
-test('world: a container with items cannot be broken or replaced (empty it first); an empty one can', () => {
+test('rule (Diego, Oct 31): a player break of a full container drops 80% per stack, rounded; the rest is lost', () => {
   const { world } = fresh()
   world.apply([{ x: 1, y: 64, z: 1, id: BOX, b: 0 }], A)
-  world.move(A, 1, 64, 1, APPLE, 5, 'put')
-  assert.equal(world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], A)[0].why, 'not-empty')
-  assert.equal(world.apply([{ x: 1, y: 64, z: 1, id: STONE, b: BOX }], A)[0].why, 'not-empty')
-  world.move(A, 1, 64, 1, APPLE, 5, 'take')
-  assert.equal(world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], A)[0].ok, true)
+  world.move(A, 1, 64, 1, APPLE, 64 + 3, 'put')
+  world.move(A, 1, 64, 1, LOG, 1, 'put')
+  const r = world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], A, undefined, { drops: true })[0]
+  assert.equal(r.ok, true)
+  assert.deepEqual(r.drops, [{ id: APPLE, n: 51 }, { id: APPLE, n: 2 }, { id: LOG, n: 1 }], '64 -> 51, 3 -> 2, 1 -> 1')
   assert.equal(world.inv(1, 64, 1).error, 'container')
+  assert.equal(world.cell(1, 64, 1), 0)
+  // a wrench / replace is the same rule
+  world.apply([{ x: 2, y: 64, z: 1, id: BOX, b: 0 }], A)
+  world.move(A, 2, 64, 1, APPLE, 10, 'put')
+  const w = world.apply([{ x: 2, y: 64, z: 1, id: STONE, b: BOX }], A, undefined, { drops: true })[0]
+  assert.deepEqual(w.drops, [{ id: APPLE, n: 8 }])
+  // an empty container breaks normally, with no drops
+  world.apply([{ x: 3, y: 64, z: 1, id: OVEN, b: 0 }], A)
+  const e = world.apply([{ x: 3, y: 64, z: 1, id: 0, b: OVEN }], A, undefined, { drops: true })[0]
+  assert.deepEqual(e, { ok: true, s: e.s })
+})
+
+test('rule: no duplication: the items leave the world with the break, once; a repeat, a re-place, a reload or an undo gets nothing', () => {
+  const { world, db } = fresh()
+  world.apply([{ x: 1, y: 64, z: 1, id: BOX, b: 0 }], A)
+  world.move(A, 1, 64, 1, APPLE, 20, 'put')
+  const t0 = Date.now()
+  const r = world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], A, t0, { drops: true })[0]
+  assert.deepEqual(r.drops, [{ id: APPLE, n: 16 }])
+  const again = world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], A, t0, { drops: true })[0]
+  assert.deepEqual([again.ok, again.why, again.drops], [false, 'stale', undefined], 'a repeated break frame is stale')
+  world.apply([{ x: 1, y: 64, z: 1, id: BOX, b: 0 }], A)
+  assert.deepEqual(world.inv(1, 64, 1).slots, emptySlots(BOX), 'a box placed back is empty')
+  world.flush()
+  assert.deepEqual(makeWorld(db, { gen: () => 0 }).inv(1, 64, 1).slots, emptySlots(BOX), 'and stays empty after a reload')
+  // undo (system, no breaker) keeps the old safe refusal: a full container is never broken with nobody to drop to
+  world.move(A, 1, 64, 1, APPLE, 5, 'put')
+  assert.equal(world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BOX }], 0)[0].why, 'not-empty')
+  assert.equal(count(world.inv(1, 64, 1).slots, APPLE), 5)
+})
+
+test('rule: an explosion drops ALL items of a container; the explode hook is not called by anything yet', () => {
+  const { world } = fresh()
+  world.apply([{ x: 1, y: 64, z: 1, id: BOX, b: 0 }, { x: 2, y: 64, z: 1, id: OVEN, b: 0 }, { x: 3, y: 64, z: 1, id: STONE, b: 0 }], A)
+  world.move(A, 1, 64, 1, APPLE, 67, 'put')
+  world.move(A, 2, 64, 1, 11, 3, 'put')                // part 2: an oven takes real fuel only (log 11 -> fuel slot)
+  const head = world.head()
+  const r = world.explode([{ x: 1, y: 64, z: 1 }, { x: 2, y: 64, z: 1 }, { x: 3, y: 64, z: 1 }, { x: 4, y: 64, z: 1 }])
+  assert.equal(r.n, 3, 'air is skipped')
+  assert.deepEqual(r.drops, [{ x: 1, y: 64, z: 1, id: APPLE, n: 64 }, { x: 1, y: 64, z: 1, id: APPLE, n: 3 }, { x: 2, y: 64, z: 1, id: 11, n: 3 }])
+  assert.equal(world.inv(1, 64, 1).error, 'container')
+  assert.deepEqual(world.since(head, 10).ops.map((o) => [o.b, o.i, o.w]), [[BOX, 0, 0], [OVEN, 0, 0], [STONE, 0, 0]], 'logged as system breaks')
+  assert.deepEqual(world.explode([{ x: 1, y: 64, z: 1 }]).drops, [], 'nothing to drop twice')
 })
 
 test('protocol: iget/iput/itake frames are strict', () => {
@@ -155,4 +198,19 @@ test('through a real room: inv, put, take; the other kid hears the touch op; out
   await send(b.room, b, { v: 0, t: 'itake', x: cell.x + 200, y: 64, z: cell.z, id: APPLE, n: 1 }); await settle()
   assert.equal(frames(b.sock).filter((f) => f.t === 'no').at(-1).c, 'reach')
   assert.equal(count(hub.inv(cell.x, cell.y, cell.z).slots, APPLE), 60)
+
+  // grief rules still decide who may break: kid b is in reach but it is kid k's plot -> refused, nothing drops
+  t.mock.timers.tick(300)
+  await send(b.room, b, { v: 0, t: 'b', ...cell, id: 0, b: BOX }); await settle()
+  assert.equal(frames(b.sock).filter((f) => f.t === 'dr').length, 0)
+  assert.equal(count(hub.inv(cell.x, cell.y, cell.z).slots, APPLE), 60, 'items untouched')
+  // the owner breaks it mid-use: 80% per stack to the breaker's client only, once
+  const want = hub.inv(cell.x, cell.y, cell.z).slots.filter(Boolean).map((q) => [q.id, Math.round(q.n * 0.8)])
+  t.mock.timers.tick(300)
+  await send(k.room, k, { v: 0, t: 'b', ...cell, id: 0, b: BOX }); await settle()
+  const dr = frames(k.sock).filter((f) => f.t === 'dr')
+  assert.equal(dr.length, 1)
+  assert.deepEqual([dr[0].x, dr[0].y, dr[0].z, dr[0].d], [cell.x, cell.y, cell.z, want])
+  assert.equal(frames(b.sock).filter((f) => f.t === 'dr').length, 0, 'the other kid gets no copy')
+  assert.equal(hub.inv(cell.x, cell.y, cell.z).error, 'container')
 })
