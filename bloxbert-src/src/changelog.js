@@ -19,6 +19,10 @@ export const CHANGELOG = [
     en: ["2.5.592 — Bertopia has one address now. Old /blocks/ links open /bertopia/, and the old offline copy clears itself."],
     simple: ["2.5.592 — Old Bertopia links open the new one. The old offline copy clears itself."],
   } },
+  { v: '2.5.590', date: '2026-10-31', lines: {
+    en: ["2.5.590 — Mystical is the look for a new player. Your saved look stays as it was."],
+    simple: ["2.5.590 — New players get the Mystical look. Your saved look stays."],
+  } },
   { v: '2.5.586', date: '2026-10-31', lines: {
     en: ["2.5.586 — On phones, the crafting panel opens below the top bar, so its title and Close are easy to reach."],
     simple: ["2.5.586 — On phones, Crafting opens below the top bar. Close is easy to tap."],
