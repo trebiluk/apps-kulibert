@@ -1740,7 +1740,7 @@ export function createSession(api) {
         trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
       } else if (need === 'stoneAny') {
         let left = takeN
-        for (const c of ['stone', 'slate', 'coal']) {
+        for (const c of ['stone', 'coal']) {
           const d = Math.min(bag.count(c), left)
           if (d > 0 && bag.take(c, d)) {
             trayWool[i] = mixAdd(trayWool[i], c, d)
@@ -2063,7 +2063,7 @@ export function createSession(api) {
       const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
       const ready = !isBread && full && !st.station && !st.gate
       const blocked = (st.station || st.gate)
-        ? (st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.gate === 'T5' ? t('needsT5') : st.station === 'fabricator' ? t('atFab') : '')
+        ? (st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.gate === 'metal' ? t('needsMetal') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.gate === 'T5' ? t('needsT5') : st.station === 'fabricator' ? t('atFab') : '')
         : ''
       let times = 64
       for (const [item, need] of r.in) times = Math.min(times, Math.floor(heldCount(r, item) / need))
@@ -2717,7 +2717,7 @@ export function createSession(api) {
   }
   function takeNamed(item, n) {
     if (item !== 'woolAny' && item !== 'stoneAny' && item !== 'plankAny') return bag.take(item, n)
-    const order = item === 'stoneAny' ? ['stone', 'slate', 'coal'] : item === 'plankAny' ? ['planks', 'birchPlanks', 'pinePlanks'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+    const order = item === 'stoneAny' ? ['stone', 'coal'] : item === 'plankAny' ? ['planks', 'birchPlanks', 'pinePlanks'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
     let left = n
     const spent = []
     for (const c of order) {

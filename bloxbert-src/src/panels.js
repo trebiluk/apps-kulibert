@@ -112,6 +112,7 @@ export function mountPanels(api) {
       sheet.style.top = ''
       body.style.overflow = ''
     }
+    craftBelowBar(id)
     lastFill = fill
     dress(id)
     if (api.paintBack) api.paintBack()
@@ -121,6 +122,23 @@ export function mountPanels(api) {
     armSlide(id)
     openedAt = performance.now()
   }
+  // 2.5.586: the crafting panel starts below the shared top bar, measured live, because on phones the
+  // bar wraps to two rows (about 100px at 412) and covered the panel's title and Close.
+  // 2.5.592: the World panel too; on phones the game HUD row (#top) also sits over the panel, so clear it as well.
+  const BELOW_BAR = ['crafting', 'world']
+  function craftBelowBar(id) {
+    if (BELOW_BAR.indexOf(id) === -1) { sheet.style.removeProperty('top'); return }
+    const bar = document.querySelector('.kb-bar')
+    const r = bar ? bar.getBoundingClientRect() : null
+    let h = r && r.height ? Math.ceil(r.bottom) : 48
+    if (id === 'world' && window.innerWidth <= 600) {
+      const hud = document.getElementById('top')
+      const hr = hud && hud.offsetWidth ? hud.getBoundingClientRect() : null
+      if (hr && hr.height && hr.top < h + 8 && hr.bottom < window.innerHeight / 2) h = Math.max(h, Math.ceil(hr.bottom))
+    }
+    sheet.style.setProperty('top', h + 'px', 'important')
+  }
+  window.addEventListener('resize', () => { if (!sheet.hidden && BELOW_BAR.indexOf(sheet.dataset.panel) !== -1) craftBelowBar(sheet.dataset.panel) })
   let openedAt = 0
   let lastFill = null
   function freshSlots() {
