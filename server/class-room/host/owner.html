@@ -25,14 +25,16 @@
   #gate { position:fixed; inset:0; background:var(--bg); display:grid; place-items:center; z-index:9 } #gate .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; width:min(92vw, 420px) }
   #toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:#1e293b; border:1px solid var(--teal); border-radius:12px; padding:10px 16px; display:none }
   @media (max-width:600px) { main { padding:10px } section { padding:12px } header { padding:10px 12px } }
+  label.check { display:flex; align-items:center; gap:10px; min-height:44px; cursor:pointer }
+  label.check input { width:22px; height:22px; min-height:0; padding:0; margin:0; flex:none; accent-color:var(--teal) }
 </style>
 </head>
 <body>
-<div id="gate"><div class="card">
-  <h1 style="margin-bottom:8px">Owner sign-in</h1>
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title"><div class="card">
+  <h1 id="gate-title" style="margin-bottom:8px">Owner sign-in</h1>
   <p class="dim" id="gate-help">Enter your owner PIN.</p>
-  <div class="row"><input type="password" id="pin" inputmode="numeric" autocomplete="off" placeholder="PIN (6+ digits)" style="flex:1"><button id="pin-go" class="go">Open</button></div>
-  <p class="bad" id="gate-err"></p>
+  <div class="row"><input type="password" id="pin" inputmode="numeric" autocomplete="off" placeholder="PIN (6+ digits)" aria-label="Owner PIN" autofocus style="flex:1"><button id="pin-go" class="go">Open</button></div>
+  <p class="bad" id="gate-err" role="alert"></p>
 </div></div>
 <header>
   <h1>Bertopia home server</h1>
@@ -59,7 +61,7 @@
     <h2 style="margin-top:14px">Join address</h2>
     <div id="addrs"></div>
     <p class="dim" id="lan-help"></p>
-    <div class="row"><label><input type="checkbox" id="lan"> Let other computers join (this network)</label></div>
+    <div class="row"><label class="check"><input type="checkbox" id="lan"> Let other computers join (this network)</label></div>
   </section>
 
   <section>
@@ -97,7 +99,8 @@ const ago = (t) => { const s = Math.max(0, (Date.now() - t) / 1000); return s < 
 const RULES = { 'home-school': 'Same as school', 'home-survival': 'Survival', 'home-creative': 'Creative', 'home-peaceful': 'Peaceful', 'home-pvp': 'PvP on', 'home-hardcore': 'Hardcore' }
 
 // ---- gate
-;(async () => { const s = await (await fetch('/owner/setup?k=' + encodeURIComponent(key || ''))).json(); if (!s.keyOk) { $('gate-help').textContent = 'Open this page from the link the server printed (it carries a key).'; $('pin-go').disabled = true; return } if (!s.pinSet) $('gate-help').textContent = 'First run: choose an owner PIN (6 or more digits). You will need it every time.' })()
+;(async () => { const s = await (await fetch('/owner/setup?k=' + encodeURIComponent(key || ''))).json(); if (!s.keyOk) { $('gate-help').textContent = 'Open this page from the link the server printed (it carries a key).'; $('pin-go').disabled = true; return } if (!s.pinSet) $('gate-help').textContent = 'First run: choose an owner PIN (6 or more digits). You will need it every time.'; $('pin').focus() })()
+$('pin').focus()
 $('pin').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('pin-go').click() })
 $('pin-go').addEventListener('click', async () => {
   const r = await (await fetch('/owner/pin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key, pin: $('pin').value }) })).json()
@@ -113,7 +116,7 @@ function render(s) {
   $('ver').textContent = 'server ' + s.version + ' · ' + s.data
   if (s.code) { $('code-box').hidden = false; $('code').textContent = s.code.slice(0, 4) + ' ' + s.code.slice(4) } else $('code-box').hidden = true
   const rs = $('ruleset'); if (!rs.options.length) for (const id of s.rulesets) rs.add(new Option(RULES[id] || id, id)); rs.value = s.live.session ? s.live.session.cfg : s.live.ruleset
-  $('session-info').textContent = s.live.session ? 'Started ' + ago(s.live.session.startedAt) + (s.live.session.password ? ' · password on' : '') + (s.live.session.rotated ? ' · code rotated ' + s.live.session.rotated + '×' : '') + ' · max ' + s.maxPlayers + ' players' : 'Open a world, pick rules, then Start session to get a code.'
+  $('session-info').textContent = (s.live.rules ? (s.live.rules.locked ? 'Rules locked to the student defaults. ' : 'Edit single rules in-game (Play as owner → Rules). ') : '') + (s.live.session ? 'Started ' + ago(s.live.session.startedAt) + (s.live.session.password ? ' · password on' : '') + (s.live.session.rotated ? ' · code rotated ' + s.live.session.rotated + '×' : '') + ' · max ' + s.maxPlayers + ' players' : 'Open a world, pick rules, then Start session to get a code.')
   $('btn-start').disabled = !s.world || !!s.live.session; $('btn-rotate').disabled = $('btn-end').disabled = $('btn-play').disabled = !s.live.session
   $('addrs').innerHTML = (s.lan && s.addrs.length ? s.addrs : ['localhost']).map((a) => `<div><code>http://${a}:${s.port}/</code></div>`).join('')
   $('lan-help').textContent = s.lan ? 'Anyone on this network with the code can join. Do not expose this port to the internet without TLS (see README).' : 'This PC only. Turn on the switch below to let other computers on your network join (restart needed).'
@@ -143,8 +146,8 @@ document.addEventListener('click', async (e) => {
   else if (b.id === 'btn-end') { if (confirm('End the session? Everyone is disconnected and the code stops working.')) await api('session/end', {}) }
   else if (b.id === 'btn-rotate') { await api('session/rotate', {}); toast('New code. People already in stay in.') }
   else if (b.id === 'btn-hide') await api('session/code/hide', {})
-  else if (b.id === 'btn-copy') { try { await navigator.clipboard.writeText((state.code || '')); toast('Code copied') } catch (e) { toast('Select the code and copy it') } return }
-  else if (b.id === 'btn-play') { const r = await api('play', { name: 'Owner' }); if (r.ticket) { sessionStorage.setItem('bt-home-owner-ticket', JSON.stringify(r)); window.open('/?owner=1', '_blank') } return }
+  else if (b.id === 'btn-copy') { try { await navigator.clipboard.writeText((state.code || '')); b.textContent = '✓ Copied'; setTimeout(() => (b.textContent = 'Copy'), 1800); toast('Code copied') } catch (e) { toast('Select the code and copy it') } return }
+  else if (b.id === 'btn-play') { const r = await api('play', { name: 'Owner' }); if (r.ticket) { sessionStorage.setItem('bt-home-owner-ticket', JSON.stringify(r)); sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token })); window.open('/?owner=1', '_blank') } return }
   else if (b.id === 'btn-freeze') await api('freeze', { on: !state.live.frozen })
   else if (b.id === 'btn-muteall') await api('mute', { ref: '*', on: true })
   else if (b.id === 'btn-unmuteall') await api('mute', { ref: '*', on: false })
@@ -156,7 +159,7 @@ document.addEventListener('click', async (e) => {
   else return
   refresh()
 })
-$('ruleset').addEventListener('change', async () => { if (!token) return; await api('ruleset', { ruleset: $('ruleset').value }); toast(state && state.live.session ? 'Rules apply to the next session (live switching comes in part 3)' : 'Rules set'); refresh() })
+$('ruleset').addEventListener('change', async () => { if (!token) return; const r = await api('ruleset', { ruleset: $('ruleset').value }); toast(r.ok ? (state && state.live.session ? 'Rules changed for everyone: ' + RULES[r.preset] : 'Rules set: ' + RULES[r.preset]) : 'Could not change rules'); refresh() })
 $('lan').addEventListener('change', async () => { await api('lan', { on: $('lan').checked }); toast('Saved. Restart the server for this to take effect.'); refresh() })
 setInterval(refresh, 2000)
 </script>

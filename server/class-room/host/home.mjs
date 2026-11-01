@@ -16,6 +16,7 @@ import { World } from '../src/world-do.js'
 import { PROTOCOL } from '../src/protocol.js'
 import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
 import { nameOk } from './words.mjs'
+import { makeRuleset, PRESETS } from './rules.mjs'
 import { HISTORY_MS } from '../src/editlog.js'
 import { undoPlan, applyUndo } from '../src/world/undo.js'
 
@@ -34,7 +35,7 @@ function serveFile(res, root, rel) {
   const p = path.normalize(path.join(root, rel))
   if (!p.startsWith(root) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) return false
   const ext = path.extname(p).toLowerCase()
-  res.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': ext === '.html' ? 'no-store' : 'max-age=300' })
+  res.writeHead(200, { 'content-type': (Object.prototype.hasOwnProperty.call(MIME, ext) && MIME[ext]) || 'application/octet-stream', 'cache-control': ext === '.html' ? 'no-store' : 'max-age=300' })
   res.end(fs.readFileSync(p)); return true
 }
 try { PKG.gameVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'bloxbert-src', 'package.json'), 'utf8')).version } catch (e) {}
@@ -127,10 +128,13 @@ function restoreWorld(file) {
 
 // ---------------------------------------------------------------- session (the door) + owner tools
 let lastCode = null                  // shown on the owner page until the owner dismisses it; never written to disk
+let rules = makeRuleset(cfg.ruleset)   // the live ruleset (host/rules.mjs); hello carries it, a change is broadcast
+const RULE_FRAMES = new Set(['craft', 'st', 'hit'])   // home-only frames the Room does not know; answered here
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
   if (!cfg.world) return { error: 'no world' }
   if (ruleset && RULESETS.includes(ruleset)) cfg.ruleset = ruleset
+  rules = makeRuleset(cfg.ruleset)
   const r = door.start({ world: cfg.world, cfg: cfg.ruleset, password: password || null })
   lastCode = r.code
   saveCfg()
@@ -157,6 +161,27 @@ function rollback(minutes, ref) {
   const res = applyUndo(hub.world, plan)
   return { ok: true, cells: plan.length, applied: res.filter((r) => r.ok).length }
 }
+// Everyone hears a rules change as {t:'rules', ...snapshot}: the client shows a calm toast and applies it.
+function broadcastRules() { const f = { t: 'rules', ...rules.snapshot() }; for (const r of rooms.values()) r.broadcast(f) }
+function setRuleset(preset) { if (!rules.setPreset(preset)) return { error: 'ruleset' }; cfg.ruleset = preset; door.setCfg(preset); saveCfg(); broadcastRules(); return { ok: true, ...rules.snapshot() } }
+function setRule(id, v) { const r = rules.set(id, v); if (r.error) return r; if (!r.same) broadcastRules(); return { ok: true, ...rules.snapshot() } }
+// The home frame filter: runs BEFORE the (school) Room sees a frame. Enforces the ruleset on edits, answers the
+// home-only craft/st/hit frames, drops quick chat from a muted player. Everything else goes to the Room unchanged.
+function homeFrame(room, ws, p, text) {
+  let m = null; try { m = JSON.parse(text) } catch (e) { return false }
+  if (!m || m.v !== 0 || typeof m.t !== 'string') return false
+  const staff = p.role !== 'kid'
+  const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
+  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } return false }
+  if (m.t === 'p') { const why = rules.flyWhy(m, staff); if (why) { no(why); return true } return false }
+  if (RULE_FRAMES.has(m.t)) {
+    const why = m.t === 'craft' ? rules.craftWhy(m, staff) : m.t === 'st' ? rules.stationWhy(m, staff) : rules.hitWhy(m, staff)
+    if (why) no(why, m.t === 'st' ? { k: m.k } : {}); else try { ws.send(JSON.stringify({ t: 'ok', a: m.t })) } catch (e) {}
+    return true
+  }
+  if ((m.t === 'q' || m.t === 'chat') && p.muted) return true   // dropped quietly (chat lands in part 4)
+  return false
+}
 function live() {
   const w = cfg.world ? worlds.get(cfg.world) : null
   const out = { world: cfg.world, session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
@@ -164,6 +189,7 @@ function live() {
   if (w) {
     const h = w.obj.hub
     const who = new Map(out.players.map((p) => [h.who(p.ref), p.name]))
+    out.rules = rules.snapshot()
     out.recent = (h.world.since(Math.max(0, h.world.head() - 30), 30).ops || []).map((o) => ({ s: o.s, who: o.w ? who.get(o.w) || 'someone' : 'server', x: o.x, y: o.y, z: o.z, b: o.b, i: o.i, t: o.t })).reverse()
   }
   return out
@@ -178,12 +204,19 @@ const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req))
 const json = (res, status, body) => { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)) }
 const text = (res, status, body) => { res.writeHead(status, { 'content-type': 'text/plain', 'cache-control': 'no-store' }); res.end(body) }
 const page = (res, name) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(fs.readFileSync(path.join(HERE, name))) }
-const readBody = (req) => new Promise((r) => { let b = ''; req.on('data', (d) => { b += d; if (b.length > 1e5) req.destroy() }); req.on('end', () => { try { r(JSON.parse(b || '{}')) } catch (e) { r({}) } }) })
+const BODY_MAX = 16 * 1024   // the biggest honest body (a rules edit) is under 1 KB
+const readBody = (req, res) => new Promise((r) => {
+  let b = '', over = false
+  req.on('data', (d) => { if (over) return; b += d; if (b.length > BODY_MAX) { over = true; res.writeHead(413, { 'content-type': 'application/json', connection: 'close' }); res.end('{"error":"too-big"}'); req.destroy() } })
+  req.on('end', () => { if (over) return; try { r(JSON.parse(b || '{}')) } catch (e) { r({}) } })
+  req.on('close', () => { if (over) r(null) })
+})
 const ownerTokens = new Map()         // token -> expiry; issued after a PIN check, per owner browser session
 const ownerOk = (req) => { const tkn = req.headers['x-owner']; const exp = tkn && ownerTokens.get(tkn); return isLocal(req) && !!exp && exp > Date.now() }
 const originOk = (req) => { const o = req.headers.origin; if (!o) return true; const mine = ['http://localhost:' + cfg.port, 'http://127.0.0.1:' + cfg.port, ...lanAddrs().map((a) => 'http://' + a + ':' + cfg.port), ...cfg.origins]; return mine.includes(o) }
 
-export const server = http.createServer(async (req, res) => {
+export const server = http.createServer((req, res) => handle(req, res).catch((e) => { console.error('[home] request failed:', e && e.message); try { json(res, 500, { error: 'server' }) } catch (_) {} }))
+async function handle(req, res) {
   const url = new URL(req.url, 'http://x')
   if (!originOk(req)) return text(res, 403, 'origin')
   if (url.pathname === '/' || url.pathname === '/index.html') return GAME ? serveFile(res, GAME, 'index.html') : page(res, 'join.html')
@@ -195,7 +228,7 @@ export const server = http.createServer(async (req, res) => {
   if (url.pathname === '/rt/health') return text(res, 200, 'ok')
   if (url.pathname === '/version') return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null })
   if (url.pathname === '/join' && req.method === 'POST') {
-    const b = await readBody(req)
+    const b = await readBody(req, res); if (!b) return
     const r = await door.join({ code: b.code, name: b.name, password: b.password, adults: b.adults === true, ip: ipOf(req), playersOnline: online() })
     // the hub opens a world when a staff seat (here: the owner) is in it; say so instead of handing out a ticket that dies at the door
     if (!r.error && !ownerSeated) return json(res, 403, { error: 'no-owner' })
@@ -205,7 +238,10 @@ export const server = http.createServer(async (req, res) => {
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
   if (url.pathname.startsWith('/owner/')) {
     if (!isLocal(req)) return json(res, 403, { error: 'host only' })
-    const b = req.method === 'POST' ? await readBody(req) : {}
+    const raw = req.method === 'POST' ? await readBody(req, res) : {}; if (!raw) return
+    // owner bodies are small and flat: keep strings, booleans and finite numbers; drop anything else (no objects as ids)
+    const b = Object.create(null)
+    for (const [k, v] of Object.entries(raw && typeof raw === 'object' ? raw : {})) if (['string', 'boolean'].includes(typeof v) || (typeof v === 'number' && Number.isFinite(v)) || v === null) b[k] = v
     if (url.pathname === '/owner/pin') {
       if (b.key !== cfg.ownerKey) return json(res, 403, { error: 'key' })
       const lim = door.pinAttempt(ipOf(req)); if (lim) return json(res, 429, { error: 'slow-down', wait: lim.wait })
@@ -224,7 +260,9 @@ export const server = http.createServer(async (req, res) => {
       case '/owner/session/rotate': return json(res, 200, rotateCode())
       case '/owner/session/code/hide': lastCode = null; return json(res, 200, { ok: true })
       case '/owner/session/password': door.setPassword(b.password); return json(res, 200, { ok: true, password: !!b.password })
-      case '/owner/ruleset': if (!RULESETS.includes(b.ruleset)) return json(res, 400, { error: 'ruleset' }); cfg.ruleset = b.ruleset; door.setCfg(b.ruleset); saveCfg(); return json(res, 200, { ok: true, ruleset: cfg.ruleset })   // part 3 makes this live mid-session
+      case '/owner/ruleset': return json(res, RULESETS.includes(b.ruleset) ? 200 : 400, setRuleset(String(b.ruleset || '')))
+      case '/owner/rule': { const r = setRule(String(b.id || ''), b.v); return json(res, r.error ? 400 : 200, r) }
+      case '/owner/rules': return json(res, 200, { ...rules.snapshot(), presets: Object.keys(PRESETS) })
       case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws' }) : json(res, 400, { error: 'no session' }) }
       case '/owner/world/open': return json(res, 200, openWorld(String(b.name || '')))
       case '/owner/world/close': endSession(); closeWorld(); return json(res, 200, { ok: true })
@@ -242,7 +280,7 @@ export const server = http.createServer(async (req, res) => {
     }
   }
   text(res, 404, 'not found')
-})
+}
 
 // WebSocket: a home ticket (iss 'home', our secret) opens the same Room.fetch the school uses.
 server.on('upgrade', async (req, tcp, head) => {
@@ -271,14 +309,15 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
+  try { ws.send(JSON.stringify({ t: 'rules', ...rules.snapshot() })) } catch (e) {}   // right after hello: the active ruleset
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
-    onText: (t) => { door.noteActivity(); if (room) room.webSocketMessage(ws, t).catch(() => {}) },
+    onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
     onEnd: (code) => { door.connClose(ip); if (room) room.webSocketClose(ws, code).catch(() => {}) },
   })
 })
 
-setInterval(() => { if (door.sweep(online())) console.log('[home] session ended: 24 h with nobody in') }, 60 * 1000).unref()
+setInterval(() => { for (const [k, exp] of ownerTokens) if (exp <= Date.now()) ownerTokens.delete(k); if (door.sweep(players().length)) console.log('[home] session ended: 24 h with nobody in') }, 60 * 1000).unref()
 
 function shutdown() {
   console.log('[home] stopping')

@@ -7,6 +7,42 @@
 // this socket has the staff role. A version mismatch shows an Update card instead of connecting. Strings live here in
 // the 9 languages the game uses (en, simple, uk, ru, es, ar, fa-AF, rw, ti); WordBot may replace them.
 import { setHomeEndpoints } from '../classnet/config.js'
+import { Rules } from '../rules.js'
+
+// Two home-only rules (docs §5). Registered from here, so the student build never has them. Labels: 8 languages (drafts).
+const L = (en, uk, ru, es, ar, fa, rw, ti) => ({ en, uk, ru, es, ar, 'fa-AF': fa, rw, ti })
+export function registerHomeRules() {
+  Rules.register({ id: 'combat.pvp', type: 'bool', def: false, group: 'combat', display: 'survival', icon: '⚔',
+    label: L('Player fights', 'Бої гравців', 'Бои игроков', 'Peleas entre jugadores', 'قتال اللاعبين', 'جنگ بازیکن‌ها', 'Imirwano y’abakinnyi', 'ውግእ ተጻወቲ'),
+    desc: L('Players can hit each other.', 'Гравці можуть бити один одного.', 'Игроки могут бить друг друга.', 'Los jugadores pueden golpearse.', 'يمكن للاعبين ضرب بعضهم.', 'بازیکن‌ها می‌توانند همدیگر را بزنند.', 'Abakinnyi bashobora gukubitana.', 'ተጻወቲ ንሓድሕዶም ክወቕዑ ይኽእሉ።') })
+  Rules.register({ id: 'survival.keep', type: 'bool', def: true, group: 'survival', display: 'survival', icon: '🎒',
+    label: L('Keep stuff', 'Зберігати речі', 'Сохранять вещи', 'Conservar cosas', 'الاحتفاظ بالأشياء', 'نگه‌داشتن وسایل', 'Kugumana ibintu', 'ንብረት ምዕቃብ'),
+    desc: L('You keep your bag when you faint.', 'Сумка лишається, коли ти знепритомнієш.', 'Сумка остаётся, когда ты теряешь сознание.', 'Conservas tu bolsa al desmayarte.', 'تحتفظ بحقيبتك عند الإغماء.', 'وقتی از حال می‌روی کیفت می‌ماند.', 'Ugumana umufuka wawe iyo ugwiriwe.', 'ክትሰሓብ ከለኻ ቦርሳኻ ይተርፍ።') })
+}
+// The server's ruleset: applied to the game's own Rules (which already enforce locally) and announced with a calm toast.
+export const RULE_TOAST = { en: 'Rules changed: {r}', simple: 'New rules: {r}', uk: 'Правила змінено: {r}', ru: 'Правила изменены: {r}', es: 'Reglas cambiadas: {r}', ar: 'تغيّرت القواعد: {r}', 'fa-AF': 'قوانین عوض شد: {r}', rw: 'Amategeko yahindutse: {r}', ti: 'ሕግታት ተቐይሮም: {r}' }
+let onRules = null
+export function onHomeRules(fn) { onRules = fn }
+// The owner's in-game editor (rules-editor.js) calls Rules.set(); at home the server is the authority, so when the owner
+// is in, every set is also sent to the host, which validates it, bumps rev and broadcasts. Players never get this hook.
+let ownerApi = null   // { base, token } from the owner page (sessionStorage), present only for the owner's own session
+let wrapped = false
+export function armOwnerEditor() {
+  if (wrapped || !homeOwnerOn()) return
+  try { ownerApi = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {}
+  if (!ownerApi || !ownerApi.token) return
+  const real = Rules.set
+  Rules.set = (id, v) => { const out = real(id, v); try { fetch(ownerApi.base + '/owner/rule', { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerApi.token }, body: JSON.stringify({ id, v: out }) }).catch(() => {}) } catch (e) {} return out }
+  wrapped = true
+}
+export function applyHomeRules(f, toast, lang) {
+  if (!f || !f.r) return
+  const r = { ...f.r }; const mode = r.mode; delete r.mode
+  try { Rules.load(r) } catch (e) {}
+  if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev }
+  if (onRules) try { onRules({ preset: f.preset, mode, locked: !!f.locked, rev: f.rev, r }) } catch (e) {}
+  if (toast && f.rev > 1) toast((RULE_TOAST[lang] || RULE_TOAST[(lang || '').split('-')[0]] || RULE_TOAST.en).replace('{r}', homeRuleName(f.preset)))
+}
 const KEY_ADULTS = 'bt-home-adults'
 const KEY_LAST = 'bt-home-last'           // last server address + display name (no code, no ticket)
 let sock = null, hello = null, info = null, q = 0
@@ -32,7 +68,7 @@ const S = {
     errs: { code: 'እቲ ኮድ ቅኑዕ ኣይኮነን።', ended: 'ክፍለ ግዜ የለን። ኣአንጋዲ ክጅምር ሕተቶ።', password: 'መሕለፊ ቃል ቅኑዕ ኣይኮነን።', adults: '18 ወይ ልዕሊኡ ምዃንካ ኣረጋግጽ።', name: 'ስም: 2 ክሳብ 20 ፊደላት፡ ቁጽርታት፡ ክፍተት፡ _ ወይ -።', 'name-reserved': 'እዚ ስም ከም ናይ ኣአንጋዲ ይመስል። ካልእ ምረጽ።', 'name-filtered': 'እዚ ስም ኣብዚ ኣይፍቀድን። ካልእ ምረጽ።', 'name-taken': 'እዚ ስም ተታሒዙ እዩ።', full: 'ሰርቨር መሊኡ እዩ።', 'too-many': 'ካብ መርበብካ ብዙሕ ምትእስሳር።', banned: 'ክትጽንበር ኣይትኽእልን።', 'slow-down': 'ብዙሕ ፈተነ። ቁሩብ ደቓይቕ ተጸበ።', 'no-owner': 'ኣአንጋዲ ገና ኣብ ዓለም የለን።', network: 'ናብዚ ኣድራሻ ክንበጽሕ ኣይከኣልናን።' } },
 }
 const RULE_NAMES = { 'home-school': 'Same as school', 'home-survival': 'Survival', 'home-creative': 'Creative', 'home-peaceful': 'Peaceful', 'home-pvp': 'PvP on', 'home-hardcore': 'Hardcore' }
-const str = (lang) => S[lang] || S[(lang || '').split('-')[0]] || S.en
+const str = (lang) => ({ ...(S[lang] || S[(lang || '').split('-')[0]] || S.en), lang })
 const fill = (s, m) => s.replace(/\{(\w)\}/g, (_, k) => m[k])
 
 export const isHomePage = () => typeof document !== 'undefined' && !!document.querySelector('meta[name="bertopia-home"]')
@@ -107,13 +143,15 @@ function updateCard(root, T, server, client, retry) {
   root.querySelector('#hj-retry').onclick = retry
 }
 
+let toastFn = null
+export function setHomeToast(fn) { toastFn = fn }
 function connect(j, T, version, resolve, root) {
   if (!homeWsOk(j.ws)) { (root || card(css)).querySelector('.out, .hc').innerHTML += '<span class="bad">ws:// is only for this machine or a home network.</span>'; return }
   if (sock) try { sock.close() } catch (e) {}
   hello = null; info = { name: j.name, world: j.world, ruleset: j.ruleset, ws: j.ws, server: j.version }
   setHomeEndpoints({ ws: j.ws, join: j.ws.replace(/^ws/, 'http').replace(/\/rt\/ws$/, '/join') })
   sock = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { info.ruleset = f.r } }
+  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } }
   sock.onclose = (e) => { if (!hello && root) root.querySelector('#hj-out') && (root.querySelector('#hj-out').innerHTML = '<span class="bad">' + (T.errs[e.reason] || e.reason || T.errs.network) + '</span>'); hello = null }
   sock.onerror = () => {}
   const beat = setInterval(() => { if (!sock || sock.readyState !== 1) return clearInterval(beat); try { sock.send(JSON.stringify({ v: 0, t: 'ping', n: ++q })) } catch (e) {} }, 10000)
