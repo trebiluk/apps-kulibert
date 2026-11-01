@@ -334,10 +334,16 @@ const rawIp = (req) => (req.socket.remoteAddress || '').replace(/^::ffff:/, '')
 // A loopback connection may carry X-Forwarded-For (a local TLS proxy per the README, or a check); anything else is its real address.
 // A loopback peer may be a local TLS proxy or the Cloudflare tunnel (which sends the visitor in CF-Connecting-IP).
 const ipOf = (req) => { const r = rawIp(req); const f = r === '127.0.0.1' || r === '::1' ? String(req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || '').split(',')[0].trim() : ''; return f || r }
-const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req))
+// "This PC" = a loopback socket that did NOT come through a proxy or the tunnel: anything carrying a forwarded visitor
+// (CF-Connecting-IP, X-Forwarded-For) or the tunnel's own hostname is a visitor, however local the socket looks.
+const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req)) && !req.headers['cf-connecting-ip'] && !req.headers['x-forwarded-for'] && !(tunnelHost() && String(req.headers.host || '').toLowerCase().split(':')[0] === tunnelHost())
 // Behind a local TLS proxy (README: Caddy/nginx on this PC) the page is https, so the socket must be wss://. Only a
 // loopback peer may say so; anyone else gets plain ws:// for their LAN address.
-const wsBase = (req) => (isLocal(req) && String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? 'wss://' : 'ws://') + req.headers.host
+const viaProxy = (req) => ['127.0.0.1', '::1'].includes(rawIp(req))   // a loopback socket: a local TLS proxy or the tunnel may stand in front
+// Through the tunnel (loopback socket + CF-Connecting-IP) the game must open wss://<tunnel host>: Cloudflare only
+// routes the tunnel's own hostname, and a browser on an https page refuses plain ws://.
+const viaTunnel = (req) => viaProxy(req) && !!req.headers['cf-connecting-ip'] && !!tunnelHost()
+const wsBase = (req) => viaTunnel(req) ? 'wss://' + tunnelHost() : (viaProxy(req) && String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? 'wss://' : 'ws://') + req.headers.host
 const json = (res, status, body) => { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)) }
 const text = (res, status, body) => { res.writeHead(status, { 'content-type': 'text/plain', 'cache-control': 'no-store' }); res.end(body) }
 const page = (res, name) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(fs.readFileSync(path.join(HERE, name))) }

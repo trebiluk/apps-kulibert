@@ -115,7 +115,7 @@ async function sock(j) {
 }
 const player = async (name) => sock(await post('/join', { code: CODE, name, adults: true }, { 'x-forwarded-for': '203.0.113.' + ipN++ }))
 try {
-  child = spawn(process.execPath, ['--no-warnings', '--import', './host/register.mjs', 'host/home.mjs', '--port', String(PORT), '--data', DATA, '--show-chat'], { stdio: ['ignore', 'pipe', 'pipe'] })
+  child = spawn(process.execPath, ['--no-warnings', '--import', './host/register.mjs', 'host/home.mjs', '--port', String(PORT), '--data', DATA, '--show-chat', '--tunnel-host', 'adultopia.kulibert.net'], { stdio: ['ignore', 'pipe', 'pipe'] })
   child.stdout.on('data', (d) => (log += d)); child.stderr.on('data', (d) => (log += d))
   for (let i = 0; i < 100 && !/owner page/.test(log); i++) await sleep(50)
   const key = /k=([0-9a-f]+)/.exec(log)[1]
@@ -206,6 +206,15 @@ try {
   const viaTls = await post('/join', { code: CODE, name: 'Tls Tester', adults: true }, { 'x-forwarded-for': '203.0.113.' + ipN++, 'x-forwarded-proto': 'https' })
   const plain = await post('/join', { code: CODE, name: 'Lan Tester', adults: true }, { 'x-forwarded-for': '203.0.113.' + ipN++ })
   eq(/^wss:\/\//.test(viaTls.ws || '') && /^ws:\/\//.test(plain.ws || ''), 'TLS proxy: a join through the local proxy gets wss://, a plain one ws://')
+
+  // through the tunnel every visitor reaches the host from loopback: the owner page and owner API must still refuse them
+  const viaTunnel = { 'cf-connecting-ip': '203.0.113.77' }   // (Node's fetch sets Host itself; Cloudflare sends the tunnel hostname)
+  const op = await fetch(H + '/owner?k=' + (/k=([0-9a-f]+)/.exec(log) || [])[1], { headers: viaTunnel })
+  const oa = await fetch(H + '/owner/state', { headers: { ...viaTunnel, 'x-owner': token } })
+  const oj = await fetch(H + '/owner/pin', { method: 'POST', headers: { ...viaTunnel, 'content-type': 'application/json' }, body: JSON.stringify({ key: (/k=([0-9a-f]+)/.exec(log) || [])[1], pin: '246810' }) })
+  eq(op.status === 403 && oa.status === 403 && oj.status === 403, 'tunnel: a visitor through the tunnel (loopback socket, forwarded address) cannot open the owner page, API or PIN sign-in')
+  const tj = await post('/join', { code: CODE, name: 'Far Away', adults: true }, { 'cf-connecting-ip': '203.0.113.78', 'x-forwarded-proto': 'https' })
+  eq(!!tj.ticket && /^wss:\/\/adultopia\.kulibert\.net\/rt\/ws$/.test(tj.ws), 'tunnel: a visitor can join and is handed wss://<tunnel host>/rt/ws')
 
   // the log: failure codes only
   eq(!log.includes(CODE) && !log.includes('246810') && !log.includes(token) && !/203\.0\.113\.\d/.test(log) && !/\b(no-owner|chat-|ev-)/.test(log), 'log: no session code, PIN, owner token, player address or error noise')
