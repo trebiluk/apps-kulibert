@@ -74,6 +74,13 @@ export function applyHomeRules(f, toast, lang) {
 }
 const KEY_ADULTS = 'bt-home-adults'
 const KEY_LAST = 'bt-home-last'           // last server address + display name (no code, no ticket)
+const KEY_AGAIN = 'bt-home-again'         // one-shot rejoin after a deliberate reload (this tab only, removed on read)
+let codeNow = ''                          // the code this player joined with (memory only; written to KEY_AGAIN for a reload)
+// Reload the game and come straight back in: the owner has its token, a player gets the code back once.
+export function homeReload() {
+  try { if (codeNow && !homeOwnerOn()) sessionStorage.setItem(KEY_AGAIN, JSON.stringify({ code: codeNow })) } catch (e) {}
+  location.reload()
+}
 let sock = null, hello = null, info = null, q = 0
 
 const S = {
@@ -130,6 +137,8 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
   try { ownerApiNow = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {}
   if (owner && owner.name && ownerApiNow) try { sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ ...ownerApiNow, name: owner.name })) } catch (e) {}
   const ownerAgain = !owner && /[?&]owner=1(&|$)/.test(location.search) && ownerApiNow && ownerApiNow.token ? ownerApiNow : null
+  let again = null   // a one-shot rejoin after homeReload() (the touch setting needs a fresh page): same tab, used once
+  try { again = JSON.parse(sessionStorage.getItem(KEY_AGAIN) || 'null'); sessionStorage.removeItem(KEY_AGAIN) } catch (e) {}
   return new Promise((resolve) => {
     if (owner && owner.ticket) { connect(owner, T, version, resolve); return }
     if (ownerAgain) {
@@ -151,6 +160,7 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
       <button id="hj-go">${T.join}</button><button id="hj-solo" class="alt">${T.solo}</button><div class="out" id="hj-out" aria-live="polite"></div></div>`)
     const $ = (id) => root.querySelector('#' + id)
     try { if (sessionStorage.getItem(KEY_ADULTS) === '1') $('hj-adults').checked = true } catch (e) {}
+    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 9); $('hj-adults').checked = true; setTimeout(() => $('hj-go').click(), 50); again = null }
     $('hj-solo').onclick = () => { root.remove(); resolve(null) }
     $('hj-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('hj-go').click() })
     $('hj-go').onclick = async () => {
@@ -163,6 +173,7 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
       if (j.error) { if (j.error === 'password') $('hj-pwrow').hidden = false; badText($('hj-out'), errText(T, j.error) + (j.wait ? ' (' + Number(j.wait) + ' s)' : '')); return }
       if (version && j.version && j.version !== version) { updateCard(root, T, j.version, version, () => location.reload()); return }
       try { sessionStorage.setItem(KEY_ADULTS, '1'); localStorage.setItem(KEY_LAST, JSON.stringify({ addr: base, name: j.name })) } catch (e) {}
+      codeNow = body.code
       connect(j, T, version, resolve, root)
     }
   }
@@ -197,6 +208,43 @@ export function homeLeave() { if (sock) try { sock.close(1000, 'bye') } catch (e
 export const homeRuleName = (id, lang) => (RULE_NAMES[id] || id || '').replace('home-', '')
 export const homeStrings = S
 
+// ---------------------------------------------------------------- Settings rows (home only; English, adults)
+const TOUCH_KEY = 'bloxbert-touch'   // '' (auto) | 'on' | 'off' — main.js reads it at boot, before TOUCH_UI is fixed
+export const homeTouchPref = () => { try { const v = localStorage.getItem(TOUCH_KEY); return v === 'on' || v === 'off' ? v : '' } catch (e) { return '' } }
+const SET = { touch: 'Touch controls', touchHint: 'Auto picks by the device. On shows the stick and tap buttons; Off hides them (mouse and keys). Changing it reloads the game.', auto: 'Auto', on: 'On', off: 'Off', reload: 'Reloading…', host: 'This server', hostHint: 'Game mode, player fights and keep inventory are the host\'s rules for everyone here, not a device setting. The owner changes them with /rules or the owner page.', mode: 'Mode', pvp: 'Player fights', keep: 'Keep inventory', yes: 'on', no: 'off', you: ' (set for you)' }
+export const homeSet = (k) => (Object.prototype.hasOwnProperty.call(SET, k) ? SET[k] : k)
+export function homeSettings(g) {
+  if (!hello || typeof document === 'undefined') return
+  const line = (label) => { const row = document.createElement('div'); row.className = 'set-line'; row.style.flexWrap = 'wrap'; row.style.gap = '8px'; const lab = document.createElement('span'); lab.className = 'set-lab'; lab.textContent = label; row.append(lab); return row }
+  const note = (text) => { const p = document.createElement('p'); p.className = 'gnote'; p.textContent = text; return p }
+  // touch controls: three pills, one radiogroup
+  const head = note(SET.touch); head.classList.add('ghead')
+  const row = line(SET.touch), grp = document.createElement('div'); grp.setAttribute('role', 'radiogroup'); grp.setAttribute('aria-label', SET.touch); grp.style.display = 'flex'; grp.style.gap = '8px'
+  const cur = homeTouchPref()
+  for (const [v, word] of [['', SET.auto], ['on', SET.on], ['off', SET.off]]) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pill' + (v === cur ? ' on' : ''); b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', String(v === cur)); b.setAttribute('aria-label', SET.touch + ': ' + word)
+    b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.textContent = word; b.dataset.touch = v || 'auto'
+    b.onclick = () => { if (v === cur) return; try { if (v) localStorage.setItem(TOUCH_KEY, v); else localStorage.removeItem(TOUCH_KEY) } catch (e) {} for (const k of grp.children) { k.classList.toggle('on', k === b); k.setAttribute('aria-checked', String(k === b)) } if (toastFn) toastFn(SET.reload); setTimeout(homeReload, 400) }
+    grp.append(b)
+  }
+  row.append(grp)
+  // what the host decides (read-only here)
+  let pvp = false; try { pvp = Rules.value('combat.pvp') === true } catch (e) {}
+  const r = { mode: info && info.mode, pvp, keep: keep.on }
+  const hostHead = note(SET.host); hostHead.classList.add('ghead')
+  const vals = note(SET.mode + ': ' + String(r.mode || '—') + ' · ' + SET.pvp + ': ' + (r.pvp ? SET.yes : SET.no) + ' · ' + SET.keep + ': ' + (r.keep ? SET.yes : SET.no) + (keep.from === 'player' ? SET.you : '')); vals.dataset.homeHost = '1'
+  g.append(head, row, note(SET.touchHint), hostHead, vals, note(SET.hostHint))
+}
+// the Mode panel: at home the mode is the host's; only the Build Table is a local choice
+export const homeModeNote = () => (hello ? SET.hostHint : '')
+// the World panel: this world lives on the host; the owner's Download/Import are on the owner page
+export const homeWorldNote = () => (hello ? 'This world lives on the host and is shared by everyone here. Loading, importing or starting a fresh world happens on the owner page, not on your device. Export saves a copy of what you have seen.' : '')
+// after the join: no school hub to go back to
+export function homeTrimHud() {
+  if (!hello || typeof document === 'undefined') return
+  const hub = document.getElementById('hub-back'); if (hub) hub.hidden = true
+}
+
 // ---------------------------------------------------------------- typed chat (docs §6) — home only
 // Shown only while the server's ruleset has chat.typed on (every preset starts with it off). Plain text both ways:
 // messages are written with textContent, never as HTML. The server filters, limits and relays; nothing is stored.
@@ -213,7 +261,7 @@ function ensureDock() {
   if (dock || typeof document === 'undefined') return dock
   const T = cs()
   dock = document.createElement('div'); dock.id = 'home-chat'; dock.dir = document.documentElement.dir || 'ltr'
-  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}</style>' +
+  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}@media (max-width:480px){#home-chat{top:50%}}</style>' +
     '<button type="button" class="hc-toggle" aria-expanded="false" aria-controls="hc-panel"></button>' +
     '<div class="hc-panel" id="hc-panel" hidden><div class="hc-cmds" role="group" aria-label="Commands"></div><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
   const toggle = dock.querySelector('.hc-toggle'), panel = dock.querySelector('.hc-panel'), input = dock.querySelector('input'), form = dock.querySelector('form')
@@ -229,6 +277,9 @@ function ensureDock() {
   form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); if (!m.startsWith('/') && !chatOn) return chatSay(cs().errs['rule:chat.typed']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay(''); if (!(e.submitter && e.submitter.dataset.stay) && !shiftHeld) backToGame() }
 
   document.body.append(dock); paintToggle()
+  // the game's menu sheet is a dialog: the dock (fixed, z 40) used to sit on top of it (seen over Settings, Nov 1)
+  const sheet = document.getElementById('sheet')
+  if (sheet && typeof MutationObserver === 'function') { const fit = () => { dock.style.visibility = sheet.hidden ? '' : 'hidden' }; new MutationObserver(fit).observe(sheet, { attributes: true, attributeFilter: ['hidden'] }); fit() }
   return dock
 }
 function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = (chatOn ? '💬 ' + T.chat : '⌘ Commands') + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : '') + ' (T)'; b.setAttribute('aria-label', b.textContent) }

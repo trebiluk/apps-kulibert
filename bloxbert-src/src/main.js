@@ -286,7 +286,8 @@ if (!document.createElement('canvas').getContext('webgl2')) {
 }
 const coarse = matchMedia('(pointer: coarse)').matches
 const qs = new URLSearchParams(location.search)
-const TOUCH_UI = coarse || qs.has('touch')
+const touchPref = (() => { try { const v = localStorage.getItem('bloxbert-touch'); return v === 'on' || v === 'off' ? v : '' } catch (e) { return '' } })()   // Settings > Touch controls (home build sets it)
+const TOUCH_UI = touchPref ? touchPref === 'on' : (coarse || qs.has('touch'))
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const gfx = createQuality()
@@ -1190,7 +1191,7 @@ pinKeysLine()
 
 let walkPresses = 0
 const KEYS_SEEN = 'bert-keys-tip-seen'
-const TOUCH_ONLY = matchMedia('(hover: none) and (pointer: coarse)').matches || qs.has('touch')
+const TOUCH_ONLY = touchPref ? touchPref === 'on' : (matchMedia('(hover: none) and (pointer: coarse)').matches || qs.has('touch'))
 let keysGone = false
 function keysStored() {
   try { return localStorage.getItem(KEYS_SEEN) === '1' } catch (e) { return false }
@@ -7529,7 +7530,9 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g); namePills(g); if (__HOME_HOST__ && homeSession) HOME.homeSettings(g) },
+  homeModeNote: () => (__HOME_HOST__ && homeSession ? HOME.homeModeNote() : ''),
+  homeWorldNote: () => (__HOME_HOST__ && homeSession ? HOME.homeWorldNote() : ''),
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -9227,6 +9230,7 @@ if (/[?&]debug=1(&|$)/.test(location.search)) {
   }
   window.__bt = {
     placeAt: btPlaceAt,
+    openPanel(id) { openMenu(true); panels.open(id || 'menu') },   // test hook: the menu audit walks every panel
     // blockAt: the block id at that cell (0 = air), or null if x/y/z aren't numbers
     blockAt(x, y, z) {
       if (![x, y, z].every(Number.isFinite)) return null
@@ -10639,6 +10643,17 @@ function lookLine(name, value, icon) {
   }
   return row
 }
+// A pill that only says ON/OFF is named "OFF" to a screen reader (ten of them in Settings, Nov 1 audit): give each
+// one its row's label as the name; the state stays in aria-pressed.
+function namePills(g) {
+  for (const row of g.querySelectorAll('.set-line')) {
+    const lab = row.querySelector('.set-lab'); if (!lab) continue
+    for (const b of row.querySelectorAll('button.pill')) {
+      if (!b.getAttribute('aria-label') && !b.getAttribute('aria-labelledby') && !b.getAttribute('role')) b.setAttribute('aria-label', lab.textContent.trim())
+      if (!b.getAttribute('aria-pressed') && !b.getAttribute('role') && (b.textContent === t('switchOn') || b.textContent === t('switchOff'))) b.setAttribute('aria-pressed', String(b.textContent === t('switchOn')))
+    }
+  }
+}
 function lookPill(name, on, flip, look, icon) {
   const row = lookLine(name, null, icon)
   const b = document.createElement('button')
@@ -10766,7 +10781,7 @@ function paintPackLook(g) {
     hint.id = 'tex-auto-hint'
     hint.textContent = t('texSmallHint')
     smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
-    g.insertBefore(hint, g.firstChild)
+    smallBtn.after(hint)   // under the button it describes (it sat alone at the top of Settings, Nov 1 audit)
   }
 }
 function paintLook(g) {
@@ -13272,7 +13287,7 @@ window.__bertopiaRotateCheck = function () {
 let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
 ;(bootLoad = (async () => {
   if (__HOME_HOST__ && HOME.isHomePage()) { try { HOME.registerHomeRules(); HOME.setHomeToast(toast); homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
-  if (__HOME_HOST__ && homeSession) WORLD = HOME.homeSlot()   // this host world's own slot: your single-player world is never loaded or saved over
+  if (__HOME_HOST__ && homeSession) { WORLD = HOME.homeSlot(); HOME.homeTrimHud() }   // this host world's own slot: your single-player world is never loaded or saved over; no hub link
   await load()
   if (__HOME_HOST__ && homeSession) await homeShare()
 })()).catch(() => {}).finally(() => {
@@ -14074,6 +14089,7 @@ function paintLangRow(g) {
   g.append(row, list)
 }
 function paintPvpSettings(g) {
+  if (__HOME_HOST__ && homeSession) return   // home: English only (no language row); PvP and keep inventory are the host's rules (HOME.homeSettings shows them)
   paintLangRow(g)
   const p = readPvpPrefs()
   const mk = (key, def, onLabel, offLabel, icon) => {
@@ -14093,6 +14109,8 @@ function paintPvpSettings(g) {
     lab.textContent = onLabel.split(':')[0].trim()
     btn.textContent = on ? (t('switchOn') || 'ON') : (t('switchOff') || 'OFF')
     btn.setAttribute('aria-label', lab.textContent)
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false')
+    btn.classList.toggle('on', !!on)
     btn.addEventListener('click', () => {
       const cur = readPvpPrefs()
       cur[key] = !on

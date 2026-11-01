@@ -442,7 +442,9 @@ export function createLearn(api) {
     blab.className = 'glbl'
     blab.textContent = api.t('highContrast')
     b.append(bico, blab)
-    b.addEventListener('click', () => a11y({ contrast: !a11y().contrast }))
+    const press = (el, on) => { el.setAttribute('aria-pressed', on ? 'true' : 'false'); el.classList.toggle('on', !!on); const old = el.querySelector('[data-mark]'); if (old) old.remove(); if (on) { const m = menuIcon('check'); if (m) { m.dataset.mark = '1'; el.append(m) } } }
+    press(b, !!a11y().contrast)
+    b.addEventListener('click', () => { a11y({ contrast: !a11y().contrast }); press(b, !!a11y().contrast) })
     const gentle = document.createElement('button')
     gentle.type = 'button'
     gentle.className = 'gtile'
@@ -454,7 +456,8 @@ export function createLearn(api) {
     glab.className = 'glbl'
     glab.textContent = api.t('gentle')
     gentle.append(gico, glab)
-    gentle.addEventListener('click', () => a11y({ gentle: !a11y().gentle }))
+    press(gentle, !!a11y().gentle)
+    gentle.addEventListener('click', () => { a11y({ gentle: !a11y().gentle }); press(gentle, !!a11y().gentle) })
     const bright = document.createElement('button')
     bright.type = 'button'
     bright.className = 'gtile'
@@ -468,7 +471,10 @@ export function createLearn(api) {
       lab.className = 'glbl'
       lab.textContent = api.t('brighterNights')
       bright.append(ico, lab)
-      if (api.bright && api.bright()) {
+      const on = !!(api.bright && api.bright())
+      bright.setAttribute('aria-pressed', on ? 'true' : 'false')
+      bright.classList.toggle('on', on)
+      if (on) {
         const mark = menuIcon('check')
         if (mark) lab.after(mark)
       }

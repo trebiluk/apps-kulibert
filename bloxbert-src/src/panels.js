@@ -551,6 +551,12 @@ export function mountPanels(api) {
       goals: () => show('goals', api.t('goals'), (g) => api.paintGoals(g)),
       a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
+        const hostNote = api.homeWorldNote ? api.homeWorldNote() : ''
+        if (hostNote) {   // a home server: the host owns the world
+          const note = document.createElement('p'); note.className = 'gnote'; note.textContent = hostNote; g.append(note)
+          g.append(tile('up', api.t('exportWorld'), () => api.exportWorld()))
+          return
+        }
         g.append(
           tile('folder', api.t('loadSaved'), () => api.load()),
           tile('up', api.t('exportWorld'), () => api.exportWorld()),
@@ -570,6 +576,12 @@ export function mountPanels(api) {
       }),
       mode: () => show('mode', api.t('mode'), (g) => {
         const teacher = api.teacher && api.teacher()
+        const hostNote = api.homeModeNote ? api.homeModeNote() : ''
+        if (hostNote) {   // a home server: the mode is the host's rule for everyone; only the Build Table is a local choice
+          const note = document.createElement('p'); note.className = 'gnote'; note.textContent = hostNote; g.append(note)
+          g.append(tile('grid', api.t('buildTable'), () => api.table()))
+          return
+        }
         if (!teacher) {
           const note = document.createElement('p')
           note.className = 'gnote'

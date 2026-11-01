@@ -232,6 +232,35 @@ try {
       eq(ok.every(Boolean), `@${w}: full game: owner and player both reach a running world`)
       eq(!gerr.length, `@${w}: full game: no page errors${gerr.length ? ': ' + gerr.slice(0, 2).join(' / ') : ''}`)
       await P2.screenshot({ path: path.join(os.tmpdir(), `home-game-${w}.png`) })
+      // menus at home (Nov 1 pass): Settings has the touch row and no language row, every ON/OFF pill is named, the
+      // chat dock steps aside under the sheet, Mode/World are the host's, Accessibility tiles show their state
+      await O2.evaluate((t) => sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token: t, name: 'Diego' })), gt)
+      await O2.goto(G + '/?owner=1&debug=1'); await sleep(8000)
+      await O2.evaluate(() => window.__bt.openPanel('settings')); await sleep(400)
+      const st = await O2.evaluate(() => { const b = document.getElementById('sheet-body'); const pills = [...b.querySelectorAll('button.pill')].filter((x) => /^(ON|OFF)$/.test(x.textContent)); return { touch: b.querySelectorAll('[role=radiogroup][aria-label="Touch controls"] [role=radio]').length, lang: !!b.querySelector('#lang-list'), unnamed: pills.filter((x) => !x.getAttribute('aria-label')).length, unstated: pills.filter((x) => !x.getAttribute('aria-pressed')).length, host: !!b.querySelector('[data-home-host]'), keepPill: [...b.querySelectorAll('.set-lab')].some((l) => /Keep my stuff/.test(l.textContent)), dock: document.getElementById('home-chat') ? getComputedStyle(document.getElementById('home-chat')).visibility : 'none' } })
+      eq(st.touch === 3 && !st.lang && st.unnamed === 0 && st.unstated === 0 && st.host && !st.keepPill && (st.dock === 'hidden' || st.dock === 'none'), `@${w}: menus: Settings has Touch controls (3), no language row, ${st.unnamed} unnamed / ${st.unstated} unstated pills, the host line, no device keep pill; the chat dock hides under the sheet (${st.dock})`)
+      await O2.evaluate(() => window.__bt.openPanel('mode')); await sleep(300)
+      const md = await O2.evaluate(() => [...document.querySelectorAll('#sheet-body button')].map((b) => b.textContent.trim()))
+      await O2.evaluate(() => window.__bt.openPanel('world')); await sleep(300)
+      const wd = await O2.evaluate(() => [...document.querySelectorAll('#sheet-body button')].map((b) => b.textContent.trim()))
+      eq(md.length === 1 && /Build Table/.test(md[0]) && wd.length === 1 && /Export/.test(wd[0]) && (await O2.evaluate(() => document.getElementById('hub-back').hidden)), `@${w}: menus: Mode offers only the Build Table, World only Export, and the hub link is gone (${md.join('/')} · ${wd.join('/')})`)
+      await O2.evaluate(() => window.__bt.openPanel('a11y')); await sleep(300)
+      const a1 = await O2.evaluate(() => { const t = [...document.querySelectorAll('#sheet-body button.gtile')]; t[0].click(); return { n: t.length, pressed: t.map((b) => b.getAttribute('aria-pressed')), after: t[0].getAttribute('aria-pressed'), mark: !!t[0].querySelector('[data-mark]') } })
+      eq(a1.n === 3 && a1.pressed.every((p) => p === 'false' || p === 'true') && a1.after === 'true' && a1.mark, `@${w}: menus: Accessibility tiles carry aria-pressed and a check mark when on`)
+      await O2.evaluate(() => { const t = [...document.querySelectorAll('#sheet-body button.gtile')]; t[0].click() })
+      // hotbar (Nov 1 pass): numbered names; on a phone two rows of five (slots 1-5 / 6-9 + bag) and the stick above the bar
+      await O2.evaluate(() => { const x = document.getElementById('sheet-x'); if (x && !document.getElementById('sheet').hidden) x.click() }); await sleep(300)
+      const hb = await O2.evaluate(() => { const bar = document.getElementById('hotbar'), rb = bar.getBoundingClientRect(); const slots = [...bar.querySelectorAll('.slot')].map((e) => { const r = e.getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), label: e.getAttribute('aria-label') } }); const rows = new Set(slots.map((s) => Math.round(s.y / 30))).size; return { n: slots.length, rows, h: Math.round(rb.height), small: slots.filter((s) => s.w < 44 || s.h < 44).length, numbered: slots.slice(0, 9).every((s, i) => s.label.endsWith('· ' + (i + 1))), lift: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hud-lift')), centered: Math.abs((rb.left + rb.right) / 2 - innerWidth / 2) < 4 } })
+      eq(hb.n === 10 && hb.small === 0 && hb.numbered && (w === 412 ? hb.rows === 2 && hb.h < 170 && hb.lift >= hb.h + 12 && hb.centered : hb.rows === 1), `@${w}: hotbar: ${hb.n} tiles in ${hb.rows} row(s), ${hb.h} px tall, none under 44 px, numbered names${w === 412 ? ', centered, HUD lifted to ' + hb.lift + ' px' : ''}`)
+      if (w === 412) {   // touch controls: On -> reload -> the owner is back in, with the touch UI; then back to Auto
+        await O2.evaluate(() => window.__bt.openPanel('settings')); await sleep(300)
+        await O2.evaluate(() => document.querySelector('[role=radiogroup][aria-label="Touch controls"] [data-touch=on]').click())
+        await O2.waitForFunction(() => !window.session, null, { timeout: 5000 }).catch(() => {}); await sleep(9000)
+        await O2.waitForFunction(() => window.session, null, { timeout: 15000 }).catch(() => {})
+        const tc = await O2.evaluate(() => ({ session: !!window.session, touch: document.body.classList.contains('touch'), pref: localStorage.getItem('bloxbert-touch'), join: !!document.querySelector('#hj-go'), canvas: !!document.querySelector('canvas'), play: !!(document.getElementById('play-chip') && !document.getElementById('play-chip').hidden) }))
+        eq(!tc.join && tc.canvas && (tc.session || tc.play) && tc.touch && tc.pref === 'on', `@${w}: touch controls: On reloads the game, the owner is back in (no join card; Tap to play) with the touch UI (${JSON.stringify(tc)})`)
+        await O2.evaluate(() => localStorage.removeItem('bloxbert-touch'))
+      }
       await ctx.close()
     }
     await gapi('stop'); await sleep(300); if (g.exitCode === null) g.kill(); fs.rmSync(DATA + '-g', { recursive: true, force: true })
