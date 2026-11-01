@@ -3,6 +3,7 @@ import { RECIPES, BED_SHOP } from './data/recipes.js'
 import { ITEMS } from './data/items.js'
 import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
+import { decorMetalLocked } from './craft.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8, pinecone: 1 }
 let slotsOf = () => []
@@ -791,6 +792,7 @@ export function createStations(api) {
       { id: 'rug', need: '4 Wool', ins: [['woolBlue', 4], ['woolGreen', 4], ['woolRed', 4], ['woolTan', 4]] },
     ]
     const decorReason = (d) => {
+      if (decorMetalLocked(d.ins, !!(api.creative && api.creative()))) return api.t('needsMetal')
       if (!hungOk) return api.t('decorNeedTools')
       if (d.id === 'rug') {
         const have = d.ins.some(([k]) => api.have && api.have(k) >= 4)
@@ -806,10 +808,19 @@ export function createStations(api) {
       const title = document.createElement('p')
       title.className = 'gnote'
       title.textContent = api.t(d.id)
+      const metal = decorMetalLocked(d.ins, !!(api.creative && api.creative()))
       const reason = decorReason(d)
       const need = document.createElement('p')
       need.className = 'gnote decor-need'
-      need.textContent = reason || d.need
+      if (metal) {
+        need.textContent = ''
+        const chip = document.createElement('span')
+        chip.className = 'gate-chip'
+        chip.dataset.gate = 'metal'
+        chip.textContent = reason
+        chip.style.cssText = 'display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;margin-top:6px;padding:8px 12px;border-radius:999px;background:#08131A;color:#E6EEF2;border:2px solid #1F8A8A;font-size:16px;font-weight:700;max-width:100%'
+        need.append(chip)
+      } else need.textContent = reason || d.need
       card.append(title, need)
       const job = rec.decorJob && rec.decorJob.id === d.id ? rec.decorJob : null
       if (job) {
@@ -864,18 +875,19 @@ export function createStations(api) {
           paintWoodshop(g, key)
         }, 'make')
         if (d.id === 'rug' && !(api.have && api.have(job.colour || 'woolBlue') >= 4)) make.disabled = true
+        if (metal) lockBtn(make, reason)
         step.append(make)
         card.append(step)
       } else {
         const row = document.createElement('div')
         row.className = 'bed-paths'
         const sayNeed = () => { if (api.toast && reason) api.toast(reason) }
-        const just = capBtn('decor-just-' + d.id, reason || api.t('decorJust'), () => {
+        const just = capBtn('decor-just-' + d.id, metal ? api.t('decorJust') : (reason || api.t('decorJust')), () => {
           if (decorReason(d)) { sayNeed(); return }
           if (api.craft) api.craft(d.id)
           paintWoodshop(g, key)
         }, 'make')
-        const design = capBtn('decor-design-' + d.id, reason || api.t('decorDesign'), () => {
+        const design = capBtn('decor-design-' + d.id, metal ? api.t('decorDesign') : (reason || api.t('decorDesign')), () => {
           if (decorReason(d)) { sayNeed(); return }
           const wool = d.id === 'rug' && d.ins.find(([k]) => api.have && api.have(k) >= 4)
           rec.decorJob = d.id === 'rug'
@@ -884,7 +896,8 @@ export function createStations(api) {
           touch()
           paintWoodshop(g, key)
         }, 'design')
-        if (reason) { just.title = reason; design.title = reason }
+        if (metal) { lockBtn(just, reason); lockBtn(design, reason) }
+        else if (reason) { just.title = reason; design.title = reason }
         row.append(just, design)
         card.append(row)
       }

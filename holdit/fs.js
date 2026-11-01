@@ -133,7 +133,7 @@
     for (var n = 0; n < 4; n++) {
       var b = btn.getBoundingClientRect();
       var next = 0;
-      var cards = document.querySelectorAll(".hi-studio, .hi-plan");
+      var cards = document.querySelectorAll(".hi-studio, .hi-plan, .shop-editor .hi-dock .pointer-events-none.absolute.top-3");
       for (var i = 0; i < cards.length; i++) {
         var c = cards[i].getBoundingClientRect();
         if (c.width < 8 || c.height < 8) continue;
@@ -515,6 +515,7 @@
       ensureExit(document.getElementById("hi-settings-panel"));
       paint();
       syncResult();
+      showBtn(); /* r3: a Test card that just appeared pushes Full screen below it */
     } finally {
       if (document.body) obs.observe(document.body, { childList: true, subtree: true });
     }
