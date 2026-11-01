@@ -18,6 +18,9 @@ export function registerHomeRules() {
   Rules.register({ id: 'survival.keep', type: 'bool', def: true, group: 'survival', display: 'survival', icon: '🎒',
     label: L('Keep stuff', 'Зберігати речі', 'Сохранять вещи', 'Conservar cosas', 'الاحتفاظ بالأشياء', 'نگه‌داشتن وسایل', 'Kugumana ibintu', 'ንብረት ምዕቃብ'),
     desc: L('You keep your bag when you faint.', 'Сумка лишається, коли ти знепритомнієш.', 'Сумка остаётся, когда ты теряешь сознание.', 'Conservas tu bolsa al desmayarte.', 'تحتفظ بحقيبتك عند الإغماء.', 'وقتی از حال می‌روی کیفت می‌ماند.', 'Ugumana umufuka wawe iyo ugwiriwe.', 'ክትሰሓብ ከለኻ ቦርሳኻ ይተርፍ።') })
+  Rules.register({ id: 'chat.typed', type: 'bool', def: false, group: 'core', display: 'effects', icon: '💬',
+    label: L('Typed chat', 'Текстовий чат', 'Текстовый чат', 'Chat escrito', 'الدردشة الكتابية', 'چت نوشتاری', 'Ikiganiro cyanditse', 'ጽሑፋዊ ዕላል'),
+    desc: L('Players can type short messages (200 characters, filtered, never saved).', 'Гравці можуть писати короткі повідомлення (200 символів, з фільтром, не зберігаються).', 'Игроки могут писать короткие сообщения (200 символов, с фильтром, не сохраняются).', 'Los jugadores pueden escribir mensajes cortos (200 caracteres, filtrados, nunca guardados).', 'يمكن للاعبين كتابة رسائل قصيرة (200 حرف، مع فلتر، لا تُحفظ).', 'بازیکن‌ها می‌توانند پیام کوتاه بنویسند (۲۰۰ حرف، با فیلتر، ذخیره نمی‌شود).', 'Abakinnyi bashobora kwandika ubutumwa bugufi (inyuguti 200, bushungurwa, ntibubikwa).', 'ተጻወቲ ሓጸርቲ መልእኽትታት ክጽሕፉ ይኽእሉ (200 ፊደላት፡ ብመጻረዪ፡ ኣይዕቀብን)።') })
 }
 // The server's ruleset: applied to the game's own Rules (which already enforce locally) and announced with a calm toast.
 export const RULE_TOAST = { en: 'Rules changed: {r}', simple: 'New rules: {r}', uk: 'Правила змінено: {r}', ru: 'Правила изменены: {r}', es: 'Reglas cambiadas: {r}', ar: 'تغيّرت القواعد: {r}', 'fa-AF': 'قوانین عوض شد: {r}', rw: 'Amategeko yahindutse: {r}', ti: 'ሕግታት ተቐይሮም: {r}' }
@@ -37,7 +40,9 @@ export function armOwnerEditor() {
 }
 export function applyHomeRules(f, toast, lang) {
   if (!f || !f.r) return
+  chatLang = lang || 'en'
   const r = { ...f.r }; const mode = r.mode; delete r.mode
+  setChatOn(r['chat.typed'] === true)
   try { Rules.load(r) } catch (e) {}
   if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev }
   if (onRules) try { onRules({ preset: f.preset, mode, locked: !!f.locked, rev: f.rev, r }) } catch (e) {}
@@ -126,11 +131,11 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
     $('hj-go').onclick = async () => {
       const base = $('hj-addr').value.trim().replace(/\/+$/, '')
       const body = { code: $('hj-code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('hj-name').value, password: $('hj-pw').value || undefined, adults: $('hj-adults').checked }
-      if (!/^https?:\/\//.test(base)) { $('hj-out').innerHTML = '<span class="bad">http:// …</span>'; return }
+      if (!/^https?:\/\//.test(base)) { badText($('hj-out'), 'http:// …'); return }
       $('hj-out').textContent = T.asking
       let j
       try { j = await (await fetch(base + '/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json() } catch (e) { j = { error: 'network' } }
-      if (j.error) { if (j.error === 'password') $('hj-pwrow').hidden = false; $('hj-out').innerHTML = '<span class="bad">' + (T.errs[j.error] || j.error) + (j.wait ? ' (' + j.wait + ' s)' : '') + '</span>'; return }
+      if (j.error) { if (j.error === 'password') $('hj-pwrow').hidden = false; badText($('hj-out'), errText(T, j.error) + (j.wait ? ' (' + Number(j.wait) + ' s)' : '')); return }
       if (version && j.version && j.version !== version) { updateCard(root, T, j.version, version, () => location.reload()); return }
       try { sessionStorage.setItem(KEY_ADULTS, '1'); localStorage.setItem(KEY_LAST, JSON.stringify({ addr: base, name: j.name })) } catch (e) {}
       connect(j, T, version, resolve, root)
@@ -139,11 +144,15 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
 }
 
 function updateCard(root, T, server, client, retry) {
-  root.innerHTML = css + `<div class="hc"><h1>⟳ ${T.update}</h1><p>${fill(T.updateHow, { s: server, c: client })}</p><button id="hj-retry">${T.retry}</button></div>`
+  root.innerHTML = css + `<div class="hc"><h1>⟳ ${T.update}</h1><p></p><button id="hj-retry">${T.retry}</button></div>`
+  root.querySelector('.hc p').textContent = fill(T.updateHow, { s: String(server), c: String(client) })   // the server's words are text, never HTML
   root.querySelector('#hj-retry').onclick = retry
 }
 
 let toastFn = null
+// Replies come from whatever address was typed: show them as text only, and look messages up as own keys only.
+const errText = (T, code) => (Object.prototype.hasOwnProperty.call(T.errs, code) ? T.errs[code] : String(code))
+function badText(el, text) { el.textContent = ''; const sp = document.createElement('span'); sp.className = 'bad'; sp.textContent = text; el.append(sp) }
 export function setHomeToast(fn) { toastFn = fn }
 function connect(j, T, version, resolve, root) {
   if (!homeWsOk(j.ws)) { (root || card(css)).querySelector('.out, .hc').innerHTML += '<span class="bad">ws:// is only for this machine or a home network.</span>'; return }
@@ -151,8 +160,8 @@ function connect(j, T, version, resolve, root) {
   hello = null; info = { name: j.name, world: j.world, ruleset: j.ruleset, ws: j.ws, server: j.version }
   setHomeEndpoints({ ws: j.ws, join: j.ws.replace(/^ws/, 'http').replace(/\/rt\/ws$/, '/join') })
   sock = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } }
-  sock.onclose = (e) => { if (!hello && root) root.querySelector('#hj-out') && (root.querySelector('#hj-out').innerHTML = '<span class="bad">' + (T.errs[e.reason] || e.reason || T.errs.network) + '</span>'); hello = null }
+  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } else homeFrame(f) }
+  sock.onclose = (e) => { if (!hello && root && root.querySelector('#hj-out')) badText(root.querySelector('#hj-out'), e.reason ? errText(T, e.reason) : T.errs.network); hello = null }
   sock.onerror = () => {}
   const beat = setInterval(() => { if (!sock || sock.readyState !== 1) return clearInterval(beat); try { sock.send(JSON.stringify({ v: 0, t: 'ping', n: ++q })) } catch (e) {} }, 10000)
 }
@@ -162,3 +171,96 @@ export function homeSend(frame) { if (sock && sock.readyState === 1) sock.send(J
 export function homeLeave() { if (sock) try { sock.close(1000, 'bye') } catch (e) {} sock = null; hello = null; info = null }
 export const homeRuleName = (id, lang) => (RULE_NAMES[id] || id || '').replace('home-', '')
 export const homeStrings = S
+
+// ---------------------------------------------------------------- typed chat (docs §6) — home only
+// Shown only while the server's ruleset has chat.typed on (every preset starts with it off). Plain text both ways:
+// messages are written with textContent, never as HTML. The server filters, limits and relays; nothing is stored.
+const C = {
+  en: { chat: 'Chat', send: 'Send', ph: 'Say something (200 max)', close: 'Close chat', unread: '{n} new', errs: { 'chat-slow': 'Wait {s} s.', 'chat-long': '200 characters at most.', 'chat-filtered': 'That message is not allowed here.', 'chat-muted': 'The host muted you.', 'rule:chat.typed': 'Chat is off.', 'chat-empty': 'Type something first.' },
+    bossStart: '{n} started a Foundry Overseer fight. Come help!', bossLive: '{n} is fighting the Foundry Overseer.', bossEnd: 'The Foundry Overseer fight is over.', bossWon: 'The Foundry Overseer was rebooted!' },
+  simple: { chat: 'Chat', send: 'Send', ph: 'Type here (200 max)', close: 'Close', unread: '{n} new', errs: { 'chat-slow': 'Wait {s} s.', 'chat-long': 'Too long. 200 max.', 'chat-filtered': 'Not allowed.', 'chat-muted': 'You are muted.', 'rule:chat.typed': 'Chat is off.', 'chat-empty': 'Type something.' },
+    bossStart: '{n} woke the Foundry Overseer. Help!', bossLive: '{n} is fighting the Foundry Overseer.', bossEnd: 'The boss fight ended.', bossWon: 'The Foundry Overseer was rebooted!' },
+  uk: { chat: 'Чат', send: 'Надіслати', ph: 'Напиши щось (до 200)', close: 'Закрити чат', unread: 'нових: {n}', errs: { 'chat-slow': 'Зачекай {s} с.', 'chat-long': 'Не більше 200 символів.', 'chat-filtered': 'Таке повідомлення тут не можна.', 'chat-muted': 'Господар вимкнув тобі чат.', 'rule:chat.typed': 'Чат вимкнено.', 'chat-empty': 'Спершу напиши щось.' },
+    bossStart: '{n} почав бій з Наглядачем Ливарні. Допоможи!', bossLive: '{n} б’ється з Наглядачем Ливарні.', bossEnd: 'Бій з Наглядачем Ливарні закінчився.', bossWon: 'Наглядача Ливарні перезавантажено!' },
+  ru: { chat: 'Чат', send: 'Отправить', ph: 'Напиши что-нибудь (до 200)', close: 'Закрыть чат', unread: 'новых: {n}', errs: { 'chat-slow': 'Подожди {s} с.', 'chat-long': 'Не больше 200 символов.', 'chat-filtered': 'Такое сообщение здесь нельзя.', 'chat-muted': 'Хозяин выключил тебе чат.', 'rule:chat.typed': 'Чат выключен.', 'chat-empty': 'Сначала напиши что-нибудь.' },
+    bossStart: '{n} начал бой со Смотрителем Литейной. Помоги!', bossLive: '{n} сражается со Смотрителем Литейной.', bossEnd: 'Бой со Смотрителем Литейной закончился.', bossWon: 'Смотритель Литейной перезагружен!' },
+  es: { chat: 'Chat', send: 'Enviar', ph: 'Escribe algo (máx. 200)', close: 'Cerrar chat', unread: '{n} nuevos', errs: { 'chat-slow': 'Espera {s} s.', 'chat-long': '200 caracteres como máximo.', 'chat-filtered': 'Ese mensaje no está permitido aquí.', 'chat-muted': 'El anfitrión te silenció.', 'rule:chat.typed': 'El chat está apagado.', 'chat-empty': 'Escribe algo primero.' },
+    bossStart: '{n} empezó una pelea con el Supervisor de la Fundición. ¡Ven a ayudar!', bossLive: '{n} está peleando con el Supervisor de la Fundición.', bossEnd: 'La pelea con el Supervisor de la Fundición terminó.', bossWon: '¡El Supervisor de la Fundición fue reiniciado!' },
+  ar: { chat: 'الدردشة', send: 'إرسال', ph: 'اكتب شيئاً (200 كحد أقصى)', close: 'إغلاق الدردشة', unread: '{n} جديدة', errs: { 'chat-slow': 'انتظر {s} ث.', 'chat-long': '200 حرف كحد أقصى.', 'chat-filtered': 'هذه الرسالة غير مسموحة هنا.', 'chat-muted': 'أوقف المضيف دردشتك.', 'rule:chat.typed': 'الدردشة متوقفة.', 'chat-empty': 'اكتب شيئاً أولاً.' },
+    bossStart: 'بدأ {n} قتالاً مع مشرف المسبك. تعال وساعد!', bossLive: '{n} يقاتل مشرف المسبك.', bossEnd: 'انتهى القتال مع مشرف المسبك.', bossWon: 'تمت إعادة تشغيل مشرف المسبك!' },
+  'fa-AF': { chat: 'چت', send: 'فرستادن', ph: 'چیزی بنویس (حداکثر ۲۰۰)', close: 'بستن چت', unread: '{n} تازه', errs: { 'chat-slow': '{s} ثانیه صبر کن.', 'chat-long': 'حداکثر ۲۰۰ حرف.', 'chat-filtered': 'این پیام اینجا مجاز نیست.', 'chat-muted': 'میزبان چت تو را بست.', 'rule:chat.typed': 'چت خاموش است.', 'chat-empty': 'اول چیزی بنویس.' },
+    bossStart: '{n} جنگ با ناظر ریخته‌گری را شروع کرد. بیا کمک کن!', bossLive: '{n} با ناظر ریخته‌گری می‌جنگد.', bossEnd: 'جنگ با ناظر ریخته‌گری تمام شد.', bossWon: 'ناظر ریخته‌گری دوباره راه‌اندازی شد!' },
+  rw: { chat: 'Ikiganiro', send: 'Ohereza', ph: 'Andika ikintu (ntarengwa 200)', close: 'Funga ikiganiro', unread: '{n} bishya', errs: { 'chat-slow': 'Tegereza amasegonda {s}.', 'chat-long': 'Inyuguti 200 ntarengwa.', 'chat-filtered': 'Ubwo butumwa ntibwemewe hano.', 'chat-muted': 'Nyir’urugo yaguhagaritse kuvuga.', 'rule:chat.typed': 'Ikiganiro kirafunze.', 'chat-empty': 'Banza wandike ikintu.' },
+    bossStart: '{n} yatangiye kurwana n’Umugenzuzi w’Uruganda. Ngwino ufashe!', bossLive: '{n} arimo kurwana n’Umugenzuzi w’Uruganda.', bossEnd: 'Intambara n’Umugenzuzi w’Uruganda yarangiye.', bossWon: 'Umugenzuzi w’Uruganda yongeye gutangizwa!' },
+  ti: { chat: 'ዕላል', send: 'ስደድ', ph: 'ገለ ጽሓፍ (ክሳብ 200)', close: 'ዕላል ዕጸው', unread: '{n} ሓደስቲ', errs: { 'chat-slow': '{s} ካልኢት ተጸበ።', 'chat-long': 'ክሳብ 200 ፊደላት ጥራይ።', 'chat-filtered': 'እዚ መልእኽቲ ኣብዚ ኣይፍቀድን።', 'chat-muted': 'ኣአንጋዲ ዕላልካ ኣጥፊኡ።', 'rule:chat.typed': 'ዕላል ጠፊኡ ኣሎ።', 'chat-empty': 'ቅድም ገለ ጽሓፍ።' },
+    bossStart: '{n} ምስ ተቖጻጻሪ ፋብሪካ ውግእ ጀሚሩ። ንዓ ሓግዝ!', bossLive: '{n} ምስ ተቖጻጻሪ ፋብሪካ ይዋጋእ ኣሎ።', bossEnd: 'ውግእ ምስ ተቖጻጻሪ ፋብሪካ ተወዲኡ።', bossWon: 'ተቖጻጻሪ ፋብሪካ ዳግም ተጀሚሩ!' },
+}
+let chatLang = 'en'   // set from the rules frame (it carries the game's language)
+const cs = () => C[chatLang] || C[(chatLang || '').split('-')[0]] || C.en
+const fillAll = (s, m) => String(s).replace(/\{(\w+)\}/g, (_, k) => (m[k] === undefined ? '' : String(m[k])))
+const CHAT_LINES = 50
+let dock = null, chatOn = false, unread = 0
+function ensureDock() {
+  if (dock || typeof document === 'undefined') return dock
+  const T = cs()
+  dock = document.createElement('div'); dock.id = 'home-chat'; dock.dir = document.documentElement.dir || 'ltr'
+  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}</style>' +
+    '<button type="button" class="hc-toggle" aria-expanded="false" aria-controls="hc-panel"></button>' +
+    '<div class="hc-panel" id="hc-panel" hidden><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
+  const toggle = dock.querySelector('.hc-toggle'), panel = dock.querySelector('.hc-panel'), input = dock.querySelector('input'), form = dock.querySelector('form')
+  input.setAttribute('aria-label', T.ph); input.placeholder = T.ph; form.querySelector('button').textContent = T.send
+  toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) { unread = 0; input.focus() } paintToggle() }
+  // keys typed here are chat, not game controls
+  for (const ev of ['keydown', 'keyup', 'keypress']) input.addEventListener(ev, (e) => { e.stopPropagation(); if (e.type === 'keydown' && e.key === 'Escape') { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); paintToggle() } })
+  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay('') }
+  document.body.append(dock); paintToggle()
+  return dock
+}
+function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = '💬 ' + T.chat + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : ''); b.setAttribute('aria-label', b.textContent) }
+function chatSay(text) { if (dock) dock.querySelector('.hc-msg').textContent = text }
+function setChatOn(on) {
+  chatOn = !!on
+  if (chatOn) { ensureDock(); if (dock) dock.hidden = false }
+  else if (dock) { dock.hidden = true; dock.querySelector('.hc-panel').hidden = true; dock.querySelector('.hc-toggle').setAttribute('aria-expanded', 'false') }
+}
+function chatLine(f) {
+  if (!chatOn || !ensureDock()) return
+  const log = dock.querySelector('.hc-log'), li = document.createElement('li'), who = document.createElement('b')
+  who.textContent = String(f.a || '') + ': '; li.append(who, document.createTextNode(String(f.m || '')))
+  log.append(li); while (log.children.length > CHAT_LINES) log.firstChild.remove()
+  log.scrollTop = log.scrollHeight
+  if (dock.querySelector('.hc-panel').hidden) { unread = Math.min(99, unread + 1); paintToggle() }
+}
+function chatRefused(f) { const T = cs(); chatSay(fillAll(T.errs[f.c] || T.errs['rule:chat.typed'], { s: f.wait || 2 })) }
+
+// ---------------------------------------------------------------- shared boss news (docs §7) — home only
+// Mobs stay local to each game; the fight itself is news. main.js calls homeBossTick() with the local Overseer (or
+// null) at the boss bar's own 4 Hz; this sends start / phase / end to the host, at most one phase note per 3 s.
+let bossMine = null, bossLast = 0, bossPending = null, bossLive = null
+const BOSS_GAP_MS = 3000
+export function homeBossTick(boss) {
+  if (!sock || sock.readyState !== 1 || !hello) return
+  const t = Date.now()
+  if (boss && boss.hp > 0) {
+    const pct = Math.min(100, Math.ceil(4 * Math.max(0, boss.hp) / (boss.maxHp || 1)) * 25), phase = Math.min(3, Math.max(1, boss.phase || 1))
+    if (!bossMine || bossMine.id !== boss.id) { bossMine = { id: boss.id, phase, pct }; bossPending = null; bossLast = t; homeSend({ t: 'ev', k: 'boss', a: 'start', phase, pct }); return }
+    if (phase !== bossMine.phase || pct !== bossMine.pct) { bossMine.phase = phase; bossMine.pct = pct; bossPending = { phase, pct } }
+    if (bossPending && t - bossLast >= BOSS_GAP_MS) { homeSend({ t: 'ev', k: 'boss', a: 'phase', ...bossPending }); bossPending = null; bossLast = t }
+    return
+  }
+  if (bossMine) { homeSend({ t: 'ev', k: 'boss', a: 'end', won: !!(boss && boss.hp <= 0) || bossMine.pct <= 25 }); bossMine = null; bossPending = null }
+}
+export const homeBossLive = () => bossLive
+function bossNews(f) {
+  if (f.k !== 'boss') return
+  const T = cs(), me = info && f.by === info.name
+  if (f.a === 'start' || f.a === 'live') { bossLive = { by: f.by, phase: f.phase, pct: f.pct }; if (!me && toastFn) toastFn(fillAll(f.a === 'start' ? T.bossStart : T.bossLive, { n: f.by })) }
+  else if (f.a === 'phase') bossLive = { by: f.by, phase: f.phase, pct: f.pct }
+  else if (f.a === 'end') { bossLive = null; if (!me && toastFn) toastFn(f.won ? T.bossWon : T.bossEnd) }
+}
+// the socket's home-only frames (called from connect's onmessage)
+function homeFrame(f) {
+  if (f.t === 'chat') chatLine(f)
+  else if (f.t === 'ev') bossNews(f)
+  else if (f.t === 'no' && typeof f.c === 'string' && (f.c.startsWith('chat-') || f.c === 'rule:chat.typed')) chatRefused(f)
+}

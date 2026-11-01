@@ -1,14 +1,15 @@
 // Rulesets for the personal host (docs/bertopia/HOME-HOST.md §5). Pure. The keys are the game's own rule ids
-// (bloxbert-src/src/rules.js) plus two home-only ones (combat.pvp, survival.keep) and the game mode. The server holds
+// (bloxbert-src/src/rules.js) plus three home-only ones (combat.pvp, survival.keep, chat.typed) and the game mode. The server holds
 // the active set, hands it out in hello, broadcasts a change, and ENFORCES what it can see on the wire.
-export const RULE_IDS = ['core.break', 'core.place', 'core.craft', 'core.station.open', 'core.fly', 'station.bench', 'station.oven', 'station.woodshop', 'survival.daynight', 'survival.energy', 'combat.pvp', 'survival.keep']
-const BOOLS = new Set(['core.break', 'core.place', 'core.craft', 'core.station.open', 'core.fly', 'station.bench', 'station.oven', 'station.woodshop', 'combat.pvp', 'survival.keep'])
+export const RULE_IDS = ['core.break', 'core.place', 'core.craft', 'core.station.open', 'core.fly', 'station.bench', 'station.oven', 'station.woodshop', 'survival.daynight', 'survival.energy', 'combat.pvp', 'survival.keep', 'chat.typed']
+const BOOLS = new Set(['core.break', 'core.place', 'core.craft', 'core.station.open', 'core.fly', 'station.bench', 'station.oven', 'station.woodshop', 'combat.pvp', 'survival.keep', 'chat.typed'])
 const PICKS = Object.assign(Object.create(null), { 'survival.daynight': ['cycle', 'day', 'night'], 'survival.energy': ['off', 'calm', 'normal', 'fast'] })
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k)
 export const MODES = ['survival', 'creative']
 
-// Student defaults = what rules.js registers (every bool true, cycle, normal) + survival mode, PvP off, keep on.
-const STUDENT = { mode: 'survival', 'core.break': true, 'core.place': true, 'core.craft': true, 'core.station.open': true, 'core.fly': true, 'station.bench': true, 'station.oven': true, 'station.woodshop': true, 'survival.daynight': 'cycle', 'survival.energy': 'normal', 'combat.pvp': false, 'survival.keep': true }
+// Student defaults = what rules.js registers (every bool true, cycle, normal) + survival mode, PvP off, keep on,
+// typed chat off (school has quick chat only; every home preset starts with typed chat off, the owner turns it on).
+const STUDENT = { mode: 'survival', 'core.break': true, 'core.place': true, 'core.craft': true, 'core.station.open': true, 'core.fly': true, 'station.bench': true, 'station.oven': true, 'station.woodshop': true, 'survival.daynight': 'cycle', 'survival.energy': 'normal', 'combat.pvp': false, 'survival.keep': true, 'chat.typed': false }
 export const PRESETS = Object.assign(Object.create(null), {
   'home-school': { ...STUDENT, locked: true },                       // literal student rules; the editor is locked
   'home-survival': { ...STUDENT },
@@ -53,6 +54,8 @@ export function makeRuleset(preset = 'home-survival') {
     // hit {t:'hit', i}: PvP
     hitWhy(f, staff) { if (r['combat.pvp'] !== true) return 'rule:combat.pvp'; return null },
     // fly flag on a position frame: f.f is the game's own "flying" bit; creative allows it, survival needs core.fly
+    // typed chat {t:'chat'}: off means off for everyone, the owner too
+    chatWhy() { return r['chat.typed'] === true ? null : 'rule:chat.typed' },
     flyWhy(f, staff) { if (staff) return null; if (f.f && r.mode !== 'creative' && r['core.fly'] === false) return 'rule:core.fly'; return null },
   }
   return api

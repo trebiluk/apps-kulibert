@@ -33,3 +33,15 @@ export function nameOk(name) {
   for (const st of l.stems) if (compact.includes(st)) return false
   return true
 }
+
+// Chat text: the same list, checked word by word (a sentence compacted would trip on innocent word pairs, "is hit"),
+// plus runs of 1-2 letter pieces joined ("f u c k", "ph u c k"). true = fine.
+export function textOk(text) {
+  const l = load()
+  const words = fold(text).split(' ').filter(Boolean)
+  const bad = (w) => l.words.has(w) || l.stems.some((st) => w.includes(st))
+  for (const w of words) if (bad(w)) return false
+  let run = '', n = 0
+  for (const w of [...words, '']) { if (w && w.length <= 2) { run += w; n++ } else { if (n >= 2 && run.length >= 3 && bad(run)) return false; run = ''; n = 0 } }
+  return true
+}

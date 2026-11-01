@@ -12420,7 +12420,7 @@ function paintBossBar() {
 }
 
 noa.on('beforeRender', (dt) => {
-  if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }
+  if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar(); if (__HOME_HOST__) HOME.homeBossTick(mobs && mobs.list ? mobs.list().find((m) => m.kind === 'overseer') || null : null) }
   // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
