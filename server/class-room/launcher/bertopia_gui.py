@@ -76,7 +76,7 @@ class App:
         opts = ttk.Frame(r, padding=(12, 4)); opts.pack(fill='x')
         self.vars = {}
         for k, text in (('auto_update', 'Update automatically before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS, kept up to date)"),
-                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('debug', 'Debug log (more detail in the log file)')):
+                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('show_chat', 'Show chat messages in the activity feed below'), ('debug', 'Debug log (more detail in the log file)')):
             v = tk.BooleanVar(value=self.settings[k]); self.vars[k] = v
             ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).pack(anchor='w')
 
@@ -181,7 +181,7 @@ class App:
         if not core.prepare_game(n, on_line=lambda l: self.say(l, 'build')): raise RuntimeError('install or build failed (see the lines above)')
         self.show_game()
         self.say('starting the server ...')
-        if not self.server.start(n): raise RuntimeError('the server stopped right away (see the lines above)')
+        if not self.server.start(n, extra=(['--show-chat'] if self.settings['show_chat'] else [])): raise RuntimeError('the server stopped right away (see the lines above)')
         self.q.put(('call', self.paint))
         if self.server.owner_url: self.q.put(('call', lambda: webbrowser.open(self.server.owner_url)))
 

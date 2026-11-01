@@ -206,6 +206,18 @@ function sendAll(ws, p) {
   const n = Math.max(1, Math.ceil(wc.cells.length / ALL_BATCH))
   for (let i = 0; i < n; i++) { try { ws.send(JSON.stringify({ t: 'all', s: wc.head, i, n, c: wc.cells.slice(i * ALL_BATCH, (i + 1) * ALL_BATCH) })) } catch (e) { return } }
 }
+// Activity feed for the host's own window (Diego: "console never updated with chat, joins, blocks"). Display names
+// and counts only: never a code, PIN, token, address or ref. Block edits are summed per player per 5 s. Chat lines show
+// only with --show-chat (or SHOW_CHAT=1): the host sees them in the game anyway; the launcher passes it when asked.
+const SHOW_CHAT = flag('show-chat') || process.env.BT_SHOW_CHAT === '1'
+const feed = (text) => console.log('[' + new Date().toTimeString().slice(0, 8) + '] ' + text)
+const editTally = new Map()   // alias -> { placed, broken, timer }
+function tallyEdit(alias, placed) {
+  let t = editTally.get(alias)
+  if (!t) { t = { placed: 0, broken: 0, timer: null }; editTally.set(alias, t) }
+  if (placed) t.placed++; else t.broken++
+  if (!t.timer) t.timer = setTimeout(() => { editTally.delete(alias); feed(alias + (t.placed ? ' placed ' + t.placed : '') + (t.placed && t.broken ? ',' : '') + (t.broken ? ' broke ' + t.broken : '') + ' block' + (t.placed + t.broken === 1 ? '' : 's')) }, 5000).unref()
+}
 const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
@@ -215,19 +227,21 @@ function startSession({ ruleset, password }) {
   const r = door.start({ world: cfg.world, cfg: cfg.ruleset, password: password || null })
   lastCode = r.code
   saveCfg()
+  feed('session started · world ' + cfg.world + ' · rules ' + cfg.ruleset + (password ? ' · password on' : ''))
   return { ok: true, code: r.code, session: r.session }
 }
 function endSession() {
+  if (door.session) feed('session ended')
   door.end(); lastCode = null; ownerSeated = false; events.clear(); keepFor.clear()
   for (const { room, p } of players()) room.drop(p.id, 4006, 'session ended')
 }
-function rotateCode() { const r = door.rotate(); if (!r) return { error: 'ended' }; lastCode = r.code; return { ok: true, code: r.code } }
+function rotateCode() { const r = door.rotate(); if (!r) return { error: 'ended' }; lastCode = r.code; feed('code rotated'); return { ok: true, code: r.code } }
 const findPlayer = (ref) => players().find(({ p }) => p.ref === ref)
-function kick(ref) { const f = findPlayer(ref); if (!f) return { error: 'offline' }; f.room.drop(f.p.id, 4006, 'kicked'); return { ok: true } }
-function ban(ref) { const f = findPlayer(ref); door.ban(ref, f ? f.p.alias : door.nameOf(ref) || '', f ? f.p.ip : ''); if (f) f.room.drop(f.p.id, 4006, 'banned'); return { ok: true } }
-function freeze(on) { for (const r of rooms.values()) { r.frozen = !!on; r.broadcast({ t: 'frz', on: on ? 1 : 0 }) } return { ok: true, frozen: !!on } }
+function kick(ref) { const f = findPlayer(ref); if (!f) return { error: 'offline' }; feed('owner kicked ' + f.p.alias); f.room.drop(f.p.id, 4006, 'kicked'); return { ok: true } }
+function ban(ref) { const f = findPlayer(ref); feed('owner banned ' + (f ? f.p.alias : door.nameOf(ref) || 'a player')); door.ban(ref, f ? f.p.alias : door.nameOf(ref) || '', f ? f.p.ip : ''); if (f) f.room.drop(f.p.id, 4006, 'banned'); return { ok: true } }
+function freeze(on) { feed(on ? 'owner froze building' : 'owner unfroze building'); for (const r of rooms.values()) { r.frozen = !!on; r.broadcast({ t: 'frz', on: on ? 1 : 0 }) } return { ok: true, frozen: !!on } }
 // Mute: a per-player flag the Room reads once quick chat is wired (part 4; essentials.js is standalone today). Until then it only shows on the owner page.
-function mute(ref, on) { let n = 0; for (const { p } of players()) if (ref === '*' || p.ref === ref) { p.muted = !!on; n++ } return { ok: true, n } }
+function mute(ref, on) { let n = 0, who = ref === '*' ? 'everyone' : ''; for (const { p } of players()) if (ref === '*' || p.ref === ref) { p.muted = !!on; n++; if (ref !== '*') who = p.alias } if (n) feed('owner ' + (on ? 'muted ' : 'unmuted ') + who); return { ok: true, n } }
 // Rollback: undo every edit of the last N minutes (optionally by one player), through the world so it is numbered, saved and fanned out.
 function rollback(minutes, ref) {
   const w = cfg.world && worlds.get(cfg.world); if (!w) return { error: 'no world' }
@@ -236,6 +250,7 @@ function rollback(minutes, ref) {
   const sel = { since, until, ...(ref ? { who: hub.who(ref) } : {}) }
   const plan = undoPlan(hub.world.log(), sel)
   const res = applyUndo(hub.world, plan)
+  feed('owner rolled back ' + plan.length + ' cell' + (plan.length === 1 ? '' : 's') + ' (' + Math.round((until - since) / 60000) + ' min' + (ref ? ', one player' : '') + ')')
   return { ok: true, cells: plan.length, applied: res.filter((r) => r.ok).length }
 }
 // Keep inventory: the world's value (rules 'survival.keep') unless the owner set one for a player (this session only).
@@ -255,7 +270,7 @@ function setKeep(ref, on) {
   const f = findPlayer(ref); if (f && f.p.ws) sendRules(f.p.ws, ref)
   return { ok: true, keep: keepFor.has(ref) ? keepFor.get(ref) : rules.get('survival.keep'), from: keepFor.has(ref) ? 'player' : 'world' }
 }
-function setRuleset(preset) { if (!rules.setPreset(preset)) return { error: 'ruleset' }; cfg.ruleset = preset; door.setCfg(preset); saveCfg(); broadcastRules(); return { ok: true, ...rules.snapshot() } }
+function setRuleset(preset) { if (!rules.setPreset(preset)) return { error: 'ruleset' }; feed('rules: ' + preset); cfg.ruleset = preset; door.setCfg(preset); saveCfg(); broadcastRules(); return { ok: true, ...rules.snapshot() } }
 function setRule(id, v) { const r = rules.set(id, v); if (r.error) return r; if (!r.same) broadcastRules(); return { ok: true, ...rules.snapshot() } }
 // The home frame filter: runs BEFORE the (school) Room sees a frame. Enforces the ruleset on edits, answers the
 // home-only craft/st/hit frames, drops quick chat from a muted player. Everything else goes to the Room unchanged.
@@ -264,7 +279,7 @@ function homeFrame(room, ws, p, text) {
   if (!m || m.v !== 0 || typeof m.t !== 'string') return false
   const staff = p.role !== 'kid'
   const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
-  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } return false }
+  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
   if (m.t === 'p') {
     const why = rules.flyWhy(m, staff); if (why) { no(why); return true }
     // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
@@ -289,12 +304,13 @@ function homeFrame(room, ws, p, text) {
     const c = cleanChat(m.m); if (c.error) { no(c.error); return true }
     const slow = chatGate.check(p.ref); if (slow) { no('chat-slow', slow); return true }
     broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now() })
+    if (SHOW_CHAT) feed(p.alias + ': ' + c.m)
     return true
   }
   // shared events (home-only): a boss fight started, moved on or ended somewhere in the world
   if (m.t === 'ev') {
     const r = events.handle({ ref: p.ref, alias: p.alias, staff }, m)
-    if (r.error) no(r.error); else if (r.relay) broadcastAll(r.relay)
+    if (r.error) no(r.error); else if (r.relay) { broadcastAll(r.relay); if (r.relay.a === 'start') feed(p.alias + ' started a boss fight'); else if (r.relay.a === 'end') feed('the boss fight ended' + (r.relay.won ? ': won' : '')) }
     return true
   }
   return false
@@ -433,12 +449,13 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
+  feed(c.alias + (c.role !== 'kid' ? ' (owner)' : '') + ' joined · ' + players().length + ' in')
   sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
   { const ev = events.current(); if (ev) try { ws.send(JSON.stringify(ev)) } catch (e) {} }   // and a boss fight already going
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 

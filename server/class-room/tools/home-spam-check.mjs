@@ -115,7 +115,7 @@ async function sock(j) {
 }
 const player = async (name) => sock(await post('/join', { code: CODE, name, adults: true }, { 'x-forwarded-for': '203.0.113.' + ipN++ }))
 try {
-  child = spawn(process.execPath, ['--no-warnings', '--import', './host/register.mjs', 'host/home.mjs', '--port', String(PORT), '--data', DATA], { stdio: ['ignore', 'pipe', 'pipe'] })
+  child = spawn(process.execPath, ['--no-warnings', '--import', './host/register.mjs', 'host/home.mjs', '--port', String(PORT), '--data', DATA, '--show-chat'], { stdio: ['ignore', 'pipe', 'pipe'] })
   child.stdout.on('data', (d) => (log += d)); child.stderr.on('data', (d) => (log += d))
   for (let i = 0; i < 100 && !/owner page/.test(log); i++) await sleep(50)
   const key = /k=([0-9a-f]+)/.exec(log)[1]
@@ -152,7 +152,7 @@ try {
   eq(A.chat.at(-1).m === 'back now', 'live chat: recovers on unmute')
   const files = fs.readdirSync(DATA, { recursive: true }).map(String)
   const onDisk = files.filter((f) => !fs.statSync(path.join(DATA, f)).isDirectory()).some((f) => fs.readFileSync(path.join(DATA, f)).includes('back now'))
-  eq(!onDisk && !log.includes('back now') && !log.includes('hi all'), 'live chat: no message is written to disk or the log')
+  eq(!onDisk, 'live chat: no message is written to disk (the host window shows it only with --show-chat)')
 
   // keep inventory: world toggle, then one player set apart; each player's rules frame carries their own value
   const rulesOf = (c) => c.rules.at(-1) || {}
@@ -208,7 +208,11 @@ try {
   eq(/^wss:\/\//.test(viaTls.ws || '') && /^ws:\/\//.test(plain.ws || ''), 'TLS proxy: a join through the local proxy gets wss://, a plain one ws://')
 
   // the log: failure codes only
-  eq(!log.includes(CODE) && !log.includes('246810') && !log.includes(token) && !/203\.0\.113\.\d/.test(log) && !/\b(no-owner|chat-|ev-)/.test(log), 'log: no session code, PIN, owner token, player address or chat/event noise')
+  eq(!log.includes(CODE) && !log.includes('246810') && !log.includes(token) && !/203\.0\.113\.\d/.test(log) && !/\b(no-owner|chat-|ev-)/.test(log), 'log: no session code, PIN, owner token, player address or error noise')
+  await sleep(5200)   // the block tally prints 5 s after the last edit
+  for (const rx of [/\] Ana Spam joined · \d in/, /\] Ana Spam: hi all/, /\] Ben Spam placed \d+ block/, /\] owner muted Ben Spam/, /\] Ana Spam started a boss fight/, /\] session started · world spam-world-0001/]) if (!rx.test(log)) console.log("MISSING", String(rx))
+  eq(/\] Ana Spam joined · \d in/.test(log) && /\] Ana Spam: hi all/.test(log) && /\] Ben Spam placed \d+ block/.test(log) && /\] owner muted Ben Spam/.test(log) && /\] Ana Spam started a boss fight/.test(log) && /\] session started · world spam-world-0001/.test(log), 'feed: joins, chat (with --show-chat), block counts, owner actions, boss fights and the session show in the host window')
+  eq(!/\] [^\n]*(no-owner|chat-slow|ev-busy)/.test(log), 'feed: refusals are not noise in the feed')
   for (const c of [O, B, C]) try { c.ws.close() } catch (e) {}
 } catch (e) {
   eq(false, 'live run threw: ' + e.message)

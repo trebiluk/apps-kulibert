@@ -55,7 +55,7 @@ class Logs(unittest.TestCase):
     def test_settings_survive_junk(self):
         (core.app_dir() / 'launcher.json').write_text('{"auto_update": "yes", "own_node": true, "evil": 1}')
         s = core.load_settings()
-        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True})
+        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True})
         core.save_settings({**s, 'debug': True}); self.assertTrue(core.load_settings()['debug'])
 
     def test_diagnostics_are_redacted(self):

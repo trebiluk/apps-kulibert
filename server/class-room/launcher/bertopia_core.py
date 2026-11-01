@@ -14,7 +14,7 @@ Standard library only. Works on Windows (the target) and Linux (where the checks
 import datetime, hashlib, io, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, traceback, urllib.request, zipfile
 from pathlib import Path
 
-LAUNCHER_VERSION = '1.1.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
+LAUNCHER_VERSION = '1.2.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
 
 HERE = Path(__file__).resolve().parent
 ROOM = HERE.parent                       # server/class-room (set_repo() moves all three)
@@ -64,7 +64,7 @@ def app_dir():
 
 
 # ---------------------------------------------------------------- settings
-DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False, 'follow_release': True}
+DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True}
 RELEASE_BRANCH = 'bertopia-home'   # always points at the newest home-host part; the launcher follows it
 
 def load_settings():
