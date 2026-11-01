@@ -32,7 +32,7 @@ function findWin(level, cap) {
   return null;
 }
 
-assert.equal(G.APP_VERSION, "1.7.3");
+assert.equal(G.APP_VERSION, "1.8.0");
 assert.equal(G.LEVELS.length, 11);
 assert.equal(G.LEVELS[6].id, "T3");
 assert.ok(G.LEVELS[6].duo);
@@ -253,7 +253,7 @@ assert.match(page, /#2A2620/);
 assert.match(page, /#E8B400/);
 assert.match(page, /#1E1C19/);
 assert.match(page, /#EFE9DC/);
-assert.match(page, /v1\.7\.3/);
+assert.match(page, /v1\.8\.0/);
 assert.match(page, /Version 1\.3\.0/);
 assert.match(page, /Version 1\.2\.2/);
 assert.match(page, /Version 1\.2\.1/);
@@ -359,7 +359,7 @@ assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
 assert.ok((page.match(/box-shadow/g) || []).length <= 1); // 0055: the E-STOP is matte now, so its shadow is gone
 assert.match(hub, /href="\/berty-bizzy\/"/);
-assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.7\.3<\/strong>/);
+assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.8\.0<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);
 const vj = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 for (const src of ["/pinchy", "/pinchy/", "/pinchy/:path*"]) {
@@ -645,7 +645,7 @@ console.log("berty-bizzy win-test ok");
   assert.deepEqual([a60.ticks, a60.ms, a60.win], [a120.ticks, a120.ms, a120.win]);
   assert.ok(a30.worst <= 4 && P.pacer().steps(1.0) <= 4, "at most 4 substeps per frame");
   // the page loads the sim before the engine and carries the 1.7.0 notes
-  assert.match(page, /physics\.js\?v=1\.7\.3/);
+  assert.match(page, /physics\.js\?v=1\.8\.0/);
   assert.match(page, /data-k="w170a"/);
   console.log("ok 1.7.0 touch + physics: pass at", win.simMs, "ms; 30/60/120 fps ticks", a30.ticks, a60.ticks, a120.ticks);
 }
@@ -654,3 +654,17 @@ console.log("berty-bizzy win-test ok");
 for (const code of ["en", "es", "uk", "ru", "rw", "ti", "ar", "fa-AF"]) for (const k of ["v173", "w173a", "w173b", "w173c"]) assert.ok(G.uiText(code, k) && G.uiText(code, k) !== k, k + " " + code);
 assert.match(page, /data-k="w173c"/);
 console.log("ok 1.7.3 what's new");
+
+// 1.8.0: Set joints blocks (Teach / Record)
+{
+  const L2 = G.LEVELS[1];
+  const cmd = G.makeSet({ base: 0, shoulder: 15, elbow: -90, wrist: 0, open: false });
+  assert.equal(cmd, "set:0,15,-90,0,0");
+  assert.deepEqual(G.parseSet(cmd), { base: 0, shoulder: 15, elbow: -90, wrist: 0, open: false });
+  assert.equal(G.runAll(L2, [cmd, "base-right", "base-right", "claw-open"]).win, true, "a recorded pose grabs the part");
+  assert.equal(G.runAll(L2, ["set:0,15,-90,0,0", "set:30,15,-90,0,1"]).win, true, "two poses place it");
+  assert.equal(G.runAll(L2, ["set:0,200,-90,0,1"]).crash, "shoulder stopped at 120 degrees", "limits apply");
+  assert.ok(G.blockById(cmd) && G.blockById(cmd).joint === "set");
+  for (const code of ["en", "es", "uk", "ru", "rw", "ti", "ar", "fa-AF"]) for (const k of ["v180", "w180a", "w180b", "w180c"]) assert.ok(G.uiText(code, k) !== k, k + " " + code);
+  console.log("ok 1.8.0 set joints + what's new");
+}
