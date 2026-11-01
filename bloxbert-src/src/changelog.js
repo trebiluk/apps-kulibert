@@ -11,6 +11,17 @@ export const CHANGELOG = [
     en: ["2.5.595 — Closing the tab right after an edit still sends that edit to the school copy, once."],
     simple: ["2.5.595 — Close the tab after an edit. The edit still saves to school."],
   } },
+  { v: '2.5.594', date: '2026-10-31', lines: {
+    en: ["2.5.594 — Sign in shows real words, not code names. Typing your PIN never moves the hotbar."],
+    simple: ["2.5.594 — Sign in shows real words. Typing your PIN does not move the hotbar."],
+    uk: ["2.5.594 — Вхід показує справжні слова, а не коди. Введення PIN не рухає панель."],
+    ru: ["2.5.594 — Вход показывает настоящие слова, а не коды. Ввод PIN не двигает панель."],
+    es: ["2.5.594 — Iniciar sesión muestra palabras reales, no códigos. Escribir el PIN no mueve la barra."],
+    ar: ["2.5.594 — تسجيل الدخول يعرض كلمات حقيقية لا رموزًا. كتابة الرقم السري لا تحرّك الشريط."],
+    'fa-AF': ["2.5.594 — ورود کلمات واقعی را نشان می‌دهد، نه کد. نوشتن PIN نوار را حرکت نمی‌دهد."],
+    rw: ["2.5.594 — Kwinjira kwerekana amagambo nyayo, atari kode. Kwandika PIN ntibihindura akabari."],
+    ti: ["2.5.594 — ምእታው ናይ ሓቂ ቃላት የርኢ፣ ኮድ ኣይኮነን። PIN ምጽሓፍ ነቲ ባር ኣየንቀሳቕስን።"],
+  } },
   { v: '2.5.589', date: '2026-10-31', lines: {
     en: ["2.5.589 — Every save reaches the server or shows Not saved. Quick edits are no longer lost, and no fake Two copies found card."],
     simple: ["2.5.589 — Saves always reach the server, or you see Not saved."],
