@@ -46,7 +46,7 @@ HOME.homeJoinScreen({ lang: 'en', version: v }).then((s) => { window.session = s
 await esbuild.build({ entryPoints: [entry], bundle: true, format: 'iife', outfile: path.join(GAME, 'harness.js'), define: { __HOME_HOST__: 'true' }, logLevel: 'error', target: 'es2020' })
 fs.writeFileSync(path.join(GAME, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="bertopia-home" content="1"><title>home play check</title>
 <style>body{margin:0;min-height:100vh;background:#1e293b;color:#f8fafc;font:14px system-ui}#toasts{position:fixed;bottom:12px;inset-inline:12px}.toast{background:#0f172a;border:1px solid #475569;border-radius:10px;padding:8px 12px;margin-top:6px}</style></head>
-<body><div id="toasts" role="status" aria-live="polite"></div><script src="harness.js"></script></body></html>`)
+<body><div id="stage"><canvas tabindex="0" width="8" height="8"></canvas></div><div id="toasts" role="status" aria-live="polite"></div><script src="harness.js"></script></body></html>`)
 
 // ---- the host
 const PORT = 19390 + (process.pid % 100)
@@ -114,14 +114,17 @@ try {
     const ring = await P.evaluate(() => { const s = getComputedStyle(document.activeElement); return s.outlineStyle + ' ' + s.outlineWidth })
     eq(/solid 3px/.test(ring), `${tag} chat: the focused box has a 3 px focus ring (${ring})`)
     await P.keyboard.type('hello from the play check'); await P.keyboard.press('Enter'); await sleep(400)
+    const focusAfter = await P.evaluate(() => (document.activeElement && document.activeElement.tagName) || 'none')
+    eq(focusAfter !== 'INPUT', `${tag} chat: after Send the keys go back to the game (focus is on ${focusAfter}, not the chat box)`)
+    await P.focus('#home-chat input')
     await O.evaluate(() => { const b = document.querySelector('#home-chat .hc-toggle'); if (b && b.getAttribute('aria-expanded') !== 'true') b.click() })
     const line = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1) || '')
     eq(line === (round === 1 ? 'Ana Play' : 'Bo Play') + ': hello from the play check', `${tag} chat: the owner's panel shows "${line}"`)
-    for (let i = 0; i < 5; i++) { await P.keyboard.type('quick ' + i); await P.keyboard.press('Enter') }
+    for (let i = 0; i < 5; i++) { await P.focus('#home-chat input'); await P.keyboard.type('quick ' + i); await P.keyboard.press('Enter') }
     await sleep(300)
     const slow = await P.evaluate(() => document.querySelector('#home-chat .hc-msg').textContent)
     eq(/Slow down: wait \d s\./.test(slow), `${tag} chat: past the burst of 5 the box says "${slow}"`)
-    await sleep(1300); await P.keyboard.type('<img src=x onerror=alert(1)>'); await P.keyboard.press('Enter'); await sleep(400)
+    await sleep(1300); await P.focus('#home-chat input'); await P.keyboard.type('<img src=x onerror=alert(1)>'); await P.keyboard.press('Enter'); await sleep(400)
     const asText = await O.evaluate(() => ({ imgs: document.querySelectorAll('#home-chat img').length, last: [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1) }))
     eq(asText.imgs === 0 && asText.last.endsWith('<img src=x onerror=alert(1)>'), `${tag} chat: markup in a message arrives as plain text`)
     const unread = await P.evaluate(async () => { document.querySelector('#home-chat .hc-toggle').click(); await new Promise((r) => setTimeout(r, 50)); return document.querySelector('#home-chat .hc-toggle').textContent })

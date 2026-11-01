@@ -218,8 +218,14 @@ function ensureDock() {
   input.setAttribute('aria-label', T.ph); input.placeholder = T.ph; form.querySelector('button').textContent = T.send
   toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) { unread = 0; input.focus() } paintToggle() }
   // keys typed here are chat, not game controls
-  for (const ev of ['keydown', 'keyup', 'keypress']) input.addEventListener(ev, (e) => { e.stopPropagation(); if (e.type === 'keydown' && e.key === 'Escape') { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); paintToggle() } })
-  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay('') }
+  for (const ev of ['keydown', 'keyup', 'keypress']) input.addEventListener(ev, (e) => { e.stopPropagation(); if (e.type === 'keydown' && e.key === 'Escape') { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); paintToggle(); input.blur(); const c = document.querySelector('#stage canvas') || document.body; try { c.focus({ preventScroll: true }) } catch (e2) { c.focus() } } })
+  // after Send the keys go back to the game (the box kept the focus, so Enter/Tab/Space never reached the wand or
+  // the player until a mouse click: Diego, Nov 1). Shift+Enter keeps the cursor in the box for another message.
+  let shiftHeld = false
+  input.addEventListener('keydown', (e) => { shiftHeld = e.shiftKey })
+  const backToGame = () => { input.blur(); const c = document.querySelector('#stage canvas') || document.body; try { c.focus({ preventScroll: true }) } catch (e) { c.focus() } }
+  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay(''); if (!(e.submitter && e.submitter.dataset.stay) && !shiftHeld) backToGame() }
+
   document.body.append(dock); paintToggle()
   return dock
 }
