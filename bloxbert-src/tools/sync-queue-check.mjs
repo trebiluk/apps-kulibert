@@ -562,7 +562,7 @@ for (const [label, setup] of [
   eq(EXTRA.en.codeHint === '5 characters' && EXTRA.en.pinHint === 'From your teacher', 'English placeholders unchanged')
   // main.js applies the placeholder attribute and checks it for drift (source-level check; the page needs a build)
   const mainSrc = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8')
-  eq(/querySelectorAll\('\[data-i18n-placeholder\]'\)\) el\.setAttribute\('placeholder', t\(el\.dataset\.i18nPlaceholder\)\)/.test(mainSrc), 'applyI18n sets the placeholder attribute')
+  eq(/querySelectorAll\('\[data-i18n-placeholder\]'\)\)( \{ if \(!sharedI18n\(el\)\))? el\.setAttribute\('placeholder', t\(el\.dataset\.i18nPlaceholder\)\)/.test(mainSrc), 'applyI18n sets the placeholder attribute') // 2.5.594 (#108) guards shared keys
   eq(/getAttribute\('placeholder'\) !== t\(el\.dataset\.i18nPlaceholder\)/.test(mainSrc), 'drift check covers placeholders')
 }
 

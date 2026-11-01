@@ -37,6 +37,7 @@ for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = lines.join(' ')
 }
+initPainter({ t, toast }) // block painter words (was inside the old What's-new chain)
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined

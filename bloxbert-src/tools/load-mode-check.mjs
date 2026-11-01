@@ -32,9 +32,11 @@ ok('emptyPlayer default', emptyPlayer().mode === 'survival' && emptyPlayer('crea
 
 // 4) sync chip flag: ?sync=1 or the bt-sync sessionStorage key (same key as server-sync.js)
 const src = await import('fs').then((fs) => fs.readFileSync(new URL('../src/save/sync-chip.js', import.meta.url), 'utf8'))
-ok('sync-chip reads bt-sync from sessionStorage', /sessionStorage\.getItem\('bt-sync'\) === '1'/.test(src))
+// 2.5.559 (#64): one sync flag module (save/sync-flag.js) that the chip and server-sync both import
+const flagSrc = await import('fs').then((fs) => fs.readFileSync(new URL('../src/save/sync-flag.js', import.meta.url), 'utf8'))
+ok('sync-chip reads bt-sync from sessionStorage', /from '\.\/sync-flag\.js'/.test(src) && /sessionStorage\.getItem\('bt-sync'\) === '1'/.test(flagSrc))
 const srv = await import('fs').then((fs) => fs.readFileSync(new URL('../src/save/server-sync.js', import.meta.url), 'utf8'))
-ok('server-sync persists the same key', /sessionStorage\.setItem\('bt-sync', '1'\)/.test(srv))
+ok('server-sync persists the same key', /persistFlag/.test(srv) && /from '\.\/sync-flag\.js'/.test(srv) && /sessionStorage\.setItem\('bt-sync', '1'\)/.test(flagSrc))
 // mountSyncChip in a fake browser: no query and no flag -> no chip; flag only -> chip mounted
 let appended = 0
 const fakeEl = () => ({ setAttribute() {}, append() {}, appendChild() {}, addEventListener() {}, querySelector: () => ({ textContent: '' }), style: {}, innerHTML: '' })
