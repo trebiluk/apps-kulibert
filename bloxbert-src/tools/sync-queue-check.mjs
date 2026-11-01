@@ -150,11 +150,8 @@ const doc = (blocks, at) => ({ id: 'bertyville-survival', updatedAt: at || new D
   srv.holdPut = null
   release()
   await flush()
-  eq(srv.rev === 1 && srv.puts.length === 1, 'first push landed alone')
-  await advance(19000)
-  eq(srv.puts.length === 1, 'second push waits for the 20 s window')
-  await advance(2000)
-  eq(srv.puts.length === 2 && srv.rev === 2, 'pending doc pushed when the window ends (puts ' + srv.puts.length + ')')
+  // main (2.5.595): a doc that arrived while a push was busy goes right after it, so a tab closed soon after still got both up
+  eq(srv.rev === 2 && srv.puts.length === 2, 'first push landed, then the waiting doc right after it, one at a time (puts ' + srv.puts.length + ')')
   eq(JSON.stringify(Object.values(srv.chunks)) === '["a","b"]', 'both blocks are on the server')
   eq(srv.puts[1].ifMatch === 1, 'second PUT uses the fresh rev')
   eq(!logs.some((l) => l.includes('409')) && school.length === 0, 'no 409 and no school copy')
@@ -212,8 +209,8 @@ const doc = (blocks, at) => ({ id: 'bertyville-survival', updatedAt: at || new D
   maybePush(doc(['mine']))
   await flush()
   eq(srv.puts.length === 2, 'conflict: PUT, then one re-PUT (' + srv.puts.length + ')')
-  eq(srv.puts[0].ifMatch === 3 && srv.puts[1] && srv.puts[1].ifMatch === 4, 'keepBoth uses the fresh server rev: ' + srv.puts.map((p) => p.ifMatch).join(','))
-  eq(school.length === 1, 'real conflict keeps a school copy')
+  // main (Topia sync P1): a 409 reads the head again and retries once with that rev; only a second 409 keeps both
+  eq(srv.puts[0].ifMatch === 3 && srv.puts[1] && srv.puts[1].ifMatch === 4, 're-PUT uses the fresh server rev: ' + srv.puts.map((p) => p.ifMatch).join(','))
   eq(srv.rev === 5, 'local doc ends up on the server')
 }
 
@@ -404,18 +401,19 @@ for (const [label, setup] of [
 {
   const { maybePush } = await fresh()
   serverAt(3, '2026-10-31T09:00:00.000Z')
-  srv.putStatus = [409, 409]
+  // main re-reads and re-PUTs once on a 409 before it keeps both, so it takes three 409s to reach the keepBoth re-PUT 409
+  srv.putStatus = [409, 409, 409]
   maybePush(doc(['mine']))
   await flush()
   eq(school.length === 1, '409: both kept once')
-  eq(srv.puts.length === 2, '409: PUT and the keepBoth re-PUT (' + srv.puts.length + ')')
+  eq(srv.puts.length === 3, '409: PUT, the fresh-rev re-PUT and the keepBoth re-PUT (' + srv.puts.length + ')')
   await advance(1500)
-  eq(srv.puts.length === 2, '409 again: backs off, no immediate PUT')
+  eq(srv.puts.length === 3, '409 again: backs off, no immediate PUT')
   await advance(1000)
-  eq(srv.puts.length === 3 && srv.rev === 4 && srv.chunks['0,0,0'] === 'mine', '409 then success: saved on the next try')
+  eq(srv.puts.length === 4 && srv.rev === 4 && srv.chunks['0,0,0'] === 'mine', '409 then success: saved on the next try')
   eq(school.length === 1, 'no second school copy on the repeat 409')
   await advance(60000)
-  eq(srv.puts.length === 3, 'done: nothing more sent')
+  eq(srv.puts.length === 4, 'done: nothing more sent')
 }
 
 // 22. 5xx backs off and recovers; a new save during backoff does not jump the queue

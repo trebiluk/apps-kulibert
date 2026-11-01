@@ -9,6 +9,14 @@
   var SCHOOL = "kulibert-boards-school";
   var NOTES = "kulibert-boards-notes";
   var API = "https://tw.kulibert.net/api/boards";
+  // Hub rev 2026-10-31-boards-quiet: the board API only answers pages on these hosts (CORS). On previews and
+  // localhost the browser would log a CORS error for every call, so we stay on this Chromebook's boards instead.
+  var API_HOSTS = { "apps.kulibert.net": 1 };
+  var pullFails = 0;
+  function apiOk() {
+    if (!API || API.charAt(0) === "/") return false;
+    try { return !!API_HOSTS[root.location.hostname]; } catch (e) { return false; }
+  }
   var MAX = 400;
 
   var ADJ = ["Swift", "Bright", "Calm", "Keen", "Bold", "Quiet", "Rapid", "Solid"];
@@ -235,7 +243,7 @@
       writeNotes(pack);
     }
     try { root.dispatchEvent(new CustomEvent("kulibert-boards", { detail: row })); } catch (e) {}
-    try {
+    if (apiOk()) try {
       fetch(API, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -312,10 +320,29 @@
     return bag.rows.length;
   }
 
+  // One pull at a time; after 2 failed pulls (the first try and 1 retry) we stop asking until the page reloads.
+  var pulling = null;
   function pull() {
-    if (!API || API.charAt(0) === "/") return Promise.resolve(null);
+    if (!apiOk() || pullFails >= 2) return Promise.resolve(null);
+    if (pulling) return pulling;
+    pulling = pullOnce().then(function (n) {
+      pulling = null;
+      if (n == null) pullFails += 1;
+      else pullFails = 0;
+      return n;
+    }, function () { pulling = null; pullFails += 1; return null; });
+    return pulling;
+  }
+
+  function pullOnce() {
     var cls = classCode();
-    return fetch(API + "?class=" + encodeURIComponent(cls), { credentials: "omit" }).then(function (res) {
+    var req;
+    try {
+      req = fetch(API + "?class=" + encodeURIComponent(cls), { credentials: "omit" });
+    } catch (eFetch) {
+      return Promise.resolve(null);
+    }
+    return req.then(function (res) {
       if (!res.ok) return null;
       return res.json();
     }).then(function (pack) {

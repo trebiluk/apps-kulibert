@@ -4,6 +4,21 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/pinchy",
+      "destination": "/berty-bizzy/",
+      "permanent": true
+    },
+    {
+      "source": "/pinchy/",
+      "destination": "/berty-bizzy/",
+      "permanent": true
+    },
+    {
+      "source": "/pinchy/:path*",
+      "destination": "/berty-bizzy/",
+      "permanent": true
+    },
+    {
       "source": "/teacher",
       "destination": "/paperlab/teacher",
       "permanent": false,
@@ -422,6 +437,111 @@
       "permanent": false
     },
     {
+      "source": "/alice",
+      "destination": "/alice/",
+      "permanent": true
+    },
+    {
+      "source": "/berty-run",
+      "destination": "/berty-run/",
+      "permanent": true
+    },
+    {
+      "source": "/bertybeatz",
+      "destination": "/bertybeatz/",
+      "permanent": true
+    },
+    {
+      "source": "/bertybots",
+      "destination": "/bertybots/",
+      "permanent": true
+    },
+    {
+      "source": "/bertyscore",
+      "destination": "/bertyscore/",
+      "permanent": true
+    },
+    {
+      "source": "/bits",
+      "destination": "/bits/",
+      "permanent": true
+    },
+    {
+      "source": "/catapult",
+      "destination": "/catapult/",
+      "permanent": true
+    },
+    {
+      "source": "/coderized",
+      "destination": "/coderized/",
+      "permanent": true
+    },
+    {
+      "source": "/creator-dash",
+      "destination": "/creator-dash/",
+      "permanent": true
+    },
+    {
+      "source": "/drawin",
+      "destination": "/drawin/",
+      "permanent": true
+    },
+    {
+      "source": "/holdit",
+      "destination": "/holdit/",
+      "permanent": true
+    },
+    {
+      "source": "/housekit",
+      "destination": "/housekit/",
+      "permanent": true
+    },
+    {
+      "source": "/hub-next",
+      "destination": "/hub-next/",
+      "permanent": true
+    },
+    {
+      "source": "/master-control",
+      "destination": "/master-control/",
+      "permanent": true
+    },
+    {
+      "source": "/music",
+      "destination": "/music/",
+      "permanent": true
+    },
+    {
+      "source": "/musiclab",
+      "destination": "/musiclab/",
+      "permanent": true
+    },
+    {
+      "source": "/rampfill",
+      "destination": "/rampfill/",
+      "permanent": true
+    },
+    {
+      "source": "/sprocket",
+      "destination": "/sprocket/",
+      "permanent": true
+    },
+    {
+      "source": "/staff",
+      "destination": "/staff/",
+      "permanent": true
+    },
+    {
+      "source": "/visualizer",
+      "destination": "/visualizer/",
+      "permanent": true
+    },
+    {
+      "source": "/voltduel",
+      "destination": "/voltduel/",
+      "permanent": true
+    },
+    {
       "source": "/spancraft",
       "has": [{ "type": "query", "key": "build" }],
       "destination": "/spancraft/index.html",
@@ -503,22 +623,44 @@
     {
       "source": "/blocks",
       "destination": "/bertopia/",
-      "permanent": true
+      "permanent": false,
+      "missing": [
+        { "type": "header", "key": "sec-fetch-dest", "value": "empty" }
+      ]
     },
     {
-      "source": "/blocks/:path((?!sw\\.js$).*)",
+      "source": "/blocks/:path(app\\.js|read\\.css|icons-test\\.html|icons-test\\.js|THIRD-PARTY\\.txt|assets/.*)",
       "destination": "/bertopia/:path",
-      "permanent": true
+      "permanent": false
+    },
+    {
+      "source": "/blocks/:rest((?!sw\\.js$).*)",
+      "destination": "/bertopia/",
+      "permanent": false,
+      "missing": [
+        { "type": "header", "key": "sec-fetch-dest", "value": "empty" }
+      ]
     },
     {
       "source": "/blocks-test",
       "destination": "/bertopia/",
-      "permanent": true
+      "permanent": false,
+      "missing": [
+        { "type": "header", "key": "sec-fetch-dest", "value": "empty" }
+      ]
     },
     {
-      "source": "/blocks-test/:path((?!sw\\.js$).*)",
+      "source": "/blocks-test/:path(app\\.js|read\\.css|icons-test\\.html|icons-test\\.js|THIRD-PARTY\\.txt|assets/.*)",
       "destination": "/bertopia/:path",
-      "permanent": true
+      "permanent": false
+    },
+    {
+      "source": "/blocks-test/:rest((?!sw\\.js$).*)",
+      "destination": "/bertopia/",
+      "permanent": false,
+      "missing": [
+        { "type": "header", "key": "sec-fetch-dest", "value": "empty" }
+      ]
     }
   ],
   "rewrites": [
