@@ -2355,13 +2355,41 @@ function floraCols(x0, z0) {
   return tree
 }
 
+function deepRiverBank(x, z, h) {
+  for (let i = 0; i < 4; i++) {
+    const w = water6(x + D4[i][0], z + D4[i][1])
+    if (!w || w.lake) continue
+    if (w.depth >= 3 && Math.abs(h - w.top) <= 1) return true
+  }
+  return false
+}
+
+// Gen 8 only. High ground (y >= 12) wears snow so ice can be made.
+// A bank beside a deep river wears red sand so red brick can be made.
+// Older gens stay byte-for-byte.
+function cap8(x, y, z, name, cols) {
+  if (name === 'grass') {
+    if (inTownXZ(x, z)) return name
+    const idx = colsIndex(cols, x, z)
+    const h = idx >= 0 && cols ? cols.h[idx] : groundAt(x, z, 8, null, cols)
+    if (y === h && h >= 12) return 'snow'
+    return name
+  }
+  if (name !== 'sand' && name !== 'gravel') return name
+  const idx = colsIndex(cols, x, z)
+  const info = idx >= 0 && cols && cols.feat ? cols.feat[idx] : columnFeat(x, z)
+  if (info && info.bank && y === info.bank.h && deepRiverBank(x, z, info.bank.h)) return 'redSand'
+  return name
+}
+
 export function genBlock(x, y, z, gen, fade, cols) {
   const g = gen | 0
   const xi = x | 0
   const yi = y | 0
   const zi = z | 0
   if (g >= 6) {
-    const base = gen6Fast(xi, yi, zi, fade, cols)
+    let base = gen6Fast(xi, yi, zi, fade, cols)
+    if (g >= 8 && (base === 'grass' || base === 'sand' || base === 'gravel')) base = cap8(xi, yi, zi, base, cols)
     if (base || g < 7) return base
     let grown = ''
     if (cols && cols.tree) {

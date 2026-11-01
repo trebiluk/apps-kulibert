@@ -526,3 +526,50 @@ html[dir="rtl"] .lp-dialog[class*="56rem"] td {
   box-shadow: 0 0 0 2px #f4f1ea;
 }
 
+
+/* HI 1.1.24 — On a phone, Sign in sits on the right of the Hub bar,
+   directly over the Test button. While the editor is open, those two
+   controls leave the bar (the menu still has them). Test stays on top
+   of anything that still overlaps it. Debug is a teacher tool. */
+html.hi-editor .kb-bar .kb-home,
+html.hi-editor .kb-bar .kb-alias {
+  display: none !important;
+}
+html.hi-editor .shop-editor > header > button:last-child {
+  position: relative;
+  z-index: 91;
+}
+html:not(.hi-debug) a[href="/holdit/debug"],
+html:not(.hi-debug) a[href="/holdit/debug/"],
+html:not(.hi-debug) a[href$="/debug"],
+html:not(.hi-debug) a[href*="/debug?"],
+html:not(.hi-debug) a.hi-debug-row,
+html:not(.hi-debug) #hi-drawer a[href*="/debug"],
+html:not(.hi-debug) #kb-drawer a[href*="/debug"] {
+  display: none !important;
+}
+html.hi-debug a[href$="/debug"],
+html.hi-debug a.hi-debug-row,
+html.hi-debug #hi-drawer a[href*="/debug"],
+html.hi-debug #kb-drawer a.hi-debug-row {
+  display: flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  min-width: 44px;
+  box-sizing: border-box;
+}
+html.hi-debug a.hi-debug-row:focus-visible,
+html.hi-debug #kb-drawer a[href$="/debug"]:focus-visible {
+  outline: 2px solid #e8f7ff;
+  outline-offset: 2px;
+}
+.hi-back-hub,
+.hi-sign-in {
+  gap: 0.4rem;
+}
+.hi-back-hub:focus-visible,
+.hi-sign-in:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}

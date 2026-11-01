@@ -1,7 +1,7 @@
 {
   "name": "bertopia-room-server",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.5.569",
   "description": "Phase 0 class room server for Bertopia: presence only (alias nameplates + positions). Standalone. Not wired into the game.",
   "type": "module",
   "scripts": {

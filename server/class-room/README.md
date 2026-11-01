@@ -1,6 +1,8 @@
 # Bertopia class room server (Phase 0: presence only)
 
-**Standalone. Not wired into the game. Not deployed.** Nothing in `bloxbert-src` changes. Design by Claude; Debugzy gates and builds.
+Version: 2.5.569
+
+**Standalone. Not wired into the game. Auto-deploys from `main` via Cloudflare Workers Git integration (worker `bertopia-room-server`, root `server/class-room`, `npx wrangler deploy`).** Nothing in `bloxbert-src` changes. Design by Claude; Debugzy gates and builds.
 
 One Cloudflare Durable Object per room. Up to 30 kids (plus up to 4 staff sockets). Each kid sees the others' **alias nameplates and positions at about 5 Hz**. No typed text, no names, no block edits, no inventory (those are Phase 1+).
 
@@ -91,3 +93,15 @@ Words, not code. Every on-screen string in 8 languages + Simple; keyboard and to
 **C. No kid-hosted worlds.**
 - For kids there is no Create, Host, Invite, Share-world, Realm or join-by-code control anywhere in the game, help text or menus. Only teachers/staff (staff passkey sign-in on TechWorks) create a server world and pick one of the 7 configs. Kids join a staff-made world from their class list.
 - Countable check: search the kid build's strings and UI for host/invite/realm/create-world: 0 matches for the kid role. Server side: `npm run test:abuse` shows all world-making messages closed.
+
+## Local dev (wrangler)
+1. `cp .dev.vars.example .dev.vars` and fill in your own local values (never commit `.dev.vars`).
+2. Run:
+   ```
+   npx wrangler dev --local --port 8787 --local-upstream 127.0.0.1:8787
+   ```
+   `--local-upstream` is required. Without it wrangler routes requests to the custom domain from `wrangler.toml`, so the origin check fails and every socket gets `403 origin`.
+3. Load test (in a second terminal), with `ROOM_JOIN_SECRET` set to the same value as in your `.dev.vars`:
+   ```
+   ROOM_JOIN_SECRET=<same-as-.dev.vars> npm run test:load -- --seconds=60
+   ```

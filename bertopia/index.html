@@ -3,8 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// One Bertopia URL: the old /blocks/ and /blocks-test/ doors redirect on the server; this is the fallback.
+// Local test servers (localhost, 127.0.0.1) still open /blocks-test/ so the build checks keep working.
+;(function () { try { if (/^\/blocks(-test)?(\/|$)/.test(location.pathname) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { document.documentElement.style.background = '#0B1220'; location.replace('/bertopia/' + location.search + location.hash) } } catch (e) {} })()
+</script>
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.564</title>
+<title>Bertopia 2.5.595</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.541">
 <link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.541">
 <style>
@@ -204,7 +209,7 @@ body.stick-right #t-bonk:not([hidden]){right:auto;left:calc(100% + 12px)}
 
 #suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
 @media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
-@media (max-height:500px){body:not(.stick-right) #suit-bar{left:160px}} /* 2.5.550: sideways phones, Suit sits right of Goals, not under it */
+@media (max-height:500px){body:not(.stick-right) #suit-bar{left:160px}} /* 2.5.571: sideways phones, Suit sits right of Goals, not under it */
 body.stick-right #suit-bar{left:auto;right:10px}
 body.touch #pick-chip{right:calc(16px + 64px + 12px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h, var(--hud-lift)) + 12px + 56px + 16px)}
 body.touch.stick-right #pick-chip{right:auto;left:calc(16px + 64px + 12px + env(safe-area-inset-left))}
@@ -319,7 +324,7 @@ body:not(.menu-open) #sheet[hidden] ~ .keys{display:block}
 #sheet[data-panel] .sheet-bar{flex:0 0 auto;overflow:visible;max-height:none}
 .slot.bag-tile{position:static;flex:0 0 auto;right:auto}
 #sheet[hidden]{display:none}
-@media (min-width:700px){html body #sheet.kd-panel[data-panel=inventory][data-panel]{left:0;right:0;margin-inline:auto}} /* 2.5.550: Bag centered, not docked left (Escape menu was already centered) */
+@media (min-width:700px){html body #sheet.kd-panel[data-panel=inventory][data-panel]{left:0;right:0;margin-inline:auto}} /* 2.5.571: Bag centered, not docked left (Escape menu was already centered) */
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
 .sheet-bar button{min-width:48px;min-height:48px;background:rgba(11,18,32,.85);color:#f8fafc;border:1px solid var(--teal);border-radius:10px}
 html[dir=rtl] #fs-btn{right:12px;left:auto}
@@ -749,6 +754,8 @@ body[data-glasses="1"] .cross{box-shadow:none}
 .top,#path-chip,#game-menu,#inspect-chip,#wallet-chip,#fs-btn,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
+/* 2.5.592: phone World panel, two columns so labels show in full (no "Load my...") */
+@media (max-width:600px){#sheet[data-panel="world"] .ggrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#sheet[data-panel="world"] .gtile .glbl{display:block!important;-webkit-line-clamp:unset!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;max-height:none!important;max-width:none!important;overflow-wrap:break-word;line-height:1.2}}
 #qol-tip.kd-tip,#qol-held{
   position:fixed;z-index:80;font-size:max(14px,var(--ks-fs-s));
   padding:calc(var(--ks-pad) / 3) var(--ks-pad);pointer-events:none
@@ -1186,7 +1193,7 @@ body.tip-on #held-chip{display:none!important}
 #soil-tip .mark{width:22px;height:22px;flex:0 0 22px;display:block}
 #place-cue-live{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 @media(max-width:940px){.mode-lab,.day-sep{display:none!important}.top{gap:4px 6px;padding:4px 8px}}</style>
-<link rel="stylesheet" href="read.css?v=2.5.564">
+<link rel="stylesheet" href="read.css?v=2.5.595">
 </head>
 <body>
 <div id="stage"></div>
@@ -1204,7 +1211,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.564</span>
+      <span class="ver" id="ver-plate">2.5.595</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1257,7 +1264,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.584 — Bertopia no longer keeps an old copy of itself on your device, so you always get the newest version.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1307,7 +1314,7 @@ body.tip-on #held-chip{display:none!important}
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
     <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">2.5.564</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.5.584</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a><br><span data-i18n="creditDyslexia">Dyslexia font: OpenDyslexic (OFL 1.1).</span> <a href="/fonts/OFL.txt" target="_blank" rel="noopener">OFL</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card kd-card" role="dialog" aria-labelledby="about-title">
@@ -1423,8 +1430,8 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/kulibert-slots.js?v=2.5.541"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.564" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.564" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-22-first" data-app="bloxbert" data-name="Bertopia" data-version="2.5.595" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.595" defer></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1562,7 +1569,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (window.__bertOpen === true) { window.dispatchEvent(new Event('bert-update')); return }
       reloadOnce()
     })
-    navigator.serviceWorker.register(scope + 'sw.js', { scope: scope, updateViaCache: 'none' }).then(arm).catch(function () {}) // 2.5.484
+    // One URL + kill-switch: never register a worker again (a new register() would revive one that is unregistering).
+    // An old worker is asked to update instead; the update is the kill-switch sw.js, which clears bloxbert-* caches and unregisters.
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { if (r.scope.indexOf(scope) !== -1) { try { r.update().catch(function () {}) } catch (e) {} } })
+    }).catch(function () {})
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return
       navigator.serviceWorker.getRegistration(scope).then(function (reg) {
