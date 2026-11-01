@@ -7,16 +7,18 @@ const PICKS = Object.assign(Object.create(null), { 'survival.daynight': ['cycle'
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k)
 export const MODES = ['survival', 'creative']
 
-// Student defaults = what rules.js registers (every bool true, cycle, normal) + survival mode, PvP off, keep on,
-// typed chat off (school has quick chat only; every home preset starts with typed chat off, the owner turns it on).
-const STUDENT = { mode: 'survival', 'core.break': true, 'core.place': true, 'core.craft': true, 'core.station.open': true, 'core.fly': true, 'station.bench': true, 'station.oven': true, 'station.woodshop': true, 'survival.daynight': 'cycle', 'survival.energy': 'normal', 'combat.pvp': false, 'survival.keep': true, 'chat.typed': false }
+// Student defaults = what rules.js registers (every bool true, cycle, normal) + survival mode, PvP off.
+// Two home settings ride along: survival.keep (keep inventory) ON and chat.typed (world chat) ON in every preset.
+// They are server settings, not game rules, so the owner may change them even under "Same as school"'s lock.
+const STUDENT = { mode: 'survival', 'core.break': true, 'core.place': true, 'core.craft': true, 'core.station.open': true, 'core.fly': true, 'station.bench': true, 'station.oven': true, 'station.woodshop': true, 'survival.daynight': 'cycle', 'survival.energy': 'normal', 'combat.pvp': false, 'survival.keep': true, 'chat.typed': true }
+export const SERVER_TOGGLES = new Set(['survival.keep', 'chat.typed'])   // outside the lock
 export const PRESETS = Object.assign(Object.create(null), {
   'home-school': { ...STUDENT, locked: true },                       // literal student rules; the editor is locked
   'home-survival': { ...STUDENT },
   'home-creative': { ...STUDENT, mode: 'creative', 'survival.daynight': 'day', 'survival.energy': 'off' },
   'home-peaceful': { ...STUDENT, 'survival.energy': 'calm' },
   'home-pvp': { ...STUDENT, 'combat.pvp': true },
-  'home-hardcore': { ...STUDENT, 'survival.energy': 'fast', 'combat.pvp': true, 'survival.keep': false },
+  'home-hardcore': { ...STUDENT, 'survival.energy': 'fast', 'combat.pvp': true },
 })
 export const PRESET_NAMES = { 'home-school': 'Same as school', 'home-survival': 'Survival', 'home-creative': 'Creative', 'home-peaceful': 'Peaceful', 'home-pvp': 'PvP on', 'home-hardcore': 'Hardcore' }
 
@@ -42,7 +44,7 @@ export function makeRuleset(preset = 'home-survival') {
     snapshot() { const { locked, ...rest } = r; return { preset: name, rev, locked: !!locked, r: rest } },
     setPreset(p) { if (typeof p !== 'string' || !own(PRESETS, p)) return false; name = p; r = { ...PRESETS[p] }; rev++; return true },
     // an edit from the owner's editor; a locked preset ("Same as school") refuses every change
-    set(id, v) { if (r.locked) return { error: 'locked' }; const c = cleanValue(id, v); if (c === undefined) return { error: 'value' }; if (r[id] === c) return { ok: true, same: true }; r[id] = c; rev++; return { ok: true } },
+    set(id, v) { if (r.locked && !SERVER_TOGGLES.has(id)) return { error: 'locked' }; const c = cleanValue(id, v); if (c === undefined) return { error: 'value' }; if (r[id] === c) return { ok: true, same: true }; r[id] = c; rev++; return { ok: true } },
     get: (id) => (own(r, id) ? r[id] : undefined),
     // ---- enforcement: what the server refuses, by frame. staff (the owner) is never refused by a rule.
     // block edit {t:'b', id} : id 0 = break, else place
@@ -54,7 +56,7 @@ export function makeRuleset(preset = 'home-survival') {
     // hit {t:'hit', i}: PvP
     hitWhy(f, staff) { if (r['combat.pvp'] !== true) return 'rule:combat.pvp'; return null },
     // fly flag on a position frame: f.f is the game's own "flying" bit; creative allows it, survival needs core.fly
-    // typed chat {t:'chat'}: off means off for everyone, the owner too
+    // world chat {t:'chat'}: on unless the owner turned it off; off means off for everyone, the owner too
     chatWhy() { return r['chat.typed'] === true ? null : 'rule:chat.typed' },
     flyWhy(f, staff) { if (staff) return null; if (f.f && r.mode !== 'creative' && r['core.fly'] === false) return 'rule:core.fly'; return null },
   }

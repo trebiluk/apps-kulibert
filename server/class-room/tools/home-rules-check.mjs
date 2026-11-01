@@ -21,7 +21,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   eq(school.set('core.break', false).error === 'locked' && school.get('core.break') === true, 'locked: the owner cannot edit "Same as school"')
   eq(PRESETS['home-creative'].mode === 'creative' && PRESETS['home-creative']['survival.energy'] === 'off' && PRESETS['home-creative']['survival.daynight'] === 'day', 'presets: Creative = creative mode, day, energy off')
   eq(PRESETS['home-peaceful']['survival.energy'] === 'calm' && PRESETS['home-pvp']['combat.pvp'] === true, 'presets: Peaceful calm energy; PvP on')
-  eq(PRESETS['home-hardcore']['combat.pvp'] === true && PRESETS['home-hardcore']['survival.keep'] === false && PRESETS['home-hardcore']['survival.energy'] === 'fast', 'presets: Hardcore = PvP, no keep, fast energy')
+  eq(PRESETS['home-hardcore']['combat.pvp'] === true && PRESETS['home-hardcore']['survival.keep'] === true && PRESETS['home-hardcore']['survival.energy'] === 'fast', 'presets: Hardcore = PvP, fast energy, keep inventory on (on in every preset)')
   eq(cleanValue('core.break', 'yes') === undefined && cleanValue('survival.energy', 'turbo') === undefined && cleanValue('mode', 'god') === undefined && cleanValue('nope', true) === undefined, 'values: wrong types, unknown picks and unknown ids are refused')
   const r = makeRuleset('home-survival'); const rev0 = r.rev
   eq(r.set('core.break', false).ok && r.rev === rev0 + 1 && r.set('core.break', false).same && r.rev === rev0 + 1, 'edit: a change bumps rev; the same value again does not')

@@ -1,7 +1,6 @@
 // Part 1 check (docs/bertopia/HOME-HOST.md §10): session codes, names, 18+, limits, bans, PIN, and that home and
 // school tickets never cross. Pure: fake clock and RNG, no sockets.   node tools/home-join-check.mjs
 import { makeDoor, makeCode, checkName, hashPin, checkPin, registerHome, CODE_ALPHABET, CODE_LEN, HOME_CFG, RULESETS, JOIN_PER_MIN, IDLE_END_MS, CONNS_PER_IP } from '../host/door.mjs'
-import { nameOk } from '../host/words.mjs'
 import { verifyToken, signToken } from '../src/token.js'
 import { isConfigId, CONFIG_IDS } from '../src/protocol.js'
 import { policyFor } from '../src/claims.js'
@@ -13,7 +12,7 @@ const now = () => t
 const SECRET = 'home-secret-for-the-check-0123456789abcdef'
 const SCHOOL = 'school-secret-never-the-same-0123456789'
 registerHome()
-const mk = (o = {}) => makeDoor({ secret: SECRET, now, filter: nameOk, ...o })
+const mk = (o = {}) => makeDoor({ secret: SECRET, now, ...o })   // no word filter: adults 18+
 
 // ---- codes
 {
@@ -92,14 +91,12 @@ const mk = (o = {}) => makeDoor({ secret: SECRET, now, filter: nameOk, ...o })
 
 // ---- names
 {
-  const ok = (s) => !checkName(s, { filter: nameOk }).error
-  const why = (s) => checkName(s, { filter: nameOk }).error
+  const ok = (s) => !checkName(s).error
+  const why = (s) => checkName(s).error
   eq(ok('Sam') && ok('Al') && ok('Mia_Rose-2') && ok('Zoë') && ok('Олена') && ok('ليلى') && ok('a'.repeat(20)), 'names: letters in any script, digits, space, _ and - are fine')
   eq(why('A') === 'name' && why('a'.repeat(21)) === 'name' && why('Sam!') === 'name' && why('sam@x.com') === 'name' && why('') === 'name' && why(7) === 'name', 'names: too short, too long, symbols, emails and non-strings are refused')
   eq(['owner', 'Owner', 'OWNER', 'the host', 'host1', 'Host_', 'adm1n', 'Teacher', 'staff', 'bertopia', 'S3rver'].every((n) => why(n) === 'name-reserved'), 'names: owner/host/admin/server/teacher/staff lookalikes are refused')
-  eq(['f0ck you', 'Nigg3r', 'ShitLord', 'p0rn_king'].every((n) => why(n) === 'name-filtered'), 'names: the word filter catches folded leetspeak')
-  eq(ok('Scunthorpe') === false || true, 'names: (stem matches are strict by design: a false positive is a word-list job, not a crash)')
-  eq(ok('Pat Sass') && ok('Dickens') === false, 'names: whole-word entries do not hit Sass; stems do hit Dickens (list choice, WordBot to tune)')
+  eq(['ShitLord', 'Scunthorpe', 'Pat Sass', 'Dickens'].every(ok), 'names: no word filter (adults 18+); only the format and owner/host lookalikes are checked')
 }
 
 // ---- bans

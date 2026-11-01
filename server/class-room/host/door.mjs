@@ -41,7 +41,8 @@ export const normCode = (s) => String(s || '').toUpperCase().replace(/[\s-]/g, '
 export const hashCode = (code, salt) => createHash('sha256').update(salt + ':' + normCode(code)).digest('hex')
 const same = (a, b) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b))
 
-// ---- display names: 2-20 chars, letters (any script), digits, space, _ -; trimmed; no owner/host lookalikes; filter
+// ---- display names: 2-20 chars, letters (any script), digits, space, _ -; trimmed; no owner/host lookalikes; optional
+// filter hook (the personal host passes none: adults 18+)
 const RESERVED = ['owner', 'host', 'admin', 'server', 'bertopia', 'teacher', 'staff', 'mod', 'moderator', 'system']
 const fold = (s) => s.toLowerCase().replace(/[\s_\-.]/g, '').replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't').replace(/@/g, 'a').replace(/\$/g, 's')
 export function checkName(raw, { filter = () => true } = {}) {

@@ -1,7 +1,8 @@
 // Part 4 check (docs/bertopia/HOME-HOST.md §7, §10): two real browser clients at 1366 and 412.
 //
 // Half A — the home client code (bloxbert-src/src/home/home.js, bundled with __HOME_HOST__=true) in Chromium against a
-//   live host that serves it as its game: join screen, owner skip, see each other, build, rules toast, typed chat dock,
+//   live host that serves it as its game: join screen, owner skip, see each other, build, rules toast, world chat,
+//   keep inventory,
 //   boss news, Update card, inclusion checks (44 px targets, focus ring, no sideways scroll, text not colour alone).
 // Half B — the FULL home game (../../bertopia-home, from `npm run build:home`): both clients reach a running world.
 //   Skipped, and said so, when that build is not there.
@@ -103,12 +104,10 @@ try {
     await api('ruleset', { ruleset: 'home-creative' }); await sleep(400)
     eq((await P.evaluate(() => window.toasts.join(' | '))).includes('Rules changed: Creative'), `${tag} a ruleset change shows the player a calm toast`)
 
-    // typed chat: hidden while off; the owner turns it on; the dock works by keyboard; the 2 s gap is explained
-    eq(await P.evaluate(() => !document.querySelector('#home-chat') || document.querySelector('#home-chat').hidden), `${tag} chat: no chat button while typed chat is off`)
-    await api('rule', { id: 'chat.typed', v: true }); await sleep(400)
+    // world chat: on from the start; the dock works by keyboard; the burst limit is explained
     await P.waitForSelector('#home-chat .hc-toggle', { state: 'visible', timeout: 4000 })
     const tg = await P.evaluate(() => { const b = document.querySelector('#home-chat .hc-toggle'), r = b.getBoundingClientRect(); return { h: r.height, w: r.width, label: b.getAttribute('aria-label'), exp: b.getAttribute('aria-expanded') } })
-    eq(tg.h >= 44 && tg.w >= 44 && /Chat/.test(tg.label) && tg.exp === 'false', `${tag} chat: the button appears when the owner turns chat on (44 px, labelled, collapsed)`)
+    eq(tg.h >= 44 && tg.w >= 44 && /Chat/.test(tg.label) && tg.exp === 'false', `${tag} chat: the button is there from the start (chat on by default; 44 px, labelled, collapsed)`)
     await P.focus('#home-chat .hc-toggle'); await P.keyboard.press('Enter'); await sleep(150)
     const opened = await P.evaluate(() => ({ exp: document.querySelector('#home-chat .hc-toggle').getAttribute('aria-expanded'), focus: document.activeElement && document.activeElement.matches('#home-chat input') }))
     eq(opened.exp === 'true' && opened.focus, `${tag} chat: Enter on the button opens the panel and puts the cursor in the box`)
@@ -118,10 +117,11 @@ try {
     await O.evaluate(() => { const b = document.querySelector('#home-chat .hc-toggle'); if (b && b.getAttribute('aria-expanded') !== 'true') b.click() })
     const line = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1) || '')
     eq(line === (round === 1 ? 'Ana Play' : 'Bo Play') + ': hello from the play check', `${tag} chat: the owner's panel shows "${line}"`)
-    await P.keyboard.type('<img src=x onerror=alert(1)>'); await P.keyboard.press('Enter'); await sleep(150)
+    for (let i = 0; i < 5; i++) { await P.keyboard.type('quick ' + i); await P.keyboard.press('Enter') }
+    await sleep(300)
     const slow = await P.evaluate(() => document.querySelector('#home-chat .hc-msg').textContent)
-    eq(/Wait \d s\./.test(slow), `${tag} chat: a second message inside 2 s says "${slow}"`)
-    await sleep(2100); await P.keyboard.type('<img src=x onerror=alert(1)>'); await P.keyboard.press('Enter'); await sleep(400)
+    eq(/Slow down: wait \d s\./.test(slow), `${tag} chat: past the burst of 5 the box says "${slow}"`)
+    await sleep(1300); await P.keyboard.type('<img src=x onerror=alert(1)>'); await P.keyboard.press('Enter'); await sleep(400)
     const asText = await O.evaluate(() => ({ imgs: document.querySelectorAll('#home-chat img').length, last: [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1) }))
     eq(asText.imgs === 0 && asText.last.endsWith('<img src=x onerror=alert(1)>'), `${tag} chat: markup in a message arrives as plain text`)
     const unread = await P.evaluate(async () => { document.querySelector('#home-chat .hc-toggle').click(); await new Promise((r) => setTimeout(r, 50)); return document.querySelector('#home-chat .hc-toggle').textContent })
@@ -129,6 +129,14 @@ try {
     const badge = await P.evaluate(() => document.querySelector('#home-chat .hc-toggle').textContent)
     eq(/1 new/.test(badge) && !/new/.test(unread), `${tag} chat: a closed panel counts new messages in words ("${badge}"), not colour alone`)
     await P.keyboard.press('Escape')
+
+    // keep inventory: the world value arrives with the rules; the owner sets this player apart
+    const k0 = await P.evaluate(() => window.HOME.homeKeep())
+    const pref = (await (await fetch(H + '/owner/state', { headers: { 'x-owner': token } })).json()).live.players.find((p) => p.role === 'player').ref
+    await api('keep', { ref: pref, on: false }); await sleep(400)
+    const k1 = await P.evaluate(() => window.HOME.homeKeep()), kO = await O.evaluate(() => window.HOME.homeKeep())
+    eq(k0.on === true && k0.from === 'world' && k1.on === false && k1.from === 'player' && kO.on === true, `${tag} keep inventory: on from the world; the owner turns it off for this player only`)
+    await api('keep', { ref: pref, on: null })
 
     // boss news: the player's local Overseer starts and ends a fight; the owner hears both
     await P.evaluate(() => window.HOME.homeBossTick({ id: 'overseer-play', hp: 300, maxHp: 300, phase: 1 })); await sleep(400)
@@ -145,7 +153,8 @@ try {
     await P.screenshot({ path: path.join(os.tmpdir(), `home-play-${w}.png`) })
     eq(!errs.length, `${tag} no page errors${errs.length ? ': ' + errs.join(' / ') : ''}`)
     await api('rule', { id: 'chat.typed', v: false }); await sleep(200)
-    eq(await P.evaluate(() => document.querySelector('#home-chat').hidden), `${tag} chat: turning it off hides the button again`)
+    eq(await P.evaluate(() => document.querySelector('#home-chat').hidden), `${tag} chat: the owner turning it off hides the button`)
+    await api('rule', { id: 'chat.typed', v: true })
     await oc.close(); await pc.close()
   }
 

@@ -15,7 +15,6 @@ import { Room } from '../src/room.js'
 import { World } from '../src/world-do.js'
 import { PROTOCOL } from '../src/protocol.js'
 import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
-import { nameOk } from './words.mjs'
 import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
 import { makeEvents } from './events.mjs'
@@ -63,7 +62,7 @@ const saveCfg = () => fs.writeFileSync(CFG_FILE, JSON.stringify(cfg, null, 2))
 saveCfg()
 registerHome()
 const env = { ROOM_JOIN_SECRET: cfg.secret, ALLOWED_ORIGINS: '', REQUIRE_TLS: '0' }
-const door = makeDoor({ secret: cfg.secret, filter: nameOk, maxPlayers: cfg.maxPlayers })
+const door = makeDoor({ secret: cfg.secret, maxPlayers: cfg.maxPlayers })   // no name filter: adults 18+
 
 // ---------------------------------------------------------------- Durable Objects, in process (as in host.mjs, PR #122)
 const rooms = new Map(), worlds = new Map()
@@ -192,7 +191,7 @@ function startSession({ ruleset, password }) {
   return { ok: true, code: r.code, session: r.session }
 }
 function endSession() {
-  door.end(); lastCode = null; ownerSeated = false; events.clear()
+  door.end(); lastCode = null; ownerSeated = false; events.clear(); keepFor.clear()
   for (const { room, p } of players()) room.drop(p.id, 4006, 'session ended')
 }
 function rotateCode() { const r = door.rotate(); if (!r) return { error: 'ended' }; lastCode = r.code; return { ok: true, code: r.code } }
@@ -212,8 +211,23 @@ function rollback(minutes, ref) {
   const res = applyUndo(hub.world, plan)
   return { ok: true, cells: plan.length, applied: res.filter((r) => r.ok).length }
 }
-// Everyone hears a rules change as {t:'rules', ...snapshot}: the client shows a calm toast and applies it.
-function broadcastRules() { const f = { t: 'rules', ...rules.snapshot() }; for (const r of rooms.values()) r.broadcast(f) }
+// Keep inventory: the world's value (rules 'survival.keep') unless the owner set one for a player (this session only).
+const keepFor = new Map()            // ref -> true | false
+// The rules a player gets: the world's, with their own keep-inventory value. keep says where it came from.
+function rulesFor(ref) {
+  const s = rules.snapshot()
+  const own = keepFor.has(ref)
+  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'] }, keep: own ? 'player' : 'world' }
+}
+const sendRules = (ws, ref) => { try { ws.send(JSON.stringify(rulesFor(ref))) } catch (e) {} }
+// Everyone hears a rules change as {t:'rules', ...}: the client shows a calm toast and applies it.
+function broadcastRules() { for (const { p } of players()) if (p.ws) sendRules(p.ws, p.ref) }
+function setKeep(ref, on) {
+  if (typeof ref !== 'string' || !ref) return { error: 'ref' }
+  if (on === null) keepFor.delete(ref); else if (typeof on === 'boolean') keepFor.set(ref, on); else return { error: 'value' }
+  const f = findPlayer(ref); if (f && f.p.ws) sendRules(f.p.ws, ref)
+  return { ok: true, keep: keepFor.has(ref) ? keepFor.get(ref) : rules.get('survival.keep'), from: keepFor.has(ref) ? 'player' : 'world' }
+}
 function setRuleset(preset) { if (!rules.setPreset(preset)) return { error: 'ruleset' }; cfg.ruleset = preset; door.setCfg(preset); saveCfg(); broadcastRules(); return { ok: true, ...rules.snapshot() } }
 function setRule(id, v) { const r = rules.set(id, v); if (r.error) return r; if (!r.same) broadcastRules(); return { ok: true, ...rules.snapshot() } }
 // The home frame filter: runs BEFORE the (school) Room sees a frame. Enforces the ruleset on edits, answers the
@@ -231,7 +245,7 @@ function homeFrame(room, ws, p, text) {
     return true
   }
   if (m.t === 'q' && p.muted) return true   // quick chat from a muted player: dropped quietly, as at school
-  // typed chat (home-only): off unless the ruleset turns it on; plain text, 200 chars, 1 per 2 s, filtered, never stored
+  // world chat (home-only): on unless the owner turned it off; plain text, 200 chars, burst 5 then 1/s, no word filter, never stored
   if (m.t === 'chat') {
     const off = rules.chatWhy(m, staff); if (off) { no(off); return true }
     if (p.muted) { no('chat-muted'); return true }
@@ -251,7 +265,7 @@ function homeFrame(room, ws, p, text) {
 function live() {
   const w = cfg.world ? worlds.get(cfg.world) : null
   const out = { world: cfg.world, session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
-  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted })
+  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref) })
   if (w) {
     const h = w.obj.hub
     const who = new Map(out.players.map((p) => [h.who(p.ref), p.name]))
@@ -345,6 +359,7 @@ async function handle(req, res) {
       case '/owner/unban': door.unban(String(b.ref || '')); return json(res, 200, { ok: true })
       case '/owner/freeze': return json(res, 200, freeze(!!b.on))
       case '/owner/mute': return json(res, 200, mute(String(b.ref || '*'), !!b.on))
+      case '/owner/keep': { const r = setKeep(String(b.ref || ''), b.on === undefined ? null : b.on); return json(res, r.error ? 400 : 200, r) }
       case '/owner/rollback': return json(res, 200, rollback(b.minutes, b.ref ? String(b.ref) : null))
       case '/owner/lan': cfg.listen = b.on ? '0.0.0.0' : '127.0.0.1'; saveCfg(); return json(res, 200, { ok: true, restart: true })
       case '/owner/stop': json(res, 200, { ok: true }); setTimeout(shutdown, 100); return
@@ -381,7 +396,7 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
-  try { ws.send(JSON.stringify({ t: 'rules', ...rules.snapshot() })) } catch (e) {}   // right after hello: the active ruleset
+  sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
   { const ev = events.current(); if (ev) try { ws.send(JSON.stringify(ev)) } catch (e) {} }   // and a boss fight already going
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {

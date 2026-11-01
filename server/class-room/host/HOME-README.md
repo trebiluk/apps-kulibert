@@ -27,21 +27,34 @@ You need it every time you open the owner page. Five wrong tries lock it for ten
    Codes use no 0/O/1/I/L, are never reused, and stop working when you end the session, rotate the code, or
    after 24 hours with nobody in.
 4. Press **Play as owner** so the world opens, then players join at the address shown with the code and a display
-   name (2 to 20 letters, digits, space, `_`, `-`; no "owner"/"host" lookalikes; a word filter applies).
+   name (2 to 20 letters, digits, space, `_`, `-`; no "owner"/"host" lookalikes). There is no word filter.
    Every player confirms once that they are 18 or older. Nothing about age is stored.
 
 Owner tools: kick, ban (name + address, this session only), freeze building, undo the last N minutes (everyone or one
 player), mute (one player or everyone), rotate code, end session. Rules change live: pick another preset on the owner
 page, or change single rules in the game (Play as owner → Rules). Everyone gets a short "Rules changed" note and the
-server enforces the new rules at once. "Same as school" is locked to the student defaults.
+server enforces the new rules at once. "Same as school" locks the game rules to the student defaults; world chat
+and keep inventory can still be switched under it.
 
-## Typed chat
-**Off** in every preset. Turn it on with **Typed chat** on the owner page (or the 💬 rule in the game). When on:
-- plain text only, at most 200 characters, one message every 2 seconds per player;
-- a word filter (it also catches spaced-out and look-alike spellings); a refused message is not sent and the player
-  is told why;
-- muted players are told they are muted; their messages go nowhere;
+The host's own pages and messages are in English only. The game keeps all its languages.
+
+## World chat
+Regular server chat, **on** in every preset: everyone in the world sees every message, with the sender's display
+name. There is **no word filter** (this server is for adults). Turn it off or on with **World chat** on the owner page
+or the 💬 rule in the game. What stays, because it is about spam and safety rather than words:
+- at most 200 characters; 5 messages at once, then 1 a second per player (a player who goes faster is told to wait);
+- invisible characters that hide or flip text are removed;
+- the owner can mute one player or everyone; muted players are told so;
 - messages are passed on to the people in the world and **never written to disk or to the log**.
+
+## Keep inventory
+**On** in every preset. Two switches on the owner page:
+- **Keep inventory** (Session): the whole world.
+- **Keep stuff** (Players): one player, *Keep* or *Lose*, until you press **Use world** or the session ends. A player's
+  own setting stays when you change the world's.
+
+Each player's game is told its own value. Note: today nothing in Bertopia takes items away (running out of energy only
+slows you down), so *Lose* has no effect yet; it is ready for when a faint or drop rule exists.
 
 ## Boss fights
 Creatures run in each player's own game. When someone starts a Foundry Overseer fight, everyone else gets a note
@@ -88,7 +101,7 @@ The owner page answers only on this PC, never through the proxy's public address
 
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
-address · 16 players · the school's own limits on edits and messages · typed chat as above · 4 boss notes per 10 s per
+address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
 player · request bodies 16 KB (world files 256 MB).
 
 ## What is kept, what is not
@@ -100,11 +113,12 @@ player · request bodies 16 KB (world files 256 MB).
 ## Checks
 `npm run test:home` (in `server/class-room`) runs:
 - `home-page-check`: the owner and join pages parse, and the owner sign-in is labelled and keyboard-ready;
-- `home-join-check`: codes, names, limits, bans, PIN, school/home separation;
+- `home-join-check`: codes, names (format and lookalikes; no word filter), limits, bans, PIN, school/home separation;
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-spam-check`: every limit above trips and then recovers; chat and boss notes; world files; the TLS proxy reply;
-- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, boss notes,
+- `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
+  boss notes; world files; the TLS proxy reply;
+- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes,
   Update card, 44 px targets, focus rings). It runs the full game too when `bertopia-home/` has been built. It needs
   esbuild (`npm ci` in `bloxbert-src`) and Playwright, and says SKIP when they are missing.

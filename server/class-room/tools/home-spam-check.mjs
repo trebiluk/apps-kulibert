@@ -1,14 +1,13 @@
 // Part 4 check (docs/bertopia/HOME-HOST.md §6, §10): every spam limit TRIPS and then RECOVERS.
 // Pure half on a fake clock (join and PIN backoff are 10 minutes; nobody waits that long in a check), then a live
-// host for what only shows on the wire: typed chat, shared events, the Room's edit rate, world files, the log.
+// host for what only shows on the wire: world chat, keep inventory, shared events, the Room's edit rate, world files, the log.
 //   node --no-warnings tools/home-spam-check.mjs
 import { spawn } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { makeDoor, registerHome, JOIN_PER_MIN, JOIN_BACKOFF_MS, PIN_TRIES, PIN_BACKOFF_MS, CONNS_PER_IP, DEFAULT_MAX_PLAYERS } from '../host/door.mjs'
-import { nameOk } from '../host/words.mjs'
-import { cleanChat, makeChatGate, CHAT_MAX, CHAT_GAP_MS } from '../host/chat.mjs'
+import { cleanChat, makeChatGate, CHAT_MAX, CHAT_BURST, CHAT_REFILL_MS } from '../host/chat.mjs'
 import { makeEvents, EVENT_BURST, EVENT_WINDOW_MS, EVENT_STALE_MS } from '../host/events.mjs'
 import { makeRuleset, PRESETS } from '../host/rules.mjs'
 
@@ -20,7 +19,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 registerHome()
 let t = Date.UTC(2026, 10, 1, 15, 0, 0)
 const now = () => t
-const door = makeDoor({ secret: 'home-secret-for-the-spam-check-0123456789', now, filter: nameOk })
+const door = makeDoor({ secret: 'home-secret-for-the-spam-check-0123456789', now })
 const { code } = door.start({ world: 'spam-world-0001' })
 {
   const ip = '198.51.100.7'
@@ -70,12 +69,14 @@ const { code } = door.start({ world: 'spam-world-0001' })
 {
   eq(cleanChat('hello there').m === 'hello there' && cleanChat('x'.repeat(CHAT_MAX)).m && cleanChat('x'.repeat(CHAT_MAX + 1)).error === 'chat-long', `chat: ${CHAT_MAX} characters pass, ${CHAT_MAX + 1} is refused`)
   eq(cleanChat('   ').error === 'chat-empty' && cleanChat(42).error === 'chat-empty', 'chat: empty or non-text is refused')
-  eq(cleanChat('f u c k').error === 'chat-filtered' && cleanChat('fvck this').error === 'chat-filtered' && cleanChat('this is hit or miss').m, 'chat: filter catches spaced and leet words, not innocent word pairs')
-  eq(cleanChat('a‮b​c\u0007d').m === 'abcd', 'chat: direction overrides, zero-width and control characters are removed')
+  eq(cleanChat('f u c k').m === 'f u c k' && cleanChat('shit happens').m === 'shit happens', 'chat: no word filter (adults 18+)')
+  eq(cleanChat('a\u202eb\u200bc\u0007d').m === 'abcd', 'chat: direction overrides, zero-width and control characters are removed')
   let ct = 0; const g = makeChatGate({ now: () => ct })
-  const first = g.check('r1'), second = g.check('r1'), other = g.check('r2'); ct += CHAT_GAP_MS
-  eq(first === null && second && second.wait === 2 && other === null && g.check('r1') === null, `chat: 1 message per ${CHAT_GAP_MS / 1000} s per player, then recovers; players do not share a gap`)
-  eq(Object.values(PRESETS).every((p) => p['chat.typed'] === false) && makeRuleset('home-school').set('chat.typed', true).error === 'locked', 'chat: off in every preset; "Same as school" cannot turn it on')
+  const burst = []; for (let i = 0; i < CHAT_BURST; i++) burst.push(g.check('r1'))
+  const over = g.check('r1'), other = g.check('r2'); ct += CHAT_REFILL_MS
+  eq(burst.every((x) => x === null) && over && over.wait === 1 && other === null && g.check('r1') === null && g.check('r1') !== null, `chat: a burst of ${CHAT_BURST}, then 1 a second per player; players do not share a bucket`)
+  eq(Object.values(PRESETS).every((p) => p['chat.typed'] === true) && makeRuleset('home-school').set('chat.typed', false).ok, 'chat: on in every preset; the owner can turn it off, even under "Same as school"')
+  eq(Object.values(PRESETS).every((p) => p['survival.keep'] === true) && makeRuleset('home-school').set('survival.keep', false).ok && makeRuleset('home-school').set('core.break', false).error === 'locked', 'keep inventory: on in every preset; a world toggle even under "Same as school" (game rules stay locked)')
 }
 {
   let et = 0; const ev = makeEvents({ now: () => et })
@@ -102,9 +103,9 @@ let child = null, log = '', token = null, CODE = '', ipN = 30
 const post = (p, b, h = {}) => fetch(H + p, { method: 'POST', headers: { 'content-type': 'application/json', ...h }, body: JSON.stringify(b || {}) }).then((r) => r.json())
 const api = (p, b) => post('/owner/' + p, b, { 'x-owner': token })
 async function sock(j) {
-  const c = { nos: [], chat: [], ev: [], hello: null }
+  const c = { nos: [], chat: [], ev: [], rules: [], hello: null }
   c.ws = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  c.ws.onmessage = (m) => { const f = JSON.parse(m.data); if (f.t === 'hello') c.hello = f; else if (f.t === 'no') c.nos.push(f); else if (f.t === 'chat') c.chat.push(f); else if (f.t === 'ev') c.ev.push(f) }
+  c.ws.onmessage = (m) => { const f = JSON.parse(m.data); if (f.t === 'hello') c.hello = f; else if (f.t === 'no') c.nos.push(f); else if (f.t === 'chat') c.chat.push(f); else if (f.t === 'ev') c.ev.push(f); else if (f.t === 'rules') c.rules.push(f) }
   c.closed = null; c.ws.onclose = (e) => (c.closed = e.code)
   await new Promise((r, x) => { c.ws.onopen = r; c.ws.onerror = () => x(new Error('socket refused')) })
   for (let i = 0; i < 100 && !c.hello; i++) await sleep(20)
@@ -125,33 +126,48 @@ try {
   const O = await sock(own)
   const A = await player('Ana Spam'), B = await player('Ben Spam')
 
-  // typed chat: off by default
-  A.send({ t: 'chat', m: 'hello?' }); await sleep(200)
-  eq(A.codes().includes('rule:chat.typed') && !B.chat.length, 'live chat: off by default; the sender is told, nobody receives it')
-  O.send({ t: 'chat', m: 'owner too?' }); await sleep(200)
-  eq(O.codes().includes('rule:chat.typed') && !A.chat.length, 'live chat: off means off for the owner too')
-  await api('rule', { id: 'chat.typed', v: true }); await sleep(150)
+  // world chat: on by default, no filter, burst then 1 a second
   A.send({ t: 'chat', m: 'hi all' }); await sleep(200)
-  eq(B.chat.at(-1) && B.chat.at(-1).m === 'hi all' && B.chat.at(-1).a === 'Ana Spam' && O.chat.length === 1, 'live chat: on → everyone hears it, with the sender\'s display name')
-  A.send({ t: 'chat', m: 'again!' }); await sleep(150)
-  eq(A.nos.at(-1).c === 'chat-slow' && A.nos.at(-1).wait >= 1 && B.chat.length === 1, 'live chat: a second message inside 2 s is refused with a wait')
-  await sleep(CHAT_GAP_MS)
+  eq(B.chat.at(-1) && B.chat.at(-1).m === 'hi all' && B.chat.at(-1).a === 'Ana Spam' && O.chat.length === 1, 'live chat: on by default; everyone hears it with the sender\'s display name')
+  A.send({ t: 'chat', m: 'shit, that is a lot of lava' }); await sleep(150)
+  eq(B.chat.at(-1).m === 'shit, that is a lot of lava', 'live chat: no word filter')
+  for (let i = 0; i < CHAT_BURST; i++) A.send({ t: 'chat', m: 'spam ' + i }); await sleep(250)
+  const slowNo = A.nos.find((n) => n.c === 'chat-slow')
+  eq(slowNo && slowNo.wait >= 1 && !B.chat.some((c) => c.m === 'spam ' + (CHAT_BURST - 1)), `live chat: past the burst a message is refused with a wait and not relayed`)
+  await sleep(CHAT_REFILL_MS + 200)
   A.send({ t: 'chat', m: 'again!' }); await sleep(200)
-  eq(B.chat.at(-1).m === 'again!', 'live chat: recovers after 2 s')
-  await sleep(CHAT_GAP_MS)
+  eq(B.chat.at(-1).m === 'again!', 'live chat: recovers after a second')
   B.send({ t: 'chat', m: 'y'.repeat(CHAT_MAX + 1) }); await sleep(150)
-  B.send({ t: 'chat', m: 'ph u c k off' }); await sleep(150)
-  eq(B.codes().includes('chat-long') && B.codes().includes('chat-filtered') && A.chat.every((c) => c.a !== 'Ben Spam'), 'live chat: too long and filtered are refused and never relayed')
+  eq(B.codes().includes('chat-long') && A.chat.every((c) => c.a !== 'Ben Spam'), 'live chat: over 200 characters is refused and never relayed')
+  await api('rule', { id: 'chat.typed', v: false }); await sleep(150)
+  O.send({ t: 'chat', m: 'owner too?' }); await sleep(200)
+  eq(O.codes().includes('rule:chat.typed') && !A.chat.some((c) => c.m === 'owner too?'), 'live chat: the owner can turn it off; off means off for the owner too')
+  await api('rule', { id: 'chat.typed', v: true }); await sleep(150)
   const ref = (await (await fetch(H + '/owner/state', { headers: { 'x-owner': token } })).json()).live.players.find((p) => p.name === 'Ben Spam').ref
-  await api('mute', { ref, on: true }); await sleep(CHAT_GAP_MS)
+  await api('mute', { ref, on: true }); await sleep(CHAT_REFILL_MS)
   B.send({ t: 'chat', m: 'can you hear me' }); await sleep(200)
   eq(B.codes().includes('chat-muted') && !A.chat.some((c) => c.m === 'can you hear me'), 'live chat: a muted player is told and not relayed')
-  await api('mute', { ref, on: false }); await sleep(CHAT_GAP_MS)
+  await api('mute', { ref, on: false }); await sleep(CHAT_REFILL_MS)
   B.send({ t: 'chat', m: 'back now' }); await sleep(200)
   eq(A.chat.at(-1).m === 'back now', 'live chat: recovers on unmute')
   const files = fs.readdirSync(DATA, { recursive: true }).map(String)
   const onDisk = files.filter((f) => !fs.statSync(path.join(DATA, f)).isDirectory()).some((f) => fs.readFileSync(path.join(DATA, f)).includes('back now'))
   eq(!onDisk && !log.includes('back now') && !log.includes('hi all'), 'live chat: no message is written to disk or the log')
+
+  // keep inventory: world toggle, then one player set apart; each player's rules frame carries their own value
+  const rulesOf = (c) => c.rules.at(-1) || {}
+  await api('rule', { id: 'survival.keep', v: false }); await sleep(200)
+  eq(rulesOf(A).r['survival.keep'] === false && rulesOf(B).r['survival.keep'] === false && rulesOf(B).keep === 'world', 'keep inventory: the world toggle reaches every player')
+  const kb = await api('keep', { ref, on: true }); await sleep(200)
+  eq(kb.ok && kb.keep === true && kb.from === 'player' && rulesOf(B).r['survival.keep'] === true && rulesOf(B).keep === 'player' && rulesOf(A).r['survival.keep'] === false, 'keep inventory: the owner sets one player apart; only that player hears it')
+  const st = (await (await fetch(H + '/owner/state', { headers: { 'x-owner': token } })).json()).live.players
+  eq(st.find((p) => p.ref === ref).keepOwn === true && st.find((p) => p.name === 'Ana Spam').keep === false, 'keep inventory: the owner page shows who follows the world and who is set')
+  await api('rule', { id: 'survival.keep', v: true }); await api('rule', { id: 'survival.keep', v: false }); await sleep(200)
+  eq(rulesOf(B).r['survival.keep'] === true, 'keep inventory: a player\'s own setting survives world changes')
+  await api('keep', { ref, on: null }); await sleep(200)
+  eq(rulesOf(B).r['survival.keep'] === false && rulesOf(B).keep === 'world', 'keep inventory: "Use world" puts the player back on the world value')
+  eq((await api('keep', { ref, on: 'yes' })).error === 'value' && (await api('keep', { ref: '', on: true })).error === 'ref', 'keep inventory: odd values and empty refs are refused')
+  await api('rule', { id: 'survival.keep', v: true })
 
   // shared events
   A.send({ t: 'ev', k: 'boss', a: 'start' }); await sleep(200)

@@ -58,7 +58,8 @@
     </div>
     <div class="row"><button id="btn-start" class="go">Start session</button><button id="btn-rotate">Rotate code</button><button id="btn-end" class="bad">End session</button></div>
     <p class="dim" id="session-info"></p>
-    <div class="row"><label class="check"><input type="checkbox" id="chat-on"> Typed chat (off by default; 200 characters, 1 message per 2 s, word filter, never saved)</label></div>
+    <div class="row"><label class="check"><input type="checkbox" id="chat-on"> World chat (everyone in the world; 200 characters, no word filter, never saved)</label></div>
+    <div class="row"><label class="check"><input type="checkbox" id="keep-on"> Keep inventory (whole world; set players one by one under Players)</label></div>
     <h2 style="margin-top:14px">Join address</h2>
     <div id="addrs"></div>
     <p class="dim" id="lan-help"></p>
@@ -67,7 +68,7 @@
 
   <section>
     <h2>Players</h2>
-    <div class="tbl"><table id="players"><thead><tr><th>Name</th><th>Role</th><th>Muted</th><th></th></tr></thead><tbody></tbody></table></div>
+    <div class="tbl"><table id="players"><thead><tr><th>Name</th><th>Role</th><th>Muted</th><th>Keep stuff</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="row"><button id="btn-freeze">Freeze building</button><button id="btn-muteall">Mute all</button><button id="btn-unmuteall">Unmute all</button></div>
     <h2 style="margin-top:14px">Rollback</h2>
     <div class="row"><input id="rb-min" type="number" min="1" max="10080" value="5" style="width:7em"> minutes <button id="btn-rollback" class="bad">Undo everyone's edits</button></div>
@@ -125,13 +126,13 @@ function render(s) {
   $('addrs').innerHTML = (s.lan && s.addrs.length ? s.addrs : ['localhost']).map((a) => `<div><code>http://${a}:${s.port}/</code></div>`).join('')
   $('lan-help').textContent = s.lan ? 'Anyone on this network with the code can join. Do not expose this port to the internet without TLS (see README).' : 'This PC only. Turn on the switch below to let other computers on your network join (restart needed).'
   $('lan').checked = s.lan
-  $('players').querySelector('tbody').innerHTML = s.live.players.map((p) => `<tr><td>${p.name}</td><td>${p.role}</td><td>${p.muted ? 'yes' : ''}</td><td>${p.role === 'player' ? `<button data-mute="${p.ref}" data-on="${p.muted ? 0 : 1}">${p.muted ? 'Unmute' : 'Mute'}</button> <button data-rb="${p.ref}">Undo theirs</button> <button data-kick="${p.ref}">Kick</button> <button data-ban="${p.ref}" class="bad">Ban</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="dim">Nobody in yet.</td></tr>'
+  $('players').querySelector('tbody').innerHTML = s.live.players.map((p) => `<tr><td>${p.name}</td><td>${p.role}</td><td>${p.muted ? 'yes' : ''}</td><td><button data-keep="${p.ref}" data-on="${p.keep ? 0 : 1}" aria-label="Keep inventory for ${p.name}: ${p.keep ? 'on' : 'off'}${p.keepOwn ? '' : ' (world)'}">${p.keep ? 'Keep' : 'Lose'}${p.keepOwn ? '' : ' (world)'}</button>${p.keepOwn ? ` <button data-keepworld="${p.ref}">Use world</button>` : ''}</td><td>${p.role === 'player' ? `<button data-mute="${p.ref}" data-on="${p.muted ? 0 : 1}">${p.muted ? 'Unmute' : 'Mute'}</button> <button data-rb="${p.ref}">Undo theirs</button> <button data-kick="${p.ref}">Kick</button> <button data-ban="${p.ref}" class="bad">Ban</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="dim">Nobody in yet.</td></tr>'
   $('btn-freeze').textContent = s.live.frozen ? 'Unfreeze building' : 'Freeze building'
   $('bans').querySelector('tbody').innerHTML = s.live.bans.map((b) => `<tr><td>${b.name || b.ref}</td><td class="dim">${ago(b.at)}</td><td><button data-unban="${b.ref}">Unban</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}</td><td>${kb(w.bytes)}</td><td class="dim">${ago(w.changed)}</td><td>${w.open ? '' : `<button data-open="${w.name}">Open</button>`} <button data-bk="${w.name}">Back up</button> <button data-dl="${w.name}">Download</button></td></tr>`).join('') || '<tr><td colspan="4" class="dim">No worlds yet.</td></tr>'
   $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('btn-backup').disabled = $('btn-close').disabled = !s.world
-  const rr = s.live.rules; $('chat-on').checked = !!(rr && rr.r['chat.typed']); $('chat-on').disabled = !rr || rr.locked
+  const rr = s.live.rules; $('chat-on').checked = !!(rr && rr.r['chat.typed']); $('keep-on').checked = !!(rr && rr.r['survival.keep']); $('chat-on').disabled = $('keep-on').disabled = !rr
   $('head').textContent = s.live.head
   $('recent').querySelector('tbody').innerHTML = s.live.recent.map((o) => `<tr><td class="dim">${o.s}</td><td>${o.who}</td><td>${o.b === o.i ? 'touched' : o.i === 0 ? 'broke ' + o.b : o.b === 0 ? 'placed ' + o.i : o.b + ' → ' + o.i}</td><td>${o.x}, ${o.y}, ${o.z}</td><td class="dim">${ago(o.t)}</td></tr>`).join('') || '<tr><td colspan="5" class="dim">Nothing built yet.</td></tr>'
 }
@@ -159,6 +160,8 @@ document.addEventListener('click', async (e) => {
   }
   else if (d.bk) { const r = await api('world/backup', { name: d.bk }); toast(r.ok ? 'Backed up: ' + r.file : 'Backup failed') }
   else if (d.rs) { if (confirm('Restore ' + d.rs + '? The session ends and the current copy is backed up first.')) { const r = await api('world/restore', { file: d.rs }); toast(r.ok ? 'Restored ' + r.name : 'Restore failed') } }
+  else if (d.keep) await api('keep', { ref: d.keep, on: d.on === '1' })
+  else if (d.keepworld) await api('keep', { ref: d.keepworld, on: null })
   else if (d.kick) await api('kick', { ref: d.kick })
   else if (d.ban) { if (confirm('Ban this player for the rest of the session (name and address)?')) await api('ban', { ref: d.ban }) }
   else if (d.unban) await api('unban', { ref: d.unban })
@@ -182,7 +185,8 @@ document.addEventListener('click', async (e) => {
   refresh()
 })
 $('ruleset').addEventListener('change', async () => { if (!token) return; const r = await api('ruleset', { ruleset: $('ruleset').value }); toast(r.ok ? (state && state.live.session ? 'Rules changed for everyone: ' + RULES[r.preset] : 'Rules set: ' + RULES[r.preset]) : 'Could not change rules'); refresh() })
-$('chat-on').addEventListener('change', async () => { if (!token) return; const r = await api('rule', { id: 'chat.typed', v: $('chat-on').checked }); toast(r.ok ? (r.r['chat.typed'] ? 'Typed chat is on for everyone.' : 'Typed chat is off.') : 'Could not change chat'); refresh() })
+$('chat-on').addEventListener('change', async () => { if (!token) return; const r = await api('rule', { id: 'chat.typed', v: $('chat-on').checked }); toast(r.ok ? (r.r['chat.typed'] ? 'World chat is on.' : 'World chat is off.') : 'Could not change chat'); refresh() })
+$('keep-on').addEventListener('change', async () => { if (!token) return; const r = await api('rule', { id: 'survival.keep', v: $('keep-on').checked }); toast(r.ok ? (r.r['survival.keep'] ? 'Everyone keeps their stuff (except players you set).' : 'Keep inventory is off for the world (except players you set).') : 'Could not change keep inventory'); refresh() })
 $('lan').addEventListener('change', async () => { await api('lan', { on: $('lan').checked }); toast('Saved. Restart the server for this to take effect.'); refresh() })
 setInterval(refresh, 2000)
 </script>
