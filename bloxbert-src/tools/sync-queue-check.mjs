@@ -148,11 +148,8 @@ const doc = (blocks, at) => ({ id: 'bertyville-survival', updatedAt: at || new D
   srv.holdPut = null
   release()
   await flush()
-  eq(srv.rev === 1 && srv.puts.length === 1, 'first push landed alone')
-  await advance(19000)
-  eq(srv.puts.length === 1, 'second push waits for the 20 s window')
-  await advance(2000)
-  eq(srv.puts.length === 2 && srv.rev === 2, 'pending doc pushed when the window ends (puts ' + srv.puts.length + ')')
+  // main (2.5.595): a doc that arrived while a push was busy goes right after it, so a tab closed soon after still got both up
+  eq(srv.rev === 2 && srv.puts.length === 2, 'first push landed, then the waiting doc right after it, one at a time (puts ' + srv.puts.length + ')')
   eq(JSON.stringify(Object.values(srv.chunks)) === '["a","b"]', 'both blocks are on the server')
   eq(srv.puts[1].ifMatch === 1, 'second PUT uses the fresh rev')
   eq(!logs.some((l) => l.includes('409')) && school.length === 0, 'no 409 and no school copy')
@@ -209,20 +206,20 @@ const doc = (blocks, at) => ({ id: 'bertyville-survival', updatedAt: at || new D
   srv.onGet = () => { gets++; if (gets === 1) queueMicrotask(() => { srv.rev = 4 }) }
   maybePush(doc(['mine']))
   await flush()
+  // main (Topia sync P1): a 409 reads the head again and retries once with that rev; only a second 409 keeps both
   eq(srv.puts.length === 2, 'conflict: PUT, then one re-PUT (' + srv.puts.length + ')')
-  eq(srv.puts[0].ifMatch === 3 && srv.puts[1] && srv.puts[1].ifMatch === 4, 'keepBoth uses the fresh server rev: ' + srv.puts.map((p) => p.ifMatch).join(','))
-  eq(school.length === 1, 'real conflict keeps a school copy')
+  eq(srv.puts[0].ifMatch === 3 && srv.puts[1] && srv.puts[1].ifMatch === 4, 're-PUT uses the fresh server rev: ' + srv.puts.map((p) => p.ifMatch).join(','))
   eq(srv.rev === 5, 'local doc ends up on the server')
 }
 
-// 6. a server 429 on PUT is a wait, not a stop
+// 6. a server 429 on PUT: main stops sync for this page (as 401/413/503); nothing more is sent
 {
   const { maybePush } = await fresh()
   srv.putStatus = [429]
   maybePush(doc(['a']))
   await flush()
   await advance(21000)
-  eq(srv.puts.length === 2 && srv.rev === 1, '429 retried after the window')
+  eq(srv.puts.length === 1 && srv.rev === 0, '429 stops sync on this page (main)')
 }
 
 // 7. one timer per world however many saves arrive
