@@ -218,17 +218,21 @@ try {
     overflow: hidden;
     pointer-events: none;
   }
+  /* 0055: floor labels are 16px on a dark backing; the target's label pulses gently. */
   .scene-labels span {
     position: absolute;
     transform: translate(-50%, -50%);
-    font: 600 14px/1.2 "IBM Plex Mono", ui-monospace, monospace;
-    color: var(--ink);
-    background: var(--panel);
-    border: 1px solid var(--line);
+    font: 700 16px/1.2 "IBM Plex Mono", ui-monospace, monospace;
+    color: #fbf8f1;
+    background: #1d1b18;
+    border: 1px solid #1d1b18;
     border-radius: 4px;
-    padding: 1px 4px;
+    padding: 1px 5px;
     white-space: nowrap;
   }
+  .scene-labels span.is-mark { border: 2px dashed var(--pz-yellow); animation: bb-mark 1.6s ease-in-out infinite; }
+  @keyframes bb-mark { 50% { transform: translate(-50%, -50%) scale(1.12); } }
+  @media (prefers-reduced-motion: reduce) { .scene-labels span.is-mark { animation: none; } }
   .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; min-height: 64px; }
   button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
   #draft-note { margin: 0 0 0 10px; padding: 2px 8px; font: 750 12px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; color: var(--pz-ink, #1d1b16); background: var(--pz-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; max-width: 46vw; }
@@ -340,15 +344,16 @@ try {
   .ro[data-long="1"] { font-size: 11px; padding: 0 2px; justify-content: center; text-align: center; white-space: normal; overflow-wrap: anywhere; line-height: 1.05; }
   .haz { height: 8px; background: repeating-linear-gradient(-45deg, var(--pz-yellow) 0 10px, var(--pz-on-yellow) 10px 20px); }
   .estop-row { display: grid; grid-template-columns: 1fr 130px; gap: 8px; padding: 8px; border-top: 2px solid var(--pz-line); }
+  /* 0055: E-STOP stays big with its ■ and word, in a matte darker red; no hazard stripes. */
   #estop {
-    background: var(--pz-estop);
-    color: var(--pz-on-estop);
-    border-color: var(--pz-estop);
+    background: #8a2a20;
+    color: #fbf8f1;
+    border-color: #6e2018;
     font-size: 18px;
     min-height: 56px;
     justify-content: center;
-    box-shadow: 3px 3px 0 var(--pz-shadow);
   }
+  .haz { display: none !important; }
   #retry { min-height: 56px; justify-content: center; }
   .lamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
   .lamp {
@@ -467,6 +472,28 @@ try {
   }
   @media (min-width: 601px) and (min-height: 521px) {
     #pz-menu .pz-narrow { display: none; }
+  }
+  /* 0055 one goal line: the status box shows the current step in big text; the other help lines are in Help (?). */
+  #status.is-goal { font-size: 20px; font-weight: 750; line-height: 1.3; }
+  #goal, #legend { display: none !important; }
+  #angles { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  #bb-help-level { margin: 0 0 8px; font-weight: 650; }
+  /* 0054 stage readability: the arms stay on screen while you use the controls, and Run sits under the scene. */
+  .scene-col .actions { margin: 6px 0 0; }
+  .scene-col .actions #run { min-height: 52px; font-size: 18px; }
+  @media (min-width: 601px) and (min-height: 521px) {
+    /* The controls column scrolls on its own; the scene column never moves. */
+    .stage { height: calc(100vh - var(--bb-head, 104px) - 8px); min-height: 420px; align-items: stretch; }
+    .controls { overflow-y: auto; min-height: 0; padding-inline-end: 4px; overscroll-behavior: contain; }
+    .scene-col { min-height: 0; overflow-y: auto; }
+    #view { height: max(260px, calc(100vh - var(--bb-head, 104px) - 250px)); min-height: 260px; }
+  }
+  /* Short sideways screens: Run stays with the program, pinned to the bottom of that column. */
+  .controls .actions { position: sticky; bottom: 0; background: var(--pz-panel); padding-top: 4px; z-index: 1; }
+  @media (max-width: 600px) {
+    .scene-col { position: sticky; top: var(--bb-head, 100px); z-index: 4; background: var(--pz-bg); padding: 4px 0 6px; border-bottom: 3px solid var(--pz-yellow); }
+    #view { height: 30vh; min-height: 180px; }
+    #angles, #legend { display: none; }
   }
   @media (max-height: 520px) {
     .legend, #angles, #star-rules, #metrics, #stars { display: none; }
@@ -587,7 +614,8 @@ try {
   .bb-help button { min-height: 44px; min-width: 44px; padding: 0 12px; border: 2px solid var(--pz-line); border-radius: 6px; background: var(--pz-panel); color: var(--pz-ink); font: 700 15px "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; }
   @media (prefers-reduced-motion: reduce) { .bb-intro { animation: none; } }
 
-  .scene-labels .chip3d { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/1.2 "IBM Plex Mono", ui-monospace, monospace; background: var(--pz-yellow); color: var(--pz-on-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; padding: 1px 8px 1px 5px; }
+  /* 0054: arm tags are 16px text on a dark backing (yellow rim keeps them easy to spot). */
+  .scene-labels .chip3d { display: inline-flex; align-items: center; gap: 6px; font: 700 16px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; background: #1d1b18; color: #fbf8f1; border: 2px solid var(--pz-yellow); border-radius: 999px; padding: 3px 10px 3px 7px; }
   .scene-labels .chip3d b { font-weight: 700; }
   .lane-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 8px; }
   .lane-tabs[hidden], .lane[hidden] { display: none; }
@@ -640,7 +668,7 @@ try {
 </head>
 <body class="pz-light">
 <header class="top">
-  <p class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.0</span></small></p>
+  <h1 class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.3</span></small></h1>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -652,6 +680,12 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v173">Version 1.7.3</p>
+  <ul>
+    <li data-k="w173a">The arms are bigger on screen and stay in view while you use the controls. Run sits right under them.</li>
+    <li data-k="w173b">The goal is one big line in the status box. Floor labels are bigger, and the spot to go to has a dashed ring.</li>
+    <li data-k="w173c">The claw is a real gripper now: a palm with two fingers, and one motor for each of the 5 joints.</li>
+  </ul>
   <p data-k="v170">Version 1.7.0</p>
   <ul>
     <li data-k="w170a">Level 11, Touch: a cube rides a belt. The claw has a touch sensor, and there is a new If touch block.</li>
@@ -739,7 +773,6 @@ try {
 <button type="button" class="tool" id="theme-btn" aria-pressed="false">◐ Dark</button>
 <nav class="langs" id="langs" aria-label="Language"></nav>
 <section id="title-screen">
-  <h1 id="hero" translate="no">Berty &amp; Bizzy</h1>
   <div class="scene"><canvas id="title-arm" width="800" height="220" aria-hidden="true"></canvas></div>
   <p><button type="button" id="play">Play</button></p>
 </section>
@@ -785,7 +818,6 @@ try {
             <ol id="program2"></ol>
           </div>
         </div>
-        <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
       </section>
     </div>
     <div class="scene-col">
@@ -793,6 +825,7 @@ try {
         <h2 class="panel-label"><span data-ui="VIEW">VIEW</span> · <span data-ui="CELL">CELL</span> 01</h2>
         <div class="scene"><canvas id="view" width="800" height="380" aria-hidden="true"></canvas></div>
       </div>
+      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
       <p id="goal"></p>
       <p id="touch-line" hidden></p>
       <p id="angles">Base 0 degrees. Shoulder 0 degrees. Elbow 0 degrees. Wrist 0 degrees. Claw open.</p>
@@ -868,6 +901,7 @@ try {
       <h2 id="bb-help-title"></h2>
       <button type="button" id="bb-help-close" class="bb-help-close"></button>
     </div>
+    <p id="bb-help-level"></p>
     <h3 id="bb-help-blocks-h"></h3>
     <ul id="bb-help-blocks"></ul>
     <h3 id="bb-help-controls-h"></h3>
@@ -877,11 +911,11 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.0" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.3" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="physics.js?v=1.7.0"></script>
-<script src="game.js?v=1.7.0"></script>
-<script src="view3d.js?v=1.7.0"></script>
+<script src="physics.js?v=1.7.3"></script>
+<script src="game.js?v=1.7.3"></script>
+<script src="view3d.js?v=1.7.3"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -984,7 +1018,13 @@ var renderRun = function () {
   markDraft(document.getElementById("star-words"));
   var el = document.getElementById("status");
   el.textContent = view.status;
-  el.classList.remove("is-win", "is-crash");
+  el.classList.remove("is-win", "is-crash", "is-goal");
+  // 0055: before a run (and after Reset), the status box shows only the level's goal, in big text.
+  var idleNote = !state.note || state.note === "Add blocks, then press Run." || state.note === "Add a block, then press Run.";
+  if (view.kind === "idle" && idleNote) {
+    el.textContent = document.getElementById("goal").textContent || view.status;
+    el.classList.add("is-goal");
+  }
   if (view.kind === "won") el.classList.add("is-win");
   if (view.kind === "crashed") el.classList.add("is-crash");
   markDraft(el);
@@ -1180,6 +1220,14 @@ var renderLevels = function () {
   else if (levelNow.duo) legendKey = "legendDuo";
   legend.textContent = PINCHY.uiText(lang, legendKey);
   markDraft(legend);
+  // 0055: the level's legend now lives in Help (?), without the "3D arm turns on its base" sentence.
+  var helpLevel = document.getElementById("bb-help-level");
+  if (helpLevel) {
+    var legendText = PINCHY.uiText(lang, legendKey);
+    if (legendKey === "legend") legendText = legendText.replace(/^[^.\u1362\u06d4]*[.\u1362\u06d4]\s*/, "");
+    helpLevel.textContent = legendText;
+    helpLevel.lang = lang;
+  }
   var helpEl = document.getElementById("help");
   var helpText = PINCHY.helpFor(lang, !!levelNow.debug);
   var helpMeta = PINCHY.langMeta(lang);
@@ -2815,7 +2863,7 @@ var bbInit = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.0") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.3") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.programs2.push([]);
@@ -2999,6 +3047,47 @@ var boot = function () {
   watchBar();
   applyLang(startLang);
   bbInit();
+  // 0054: Run sits under the scene, except on short sideways screens, where the scene is small and Run stays
+  // pinned at the bottom of the program column.
+  var actionsEl = document.getElementById("actions");
+  var sideMq = window.matchMedia("(max-height: 520px) and (min-width: 601px)");
+  var placeActions = function () {
+    if (!actionsEl) return;
+    var host = sideMq.matches ? document.querySelector(".controls .panel:nth-child(3)") : document.querySelector(".scene-col");
+    if (!host) return;
+    if (sideMq.matches) { if (actionsEl.parentNode !== host) host.appendChild(actionsEl); }
+    else if (actionsEl.previousElementSibling !== host.querySelector(".viewport")) host.querySelector(".viewport").after(actionsEl);
+  };
+  // Stars and the blocks/time line live in the scrolling controls column on desktop, so the page itself
+  // never scrolls and the scene stays put.
+  var deskMq = window.matchMedia("(min-width: 601px) and (min-height: 521px)");
+  var tailIds = ["stars", "star-rules", "metrics"];
+  var placeTail = function () {
+    var controls = document.querySelector(".controls");
+    var game = document.getElementById("game");
+    tailIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var host = deskMq.matches ? controls : game;
+      if (el.parentNode !== host) host.appendChild(el);
+    });
+  };
+  placeTail();
+  if (deskMq.addEventListener) deskMq.addEventListener("change", placeTail);
+  else if (deskMq.addListener) deskMq.addListener(placeTail);
+  placeActions();
+  if (sideMq.addEventListener) sideMq.addEventListener("change", placeActions);
+  else if (sideMq.addListener) sideMq.addListener(placeActions);
+  // 0054: the view sticks just under the sticky header; measure it, because the header wraps on narrow screens.
+  var headEl = document.querySelector("header.top");
+  var setHead = function () {
+    if (!headEl) return;
+    var b = Math.ceil(headEl.getBoundingClientRect().bottom);
+    if (b > 0) document.documentElement.style.setProperty("--bb-head", b + "px");
+  };
+  setHead();
+  window.addEventListener("resize", setHead);
+  if (window.ResizeObserver && headEl) new ResizeObserver(setHead).observe(headEl);
   window.addEventListener("kulibert-lang", function (ev) {
     var code = ev && ev.detail && ev.detail.lang;
     if (knownLang(code) && code !== lang) applyLang(code, true);
