@@ -285,7 +285,8 @@ const page = await browser.newPage()
 const errs = await prep(page)
 await boot(page, 'q=full&smoke=1&auto=0')
 const version = await page.evaluate(() => window.__blocks.version)
-eq(version === '2.5.174', 'version', version)
+const wantVersion = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version
+eq(version === wantVersion, 'version matches package.json', version + ' vs ' + wantVersion)
 
 await page.evaluate(() => {
   const ops = []

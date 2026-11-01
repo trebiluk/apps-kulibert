@@ -1,7 +1,10 @@
 // World rules R1. Pure, no browser.
-import { Rules, ALIASES, GROUPS } from '../src/rules.js'
-import { paintRules, rulesWord } from '../src/rules-editor.js'
-import { createBasics } from '../src/basics.js'
+// The game source imports JSON without an import attribute (fine for esbuild, refused by Node 22): load it through
+// the check-only JSON hook, so the source modules are imported after the hook is registered.
+import './lib/json-hook.mjs'
+const { Rules, ALIASES, GROUPS } = await import('../src/rules.js')
+const { paintRules, rulesWord } = await import('../src/rules-editor.js')
+const { createBasics } = await import('../src/basics.js')
 
 const fail = []
 function eq(ok, msg) { if (!ok) fail.push(msg) }
@@ -78,8 +81,10 @@ const made = []
 function node(tag) {
   const n = {
     tag, className: '', id: '', textContent: '', title: '', type: '', value: '', disabled: false, hidden: false,
-    style: {}, dataset: {}, children: [], attrs: {}, listeners: {}, isConnected: true, clientWidth: 0,
+    style: { setProperty(k, v) { this[k] = v }, removeProperty(k) { delete this[k] }, getPropertyValue(k) { return this[k] || '' } }, dataset: {}, children: [], attrs: {}, listeners: {}, isConnected: true, clientWidth: 0,
     append(...xs) { for (const x of xs) if (x && typeof x === 'object') { x.parent = n; n.children.push(x) } },
+    replaceChildren(...xs) { n.children.length = 0; n.append(...xs) },
+    prepend(...xs) { const add = xs.filter((x) => x && typeof x === 'object'); for (const x of add) x.parent = n; n.children.unshift(...add) },
     setAttribute(k, v) { n.attrs[k] = String(v); if (k === 'id') n.id = String(v) },
     getAttribute(k) { return Object.prototype.hasOwnProperty.call(n.attrs, k) ? n.attrs[k] : null },
     addEventListener(ev, fn) { (n.listeners[ev] || (n.listeners[ev] = [])).push(fn) },
@@ -125,10 +130,12 @@ function node(tag) {
   made.push(n)
   return n
 }
+globalThis.MutationObserver = globalThis.MutationObserver || class { observe() {} disconnect() {} takeRecords() { return [] } }
 globalThis.document = {
   documentElement: node('html'),
   body: node('body'),
   createElement: node,
+  createTextNode(text) { const t = node('#text'); t.textContent = String(text); return t },
   createRange() { return { setStart() {}, setEnd() {}, getClientRects: () => [] } },
   getElementById(id) { return made.find((n) => n.id === id) || null },
   querySelector(sel) { return made.find((n) => matchSel(n, sel)) || null },
