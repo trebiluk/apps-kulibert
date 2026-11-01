@@ -231,7 +231,7 @@ export class Room extends DurableObject {
     if (this.wid && typeof message === 'string' && message.length <= MAX_FRAME_CHARS) {
       let m = null
       try { m = JSON.parse(message) } catch (e) {}
-      if (m && (m.t === 'b' || m.t === 'sync' || m.t === 'cget')) return this.worldFrame(p, m, now)
+      if (m && (m.t === 'b' || m.t === 'sync' || m.t === 'cget' || m.t === 'iget' || m.t === 'iput' || m.t === 'itake')) return this.worldFrame(p, m, now)
     }
     const f = parseFrame(message)
     if (f.err) return this.hardFail(p, f.err, now)
@@ -275,11 +275,29 @@ export class Room extends DurableObject {
       return this.send(p, r.resync ? { t: 'rs' } : { t: 'o', o: r.ops.map((o) => [o.s, o.x, o.y, o.z, o.i]) })
     }
     const no = (c, extra) => this.send(p, { t: 'no', c, x: f.x, y: f.y, z: f.z, ...extra })
+    if (f.t === 'iget') {
+      if (!takeToken(p.cbucket, now)) return
+      const r = await this.stub.inv(f.x, f.y, f.z)
+      return r.error ? no(r.error) : this.send(p, { t: 'inv', x: f.x, y: f.y, z: f.z, s: r.s, slots: r.slots.map((q) => (q ? [q.id, q.n] : 0)) })
+    }
+    if (f.t === 'iput' || f.t === 'itake') {
+      if (!takeToken(p.ebucket, now)) return no('rate')
+      if (this.frozen && !isStaff(p.role)) return no('frozen')
+      const v = checkBlockEdit({ op: 'place', x: f.x, y: f.y, z: f.z, id: f.id }, p.pos, null)   // same reach rule as a block edit
+      if (!v.ok) return no(v.why)
+      const r = await this.stub.move(p.ref, f.x, f.y, f.z, f.id, f.n, f.t === 'iput' ? 'put' : 'take')
+      if (!r.ok) return no(r.why)
+      return this.send(p, { t: 'mv', x: f.x, y: f.y, z: f.z, s: r.s, moved: r.moved, slots: r.slots.map((q) => (q ? [q.id, q.n] : 0)) })   // others hear the touch op through the fan-out
+    }
     if (!takeToken(p.ebucket, now)) return no('rate')
     if (this.frozen && !isStaff(p.role)) return no('frozen')
     const v = checkBlockEdit({ op: f.id === 0 ? 'break' : 'place', x: f.x, y: f.y, z: f.z, id: f.id }, p.pos, null)
     if (!v.ok) return no(v.why)
     const [r] = await this.stub.edit({ ref: p.ref, staff: isStaff(p.role) }, [{ x: f.x, y: f.y, z: f.z, id: f.id, b: f.b }])
+    // A container with items broke: its drops go to the breaker's client only, which drops them through its
+    // existing drop path (bloxbert drops.js; ground cap 256, overflow to Lost & Found). Sent once, here.
+    // Frame: {"t":"dr","x","y","z","s","d":[[id,n],...]}. Everyone (this kid too) still hears the break op.
+    if (r.ok && r.drops && r.drops.length) return this.send(p, { t: 'dr', x: f.x, y: f.y, z: f.z, s: r.s, d: r.drops.map((q) => [q.id, q.n]) })
     if (r.ok) return   // everyone, including this kid, hears it through the world's fan-out
     no(r.why, r.cur === undefined ? {} : { cur: r.cur })
     if (r.strike) this.punish(p, r.why, CLOSE.ABUSE, now)

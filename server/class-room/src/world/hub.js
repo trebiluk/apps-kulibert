@@ -47,7 +47,7 @@ export function makeHub({ db, send, gen, now = Date.now }) {
         if (c.ok) ok.push(e)
         return c.ok ? null : c
       })
-      const res = world.apply(ok, who, t)
+      const res = world.apply(ok, who, t, { drops: true })   // a player break of a full container drops 80% to them
       let i = 0
       return out.map((c) => c || res[i++])
     },
@@ -61,6 +61,8 @@ export function makeHub({ db, send, gen, now = Date.now }) {
     sim: (t = now()) => world.sim(t),
     clock: () => world.clock(),
     simAt: () => world.simAt(),
+    inv: (x, y, z) => world.inv(x, y, z),
+    move: (ref, x, y, z, item, n, dir) => world.move(h32(ref), x, y, z, item, n, dir),
     who: h32,
   }
 }

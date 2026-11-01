@@ -88,4 +88,6 @@ export class World extends DurableObject {
   chunk(cx, cz) { return this.hub.chunk(cx, cz) }
   since(s, n) { return this.hub.since(s, n) }
   worldClock() { return this.hub.clock() }
+  inv(x, y, z) { return this.hub.inv(x, y, z) }
+  async move(ref, x, y, z, item, n, dir) { const r = this.hub.move(ref, x, y, z, item, n, dir); if (r.ok) await this.save(); return r }
 }
