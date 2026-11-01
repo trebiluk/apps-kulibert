@@ -1,8 +1,8 @@
-import { createSession } from '../src/session.js'
-import { createBag } from '../src/items.js'
-import { createBasics } from '../src/basics.js'
 import { readFileSync } from 'node:fs'
 import vm from 'node:vm'
+// The game source imports JSON without an import attribute (fine for esbuild, refused by Node 22): load it through
+// the check-only JSON hook, so the source modules are imported after the hook is registered.
+import './lib/json-hook.mjs'
 
 globalThis.document = {
   getElementById() { return null },
@@ -11,6 +11,13 @@ globalThis.document = {
   documentElement: { dataset: {} },
   body: { classList: { contains() { return false } }, dataset: {} },
 }
+// window is the global object, as in a browser (shared/kulibert-slots.js registers itself on window).
+if (!globalThis.window) globalThis.window = globalThis
+for (const [k, v] of Object.entries({ addEventListener() {}, removeEventListener() {}, innerWidth: 1366, innerHeight: 768, matchMedia: () => ({ matches: false, addEventListener() {} }) })) if (!(k in globalThis)) globalThis[k] = v
+// Source modules now touch the page while loading (tips.js arms a watch if document.body exists), so they load after the fake page.
+const { createSession } = await import('../src/session.js')
+const { createBag } = await import('../src/items.js')
+const { createBasics } = await import('../src/basics.js')
 
 const toasts = []
 let pos = [8.5, 5, 1.5]

@@ -492,7 +492,7 @@ try {
     return s ? s.dataset.step : ''
   })
   if (!note('bed next', stepped === 'plan' || stepped === 'measure', stepped || 'no step')) failed = true
-  if (!note('woodshop open, shop.open && shop.wall >= 4 && shop.bed && shop.decor >= 3 && errors.filter((e) => e.startsWith('page:')).length === 0, JSON.stringify(shop))) failed = true
+  if (!note('woodshop open', shop.open && shop.wall >= 4 && shop.bed && shop.decor >= 3 && errors.filter((e) => e.startsWith('page:')).length === 0, JSON.stringify(shop))) failed = true
   const noise = errors.filter((e) => !/favicon|net::ERR_FILE|Download the React DevTools/i.test(e))
   report.errors = noise
   if (!note('console', noise.length === 0, noise.slice(0, 6).join(' | '))) failed = true
