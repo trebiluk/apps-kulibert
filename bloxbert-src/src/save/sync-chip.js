@@ -1,4 +1,5 @@
-// Sync status chip. Only mounts when ?sync=1. DOM, aria-live polite.
+// Sync status chip. Mounts when sync is on: ?sync=1 in the URL, or the bt-sync sessionStorage flag that
+// server-sync.js sets once sync has run, so the chip stays after a navigation without the query. DOM, aria-live polite.
 // States: Saved to school / Saving… / Offline — saved here / Not signed in.
 
 import { flagOn } from './sync-flag.js'
@@ -11,6 +12,14 @@ let current = 'idle'
 let retry = null
 let wrap = null
 let retryFn = null
+
+function flagOn() {
+  try {
+    if (typeof location !== 'undefined' && /(?:\?|&)sync=1(?:&|$)/.test(location.search)) return true
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('bt-sync') === '1') return true // same key server-sync.js persists
+  } catch (e) {}
+  return false
+}
 
 async function signedIn() {
   try {

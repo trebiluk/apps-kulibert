@@ -173,6 +173,19 @@ const WN570 = {
   ti: { whatsNewBody: '2.5.570 — «ተዓቂቡ» ድሕሪ ነፍሲ ወከፍ ናይ ሓቂ ምዕቃብ ሓንሳብ ይርአ፡ ኣብ ትሕቲኡ ምጥዋቕ ድማ ገና ብሎክካ የቐምጥ። ምዕቃብ እንተ ፈሺሉ «ኣይተዓቀበን» ትርኢ።' },
 }
 for (const [lang, row] of Object.entries(WN570)) {
+// 2.5.568 what's new (brief 0057). rw, ti, and fa-AF are machine drafts.
+const WN568 = {
+  en: { whatsNewBody: '2.5.568 — A Creative world always reopens in Creative, your bag always has 15 slots, and the school-sync chip stays after you move between pages.' },
+  simple: { whatsNewBody: '2.5.568 — A Creative world opens in Creative. Your bag always has 15 slots. The sync chip stays.' },
+  uk: { whatsNewBody: '2.5.568 — Світ у Творчому режимі завжди відкривається у Творчому, у сумці завжди 15 комірок, а фішка шкільної синхронізації лишається після переходу між сторінками.' },
+  ru: { whatsNewBody: '2.5.568 — Мир в Творческом режиме всегда открывается в Творческом, в сумке всегда 15 ячеек, а фишка школьной синхронизации остаётся после перехода между страницами.' },
+  es: { whatsNewBody: '2.5.568 — Un mundo Creativo siempre se abre en Creativo, tu bolsa siempre tiene 15 espacios y la ficha de sincronización escolar se queda al cambiar de página.' },
+  ar: { whatsNewBody: '2.5.568 — عالم الإبداع يفتح دائماً في وضع الإبداع، وحقيبتك فيها 15 خانة دائماً، وشريحة مزامنة المدرسة تبقى بعد التنقل بين الصفحات.' },
+  'fa-AF': { whatsNewBody: '2.5.568 — دنیای خلاقانه همیشه در حالت خلاقانه باز می‌شود، کیف تو همیشه ۱۵ خانه دارد و تراشه همگام‌سازی مکتب بعد از جابجایی بین صفحه‌ها می‌ماند.' },
+  rw: { whatsNewBody: '2.5.568 — Isi ya Creative buri gihe ifungurwa muri Creative, umufuka wawe buri gihe ufite imyanya 15, kandi ikofi yo guhuza n\'ishuri iguma nyuma yo kujya ku rundi rupapuro.' },
+  ti: { whatsNewBody: '2.5.568 — ዓለም ክሪኤቲቭ ኩሉ ግዜ ኣብ ክሪኤቲቭ ይኽፈት፡ ቦርሳኻ ኩሉ ግዜ 15 ቦታ ኣለዎ፡ ናይ ቤት ትምህርቲ ምውህሃድ ቺፕ ድማ ኣብ መንጎ ገጻት ምስ ተንቀሳቐስካ ይጸንሕ።' },
+}
+for (const [lang, row] of Object.entries(WN568)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
