@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:,">
+<title>Arm Lab</title>
+<style>
+  :root {
+    --bg: #d5d3ce;
+    --panel: #f3f2ef;
+    --ink: #2c2b28;
+    --line: #5e5c57;
+    --soft: #e4e2dc;
+    --chip: #e7e5df;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    min-height: 100vh;
+    font: 16px/1.35 system-ui, sans-serif;
+  }
+  button { font: inherit; color: inherit; touch-action: manipulation; }
+  button, .chip, canvas { user-select: none; }
+  .app {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  h1 { margin: 0; font-size: 22px; font-weight: 750; letter-spacing: 0; }
+  .levels { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 280px; justify-content: flex-end; }
+  button.level, button.block, button.action {
+    min-width: 48px;
+    min-height: 48px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    font-weight: 650;
+  }
+  button.level {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    text-align: left;
+    flex: 1 1 140px;
+  }
+  button.level[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--panel);
+  }
+  button:focus, #program-wrap:focus {
+    outline: 3px solid #1c1b19;
+    outline-offset: 2px;
+  }
+  button:active { background: var(--soft); }
+  button.level[aria-pressed="true"]:active { background: #1a1917; }
+  button:disabled { opacity: 0.45; }
+  button svg, .chip svg { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
+  #goal { margin: 0; font-weight: 650; }
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 8px;
+    align-items: start;
+  }
+  #view {
+    width: 100%;
+    height: 250px;
+    display: block;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+  }
+  #angles { margin: 6px 0 0; font-weight: 650; }
+  .side { display: flex; flex-direction: column; gap: 8px; }
+  .palette, .actions { display: grid; gap: 6px; }
+  .palette { grid-template-columns: 1fr 1fr; }
+  .actions { grid-template-columns: 1fr 1fr; }
+  button.block, button.action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  button.block .name, button.action .name, button.level .name { flex: 1 1 auto; line-height: 1.15; }
+  kbd {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px 5px;
+    background: var(--soft);
+    font: 700 12px/1.2 system-ui, sans-serif;
+    white-space: nowrap;
+  }
+  button.level[aria-pressed="true"] kbd {
+    background: transparent;
+    color: var(--panel);
+    border-color: #c8c6c0;
+  }
+  #status {
+    margin: 0;
+    min-height: 48px;
+    padding: 8px 10px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    font-weight: 700;
+  }
+  #status.is-win { border-style: double; border-width: 4px; }
+  #status.is-bad { border-style: dashed; }
+  #metrics { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; font-weight: 650; }
+  #program-wrap {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+  }
+  #program-wrap p { margin: 0 0 6px; font-weight: 750; }
+  #program {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin: 0;
+    padding: 2px 2px 6px;
+    list-style: none;
+    min-height: 48px;
+    align-items: center;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--chip);
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  .chip.is-now { outline: 3px solid #1c1b19; outline-offset: 1px; }
+  .chip.is-stop { outline: 3px dashed #1c1b19; outline-offset: 1px; }
+  .chip .mark { font-weight: 750; }
+  .help { margin: 0; font-weight: 650; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (max-width: 800px) {
+    header { flex-direction: column; align-items: stretch; }
+    .stage { grid-template-columns: 1fr; }
+    .levels { justify-content: stretch; }
+    #view { height: 210px; }
+  }
+  @media (max-height: 800px) and (min-width: 900px) {
+    #view { height: 230px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+  }
+  @media (forced-colors: active) {
+    button, .chip, #view, #status, #program-wrap { border: 2px solid ButtonText; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>Arm Lab</h1>
+    <div class="levels" id="levels" role="group" aria-label="Levels"></div>
+  </header>
+  <p id="goal"></p>
+  <div class="stage">
+    <div>
+      <canvas id="view" width="800" height="250" aria-hidden="true"></canvas>
+      <p id="angles" aria-live="off">Shoulder 0 degrees. Elbow 0 degrees. Gripper open.</p>
+    </div>
+    <div class="side">
+      <div class="palette" id="palette" role="group" aria-label="Blocks"></div>
+      <div class="actions" id="actions" role="group" aria-label="Program controls"></div>
+    </div>
+  </div>
+  <p id="status" role="status" aria-live="assertive">Add blocks, then press Run.</p>
+  <p id="step-live" class="sr-only" aria-live="polite"></p>
+  <p id="metrics">
+    <span id="m-blocks">Blocks: 0</span>
+    <span id="m-time">Time: none yet</span>
+    <span id="m-best">Best this session: none yet</span>
+  </p>
+  <div id="program-wrap" tabindex="0" aria-label="Program. Enter runs.">
+    <p>Program</p>
+    <ol id="program"></ol>
+  </div>
+  <p class="help">Keys: 1 or up arrow Shoulder +15. 2 or down arrow Shoulder -15. 3 or right arrow Elbow +15. 4 or left arrow Elbow -15. 5 Open. 6 Close. Enter runs. Backspace removes. If a button is focused, Enter presses that button.</p>
+</main>
+<noscript><p>Arm Lab needs JavaScript. It does not use the network.</p></noscript>
+<script id="game">
+"use strict";
+var L1 = 124, L2 = 96, SY = 100, JAW = 30;
+var GAP_OPEN = 34, GAP_CLOSED = 10;
+var SMIN = -15, SMAX = 135, EMIN = -135, EMAX = 135;
+var THICK = 8;
+var VIEW = { x0: -64, x1: 308, y0: -18, y1: 200 };
+var STEP_MS = 520;
+var SNAP_MS = 260;
+
+var pose = function (sd, ed, open, gap) {
+  var g = gap == null ? (open ? GAP_OPEN : GAP_CLOSED) : gap;
+  var s = sd * Math.PI / 180;
+  var w = (sd + ed) * Math.PI / 180;
+  var ex = L1 * Math.cos(s);
+  var ey = SY + L1 * Math.sin(s);
+  var px = Math.cos(w);
+  var py = Math.sin(w);
+  var gx = ex + L2 * px;
+  var gy = ey + L2 * py;
+  var nx = -py;
+  var ny = px;
+  return {
+    ex: ex, ey: ey, gx: gx, gy: gy, px: px, py: py, nx: nx, ny: ny,
+    gap: g, open: !!open, cx: gx + px * 16, cy: gy + py * 16, sd: sd, ed: ed
+  };
+};
+
+var samples = function (x1, y1, x2, y2, n) {
+  var pts = [];
+  for (var i = 0; i <= n; i++) {
+    var t = i / n;
+    pts.push([x1 + (x2 - x1) * t, y1 + (y2 - y1) * t]);
+  }
+  return pts;
+};
+
+var inBase = function (x, y) {
+  return Math.abs(x) <= 30 && y >= -4 && y <= SY + 8;
+};
+
+var pointHit = function (x, y, who, level, part, canPart) {
+  if (y < 2 && !inBase(x, y)) return who + " hit table";
+  var obs = level.obs;
+  for (var i = 0; i < obs.length; i++) {
+    var o = obs[i];
+    if (x >= o.l && x <= o.r && y >= -2 && y <= o.h) return who + " hit " + o.name;
+  }
+  if (canPart && part && !part.inBin && Math.abs(x - part.x) <= part.hw && Math.abs(y - part.y) <= part.hh) {
+    return who + " hit part";
+  }
+  return "";
+};
+
+var overBin = function (x, y, level) {
+  return x > level.mouth.l && x < level.mouth.r && y > 8 && y < 260;
+};
+
+var collide = function (state, level) {
+  var p = pose(state.sd, state.ed, state.open, state.gap);
+  var part = state.holding ? {
+    x: p.cx, y: p.cy, hw: state.part.hw, hh: state.part.hh, inBin: false, nested: false
+  } : state.part;
+  var ignorePart = !!(state.part.nested && !state.holding);
+  var upper = samples(0, SY, p.ex, p.ey, 8);
+  var i, hit;
+  for (i = 2; i < upper.length - 1; i++) {
+    hit = pointHit(upper[i][0], upper[i][1], "shoulder", level, part, !ignorePart && !state.holding);
+    if (hit) return hit;
+  }
+  var fore = samples(p.ex, p.ey, p.gx, p.gy, 8);
+  for (i = 0; i < fore.length; i++) {
+    hit = pointHit(fore[i][0], fore[i][1], "elbow", level, part, !ignorePart && !state.holding);
+    if (hit) return hit;
+  }
+  var half = p.gap / 2;
+  var sign;
+  for (sign = -1; sign <= 1; sign += 2) {
+    var x1 = p.gx + p.nx * sign * half;
+    var y1 = p.gy + p.ny * sign * half;
+    var x2 = x1 + p.px * JAW;
+    var y2 = y1 + p.py * JAW;
+    var pts = samples(x1, y1, x2, y2, 6);
+    for (i = 0; i < pts.length; i++) {
+      var can = !state.open && !ignorePart && !state.holding;
+      hit = pointHit(pts[i][0], pts[i][1], "gripper", level, part, can);
+      if (hit) return hit;
+    }
+  }
+  if (state.holding) {
+    var over = overBin(p.cx, p.cy, level);
+    if (p.cy < state.part.hh && !over) return "part hit table";
+    for (i = 0; i < level.obs.length; i++) {
+      var o = level.obs[i];
+      if (p.cx >= o.l && p.cx <= o.r && p.cy >= -2 && p.cy <= o.h) return "part hit " + o.name;
+    }
+  }
+  return "";
+};
+
+var contains = function (p, part) {
+  if (!part || part.inBin) return false;
+  var dx = part.x - p.gx;
+  var dy = part.y - p.gy;
+  var along = dx * p.px + dy * p.py;
+  var across = dx * p.nx + dy * p.ny;
+  return along >= 4 && along <= JAW - 2 && Math.abs(across) <= (p.gap / 2) + 1;
+};
+
+var clonePart = function (part, x, y, extra) {
+  return {
+    x: x, y: y, hw: part.hw, hh: part.hh,
+    nested: !!(extra && extra.nested),
+    inBin: !!(extra && extra.inBin),
+    dropped: !!(extra && extra.dropped),
+    loose: !!(extra && extra.loose)
+  };
+};
+
+var JOINT = { "s+": [15, 0], "s-": [-15, 0], "e+": [0, 15], "e-": [0, -15] };
+
+var applyCommand = function (state, cmd, level) {
+  var nsd, ned, i, t, sd, ed, gap, trial, hit, openPose, closed, p, release, restY;
+  if (JOINT[cmd]) {
+    nsd = state.sd + JOINT[cmd][0];
+    ned = state.ed + JOINT[cmd][1];
+    if (nsd > SMAX || nsd < SMIN) {
+      return { ok: false, msg: "shoulder stopped at " + (nsd > SMAX ? SMAX : SMIN) + " degrees", t: 0, state: state };
+    }
+    if (ned > EMAX || ned < EMIN) {
+      return { ok: false, msg: "elbow stopped at " + (ned > EMAX ? EMAX : EMIN) + " degrees", t: 0, state: state };
+    }
+    for (i = 1; i <= 6; i++) {
+      t = i / 6;
+      sd = state.sd + (nsd - state.sd) * t;
+      ed = state.ed + (ned - state.ed) * t;
+      trial = {
+        sd: sd, ed: ed, open: state.open, gap: state.gap, holding: state.holding,
+        part: state.holding ? clonePart(state.part, 0, 0) : state.part
+      };
+      if (state.holding) {
+        p = pose(sd, ed, state.open, state.gap);
+        trial.part = clonePart(state.part, p.cx, p.cy);
+      }
+      hit = collide(trial, level);
+      if (hit) return { ok: false, msg: hit, t: t, state: trial };
+    }
+    p = pose(nsd, ned, state.open, state.gap);
+    return {
+      ok: true, t: 1,
+      state: {
+        sd: nsd, ed: ned, open: state.open, gap: state.gap, holding: state.holding,
+        part: state.holding ? clonePart(state.part, p.cx, p.cy) : state.part
+      }
+    };
+  }
+  if (cmd === "close") {
+    if (state.holding) {
+      return { ok: true, t: 1, state: { sd: state.sd, ed: state.ed, open: false, gap: GAP_CLOSED, holding: true, part: state.part } };
+    }
+    openPose = pose(state.sd, state.ed, true, GAP_OPEN);
+    if (contains(openPose, state.part) || (state.part.nested && Math.hypot(openPose.cx - state.part.x, openPose.cy - state.part.y) < 12)) {
+      closed = pose(state.sd, state.ed, false, GAP_CLOSED);
+      return {
+        ok: true, t: 1,
+        state: {
+          sd: state.sd, ed: state.ed, open: false, gap: GAP_CLOSED, holding: true,
+          part: clonePart(state.part, closed.cx, closed.cy)
+        }
+      };
+    }
+    for (i = 1; i <= 4; i++) {
+      t = i / 4;
+      gap = GAP_OPEN + (GAP_CLOSED - GAP_OPEN) * t;
+      trial = { sd: state.sd, ed: state.ed, open: gap > 22, gap: gap, holding: false, part: state.part };
+      hit = collide(trial, level);
+      if (hit) return { ok: false, msg: hit, t: t, state: trial };
+    }
+    return { ok: true, t: 1, state: { sd: state.sd, ed: state.ed, open: false, gap: GAP_CLOSED, holding: false, part: state.part } };
+  }
+  if (cmd === "open") {
+    if (!state.holding) {
+      return { ok: true, t: 1, state: { sd: state.sd, ed: state.ed, open: true, gap: GAP_OPEN, holding: false, part: state.part } };
+    }
+    for (i = 1; i <= 4; i++) {
+      t = i / 4;
+      gap = GAP_CLOSED + (GAP_OPEN - GAP_CLOSED) * t;
+      p = pose(state.sd, state.ed, gap > 22, gap);
+      trial = {
+        sd: state.sd, ed: state.ed, open: gap > 22, gap: gap, holding: true,
+        part: clonePart(state.part, p.cx, p.cy)
+      };
+      hit = collide(trial, level);
+      if (hit) return { ok: false, msg: hit, t: t, state: trial };
+    }
+    p = pose(state.sd, state.ed, true, GAP_OPEN);
+    release = { x: p.cx, y: p.cy };
+    if (overBin(release.x, release.y, level)) {
+      return {
+        ok: true, win: true, t: 1, release: release,
+        state: {
+          sd: state.sd, ed: state.ed, open: true, gap: GAP_OPEN, holding: false,
+          part: clonePart(state.part, release.x, state.part.hh, { inBin: true })
+        }
+      };
+    }
+    restY = state.part.hh;
+    if (level.wall && release.x >= level.wall.l && release.x <= level.wall.r) restY = level.wall.h + state.part.hh;
+    return {
+      ok: false, miss: true, t: 1, release: release, msg: "part missed the bin",
+      state: {
+        sd: state.sd, ed: state.ed, open: true, gap: GAP_OPEN, holding: false,
+        part: clonePart(state.part, release.x, restY, { dropped: true, loose: true })
+      }
+    };
+  }
+  return { ok: false, msg: "unknown block", t: 0, state: state };
+};
+
+var endReason = function (state) {
+  if (state.part && state.part.inBin) return "";
+  if (state.holding) return "part is still held. Open the gripper over the bin.";
+  if (state.part && state.part.dropped) return "part missed the bin.";
+  return "gripper never closed on the part.";
+};
+
+var decorate = function (level) {
+  var obs = [];
+  if (level.wall) obs.push({ l: level.wall.l, r: level.wall.r, h: level.wall.h, name: "wall" });
+  obs.push({ l: level.bin.l, r: level.bin.l + THICK, h: level.bin.h, name: "bin" });
+  obs.push({ l: level.bin.r - THICK, r: level.bin.r, h: level.bin.h, name: "bin" });
+  level.obs = obs;
+  level.mouth = { l: level.bin.l + THICK, r: level.bin.r - THICK };
+  return level;
+};
+
+var partBox = function (x, y, nested) {
+  return { x: x, y: y, hw: 11, hh: 10, nested: !!nested };
+};
+
+var buildLevels = function () {
+  var nest = pose(30, -75, true, GAP_OPEN);
+  var g2 = pose(15, -90, true, GAP_OPEN);
+  var g3 = pose(15, -105, true, GAP_OPEN);
+  return [
+    decorate({
+      name: "Grab",
+      icon: "close",
+      sd: 30,
+      ed: -75,
+      part: partBox(nest.cx, nest.cy, true),
+      bin: { l: Math.round(nest.cx) - 48, r: Math.round(nest.cx) + 48, h: 26 },
+      wall: null,
+      par: 2,
+      goal: "The part is already in the open gripper, above the bin. Close the gripper, then open it so the part drops in. You can finish this with 2 blocks."
+    }),
+    decorate({
+      name: "Move and grab",
+      icon: "s-",
+      sd: 30,
+      ed: -90,
+      part: partBox(g2.cx, 16, false),
+      bin: { l: 176, r: 260, h: 28 },
+      wall: null,
+      par: 5,
+      goal: "Move the arm to the part, close the gripper, and drop the part in the bin. You can finish this with 5 blocks."
+    }),
+    decorate({
+      name: "Pick and place",
+      icon: "place",
+      sd: 30,
+      ed: -105,
+      part: partBox(g3.cx, 16, false),
+      bin: { l: 204, r: 292, h: 30 },
+      wall: { l: 164, r: 196, h: 44 },
+      par: 8,
+      goal: "Pick up the part and place it in the bin. Lift over the wall before you swing. You can finish this with 8 blocks."
+    })
+  ];
+};
+
+var LEVELS = buildLevels();
+
+var initialState = function (level) {
+  var part = level.part;
+  return {
+    sd: level.sd,
+    ed: level.ed,
+    open: true,
+    gap: GAP_OPEN,
+    holding: false,
+    part: {
+      x: part.x, y: part.y, hw: part.hw, hh: part.hh,
+      nested: !!part.nested, inBin: false, dropped: false, loose: false
+    }
+  };
+};
+
+var runAll = function (level, commands) {
+  var state = initialState(level);
+  var startHit = collide(state, level);
+  if (startHit) return { crash: "start " + startHit, step: 0, state: state };
+  for (var i = 0; i < commands.length; i++) {
+    var r = applyCommand(state, commands[i], level);
+    if (!r.ok) return { crash: r.msg, step: i + 1, state: r.state, miss: !!r.miss };
+    state = r.state;
+    if (r.win) return { win: true, step: i + 1, blocks: commands.length, state: state };
+  }
+  var why = endReason(state);
+  if (!why) return { win: true, step: commands.length, blocks: commands.length, state: state };
+  return { end: why, blocks: commands.length, state: state };
+};
+
+var BLOCKS = [
+  { id: "s+", label: "Shoulder +15", keys: "1 ↑", shortcuts: "1 ArrowUp" },
+  { id: "s-", label: "Shoulder -15", keys: "2 ↓", shortcuts: "2 ArrowDown" },
+  { id: "e+", label: "Elbow +15", keys: "3 →", shortcuts: "3 ArrowRight" },
+  { id: "e-", label: "Elbow -15", keys: "4 ←", shortcuts: "4 ArrowLeft" },
+  { id: "open", label: "Open", keys: "5", shortcuts: "5" },
+  { id: "close", label: "Close", keys: "6", shortcuts: "6" }
+];
+
+var KEYS = {
+  "1": "s+", "2": "s-", "3": "e+", "4": "e-", "5": "open", "6": "close",
+  ArrowUp: "s+", ArrowDown: "s-", ArrowRight: "e+", ArrowLeft: "e-"
+};
+
+var svg = function (body) {
+  return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">' + body + "</svg>";
+};
+var ST = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+var ICONS = {
+  "s+": svg('<circle cx="5" cy="18" r="1.6" ' + ST + '/><path d="M7 16 L14 8" ' + ST + '/><path d="M10 8 h5 v5" ' + ST + '/>'),
+  "s-": svg('<circle cx="5" cy="6" r="1.6" ' + ST + '/><path d="M7 8 L14 16" ' + ST + '/><path d="M10 16 h5 v-5" ' + ST + '/>'),
+  "e+": svg('<path d="M3 17 H10 L17 8" ' + ST + '/><path d="M13 8 h5 v5" ' + ST + '/>'),
+  "e-": svg('<path d="M3 7 H10 L17 16" ' + ST + '/><path d="M13 16 h5 v-5" ' + ST + '/>'),
+  "open": svg('<path d="M8 5 H16 M8 5 L4 18 M16 5 L20 18" ' + ST + '/>'),
+  "close": svg('<path d="M7 5 H17 M8 5 L11 18 M16 5 L13 18" ' + ST + '/>'),
+  "place": svg('<path d="M4 8 h16 v10 H4 z" ' + ST + '/><path d="M9 8 V5 h6 v3" ' + ST + '/>'),
+  "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
+  "remove": svg('<path d="M20 12 H7" ' + ST + '/><path d="M11 8 L7 12 L11 16" ' + ST + '/>'),
+  "clear": svg('<path d="M6 6 h12 v12 H6 z" ' + ST + '/><path d="M9 9 l6 6 M15 9 l-6 6" ' + ST + '/>'),
+  "retry": svg('<path d="M12 6 a6 6 0 1 1 -4.2 1.8" ' + ST + '/><path d="M7 4 v5 h5" ' + ST + '/>')
+};
+
+var session = { level: 0, programs: [[], [], []], best: [null, null, null] };
+var world = null;
+var playback = 0;
+var playing = false;
+var lastMs = null;
+var runT0 = 0;
+var reduce = false;
+var canvas, ctx, cssW = 800, cssH = 250;
+var patterns = null;
+var activeCmd = "";
+
+var labelOf = function (id) {
+  for (var i = 0; i < BLOCKS.length; i++) if (BLOCKS[i].id === id) return BLOCKS[i].label;
+  return id;
+};
+
+var formatMs = function (ms) {
+  return (Math.max(0, ms) / 1000).toFixed(1) + " s";
+};
+
+var setStatus = function (text, kind) {
+  var el = document.getElementById("status");
+  el.textContent = text;
+  el.classList.remove("is-win", "is-bad");
+  if (kind) el.classList.add(kind === "win" ? "is-win" : "is-bad");
+};
+
+var setStepLive = function (text) {
+  document.getElementById("step-live").textContent = text;
+};
+
+var updateAngles = function (state) {
+  var grip = state.open ? "open" : "closed";
+  document.getElementById("angles").textContent =
+    "Shoulder " + Math.round(state.sd) + " degrees. Elbow " + Math.round(state.ed) + " degrees. Gripper " + grip + ".";
+};
+
+var updateMetrics = function () {
+  var n = session.programs[session.level].length;
+  document.getElementById("m-blocks").textContent = "Blocks: " + n;
+  var timeEl = document.getElementById("m-time");
+  if (playing && runT0) timeEl.textContent = "Time: " + formatMs(performance.now() - runT0);
+  else if (lastMs == null) timeEl.textContent = "Time: none yet";
+  else timeEl.textContent = "Time: " + formatMs(lastMs);
+  var best = session.best[session.level];
+  document.getElementById("m-best").textContent = best
+    ? ("Best this session: " + best.blocks + " blocks, " + formatMs(best.ms))
+    : "Best this session: none yet";
+};
+
+var renderProgram = function (now, stop) {
+  var ol = document.getElementById("program");
+  var list = session.programs[session.level];
+  ol.replaceChildren();
+  if (!list.length) {
+    var empty = document.createElement("li");
+    empty.textContent = "No blocks yet.";
+    ol.appendChild(empty);
+    return;
+  }
+  for (var i = 0; i < list.length; i++) {
+    var li = document.createElement("li");
+    li.className = "chip";
+    if (i === now) {
+      li.classList.add("is-now");
+      li.setAttribute("aria-current", "step");
+    }
+    if (i === stop) li.classList.add("is-stop");
+    if (i === now || i === stop) {
+      var mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = i === stop ? "Stop ✗" : "Now";
+      li.appendChild(mark);
+    }
+    var idx = document.createElement("span");
+    idx.textContent = String(i + 1);
+    li.appendChild(idx);
+    var holder = document.createElement("span");
+    holder.innerHTML = ICONS[list[i]] || "";
+    if (holder.firstChild) li.appendChild(holder.firstChild);
+    var name = document.createElement("span");
+    name.textContent = labelOf(list[i]);
+    li.appendChild(name);
+    ol.appendChild(li);
+  }
+  var current = ol.querySelector(".is-now, .is-stop");
+  if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+};
+
+var renderLevels = function () {
+  var nav = document.getElementById("levels");
+  var buttons = nav.querySelectorAll("button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed", i === session.level ? "true" : "false");
+  }
+  document.getElementById("goal").textContent = LEVELS[session.level].goal;
+};
+
+var setBusy = function (busy) {
+  var nodes = document.querySelectorAll("[data-cmd], #remove, #clear, #run");
+  for (var i = 0; i < nodes.length; i++) nodes[i].disabled = busy;
+};
+
+var addBlock = function (id) {
+  if (playing) return;
+  var list = session.programs[session.level];
+  if (list.length >= 24) {
+    setStatus("Program is full at 24 blocks.", "");
+    return;
+  }
+  list.push(id);
+  renderProgram(-1, -1);
+  updateMetrics();
+};
+
+var removeLast = function () {
+  if (playing) return;
+  var list = session.programs[session.level];
+  if (!list.length) return;
+  list.pop();
+  renderProgram(-1, -1);
+  updateMetrics();
+};
+
+var clearProgram = function () {
+  if (playing) return;
+  session.programs[session.level].length = 0;
+  renderProgram(-1, -1);
+  updateMetrics();
+  setStatus("Program cleared.", "");
+  setStepLive("");
+};
+
+var projector = function (w, h) {
+  var worldW = VIEW.x1 - VIEW.x0;
+  var worldH = VIEW.y1 - VIEW.y0;
+  var s = Math.min(w / worldW, h / worldH);
+  var ox = (w - worldW * s) / 2;
+  var oy = (h - worldH * s) / 2;
+  return {
+    s: s,
+    x: function (wx) { return ox + (wx - VIEW.x0) * s; },
+    y: function (wy) { return oy + (VIEW.y1 - wy) * s; }
+  };
+};
+
+var roundRect = function (c, x, y, w, h, r) {
+  var rr = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  c.beginPath();
+  c.moveTo(x + rr, y);
+  c.arcTo(x + w, y, x + w, y + h, rr);
+  c.arcTo(x + w, y + h, x, y + h, rr);
+  c.arcTo(x, y + h, x, y, rr);
+  c.arcTo(x, y, x + w, y, rr);
+  c.closePath();
+};
+
+var ensurePatterns = function () {
+  if (patterns) return patterns;
+  var make = function (draw) {
+    var c = document.createElement("canvas");
+    c.width = 8;
+    c.height = 8;
+    var g = c.getContext("2d");
+    g.strokeStyle = "#2c2b28";
+    g.lineWidth = 1;
+    draw(g);
+    return ctx.createPattern(c, "repeat");
+  };
+  patterns = {
+    part: make(function (g) { g.beginPath(); g.moveTo(0, 8); g.lineTo(8, 0); g.stroke(); }),
+    wall: make(function (g) {
+      g.beginPath();
+      g.moveTo(0, 2); g.lineTo(8, 2);
+      g.moveTo(0, 6); g.lineTo(8, 6);
+      g.stroke();
+    }),
+    bin: make(function (g) {
+      g.beginPath();
+      g.moveTo(3, 0); g.lineTo(3, 8);
+      g.moveTo(6, 0); g.lineTo(6, 8);
+      g.stroke();
+    })
+  };
+  return patterns;
+};
+
+var labelQueue = [];
+var tag = function (text, wx, wy) {
+  labelQueue.push({ text: text, wx: wx, wy: wy });
+};
+var paintTags = function (P) {
+  ctx.font = "600 13px system-ui, sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  for (var i = 0; i < labelQueue.length; i++) {
+    var item = labelQueue[i];
+    var tw = ctx.measureText(item.text).width;
+    var pad = 4;
+    var w = tw + pad * 2;
+    var h = 18;
+    var x = Math.max(2, Math.min(P.x(item.wx) - w / 2, cssW - w - 2));
+    var y = Math.max(2, Math.min(P.y(item.wy) - h / 2, cssH - h - 2));
+    ctx.fillStyle = "#e4e2dc";
+    roundRect(ctx, x, y, w, h, 4);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#5e5c57";
+    ctx.stroke();
+    ctx.fillStyle = "#2c2b28";
+    ctx.fillText(item.text, x + pad, y + 13);
+  }
+  labelQueue = [];
+};
+
+var draw = function (state, cmd) {
+  if (!ctx || cssW < 2 || cssH < 2) return;
+  labelQueue = [];
+  var level = LEVELS[session.level];
+  var P = projector(cssW, cssH);
+  var pats = ensurePatterns();
+  ctx.clearRect(0, 0, cssW, cssH);
+  ctx.fillStyle = "#d5d3ce";
+  ctx.fillRect(0, 0, cssW, cssH);
+
+  var tableTop = P.y(0);
+  ctx.fillStyle = "#b7b4ad";
+  ctx.fillRect(0, tableTop, cssW, cssH - tableTop);
+  ctx.strokeStyle = "#2c2b28";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, tableTop);
+  ctx.lineTo(cssW, tableTop);
+  ctx.stroke();
+  tag("Table", VIEW.x0 + 36, -10);
+
+  var bin = level.bin;
+  var xL = P.x(bin.l), xR = P.x(bin.r), y0 = P.y(0), yH = P.y(bin.h);
+  ctx.fillStyle = "#d4d1ca";
+  ctx.fillRect(xL, yH, xR - xL, y0 - yH);
+  ctx.strokeStyle = "#2c2b28";
+  ctx.lineWidth = Math.max(2, P.s * THICK * 0.45);
+  ctx.beginPath();
+  ctx.moveTo(xL, yH);
+  ctx.lineTo(xL, y0);
+  ctx.lineTo(xR, y0);
+  ctx.lineTo(xR, yH);
+  ctx.stroke();
+  tag("Bin", bin.r - 6, bin.h + 16);
+
+  if (level.wall) {
+    var wall = level.wall;
+    var wx = P.x(wall.l), wy = P.y(wall.h), ww = P.x(wall.r) - wx, wh = P.y(0) - wy;
+    ctx.fillStyle = "#a7a49c";
+    ctx.fillRect(wx, wy, ww, wh);
+    ctx.fillStyle = pats.wall;
+    ctx.fillRect(wx, wy, ww, wh);
+    ctx.strokeStyle = "#2c2b28";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(wx, wy, ww, wh);
+    tag("Wall", (wall.l + wall.r) / 2, wall.h + 14);
+  }
+
+  var bx = P.x(-20), by = P.y(SY), bw = P.x(20) - bx, bh = P.y(0) - by;
+  ctx.fillStyle = "#8d8a83";
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = "#2c2b28";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(bx, by, bw, bh);
+  tag("Base", 0, SY * 0.45);
+
+  var p = pose(state.sd, state.ed, state.open, state.gap);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "#4a4844";
+  ctx.lineWidth = Math.max(8, P.s * 12);
+  ctx.beginPath();
+  ctx.moveTo(P.x(0), P.y(SY));
+  ctx.lineTo(P.x(p.ex), P.y(p.ey));
+  ctx.stroke();
+  ctx.lineWidth = Math.max(7, P.s * 10);
+  ctx.beginPath();
+  ctx.moveTo(P.x(p.ex), P.y(p.ey));
+  ctx.lineTo(P.x(p.gx), P.y(p.gy));
+  ctx.stroke();
+
+  var part = state.holding ? { x: p.cx, y: p.cy, hw: state.part.hw, hh: state.part.hh } : state.part;
+  if (!part.inBin) {
+    var px = P.x(part.x - part.hw), py = P.y(part.y + part.hh);
+    var pw = P.x(part.x + part.hw) - px, ph = P.y(part.y - part.hh) - py;
+    ctx.fillStyle = "#c8c4bb";
+    ctx.fillRect(px, py, pw, ph);
+    ctx.fillStyle = pats.part;
+    ctx.fillRect(px, py, pw, ph);
+    ctx.strokeStyle = "#2c2b28";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px, py, pw, ph);
+  } else {
+    var ix = P.x(part.x - part.hw), iy = P.y(part.hh * 2);
+    var iw = P.x(part.x + part.hw) - ix, ih = P.y(0) - iy;
+    ctx.fillStyle = "#c8c4bb";
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.fillStyle = pats.part;
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.strokeStyle = "#2c2b28";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(ix, iy, iw, ih);
+  }
+  tag("Part", part.x, (part.inBin ? part.hh : part.y + part.hh) + 12);
+
+  var half = p.gap / 2;
+  ctx.strokeStyle = "#2c2b28";
+  ctx.lineWidth = Math.max(4, P.s * 4);
+  for (var sign = -1; sign <= 1; sign += 2) {
+    var x1 = p.gx + p.nx * sign * half;
+    var y1 = p.gy + p.ny * sign * half;
+    ctx.beginPath();
+    ctx.moveTo(P.x(x1), P.y(y1));
+    ctx.lineTo(P.x(x1 + p.px * JAW), P.y(y1 + p.py * JAW));
+    ctx.stroke();
+  }
+
+  var joint = function (wx, wy, hot) {
+    ctx.beginPath();
+    ctx.fillStyle = "#2c2b28";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(5, P.s * 6), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#e4e2dc";
+    ctx.arc(P.x(wx), P.y(wy), Math.max(2, P.s * 2.4), 0, Math.PI * 2);
+    ctx.fill();
+    if (hot) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#1c1b19";
+      ctx.lineWidth = 2;
+      ctx.arc(P.x(wx), P.y(wy), Math.max(9, P.s * 10), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  };
+  joint(0, SY, cmd === "s+" || cmd === "s-");
+  joint(p.ex, p.ey, cmd === "e+" || cmd === "e-");
+  tag("Shoulder " + Math.round(state.sd) + "°", -6, SY + 22);
+  tag("Elbow " + Math.round(state.ed) + "°", p.ex, p.ey + 18);
+  paintTags(P);
+};
+
+var fit = function () {
+  var rect = canvas.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  cssW = Math.max(1, Math.round(rect.width));
+  cssH = Math.max(1, Math.round(rect.height));
+  canvas.width = Math.max(1, Math.round(cssW * dpr));
+  canvas.height = Math.max(1, Math.round(cssH * dpr));
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+};
+
+var blend = function (start, result, f) {
+  var sd = start.sd + (result.state.sd - start.sd) * f;
+  var ed = start.ed + (result.state.ed - start.ed) * f;
+  var gap = start.gap + ((result.state.gap == null ? start.gap : result.state.gap) - start.gap) * f;
+  var p = pose(sd, ed, gap > 22, gap);
+  var part = {
+    x: start.part.x, y: start.part.y, hw: start.part.hw, hh: start.part.hh,
+    nested: start.part.nested, inBin: false, dropped: false
+  };
+  if (start.holding) {
+    part.x = p.cx;
+    part.y = p.cy;
+    part.nested = false;
+  } else if (result.state.holding) {
+    part.x = start.part.x + (result.state.part.x - start.part.x) * f;
+    part.y = start.part.y + (result.state.part.y - start.part.y) * f;
+    part.nested = false;
+  }
+  if (f >= 1 && result.release) {
+    return {
+      sd: result.state.sd, ed: result.state.ed, open: true, gap: GAP_OPEN, holding: false,
+      part: { x: result.release.x, y: result.release.y, hw: start.part.hw, hh: start.part.hh, inBin: false }
+    };
+  }
+  return { sd: sd, ed: ed, open: gap > 22, gap: gap, holding: start.holding || (result.state.holding && f > 0.92), part: part };
+};
+
+var until = function (ms, token) {
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      if (playing && runT0) updateMetrics();
+      if (now - t0 >= ms) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+
+var glide = function (ms, token, onFrame) {
+  if (reduce) {
+    onFrame(1);
+    return until(SNAP_MS, token);
+  }
+  return new Promise(function (resolve) {
+    var t0 = performance.now();
+    var frame = function (now) {
+      if (token !== playback) return resolve(false);
+      var t = Math.min(1, (now - t0) / ms);
+      onFrame(t);
+      if (playing && runT0) updateMetrics();
+      if (t >= 1) return resolve(true);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+};
+
+var fallPart = function (token, result) {
+  var fromY = result.release.y;
+  var toY = result.state.part.y;
+  var x = result.state.part.x;
+  if (reduce || Math.abs(toY - fromY) < 1) return Promise.resolve(token === playback);
+  return glide(220, token, function (t) {
+    var vis = {
+      sd: result.state.sd, ed: result.state.ed, open: true, gap: GAP_OPEN, holding: false,
+      part: {
+        x: x, y: fromY + (toY - fromY) * t, hw: result.state.part.hw, hh: result.state.part.hh,
+        inBin: t > 0.98 && !!result.state.part.inBin
+      }
+    };
+    draw(vis, "open");
+    updateAngles(vis);
+  });
+};
+
+var finishWin = function (blocks, ms) {
+  var best = session.best[session.level];
+  var better = !best || blocks < best.blocks || (blocks === best.blocks && ms < best.ms);
+  if (better) session.best[session.level] = { blocks: blocks, ms: ms };
+  var text = "✓ Part is in the bin. " + blocks + " blocks, " + formatMs(ms) + ".";
+  if (better) text += " New best this session.";
+  setStatus(text, "win");
+  setStepLive(text);
+};
+
+var finishFail = function (msg) {
+  var text = "✗ " + msg;
+  setStatus(text, "bad");
+  setStepLive(text);
+};
+
+var play = async function () {
+  if (playing) return;
+  var commands = session.programs[session.level].slice();
+  if (!commands.length) {
+    setStatus("Add a block, then press Run.", "");
+    return;
+  }
+  var token = ++playback;
+  playing = true;
+  setBusy(true);
+  var level = LEVELS[session.level];
+  world = initialState(level);
+  runT0 = performance.now();
+  lastMs = null;
+  activeCmd = "";
+  renderProgram(-1, -1);
+  updateAngles(world);
+  updateMetrics();
+  draw(world, "");
+  setStatus("Running.", "");
+  var state = world;
+  var startHit = collide(state, level);
+  if (startHit) {
+    playing = false;
+    setBusy(false);
+    lastMs = performance.now() - runT0;
+    finishFail(startHit);
+    updateMetrics();
+    return;
+  }
+  for (var i = 0; i < commands.length; i++) {
+    if (token !== playback) return;
+    activeCmd = commands[i];
+    renderProgram(i, -1);
+    setStepLive("Step " + (i + 1) + " of " + commands.length + ". " + labelOf(commands[i]) + ".");
+    setStatus("Running step " + (i + 1) + " of " + commands.length + ": " + labelOf(commands[i]) + ".", "");
+    var result = applyCommand(state, commands[i], level);
+    var moved = result.t > 0;
+    if (moved) {
+      var dur = reduce ? SNAP_MS : Math.max(180, STEP_MS * result.t);
+      var alive = await glide(dur, token, function (u) {
+        var vis = blend(state, result, u);
+        draw(vis, commands[i]);
+        updateAngles(vis);
+      });
+      if (!alive || token !== playback) return;
+    }
+    if (result.release) {
+      var fell = await fallPart(token, result);
+      if (!fell || token !== playback) return;
+    }
+    state = result.state;
+    world = state;
+    draw(world, commands[i]);
+    updateAngles(world);
+    if (!result.ok || result.win) {
+      lastMs = performance.now() - runT0;
+      playing = false;
+      activeCmd = "";
+      setBusy(false);
+      if (result.win) {
+        renderProgram(i, -1);
+        finishWin(commands.length, lastMs);
+      } else {
+        renderProgram(-1, i);
+        finishFail(result.msg + " at step " + (i + 1));
+      }
+      updateMetrics();
+      draw(world, "");
+      return;
+    }
+  }
+  if (token !== playback) return;
+  lastMs = performance.now() - runT0;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+  renderProgram(-1, -1);
+  setStatus(endReason(state), "");
+  setStepLive(endReason(state));
+  updateMetrics();
+  draw(world, "");
+};
+
+var stopPlay = function () {
+  playback += 1;
+  playing = false;
+  activeCmd = "";
+  setBusy(false);
+};
+
+var retry = function () {
+  stopPlay();
+  world = initialState(LEVELS[session.level]);
+  lastMs = null;
+  runT0 = 0;
+  setStatus("Arm reset. Program kept.", "");
+  setStepLive("Arm reset. Program kept.");
+  renderProgram(-1, -1);
+  updateAngles(world);
+  updateMetrics();
+  draw(world, "");
+};
+
+var selectLevel = function (index) {
+  if (index === session.level && !playing) return;
+  stopPlay();
+  session.level = index;
+  world = initialState(LEVELS[index]);
+  lastMs = null;
+  runT0 = 0;
+  renderLevels();
+  renderProgram(-1, -1);
+  updateAngles(world);
+  updateMetrics();
+  setStatus("Add blocks, then press Run.", "");
+  setStepLive("");
+  draw(world, "");
+};
+
+var makeButton = function (className, icon, label, keyText, onClick) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = className;
+  b.innerHTML = ICONS[icon] || "";
+  var name = document.createElement("span");
+  name.className = "name";
+  name.textContent = label;
+  b.appendChild(name);
+  if (keyText) {
+    var k = document.createElement("kbd");
+    k.textContent = keyText;
+    b.appendChild(k);
+  }
+  b.addEventListener("click", onClick);
+  return b;
+};
+
+var boot = function () {
+  canvas = document.getElementById("view");
+  ctx = canvas.getContext("2d");
+  var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  reduce = !!(mq && mq.matches);
+  if (mq && mq.addEventListener) mq.addEventListener("change", function () { reduce = mq.matches; });
+  else if (mq && mq.addListener) mq.addListener(function () { reduce = mq.matches; });
+
+  var nav = document.getElementById("levels");
+  LEVELS.forEach(function (level, index) {
+    var b = makeButton("level", level.icon, (index + 1) + " " + level.name, "", function () { selectLevel(index); });
+    b.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+    nav.appendChild(b);
+  });
+
+  var palette = document.getElementById("palette");
+  BLOCKS.forEach(function (block) {
+    var b = makeButton("block", block.id, block.label, block.keys, function () { addBlock(block.id); });
+    b.dataset.cmd = block.id;
+    b.setAttribute("aria-keyshortcuts", block.shortcuts);
+    palette.appendChild(b);
+  });
+
+  var actions = document.getElementById("actions");
+  var runBtn = makeButton("action", "run", "Run", "Enter", function () { play(); });
+  runBtn.id = "run";
+  var removeBtn = makeButton("action", "remove", "Remove", "Bksp", function () { removeLast(); });
+  removeBtn.id = "remove";
+  var clearBtn = makeButton("action", "clear", "Clear", "", function () { clearProgram(); });
+  clearBtn.id = "clear";
+  var retryBtn = makeButton("action", "retry", "Retry", "", function () { retry(); });
+  retryBtn.id = "retry";
+  actions.appendChild(runBtn);
+  actions.appendChild(removeBtn);
+  actions.appendChild(clearBtn);
+  actions.appendChild(retryBtn);
+
+  window.addEventListener("keydown", function (e) {
+    if (e.repeat && KEYS[e.key]) return;
+    var cmd = KEYS[e.key];
+    if (cmd) {
+      e.preventDefault();
+      addBlock(cmd);
+      return;
+    }
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      removeLast();
+      return;
+    }
+    if (e.key === "Enter") {
+      var target = e.target;
+      if (target && target.closest && target.closest("button")) return;
+      e.preventDefault();
+      play();
+    }
+  });
+
+  var queued = false;
+  window.addEventListener("resize", function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () {
+      queued = false;
+      fit();
+      if (world) draw(world, activeCmd);
+    });
+  });
+
+  world = initialState(LEVELS[0]);
+  renderLevels();
+  renderProgram(-1, -1);
+  updateAngles(world);
+  updateMetrics();
+  fit();
+  draw(world, "");
+  var wrap = document.getElementById("program-wrap");
+  if (wrap && wrap.focus) wrap.focus({ preventScroll: true });
+};
+
+if (typeof document !== "undefined") boot();
+</script>
+</body>
+</html>

@@ -20,9 +20,10 @@ export function cellAt(cx, cz, idx) {
   return { x: cx * 16 + (idx % 16), y: Math.floor(idx / 256) + Y_MIN, z: cz * 16 + (Math.floor(idx / 16) % 16) }
 }
 
-export const encodeChunk = (edits) => JSON.stringify({ f: FMT, e: [...edits] })
+// m: machine rows (see sim.js), added in P4; older chunks have none.
+export const encodeChunk = (edits, m = []) => (m.length ? JSON.stringify({ f: FMT, e: [...edits], m }) : JSON.stringify({ f: FMT, e: [...edits] }))
 
-// -> { edits:Map } or { error:'corrupt'|'newer' }. An error chunk is never written over.
+// -> { edits:Map, m:[] } or { error:'corrupt'|'newer' }. An error chunk is never written over.
 export function decodeChunk(str) {
   if (str === null || str === undefined || str === '') return { edits: new Map() }
   let o
@@ -33,5 +34,5 @@ export function decodeChunk(str) {
   for (const p of Array.isArray(o.e) ? o.e : []) {
     if (Array.isArray(p) && Number.isInteger(p[0]) && Number.isInteger(p[1]) && p[0] >= 0 && p[1] >= 0) edits.set(p[0], p[1])
   }
-  return { edits }
+  return { edits, m: Array.isArray(o.m) ? o.m : [] }
 }

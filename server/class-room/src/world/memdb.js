@@ -16,6 +16,7 @@ export function memDb() {
       ops = ops.concat(os).slice(-keep)
       for (const k of Object.keys(m)) meta.set(k, m[k])
     },
+    purgeOps(before) { const n = ops.length; ops = ops.filter((o) => o.t >= before); return n - ops.length },
     *allChunks() { for (const [k, v] of chunks) { const [cx, cz] = k.split(',').map(Number); yield [cx, cz, v] } },
     chunkCount: () => chunks.size,
   }
