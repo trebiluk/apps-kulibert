@@ -1,7 +1,7 @@
-// Bertopia kill-switch worker (2.5.584). build.mjs writes the real version over 2.5.592.
+// Bertopia kill-switch worker (2.5.584). build.mjs writes the real version over 2.5.589.
 // No fetch handler and no caching: it clears every Bertopia cache and unregisters itself.
 // Only bloxbert-* caches are cleared, because every app on this origin shares Cache Storage.
-const VERSION = '2.5.592'
+const VERSION = '2.5.589'
 const CACHE = 'bloxbert-off-' + VERSION // never opened; the name changes each version so the browser sees a new worker
 
 self.addEventListener('install', () => { self.skipWaiting() })

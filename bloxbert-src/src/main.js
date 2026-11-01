@@ -4928,6 +4928,11 @@ saveSoon = () => {
     if (!(bytes >= 0)) return bytes
     paintSaveChip(navigator.onLine ? 'saved' : 'offline')
     return bytes
+  }).catch((e) => {
+    // Topia sync P1: a failed save (quota full, held, newer copy) says "Not saved" instead of an uncaught rejection.
+    // A paused tab already shows its own pause chip.
+    if (!(e && e.code === 'paused')) showNotSavedChip()
+    return -1
   })
 }
 async function saveClicked() {
@@ -9076,6 +9081,51 @@ async function seedOldSave() {
   })
 }
 window.__bertopiaOldSeed = seedOldSave()
+// 2.5.589 dev-only place hook for ShipCheck: exists ONLY with ?debug=1. Goes through placeBlock -> edit -> saveSoon (dirty, autosave, sync push).
+if (/[?&]debug=1(&|$)/.test(location.search)) {
+  const btHold = (id) => {
+    if (!id) return
+    if (survivalOn() && session) {
+      if (!session.selectOwned(id)) {
+        const key = Object.keys(ITEMS).find((k) => ITEMS[k] && ITEMS[k].block === id)
+        if (key) { session.give(key, 1); session.selectOwned(id) }
+      }
+    } else current = id
+  }
+  const btPlaceAt = (x, y, z, id) => {
+    x = Math.floor(x); y = Math.floor(y); z = Math.floor(z)
+    kidActed = true // the hook stands in for a kid tap, so the Saved chip shows
+    btHold(id)
+    const below = getVoxel(x, y - 1, z)
+    const face = { id: below, blockID: below, position: [x, y - 1, z], adjacent: [x, y, z], normal: [0, 1, 0] }
+    const ok = !!placeBlock(face)
+    return { ok, at: [x, y, z], id: getVoxel(x, y, z) }
+  }
+  window.__bt = {
+    placeAt: btPlaceAt,
+    // blockAt: the block id at that cell (0 = air), or null if x/y/z aren't numbers
+    blockAt(x, y, z) {
+      if (![x, y, z].every(Number.isFinite)) return null
+      return getVoxel(Math.floor(x), Math.floor(y), Math.floor(z)) || 0
+    },
+    placeTest(id) {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const h = noa.camera ? noa.camera.heading : 0
+      const dx = Math.round(Math.sin(h)), dz = Math.round(Math.cos(h))
+      const bx = Math.floor(p[0]), by = Math.floor(p[1]), bz = Math.floor(p[2])
+      const tries = [[dx * 2, dz * 2], [dx, dz], [2, 0], [-2, 0], [0, 2], [0, -2]]
+      for (const [ox, oz] of tries) {
+        for (const oy of [0, 1, -1]) {
+          const x = bx + ox, y = by + oy, z = bz + oz
+          if (getVoxel(x, y, z) || !getVoxel(x, y - 1, z)) continue
+          const r = btPlaceAt(x, y, z, id || ID.planks)
+          if (r.ok) return r
+        }
+      }
+      return { ok: false }
+    },
+  }
+}
 let bootLoad = Promise.resolve() // set to the first load() below, so an early click waits for it
 async function loadOldClicked() {
   const btn = $('m-load')

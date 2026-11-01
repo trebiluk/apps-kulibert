@@ -12,7 +12,11 @@ let logged409 = false
 let verified = null
 const lastPush = Object.create(null)
 const lastPushedAt = Object.create(null)
-let pendingDoc = null
+// Topia sync P1: one push in flight per world, one waiting doc per world, one timer per world.
+const inflight = Object.create(null)
+const pendingDocs = Object.create(null)
+const pendTimers = Object.create(null)
+const WINDOW = 20000
 let onlineHandler = null
 
 function flagOn() {
@@ -120,11 +124,12 @@ export async function maybePull(worldId, localDoc) {
 }
 
 
-async function keepBoth(localDoc, serverRev) {
+async function keepBoth(localDoc) {
   try {
     const world = localDoc.id
     const server = await fetchHead(world)
     if (!server || !server.head) return
+    const freshRev = server.rev || 0 // P1: If-Match uses the rev we just read, never the stale one
     const keys = Object.keys(server.chunks || {})
     const chunks = keys.length ? await fetchChunks(world, keys) : {}
     if (!chunks) return
@@ -141,19 +146,24 @@ async function keepBoth(localDoc, serverRev) {
       r.onerror = () => rej(r.error)
     })
     showKeepBothCard()
-    // re-push current with server rev
+    // re-push current with the fresh server rev
     const head = { ...localDoc }
     delete head.chunks
     if (!head.format) head.format = 'kuliblocks'
     if (head.v == null) head.v = 2
     if (typeof head.schema !== 'number') head.schema = 2
     const body = { head, chunks: localDoc.chunks || {}, drop: [] }
-    await fetch(BASE + '?world=' + encodeURIComponent(world), {
+    const putRes = await fetch(BASE + '?world=' + encodeURIComponent(world), {
       method: 'PUT',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', 'If-Match': String(serverRev) },
+      headers: { 'Content-Type': 'application/json', 'If-Match': String(freshRev) },
       body: JSON.stringify(body),
     })
+    if (putRes.ok) {
+      lastPush[world] = Date.now()
+      lastPushedAt[world] = localDoc.updatedAt || new Date().toISOString()
+      try { setSyncState('saved') } catch (e) {}
+    }
   } catch (e) {}
 }
 
@@ -179,33 +189,29 @@ function showKeepBothCard() {
   card.addEventListener('click', (e) => { if (e.target === card) card.remove() })
 }
 
-async function pushNow(doc) {
-  if (stopped || !doc || !doc.id) return
-  const world = doc.id
-  const now = Date.now()
-  if (lastPush[world] && now - lastPush[world] < 20000) return
-
-  if (!(await isVerified())) { try { setSyncState("nosign") } catch (e) {} return }
-  try { setSyncState("saving") } catch (e) {}
-
-  let rev = 0
-  let serverChunks = {}
+// Reads the server head for one world. Returns { rev, chunks } or null; null means "skip this push".
+async function readHead(world) {
   try {
     const getRes = await fetch(BASE + '?world=' + encodeURIComponent(world), { credentials: 'include' })
-    if (getRes.status === 404) {
-      rev = 0
-    } else if (!getRes.ok) {
+    if (getRes.status === 404) return { rev: 0, chunks: {} }
+    if (!getRes.ok) {
       if ([401, 413, 429, 503].includes(getRes.status)) stopped = true
-      return
-    } else {
-      const server = await getRes.json()
-      if (!server || !server.ok) return
-      rev = server.rev || 0
-      serverChunks = server.chunks || {}
+      return null
     }
+    const server = await getRes.json()
+    if (!server || !server.ok) return null
+    return { rev: server.rev || 0, chunks: server.chunks || {} }
   } catch (e) {
-    return
+    return null
   }
+}
+
+// One PUT attempt. Returns 'ok', 'conflict', 'stopped', 'skip' or 'net'.
+async function putOnce(doc, world) {
+  const got = await readHead(world)
+  if (!got) return stopped ? 'stopped' : 'net'
+  const rev = got.rev
+  const serverChunks = got.chunks
 
   const head = { ...doc }
   delete head.chunks
@@ -237,32 +243,81 @@ async function pushNow(doc) {
       },
       body: JSON.stringify(body),
     })
-    if (putRes.status === 409) {
-      if (!logged409) { console.log('bt-sync 409'); logged409 = true }
-      keepBoth(doc, rev).catch(() => {})
-      return
-    }
-    if ([401, 413, 429, 503].includes(putRes.status)) {
-      stopped = true
-      return
-    }
+    if (putRes.status === 409) return 'conflict'
+    if ([401, 413, 429, 503].includes(putRes.status)) { stopped = true; return 'stopped' }
     if (putRes.ok) {
       lastPush[world] = Date.now()
       lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
-      try { setSyncState("saved") } catch (e) {}
+      return 'ok'
     }
+    return 'skip'
   } catch (e) {
-    // offline or network — keep pending
+    return 'net' // offline or network: the doc stays pending and is retried
   }
+}
+
+function armTimer(world, delay) {
+  if (pendTimers[world] || typeof setTimeout === 'undefined') return
+  pendTimers[world] = setTimeout(() => {
+    delete pendTimers[world]
+    const d = pendingDocs[world]
+    if (d && !stopped) pushNow(d).catch(() => {})
+  }, Math.max(50, delay))
+}
+
+async function runPush(doc) {
+  const world = doc.id
+  if (!(await isVerified())) { try { setSyncState('nosign') } catch (e) {} return }
+  try { setSyncState('saving') } catch (e) {}
+
+  let result = await putOnce(doc, world)
+  if (result === 'conflict') {
+    // Lane 1's server answers 409 {rev}: read the head again and try once more with that rev.
+    result = await putOnce(doc, world)
+    if (result === 'conflict') {
+      if (!logged409) { console.log('bt-sync 409'); logged409 = true }
+      await keepBoth(doc)
+      return
+    }
+  }
+  if (result === 'ok') {
+    if (pendingDocs[world] === doc) delete pendingDocs[world]
+    try { setSyncState('saved') } catch (e) {}
+  } else if (result === 'net') {
+    pendingDocs[world] = pendingDocs[world] || doc
+    try { setSyncState('offline') } catch (e) {}
+    armTimer(world, WINDOW)
+  }
+}
+
+function pushNow(doc, force) {
+  if (stopped || !doc || !doc.id) return Promise.resolve()
+  const world = doc.id
+  // Busy: keep the newest doc and push it when the current push finishes.
+  if (inflight[world]) { pendingDocs[world] = doc; return inflight[world] }
+  // Throttled: keep the doc and push it when the 20 s window ends.
+  // A doc that arrived while a push was busy goes right after it (force), so a tab closed soon after still got both edits up.
+  const now = Date.now()
+  const wait = (!force && lastPush[world]) ? WINDOW - (now - lastPush[world]) : 0
+  if (wait > 0) { pendingDocs[world] = doc; armTimer(world, wait); return Promise.resolve() }
+  if (pendTimers[world]) { clearTimeout(pendTimers[world]); delete pendTimers[world] }
+
+  const job = runPush(doc).catch(() => {}).then(() => {
+    delete inflight[world]
+    const next = pendingDocs[world]
+    if (next && next !== doc && !stopped) return pushNow(next, true)
+  })
+  inflight[world] = job
+  return job
 }
 
 function armOnline() {
   if (onlineHandler || typeof window === 'undefined') return
   onlineHandler = () => {
-    if (pendingDoc && !stopped) {
-      const d = pendingDoc
-      pendingDoc = null
-      pushNow(d).catch(() => {})
+    if (stopped) return
+    for (const world of Object.keys(pendingDocs)) {
+      if (pendTimers[world]) { clearTimeout(pendTimers[world]); delete pendTimers[world] }
+      pushNow(pendingDocs[world]).catch(() => {})
     }
   }
   window.addEventListener('online', onlineHandler)
@@ -276,8 +331,8 @@ export function maybePush(doc) {
       persistFlag()
       armOnline()
     }
-    if (stopped || !doc) return
-    pendingDoc = doc
+    if (stopped || !doc || !doc.id) return
+    pendingDocs[doc.id] = doc
     if (typeof navigator !== 'undefined' && !navigator.onLine) { try { setSyncState('offline') } catch (e) {} return }
     pushNow(doc).catch(() => {})
   } catch (e) {}

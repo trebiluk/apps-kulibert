@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.589', date: '2026-10-31', lines: {
+    en: ["2.5.589 — Every save reaches the server or shows Not saved. Quick edits are no longer lost, and no fake Two copies found card."],
+    simple: ["2.5.589 — Saves always reach the server, or you see Not saved."],
+  } },
   { v: '2.5.592', date: '2026-10-31', lines: {
     en: ["2.5.592 — Bertopia has one address now. Old /blocks/ links open /bertopia/, and the old offline copy clears itself."],
     simple: ["2.5.592 — Old Bertopia links open the new one. The old offline copy clears itself."],
