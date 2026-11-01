@@ -12256,17 +12256,17 @@ function holoState() {
 }
 // A block in the look direction between reach and 12 blocks: the crosshair says "Too far" and no beam shows.
 let farAt = 0
-let farHit = false
+let farAheadHit = false
 function farBlockAhead() {
   const now = performance.now()
-  if (now - farAt < 120) return farHit
+  if (now - farAt < 120) return farAheadHit
   farAt = now
-  farHit = false
+  farAheadHit = false
   try {
     const hit = noa.pick(null, null, 12, (id) => id !== 0 && id !== WATER)
-    farHit = !!hit
-  } catch (e) { farHit = false }
-  return farHit
+    farAheadHit = !!hit
+  } catch (e) { farAheadHit = false }
+  return farAheadHit
 }
 // Break: the block is already gone from the world; a copy of its cell fades and drops over 220 ms. One mesh, reused.
 let breakFx = null
