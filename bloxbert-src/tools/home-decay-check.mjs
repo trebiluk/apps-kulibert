@@ -47,6 +47,14 @@ const MIN = 60000
   eq(Object.keys(D.DECAY_STRINGS).every((k) => typeof D.DECAY_STRINGS[k] === 'string' && D.DECAY_STRINGS[k].length) && D.DECAY_ITEMS[D.ROTTEN] && D.DECAY_ITEMS[D.PATCH] && D.DECAY_RECIPES[0].out[0] === D.PATCH, 'items: Rotten food and Bag patch, the patch recipe (1 tan wool) and English words are all there')
 }
 
+// the game's own build gate: tools/check-strings.mjs must stay at 0 problems (build.mjs stops otherwise; Nov 1, Diego's
+// first Windows build stopped here on 9 home words that reached t())
+{
+  const { spawnSync } = await import('node:child_process')
+  const r = spawnSync(process.execPath, ['--no-warnings', 'tools/check-strings.mjs'], { cwd: ROOT, encoding: 'utf8' })
+  eq(r.status === 0 && /strings: 0 problems/.test(r.stdout), 'build gate: the string check has 0 problems (decay words never go through the game\'s t())')
+}
+
 // ---------------------------------------------------------------- the real bag (src/items.js)
 {
   const b = plainBag(); b.hook = D.bagHook({ wear: 100 }, 15)

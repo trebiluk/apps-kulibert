@@ -3578,9 +3578,9 @@ function homeCompostAt(hit) {
   const crop = farm.get(x, y, z)
   if (!crop || !canReach([x, y, z])) return false
   advance(crop, Date.now())
-  if (!(__HOME_HOST__ && HOME.homeCompostCrop(crop, capOf(crop)))) { toast(t('compostRipe')); return true }
+  if (!(__HOME_HOST__ && HOME.homeCompostCrop(crop, capOf(crop)))) { toast(HOME.homeSay('compostRipe')); return true }
   session.takeHeldOne('rotten')
-  toast(t('composted'))
+  if (__HOME_HOST__) toast(HOME.homeSay('composted'))
   return true
 }
 function useAt(hit) {
