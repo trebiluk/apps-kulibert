@@ -31,11 +31,12 @@ export function leafTint(id, x, z) {
   return null
 }
 
+// Face shading is simple and flat (2.5.553 art rules): top 100%, sides 80%, bottom 60%.
+// The soft argument stays so callers do not change; every look uses the same three values.
 function faceShade(nx, ny, nz, soft) {
   if (ny > 0.5) return 1
-  if (ny < -0.5) return soft ? 0.78 : 0.55
-  if (nx > 0.5 || nz > 0.5) return soft ? 0.9 : 0.8
-  return soft ? 0.86 : 0.7
+  if (ny < -0.5) return 0.6
+  return 0.8
 }
 
 function k3(x, y, z) { return x + ',' + y + ',' + z }
@@ -46,6 +47,7 @@ export function createLook(opts) {
   try { stored = localStorage.getItem(GKEY) } catch (e) {}
   const asked = qs.get('gfx')
   let managed = false
+  let autoFrom = null
   let name
   if (asked === 'lite' || asked === 'normal' || asked === 'fancy') name = asked
   else if (stored === 'lite' || stored === 'normal' || stored === 'fancy') name = stored
@@ -374,10 +376,14 @@ export function createLook(opts) {
       fields.clear()
       return { ao: flags().ao, changed: flags().ao !== prev }
     },
-    autoName(q) {
+    // Auto may only step Fancy down to Normal and back. It never raises a
+    // look the user did not start on (seed is the ?lowfps=1 test start).
+    autoName(q, seed) {
       if (!managed) return null
       if (q !== 'normal' && q !== 'fancy') return null
       if (name === q) return null
+      if (seed) autoFrom = q
+      else if (q === 'fancy' && autoFrom !== 'fancy') return null
       const prevAo = flags().ao
       const prevLights = flags().lights
       name = q

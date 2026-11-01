@@ -4,6 +4,7 @@ import './packs/farm/pack.js'
 import './packs/flora/pack.js'
 import './packs/tech/pack.js'
 import './packs/decor/pack.js'
+import { OUTFIT_STR } from './outfits-strings.js'
 export const EXTRA = {
   en: {
     changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', helpLamps: 'Get a Floor Lamp or Wall Lamp at the Woodshop. Hold it and tap the ground or a wall to place it. Tap it again to turn it on.', helpWoodshop: 'Tap a Woodshop to open it. Hang your 4 tools, then make a lamp or a Bed.', helpUpdate: 'A short note shows once when Bertopia updates.', language: 'Language', pickLanguage: 'Pick', suitText: 'Suit {n}/{max}', backToHub: 'Back to the Hub', pvpOn: 'PvP: ON', pvpOff: 'PvP: OFF', keepStuffOn: 'Keep my stuff: ON', keepStuffOff: 'Keep my stuff: OFF', kitPvpOn: 'Kit PvP: ON', kitPvpOff: 'Kit PvP: OFF', select: 'Select', option: 'Option', phase1: 'Stamp coming', phase2: 'Conveyor', phase3: 'Vent left', rustbotNear: 'Rustbot nearby, hit its back', slam: 'Slam!', dexPage: 'New Bertodex page', badgeGot: 'Badge', scrapperTook: 'Scrapper took your item', zap: 'Zap!', rebooted: 'Rebooted!', pvpHint: 'Bertopia favors teaming up; PvP only if both players say yes. You keep your stuff in the main world.', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
@@ -1164,6 +1165,8 @@ const LESSONS = {
 }
 for (const [lang, row] of Object.entries(LESSONS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(packStrings())) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+// 2.5.555 Avatar Outfits: My Look names, tabs and buttons.
+for (const [lang, row] of Object.entries(OUTFIT_STR)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 const FARM_NEWS = {
   en: { whatsNewBody: 'A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.' },
   uk: { whatsNewBody: 'Дотик до ліжка, печі, скрині, прилавка чи майстерні відкриває їх. Присядь, щоб будувати поруч, і ліжко на 3 зірки зберігає свій вигляд.' },
@@ -1353,7 +1356,7 @@ for (const [lang, row] of Object.entries(ZONE_UI)) if (EXTRA[lang]) Object.assig
 const BELT_UI = {
   en: {
     conveyor: 'Conveyor',
-    beltHint: 'Belt the Smelter to the Box',
+    beltHint: 'Belt the Oven to the Box',
     beltIn: 'In: Conveyor',
     beltOut: 'Out: Conveyor',
     beltMove: 'Input {inn} -> 4/sec -> Output {outn}',
@@ -1363,7 +1366,7 @@ const BELT_UI = {
   },
   uk: {
     conveyor: 'Конвеєр',
-    beltHint: 'Стрічка: Плавильня до Скриня',
+    beltHint: 'Стрічка: Піч до Скрині',
     beltIn: 'Вхід: Конвеєр',
     beltOut: 'Вихід: Конвеєр',
     beltMove: 'Вхід {inn} -> 4/сек -> Вихід {outn}',
@@ -1373,7 +1376,7 @@ const BELT_UI = {
   },
   ru: {
     conveyor: 'Конвейер',
-    beltHint: 'Лента: Плавильня до Сундук',
+    beltHint: 'Лента: Печь до Сундука',
     beltIn: 'Вход: Конвейер',
     beltOut: 'Выход: Конвейер',
     beltMove: 'Вход {inn} -> 4/сек -> Выход {outn}',
@@ -1383,7 +1386,7 @@ const BELT_UI = {
   },
   es: {
     conveyor: 'Transportador',
-    beltHint: 'Cinta de la Fundidora a la Caja',
+    beltHint: 'Cinta del Horno a la Caja',
     beltIn: 'Entra: Transportador',
     beltOut: 'Sale: Transportador',
     beltMove: 'Entrada {inn} -> 4/s -> Salida {outn}',
@@ -1393,7 +1396,7 @@ const BELT_UI = {
   },
   ar: {
     conveyor: 'سير',
-    beltHint: 'صِل مصهر إلى صندوق',
+    beltHint: 'صِل الفرن إلى الصندوق',
     beltIn: 'داخل: سير',
     beltOut: 'خارج: سير',
     beltMove: 'مدخل {inn} -> 4/ث -> مخرج {outn}',
@@ -1403,7 +1406,7 @@ const BELT_UI = {
   },
   'fa-AF': {
     conveyor: 'نوار',
-    beltHint: 'کوره گداز را به صندوق برسان',
+    beltHint: 'داش را به صندوق برسان',
     beltIn: 'ورود: نوار',
     beltOut: 'خروج: نوار',
     beltMove: 'ورود {inn} -> ۴/ث -> خروج {outn}',
@@ -1413,7 +1416,7 @@ const BELT_UI = {
   },
   rw: {
     conveyor: 'Umugozi',
-    beltHint: 'Huza Isaturire na Agasanduku',
+    beltHint: 'Huza Ifuru na Agasanduku',
     beltIn: 'Injira: Umugozi',
     beltOut: 'Sohoka: Umugozi',
     beltMove: 'Iwinjira {inn} -> 4/seg -> Ibisohoka {outn}',
@@ -1423,7 +1426,7 @@ const BELT_UI = {
   },
   ti: {
     conveyor: 'መተሓላለፊ',
-    beltHint: 'መፍለሒ ናብ ሳንዱቅ',
+    beltHint: 'እቶን ናብ ሳንዱቕ',
     beltIn: 'እታይ: መተሓላለፊ',
     beltOut: 'ወጻኢ: መተሓላለፊ',
     beltMove: 'እታይ {inn} -> 4/ሰ -> ወጻኢ {outn}',
@@ -3869,6 +3872,62 @@ for (const [lang, row] of Object.entries(DAILY547)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// 2.5.559 sign-in popup text. The shared popup (tw-session.js) puts data-i18n on two lines and data-i18n-placeholder on the two inputs, and this page
+// rewrites every data-i18n, so without them the popup showed the raw key. Copied from shared/i18n. rw, ti, and Dari are machine drafts.
+const SIGN559 = {
+  en: {
+    signOptional: 'You can use every app without signing in. Tap Sign in to keep your marks and your alias.', signOut: 'Sign out',
+    codeHint: '5 characters', pinHint: 'From your teacher',
+  },
+  uk: {
+    signOptional: 'Ти можеш користуватися кожною програмою без входу. Натисни «Увійти», щоб зберегти свої оцінки й псевдонім.', signOut: 'Вийти',
+    codeHint: '5 знаків', pinHint: 'Від учителя',
+  },
+  ru: {
+    signOptional: 'Ты можешь пользоваться любым приложением без входа. Нажми «Войти», чтобы сохранить свои отметки и псевдоним.', signOut: 'Выйти',
+    codeHint: '5 знаков', pinHint: 'От учителя',
+  },
+  es: {
+    signOptional: 'Puedes usar cada app sin entrar. Toca Entrar para guardar tus marcas y tu alias.', signOut: 'Salir',
+    codeHint: '5 caracteres', pinHint: 'De tu profe',
+  },
+  ar: {
+    signOptional: 'يمكنك استخدام كل تطبيق بدون تسجيل الدخول. اضغط تسجيل الدخول لحفظ علاماتك واسمك المستعار.', signOut: 'خروج',
+    codeHint: '٥ أحرف', pinHint: 'من معلمك',
+  },
+  'fa-AF': {
+    signOptional: 'هر برنامه را بدون ورود استفاده کرده می‌توانی. برای نگه‌داشتن نمره‌ها و نام مستعار خود، ورود را بزن.', signOut: 'بیرون شدن',
+    codeHint: '۵ حرف', pinHint: 'از معلم',
+  },
+  rw: {
+    signOptional: 'Ushobora gukoresha porogaramu zose utinjiye. Kanda Injira kugira ngo ubike amanota yawe n\'izina ryawe ry\'irihimbano.', signOut: 'Sohoka',
+    codeHint: 'Inyuguti 5', pinHint: 'Biva ku mwarimu',
+  },
+  ti: {
+    signOptional: 'ብዘይ ምእታው ነፍሲ ወከፍ ኣፕ ክትጥቀም ትኽእል ኢኻ። ምልክታትካን ሳጓ ስምካን ንምዕቃብ እቶ ጠውቕ።', signOut: 'ውጻእ',
+    codeHint: '5 ፊደላት', pinHint: 'ካብ መምህርካ',
+  },
+}
+for (const [lang, row] of Object.entries(SIGN559)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+// 2.5.557 round 1: the World panel line that says which world opened. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+const WORLD557 = {
+  en: { worldSeed: 'seed {n}', worldFromDevice: 'from this device', worldFromServer: 'from the school server', worldFromNew: 'new world', worldSaved: 'saved {when}' },
+  uk: { worldSeed: 'зерно {n}', worldFromDevice: 'з цього пристрою', worldFromServer: 'зі шкільного сервера', worldFromNew: 'новий світ', worldSaved: 'збережено {when}' },
+  ru: { worldSeed: 'зерно {n}', worldFromDevice: 'с этого устройства', worldFromServer: 'со школьного сервера', worldFromNew: 'новый мир', worldSaved: 'сохранено {when}' },
+  es: { worldSeed: 'semilla {n}', worldFromDevice: 'de este dispositivo', worldFromServer: 'del servidor de la escuela', worldFromNew: 'mundo nuevo', worldSaved: 'guardado {when}' },
+  ar: { worldSeed: 'البذرة {n}', worldFromDevice: 'من هذا الجهاز', worldFromServer: 'من خادم المدرسة', worldFromNew: 'عالم جديد', worldSaved: 'حُفظ {when}' },
+  'fa-AF': { worldSeed: 'دانه {n}', worldFromDevice: 'از همین دستگاه', worldFromServer: 'از سرور مکتب', worldFromNew: 'جهان تازه', worldSaved: 'ذخیره شد {when}' },
+  rw: { worldSeed: 'imbuto {n}', worldFromDevice: 'kuri iki gikoresho', worldFromServer: 'kuri seriveri y\'ishuri', worldFromNew: 'isi nshya', worldSaved: 'yabitswe {when}' },
+  ti: { worldSeed: 'ዘርኢ {n}', worldFromDevice: 'ካብዚ መሳርሒ', worldFromServer: 'ካብ ሰርቨር ቤት ትምህርቲ', worldFromNew: 'ሓድሽ ዓለም', worldSaved: 'ተዓቂቡ {when}' },
+}
+for (const [lang, row] of Object.entries(WORLD557)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 // 2.5.550 Look: small textures wording. fa-AF, rw, and ti are machine drafts.
 const TEX550 = {
   en: { texSmallOn: 'Small textures: ON (faster)', texSmallOff: 'Small textures: OFF (sharper)', texSmallHint: 'Turn off for sharper.' },
@@ -3886,6 +3945,93 @@ for (const [lang, row] of Object.entries(TEX550)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// 2.5.562 Look heading and pack names. fa-AF, rw, and ti are machine drafts.
+const LOOK562 = {
+  en: { lookHead: 'Look', packClassic: 'Classic Topia', packMystical: 'Mystical Topia' },
+  simple: { lookHead: 'Look', packClassic: 'Classic Topia', packMystical: 'Mystical Topia' },
+  uk: { lookHead: 'Вигляд', packClassic: 'Класична Топія', packMystical: 'Чарівна Топія' },
+  ru: { lookHead: 'Вид', packClassic: 'Классическая Топия', packMystical: 'Волшебная Топия' },
+  es: { lookHead: 'Aspecto', packClassic: 'Topia clásica', packMystical: 'Topia mística' },
+  ar: { lookHead: 'المظهر', packClassic: 'توبيا الكلاسيكية', packMystical: 'توبيا السحرية' },
+  'fa-AF': { lookHead: 'نما', packClassic: 'توپیای کلاسیک', packMystical: 'توپیای جادویی' },
+  rw: { lookHead: 'Isura', packClassic: 'Topia isanzwe', packMystical: 'Topia y\'amayobera' },
+  ti: { lookHead: 'መልክዕ', packClassic: 'ክላሲክ ቶፕያ', packMystical: 'ምስጢራዊ ቶፕያ' },
+}
+for (const [lang, row] of Object.entries(LOOK562)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.582 Supply Cache. fa-AF, rw, and ti are machine drafts for WordBot.
+const LOOT582 = {
+  en: {
+    supplyCache: 'Supply Cache', whatsInside: "what's inside", alreadyOpened: 'already opened',
+    rarityCommon: 'common', rarityUncommon: 'uncommon', rarityRare: 'rare', scrap: 'scrap',
+    supplyOpen: 'Open', supplyGot: 'In your bag: {item}',
+  },
+  simple: {
+    supplyCache: 'Supply Cache', whatsInside: "what's inside", alreadyOpened: 'already opened',
+    rarityCommon: 'common', rarityUncommon: 'uncommon', rarityRare: 'rare', scrap: 'scrap',
+    supplyOpen: 'Open', supplyGot: 'In your bag: {item}',
+  },
+  uk: {
+    supplyCache: 'Сховок припасів', whatsInside: 'що всередині', alreadyOpened: 'уже відкрито',
+    rarityCommon: 'звичайне', rarityUncommon: 'незвичайне', rarityRare: 'рідкісне', scrap: 'брухт',
+    supplyOpen: 'Відкрити', supplyGot: 'У твоїй сумці: {item}',
+  },
+  ru: {
+    supplyCache: 'Схрон припасов', whatsInside: 'что внутри', alreadyOpened: 'уже открыто',
+    rarityCommon: 'обычное', rarityUncommon: 'необычное', rarityRare: 'редкое', scrap: 'лом',
+    supplyOpen: 'Открыть', supplyGot: 'В твоей сумке: {item}',
+  },
+  es: {
+    supplyCache: 'Alijo de suministros', whatsInside: 'qué hay dentro', alreadyOpened: 'ya abierto',
+    rarityCommon: 'común', rarityUncommon: 'poco común', rarityRare: 'raro', scrap: 'chatarra',
+    supplyOpen: 'Abrir', supplyGot: 'En tu bolsa: {item}',
+  },
+  ar: {
+    supplyCache: 'مخزن المؤن', whatsInside: 'ماذا بالداخل', alreadyOpened: 'مفتوح من قبل',
+    rarityCommon: 'شائع', rarityUncommon: 'غير شائع', rarityRare: 'نادر', scrap: 'خردة',
+    supplyOpen: 'افتح', supplyGot: 'في حقيبتك: {item}',
+  },
+  'fa-AF': {
+    supplyCache: 'ذخیره تدارک', whatsInside: 'داخلش چیست', alreadyOpened: 'قبلاً باز شده',
+    rarityCommon: 'معمولی', rarityUncommon: 'کمیاب‌تر', rarityRare: 'نادر', scrap: 'قراضه',
+    supplyOpen: 'باز کن', supplyGot: 'در بکس تو: {item}',
+  },
+  rw: {
+    supplyCache: 'Ububiko bw\'ibikoresho', whatsInside: 'ibiri imbere', alreadyOpened: 'byamaze gufungurwa',
+    rarityCommon: 'bisanzwe', rarityUncommon: 'bitari bisanzwe', rarityRare: 'bidasanzwe', scrap: 'ibisigazwa',
+    supplyOpen: 'Fungura', supplyGot: 'Mu gasaho kawe: {item}',
+  },
+  ti: {
+    supplyCache: 'መኽዘን ኣቑሑት', whatsInside: 'እንታይ ኣሎ ውሽጢ', alreadyOpened: 'ቅድሚ ሕጂ ተኸፊቱ',
+    rarityCommon: 'ልሙድ', rarityUncommon: 'ዘይልሙድ', rarityRare: 'ሓደሽቲ', scrap: 'ቁርጽራጽ',
+    supplyOpen: 'ክፈት', supplyGot: 'ኣብ ቦርሳኻ: {item}',
+  },
+}
+for (const [lang, row] of Object.entries(LOOT582)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Holo Hand part 1: heading over the controls in Settings. fa-AF, rw, and ti are machine drafts.
+const HOLO1 = {
+  en: { controlsHead: 'Controls', holoKeyHint: '{key}: show or hide the hand hologram.' },
+  simple: { controlsHead: 'Controls', holoKeyHint: 'Press {key} to show or hide the hand.' },
+  uk: { controlsHead: 'Керування', holoKeyHint: '{key}: показати або сховати голограму руки.' },
+  ru: { controlsHead: 'Управление', holoKeyHint: '{key}: показать или скрыть голограмму руки.' },
+  es: { controlsHead: 'Controles', holoKeyHint: '{key}: mostrar u ocultar el holograma de la mano.' },
+  ar: { controlsHead: 'التحكم', holoKeyHint: '{key}: أظهر أو أخفِ صورة اليد المجسّمة.' },
+  'fa-AF': { controlsHead: 'کنترول‌ها', holoKeyHint: '{key}: هولوگرام دست را نشان بده یا پنهان کن.' },
+  rw: { controlsHead: 'Igenzura', holoKeyHint: '{key}: erekana cyangwa uhishe ishusho y\'ukuboko.' },
+  ti: { controlsHead: 'መቆጻጸሪ', holoKeyHint: '{key}: ሆሎግራም ኢድ ኣርኢ ወይ ሕባእ።' },
+}
+for (const [lang, row] of Object.entries(HOLO1)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 // 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
 const CRAFT065 = {
   en: { needsMetal: '🔒 Needs metal tier' },
@@ -3899,6 +4045,23 @@ const CRAFT065 = {
   ti: { needsMetal: '🔒 ደረጃ ብረት የድሊ' },
 }
 for (const [lang, row] of Object.entries(CRAFT065)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Holo Hand part 2: the words by the crosshair. Icon glyphs stay in every language. fa-AF, rw, and ti are machine drafts.
+const HOLO2 = {
+  en: { holoMining: 'Mining {n}%', holoPlace: 'Place ▢', holoOpen: 'Open ⇲', holoTooFar: 'Too far ⟂' },
+  simple: { holoMining: 'Digging {n}%', holoPlace: 'Put block ▢', holoOpen: 'Open ⇲', holoTooFar: 'Too far ⟂' },
+  uk: { holoMining: 'Копаю {n}%', holoPlace: 'Поставити ▢', holoOpen: 'Відкрити ⇲', holoTooFar: 'Задалеко ⟂' },
+  ru: { holoMining: 'Копаю {n}%', holoPlace: 'Поставить ▢', holoOpen: 'Открыть ⇲', holoTooFar: 'Слишком далеко ⟂' },
+  es: { holoMining: 'Picando {n}%', holoPlace: 'Poner ▢', holoOpen: 'Abrir ⇲', holoTooFar: 'Muy lejos ⟂' },
+  ar: { holoMining: 'تعدين {n}٪', holoPlace: 'ضع ▢', holoOpen: 'افتح ⇲', holoTooFar: 'بعيد جداً ⟂' },
+  'fa-AF': { holoMining: 'کندن {n}٪', holoPlace: 'بگذار ▢', holoOpen: 'باز کن ⇲', holoTooFar: 'خیلی دور ⟂' },
+  rw: { holoMining: 'Gucukura {n}%', holoPlace: 'Shyiraho ▢', holoOpen: 'Fungura ⇲', holoTooFar: 'Kure cyane ⟂' },
+  ti: { holoMining: 'ምኹዓት {n}%', holoPlace: 'ኣቐምጥ ▢', holoOpen: 'ክፈት ⇲', holoTooFar: 'ኣዝዩ ርሑቕ ⟂' },
+}
+for (const [lang, row] of Object.entries(HOLO2)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
@@ -3951,6 +4114,57 @@ const LORE597 = {
   ti: { mp2: 'ኣፍደገ ሰዓት ንመላእ ምድሪ ግዜ ይሕሉ። ክዘውር ግደፎ።', mp3: 'ብርሃን ኣብ ኦም መስታወት ይጠውይ። መልእኽቲ ንምልኣኽ ተጠቒምናሉ።', mp5: 'ማዕበል ባሕሪ እውን ሰዓት እዩ። ኣጸቢቕካ እንተ ረኣኻ፡ ኣብዚ ኩሉ ማሽን እዩ።' },
 }
 for (const [lang, row] of Object.entries(LORE597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Painter: put one block back to the active pack's default. {pack} is the pack's own name. fa-AF, rw, and ti are machine drafts.
+const PAINT597 = {
+  en: { ptResetAll: 'Reset all blocks', ptAllBack: 'All blocks are back to {pack} ✓', ptReset: 'Default block', ptResetDone: '{block} is back to {pack} ✓' },
+  simple: { ptResetAll: 'Reset all blocks', ptAllBack: 'All blocks look like {pack} again ✓', ptReset: 'Default block', ptResetDone: '{block} looks like {pack} again ✓' },
+  uk: { ptResetAll: 'Скинути всі блоки', ptAllBack: 'Усі блоки знову як у {pack} ✓', ptReset: 'Блок за замовчуванням', ptResetDone: '{block} знову як у {pack} ✓' },
+  ru: { ptResetAll: 'Сбросить все блоки', ptAllBack: 'Все блоки снова как в {pack} ✓', ptReset: 'Блок по умолчанию', ptResetDone: '{block} снова как в {pack} ✓' },
+  es: { ptResetAll: 'Restablecer todos', ptAllBack: 'Todos los bloques vuelven a {pack} ✓', ptReset: 'Bloque original', ptResetDone: '{block} vuelve a {pack} ✓' },
+  ar: { ptResetAll: 'إعادة كل المكعبات', ptAllBack: 'عادت كل المكعبات إلى {pack} ✓', ptReset: 'المكعب الأصلي', ptResetDone: 'عاد {block} إلى {pack} ✓' },
+  'fa-AF': { ptResetAll: 'بازگرداندن همه بلاک‌ها', ptAllBack: 'همه بلاک‌ها دوباره مثل {pack} شدند ✓', ptReset: 'بلاک اصلی', ptResetDone: '{block} دوباره مثل {pack} شد ✓' },
+  rw: { ptResetAll: 'Subiza block zose', ptAllBack: 'Block zose zasubiye kuri {pack} ✓', ptReset: 'Block y\'umwimerere', ptResetDone: '{block} yasubiye kuri {pack} ✓' },
+  ti: { ptResetAll: 'ኩሉ ብሎካት መልስ', ptAllBack: 'ኩሉ ብሎካት ናብ {pack} ተመሊሶም ✓', ptReset: 'ናይ መጀመርታ ብሎክ', ptResetDone: '{block} ናብ {pack} ተመሊሱ ✓' },
+}
+for (const [lang, row] of Object.entries(PAINT597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.572: the oven panel names the belt slot (moved here from stations.js). rw, ti, and fa-AF are draft translations.
+const BELT572 = {
+  en: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  simple: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  uk: { beltFrom: 'зі стрічки', beltEmpty: 'стрічка: порожньо' },
+  ru: { beltFrom: 'с ленты', beltEmpty: 'лента: пусто' },
+  es: { beltFrom: 'de la cinta', beltEmpty: 'cinta: vacía' },
+  ar: { beltFrom: 'من السير', beltEmpty: 'السير: فارغ' },
+  'fa-AF': { beltFrom: 'از نوار', beltEmpty: 'نوار: خالی' },
+  rw: { beltFrom: 'kuva ku mugozi', beltEmpty: 'umugozi: ubusa' },
+  ti: { beltFrom: 'ካብ መተሓላለፊ', beltEmpty: 'መተሓላለፊ: ባዶ' },
+}
+for (const [lang, row] of Object.entries(BELT572)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Quality: Max (sees farthest). fa-AF, rw, and ti are machine drafts.
+const QMAX = {
+  en: { max: 'Max', maxHint: 'Sees farthest. For strong computers.' },
+  simple: { max: 'Max', maxHint: 'See very far. Needs a fast computer.' },
+  uk: { max: 'Максимум', maxHint: 'Найдальший огляд. Для потужних комп’ютерів.' },
+  ru: { max: 'Максимум', maxHint: 'Самый дальний обзор. Для мощных компьютеров.' },
+  es: { max: 'Máximo', maxHint: 'Se ve lo más lejos. Para computadoras potentes.' },
+  ar: { max: 'الأقصى', maxHint: 'أبعد رؤية. للحواسيب القوية.' },
+  'fa-AF': { max: 'بیشترین', maxHint: 'دورترین دید. برای کمپیوترهای قوی.' },
+  rw: { max: 'Ntarengwa', maxHint: 'Ureba kure cyane. Ni iya mudasobwa zikomeye.' },
+  ti: { max: 'ዝለዓለ', maxHint: 'ዝረሓቐ ምርኣይ። ንሓያላት ኮምፒተራት።' },
+}
+for (const [lang, row] of Object.entries(QMAX)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

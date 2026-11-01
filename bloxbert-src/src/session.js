@@ -9,7 +9,8 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { slotArt, menuIcon } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot, tagAlias, restoreDrop } from './drops.js'
+import { rollWildBush, rollSupply } from './loot-tables.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots, closeTip } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
@@ -19,6 +20,8 @@ import { berryTuft } from './worldgen.js'
 import { floraExtra } from './packs/flora/pack.js'
 import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
+
+if (!ITEMS.scrap) ITEMS.scrap = { letter: 'Sc', base: 0, sell: false, stack: 64 }
 
 export function createSession(api) {
   if (api && api.close) {
@@ -191,9 +194,23 @@ export function createSession(api) {
     wallet.state.found.push(item)
     if (api.found) api.found(item)
   }
+  function breakerAlias() {
+    try {
+      if (api && typeof api.alias === 'function') {
+        const named = tagAlias(api.alias())
+        if (named) return named
+      }
+      const who = typeof window !== 'undefined' && window.KulibertWho
+      const row = who && typeof who.read === 'function' ? who.read() : null
+      const named = row && tagAlias(row.alias)
+      if (named) return named
+    } catch (e) {}
+    return 'you'
+  }
   function spawnDrop(item, n, x, y, z, why) {
-    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground' })
+    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground', alias: breakerAlias() })
     if (where === 'lost') api.toast(t('lostFound'))
+    else if (where === 'trimmed') api.toast(t('groundFull'))
     else if (why === 'q') api.toast(t('dropped'))
     else if (why === 'full') api.toast(t('bagFull'))
     if (api.markDirty) api.markDirty()
@@ -887,6 +904,37 @@ export function createSession(api) {
     if (!item && !k) return document.createElement('span')
     return slotNode(k, item)
   }
+  // #87 r3: the 15-slot Bag is sized from the screen height. Tiles shrink (never below 56 px, so the tap target stays
+  // over 44 px) until every row fits the sheet; only when even that does not fit (a short sideways phone) does it scroll.
+  function fitBag(layout) {
+    const run = () => {
+      if (!layout || !layout.isConnected) return
+      const body = document.getElementById('sheet-body')
+      if (!body) return
+      delete layout.dataset.fit
+      layout.style.removeProperty('--bag-tile')
+      const tiles = [...layout.querySelectorAll('.wells .well')]
+      if (!tiles.length) return
+      const over = body.scrollHeight - body.clientHeight
+      if (over <= 1) return
+      const natural = tiles[0].getBoundingClientRect().height
+      const rows = new Set(tiles.map((el) => Math.round(el.getBoundingClientRect().top))).size || 1
+      const h = Math.max(56, Math.floor(natural - (over + 2) / rows))
+      layout.style.setProperty('--bag-tile', h + 'px')
+      layout.dataset.fit = '1'
+    }
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(run)
+  if (typeof setTimeout === 'function') setTimeout(run, 300) // again once fonts and icons have settled
+    else run()
+    if (!fitBag.bound && typeof addEventListener === 'function') {
+      fitBag.bound = true
+      addEventListener('resize', () => {
+        const sheet = document.getElementById('sheet')
+        const lay = sheet && !sheet.hidden && sheet.dataset.panel === 'inventory' ? sheet.querySelector('.bag-layout') : null
+        if (lay) fitBag(lay)
+      })
+    }
+  }
   function paintBag(g) {
     clearPocketDot()
     const title = document.getElementById('sheet-title')
@@ -1049,6 +1097,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'keycap lost-row'
+      b.style.minWidth = '44px'
+      b.style.minHeight = '44px'
       b.textContent = text
       b.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
       g.append(b)
@@ -1077,18 +1127,19 @@ export function createSession(api) {
     const main = document.createElement('div')
     main.className = 'bag-main'
     const cap = hotCap()
-    main.append(tab(t('hotbar'), 'hotbar'), row(0, cap))
-    const pocketAt = []
-    for (let i = 9; i < bag.slots.length; i++) if (bag.slots[i]) pocketAt.push(i)
-    if (pocketAt.length) {
+    const hotN = Math.min(cap, bag.slots.length)
+    main.append(tab(t('hotbar'), 'hotbar'), row(0, hotN))
+    // 2.5.568: always show the rest of the 15-slot bag, including empty pockets.
+    if (bag.slots.length > hotN) {
       const pockets = document.createElement('div')
       pockets.className = 'wells'
-      for (const i of pocketAt) pockets.append(one(bag.slots[i], i))
+      for (let i = hotN; i < bag.slots.length; i++) pockets.append(one(bag.slots[i], i))
       main.append(tab(t('pockets'), 'pockets'), pockets)
     }
     layout.append(main)
     if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
     g.append(layout)
+    fitBag(layout)
     function one(s, i) {
       const b = document.createElement('button')
       b.type = 'button'
@@ -2807,7 +2858,11 @@ export function createSession(api) {
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (api.townKept && api.townKept(x, y, z)) return false
     if (id === 24 || id === 26) return false
-    if (id === 27) spillBox(x, y, z)
+    if (id === 27) {
+      const supply = meta.get(x + ',' + y + ',' + z)
+      if (supply && supply.kind === 'supply') { api.toast(t('supplyCache')); return false }
+      spillBox(x, y, z)
+    }
     const wildBush = id >= 65 && id <= 68 && api.wildBush && api.wildBush(x, y, z)
     const drop = wildBush ? null : dropOf(id)
     let got = 0
@@ -2815,10 +2870,10 @@ export function createSession(api) {
     const wasEmpty = !bag.slots[hot]
     const beforeSlots = slotSnap()
     if (wildBush) {
-      const loot = wildBushLoot(x, y, z)
-      giveLoose('berry', loot.berries, x, y, z)
-      if (loot.sprout) giveLoose('bushSprout', 1, x, y, z)
-      got = loot.berries
+      const loot = rollWildBush(x, y, z)
+      for (const d of loot) giveLoose(d.item, d.n, x, y, z)
+      const berry = loot.find((d) => d.item === 'berry')
+      got = berry ? berry.n : 0
     } else if (drop) {
       markFound(drop)
       const left = bag.add(drop, 1)
@@ -3335,6 +3390,7 @@ export function createSession(api) {
     }
     if (id === 27) {
       const rec = meta.get(key)
+      if (rec && rec.kind === 'supply') return false
       if (rec && rec.slots) for (const s of rec.slots) if (s && s.n) take(s.item, s.n)
       take('box', 1)
       meta.delete(key)
@@ -3537,7 +3593,7 @@ export function createSession(api) {
       },
       econ: wallet.dump(),
       meta: m,
-      drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })),
+      drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at, alias: d.alias || '' })),
       lost: lost.map((d) => ({ item: d.item, n: d.n, why: d.why || 'ground' })),
     }
   }
@@ -3575,8 +3631,10 @@ export function createSession(api) {
     lost.length = 0
     for (const d of doc.drops || []) {
       if (!d || !ITEMS[d.item] || !(d.n > 0)) continue
-      ground.push({ id: d.id || ground.length + 1, x: +d.x || 0, y: +d.y || 0, z: +d.z || 0, item: d.item, n: d.n | 0, at: d.at || 0 })
-      noteId(d.id || 0)
+      const row = restoreDrop(d)
+      if (!row.id) row.id = ground.length + 1
+      ground.push(row)
+      noteId(row.id)
     }
     for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0, why: d.why === 'ground' || d.why === 'bag' || d.why === 'aside' ? d.why : 'ground' })
     for (const s of extra) if (s && ITEMS[s.item] && s.n > 0) {
@@ -3794,6 +3852,38 @@ export function createSession(api) {
     return energy.bolts
   }
   function energyState() { return { bolts: energy.bolts, acc: energy.acc } }
+  function supplyWho(alias) {
+    return String(alias || 'kid').slice(0, 24)
+  }
+  function supplyPeek(x, y, z, alias) {
+    const rec = meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0))
+    if (!rec || rec.kind !== 'supply') return null
+    const who = supplyWho(alias)
+    const prev = (rec.opened || []).find((o) => o && o.alias === who)
+    return { already: !!prev, item: prev ? prev.item || '' : '', n: prev ? prev.n | 0 : 0 }
+  }
+  function openSupply(x, y, z, alias) {
+    const key = (x | 0) + ',' + (y | 0) + ',' + (z | 0)
+    const rec = meta.get(key)
+    if (!rec || rec.kind !== 'supply') return null
+    const who = supplyWho(alias)
+    const list = Array.isArray(rec.opened) ? rec.opened.slice() : []
+    const prev = list.find((o) => o && o.alias === who)
+    if (prev) return { already: true, item: prev.item || '', n: prev.n | 0 }
+    const drop = rollSupply(x | 0, y | 0, z | 0, who)
+    if (!drop || !drop.item) return { already: false, item: '', n: 0 }
+    if (!ITEMS[drop.item]) ITEMS[drop.item] = { letter: 'Sc', base: 0, sell: false, stack: 64 }
+    const left = bag.add(drop.item, drop.n)
+    const got = (drop.n | 0) - (left | 0)
+    if (got) paintHotbar()
+    if (left) spawnDrop(drop.item, left, (x | 0) + 0.5, (y | 0) + 0.5, (z | 0) + 0.5, 'full')
+    list.push({ alias: who, item: drop.item, n: got })
+    rec.opened = list
+    meta.set(key, rec)
+    if (api.markDirty) api.markDirty()
+    if (api.saveNow) api.saveNow()
+    return { already: false, item: drop.item, n: got }
+  }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     get bag() { return bag },
@@ -3845,6 +3935,7 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
+    supplyPeek, openSupply,
     useHeld, selectOwned, holdItem, mountEnergy, isFood: isFoodItem,
     fillFacts(host, spec) {
       if (!host || !spec || !spec.item || !ITEMS[spec.item]) return

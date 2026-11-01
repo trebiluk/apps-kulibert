@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt Ikiraro",
   "helpHoldItSpan": "HoldIt Ikiraro ni ikibazo cy'ikiraro. HoldIt ni igikoresho cyo gushushanya.",
   "helpGateConflict": "Buri push ikora igenzura rya Hub: kode, ibimenyetso by'amakimbirane, na /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "Inyandiko ya Hub igaragara hasi iyo abakozi bafunguye."
+  "helpHideDevRev": "Inyandiko ya Hub igaragara hasi iyo abakozi bafunguye.",
+  "goals": "Intego",
+  "keysChip": "? IMBOKO",
+  "keysAgain": "Kanda ? urebe imfunguzo ukundi.",
+  "creditDyslexia": "Imyandikire yo gusoma: OpenDyslexic (OFL 1.1)."
 }

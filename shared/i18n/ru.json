@@ -426,5 +426,9 @@
   "labelHoldItSpan": "HoldIt Пролёт",
   "helpHoldItSpan": "HoldIt Пролёт — это испытание моста. HoldIt — инструмент дизайна.",
   "helpGateConflict": "Каждый push запускает проверку Hub: код, метки конфликта и /bertopia/ = /blocks-test/.",
-  "helpHideDevRev": "Версия Hub показывается внизу после разблокировки персонала."
+  "helpHideDevRev": "Версия Hub показывается внизу после разблокировки персонала.",
+  "goals": "Цели",
+  "keysChip": "? КЛАВИШИ",
+  "keysAgain": "Нажми ?, чтобы снова увидеть клавиши.",
+  "creditDyslexia": "Шрифт для дислексии: OpenDyslexic (OFL 1.1)."
 }

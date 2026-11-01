@@ -1,5 +1,8 @@
-// Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
+// Loose drops. They never despawn. Each alias keeps 32 piles; the oldest past that
+// wait in Lost & Found ("ground full"). The ground never draws more than 256 piles.
+import { rollWildBush } from './loot-tables.js'
 export const DROP_CAP = 256
+export const KID_CAP = 32
 export function lostWhyKey(why) {
   if (why === 'bag') return 'lostWhyBag'
   if (why === 'aside') return 'lostWhyAside'
@@ -22,6 +25,26 @@ export const MAGNET_SPEED = 6
 let seq = 1
 export function noteId(id) { if (id >= seq) seq = id + 1 }
 
+// Alias only. Empty means an old or mob pile, which does not use a kid's 32.
+export function tagAlias(alias) {
+  if (alias == null) return ''
+  const s = String(alias).trim().slice(0, 24)
+  return s
+}
+
+export function restoreDrop(d) {
+  return {
+    id: d.id || 0,
+    x: +d.x || 0,
+    y: +d.y || 0,
+    z: +d.z || 0,
+    item: d.item,
+    n: d.n | 0,
+    at: d.at || 0,
+    alias: tagAlias(d.alias),
+  }
+}
+
 export function nearEnough(a, b, r) {
   const dx = a.x - b.x
   const dy = a.y - b.y
@@ -29,21 +52,51 @@ export function nearEnough(a, b, r) {
   return dx * dx + dy * dy + dz * dz <= r * r
 }
 
+function countAlias(drops, alias) {
+  let n = 0
+  for (const d of drops) if (tagAlias(d.alias) === alias) n++
+  return n
+}
+
+function oldestOf(drops, alias) {
+  let best = null
+  for (const d of drops) {
+    if (tagAlias(d.alias) !== alias) continue
+    if (!best || (d.at || 0) < (best.at || 0) || ((d.at || 0) === (best.at || 0) && (d.id || 0) < (best.id || 0))) best = d
+  }
+  return best
+}
+
+function park(lost, item, n, why) {
+  const pile = lost.find((d) => d.item === item && (d.why || 'ground') === why)
+  if (pile) {
+    pile.n += n
+    if (!pile.why) pile.why = why
+  } else lost.push({ item, n, why })
+}
+
 export function mergeOrAdd(drops, lost, drop) {
   const n = drop.n | 0
   if (!drop.item || n <= 0) return 'skip'
-  const near = drops.find((d) => d.item === drop.item && nearEnough(d, drop, MERGE_R))
+  const alias = tagAlias(drop.alias)
+  const near = drops.find((d) => d.item === drop.item && tagAlias(d.alias) === alias && nearEnough(d, drop, MERGE_R))
   if (near) { near.n += n; return 'merged' }
+  let trimmed = false
+  if (alias && countAlias(drops, alias) >= KID_CAP) {
+    const old = oldestOf(drops, alias)
+    if (old) {
+      const i = drops.indexOf(old)
+      if (i >= 0) drops.splice(i, 1)
+      park(lost, old.item, old.n, 'ground')
+      trimmed = true
+    }
+  }
   if (drops.length >= DROP_CAP) {
-    const pile = lost.find((d) => d.item === drop.item)
-    if (pile) {
-      pile.n += n
-      if (!pile.why) pile.why = drop.why || 'ground'
-    } else lost.push({ item: drop.item, n, why: drop.why || 'ground' })
+    park(lost, drop.item, n, drop.why || 'ground')
     return 'lost'
   }
-  drops.push({ id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0 })
-  return 'ground'
+  drops.push({ id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0, alias })
+  return trimmed ? 'trimmed' : 'ground'
 }
 
 export function canPick(drop, now) {
@@ -82,11 +135,11 @@ export function intoBag(name) {
   return null
 }
 
-// Wild berry bush break. 1-2 Berries every time, and a Bush Sprout 1 time in 4.
-// Planted bushes do not use this. Leaf berries stay on their own roll.
+// Wild berry bush. Same 1-2 berries, and a sprout 1 time in 4. The shared table owns the roll.
 export function wildBushLoot(x, y, z) {
-  const h = (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263) ^ Math.imul(68, 374761393)) >>> 0
-  return { berries: 1 + (h % 2), sprout: ((h >>> 3) % 4) === 0 }
+  const drops = rollWildBush(x, y, z)
+  const berry = drops.find((d) => d.item === 'berry')
+  return { berries: berry ? berry.n : 0, sprout: drops.some((d) => d.item === 'bushSprout') }
 }
 
 export function pullLoose(ground, lost, bagCount, bagTake, item, n) {

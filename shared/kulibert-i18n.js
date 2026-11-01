@@ -2,7 +2,7 @@
 (function (root) {
   // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
   // Apps: do not edit.
-  var I18N_REV = "2026-10-27-sign-carry";
+  var I18N_REV = "2026-10-31-bertopia-keys";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",

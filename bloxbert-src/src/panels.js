@@ -125,21 +125,29 @@ export function mountPanels(api) {
   }
   // 2.5.586: the crafting panel starts below the shared top bar, measured live, because on phones the
   // bar wraps to two rows (about 100px at 412) and covered the panel's title and Close.
-  // 2.5.592: the World panel too; on phones the game HUD row (#top) also sits over the panel, so clear it as well.
-  const BELOW_BAR = ['crafting', 'world']
+  // 2.5.592 (main): the World panel too; on phones the game HUD row (#top) also sits over the panel, so clear it as well.
+  // 2.5.593 (this PR): every panel does this (Notebook, World, Menu...), so the Menu chip, Sign in and the version chip
+  // never sit on top of a panel's title or Close.
   function craftBelowBar(id) {
-    if (BELOW_BAR.indexOf(id) === -1) { sheet.style.removeProperty('top'); return }
     const bar = document.querySelector('.kb-bar')
-    const r = bar ? bar.getBoundingClientRect() : null
-    let h = r && r.height ? Math.ceil(r.bottom) : 48
+    const r = bar && getComputedStyle(bar).display !== 'none' ? bar.getBoundingClientRect() : null
+    let h = r && r.height ? Math.ceil(r.bottom) : (id === 'crafting' || id === 'world' ? 48 : 0)
+    // Menu and Settings keep the game bar (header.top) above the panel (read.css 2.5.523); start below it too.
+    // On phones that bar wraps to two rows, so the old fixed 68px left the panel's Close under it.
+    if (id === 'menu' || id === 'settings') {
+      const hud = document.querySelector('header.top')
+      const hr = hud && getComputedStyle(hud).display !== 'none' ? hud.getBoundingClientRect() : null
+      if (hr && hr.height) h = Math.max(h, Math.ceil(hr.bottom))
+    }
     if (id === 'world' && window.innerWidth <= 600) {
       const hud = document.getElementById('top')
       const hr = hud && hud.offsetWidth ? hud.getBoundingClientRect() : null
       if (hr && hr.height && hr.top < h + 8 && hr.bottom < window.innerHeight / 2) h = Math.max(h, Math.ceil(hr.bottom))
     }
+    if (!h) { sheet.style.removeProperty('top'); return }
     sheet.style.setProperty('top', h + 'px', 'important')
   }
-  window.addEventListener('resize', () => { if (!sheet.hidden && BELOW_BAR.indexOf(sheet.dataset.panel) !== -1) craftBelowBar(sheet.dataset.panel) })
+  window.addEventListener('resize', () => { if (!sheet.hidden && sheet.dataset.panel) craftBelowBar(sheet.dataset.panel) })
   let openedAt = 0
   let lastFill = null
   function freshSlots() {
@@ -336,6 +344,7 @@ export function mountPanels(api) {
       menuGroup('settings', api.t('settings'), [
         keyTile('gear', 'settings', api.t('settings'), () => open('settings')),
         keyTile('eye', 'a11y', api.t('a11y'), () => open('a11y')),
+        keyTile('mylook', 'mylook', api.t('myLook'), () => open('mylook')), // 2.5.555: Avatar Outfits
         keyTile('full', 'fs', api.t('fs'), () => api.fullScreen()),
         keyTile('scroll', 'log', api.t('changelog'), () => open('log')),
       ]),
@@ -411,6 +420,7 @@ export function mountPanels(api) {
         }
         requestAnimationFrame(focusGo)
       },
+      mylook: () => show('mylook', api.t('myLook'), (g) => { if (api.paintMyLook) api.paintMyLook(g) }), // 2.5.555
       inventory: () => show('inventory', api.t('inventory'), (g) => api.paintBag(g)),
       crafting: () => show('crafting', api.t('crafting'), (g) => api.paintCraft(g)),
       shop: () => show('shop', api.t('shop'), (g) => api.paintShop(g)),
@@ -551,11 +561,19 @@ export function mountPanels(api) {
       goals: () => show('goals', api.t('goals'), (g) => api.paintGoals(g)),
       a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
+        if (api.worldLine) {
+          const now = document.createElement('p')
+          now.className = 'gnote wide'
+          now.id = 'world-now'
+          now.textContent = api.worldLine()
+          g.append(now)
+        }
         g.append(
           tile('folder', api.t('loadSaved'), () => api.load()),
           tile('up', api.t('exportWorld'), () => api.exportWorld()),
           tile('down', api.t('importWorld'), () => api.importWorld()),
-          tile('spark', api.t('freshWorld'), () => { if (confirm(api.t('confirmFresh'))) api.fresh() }),
+          // 2.5.593: one "start over" action. With the world maker on, Fresh world opens it (it asks before it starts).
+          tile('spark', api.t('freshWorld'), () => { if (api.makerOn && api.makerOn() && api.openMaker) { api.openMaker(); return } if (confirm(api.t('confirmFresh'))) api.fresh() }),
           tile('home', api.t('hub'), () => api.hub()),
         )
         if (api.teacher && api.teacher()) {

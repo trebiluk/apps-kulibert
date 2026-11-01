@@ -4,7 +4,7 @@ import '@babylonjs/core/Rendering/edgesRenderer' // side effect: enables mesh.en
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
 const VERSION = PKG_VERSION
 import { Engine } from 'noa-engine'
-import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
+import { CreateLines, CreateDashedLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
 import { CreateGround } from '@babylonjs/core/Meshes/Builders/groundBuilder'
@@ -25,141 +25,21 @@ import ATLAS from '../assets/atlas.json'
 import { BLOCKS } from './data/blocks-list.js';
 import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
 import { initPainter, addPaintButton } from './gfx/painter.js'
+import { REST, blendSky, bodies, glowFor, hillSamples, hillBytes, hillColors, HILL_N } from './gfx/horizon.js'
+import { readDebug, aimFor, DEBUG_CLOCK } from './debug-params.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
-// 2.5.536 what's new. Locked version. Main was 2.5.533. rw, ti, and fa-AF are machine drafts.
-const WN536 = {
-  en: { whatsNewBody: '2.5.536 — Tap your cog chip to see today\'s cogs.' },
-  simple: { whatsNewBody: '2.5.536 — Tap the cog chip. See today\'s cogs.' },
-  uk: { whatsNewBody: '2.5.536 — Торкни фішку шестерень, щоб побачити сьогоднішні.' },
-  ru: { whatsNewBody: '2.5.536 — Нажми фишку шестерён, чтобы увидеть сегодняшние.' },
-  es: { whatsNewBody: '2.5.536 — Toca la ficha de engranajes para ver los de hoy.' },
-  ar: { whatsNewBody: '2.5.536 — المس شريحة التروس لترى تروس اليوم.' },
-  'fa-AF': { whatsNewBody: '2.5.536 — تراشه چرخ‌دنده را بزن تا چرخ‌دنده‌های امروز را ببینی.' },
-  rw: { whatsNewBody: '2.5.536 — Kanda ikofi y\'amapine ubone aya uyu munsi.' },
-  ti: { whatsNewBody: '2.5.536 — ናይ ኮግ ቺፕ ጠውቕ ናይ ሎሚ ኮግ ንምርኣይ።' },
-}
-for (const [lang, row] of Object.entries(WN536)) {
+// What's new comes from the running version's own CHANGELOG entry, in every language (2.5.560). A language the entry
+// does not have gets the English line of THIS version, never an old one. The per-release WN5xx blocks that used to sit
+// here only fixed the languages each release remembered to list; they were removed in the backlog integration (B13).
+const WN_NOW = CHANGELOG.find((e) => e.v === VERSION) || CHANGELOG[0]
+for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']) {
+  const lines = WN_NOW.lines[lang] && WN_NOW.lines[lang].length ? WN_NOW.lines[lang] : WN_NOW.lines.en
+  if (!lines || !lines.length) continue
   if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
+  EXTRA[lang].whatsNewBody = lines.join(' ')
 }
-// 2.5.540 what's new. Locked 2.5.537 was already below main (2.5.539). rw, ti, and fa-AF are machine drafts.
-const WN540 = {
-  en: { whatsNewBody: '2.5.540 — Beds now tell you why they won\'t fit.' },
-  simple: { whatsNewBody: '2.5.540 — Beds now say why they will not fit.' },
-  uk: { whatsNewBody: '2.5.540 — Ліжка тепер кажуть, чому не вміщаються.' },
-  ru: { whatsNewBody: '2.5.540 — Кровати теперь говорят, почему не помещаются.' },
-  es: { whatsNewBody: '2.5.540 — Las camas ahora dicen por qué no caben.' },
-  ar: { whatsNewBody: '2.5.540 — الأسرّة الآن تقول لماذا لا تتسع.' },
-  'fa-AF': { whatsNewBody: '2.5.540 — بسترها حالا می‌گویند چرا جا نمی‌شوند.' },
-  rw: { whatsNewBody: '2.5.540 — Ibitanda ubu bivuga impamvu bitinjira.' },
-  ti: { whatsNewBody: '2.5.540 — ዓራታት ሕጂ ስለምን ከምዘይኣትዉ ይነግሩ።' },
-}
-for (const [lang, row] of Object.entries(WN540)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-// 2.5.541 what's new. Locked 2.5.534 was already below main (2.5.540). rw, ti, and fa-AF are machine drafts.
-const WN541 = {
-  en: { whatsNewBody: '2.5.541 — The Menu opens on the first click and speaks your language.' },
-  simple: { whatsNewBody: '2.5.541 — The Menu opens on the first click. It uses your language.' },
-  uk: { whatsNewBody: '2.5.541 — Меню відкривається з першого клацання і говорить твоєю мовою.' },
-  ru: { whatsNewBody: '2.5.541 — Меню открывается с первого щелчка и говорит на твоём языке.' },
-  es: { whatsNewBody: '2.5.541 — El Menú se abre al primer clic y habla tu idioma.' },
-  ar: { whatsNewBody: '2.5.541 — القائمة تُفتح من أول نقرة وتتحدث بلغتك.' },
-  'fa-AF': { whatsNewBody: '2.5.541 — فهرست از اولین کلیک باز می‌شود و به زبان تو حرف می‌زند.' },
-  rw: { whatsNewBody: '2.5.541 — Menyu ifunguka ku gukanda kwa mbere kandi ivuga ururimi rwawe.' },
-  ti: { whatsNewBody: '2.5.541 — ዝርዝር ካብ ቀዳማይ ጠውቃይ ይኸፍትን ብቋንቋኻ ይዛረብን።' },
-}
-for (const [lang, row] of Object.entries(WN541)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-// 2.5.545 what's new. rw, ti, and fa-AF are machine drafts.
-const WN542 = {
-  en: { whatsNewBody: '2.5.545 — Classic and Mystical looks. Small textures stay sharp.' },
-  simple: { whatsNewBody: '2.5.545 — Two looks: Classic and Mystical. Small textures stay sharp.' },
-  uk: { whatsNewBody: '2.5.545 — Вигляди Класичний і Містичний. Малі текстури лишаються чіткими.' },
-  ru: { whatsNewBody: '2.5.545 — Виды Классика и Мистика. Маленькие текстуры остаются чёткими.' },
-  es: { whatsNewBody: '2.5.545 — Aspectos Clásico y Místico. Las texturas pequeñas siguen nítidas.' },
-  ar: { whatsNewBody: '2.5.545 — مظهران: كلاسيكي وصوفي. القوام الصغير يبقى حادًا.' },
-  'fa-AF': { whatsNewBody: '2.5.545 — دو نما: کلاسیک و رازآلود. بافت کوچک تیز می‌ماند.' },
-  rw: { whatsNewBody: '2.5.545 — Isura Classic na Mystical. Amashusho mato aguma yagaragara.' },
-  ti: { whatsNewBody: '2.5.545 — ክልተ መልክዕ፡ ክላሲክን ሚስቲካልን። ንኣሽቱ ምስልታት ብልጽጽ ይጸንሑ።' },
-}
-for (const [lang, row] of Object.entries(WN542)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-// 2.5.546 what's new. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
-const WN546 = {
-  en: { whatsNewBody: '2.5.546 — Paint a block in Settings > Look and see it in your world.' },
-  simple: { whatsNewBody: '2.5.546 — Paint a block in Settings. See it in your world.' },
-  uk: { whatsNewBody: '2.5.546 — Намалюй блок у Налаштуваннях > Вигляд і побач його у своєму світі.' },
-  ru: { whatsNewBody: '2.5.546 — Нарисуй блок в Настройках > Вид и увидь его в своём мире.' },
-  es: { whatsNewBody: '2.5.546 — Pinta un bloque en Ajustes > Aspecto y velo en tu mundo.' },
-  ar: { whatsNewBody: '2.5.546 — ارسم مكعبًا في الإعدادات > المظهر وشاهده في عالمك.' },
-  'fa-AF': { whatsNewBody: '2.5.546 — در تنظیمات > نما یک بلاک رنگ کن و آن را در جهانت ببین.' },
-  rw: { whatsNewBody: '2.5.546 — Shushanya block muri Igenamiterere > Isura urebe mu isi yawe.' },
-  ti: { whatsNewBody: '2.5.546 — ኣብ ቅጥዕታት > መልክዕ ብሎክ ቀልሕ ኣብ ዓለምካ ርኣዮ።' },
-}
-for (const [lang, row] of Object.entries(WN546)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-initPainter({ t, toast })
-// 2.5.547 what's new. Locked by ManagerBot. All non-English lines are machine drafts.
-const WN547 = {
-  en: { whatsNewBody: '2.5.547 — Goals now shows today\'s Daily and your Sweep.' },
-  simple: { whatsNewBody: '2.5.547 — Goals shows today\'s Daily and your Sweep.' },
-  uk: { whatsNewBody: '2.5.547 — У Цілях тепер видно щоденне завдання і твою зачистку.' },
-  ru: { whatsNewBody: '2.5.547 — В Целях теперь видно задание дня и твою зачистку.' },
-  es: { whatsNewBody: '2.5.547 — Metas ahora muestra el reto de hoy y tu barrido.' },
-  ar: { whatsNewBody: '2.5.547 — الأهداف تعرض الآن تحدي اليوم وكنسك.' },
-  'fa-AF': { whatsNewBody: '2.5.547 — هدف‌ها حالا چالش امروز و جاروب تو را نشان می‌دهند.' },
-  rw: { whatsNewBody: '2.5.547 — Intego ubu zerekana umukino wa none n\'isuku yawe.' },
-  ti: { whatsNewBody: '2.5.547 — ዕላማታት ሕጂ ናይ ሎሚ ዕለታዊን ምጽራግካን የርእዩ።' },
-}
-for (const [lang, row] of Object.entries(WN547)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-// Daily Board card (2.5.547). Mount only: all logic lives in daily/card.js.
-// Teacher override: a plain object saved as JSON under 'bloxbert-daily-board' merges over the defaults inside boardConfig().
-// Only read when teacherOn() is true (the existing 'bloxbert-teacher' flag). Kids' devices always get the defaults.
-// Nothing writes that key yet. A missing or bad value falls back to the defaults.
-// 2.5.550 what's new. rw, ti, and fa-AF are machine drafts.
-const WN549 = {
-  en: { whatsNewBody: '2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.' },
-  simple: { whatsNewBody: '2.5.550 — Smoother world. Greener leaves. Grey stone. Softer glow. Bag and menu in the middle. Farther fog. New birch trees.' },
-  uk: { whatsNewBody: '2.5.550 — Легші текстури працюють плавніше. Зеленіше листя, сірий камінь, м’якше світло, а сумка й меню посередині. Туман далі, берези намальовані заново.' },
-  ru: { whatsNewBody: '2.5.550 — Лёгкие текстуры работают плавнее. Листва зеленее, камень серый, свет мягче, а сумка и меню в центре. Туман дальше, берёзы нарисованы заново.' },
-  es: { whatsNewBody: '2.5.550 — Texturas más ligeras y fluidas. Hojas más verdes, piedra gris, brillo más suave, y la bolsa y el menú en el centro. La niebla queda más lejos y los abedules son nuevos.' },
-  ar: { whatsNewBody: '2.5.550 — قوام أخف وأكثر سلاسة. أوراق أكثر خضرة، حجر رمادي، توهج أهدأ، والحقيبة والقائمة في الوسط. الضباب أبعد، وأشجار البتولا جديدة.' },
-  'fa-AF': { whatsNewBody: '2.5.550 — بافت‌های سبک‌تر روان‌تر کار می‌کنند. برگ‌ها سبزتر، سنگ خاکستری، نور نرم‌تر، و کیف و منو در وسط. مه دورتر است و درختان توس تازه شده‌اند.' },
-  rw: { whatsNewBody: '2.5.550 — Amashusho yoroheje agenda neza. Amababi y\'icyatsi, ibuye ry\'ikijuju, urumuri rworoheje, umufuka na menu biri hagati. Igihu kiri kure, ibiti bishya bya birch.' },
-  ti: { whatsNewBody: '2.5.550 — ፈኲሶም ምስልታት ብልሙጽ ይኸዱ። ቆጽሊ ዝያዳ ቀጠልያ፡ እምኒ ሓሙኽሽቲ፡ ልሙጽ ብርሃን፡ ቦርሳን ሜኑን ኣብ ማእከል። ግመ ርሒቑ፡ ኦም በርች ሓድሽ።' },
-}
-for (const [lang, row] of Object.entries(WN549)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
-// 2.5.571 what's new (brief 0065). rw, ti, and fa-AF are machine drafts.
-const WN571 = {
-  en: { whatsNewBody: '2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.' },
-  simple: { whatsNewBody: '2.5.571 — Crafting shows only what you can make. Metal things show a lock. Belts can use any planks, stone or wool.' },
-  uk: { whatsNewBody: '2.5.571 — Крафт показує лише те, що справді можна зробити: металеві речі мають замок, доки не відкриється рівень плавильні. Верстаки зі стрічкою тепер роблять речі з будь-яких дощок, каменю чи вовни.' },
-  ru: { whatsNewBody: '2.5.571 — Крафт показывает только то, что реально можно сделать: металлические вещи показывают замок, пока не откроется ступень плавильни. Верстаки с лентой теперь делают вещи из любых досок, камня или шерсти.' },
-  es: { whatsNewBody: '2.5.571 — Crear solo muestra lo que de verdad puedes hacer: las cosas de metal llevan un candado hasta que se abra el nivel de la fundidora. Las mesas con cinta ahora crean con cualquier tabla, piedra o lana.' },
-  ar: { whatsNewBody: '2.5.571 — قائمة الصنع تعرض فقط ما يمكنك صنعه فعلاً: الأشياء المعدنية عليها قفل حتى يُفتح مستوى المصهر. طاولات العمل الموصولة بالسير تصنع الآن من أي ألواح أو حجر أو صوف.' },
-  'fa-AF': { whatsNewBody: '2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.' },
-  rw: { whatsNewBody: '2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.' },
-  ti: { whatsNewBody: '2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።' },
-}
-for (const [lang, row] of Object.entries(WN571)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  EXTRA[lang].whatsNewBody = row.whatsNewBody
-}
+initPainter({ t, toast }) // block painter words (was inside the old What's-new chain)
 function dailyOverride() {
   try {
     if (!teacherOn()) return undefined
@@ -199,13 +79,14 @@ import { dayCap } from './econ/cogs.js'
 import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
 import { createLore } from './lore/pages.js'
+import { createWater } from './water.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { holdTip, dropTip, showToast, pinAboveBar } from './tips.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT, plotInterior } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, hash as worldHash, worldTune, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
 import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
@@ -215,8 +96,10 @@ import { nearestTree, fellCells, takeHit, TREE_NEAR, TREE_LOOK, TREE_HITS } from
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
-import { maybePush, maybePull } from './save/server-sync.js'
+import { maybePush, maybePull, setSyncDb, syncMark } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { pickLoaded, describeWorld, worldLine as worldLineText, worldAttrs } from './save/world-id.js'
+import { createSaveSoon } from './save/save-soon.js' // 0056
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -258,21 +141,25 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
   dirty = true
 })
 CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
-import { wildBushLoot } from './drops.js'
+import { rollWildBush, lootLines } from './loot-tables.js'
 import { createHands } from './hands.js'
+import { wildBushLoot } from './drops.js'
+import { createHolo } from './holo.js' // Holo Hand part 1: replaces the first-person hand (hands.js is no longer mounted)
+import { createHoloBeam } from './holo-beam.js' // Holo Hand part 2: beam and state words
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
-import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder'
 import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
 import { initBot } from './bot/bot.js'
+import * as outfitsLib from './outfits.js'
+import { mountMyLook } from './outfits-ui.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
-import { mountFpsOverlay } from './fps-overlay.js'
+import { mountFpsOverlay, fb } from './fps-overlay.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -455,7 +342,8 @@ function laneRelease(el) {
 function capLane() {
   const lane = document.getElementById('chip-lane')
   if (!lane) return
-  const cap = (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
+  // 2.5.560: on windows 380px tall or less only one chip fits between the bars and the hotbar. The rest wait their turn.
+  const cap = window.innerHeight <= 380 ? 1 : (window.innerWidth < 520 || window.innerHeight < 520) ? 3 : 4
   let n = 0
   for (const el of lane.children) {
     const fading = el.id === 'path-chip' && el.classList.contains('path-out')
@@ -490,6 +378,15 @@ function layoutLane() {
   bump(box('game-menu'))
   bump(box('pause-btn'))
   bump(box('fs-btn'))
+  // 2.5.560: when the lane starts on the same line as Goals (sideways phones), begin after Goals, not under it.
+  const goalsBox = box('goals-hud')
+  if (goalsBox && lane.getBoundingClientRect().top < goalsBox.bottom - 1) bump(goalsBox)
+  // The Suit bar sits in the same band on sideways phones. Start after it when they share rows.
+  const suitBox = box('suit-bar')
+  if (suitBox) {
+    const band = lane.getBoundingClientRect()
+    if (suitBox.top < band.bottom - 1 && suitBox.bottom > band.top + 1 && band.top < suitBox.bottom) bump(suitBox)
+  }
   const play = box('play-chip')
   if (play) {
     const band = lane.getBoundingClientRect()
@@ -506,6 +403,16 @@ function layoutLane() {
   }
   lane.style.left = left + 'px'
   lane.style.right = right + 'px'
+  // 2.5.588: reserve the real hotbar height so the quest card and stick never sit on it.
+  const hot = document.getElementById('hotbar')
+  if (hot && !hot.hidden) {
+    const hr = hot.getBoundingClientRect()
+    if (hr.height > 8) {
+      document.documentElement.style.setProperty('--hotbar-h', Math.ceil(hr.height) + 'px')
+      const stick = document.getElementById('stick-pad')
+      if (stick) stick.style.bottom = 'calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom, 0px))'
+    }
+  }
   capLane()
   seatToasts()
 }
@@ -708,7 +615,7 @@ function guardTest() {
 guardTest()
 const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
-if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
+if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy', true)
 
 function normLang(code) {
   const raw = String(code || '').trim()
@@ -814,7 +721,11 @@ let freshDropDate = ''
 function t(key) {
   if (key === 'confirmFresh' && freshDropDate) return t('confirmFreshFull').replace('{date}', freshDropDate)
   const hit = (EXTRA[LANG] && EXTRA[LANG][key]) || (STR[LANG] && STR[LANG][key]) || (EXTRA.en && EXTRA.en[key]) || (STR.en && STR.en[key])
-  if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
+  if (!hit) {
+    // 2.5.594: a key the shared top bar owns (sign-in panel) comes from the shared pack, English fallback included, never a raw key
+    try { const sh = window.KulibertI18n && window.KulibertI18n.t && window.KulibertI18n.t(key, ''); if (sh && sh !== key) return sh } catch (e) {}
+    console.warn('missing string', key); return EXTRA.en[key] || key
+  }
   return hit
 }
 function tintIco(canvas, hex) {
@@ -1049,11 +960,15 @@ function applyI18n() {
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
   else document.documentElement.dir = 'ltr'
   for (const el of document.querySelectorAll('[data-i18n]')) {
+    if (sharedI18n(el)) continue
     const key = i18nKey(el)
     el.textContent = t(key)
   }
-  for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
-  for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  for (const el of document.querySelectorAll('[data-i18n-label]')) { if (!sharedI18n(el)) el.setAttribute('aria-label', t(el.dataset.i18nLabel)) }
+  for (const el of document.querySelectorAll('[data-i18n-title]')) { if (!sharedI18n(el)) el.setAttribute('title', t(el.dataset.i18nTitle)) }
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) { if (!sharedI18n(el)) el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)) } // 2.5.559: sign-in popup inputs
+  // Bertopia-only keys: data-bt, so the shared /shared/ painter never sees them.
+  for (const el of document.querySelectorAll('[data-bt]')) el.textContent = t(el.dataset.bt)
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -1159,11 +1074,21 @@ function repaintLiveNotes() {
 let painting = false
 let lookReady = false
 let langArm = 0
+// 2.5.594: the shared top bar and its sign-in panel (kulibert-bar.js, tw-session.js) paint their own words.
+// Painting them here wrote raw keys (signOptional, errOffline) and the drift guard kept writing them back.
+const SHARED_I18N = '.kb-bar, .tw-pop, .tw-solo-out, .tw-solo-in, .tw-wrap, [class^="tw-"], [class*=" tw-"]'
+function sharedI18n(el) {
+  return !!(el && el.closest && el.closest(SHARED_I18N))
+}
 function langDrifted() {
   if (document.documentElement.lang !== LANG) return true
   for (const el of document.querySelectorAll('[data-i18n]')) {
+    if (sharedI18n(el)) continue
     const key = i18nKey(el)
     if (el.textContent !== t(key)) return true
+  }
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) {
+    if (el.getAttribute('placeholder') !== t(el.dataset.i18nPlaceholder)) return true
   }
   return false
 }
@@ -1184,6 +1109,7 @@ new MutationObserver((records) => {
   }
 }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'], subtree: true, childList: true, characterData: true })
 applyI18n()
+try { mountSyncChip() } catch (e) {} // 2.5.559: also at start, not only after the tab shows again
 pinKeysLine()
 
 let walkPresses = 0
@@ -1240,6 +1166,14 @@ function pinKeysLine() {
   const sheet = document.getElementById('sheet')
   if (sheet && !sheet.hidden) return
   pinAboveBar(el)
+  // 2.5.597: on a sideways phone "above the hotbar" is the middle of the screen, so the camera-view chip sat on the
+  // crosshair and ate taps aimed there. Same row, slid right of centre.
+  const r = el.getBoundingClientRect()
+  const cx = innerWidth / 2, cy = innerHeight / 2
+  if (r.width && r.top < cy + 48 && r.bottom > cy - 48 && r.left < cx + 48 && r.right > cx - 48) {
+    const left = Math.max(8, Math.min(innerWidth - 8 - r.width, Math.round(cx + 56)))
+    el.style.setProperty('left', left + 'px', 'important')
+  }
 }
 function bindKeysChip() {
   const btn = document.getElementById('keys-chip')
@@ -1645,7 +1579,7 @@ function shape(name, parts, mat) {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const woodD = dye('shape-wood', 0.72, 0.48, 0.24)
+const woodD = dye('shape-wood', 0.45, 0.355, 0.25) // 2.5.553: was 0.72, 0.48, 0.24, which lit to a bright orange; now lights to about the planks tone (#A57C4E)
 const glassD = dye('shape-glass', 0.55, 0.86, 0.95, 0.45)
 const metalD = dye('shape-metal', 0.55, 0.6, 0.66)
 const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
@@ -2094,17 +2028,27 @@ function techButtonMesh(on) {
   const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
   return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
 }
+// 2.5.553: the bed is muted and patterned, not a flat bright fill. Light shows about 1.3x the dye value,
+// so these dyes land near #3E6FA8 (blanket) and a cream pillow. The pattern is geometry (quilt ridges, a fold,
+// a pillow seam), so it reads without color and needs nothing the engine does not already do.
 function bedMesh() {
-  const wool = dye('bed-wool', 0.2, 0.46, 0.78)
-  const pillow = dye('bed-pillow', 0.94, 0.95, 0.97)
+  const wool = dye('bed-wool', 0.19, 0.32, 0.55)
+  const ridge = dye('bed-ridge', 0.25, 0.41, 0.66)
+  const fold = dye('bed-fold', 0.13, 0.23, 0.42)
+  const pillow = dye('bed-pillow', 0.63, 0.61, 0.55)
+  const seam = dye('bed-seam', 0.47, 0.45, 0.4)
   const legs = [
     [-0.36, -0.34], [0.36, -0.34], [-0.36, 1.22], [0.36, 1.22],
   ].map(([lx, lz], i) => part('bed-leg-' + i, 0.08, 0.16, 0.08, lx, 0.08, lz, 0, woodD))
   const frame = part('bed-frame', 0.88, 0.08, 1.78, 0, 0.2, 0.44, 0, woodD)
   const mattress = part('bed-mat', 0.78, 0.14, 1.62, 0, 0.31, 0.4, 0, wool)
+  // Quilt ridges across the blanket and a darker fold near the pillow.
+  const ridges = [-0.06, 0.2, 0.46].map((rz, i) => part('bed-ridge-' + i, 0.78, 0.018, 0.07, 0, 0.386, rz, 0, ridge))
+  const foldBand = part('bed-fold', 0.78, 0.02, 0.1, 0, 0.387, 0.72, 0, fold)
   const board = part('bed-board', 0.86, 0.22, 0.08, 0, 0.42, 1.22, 0, woodD)
   const pill = part('bed-pill', 0.46, 0.12, 0.26, 0, 0.49, 1.05, 0, pillow)
-  return mergeMats('bunk', legs.concat([frame, mattress, board, pill]))
+  const pillSeam = part('bed-seam', 0.46, 0.124, 0.03, 0, 0.49, 1.05, 0, seam)
+  return mergeMats('bunk', legs.concat([frame, mattress], ridges, [foldBand, board, pill, pillSeam]))
 }
 function chairMesh() {
   const pad = dye('chair-pad', 0.16, 0.55, 0.72)
@@ -2443,7 +2387,7 @@ function drainGen() {
     added++
   }
 }
-noa.on('beforeRender', drainGen)
+noa.on('beforeRender', () => { fb.s(0); drainGen(); fb.e(0) })
 noa.world.on('worldDataNeeded', (id, arr, x, y, z) => {
   const s = saved.get(key(x / S, y / S, z / S))
   if (s) { arr.data.set(s); noa.world.setChunkData(id, arr); return }
@@ -2598,6 +2542,7 @@ function undo() {
   if (session && !session.beforeUndo()) return false
   const group = edits.undo()
   if (!group) { toast(t('nothingUndo')); return false }
+  unstickSafe()
   if (session) session.afterUndo()
   changeLog.note(group, 'you')
   toast(t('undid').replace('{n}', String(group.n)))
@@ -2607,6 +2552,7 @@ function redo() {
   if (session && !session.beforeRedo()) return false
   const group = edits.redo()
   if (!group) return false
+  unstickSafe()
   if (session) session.afterRedo()
   changeLog.note(group, 'you')
   toast(t('redid').replace('{n}', String(group.n)))
@@ -3468,7 +3414,14 @@ function syncGlasses() {
   if (glassesMesh) glassesMesh.setEnabled(on)
 }
 let hands = null
-function pokeHand(kind) { if (hands) hands.swing(kind) }
+let holo = null
+let holoBeam = null
+function pokeHand(kind, x, y, z) {
+  if (hands) hands.swing(kind)
+  // Holo Hand part 2: a placed block settles 96% -> 100%; a broken block fades and drops. No flash either way.
+  if (kind === 'place') startSettle()
+  else if (kind === 'break' && x != null) startBreakFx(x, y, z)
+}
 function breakAt(x, y, z, hold) {
   if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
   const id = getVoxel(x, y, z)
@@ -3516,6 +3469,8 @@ function breakAt(x, y, z, hold) {
   }
   if (isShopBlock(id)) return liftShop(x, y, z)
   if (id === ID.box) {
+    const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+    if (rec && rec.kind === 'supply') { toast(t('supplyCache')); return false }
     if (session && session.pickup) session.pickup(x, y, z, id)
     if (getVoxel(x, y, z) === ID.box) edit(x, y, z, 0)
     pokeHand('break')
@@ -3525,6 +3480,7 @@ function breakAt(x, y, z, hold) {
   const wheatBack = id === WILD_WHEAT && session && session.mode === 'survival' && wildWheatCell(x, y, z)
   if (session && !session.onBreak(x, y, z, id)) return false
   const gone = edit(x, y, z, 0)
+  if (gone && waterFlow) waterFlow.opened(x, y, z) // water runs into a hole dug beside it (water.js)
   if (gone && wild) forage.remove(x, y, z)
   if (gone && wheatBack) {
     forage.add(x, y, z, 'wheat', Date.now())
@@ -3539,7 +3495,7 @@ function breakAt(x, y, z, hold) {
     const cargo = belts.remove(x, y, z)
     if (cargo && session && session.give) session.give(cargo, 1)
   }
-  if (gone) pokeHand('break')
+  if (gone) pokeHand('break', x, y, z)
   return gone
 }
 function wildWheatCell(x, y, z) {
@@ -3568,6 +3524,195 @@ function useHoldReady(dig, now) {
   if (isDoor(dig.id)) return false
   return now - (dig.t0 || now) >= 500
 }
+function ensureSupplyCaches() {
+  if (!session || !session.meta) return
+  const spots = [[40, 10], [-28, 6], [10, 40]]
+  for (const [x, z] of spots) {
+    if (inTown(x, z)) continue
+    let y = -1
+    for (let yy = 12; yy >= 1; yy--) {
+      const under = getVoxel(x, yy, z) | 0
+      if (under > 0 && under !== WATER) { y = yy + 1; break }
+    }
+    if (y < 1) continue
+    const id = getVoxel(x, y, z) | 0
+    if (id && id !== ID.box) continue
+    const key = x + ',' + y + ',' + z
+    const rec = session.meta.get(key)
+    if (id === ID.box && rec && rec.kind === 'supply') continue
+    if (id !== ID.box && !edit(x, y, z, ID.box)) continue
+    if (!rec || rec.kind !== 'supply') session.meta.set(key, { kind: 'supply', opened: [] })
+  }
+}
+function playAlias() {
+  try {
+    const who = window.KulibertWho
+    const row = who && typeof who.read === 'function' ? who.read() : null
+    if (row && typeof row.alias === 'string' && row.alias) return row.alias.slice(0, 24)
+  } catch (e) {}
+  try {
+    const k = 'bt-play-alias'
+    let a = localStorage.getItem(k)
+    if (!a || a.length > 24) {
+      a = 'p' + ((Math.random() * 1e9) | 0).toString(36)
+      localStorage.setItem(k, a)
+    }
+    return a
+  } catch (e) { return 'p0' }
+}
+function supplyMotionFrames() {
+  try {
+    if (document.documentElement.getAttribute('data-kp-motion') === 'less') return 0
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0
+  } catch (e) {}
+  return 2
+}
+function ensureSupplyStyle() {
+  if (document.getElementById('supply-cache-css')) return
+  const style = document.createElement('style')
+  style.id = 'supply-cache-css'
+  style.textContent = [
+    '#supply-cache{position:fixed;left:8px;right:8px;bottom:96px;z-index:46;max-width:420px;margin:0 auto;background:#1b2433;color:#f3ecdf;border:2px solid #9a917f;border-radius:12px;padding:12px;font:700 16px/1.35 sans-serif;box-shadow:none}',
+    '#supply-cache h2{margin:0 0 8px;font:700 18px/1.3 sans-serif}',
+    '#supply-cache .loot-acts{display:flex;flex-wrap:wrap;gap:8px}',
+    '#supply-cache button{min-height:44px;min-width:44px;padding:8px 12px;font:700 16px/1.2 sans-serif;background:#2c3544;color:#f3ecdf;border:2px solid #9a917f;border-radius:8px;cursor:pointer}',
+    '#supply-cache button:focus-visible{outline:3px solid #f4efe6;outline-offset:2px}',
+    '#supply-cache .loot-lines{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}',
+    '#supply-cache .loot-line{display:flex;align-items:center;gap:8px;min-height:44px;font-size:16px}',
+    '#supply-cache .loot-ico{width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center}',
+    '#supply-cache .loot-ico canvas,#supply-cache .loot-ico img,#supply-cache .loot-ico svg{width:32px;height:32px}',
+    '#supply-cache .loot-gem{width:22px;height:22px;flex:none;display:inline-flex;align-items:center;justify-content:center}',
+    '#supply-cache .loot-gem i{width:16px;height:16px;background:#e7e0d4;display:block}',
+    '#supply-cache .loot-gem[data-shape="round"] i{border-radius:50%}',
+    '#supply-cache .loot-gem[data-shape="square"] i{border-radius:2px}',
+    '#supply-cache .loot-gem[data-shape="diamond"] i{width:12px;height:12px;transform:rotate(45deg)}',
+    '#supply-cache .loot-status{margin:8px 0 0;font-size:16px}',
+    '@media (max-width:430px){#supply-cache{bottom:128px;max-height:calc(100dvh - 220px);overflow:auto}}',
+    '@media (prefers-reduced-motion: reduce){#supply-cache,#supply-cache *{animation:none !important;transition:none !important}}',
+  ].join('')
+  document.head.append(style)
+}
+function rarityWord(rarity) {
+  if (rarity === 'uncommon') return t('rarityUncommon')
+  if (rarity === 'rare') return t('rarityRare')
+  return t('rarityCommon')
+}
+function paintSupplyLines(list) {
+  list.replaceChildren()
+  for (const row of lootLines('supply_chest')) {
+    const li = document.createElement('li')
+    li.className = 'loot-line'
+    const ico = document.createElement('span')
+    ico.className = 'loot-ico'
+    ico.setAttribute('aria-hidden', 'true')
+    const art = slotArt(row.item)
+    if (art) ico.append(art)
+    const gem = document.createElement('span')
+    gem.className = 'loot-gem'
+    gem.dataset.shape = row.shape
+    gem.setAttribute('aria-hidden', 'true')
+    gem.append(document.createElement('i'))
+    const words = document.createElement('span')
+    const name = t(row.item)
+    words.textContent = name + ' · ' + rarityWord(row.rarity) + ' · ' + row.pct + '%'
+    li.append(ico, gem, words)
+    list.append(li)
+  }
+}
+function openNearestSupply() {
+  if (!session || !session.meta || !noa || !noa.playerEntity) return false
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p) return false
+  const x0 = Math.floor(p[0]) - 2
+  const y0 = Math.floor(p[1]) - 1
+  const z0 = Math.floor(p[2]) - 2
+  let best = null
+  let bestD = 9
+  for (let x = x0; x <= x0 + 4; x++) for (let y = y0; y <= y0 + 3; y++) for (let z = z0; z <= z0 + 4; z++) {
+    if ((getVoxel(x, y, z) | 0) !== ID.box) continue
+    const rec = session.meta.get(x + ',' + y + ',' + z)
+    if (!rec || rec.kind !== 'supply') continue
+    const dx = x + 0.5 - p[0]
+    const dy = y + 0.5 - (p[1] + 1)
+    const dz = z + 0.5 - p[2]
+    const d = dx * dx + dy * dy + dz * dz
+    if (d < bestD) { bestD = d; best = [x, y, z] }
+  }
+  if (!best) return false
+  openSupplyPanel(best[0], best[1], best[2])
+  return true
+}
+function openSupplyPanel(x, y, z) {
+  ensureSupplyStyle()
+  let card = document.getElementById('supply-cache')
+  if (!card) {
+    card = document.createElement('div')
+    card.id = 'supply-cache'
+    card.setAttribute('role', 'dialog')
+    card.setAttribute('aria-labelledby', 'supply-cache-title')
+    card.innerHTML = '<h2 id="supply-cache-title"></h2><div class="loot-acts"><button type="button" data-act="inside" aria-expanded="true"></button><button type="button" data-act="open"></button><button type="button" data-act="close"></button></div><ul class="loot-lines"></ul><p class="loot-status" role="status"></p>'
+    document.body.append(card)
+    card.querySelector('[data-act="inside"]').addEventListener('click', () => {
+      const on = card.dataset.inside !== '1'
+      card.dataset.inside = on ? '1' : '0'
+      const list = card.querySelector('.loot-lines')
+      if (list) list.hidden = !on
+      const btn = card.querySelector('[data-act="inside"]')
+      if (btn) btn.setAttribute('aria-expanded', on ? 'true' : 'false')
+    })
+    card.querySelector('[data-act="open"]').addEventListener('click', () => {
+      if (!session || !session.openSupply) return
+      const got = session.openSupply(+card.dataset.x, +card.dataset.y, +card.dataset.z, playAlias())
+      paintSupplyStatus(card, got)
+    })
+    card.querySelector('[data-act="close"]').addEventListener('click', () => { card.hidden = true })
+  }
+  card.dir = document.documentElement.dir || 'ltr'
+  card.hidden = false
+  card.dataset.x = x
+  card.dataset.y = y
+  card.dataset.z = z
+  card.dataset.inside = '1'
+  card.dataset.phase = 'shut'
+  const title = card.querySelector('h2')
+  if (title) title.textContent = t('supplyCache')
+  const inside = card.querySelector('[data-act="inside"]')
+  const openBtn = card.querySelector('[data-act="open"]')
+  const closeBtn = card.querySelector('[data-act="close"]')
+  if (inside) { inside.textContent = t('whatsInside'); inside.setAttribute('aria-expanded', 'true') }
+  if (openBtn) openBtn.textContent = t('supplyOpen')
+  if (closeBtn) closeBtn.textContent = t('close')
+  const list = card.querySelector('.loot-lines')
+  if (list) { paintSupplyLines(list); list.hidden = true }
+  const status = card.querySelector('.loot-status')
+  if (status) { status.hidden = true; status.textContent = '' }
+  const peek = session && session.supplyPeek ? session.supplyPeek(x, y, z, playAlias()) : null
+  const frames = supplyMotionFrames()
+  let left = frames
+  const step = () => {
+    if (card.hidden || card.dataset.x !== String(x)) return
+    if (left > 0) { left -= 1; requestAnimationFrame(step); return }
+    card.dataset.phase = 'open'
+    if (list) list.hidden = card.dataset.inside !== '1'
+    paintSupplyStatus(card, peek && peek.already ? peek : null)
+    if (inside) { try { inside.focus({ preventScroll: true }) } catch (e) { inside.focus() } }
+  }
+  if (frames <= 0) step()
+  else requestAnimationFrame(step)
+}
+function paintSupplyStatus(card, got) {
+  const openBtn = card.querySelector('[data-act="open"]')
+  const status = card.querySelector('.loot-status')
+  const already = !!(got && got.already)
+  const granted = !!(got && got.item && !already)
+  if (openBtn) openBtn.hidden = already || granted
+  if (!status) return
+  status.hidden = false
+  if (already) status.textContent = t('alreadyOpened')
+  else if (granted && got.n > 0) status.textContent = t('supplyGot').replace('{item}', t(got.item))
+  else if (granted) status.textContent = t('alreadyOpened')
+  else status.textContent = ''
+}
 function useAt(hit) {
   // C5 Foundry Console: Override Key on the arena Console
   try {
@@ -3590,6 +3735,14 @@ function useHit(hit) {
   const ax = hit.position[0]
   const ay = hit.position[1]
   const az = hit.position[2]
+  if ((id === ID.box || id === 27) && session && session.meta) {
+    const rec = session.meta.get((ax | 0) + ',' + (ay | 0) + ',' + (az | 0))
+    if (rec && rec.kind === 'supply') {
+      if (!canReach([ax, ay, az])) return true
+      openSupplyPanel(ax | 0, ay | 0, az | 0)
+      return true
+    }
+  }
   if (id === ID.conveyor) {
     if (!canReach([ax, ay, az])) return false
     const spun = belts && belts.rotate(ax, ay, az)
@@ -3698,6 +3851,7 @@ function placeBlock(face, opts) {
     x = spot.x
     y = spot.y
     z = spot.z
+    lastPlacedCell = [x, y, z] // Holo Hand part 2: the settle body sits here if the place goes through
     if (!tableMode) {
       if (!canReach([x, y, z])) { sayFar(); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
@@ -4358,6 +4512,7 @@ noa.inputs.down.on('alt-fire', () => {
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
+setSyncDb(DB)
 const STORE = 'worlds'
 function staffOn() {
   try { return !!(window.HubStaffAuth && window.HubStaffAuth.isUnlocked()) } catch (e) { return false }
@@ -4885,7 +5040,7 @@ function docWith(chunks) {
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], look: [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
-    chunks, updatedAt: new Date().toISOString(), tabId,
+    chunks, updatedAt: new Date().toISOString(), tabId, ...syncMark(WORLD),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     creativeBar: paletteIds.slice(0, CREATIVE_HOT), // 2.5.506: Creative hotbar order, per world
     stations: stations.dump(),
@@ -4985,19 +5140,36 @@ function save() {
   saveChain = job.catch(() => {})
   return job
 }
+// 0056: saveSoon means "something changed". The first change saves at once; changes after that share one save
+// per 2 s. The chip paints only for a save that really runs, and a failed save shows "Not saved" instead of
+// an unhandled rejection. Nothing here re-queues on its own, so an idle world never saves.
+// 0056 r1: ?debug (or ?smoke=1) exposes window.__btSave = { count, lastAt, failNext() } so ShipCheck can count real
+// world saves and force one failure. Only real saves (bytes >= 0) count; a re-queue (-1) does not.
+const btSave = { count: 0, lastAt: 0, failNext() { btSave._fail = true }, _fail: false }
+if (qs.has('debug') || qs.has('smoke')) window.__btSave = btSave
+const saveQueue = createSaveSoon({
+  gapMs: 2000,
+  run: () => {
+    if (btSave._fail) {
+      btSave._fail = false
+      const err = new Error('debug: failNext')
+      err.code = 'debug'
+      return Promise.reject(err)
+    }
+    return save()
+  },
+  onStart: () => paintSaveChip('saving'),
+  onDone: () => { btSave.count += 1; btSave.lastAt = Date.now(); paintSaveChip(navigator.onLine ? 'saved' : 'offline') },
+  onFail: (e) => {
+    const el = $('save-chip')
+    if (el) el.hidden = true // not "Saving…" forever
+    if (e && e.code === 'paused') { pauseOtherTab(); return }
+    showNotSavedChip()
+  },
+})
 saveSoon = () => {
   dirty = true
-  paintSaveChip('saving')
-  return save().then((bytes) => {
-    if (!(bytes >= 0)) return bytes
-    paintSaveChip(navigator.onLine ? 'saved' : 'offline')
-    return bytes
-  }).catch((e) => {
-    // Topia sync P1: a failed save (quota full, held, newer copy) says "Not saved" instead of an uncaught rejection.
-    // A paused tab already shows its own pause chip.
-    if (!(e && e.code === 'paused')) showNotSavedChip()
-    return -1
-  })
+  return saveQueue.note()
 }
 async function saveClicked() {
   paintSaveChip('saving')
@@ -5022,6 +5194,25 @@ function keepSaved(err) {
   markSave(t('saveKept'))
   return err
 }
+// 2.5.557 round 1: say which world opened and where it came from. Data attributes on <html> and window.__bertopiaWorld() carry the
+// facts for a script; Menu > World shows the same facts as a line, and "Load my saved world" toasts it.
+let worldNow = null
+function clockText(iso) {
+  try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } catch (e) { return '' }
+}
+function noteWorld(doc, from, mismatch) {
+  try {
+    const custom = isMakerPreset(makerLive.preset) ? makerName(makerLive) : ''
+    const seed = custom ? (makerLive.seed | 0) : (doc && Number.isFinite(+doc.seed) ? +doc.seed : 1)
+    worldNow = describeWorld({ id: WORLD, doc, from, customName: custom, seed, mismatch })
+    const attrs = worldAttrs(worldNow)
+    for (const k of Object.keys(attrs)) document.documentElement.dataset[k] = attrs[k]
+    const live = document.getElementById('world-now')
+    if (live) live.textContent = worldLineNow()
+  } catch (e) { console.warn('noteWorld', e) }
+}
+function worldLineNow() { return worldNow ? worldLineText(worldNow, t, clockText) : '' }
+window.__bertopiaWorld = () => (worldNow ? { ...worldNow } : null)
 async function load() {
   spotReady = false
   const bootSpot = readSpot()
@@ -5036,14 +5227,17 @@ async function load() {
       })
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    let pick = { doc, from: doc ? 'device' : 'new', mismatch: false }
     try {
       const pulled = await Promise.race([
         maybePull(WORLD, doc),
         new Promise(r => setTimeout(() => r(null), 4000))
       ])
-      if (pulled) doc = pulled
+      pick = pickLoaded(WORLD, doc, pulled) // 2.5.557 round 1: a pulled copy that names another world is never opened
+      doc = pick.doc
     } catch (e) {}
     if (__BLOX_STUDENT__ && !doc && localStorage.getItem('bert-oldworld-done') !== '1') { // 2.5.474: old world card
       try {
@@ -5078,7 +5272,7 @@ async function load() {
             bringBtn.focus() // 2.5.475: focus the first button
           })
           localStorage.setItem('bert-oldworld-done', '1')
-          if (bring) { doc = old; idbPut(WORLD, doc) }
+          if (bring) { doc = old; idbPut(WORLD, doc); pick = { doc, from: 'old', mismatch: false } }
         }
       } catch (e) {}
     }
@@ -5109,18 +5303,22 @@ async function load() {
       }
       spotReady = true
       writeSpot()
+      noteWorld(null, 'new')
       return false
     }
     if (doc.format !== 'kuliblocks') {
       keepSaved(doc)
+      noteWorld(null, 'error')
       return false
     }
     try {
       await applyDoc(doc, bootSpot)
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    noteWorld(doc, pick.from, pick.mismatch)
     const pinned = mergePin(doc)
     if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
     allowSave = !readOnlySave && !savePaused
@@ -5606,8 +5804,13 @@ async function paintOldEntry(host, openList) {
       paintOldEntry(host, openList)
     }))
   }
-  if (makerEnabled()) host.append(menuTile('spark', t('newWorld'), () => openMaker()))
-  if (keys.length) host.append(menuTile('back', t('openOld'), () => { if (openList) openList() }))
+  // 2.5.593: no second "New world" / "Open my old world" pair next to Fresh world and Load my saved world.
+  // Fresh world opens the maker, and each old world is listed here once, by its date.
+  if (keys.length) {
+    const rows = document.createElement('div')
+    host.append(rows)
+    await paintOldList(rows)
+  }
 }
 async function paintOldList(g) {
   g.innerHTML = ''
@@ -6261,8 +6464,10 @@ function armBrief() {
   }
   window.__briefReady = true
 }
+const DEBUG = readDebug(location.search)
 function armClock() {
   const q = location.search
+  if (DEBUG) return
   if (!q.includes('clock=')) return
   try { Rules.set('survival.daynight', q.includes('clock=lock') ? 'day' : 'cycle') } catch (e) {}
   if (basics) {
@@ -6277,6 +6482,21 @@ function armClock() {
   try { applySky() } catch (e) {}
   paintDayClock()
   window.__clockReady = true
+}
+// 2.5.563 debug params. Only with ?debug=1. The clock pin lives in basics and is never written to the save.
+function armDebug() {
+  if (!DEBUG) return
+  if (DEBUG.clock && basics && basics.pinSky) {
+    basics.pinSky(DEBUG_CLOCK[DEBUG.clock])
+    try { applySky() } catch (e) {}
+    paintDayClock()
+  }
+  if (DEBUG.cam) {
+    const aim = () => { const a = aimFor(DEBUG.cam, basics && basics.clockMs ? basics.clockMs() : null); setLook(a.h, a.p) }
+    aim()
+    setTimeout(aim, 1200)
+  }
+  window.__debugParams = { clock: DEBUG.clock, cam: DEBUG.cam }
 }
 window.__clock = {
   face: () => basics && basics.face ? basics.face() : null,
@@ -6432,6 +6652,7 @@ let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
 let loreRef = null // Maker Pages (lore/pages.js); mobs fire before learn exists
+const waterFlow = createWater({ getVoxel: (x, y, z) => getVoxel(x, y, z), setVoxel: (x, y, z, v) => setVoxel(x, y, z, v), WATER, reduce: () => REDUCE, after: () => saveSoon() })
 let lastPointer = null
 let calmRepaint = false
 calm = createCalm({
@@ -6669,6 +6890,8 @@ basics = createBasics({
   badge: (text) => showCard(text),
   flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0'; paintDayClock() },
   changed: () => noteMachine(),
+  playerIn: (x, y, z) => playerIn(x, y, z),
+  settled: () => { unstickSafe() },
 })
 if ($('door-auto')) $('door-auto').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
@@ -6851,6 +7074,7 @@ belts = createBelts({
     return list
   },
   pullOven: (x, y, z) => stations.pullOut(beltKey(x, y, z)) || '',
+  pushOven: (x, y, z, item) => stations.pushIn(beltKey(x, y, z), item), // 0066: belts feed ovens
   ovenCounts: (x, y, z) => stations.slotCounts(beltKey(x, y, z)),
   pushBox(x, y, z, item) {
     const rec = session && session.meta && session.meta.get(beltKey(x, y, z))
@@ -7110,7 +7334,8 @@ function anyCard() {
   const about = $('about')
   const sheet = $('sheet')
   const cog = document.getElementById('cog-card')
-  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden) || (cog && !cog.hidden))
+  const supply = document.getElementById('supply-cache')
+  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden) || (cog && !cog.hidden) || (supply && !supply.hidden))
 }
 function focusBtn(btn) {
   if (!btn) return
@@ -7454,6 +7679,7 @@ panels = mountPanels({
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
   load: () => loadOldClicked(),
+  worldLine: () => worldLineNow(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
@@ -7462,6 +7688,8 @@ panels = mountPanels({
   classSnap: () => classSnap(),
   paintBackups: (g) => paintBackups(g),
   paintOldEntry: (host, openList) => paintOldEntry(host, openList),
+  makerOn: () => makerEnabled(),
+  openMaker: () => openMaker(),
   paintOldWorlds: (g) => paintOldList(g),
   setTeacher: (on) => setTeacher(on),
   fullScreen: () => $('fs-btn').click(),
@@ -7482,6 +7710,7 @@ panels = mountPanels({
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
   paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintMyLook: (g) => mountMyLook(g, { O: outfitsLib, store: outfitStore, t, toast, reduced: () => REDUCE || document.documentElement.getAttribute('data-kp-motion') === 'less', onSave: () => buildOutfitRig() }), // 2.5.555
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -7897,6 +8126,7 @@ function bindWandPill() {
 bindWandPill()
 let seated = null
 let sleepBusy = false
+let sleepHold = null // 2.5.561: where the player lies while asleep. Nothing moves them until they wake.
 let useTarget = null
 liveNotesReady = true
 let useScanAt = 0
@@ -7942,7 +8172,12 @@ function findUseTarget() {
       if (isDoor(below) && !isDoorTop(below)) { uy = y - 1; uid = below }
     }
     const verb = useVerb(uid) || (isFoundryConsole(uid, ux, uz) ? 'usePress' : '')
-    if (!verb) continue
+    let supplyVerb = verb
+    if (uid === ID.box && session && session.meta) {
+      const rec = session.meta.get(ux + ',' + uy + ',' + uz)
+      if (rec && rec.kind === 'supply') supplyVerb = 'supplyCache'
+    }
+    if (!supplyVerb) continue
     const dx = x + 0.5 - p[0]
     const dy = y + 0.5 - (p[1] + 1.2)
     const dz = z + 0.5 - p[2]
@@ -7952,7 +8187,7 @@ function findUseTarget() {
     if (dot < 0.62) continue
     if (dist < bestD) {
       bestD = dist
-      best = { x: ux, y: uy, z: uz, id: uid, verb, dist }
+      best = { x: ux, y: uy, z: uz, id: uid, verb: supplyVerb, dist }
     }
   }
   return best
@@ -8031,6 +8266,7 @@ function standUp() {
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (body) body.gravityMultiplier = flying ? 0 : GRAV_MULT
   noa.entities.setPosition(noa.playerEntity, [spot.x + 0.5 + Math.sin(h) * 0.85, spot.y + 0.05, spot.z + 0.5 + Math.cos(h) * 0.85])
+  unstickSafe() // 2.5.561: blocks may have come back where standing up lands (Undo, Redo, a tree or a door while sitting)
   return true
 }
 function sleepNow() {
@@ -8039,6 +8275,8 @@ function sleepNow() {
   if (phase !== 'night') { toast(t('notTired')); return 'day' }
   const fade = $('sleep-fade')
   sleepBusy = true
+  const lying = noa.entities.getPosition(noa.playerEntity)
+  sleepHold = lying ? [lying[0], lying[1], lying[2]] : null
   paintUsePill(null)
   const wake = () => {
     if (basics && basics.skipMorning) basics.skipMorning()
@@ -8046,6 +8284,10 @@ function sleepNow() {
     try { applySky() } catch (e) {}
     paintDayClock()
     sleepBusy = false
+    sleepHold = null
+    const body = noa.ents.getPhysicsBody(noa.playerEntity)
+    if (body && !seated && !tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: a block may have landed on the bed while they slept
   }
   if (loreRef) loreRef.on('sleep')
   if (!fade) { wake(); return 'night' }
@@ -8381,8 +8623,8 @@ noa.on('tick', () => {
   supportBeds()
   // 2.5.447: shared machine animation tick (UV scroll / lever tween driver). Pauses off-screen via noa.
   if (typeof window !== 'undefined') window.__btMachineAnim = (simTick % 16) / 16
-  while (beltAcc >= 250) { beltAcc -= 250; beltStep() }
-  if (simTick % 3 === 0) mobsStep()
+  fb.s(1); while (beltAcc >= 250) { beltAcc -= 250; beltStep() }; fb.e(1)
+  fb.s(2); if (simTick % 3 === 0) mobsStep(); fb.e(2)
   try { if (circuits && circuits.tick) circuits.tick(simTick * (1000/30)) } catch (e) {}
   keepSavedSpot()
   const p = noa.entities.getPosition(noa.playerEntity)
@@ -9068,7 +9310,10 @@ function liftMenuButton() {
   if (document.getElementById('bert-menu-hit')) return
   const css = document.createElement('style')
   css.id = 'bert-menu-hit'
-  css.textContent = 'html body .kb-bar{z-index:90!important;pointer-events:auto!important}html body .kb-bar .kb-menu{position:relative!important;z-index:6!important;pointer-events:auto!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar{display:flex!important;pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;z-index:90!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important;display:inline-flex!important}'
+  css.textContent = 'html body .kb-bar{z-index:90!important;pointer-events:auto!important}html body .kb-bar .kb-menu{position:relative!important;z-index:6!important;pointer-events:auto!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar{display:flex!important;pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;z-index:90!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important;display:inline-flex!important}' +
+    // 2.5.597: while a panel is open only Menu stays on the bar. Home, the title, Sign in and the practice chip floated over the
+    // panel (z 90 over 40) and covered its Close button at 412.
+    'html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar *{visibility:hidden!important;pointer-events:none!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu,html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu *{visibility:visible!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important}'
   document.head.append(css)
 }
 function bindBarMenu() {
@@ -9089,8 +9334,8 @@ function mountGoalsHud() {
   const b = document.createElement('button')
   b.type = 'button'
   b.id = 'goals-hud'
-  b.dataset.i18n = 'goals'
-  b.dataset.i18nLabel = 'goals'
+  b.dataset.bt = 'goals'
+  b.dataset.btLabel = 'goals'
   b.textContent = t('goals')
   b.setAttribute('aria-label', t('goals'))
   const menu = document.getElementById('game-menu')
@@ -9321,6 +9566,7 @@ function setMode(table) {
     noa.camera.zoomDistance = camBehind ? 4 : 0
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    unstickSafe() // 2.5.561: blocks may have come back at the table's spot while it was open
   }
 }
 function armLive(m) {
@@ -9589,6 +9835,13 @@ window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
   const langList = document.getElementById('lang-list')
   if (langList && !langList.hidden) return
+  const supplyCard = document.getElementById('supply-cache')
+  if (supplyCard && !supplyCard.hidden) {
+    e.preventDefault()
+    e.stopPropagation()
+    supplyCard.hidden = true
+    return
+  }
   const cogCard = document.getElementById('cog-card')
   if (cogCard && !cogCard.hidden) {
     e.preventDefault()
@@ -9674,6 +9927,20 @@ function gameKeyGuard(e) {
   e.preventDefault()
   if (e.code === 'Tab') e.stopImmediatePropagation()
 }
+// 2.5.594: while a text field has focus (the sign-in code and PIN above all), game keys never fire.
+// Window capture runs before every document listener and before the engine, so 1-9 stay in the PIN
+// and never move the hotbar; Z, E, C and Space stay typing. Escape and Tab still pass so the panel
+// closes and focus moves as before. The key's own default (typing) is untouched.
+function typingField(e) {
+  const inField = (el) => !!(el && el.closest && el.closest('input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]), textarea, select, [contenteditable=""], [contenteditable="true"]'))
+  return inField(e.target) || inField(document.activeElement)
+}
+function fieldKeyGuard(e) {
+  if (e.key === 'Escape' || e.key === 'Tab') return
+  if (typingField(e)) e.stopImmediatePropagation()
+}
+window.addEventListener('keydown', fieldKeyGuard, true)
+window.addEventListener('keyup', fieldKeyGuard, true)
 document.addEventListener('keydown', gameKeyGuard, true)
 document.addEventListener('keyup', gameKeyGuard, true)
 document.addEventListener('keydown', (e) => {
@@ -9731,6 +9998,26 @@ function shutByKey() {
 }
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
+  const supplyCard = document.getElementById('supply-cache')
+  if (supplyCard && !supplyCard.hidden) {
+    if (e.key === 'Escape' || e.key === 'Tab') return
+    if ((e.key === 'i' || e.key === 'I') && !e.repeat) {
+      e.preventDefault()
+      const btn = supplyCard.querySelector('[data-act="inside"]')
+      if (btn) btn.click()
+      return
+    }
+    if ((e.key === 'o' || e.key === 'O') && !e.repeat) {
+      e.preventDefault()
+      const btn = supplyCard.querySelector('[data-act="open"]')
+      if (btn && !btn.hidden) btn.click()
+      return
+    }
+    if (e.key === 'e' || e.key === 'E' || e.key === 'f' || e.key === 'F' || e.key === 'q' || e.key === 'Q') {
+      e.preventDefault()
+      return
+    }
+  }
   if (e.key === 'Escape' || e.key === 'Tab') return
   if (e.key === 'e' || e.key === 'E') { // 2.5.506: E toggles the Bag even while the wand is held
     if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return
@@ -9749,9 +10036,17 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault()
       if (e.repeat) return
       if (usePillOn()) { pressUse(); return }
+      if (openNearestSupply()) return
       useSelected()
       return
     }
+  }
+  if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && $('sheet') && $('sheet').hidden) { // Holo Hand: H shows or hides the hand hologram
+    e.preventDefault()
+    showHand = !showHand
+    applyLook()
+    if (holo) holo.announce(t('showHand') + ': ' + (showHand ? t('switchOn') : t('switchOff')))
+    return
   }
   if (e.key === 'v' || e.key === 'V') { // 2.5.441: V toggles the camera view
     if (!e.ctrlKey && !e.metaKey && !e.repeat && $('sheet') && $('sheet').hidden) {
@@ -9909,13 +10204,8 @@ function showCrack(p, x, y, early) {
   else ring.style.background = 'conic-gradient(#14B8A6 ' + shown + 'turn, transparent 0)'
 }
 function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true; showCrack.stage = 0 }
-function puff() {
-  const el = $('poof')
-  if (!el || REDUCE) return
-  el.hidden = false
-  clearTimeout(puff.t)
-  puff.t = setTimeout(() => { el.hidden = true }, 180)
-}
+// Holo Hand part 2: no screen flash on break. The old #poof radial flash is gone; breakAt starts a fade-and-drop ghost instead.
+function puff() {}
 function heldTool() { return session && session.toolTier ? session.toolTier() : 'hand' }
 const toolTold = {}
 function clampGate(dig, now) {
@@ -10029,6 +10319,123 @@ function wallId(id) {
   if (id === LANTERN || (id >= 1100 && id <= 1105)) return false
   if (id === ID.wheat || id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)) return false
   try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
+}
+// 2.5.561: the player's body against the voxel store. undo(), redo(), a growing tree and a closing door can all put a solid block
+// where the player already stands. noa never pushes a body out of a block, so the player is stuck. These move them to clear space.
+const BODY_EPS = 0.02
+let lastUnstickAt = -1e9 // when unstickPlayer last moved the player
+function bodyBox() {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const pd = noa.ents.getPositionData(noa.playerEntity)
+  return { p, w: pd && pd.width > 0 ? pd.width : 0.6, h: pd && pd.height > 0 ? pd.height : 1.8 }
+}
+function solidCell(x, y, z) {
+  const id = getVoxel(x, y, z)
+  if (!id) return false
+  try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
+}
+// True when a body of this size, feet at (px, py, pz), overlaps a solid block. A hair is trimmed so standing on a floor is not an overlap.
+function bodyHitsSolid(px, py, pz, w, h) {
+  const x0 = Math.floor(px - w / 2 + BODY_EPS), x1 = Math.floor(px + w / 2 - BODY_EPS)
+  const y0 = Math.floor(py + BODY_EPS), y1 = Math.floor(py + h - BODY_EPS)
+  const z0 = Math.floor(pz - w / 2 + BODY_EPS), z1 = Math.floor(pz + w / 2 - BODY_EPS)
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) if (solidCell(x, y, z)) return true
+  return false
+}
+// True when the player's body overlaps the cell (x, y, z). basics.js asks this before it grows a tree or shuts a door.
+function playerIn(x, y, z) {
+  if (!noa || !noa.playerEntity) return false
+  const b = bodyBox()
+  if (!b.p) return false
+  return b.p[0] + b.w / 2 - BODY_EPS > x && b.p[0] - b.w / 2 + BODY_EPS < x + 1 &&
+    b.p[1] + b.h - BODY_EPS > y && b.p[1] + BODY_EPS < y + 1 &&
+    b.p[2] + b.w / 2 - BODY_EPS > z && b.p[2] - b.w / 2 + BODY_EPS < z + 1
+}
+// The lowest solid cell the body overlaps in each column it covers: [[x, z, y], ...]
+function overlapRuns(px, py, pz, w, h) {
+  const x0 = Math.floor(px - w / 2 + BODY_EPS), x1 = Math.floor(px + w / 2 - BODY_EPS)
+  const y0 = Math.floor(py + BODY_EPS), y1 = Math.floor(py + h - BODY_EPS)
+  const z0 = Math.floor(pz - w / 2 + BODY_EPS), z1 = Math.floor(pz + w / 2 - BODY_EPS)
+  const runs = []
+  for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) for (let y = y0; y <= y1; y++) if (solidCell(x, y, z)) { runs.push([x, z, y]); break }
+  return runs
+}
+function unstickPlayer() {
+  if (!noa || !noa.playerEntity || tableMode || seated || sleepBusy) return false
+  const { p, w, h } = bodyBox()
+  if (!p || !bodyHitsSolid(p[0], p[1], p[2], w, h)) return false
+  const cx = Math.floor(p[0]), cz = Math.floor(p[2])
+  const fy = Math.floor(p[1] + BODY_EPS)
+  let best = null
+  const take = (x, y, z) => { best = [x, y, z] }
+  // 1. straight up, 1 to 3 blocks, onto whatever is under the player: the block that landed on them, or a stack of up to three.
+  //    Feet land a hair above that block, so gravity settles them. If the climb would pass through air and then a ceiling
+  //    (a low room), it is not a climb, so it falls through to the neighbours below.
+  const runs = overlapRuns(p[0], p[1], p[2], w, h)
+  for (let up = 1; up <= 3 && !best; up++) {
+    const y = fy + up + BODY_EPS
+    if (bodyHitsSolid(p[0], y, p[2], w, h)) continue
+    let solidBelow = true
+    for (const r of runs) for (let cy = r[2]; cy < fy + up; cy++) if (!solidCell(r[0], cy, r[1])) solidBelow = false
+    if (solidBelow) take(p[0], y, p[2])
+  }
+  // 2. the 8 neighbouring cells, nearest first, with ground under the feet. Steps up 0 to 3 are allowed.
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      if (!dx && !dz) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      for (let up = 0; up <= 3; up++) {
+        const y = fy + up + BODY_EPS
+        if (bodyHitsSolid(nx, y, nz, w, h)) continue
+        if (!solidCell(cx + dx, fy + up - 1, cz + dz)) continue
+        const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2]) + up * up * 0.6
+        if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+      }
+    }
+  }
+  // 3. last resorts so nobody stays trapped: a clear neighbour with no ground (a short drop), then the ring two cells out, then higher up.
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      if (!dx && !dz) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      const y = fy + BODY_EPS
+      if (bodyHitsSolid(nx, y, nz, w, h)) continue
+      const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2])
+      if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+    }
+  }
+  if (!best) {
+    let bestScore = Infinity
+    for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) {
+      if (Math.max(Math.abs(dx), Math.abs(dz)) !== 2) continue
+      const nx = cx + dx + 0.5, nz = cz + dz + 0.5
+      for (let up = 0; up <= 3; up++) {
+        const y = fy + up + BODY_EPS
+        if (bodyHitsSolid(nx, y, nz, w, h)) continue
+        const score = (nx - p[0]) * (nx - p[0]) + (nz - p[2]) * (nz - p[2]) + up * up * 0.6
+        if (score < bestScore) { bestScore = score; best = [nx, y, nz] }
+      }
+    }
+  }
+  for (let up = 4; up <= 8 && !best; up++) {
+    const y = fy + up + BODY_EPS
+    if (!bodyHitsSolid(p[0], y, p[2], w, h)) take(p[0], y, p[2])
+  }
+  if (!best) return false
+  noa.entities.setPosition(noa.playerEntity, best)
+  lastUnstickAt = performance.now()
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) {
+    body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0
+    if (body.resting) body.resting = [false, false, false]
+  }
+  return true
+}
+// Called from undo, redo, the bot's undo and from basics.js (which runs every frame). A fault here must never stop a frame.
+function unstickSafe() {
+  try { return unstickPlayer() } catch (e) { console.warn('unstick', e); return false }
 }
 function eyeBlocked() {
   if (!noa.camera || tableMode || flying) return false
@@ -10216,7 +10623,8 @@ function feelTick(dt) {
         if ((noa.camera.currentZoom || 0) > 0) noa.camera.currentZoom = 0
       } else {
         const eye = noa.camera.getPosition()
-        if (eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
+        // The camera's eye lags the body for a few frames after a move, so right after unstickPlayer it still looks blocked. Wait it out.
+        if (!seated && !sleepBusy && performance.now() - lastUnstickAt > 400 && eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
       }
     }
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
@@ -10328,6 +10736,7 @@ function feelTick(dt) {
   hoverCrop()
 }
 noa.on('tick', (dt) => {
+  fb.s(3)
   paintBonk()
   checkSafeEntry()
   const maxP = 89 * Math.PI / 180
@@ -10346,6 +10755,11 @@ noa.on('tick', (dt) => {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
     noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
     noa.entities.setPosition(noa.playerEntity, [seated.x + 0.5, seated.y + 0.02, seated.z + 0.5])
+  } else if (sleepBusy && sleepHold) {
+    body.gravityMultiplier = 0
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+    noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
+    noa.entities.setPosition(noa.playerEntity, sleepHold)
   } else if (flying) {
     body.gravityMultiplier = 0
     if (body.resting) body.resting = [false, false, false]
@@ -10362,6 +10776,7 @@ noa.on('tick', (dt) => {
     const moving = !tableMode && !seated && !REDUCE && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
     follow.offset[1] = base + (moving ? Math.sin(performance.now() / 180) * 0.045 : 0)
   }
+  fb.e(3)
 })
 
 const canvas = noa.container.canvas
@@ -10620,7 +11035,7 @@ function paintTextOpts(g) {
 function paintPackLook(g) {
   const lookHead = document.createElement('p')
   lookHead.className = 'gnote ghead'
-  lookHead.textContent = 'Look'
+  lookHead.textContent = t('lookHead')
   const packRow = document.createElement('div')
   packRow.className = 'set-line'
   packRow.id = 'look-packs'
@@ -10668,8 +11083,9 @@ function paintPackLook(g) {
     }
     face.src = 'assets/packs/' + pack.id + '/atlas32.png'
     const word = document.createElement('span')
-    word.textContent = pack.name
-    b.setAttribute('aria-label', pack.name)
+    const packName = pack.name === 'Classic Topia' ? t('packClassic') : pack.name === 'Mystical Topia' ? t('packMystical') : pack.name
+    word.textContent = packName
+    b.setAttribute('aria-label', packName)
     b.append(icon, word)
     const choose = () => {
       if (b.dataset.busy === '1') return
@@ -10720,6 +11136,13 @@ function paintPackLook(g) {
     g.insertBefore(hint, g.firstChild)
   }
 }
+function holoKeyNote() { // Holo Hand: the H key does the same as the Show hand switch
+  const p = document.createElement('p')
+  p.className = 'gnote'
+  p.dataset.holoKey = '1'
+  p.textContent = t('holoKeyHint').replace('{key}', 'H')
+  return p
+}
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')
   const range = document.createElement('input')
@@ -10734,14 +11157,40 @@ function paintLook(g) {
     if (sens._val) sens._val.textContent = lookSens.toFixed(1) + '×'
     applyLook()
   })
+  const ctlHead = document.createElement('p')
+  ctlHead.className = 'gnote ghead'
+  ctlHead.textContent = t('controlsHead')
+  // Holo Hand part 1: Main hand is two buttons, Left and Right; the chosen one is pressed. Saved with the look prefs.
   const side = lookLine(t('mainHand'), null, 'hand')
-  const sideBtn = document.createElement('button')
-  sideBtn.type = 'button'
-  sideBtn.className = 'pill on'
-  const paintSide = () => { sideBtn.textContent = mainHand === 'left' ? t('left') : t('right') }
+  const sidePair = document.createElement('span')
+  sidePair.className = 'hand-pair'
+  sidePair.setAttribute('role', 'group')
+  sidePair.setAttribute('aria-label', t('mainHand'))
+  const sideBtns = ['left', 'right'].map((v) => {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'pill'
+    b.dataset.hand = v
+    b.textContent = t(v)
+    b.addEventListener('click', () => {
+      if (mainHand === v) return
+      mainHand = v
+      applyLook()
+      paintSide()
+      if (holo) holo.announce(t('mainHand') + ': ' + t(v))
+    })
+    return b
+  })
+  const paintSide = () => {
+    for (const b of sideBtns) {
+      const on = b.dataset.hand === mainHand
+      b.classList.toggle('on', on)
+      b.setAttribute('aria-pressed', String(on))
+    }
+  }
   paintSide()
-  sideBtn.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
-  side.append(sideBtn)
+  sidePair.append(...sideBtns)
+  side.append(sidePair)
   const cam = lookLine(t('cameraView'), null, 'camera')
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
@@ -10802,12 +11251,14 @@ function paintLook(g) {
   paintClothes()
   clothes.append(clothesLab, clothesGroup)
   g.append(
+    ctlHead,
     sens,
     range,
     lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert', 'invert'),
     lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }, '', 'wide'),
     lookPill(t('autoJump'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
     lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
+    ...(TOUCH_UI ? [] : [holoKeyNote()]),
     side,
     cam,
     clothes,
@@ -11329,26 +11780,116 @@ gfx.applyFog = (next) => {
   scene.fogEnd = 12
 }
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uFlat;uniform float uStars;uniform vec3 uZenith;uniform vec3 uHorizon;void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);gl_FragColor=vec4(col,1.0);}'
-const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon'] })
+Effect.ShadersStore.bertSkyFragmentShader = [
+  'precision highp float;varying vec3 vPos;',
+  'uniform float uTime;uniform float uFlat;uniform float uStars;uniform float uHillOn;uniform float uGlowAmt;',
+  'uniform vec3 uZenith;uniform vec3 uHorizon;uniform vec3 uGlowDir;uniform vec3 uGlowCol;uniform vec3 uHillNear;uniform vec3 uHillFar;',
+  'uniform sampler2D uHills;uniform vec3 uSunDir;uniform vec3 uMoonDir;uniform float uSunVis;uniform float uMoonVis;uniform vec3 uSunCol;uniform vec3 uMoonCol;',
+  // blocky body: a square on the sky, a lighter square core. Drawn here (not as a billboard) so the hills drawn after it cover it.
+  'float body(vec3 n,vec3 d,float rimSz,float coreSz){float c=dot(n,d);if(c<=0.0)return 0.0;vec3 ax=normalize(abs(d.y)>0.99?vec3(1.0,0.0,0.0):cross(vec3(0.0,1.0,0.0),d));vec3 ay=cross(d,ax);vec2 p=vec2(dot(n,ax),dot(n,ay))/c;float q=max(abs(p.x),abs(p.y));return step(q,rimSz)+step(q,coreSz);}',
+  'void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;',
+  // soft glow around the sun or moon, strongest low on the horizon
+  'float d=max(dot(n,uGlowDir),0.0);float low=1.0-smoothstep(0.1,0.75,n.y);',
+  'col+=uGlowCol*(pow(d,5.0)*0.45+pow(d,40.0)*0.55)*uGlowAmt*mix(0.5,1.0,low);',
+  'float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));',
+  'col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);',
+  // the sun and moon, blocky; 1 = rim, 2 = core
+  'float sb=body(n,normalize(uSunDir),0.05,0.03)*uSunVis;col=mix(col,uSunCol*0.92,min(sb,1.0));col=mix(col,uSunCol,clamp(sb-1.0,0.0,1.0));',
+  'float mb=body(n,normalize(uMoonDir),0.04,0.024)*uMoonVis;col=mix(col,uMoonCol*0.85,min(mb,1.0));col=mix(col,uMoonCol,clamp(mb-1.0,0.0,1.0));',
+  // blocky clouds on a flat layer overhead: big square cells, seen in perspective toward the horizon, drifting slowly
+  // (uTime does not move with reduced motion). Tinted by the sunset glow, dimmed at night. Only with the hills (not Lite).
+  'float lum=clamp(dot(uHorizon,vec3(0.36,0.4,0.24))/0.8,0.15,1.0);',
+  // clumps: a big cell decides where a cloud is, small cells inside it make the blocky outline. No grid seams.
+  'if(uHillOn>0.5&&n.y>0.1){vec2 cp=n.xz/n.y*3.0+vec2(uTime*0.012,0.0);',
+  'float big=fract(sin(dot(floor(cp/4.0),vec2(12.9898,78.233)))*43758.5453);float sm=fract(sin(dot(floor(cp),vec2(39.346,11.135)))*43758.5453);',
+  'float cl=step(0.72,big)*step(0.3,sm)*smoothstep(0.1,0.22,n.y);vec3 cc3=max(mix(vec3(0.95,0.96,0.97),uHorizon,0.3)*lum+uGlowCol*uGlowAmt*0.3,col*1.18+vec3(0.02,0.025,0.035));',
+  'col=mix(col,cc3,cl*0.7);}',
+  // never brighter than about #EEF3F7
+  'col=min(col,vec3(0.93,0.95,0.96));',
+  // far hills: two ridgelines from a 64x1 strip, hazed toward the horizon color, fading out below the horizon
+  // blocky: one flat-topped column per strip texel (no blending between them) and heights in whole steps, hard edges
+  // three blocky layers, back to front: far mountains (snow on the tops), far hills, the near treeline (bumpy tree tops)
+  'if(uHillOn>0.5&&n.y<0.3){float raz=atan(n.z,n.x)*0.15915494+0.5;float az=(floor(raz*64.0)+0.5)/64.0;vec3 hh=floor(texture2D(uHills,vec2(az,0.5)).rgb*0.2/0.008)*0.008;',
+  'float fade=smoothstep(-0.12,0.02,n.y);',
+  'vec3 mc=mix(mix(uZenith,vec3(0.40,0.43,0.50),0.6),uHorizon,0.45)*mix(0.7,1.0,lum);vec3 snow=mix(vec3(0.86,0.89,0.92),uHorizon,0.35)*lum;',
+  'float ma=step(n.y,hh.b);float tip=step(hh.b-0.03,n.y)*step(0.075,hh.b)*step(hh.g+0.012,n.y);col=mix(col,mix(uHorizon,mix(mc,snow,tip),fade),ma);',
+  'float fa=step(n.y,hh.g);col=mix(col,mix(uHorizon,uHillFar,fade),fa);',
+  'float tb=floor(fract(sin(floor(raz*512.0)*91.7)*4375.85)*3.0)*0.006;',
+  'float na=step(n.y,hh.r+tb);col=mix(col,mix(uHorizon,uHillNear*0.85,fade),na);}',
+  'gl_FragColor=vec4(col,1.0);}',
+].join('')
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon', 'uGlowDir', 'uGlowCol', 'uGlowAmt', 'uHillOn', 'uHillNear', 'uHillFar', 'uSunDir', 'uMoonDir', 'uSunVis', 'uMoonVis', 'uSunCol', 'uMoonCol'], samplers: ['uHills'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
 skyMat.fogEnabled = false
 skyMat.setFloat('uTime', 0)
 skyMat.setFloat('uFlat', 0)
 skyMat.setFloat('uStars', 0)
+skyMat.setFloat('uHillOn', 0)
+skyMat.setFloat('uGlowAmt', 0)
 skyMat.setColor3('uZenith', new Color3(0.20, 0.38, 0.62))
 skyMat.setColor3('uHorizon', new Color3(0.70, 0.80, 0.86))
+skyMat.setVector3('uGlowDir', new Vector3(0, -1, 0))
+skyMat.setColor3('uGlowCol', new Color3(0.9, 0.82, 0.58))
+skyMat.setColor3('uHillNear', new Color3(0.4, 0.5, 0.5))
+skyMat.setColor3('uHillFar', new Color3(0.5, 0.6, 0.65))
+skyMat.setVector3('uSunDir', new Vector3(0, 1, 0))
+skyMat.setVector3('uMoonDir', new Vector3(0, -1, 0))
+skyMat.setFloat('uSunVis', 0)
+skyMat.setFloat('uMoonVis', 0)
+skyMat.setColor3('uSunCol', new Color3(0.93, 0.88, 0.66))
+skyMat.setColor3('uMoonCol', new Color3(0.86, 0.89, 0.93))
+// The hills live in the sky shader: one 64x1 strip, built once from the world. No extra mesh, no extra draw call.
+const hillTex = new DynamicTexture('far-hills', { width: HILL_N, height: 1 }, scene, false, Texture.NEAREST_SAMPLINGMODE)
+hillTex.wrapU = Texture.WRAP_ADDRESSMODE
+hillTex.wrapV = Texture.CLAMP_ADDRESSMODE
+skyMat.setTexture('uHills', hillTex)
+let hillKey = ''
+function buildHills() {
+  const w = worldTune()
+  const key = w.hills + ',' + w.water + ',' + w.trees + ',' + w.seed
+  if (key === hillKey) return
+  hillKey = key
+  try {
+    const rows = hillSamples((x, z) => surfaceY(x, z), (x, z) => worldHash(x, z), SPAWN_XZ_H[0], SPAWN_XZ_H[1], 4)
+    const ctx = hillTex.getContext()
+    const img = ctx.createImageData(HILL_N, 1)
+    img.data.set(hillBytes(rows))
+    ctx.putImageData(img, 0, 0)
+    hillTex.update(false)
+  } catch (e) { console.warn('hills', e) }
+}
+const SPAWN_XZ_H = [8, 1]
 const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
 sky.material = skyMat
 sky.isPickable = false
 sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
-function skyDisc(name, rgb, local) {
-  const mesh = CreateDisc(name, { radius: 2.25, tessellation: 32 }, scene) // 2.5.550: round sun and moon
+// Soft sun and moon: a round glow baked into a small texture. Same two meshes as before, now placed by the clock.
+function discTexture(name, core) {
+  const tex = new DynamicTexture(name, { width: 64, height: 64 }, scene, false)
+  tex.hasAlpha = true
+  const ctx = tex.getContext()
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+  g.addColorStop(0, 'rgba(255,255,255,1)')
+  g.addColorStop(core, 'rgba(255,255,255,0.95)')
+  g.addColorStop(Math.min(0.98, core + 0.12), 'rgba(255,255,255,0.28)')
+  g.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.clearRect(0, 0, 64, 64)
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 64, 64)
+  tex.update()
+  return tex
+}
+const SKY_DIST = 380
+function skyDisc(name, rgb, size, core) {
+  const mesh = CreatePlane(name, { size }, scene)
   const mat = new StandardMaterial(name + '-m', scene)
+  const tex = discTexture(name + '-t', core)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
+  // Not mat.emissiveTexture: Babylon ADDS an emissive texture to emissiveColor, so the white gradient made the disc white (#FCFBFB).
+  mat.opacityTexture = tex
   mat.disableLighting = true
   mat.backFaceCulling = false
   mat.fogEnabled = false
@@ -11356,17 +11897,21 @@ function skyDisc(name, rgb, local) {
   mesh.isPickable = false
   mesh.infiniteDistance = true
   mesh.billboardMode = Mesh.BILLBOARDMODE_ALL
-  mesh.parent = noa.rendering.camera
-  mesh.position.set(local[0], local[1], local[2])
   mesh.alwaysSelectAsActiveMesh = true
+  mesh.setEnabled(false)
   noa.rendering.addMeshToScene(mesh, false)
   return mesh
 }
-const sunQuad = skyDisc('sun-quad', [0.95, 0.90, 0.66], [-6, 11, 22])
-const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], [7, 10, 22])
+const sunQuad = skyDisc('sun-quad', [0.95, 0.90, 0.66], 70, 0.30)
+const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], 52, 0.38)
 const skyZen = new Color3(0.20, 0.38, 0.62)
 const skyHor = new Color3(0.70, 0.80, 0.86)
-const skyEase = { phase: '', z: [0.20, 0.38, 0.62], h: [0.70, 0.80, 0.86], f: [0.625, 0.71, 0.735], stars: 0, sun: 1, moon: 0, fromZ: null, fromH: null, fromF: null, fromStars: 0, fromSun: 1, fromMoon: 0, t0: 0 }
+const skyNear = new Color3(0.4, 0.5, 0.5)
+const skyFar = new Color3(0.5, 0.6, 0.65)
+const skyGlowCol = new Color3(0.9, 0.82, 0.58)
+const skyGlowDir = new Vector3(0, -1, 0)
+// Eased values. They chase the clock target with a short lag, so a clock jump (sleep, a time switch) never flashes.
+const skyEase = { ready: false, z: [0.20, 0.38, 0.62], h: [0.70, 0.80, 0.86], hill: [0.27, 0.41, 0.37], glow: [0.9, 0.82, 0.58], glowAmt: 0, stars: 0, sun: 1, moon: 0, t0: 0 }
 function skyGlideMs() {
   try {
     if (document.documentElement.getAttribute('data-kp-motion') === 'less') return 1000
@@ -11374,54 +11919,67 @@ function skyGlideMs() {
   } catch (e) {}
   return 3000
 }
-function mix3(out, from, to, u) {
-  out[0] = from[0] + (to[0] - from[0]) * u
-  out[1] = from[1] + (to[1] - from[1]) * u
-  out[2] = from[2] + (to[2] - from[2]) * u
+function chase(cur, to, a) {
+  for (let i = 0; i < cur.length; i++) cur[i] += (to[i] - cur[i]) * a
 }
 function applySky() {
   const phase = basics && basics.phase ? basics.phase() : 'day'
-  const row = gfxLook.sky(phase)
-  const tz = row.zenith
-  const th = row.horizon
-  const tf = atmosphereFog(phase, row)
-  const now = performance.now()
-  if (!skyEase.fromZ || skyEase.phase !== phase) {
-    if (!skyEase.fromZ) {
-      skyEase.z = tz.slice()
-      skyEase.h = th.slice()
-      skyEase.f = tf.slice()
-      skyEase.stars = row.stars
-      skyEase.sun = row.sun
-      skyEase.moon = row.moon
-    }
-    skyEase.fromZ = skyEase.z.slice()
-    skyEase.fromH = skyEase.h.slice()
-    skyEase.fromF = skyEase.f.slice()
-    skyEase.fromStars = skyEase.stars
-    skyEase.fromSun = skyEase.sun
-    skyEase.fromMoon = skyEase.moon
-    skyEase.phase = phase
-    skyEase.t0 = now
+  const flat = !!gfxLook.sky(phase).flat
+  const cm = basics && basics.clockMs ? basics.clockMs() : null
+  const ms = cm === null ? (REST[phase] || REST.day) : cm
+  const tgt = blendSky(ms)
+  const bod = bodies(ms)
+  const glow = glowFor(tgt, bod)
+  if (flat) {
+    // Lite: one flat color, no hills.
+    const m = [(tgt.zenith[0] + tgt.horizon[0]) * 0.5, (tgt.zenith[1] + tgt.horizon[1]) * 0.5, (tgt.zenith[2] + tgt.horizon[2]) * 0.5]
+    tgt.horizon = m
   }
-  const u = Math.min(1, (now - skyEase.t0) / skyGlideMs())
-  mix3(skyEase.z, skyEase.fromZ, tz, u)
-  mix3(skyEase.h, skyEase.fromH, th, u)
-  mix3(skyEase.f, skyEase.fromF, tf, u)
-  skyEase.stars = skyEase.fromStars + (row.stars - skyEase.fromStars) * u
-  skyEase.sun = skyEase.fromSun + (row.sun - skyEase.fromSun) * u
-  skyEase.moon = skyEase.fromMoon + (row.moon - skyEase.fromMoon) * u
+  const now = performance.now()
+  const dt = skyEase.ready ? Math.min(1000, Math.max(0, now - skyEase.t0)) : 0
+  skyEase.t0 = now
+  const a = skyEase.ready ? 1 - Math.exp(-dt / (skyGlideMs() / 3)) : 1
+  skyEase.ready = true
+  chase(skyEase.z, tgt.zenith, a)
+  chase(skyEase.h, tgt.horizon, a)
+  chase(skyEase.hill, tgt.hill, a)
+  chase(skyEase.glow, glow.col, a)
+  skyEase.glowAmt += (glow.amt - skyEase.glowAmt) * a
+  skyEase.stars += (tgt.stars - skyEase.stars) * a
+  skyEase.sun += (bod.sun.vis - skyEase.sun) * a
+  skyEase.moon += (bod.moon.vis - skyEase.moon) * a
   skyZen.set(skyEase.z[0], skyEase.z[1], skyEase.z[2])
   skyHor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
   skyMat.setColor3('uZenith', skyZen)
   skyMat.setColor3('uHorizon', skyHor)
-  skyMat.setFloat('uFlat', row.flat ? 1 : 0)
+  skyMat.setFloat('uFlat', flat ? 1 : 0)
   skyMat.setFloat('uStars', skyEase.stars)
-  sunQuad.setEnabled(skyEase.sun > 0.2)
-  moonQuad.setEnabled(skyEase.moon > 0.2)
+  skyGlowCol.set(skyEase.glow[0], skyEase.glow[1], skyEase.glow[2])
+  skyGlowDir.set(glow.dir[0], glow.dir[1], glow.dir[2])
+  skyMat.setColor3('uGlowCol', skyGlowCol)
+  skyMat.setVector3('uGlowDir', skyGlowDir)
+  skyMat.setFloat('uGlowAmt', skyEase.glowAmt)
+  // Hills: gradient-only on Lite. Haze them toward the horizon color so they read as far away.
+  const hillsOn = !flat
+  skyMat.setFloat('uHillOn', hillsOn ? 1 : 0)
+  if (hillsOn) {
+    buildHills()
+    const hc = hillColors({ hill: skyEase.hill, horizon: skyEase.h })
+    skyNear.set(hc.near[0], hc.near[1], hc.near[2])
+    skyFar.set(hc.far[0], hc.far[1], hc.far[2])
+    skyMat.setColor3('uHillNear', skyNear)
+    skyMat.setColor3('uHillFar', skyFar)
+  }
+  // Sun and moon are drawn by the sky shader now (blocky, and behind the far hills). The billboards stay off.
+  sunQuad.setEnabled(false)
+  moonQuad.setEnabled(false)
+  skyMat.setVector3('uSunDir', new Vector3(bod.sun.dir[0], bod.sun.dir[1], bod.sun.dir[2]))
+  skyMat.setVector3('uMoonDir', new Vector3(bod.moon.dir[0], bod.moon.dir[1], bod.moon.dir[2]))
+  skyMat.setFloat('uSunVis', skyEase.sun > 0.02 ? Math.min(1, skyEase.sun) : 0)
+  skyMat.setFloat('uMoonVis', skyEase.moon > 0.02 ? Math.min(1, skyEase.moon * 0.9) : 0)
   if (!underWater) {
-    const fog = skyEase.f
-    scene.fogColor.set(fog[0], fog[1], fog[2])
+    // Fog is the horizon color, exactly, so far chunks melt into the sky with no pale wall.
+    scene.fogColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
     if (scene.clearColor) scene.clearColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2], 1)
     if (gfxLook.name !== 'lite') {
       const end = scene.fogEnd || 32
@@ -11430,16 +11988,12 @@ function applySky() {
     }
   }
 }
-function atmosphereFog(phase, row) {
-  const h = row.horizon
-  if (gfxLook.name === 'lite') return h
-  const cap = (c) => Math.min(0.85, c)
-  let out
-  if (phase === 'dusk') out = [h[0] * 0.38 + 0.32, h[1] * 0.38 + 0.28, h[2] * 0.38 + 0.24]
-  else if (phase === 'dawn') out = [h[0] * 0.45 + 0.26, h[1] * 0.45 + 0.24, h[2] * 0.45 + 0.22]
-  else if (phase === 'night') out = [h[0] * 0.55 + 0.05, h[1] * 0.55 + 0.06, h[2] * 0.55 + 0.07]
-  else out = [h[0] * 0.75 + 0.10, h[1] * 0.75 + 0.11, h[2] * 0.75 + 0.09]
-  return [cap(out[0]), cap(out[1]), cap(out[2])]
+function placeBody(mesh, body, easedVis, strength) {
+  const on = easedVis > 0.02
+  mesh.setEnabled(on)
+  if (!on) return
+  mesh.position.set(body.dir[0] * SKY_DIST, body.dir[1] * SKY_DIST, body.dir[2] * SKY_DIST)
+  mesh.material.alpha = Math.min(1, easedVis) * strength
 }
 const lampLights = []
 for (let i = 0; i < 4; i++) {
@@ -11794,6 +12348,66 @@ function makeArm(name, x) {
 }
 const armL = makeArm('berty-arm-l', -0.28)
 const armR = makeArm('berty-arm-r', 0.28)
+// 2.5.555 Avatar Outfits (single player, cosmetic only). The old berty box figure stays as the carrier (same position, same hitbox)
+// but is hidden. The android and its five slots are ONE merged mesh built from outfitsLib.partsFor() and parented to it,
+// so the draw count stays the same. The look is saved as ids only, in its own local key. Arms take the Top color.
+const outfitStore = outfitsLib.createStore({ storage: (() => { try { return localStorage } catch (e) { return null } })(), key: 'bloxbert-outfit' })
+const outfitMat = noa.rendering.makeStandardMaterial('outfit-mat') // matte: no emissive, no specular, so nothing glows
+outfitMat.diffuseColor = new Color3(0.78, 0.78, 0.78)
+outfitMat.ambientColor = new Color3(0.55, 0.55, 0.55)
+const outfitAtlas = new DynamicTexture('outfit-atlas', { width: outfitsLib.TILE * outfitsLib.PATTERNS.length, height: outfitsLib.TILE }, scene, false, Texture.NEAREST_SAMPLINGMODE)
+{
+  const g = outfitAtlas.getContext()
+  for (let p = 0; p < outfitsLib.PATTERNS.length; p++) {
+    for (let y = 0; y < outfitsLib.TILE; y++) {
+      for (let x = 0; x < outfitsLib.TILE; x++) {
+        const v = Math.round(255 * outfitsLib.patternValue(outfitsLib.PATTERNS[p], x, y))
+        g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')'
+        g.fillRect(p * outfitsLib.TILE + x, y, 1, 1)
+      }
+    }
+  }
+  outfitAtlas.update()
+}
+outfitMat.diffuseTexture = outfitAtlas
+let outfitMesh = null
+function outfitArms() {
+  const c = outfitsLib.armRgb(outfitStore.saved())
+  armMat.diffuseColor.set(c[0] * 0.9, c[1] * 0.9, c[2] * 0.9)
+  armMat.emissiveColor.set(0, 0, 0)
+}
+function buildOutfitRig() {
+  const parts = outfitsLib.partsFor(outfitStore.saved())
+  const boxes = []
+  for (const part of parts) {
+    const m = CreateBox('outfit-part', { width: part.s[0], height: part.s[1], depth: part.s[2] }, scene)
+    m.position.set(part.p[0], part.p[1], part.p[2])
+    m.computeWorldMatrix(true)
+    const n = m.getTotalVertices()
+    const cols = new Float32Array(n * 4)
+    for (let i = 0; i < n; i++) { cols[i * 4] = part.rgb[0]; cols[i * 4 + 1] = part.rgb[1]; cols[i * 4 + 2] = part.rgb[2]; cols[i * 4 + 3] = 1 }
+    m.setVerticesData(VertexBuffer.ColorKind, cols)
+    const uv = m.getVerticesData(VertexBuffer.UVKind)
+    if (uv) {
+      for (let i = 0; i < uv.length; i += 2) uv[i] = (part.pat + uv[i]) / outfitsLib.PATTERNS.length
+      m.setVerticesData(VertexBuffer.UVKind, uv)
+    }
+    m.isPickable = false
+    boxes.push(m)
+  }
+  const merged = Mesh.MergeMeshes(boxes, true, true)
+  merged.name = 'outfit-rig'
+  merged.material = outfitMat
+  merged.isPickable = false
+  merged.parent = berty
+  merged.alwaysSelectAsActiveMesh = true
+  noa.rendering.addMeshToScene(merged, false) // noa only draws meshes it knows about, even children of the player mesh
+  if (outfitMesh) outfitMesh.dispose()
+  outfitMesh = merged
+  berty.isVisible = false
+  outfitArms()
+}
+buildOutfitRig()
 function paintBertySuit() {
   const suit = SUITS[suitId] || SUITS.berty
   const colors = berty.getVerticesData(VertexBuffer.ColorKind)
@@ -11817,6 +12431,7 @@ function paintBertySuit() {
   armMat.diffuseColor.set(suit.shirt[0], suit.shirt[1], suit.shirt[2])
   armMat.emissiveColor.set(suit.shirt[0] * 0.34, suit.shirt[1] * 0.34, suit.shirt[2] * 0.34)
   if (hands && hands.tint) hands.tint(suit.hand)
+  outfitArms() // 2.5.555: sleeves follow the Top color
 }
 paintBertySuit()
 const heldMat = new StandardMaterial('berty-held-mat', scene)
@@ -11939,6 +12554,12 @@ tealMat.specularColor = new Color3(0, 0, 0)
 tealMat.alpha = 0.25
 tealMat.transparencyMode = 2
 tealMat.backFaceCulling = false
+// Holo Hand part 2: the ghost outline is dashed (edges renderer cannot dash), muted amber when it fits.
+const ghostDash = CreateDashedLines('place-ghost-dash', { points: wandBoxPoints(), dashNb: 48, dashSize: 3, gapSize: 2 }, scene)
+ghostDash.color = new Color3(0.79, 0.54, 0.24)
+ghostDash.isPickable = false
+ghostDash.setEnabled(false)
+noa.rendering.addMeshToScene(ghostDash)
 const placeGhostSide = CreateBox('place-ghost-side', { size: 0.98 }, scene)
 placeGhostSide.material = ghostMat
 placeGhostSide.isPickable = false
@@ -12005,7 +12626,8 @@ function ghostCell() {
     // 2.5.550: blocked cells still get a ghost, drawn red with a reason (was hidden, so red never showed).
     if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return Object.assign({}, spot, { why: 'standing' })
   }
-  if (getVoxel(spot.x, spot.y, spot.z)) return Object.assign({}, spot, { why: 'noRoom' })
+  // same rule as placeBlock: water, tufts and wheat are fine to build into (was a red 'No room' over water)
+  if (!placeableCell(getVoxel(spot.x, spot.y, spot.z))) return Object.assign({}, spot, { why: 'noRoom' })
   return spot
 }
 function ghostBedScale(on) {
@@ -12017,7 +12639,16 @@ function seedHeld() {
   if (!survivalOn() || !session || !session.selectedItem) return false
   return (session.selectedItem() || '') === 'wheatSeeds'
 }
+function syncGhostDash(on, red) {
+  if (!ghostDash) return
+  if (!on) { if (ghostDash.isEnabled()) ghostDash.setEnabled(false); return }
+  if (red) ghostDash.color.set(0.9, 0.15, 0.15); else ghostDash.color.set(0.79, 0.54, 0.24)
+  ghostDash.position.copyFrom(placeGhost.position)
+  ghostDash.scaling.copyFrom(placeGhost.scaling)
+  if (!ghostDash.isEnabled()) ghostDash.setEnabled(true)
+}
 function hideGhosts() {
+  syncGhostDash(false)
   if (placeGhost) placeGhost.setEnabled(false)
   if (placeGhostSide) placeGhostSide.setEnabled(false)
 }
@@ -12134,12 +12765,133 @@ function syncPlaceGhost() {
   const lp = noa.globalToLocal([spot.x + 0.5, spot.y + gy, spot.z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
+  syncGhostDash(true, amber)
   if (side) {
     const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + gy, side.sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)
   } else placeGhostSide.setEnabled(false)
 }
+// Holo Hand part 2. What the beam and the crosshair word should show this frame.
+// kind: 'mine' (holding dig on a block), 'place' (a ghost is shown), 'use' (aiming at a usable block in reach), 'far' (a block past reach), or ''.
+const HOLO_WORD = { }
+function aimScreen(x, y, z) { return cropScreen(x, y, z) } // centre-top of the cell on screen, or null
+function holoState() {
+  if (!holo || !holo.origin()) return null
+  if (tableMode || anyCard()) return null
+  const tgt = noa.targetedBlock
+  let kind = ''
+  let label = ''
+  let end = null
+  const touchPt = look && look.pt === 'touch' && dig && dig.kind === 'touch' ? [look.x, look.y] : null
+  if (dig && !dig.broke && dig.p > 0 && !dig.draining && (dig.kind === 'mouse' || dig.kind === 'touch')) {
+    kind = 'mine'
+    label = t('holoMining').replace('{n}', String(Math.min(99, Math.floor(dig.p * 100))))
+    end = touchPt || aimScreen(dig.x, dig.y - 0.65, dig.z)
+  } else if (ghostCell() && placeGhost.isEnabled()) {
+    kind = 'place'
+    label = t('holoPlace')
+    const lp = placeGhost.position
+    const gp = noa.localToGlobal ? noa.localToGlobal([lp.x, lp.y, lp.z], [0, 0, 0]) : null
+    end = gp ? aimScreen(gp[0] - 0.5, gp[1] - 1.15, gp[2] - 0.5) : null
+  } else if (tgt && isUseBlock(tgt.blockID || 0) && canReach(tgt.position)) {
+    kind = 'use'
+    label = t('holoOpen')
+    end = aimScreen(tgt.position[0], tgt.position[1] - 0.65, tgt.position[2])
+  } else if (!tgt && farBlockAhead()) {
+    kind = 'far'
+    label = t('holoTooFar')
+  }
+  if (!end && kind !== 'far' && kind) end = [innerWidth / 2, innerHeight / 2]
+  return { kind, label, end }
+}
+// A block in the look direction between reach and 12 blocks: the crosshair says "Too far" and no beam shows.
+let farAt = 0
+let farAheadHit = false
+function farBlockAhead() {
+  const now = performance.now()
+  if (now - farAt < 120) return farAheadHit
+  farAt = now
+  farAheadHit = false
+  try {
+    const hit = noa.pick(null, null, 12, (id) => id !== 0 && id !== WATER)
+    farAheadHit = !!hit
+  } catch (e) { farAheadHit = false }
+  return farAheadHit
+}
+// Break: the block is already gone from the world; a copy of its cell fades and drops over 220 ms. One mesh, reused.
+let breakFx = null
+let breakFxAt = 0
+const breakLocal = [0, 0, 0]
+function startBreakFx(x, y, z) {
+  if (REDUCE) return // reduced motion: no settle, no fade; the block simply goes
+  if (!breakFx) {
+    breakFx = CreateBox('holo-break-fx', { size: 0.96 }, scene)
+    const m = new StandardMaterial('holo-break-fx-m', scene)
+    m.diffuseColor = new Color3(0.62, 0.55, 0.45)
+    m.emissiveColor = new Color3(0.22, 0.18, 0.12)
+    m.specularColor = new Color3(0, 0, 0)
+    m.alpha = 0.55
+    m.transparencyMode = 2
+    m.backFaceCulling = false
+    breakFx.material = m
+    breakFx.isPickable = false
+    breakFx.setEnabled(false)
+    noa.rendering.addMeshToScene(breakFx, false)
+  }
+  breakFx.__cell = [x, y, z]
+  breakFxAt = performance.now()
+  breakFx.setEnabled(true)
+}
+function tickBreakFx() {
+  if (!breakFx || !breakFx.isEnabled()) return
+  const u = (performance.now() - breakFxAt) / 220
+  if (u >= 1) { breakFx.setEnabled(false); return }
+  const cell = breakFx.__cell
+  const lp = noa.globalToLocal([cell[0] + 0.5, cell[1] + 0.5 - u * 0.45, cell[2] + 0.5], null, breakLocal)
+  breakFx.position.set(lp[0], lp[1], lp[2])
+  const k = 1 - u * 0.5
+  breakFx.scaling.set(k, k, k)
+  breakFx.material.alpha = 0.55 * (1 - u)
+}
+// Place: the ghost settles from 96% to 100% over 120 ms (nothing under reduced motion).
+// A voxel cannot be scaled, so a solid amber-tinted box sits over the new block for 120 ms and grows 96% -> 100%.
+let settleFx = null
+let settleAt = 0
+let settleCell = null
+function startSettle() {
+  if (REDUCE) return
+  const spot = lastPlacedCell
+  if (!spot) return
+  if (!settleFx) {
+    settleFx = CreateBox('holo-settle-fx', { size: 1.0 }, scene)
+    const m = new StandardMaterial('holo-settle-fx-m', scene)
+    m.diffuseColor = new Color3(0.79, 0.54, 0.24)
+    m.emissiveColor = new Color3(0.2, 0.14, 0.06)
+    m.specularColor = new Color3(0, 0, 0)
+    m.alpha = 0.35
+    m.transparencyMode = 2
+    m.backFaceCulling = false
+    settleFx.material = m
+    settleFx.isPickable = false
+    settleFx.setEnabled(false)
+    noa.rendering.addMeshToScene(settleFx, false)
+  }
+  settleCell = spot
+  settleAt = performance.now()
+  settleFx.setEnabled(true)
+}
+function tickSettleFx() {
+  if (!settleFx || !settleFx.isEnabled()) return
+  const u = (performance.now() - settleAt) / 120
+  if (u >= 1) { settleFx.setEnabled(false); return }
+  const lp = noa.globalToLocal([settleCell[0] + 0.5, settleCell[1] + 0.5, settleCell[2] + 0.5], null, breakLocal)
+  settleFx.position.set(lp[0], lp[1], lp[2])
+  const k = 0.96 + 0.04 * u
+  settleFx.scaling.set(k, k, k)
+  settleFx.material.alpha = 0.35 * (1 - u)
+}
+let lastPlacedCell = null
 function paintOutline() {
   const tgt = noa.targetedBlock
   const pos = tgt ? tgt.position : (tableMode ? tableCursor : null)
@@ -12227,21 +12979,15 @@ function poseBerty(dt) {
   heldMat.diffuseColor.set(c[0], c[1], c[2])
   heldMat.emissiveColor.set(c[0] * 0.45, c[1] * 0.45, c[2] * 0.45)
 }
-hands = createHands({
-  scene,
-  camera: noa.rendering.camera,
-  noa,
+// Holo Hand part 1: a flat amber hologram of the held item replaces the first-person hand. Same show / hide rules as before.
+holoBeam = createHoloBeam({ origin: () => (holo ? holo.origin() : null) })
+holo = createHolo({
   held: fillHeld,
   wandMode: () => wandMode,
   side: () => mainHand,
   show: () => showHand,
   hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open') || noa.camera.zoomDistance > 0.5,
   wet: () => underWater,
-  lite: () => quality === 'lite' || REDUCE,
-  speed: () => {
-    const b = noa.ents.getPhysicsBody(noa.playerEntity)
-    return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
-  },
 })
 paintBertySuit()
 let beltAt = 0
@@ -12419,7 +13165,7 @@ function paintBossBar() {
 }
 
 noa.on('beforeRender', (dt) => {
-  if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }
+  fb.s(3); if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }; fb.e(3)
   // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
@@ -12439,13 +13185,17 @@ noa.on('beforeRender', (dt) => {
     if (toastEl && toastEl.textContent !== t('notTired')) toastEl.hidden = true
   }
   circuitTick(performance.now())
-  stepBelts(performance.now())
+  fb.s(1); stepBelts(performance.now()); fb.e(1)
   paintOutline()
   paintWandBox()
   paintProtectRing()
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
+  if (holo) holo.update()
+  if (holoBeam) holoBeam.update(holoState())
+  tickBreakFx()
+  tickSettleFx()
   poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
@@ -12613,19 +13363,38 @@ function setGraphics(q) {
 paintGfx()
 
 const topBar = document.querySelector('.top')
-function refit() {
+// Measure the bars and publish the numbers. Cheap: no engine resize, so a panel can call it the moment it opens.
+function measureBars() {
   const bar = document.querySelector('.kb-bar')
   const kb = bar ? Math.ceil(bar.getBoundingClientRect().height) : 0
   if (kb) document.documentElement.style.setProperty('--kb-h', kb + 'px')
   const h = Math.ceil(topBar.getBoundingClientRect().height)
   document.documentElement.style.setProperty('--top-h', h + 'px')
   document.documentElement.style.setProperty('--phone-top', h + 'px')
+  // 2.5.560: one number for "where the top bars end". Goals, Pause, Full screen, the chip lane and panels all hang from it.
+  const hudTop = Math.max(h, Math.ceil(topBar.getBoundingClientRect().bottom), kb)
+  document.documentElement.style.setProperty('--hud-top', hudTop + 'px')
+}
+function refit() {
+  measureBars()
   layoutLane()
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)
 const kbWatch = document.querySelector('.kb-bar')
 if (kbWatch) new ResizeObserver(refit).observe(kbWatch)
+else if (window.MutationObserver) {
+  // 2.5.560: the shared bar mounts after this runs on slow phones. Watch for it, then track its height too.
+  const kbFind = new MutationObserver(() => {
+    const late = document.querySelector('.kb-bar')
+    if (!late) return
+    kbFind.disconnect()
+    new ResizeObserver(refit).observe(late)
+    refit()
+  })
+  kbFind.observe(document.body, { childList: true })
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit)
 addEventListener('resize', refit)
 addEventListener('orientationchange', () => { refit(); setTimeout(refit, 300) })
 if (window.visualViewport) visualViewport.addEventListener('resize', refit)
@@ -12636,7 +13405,9 @@ if (window.MutationObserver) {
   const playWatch = document.getElementById('play-chip')
   if (playWatch) new MutationObserver(() => layoutLane()).observe(playWatch, { attributes: true, attributeFilter: ['hidden'] })
   const sheetWatch = document.getElementById('sheet')
-  if (sheetWatch) new MutationObserver(() => layoutLane()).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
+  // 2.5.560 round 1: opening, closing or switching a panel shows or hides the header. Re-measure in the same task, before the next
+  // paint, so --hud-top is never a frame or two behind (that left Menu on top of the header's second row, and Changelog the same way back).
+  if (sheetWatch) new MutationObserver(() => { measureBars(); layoutLane() }).observe(sheetWatch, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
 }
 laneAdd(document.getElementById('save-chip'), 5)
 laneAdd(document.getElementById('inspect-chip'), 3)
@@ -12822,7 +13593,7 @@ if (!__BLOX_STUDENT__) {
     version: VERSION, setQuality, setGraphics, refit, get quality() { return quality }, get graphics() { return gfxLook.name }, get lang() { return LANG },
     rules: Rules,
     effects: Effects,
-    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, showDig: () => paintDigChip(null), importFile, exportDoc: snapshot,
+    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, unstick: unstickPlayer, playerIn, basics, showDig: () => paintDigChip(null), importFile, exportDoc: snapshot,
     applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
     history: (x, y, z) => changeLog.history(x, y, z),
     logPrune: (nowMs) => changeLog.prune(nowMs),
@@ -12856,7 +13627,18 @@ if (!__BLOX_STUDENT__) {
     hold: (st, v) => { noa.inputs.state[st] = v },
     get climb() { return autoClimb },
     hand() {
+      if (holo) return { show: showHand, side: mainHand, ...holo.info() } // Holo Hand part 1
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
+    },
+    holo2() { // Holo Hand part 2 test hook
+      const beam = holoBeam ? holoBeam.info() : null
+      let brightest = 0
+      try {
+        const c = document.getElementById('holo-beam')
+        const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
+        for (let i = 0; i < d.length; i += 4) if (d[i + 3]) brightest = Math.max(brightest, d[i], d[i + 1], d[i + 2])
+      } catch (e) {}
+      return { beam: beam ? { ...beam, brightest } : null, ghostDash: !!(ghostDash && ghostDash.isEnabled()), settle: !!(settleFx && settleFx.isEnabled()), breakFx: !!(breakFx && breakFx.isEnabled()), state: holoState() }
     },
     handSwing(kind) { pokeHand(kind) },
     lookHand(patch) {
@@ -13042,8 +13824,8 @@ bot = initBot({
   close: () => panels && panels.close(),
   applyEdit: (ops, meta) => edits.applyEdit(ops, meta || { source: 'bot', by: 'bot', cause: 'program' }),
   peekEdit: () => edits.peek(),
-  undoEdit: () => edits.undo(),
-  undoRun: (runId) => edits.undoRun(runId),
+  undoEdit: () => { const g = edits.undo(); unstickSafe(); return g },
+  undoRun: (runId) => { const r = edits.undoRun(runId); unstickSafe(); return r },
   noteEdit: () => { const g = edits.peek(); if (g && g.source === 'bot') changeLog.note(g, 'bot') },
   kept: (x, y, z) => keptCell(x, y, z) || protectedCell(x, y, z, protect),
   heldBlock: () => heldBlockId() || 0,
@@ -13308,7 +14090,9 @@ window.__bertopiaRotateCheck = function () {
       } else console.info('[bt-foundry] skipped (safe)')
     }
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
+  try { ensureSupplyCaches() } catch (e) { console.warn('[supply] skip', e && e.message) }
   armClock()
+  armDebug()
   runBtTest()
   paintDayClock()
   armBrief()
@@ -13531,6 +14315,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     close() { if (panels) panels.close() },
     arm() { armResume = 0; playLockWanted = false; lockSwallowUntil = 0 },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
+    dig(x, y, z) { return breakAt(x, y, z, true) }, // the same break the hold-to-break loop calls (water-check)
+    waterBusy() { return waterFlow.busy() },
     chop(x, y, z) {
       const id = getVoxel(x, y, z)
       const ok = session.onBreak(x, y, z, id)
@@ -13665,7 +14451,11 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     crops: () => farm.dump(),
     forage: () => forage.dump(),
     bushes: () => starterBushes(),
-    loot: (x, y, z) => wildBushLoot(x, y, z),
+    loot: (x, y, z) => {
+      const drops = rollWildBush(x, y, z)
+      const berry = drops.find((d) => d.item === 'berry')
+      return { berries: berry ? berry.n : 0, sprout: drops.some((d) => d.item === 'bushSprout') }
+    },
     pickN: (x, y, z) => wildPickCount(x, y, z),
     seekForage(ms) {
       const now = Date.now()
@@ -13907,8 +14697,8 @@ function paintLangRow(g) {
     opt.type = 'button'
     opt.className = 'pill lang-opt'
     opt.setAttribute('role', 'option')
-    opt.lang = code === 'ar' ? 'ar' : code
-    opt.dir = code === 'ar' ? 'rtl' : 'ltr'
+    opt.lang = code
+    opt.dir = 'ltr'
     opt.dataset.lang = code
     const on = code === cur
     opt.setAttribute('aria-selected', on ? 'true' : 'false')
@@ -13920,6 +14710,8 @@ function paintLangRow(g) {
     mark.textContent = on ? '✓' : ''
     const word = document.createElement('span')
     word.className = 'lang-name'
+    word.lang = code
+    word.dir = code === 'ar' || code === 'fa-AF' ? 'rtl' : 'ltr'
     word.textContent = name
     opt.append(mark, word)
     opt.addEventListener('pointerdown', (e) => {
@@ -14279,4 +15071,4 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
 
 repaintBlocks()
 void T0
-mountFpsOverlay()
+mountFpsOverlay(noa)

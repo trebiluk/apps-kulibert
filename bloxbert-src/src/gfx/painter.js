@@ -1,7 +1,7 @@
 // Block Painter, part 2. A kid paints one 16x16 block from the fixed 32 colors,
 // taps Use it, and the block changes in the world. Saved on this device only.
 // Format: TEXTURE-PACK-FORMAT (paletteId bertopia-32-v1). Look: BLOCK-PAINTER-LOOK.
-import { PALETTE, applyStudent, setPack, currentPackId } from './packs.js'
+import { PALETTE, applyStudent, setPack, currentPackId, packName } from './packs.js'
 
 export const STUDENT_KEY = 'bertopia-student-pack'
 const SIZE = 16
@@ -371,6 +371,35 @@ async function useIt() {
   }
 }
 
+// Put ONE block back to the active pack's own look (Classic, Mystical, …). Other painted blocks stay painted:
+// setPack re-swaps the pack strip and then reapplies what is still saved (restoreStudent).
+function restoreBlock() {
+  P.err.textContent = ''
+  const key = blockKey
+  const saved = readSaved()
+  let kept = true
+  if (saved && saved.textures && saved.textures[key]) {
+    delete saved.textures[key]
+    try {
+      if (Object.keys(saved.textures).length) localStorage.setItem(STUDENT_KEY, JSON.stringify(saved))
+      else localStorage.removeItem(STUDENT_KEY)
+    } catch (e) { kept = false }
+  }
+  delete drafts[key]
+  pixels = BLANK.slice()
+  undoStack = []
+  redoStack = []
+  history()
+  paintedChanged()
+  const word = (BLOCKS.find((b) => b.key === key) || {}).word
+  const done = T('ptResetDone').replace('{block}', word ? T(word) : key).replace('{pack}', packName())
+  setPack(currentPackId()).then(() => {
+    P.msg.textContent = done
+    if (!kept) P.err.textContent = T('ptNoSave')
+    TOAST(done)
+  }).catch(() => showErr())
+}
+
 function backToClassic() {
   P.err.textContent = ''
   try { localStorage.removeItem(STUDENT_KEY) } catch (e) {}
@@ -381,8 +410,10 @@ function backToClassic() {
   history()
   paintedChanged()
   setPack(currentPackId()).then(() => {
-    P.msg.textContent = T('ptClassicBack')
-    TOAST(T('ptClassicBack'))
+    // the active pack comes back, not always Classic
+    const back = T('ptAllBack').replace('{pack}', packName())
+    P.msg.textContent = back
+    TOAST(back)
   }).catch(() => showErr())
 }
 
@@ -409,6 +440,7 @@ function build() {
     previewLabel: q('#pt-prev-label'),
     use: q('#pt-use'),
     back: q('#pt-back'),
+    reset: q('#pt-reset'),
     msg: q('#pt-msg'),
     err: q('#pt-err'),
     live: q('#pt-live'),
@@ -467,6 +499,7 @@ function build() {
   refs.rotate.innerHTML = svg('rotate') + '<span class="pt-word"></span>'
   refs.use.innerHTML = svg('use') + '<span class="pt-word"></span>'
   refs.back.innerHTML = svg('back') + '<span class="pt-word"></span>'
+  if (refs.reset) refs.reset.innerHTML = svg('undo') + '<span class="pt-word"></span>'
   q('.pt-pickico').innerHTML = svg('block')
   return refs
 }
@@ -479,7 +512,8 @@ function words() {
   P.close.querySelector('.pt-word').textContent = T('ptClose')
   P.rotate.querySelector('.pt-word').textContent = T('ptRotate')
   P.use.querySelector('.pt-word').textContent = T('ptUse')
-  P.back.querySelector('.pt-word').textContent = T('ptBack')
+  P.back.querySelector('.pt-word').textContent = T('ptResetAll')
+  if (P.reset) P.reset.querySelector('.pt-word').textContent = T('ptReset')
   P.tools.setAttribute('aria-label', T('ptTools'))
   for (const b of P.tools.querySelectorAll('.pt-tool')) b.querySelector('.pt-word').textContent = T(b.dataset.word)
   P.palette.setAttribute('aria-label', T('ptColors'))
@@ -542,6 +576,7 @@ function wire() {
   P.close.addEventListener('click', closePainter)
   P.use.addEventListener('click', useIt)
   P.back.addEventListener('click', backToClassic)
+  if (P.reset) P.reset.addEventListener('click', restoreBlock)
   P.select.addEventListener('change', () => setBlock(P.select.value))
   P.rotate.addEventListener('click', () => {
     rot = (rot + 1) % 4

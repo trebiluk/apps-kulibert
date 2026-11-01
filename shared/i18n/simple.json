@@ -288,5 +288,9 @@
   "labelHoldItSpan": "HoldIt Span",
   "helpHoldItSpan": "Span = challenge. HoldIt = design.",
   "helpGateConflict": "Every push runs the Hub check.",
-  "helpHideDevRev": "Staff see the version code."
+  "helpHideDevRev": "Staff see the version code.",
+  "goals": "Goals",
+  "keysChip": "? KEYS",
+  "keysAgain": "Press ? to see the keys again.",
+  "creditDyslexia": "Dyslexia font: OpenDyslexic (OFL 1.1)."
 }

@@ -1,4 +1,12 @@
 export const CHANGELOG = [
+  { v: '2.5.598', date: '2026-11-01', lines: {
+    en: ["2.5.598 — A blocky sky with far mountains, treelines and clouds, and a new Max quality that sees farthest. Plus lots of waiting fixes: phones fit better and the bag fits the screen, a Creative world reopens in Creative, Saved stops eating taps, belts can feed ovens, your hand is an amber hologram, My Look outfits, a Supply Cache, and stuck players get free."],
+    simple: ["2.5.598 — A blocky sky with mountains and clouds. New Max quality. Many fixes at once. Phones fit better. Belts feed ovens. Your hand is a hologram. New outfits. Stuck players get free."],
+  } },
+  { v: '2.5.597', date: '2026-11-01', lines: {
+    en: ["2.5.597 — Water runs into holes you dig beside it. The block painter can put one block back to your pack's look. Panels on phones are easier to close."],
+    simple: ["2.5.597 — Water fills holes next to it. Put one painted block back. Phone panels close easier."],
+  } },
   { v: '2.5.596', date: '2026-11-01', lines: {
     en: ["2.5.596 — Find Maker Pages: the Makers left 20 pages around the Verge. Six are out there now; found pages go in your Notebook. Lamps and rugs pick up faster, and a rug always comes up whole."],
     simple: ["2.5.596 — Find Maker Pages. They go in your Notebook. Lamps and rugs pick up faster."],
@@ -6,6 +14,17 @@ export const CHANGELOG = [
   { v: '2.5.595', date: '2026-10-31', lines: {
     en: ["2.5.595 — Closing the tab right after an edit still sends that edit to the school copy, once."],
     simple: ["2.5.595 — Close the tab after an edit. The edit still saves to school."],
+  } },
+  { v: '2.5.594', date: '2026-10-31', lines: {
+    en: ["2.5.594 — Sign in shows real words, not code names. Typing your PIN never moves the hotbar."],
+    simple: ["2.5.594 — Sign in shows real words. Typing your PIN does not move the hotbar."],
+    uk: ["2.5.594 — Вхід показує справжні слова, а не коди. Введення PIN не рухає панель."],
+    ru: ["2.5.594 — Вход показывает настоящие слова, а не коды. Ввод PIN не двигает панель."],
+    es: ["2.5.594 — Iniciar sesión muestra palabras reales, no códigos. Escribir el PIN no mueve la barra."],
+    ar: ["2.5.594 — تسجيل الدخول يعرض كلمات حقيقية لا رموزًا. كتابة الرقم السري لا تحرّك الشريط."],
+    'fa-AF': ["2.5.594 — ورود کلمات واقعی را نشان می‌دهد، نه کد. نوشتن PIN نوار را حرکت نمی‌دهد."],
+    rw: ["2.5.594 — Kwinjira kwerekana amagambo nyayo, atari kode. Kwandika PIN ntibihindura akabari."],
+    ti: ["2.5.594 — ምእታው ናይ ሓቂ ቃላት የርኢ፣ ኮድ ኣይኮነን። PIN ምጽሓፍ ነቲ ባር ኣየንቀሳቕስን።"],
   } },
   { v: '2.5.589', date: '2026-10-31', lines: {
     en: ["2.5.589 — Every save reaches the server or shows Not saved. Quick edits are no longer lost, and no fake Two copies found card."],
@@ -15,10 +34,26 @@ export const CHANGELOG = [
     en: ["2.5.592 — Bertopia has one address now. Old /blocks/ links open /bertopia/, and the old offline copy clears itself."],
     simple: ["2.5.592 — Old Bertopia links open the new one. The old offline copy clears itself."],
   } },
+  { v: '2.5.590', date: '2026-10-31', lines: {
+    en: ["2.5.590 — Mystical is the look for a new player. Your saved look stays as it was."],
+    simple: ["2.5.590 — New players get the Mystical look. Your saved look stays."],
+  } },
   { v: '2.5.586', date: '2026-10-31', lines: {
     en: ["2.5.586 — On phones, the crafting panel opens below the top bar, so its title and Close are easy to reach."],
     simple: ["2.5.586 — On phones, Crafting opens below the top bar. Close is easy to tap."],
   } },
+  { v: '2.5.588', date: '2026-10-31', lines: {
+    en: ["2.5.588 — On a small phone the hotbar stays one row and never covers the quest card or the move stick."],
+    simple: ["2.5.588 — On a small phone the hotbar stays one row. It does not cover the quest or the stick."],
+    uk: ["2.5.588 — На маленькому телефоні панель лишається в один ряд і ніколи не закриває картку квесту чи джойстик."],
+    ru: ["2.5.588 — На маленьком телефоне панель остаётся в один ряд и никогда не закрывает карточку квеста или джойстик."],
+    es: ["2.5.588 — En un teléfono pequeño la barra se queda en una fila y nunca cubre la tarjeta de la misión ni el stick."],
+    ar: ["2.5.588 — على هاتف صغير يبقى الشريط في صف واحد ولا يغطي بطاقة المهمة أو عصا الحركة."],
+    'fa-AF': ["2.5.588 — در تلفن کوچک نوار در یک ردیف می‌ماند و کارت مأموریت یا دسته حرکت را نمی‌پوشاند."],
+    rw: ["2.5.588 — Ku telefoni ntoya umurongo usigara umwe kandi ntukingire ikarita y'umurimo cyangwa inkoni."],
+    ti: ["2.5.588 — ኣብ ንእሽቶ ተሌፎን መስመር ኣብ ሓደ ረድእ ይጸንሕ እሞ ካርድ ስራሕ ወይ መንቀሳቐሲ ኣይሽፍን።"],
+  } },
+
   { v: '2.5.585', date: '2026-10-31', lines: {
     en: ["2.5.585 — A new world starts you on top of the ground, never inside it."],
     simple: ["2.5.585 — New worlds start you on the ground."],
@@ -39,6 +74,18 @@ export const CHANGELOG = [
     en: ["2.5.584 \u2014 Bertopia no longer keeps an old copy of itself on your device, so you always get the newest version."],
     simple: ["2.5.584 \u2014 No more old copy on your device. You always get the newest version."],
   } },
+  // 2.5.572 belts feed ovens (brief 0066). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.572', date: '2026-10-31', lines: {
+    en: ['2.5.572 — Belts can feed an oven now: logs and coal become fuel, sand becomes glass. The belt hint asks for the oven-to-box loop, which you can finish.', '2.5.572 — The oven panel shows the belt slot: a sand icon and a count before it bakes, or "belt: empty".'],
+    simple: ['2.5.572 — Belts can feed an oven. Logs and coal are fuel. Sand makes glass. The belt hint is oven to box.', '2.5.572 — The oven shows the belt slot. Sand has an icon and a count. Empty says belt: empty.'],
+    uk: ['2.5.572 — Стрічки тепер можуть годувати піч: колоди й вугілля стають паливом, пісок — склом. Підказка стрічки просить коло «піч до скрині», яке можна завершити.', '2.5.572 — Панель печі показує слот стрічки: іконка й кількість піску до випікання, або «стрічка: порожньо».'],
+    ru: ['2.5.572 — Ленты теперь могут кормить печь: брёвна и уголь становятся топливом, песок — стеклом. Подсказка ленты просит круг «печь до сундука», который можно закончить.', '2.5.572 — Панель печи показывает слот ленты: значок и число песка до выпечки, или «лента: пусто».'],
+    es: ['2.5.572 — Las cintas ya pueden alimentar un horno: troncos y carbón son combustible, la arena se vuelve vidrio. La pista de la cinta pide el circuito horno-caja, que sí se puede terminar.', '2.5.572 — El panel del horno muestra el hueco de la cinta: icono y cantidad de arena antes de hornear, o «cinta: vacía».'],
+    ar: ['2.5.572 — السيور تغذّي الفرن الآن: الجذوع والفحم وقود، والرمل يصير زجاجاً. تلميح السير يطلب حلقة الفرن إلى الصندوق، ويمكن إنهاؤها.', '2.5.572 — لوحة الفرن تعرض خانة السير: أيقونة وعدد الرمل قبل الخبز، أو «السير: فارغ».'],
+    'fa-AF': ['2.5.572 — نوارها حالا می‌توانند داش را پر کنند: چوب و ذغال سوخت می‌شوند و ریگ شیشه می‌شود. راهنمای نوار حلقه داش به صندوق را می‌خواهد که می‌توان تمامش کرد.', '2.5.572 — تخته داش خانه نوار را نشان می‌دهد: نشان و شمار ریگ پیش از پختن، یا «نوار: خالی».'],
+    rw: ['2.5.572 — Imigozi ubu ishobora kugaburira ifuru: ibiti n\'amakara biba lisansi, umucanga uba ikirahure. Inama y\'umugozi isaba uruziga ifuru-agasanduku, rushobora kurangira.', '2.5.572 — Ifuru yerekana akazu k\'umugozi: ishusho n\'umubare w\'umucanga mbere yo guteka, cyangwa «umugozi: ubusa».'],
+    ti: ['2.5.572 — መተሓላለፊታት ሕጂ ንእቶን ክምግቡ ይኽእሉ፡ ዕንጸይትን ከሰልን ነዳዲ ይኾኑ፡ ሑጻ መስትያት ይኸውን። ምኽሪ መተሓላለፊ ናይ እቶን-ሳንዱቕ ዑደት ይሓትት፡ እዚ ድማ ክውዳእ ይከኣል።', '2.5.572 — እቶን ናይ መተሓላለፊ ቦታ የርኢ፡ ምልክትን ቁጽርን ሑጻ ቅድሚ ምጥባስ፡ ወይ «መተሓላለፊ: ባዶ».'],
+  } },
   // 2.5.571 honest crafting + belt alias (brief 0065). rw, ti, and fa-AF are machine drafts.
   { v: '2.5.571', date: '2026-10-31', lines: {
     en: ['2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.', 'Woodshop floor lamp and wall lamp show Needs metal tier until the smelter tier opens. The rug does not.'],
@@ -50,7 +97,50 @@ export const CHANGELOG = [
     'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.', 'چراغ زمینی و چراغ دیواری در کارگاه چوب «پله فلز لازم است» را نشان می‌دهند تا پله کوره باز شود. قالی نه. (draft translation)'],
     rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.', 'Itara ryo hasi n\'itara ryo ku rukuta mu muciro w\'imbaho bigaragaza Ikeneye urwego rw\'icyuma kugeza urwego rw\'isaturire rufunguwe. Agatapi ntabwo. (draft translation)'],
     ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።', 'ናይ መሬት መብራህቲን ናይ ግድሚ መብራህቲን ኣብ ናይ ዕንጨይት ዕዮ ደረጃ ብረት የድሊ የርእዩ፡ መፍለሒ ደረጃ ክሳብ ዝኽፈት። መንጸፍ ኣይኮነን። (draft translation)'],
+    } },
+  // 2.5.570 save chip (brief 0056). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.570', date: '2026-10-31', lines: {
+    en: ['2.5.570 — Saved shows once after each real save, and a tap under it still places your block. If a save fails, you see Not saved.'],
+    simple: ['2.5.570 — Saved shows once. A tap under it still works. If saving fails, you see Not saved.'],
+    uk: ['2.5.570 — «Збережено» з\'являється один раз після справжнього збереження, а дотик під ним усе одно ставить блок. Якщо зберегти не вдалося, побачиш «Не збережено».'],
+    ru: ['2.5.570 — «Сохранено» показывается один раз после настоящего сохранения, а нажатие под ним всё равно ставит блок. Если сохранить не удалось, увидишь «Не сохранено».'],
+    es: ['2.5.570 — Guardado aparece una vez tras cada guardado real, y un toque debajo sigue poniendo tu bloque. Si falla el guardado, ves No guardado.'],
+    ar: ['2.5.570 — تظهر «تم الحفظ» مرة واحدة بعد كل حفظ حقيقي، والنقر تحتها ما زال يضع الكتلة. إذا فشل الحفظ ترى «لم يُحفظ».'],
+    'fa-AF': ['2.5.570 — «ذخیره شد» بعد از هر ذخیره واقعی یک بار نشان داده می‌شود و ضربه زیر آن هنوز بلاک را می‌گذارد. اگر ذخیره ناکام شد، «ذخیره نشد» را می‌بینی.'],
+    rw: ['2.5.570 — Byabitswe bigaragara rimwe nyuma ya buri kubika nyakuri, kandi gukanda munsi yabyo biracyashyiraho ibuye ryawe. Kubika binaniranye, ubona Ntibyabitswe.'],
+    ti: ['2.5.570 — «ተዓቂቡ» ድሕሪ ነፍሲ ወከፍ ናይ ሓቂ ምዕቃብ ሓንሳብ ይርአ፡ ኣብ ትሕቲኡ ምጥዋቕ ድማ ገና ብሎክካ የቐምጥ። ምዕቃብ እንተ ፈሺሉ «ኣይተዓቀበን» ትርኢ።'],
   } },
+  // 2.5.562 i18n cleanup. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.562', date: '2026-10-31', lines: {
+    en: ['2.5.562 — Menus, the Look list and the language list now show in your language. Arabic shows clearly in the language list.'],
+    simple: ['2.5.562 — More words in your language. Arabic is easy to see in the language list.'],
+    uk: ['2.5.562 — Меню, список «Вигляд» і список мов тепер твоєю мовою. Арабська добре видно у списку мов.'],
+    ru: ['2.5.562 — Меню, список «Вид» и список языков теперь на твоём языке. Арабский хорошо виден в списке языков.'],
+    es: ['2.5.562 — Los menús, la lista de Aspecto y la de idiomas ya están en tu idioma. El árabe se ve bien en la lista de idiomas.'],
+    ar: ['2.5.562 — القوائم وقائمة المظهر وقائمة اللغات أصبحت بلغتك. العربية تظهر بوضوح في قائمة اللغات.'],
+    'fa-AF': ['2.5.562 — منوها، فهرست نما و فهرست زبان‌ها حالا به زبان تو هستند. عربی در فهرست زبان‌ها واضح دیده می‌شود.'],
+    rw: ['2.5.562 — Menu, urutonde rw\'Isura n\'urutonde rw\'indimi ubu biri mu rurimi rwawe. Icyarabu kigaragara neza ku rutonde rw\'indimi.'],
+    ti: ['2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።'],
+  } },
+  // 2.5.560 phone HUD, short-window panels, and What's new that follows the running version. uk, ru, es, ar are drafts to review. rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.560', date: '2026-10-31', lines: {
+    en: ['2.5.560 — Phones fit better. The top buttons, Goals and the hotbar no longer cover each other, and Settings always has Close.'],
+    simple: ['2.5.560 — Better on phones. Buttons do not cover each other. Settings always has Close.'],
+    uk: ['2.5.560 — Краще на телефонах. Верхні кнопки, Цілі й панель більше не перекривають одне одного, а в Налаштуваннях завжди є Закрити.'],
+    ru: ['2.5.560 — Лучше на телефонах. Верхние кнопки, Цели и панель больше не закрывают друг друга, а в Настройках всегда есть Закрыть.'],
+    es: ['2.5.560 — Mejor en teléfonos. Los botones de arriba, Metas y la barra ya no se tapan, y Ajustes siempre tiene Cerrar.'],
+    ar: ['2.5.560 — أفضل على الهواتف. أزرار الأعلى والأهداف والشريط لم تعد تغطي بعضها، وفي الإعدادات يوجد دائمًا زر إغلاق.'],
+    'fa-AF': ['2.5.560 — بهتر روی تلفون. دکمه‌های بالا، هدف‌ها و نوار دیگر روی هم نمی‌افتند و در تنظیمات همیشه بستن هست.'],
+    rw: ['2.5.560 — Biroroshye kuri telefoni. Utubuto two hejuru, Intego n\'umukandara ntibigipfukanwa, kandi Igenamiterere ihora ifite Funga.'],
+    ti: ['2.5.560 — ኣብ ቴለፎን ዝሓሸ። ላዕለዋይ ዝርዝራት፡ ዕላማታትን መስመርን ኣይሕዙን፡ ኣብ ቅጥዕታት ድማ ኩሉ ጊዜ ዕጸው ኣሎ።'],
+  }},
+
+  // 2.5.553 texture pack part 2. en and simple only for now; other languages follow.
+  { v: '2.5.553', date: '2026-10-31', lines: {
+    en: ['2.5.553 — Rocks, ores, oak, pine and beds have new hand-drawn looks. Stone has no more grid lines.'],
+    simple: ['2.5.553 — New looks for rocks, ores, trees and beds. Stone has no grid.'],
+  }},
+
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {
     en: ['2.5.550 — Lighter textures run smoother. Greener leaves, grey stone, softer glow, and the Bag and menu sit in the middle. Fog stays farther away, and birch trees are redrawn.'],

@@ -764,6 +764,7 @@ const MENU_GLYPH = {
   cogGold: ['.t.aa.t.', 'aaaaaaaa', 'a.oooo.a', 'aa.tt.aa', 'aa.tt.aa', 'a.oooo.a', 'aaaaaaaa', '.t.aa.t.'],
   gear: ['.t.tt.t.', 'tttttttt', 't.oooo.t', 'tto..ott', 'tto..ott', 't.oooo.t', 'tttttttt', '.t.tt.t.'],
   eye: ['........', '.tttttt.', 'twwwwwwt', 'twooowwt', 'twottowt', 'twwwwwwt', '.tttttt.', '........'],
+  mylook: ['.dddddd.', 'dwwwwwwd', 'dkkkkkkd', 'dkokkokd', 'dkkkkkkd', 'dwwwwwwd', '.dwddwd.', '..d..d..'],
   full: ['tt....tt', 't......t', '........', '........', '........', '........', 't......t', 'tt....tt'],
   scroll: ['oooooooo', 'otttttto', 'o......o', 'owwwwwwo', 'o......o', 'owwwwwwo', 'otttttto', 'oooooooo'],
   apple: ['...t.o..', '..tt....', '.rrrrrr.', 'rrrrrrrr', 'rrrrrrrr', 'rrwwrrrr', '.rrrrrr.', '........'],

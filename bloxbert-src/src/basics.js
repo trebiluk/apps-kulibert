@@ -24,8 +24,12 @@ export function createBasics(api) {
   const badges = new Set()
   let card = ''
   let cardN = 0
+  // Debug sky pin (2.5.563, ?debug=1&clock=). Time of day for the sky and clock face only. Session-only: never saved, never in dump().
+  let pin = null
   function now() { return ms + (api.now() - anchor) }
+  function skyT() { return pin !== null ? pin : now() }
   function skyRule() {
+    if (pin !== null) return 'cycle'
     let v = 'cycle'
     try { v = Rules.value('survival.daynight') } catch (e) {}
     return v === 'day' || v === 'night' ? v : 'cycle'
@@ -34,12 +38,13 @@ export function createBasics(api) {
     const mode = skyRule()
     if (mode === 'night') return 'night'
     if (mode === 'day') return 'day'
-    return phaseName(now(), always)
+    return phaseName(skyT(), pin !== null ? false : always)
   }
   function lumNow() {
     const mode = skyRule()
     if (mode === 'night') return skyK(DAY + DUSK + 1000, false, false)
     if (mode === 'day') return skyK(now(), true, false)
+    if (pin !== null) return skyK(pin, false, false)
     return skyK(now(), always, bright)
   }
   function teacher() { return !!(teacherStub || (api.teacher && api.teacher())) }
@@ -90,6 +95,7 @@ export function createBasics(api) {
     if (kind === 'metal' && how === 'tap') { api.toast(api.t('needsButton')); return true }
     const opening = cells.some((c) => !isOpenDoor(c[3]))
     setDoorState(cells, opening)
+    if (!opening && api.settled) api.settled() // 2.5.561: shutting a door you stand in must not trap you
     const auto = cells.some((c) => autos.has(key(c[0], c[1], c[2])))
     if (opening && (kind === 'slide' || auto)) arm(cells, 3000, true)
     return true
@@ -107,6 +113,7 @@ export function createBasics(api) {
         if (holdMs) arm(cells, holdMs, true)
       } else setDoorState(cells, false)
     }
+    if (api.settled) api.settled() // 2.5.561: a lever or button that shuts a door on someone moves them out
   }
   function placeColumn(x, y, z, id) {
     const base = isDoor(id) ? (doorTopId(id) === id ? id - 20 : id) : id
@@ -204,14 +211,26 @@ export function createBasics(api) {
     }
     return true
   }
-  function growTree(x, y, z) {
-    for (let dy = 0; dy <= 3; dy++) api.set(x, y + dy, z, 11)
+  // 2.5.561: the cells a grown tree fills, trunk first. growTree and the player check use the same list.
+  function treeCells(x, y, z) {
+    const cells = []
+    for (let dy = 0; dy <= 3; dy++) cells.push([x, y + dy, z, 11])
     const top = y + 3
     for (let dy = -1; dy <= 1; dy++) for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) {
       if (Math.abs(dx) + Math.abs(dz) + Math.abs(dy) > 3) continue
       if (dx === 0 && dz === 0 && dy <= 0) continue
-      api.set(x + dx, top + dy, z + dz, 12)
+      cells.push([x + dx, top + dy, z + dz, 12])
     }
+    return cells
+  }
+  // 2.5.561: true when the player's body overlaps any of these cells. api.playerIn is optional (tools and tests run without it).
+  function playerInAny(cells) {
+    if (!api.playerIn) return false
+    for (const c of cells) if (api.playerIn(c[0], c[1], c[2])) return true
+    return false
+  }
+  function growTree(x, y, z) {
+    for (const c of treeCells(x, y, z)) api.set(c[0], c[1], c[2], c[3])
   }
   function growSaplings() {
     const t = now()
@@ -220,8 +239,11 @@ export function createBasics(api) {
       if (api.get(x, y, z) !== 185) { saplings.delete(k); continue }
       if (t < (st.at || 0) + 8 * 60 * 1000) continue
       if (!spaceClear(x, y, z)) continue
+      // 2.5.561: never grow a trunk or leaves into the player. The sapling stays and tries again on the next tick.
+      if (playerInAny(treeCells(x, y, z))) continue
       growTree(x, y, z)
       saplings.delete(k)
+      if (api.settled) api.settled()
     }
   }
   function flush() {
@@ -230,6 +252,8 @@ export function createBasics(api) {
     for (let i = timers.length - 1; i >= 0; i--) {
       const job = timers[i]
       if (t < job.at) continue
+      // 2.5.561: a door never auto-closes on the player standing in its doorway. It stays open and tries again shortly.
+      if (job.close && playerInAny(job.cells)) { job.at = t + 400; continue }
       timers.splice(i, 1)
       if (job.button) api.set(job.cells[0][0], job.cells[0][1], job.cells[0][2], BUTTON.off)
       else if (job.close) {
@@ -237,6 +261,7 @@ export function createBasics(api) {
           const id = api.get(x, y, z)
           if (isDoor(id)) api.set(x, y, z, closedId(id))
         }
+        if (api.settled) api.settled()
       }
     }
     considerBadges()
@@ -307,6 +332,10 @@ export function createBasics(api) {
     get always() { return always },
     get bright() { return bright },
     lum() { const v = lumNow(); return Number.isFinite(v) ? v : 1 },
+    // Cycle position in ms, or null when a rule or Always Day locks the sky. The horizon blends colors from this.
+    clockMs() { if (pin !== null) return pin; if (always || skyRule() !== 'cycle') return null; const c = cycleMs(); return ((now() % c) + c) % c },
+    pinSky(n) { pin = Number.isFinite(n) ? ((n % cycleMs()) + cycleMs()) % cycleMs() : null },
+    get pinned() { return pin !== null },
     phase() { const v = phaseNow(); return v === 'night' || v === 'day' || v === 'dusk' || v === 'dawn' ? v : 'day' },
     clock(n) { if (!Number.isFinite(n)) return; ms += n; applyLights(n); lastT = now(); flush() },
     seek(n) { if (!Number.isFinite(n)) return; placeInDay(n) },
@@ -339,14 +368,14 @@ export function createBasics(api) {
     },
     face() {
       const cycle = cycleMs()
-      const t = now()
+      const t = skyT()
       const tod = ((t % cycle) + cycle) % cycle
       const mins = Math.floor(tod / cycle * 24 * 60)
       const shifted = (mins + 6 * 60) % (24 * 60)
       const hh = Math.floor(shifted / 60)
       const mm = shifted % 60
       const mode = skyRule()
-      const locked = mode === 'day' || always
+      const locked = pin === null && (mode === 'day' || always)
       const phase = phaseNow()
       const nightAt = DAY + DUSK
       const untilNight = tod < nightAt ? nightAt - tod : cycle - tod + nightAt

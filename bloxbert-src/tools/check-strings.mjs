@@ -56,7 +56,7 @@ export function collectProblems() {
   const used = new Set()
   for (const f of readdirSync('src').filter((f) => f.endsWith('.js'))) {
     const text = readFileSync('src/' + f, 'utf8')
-    for (const m of text.matchAll(/t\('([A-Za-z0-9]+)'\)/g)) used.add(m[1])
+    for (const m of text.matchAll(/(?<![A-Za-z0-9_$])t\('([A-Za-z0-9]+)'\)/g)) used.add(m[1])
   }
   const skip = new Set(['p', 'a', 'q', 'div', 'span', 'button', 'canvas', 'on', 'off', 'webgl2', 'scale', 'lang', 'img', '2d', 'style'])
   for (const key of used) {
