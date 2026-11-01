@@ -1,8 +1,11 @@
 // Fresh Survival start: bag and wallet match a new profile, and the archived world comes back.
 import puppeteer from 'puppeteer-core'
 import { existsSync } from 'fs'
+import { serveRepo } from './lib/serve.mjs'
 
-const URL0 = process.argv[2] || 'http://127.0.0.1:8873/?smoke=1'
+// No URL given: serve the built test bundle ourselves (no server needs to be running first).
+const own = process.argv[2] ? null : await serveRepo(8873)
+const URL0 = process.argv[2] || own.base + '/blocks-test/?smoke=1'
 const chrome = process.env.CHROME_PATH || ['/usr/bin/google-chrome', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome'].find((p) => existsSync(p))
 if (!chrome) throw new Error('no chrome')
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -111,6 +114,7 @@ eq(report.oven && report.oven.ok && report.ovenN === 1 && report.stoneLeft === 0
 eq(!errs.length, 'console errors ' + errs.slice(0, 6).join(' | '))
 
 await browser.close()
+if (own) await own.close()
 if (fail.length) {
   console.error(fail.join('\n'))
   process.exit(1)

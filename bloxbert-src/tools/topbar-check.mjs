@@ -21,7 +21,7 @@ const port = 8917
 const shots = '/workspace/artifacts/topbar-shots'
 mkdirSync(shots, { recursive: true })
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.txt': 'text/plain' }
-const chrome = [
+const chrome = process.env.CHROME_PATH || [
   '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell',
   '/opt/pw-browsers/chromium-1148/chrome-linux/chrome',
 ].find((p) => existsSync(p))

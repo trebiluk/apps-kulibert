@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer-core'
 import { existsSync } from 'fs'
 import { inflateSync } from 'zlib'
-const chrome = ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell'].find((p) => existsSync(p))
 const url = process.argv[2] || 'http://127.0.0.1:8875/blocks/'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 async function parkMouse(page, x, y) {

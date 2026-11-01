@@ -1,9 +1,19 @@
 // Save an old open world twice and check the town stations do not appear.
 import puppeteer from 'puppeteer-core'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
+import { serveRepo } from './lib/serve.mjs'
 
-const CHROME = process.env.CHROME_PATH || '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell'
-const URL0 = process.argv[2] || 'http://127.0.0.1:8875/p0-preview/index.html?smoke=1'
+const CHROME = process.env.CHROME_PATH || [
+  '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell',
+  '/opt/pw-browsers/chromium-1148/chrome-linux/chrome',
+  '/usr/bin/google-chrome',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+].find((p) => existsSync(p))
+if (!CHROME) throw new Error('no chrome')
+// No URL given: serve the built test bundle ourselves. (The old default, /p0-preview/, no longer exists.)
+const own = process.argv[2] ? null : await serveRepo(8875)
+const URL0 = process.argv[2] || own.base + '/blocks-test/index.html?smoke=1'
 const openGround = JSON.parse(readFileSync(new URL('../tests/fixtures/w-2.5.113.json', import.meta.url), 'utf8'))
 const dup = JSON.parse(readFileSync(new URL('../tests/fixtures/w-2.5.124-dup.json', import.meta.url), 'utf8'))
 const STATIONS = [[6, 5, 8], [8, 5, 9], [10, 5, 6], [11, 5, 8]]
@@ -58,6 +68,7 @@ async function cycle(doc) {
 const openShots = await cycle(openGround)
 const dupShots = await cycle(dup)
 await browser.close()
+if (own) await own.close()
 
 const fail = []
 if (fresh.join(',') !== '22,25,26,23') fail.push('new world stations ' + fresh.join(','))

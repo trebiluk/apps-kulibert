@@ -1,9 +1,10 @@
 // Tap every face of a Bed, Oven, Box, Counter and Woodshop. A tap uses it. Crouch places beside it.
 import puppeteer from 'puppeteer-core'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { serveRepo } from './lib/serve.mjs'
 
 const layout = JSON.parse(readFileSync(new URL('../tests/open-ground.json', import.meta.url), 'utf8'))
-const chrome = ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
 if (!chrome) throw new Error('no chrome')
 const out = '/tmp/furniture-tap'
 mkdirSync(out, { recursive: true })
@@ -19,6 +20,8 @@ const FACES = [
 ]
 const HOLDS = ['coal', 'bread', 'empty', 'handSaw']
 const ONLY = process.env.TAP_ONLY || ''
+// Serves the built test bundle on 8875 itself (or reuses a server already there).
+const own = await serveRepo(8875)
 const report = { version: '2.5.128', steps: [], fps: {}, errors: [] }
 function note(name, ok, detail) {
   report.steps.push({ name, ok: !!ok, detail: detail == null ? '' : String(detail).slice(0, 600) })
@@ -499,6 +502,7 @@ try {
 } finally {
   writeFileSync(out + '/report.json', JSON.stringify(report, null, 2))
   await browser.close()
+await own.close()
 }
 if (failed || report.fail) {
   console.error('furniture-tap-check failed at ' + report.fail)
