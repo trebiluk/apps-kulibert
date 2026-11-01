@@ -551,6 +551,13 @@ export function mountPanels(api) {
       goals: () => show('goals', api.t('goals'), (g) => api.paintGoals(g)),
       a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
+        if (api.worldLine) {
+          const now = document.createElement('p')
+          now.className = 'gnote wide'
+          now.id = 'world-now'
+          now.textContent = api.worldLine()
+          g.append(now)
+        }
         g.append(
           tile('folder', api.t('loadSaved'), () => api.load()),
           tile('up', api.t('exportWorld'), () => api.exportWorld()),

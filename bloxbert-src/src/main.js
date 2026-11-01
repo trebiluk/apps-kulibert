@@ -216,8 +216,9 @@ import { nearestTree, fellCells, takeHit, TREE_NEAR, TREE_LOOK, TREE_HITS } from
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
-import { maybePush, maybePull } from './save/server-sync.js'
+import { maybePush, maybePull, setSyncDb, syncMark } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { pickLoaded, describeWorld, worldLine as worldLineText, worldAttrs } from './save/world-id.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -1055,6 +1056,7 @@ function applyI18n() {
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)) // 2.5.559: sign-in popup inputs
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -1166,6 +1168,9 @@ function langDrifted() {
     const key = i18nKey(el)
     if (el.textContent !== t(key)) return true
   }
+  for (const el of document.querySelectorAll('[data-i18n-placeholder]')) {
+    if (el.getAttribute('placeholder') !== t(el.dataset.i18nPlaceholder)) return true
+  }
   return false
 }
 function defendLang() {
@@ -1185,6 +1190,7 @@ new MutationObserver((records) => {
   }
 }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'], subtree: true, childList: true, characterData: true })
 applyI18n()
+try { mountSyncChip() } catch (e) {} // 2.5.559: also at start, not only after the tab shows again
 pinKeysLine()
 
 let walkPresses = 0
@@ -4368,6 +4374,7 @@ noa.inputs.down.on('alt-fire', () => {
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
+setSyncDb(DB)
 const STORE = 'worlds'
 function staffOn() {
   try { return !!(window.HubStaffAuth && window.HubStaffAuth.isUnlocked()) } catch (e) { return false }
@@ -4895,7 +4902,7 @@ function docWith(chunks) {
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], look: [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
-    chunks, updatedAt: new Date().toISOString(), tabId,
+    chunks, updatedAt: new Date().toISOString(), tabId, ...syncMark(WORLD),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     creativeBar: paletteIds.slice(0, CREATIVE_HOT), // 2.5.506: Creative hotbar order, per world
     stations: stations.dump(),
@@ -5032,6 +5039,25 @@ function keepSaved(err) {
   markSave(t('saveKept'))
   return err
 }
+// 2.5.557 round 1: say which world opened and where it came from. Data attributes on <html> and window.__bertopiaWorld() carry the
+// facts for a script; Menu > World shows the same facts as a line, and "Load my saved world" toasts it.
+let worldNow = null
+function clockText(iso) {
+  try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } catch (e) { return '' }
+}
+function noteWorld(doc, from, mismatch) {
+  try {
+    const custom = isMakerPreset(makerLive.preset) ? makerName(makerLive) : ''
+    const seed = custom ? (makerLive.seed | 0) : (doc && Number.isFinite(+doc.seed) ? +doc.seed : 1)
+    worldNow = describeWorld({ id: WORLD, doc, from, customName: custom, seed, mismatch })
+    const attrs = worldAttrs(worldNow)
+    for (const k of Object.keys(attrs)) document.documentElement.dataset[k] = attrs[k]
+    const live = document.getElementById('world-now')
+    if (live) live.textContent = worldLineNow()
+  } catch (e) { console.warn('noteWorld', e) }
+}
+function worldLineNow() { return worldNow ? worldLineText(worldNow, t, clockText) : '' }
+window.__bertopiaWorld = () => (worldNow ? { ...worldNow } : null)
 async function load() {
   spotReady = false
   const bootSpot = readSpot()
@@ -5046,14 +5072,17 @@ async function load() {
       })
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    let pick = { doc, from: doc ? 'device' : 'new', mismatch: false }
     try {
       const pulled = await Promise.race([
         maybePull(WORLD, doc),
         new Promise(r => setTimeout(() => r(null), 4000))
       ])
-      if (pulled) doc = pulled
+      pick = pickLoaded(WORLD, doc, pulled) // 2.5.557 round 1: a pulled copy that names another world is never opened
+      doc = pick.doc
     } catch (e) {}
     if (__BLOX_STUDENT__ && !doc && localStorage.getItem('bert-oldworld-done') !== '1') { // 2.5.474: old world card
       try {
@@ -5088,7 +5117,7 @@ async function load() {
             bringBtn.focus() // 2.5.475: focus the first button
           })
           localStorage.setItem('bert-oldworld-done', '1')
-          if (bring) { doc = old; idbPut(WORLD, doc) }
+          if (bring) { doc = old; idbPut(WORLD, doc); pick = { doc, from: 'old', mismatch: false } }
         }
       } catch (e) {}
     }
@@ -5119,18 +5148,22 @@ async function load() {
       }
       spotReady = true
       writeSpot()
+      noteWorld(null, 'new')
       return false
     }
     if (doc.format !== 'kuliblocks') {
       keepSaved(doc)
+      noteWorld(null, 'error')
       return false
     }
     try {
       await applyDoc(doc, bootSpot)
     } catch (e) {
       keepSaved(e)
+      noteWorld(null, 'error')
       return false
     }
+    noteWorld(doc, pick.from, pick.mismatch)
     const pinned = mergePin(doc)
     if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
     allowSave = !readOnlySave && !savePaused
@@ -7465,6 +7498,7 @@ panels = mountPanels({
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
   load: () => loadOldClicked(),
+  worldLine: () => worldLineNow(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
