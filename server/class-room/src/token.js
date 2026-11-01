@@ -24,7 +24,9 @@ import { cleanAlias, isOpaqueId, isStaff, isConfigId, ROLES, MAX_TOKEN_TTL_SEC, 
 const enc = new TextEncoder()
 const dec = new TextDecoder()
 const SKEW_SEC = 30
-const CLAIM_KEYS = new Set(['v', 'ref', 'room', 'world', 'grp', 'bld', 'alias', 'exp', 'jti', 'role', 'amr', 'cfg'])
+const CLAIM_KEYS = new Set(['v', 'ref', 'room', 'world', 'grp', 'bld', 'alias', 'exp', 'jti', 'role', 'amr', 'cfg', 'iss'])
+// iss: who issued the ticket. Absent = TechWorks (school). The personal host issues 'home'. A verifier states which
+// issuer it accepts; the school Worker (default) accepts only school tickets, so a home ticket is refused there.
 
 function toB64u(bytes) {
   let s = ''
@@ -56,7 +58,7 @@ const bad = (why) => ({ ok: false, why })
 
 // secrets: array of strings (current first, previous second, so a secret can be rotated).
 // Returns { ok: true, claims: { ref, room, alias, jti, exp, role, cfg } } or { ok: false, why }.
-export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now() / 1000)) {
+export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now() / 1000), { issuer = undefined } = {}) {
   if (typeof token !== 'string' || token.length < 10 || token.length > 800) return bad('shape')
   const parts = token.split('.')
   if (parts.length !== 2) return bad('shape')
@@ -82,6 +84,8 @@ export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now()
   if (!isOpaqueId(c.ref) || !isOpaqueId(c.room ?? c.world) || !isOpaqueId(c.jti)) return bad('id')
   if (c.grp !== undefined && !isOpaqueId(c.grp)) return bad('id')
   if (c.bld !== undefined && c.bld !== 's' && c.bld !== 't') return bad('bld')
+  if (c.iss !== undefined && (typeof c.iss !== 'string' || !/^[a-z]{2,12}$/.test(c.iss))) return bad('iss')
+  if (c.iss !== issuer) return bad('issuer')                 // a school verifier gets undefined; the home door passes 'home'
   if (!isConfigId(c.cfg)) return bad('cfg')
   if (!ROLES.includes(c.role)) return bad('role')
   const staff = isStaff(c.role)
@@ -95,5 +99,5 @@ export async function verifyToken(token, secrets, nowSec = Math.floor(Date.now()
   const maxTtl = staff ? MAX_STAFF_TOKEN_TTL_SEC : MAX_TOKEN_TTL_SEC
   if (c.exp > nowSec + maxTtl + SKEW_SEC) return bad('ttl')
 
-  return { ok: true, claims: { ref: c.ref, room: c.room ?? null, world: c.world ?? null, grp: c.grp ?? null, bld: c.bld ?? 's', alias, jti: c.jti, exp: c.exp, role: c.role, cfg: c.cfg } }
+  return { ok: true, claims: { ref: c.ref, room: c.room ?? null, world: c.world ?? null, grp: c.grp ?? null, bld: c.bld ?? 's', alias, jti: c.jti, exp: c.exp, role: c.role, cfg: c.cfg, ...(c.iss !== undefined ? { iss: c.iss } : {}) } }
 }

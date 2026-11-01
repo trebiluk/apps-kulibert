@@ -1,0 +1,29 @@
+# Display-name blocklist for the personal host (host/words.mjs). One entry per line.
+# A trailing * means "anywhere in the name" (stem); otherwise the whole word must match after folding.
+# Starting list only. WordBot owns the real one; keep slurs out of code and chat: edit this file, not words.mjs.
+fuck*
+fock*
+fvck*
+phuck*
+shit*
+cunt*
+nigg*
+fag*
+retard*
+kike*
+spic*
+chink*
+tranny*
+whore*
+slut*
+rape*
+nazi*
+hitler*
+kkk
+porn*
+sex*
+cock*
+dick*
+pussy*
+asshole*
+bitch*

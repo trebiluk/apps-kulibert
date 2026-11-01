@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join a Bertopia home server</title>
+<style>
+  html { background:#0b1220 } body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#0b1220; color:#f8fafc; font:17px/1.5 system-ui, sans-serif }
+  .card { background:#111a2e; border:1px solid #22304d; border-radius:16px; padding:22px 24px; width:min(92vw, 440px) }
+  h1 { font-size:20px; margin:0 0 6px } p, label { color:#94a3b8; margin:6px 0; display:block }
+  input[type=text], input[type=password] { width:100%; min-height:48px; font:18px system-ui; background:#0b1220; color:#f8fafc; border:1px solid #475569; border-radius:12px; padding:0 12px; margin:4px 0 10px; box-sizing:border-box }
+  #code { font-size:24px; letter-spacing:4px; text-transform:uppercase; text-align:center }
+  .adults { display:flex; gap:10px; align-items:flex-start; background:#0b1220; border:1px solid #475569; border-radius:12px; padding:10px 12px; margin:6px 0 12px; color:#f8fafc }
+  .adults input { width:24px; height:24px; margin:2px 0 0; flex:0 0 24px }
+  button { width:100%; min-height:52px; font:inherit; font-weight:600; background:#134e4a; color:#f8fafc; border:1px solid #2dd4bf; border-radius:12px; cursor:pointer }
+  button:focus-visible, input:focus-visible { outline:3px solid #2dd4bf; outline-offset:2px }
+  #out { margin-top:12px; min-height:1.5em } .ok { color:#4ade80 } .bad { color:#f87171 }
+  @media (prefers-reduced-motion: no-preference) { button:active { transform:scale(.99) } }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Join a Bertopia home server</h1>
+  <p>This server is run by a person you know, not by the school.</p>
+  <label for="addr">Server address</label>
+  <input type="text" id="addr" autocomplete="off" spellcheck="false">
+  <label for="code">Session code</label>
+  <input type="text" id="code" maxlength="9" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH">
+  <label for="name">Your display name (2 to 20 letters, digits, space, _ or -)</label>
+  <input type="text" id="name" maxlength="20" autocomplete="off">
+  <div id="pw-row" hidden><label for="pw">Password (the host set one)</label><input type="password" id="pw" autocomplete="off"></div>
+  <label class="adults"><input type="checkbox" id="adults"><span><b>This server is for adults 18+.</b> I confirm I am 18 or older. (Nothing about your age is stored.)</span></label>
+  <button id="go">Join</button>
+  <div id="out" aria-live="polite"></div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id)
+const MSG = { code: 'That session code is not right.', ended: 'There is no session running. Ask the host to start one.', password: 'That password is not right.', adults: 'Please confirm you are 18 or older.',
+  name: 'Names are 2 to 20 letters, digits, spaces, _ or -.', 'name-reserved': 'That name looks like a host or owner name. Pick another.', 'name-filtered': 'That name is not allowed here. Pick another.', 'name-taken': 'That name is taken in this session.',
+  full: 'The server is full right now.', 'no-owner': 'The owner is not in the world yet. Ask them to press "Play as owner" first.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', version: 'Your game needs an update to join this server.', network: 'Could not reach that server address.' }
+$('addr').value = location.origin
+try { if (sessionStorage.getItem('bt-home-adults') === '1') $('adults').checked = true } catch (e) {}
+let ws = null, q = 0
+$('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click() })
+$('go').addEventListener('click', async () => {
+  const base = $('addr').value.trim().replace(/\/+$/, '')
+  const body = { code: $('code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('name').value, password: $('pw').value || undefined, adults: $('adults').checked }
+  if (!/^https?:\/\//.test(base)) { $('out').innerHTML = '<span class="bad">The address starts with http:// or https://.</span>'; return }
+  $('out').textContent = 'Asking the host…'
+  let j
+  try { j = await (await fetch(base + '/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json() } catch (e) { j = { error: 'network' } }
+  if (j.error) { if (j.error === 'password') $('pw-row').hidden = false; $('out').innerHTML = '<span class="bad">' + (MSG[j.error] || j.error) + (j.wait ? ' (' + j.wait + ' s)' : '') + '</span>'; return }
+  try { sessionStorage.setItem('bt-home-adults', '1') } catch (e) {}
+  if (ws) try { ws.close() } catch (e) {}
+  ws = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
+  ws.onopen = () => { $('out').innerHTML = '<span class="ok">Connected to “' + j.world + '” as ' + j.name + '. Rules: ' + j.ruleset.replace('home-', '') + '.</span><br><span>The game itself connects in part 2; keep this page open and the host sees you online.</span>'
+    const beat = setInterval(() => { if (ws.readyState !== 1) return clearInterval(beat); ws.send(JSON.stringify({ v: 0, t: 'p', q: q++, x: 8.5, y: 64, z: 1.5, r: 0, f: 0 })) }, 4000) }
+  ws.onmessage = (m) => { try { const f = JSON.parse(m.data); if (f.t === 'hello' && f.players.length) $('out').innerHTML += '<br><span class="ok">Here now: ' + f.players.map((p) => p.a).join(', ') + '</span>' } catch (e) {} }
+  ws.onclose = (e) => { $('out').innerHTML = '<span class="bad">Disconnected' + (e.reason ? ' (' + e.reason + ')' : '') + '.</span>' }
+})
+</script>
+</body>
+</html>

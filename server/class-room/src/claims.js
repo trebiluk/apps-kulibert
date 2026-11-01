@@ -40,7 +40,10 @@ export const POLICY = {
   contest: { plots: true, wild: false, strong: true, buddies: false, editsPerSec: 8, bannedBlocks: [] },
   // solvay, semester, period, game, loot, seed: undecided -> no kid edits
 }
-export const policyFor = (cfg) => (Object.hasOwn(POLICY, cfg) ? POLICY[cfg] : null)
+// A non-school host registers the policy for its own config ids (see protocol.js registerConfigIds). School never calls this.
+const EXTRA_POLICY = new Map()
+export function registerPolicy(cfg, policy) { if (/^home(-|$)/.test(cfg) && policy && typeof policy === 'object') EXTRA_POLICY.set(cfg, { ...policy }) }
+export const policyFor = (cfg) => (Object.hasOwn(POLICY, cfg) ? POLICY[cfg] : EXTRA_POLICY.get(cfg) ?? null)
 
 export function plotRect(i) {
   const c = i % COLS
@@ -132,7 +135,7 @@ export function makeClaims(cfg) {
 
       const reg = regionAt(edit.x, edit.z)
       let why = null
-      if (reg.kind === 'core' || reg.kind === 'commons' || reg.kind === 'path') why = 'protected'
+      if (reg.kind === 'core' || reg.kind === 'commons' || reg.kind === 'path') why = policy.town === false ? null : 'protected'   // town: false = no Bertyville map (home worlds)
       else if (reg.kind === 'wild') why = policy.wild ? null : 'protected'
       else if (!policy.plots) why = 'protected'
       else {

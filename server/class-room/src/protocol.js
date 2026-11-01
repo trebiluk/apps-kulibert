@@ -44,7 +44,11 @@ export const ROLES = ['kid', 'teacher', 'admin']
 //   contest   creative flat, plots, contest tools, strong grief prevention
 //   seed      teacher-picked custom seed and preset
 export const CONFIG_IDS = ['solvay', 'semester', 'period', 'game', 'loot', 'contest', 'seed']
-export const isConfigId = (s) => typeof s === 'string' && CONFIG_IDS.includes(s)
+// Extra config ids a NON-school host registers in its own process (the personal host, docs/bertopia/HOME-HOST.md).
+// The school Worker never calls this, so a home config id is refused at school and vice versa.
+const EXTRA_CONFIG_IDS = new Set()
+export function registerConfigIds(ids) { for (const id of ids) if (typeof id === 'string' && /^home(-[a-z]{3,16})?$/.test(id)) EXTRA_CONFIG_IDS.add(id) }
+export const isConfigId = (s) => typeof s === 'string' && (CONFIG_IDS.includes(s) || EXTRA_CONFIG_IDS.has(s))
 export const isStaff = (role) => role === 'teacher' || role === 'admin'
 
 // ---------------------------------------------------------------- identity
