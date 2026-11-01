@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.42 — What's new label — 2026-10-31
+
+- Menu label shows "What's new" (or the language's word) instead of the raw key WHATSNEW.
+- Hub Menu panel kicker and line follow the chosen language. Arabic and Dari read right-to-left.
+- What's new text stays light on the navy panel.
+
 ## 0.19.41 — Hub Menu row — 2026-10-30
 
 - The gold Menu still opens your Botz tools. The bar keeps data-menu on that button.
