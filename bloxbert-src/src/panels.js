@@ -124,18 +124,24 @@ export function mountPanels(api) {
   }
   // 2.5.586: the crafting panel starts below the shared top bar, measured live, because on phones the
   // bar wraps to two rows (about 100px at 412) and covered the panel's title and Close.
-  // 2.5.593: every panel does this (Notebook, World, Menu...), so the Menu chip, Sign in and the version chip
+  // 2.5.592 (main): the World panel too; on phones the game HUD row (#top) also sits over the panel, so clear it as well.
+  // 2.5.593 (this PR): every panel does this (Notebook, World, Menu...), so the Menu chip, Sign in and the version chip
   // never sit on top of a panel's title or Close.
   function craftBelowBar(id) {
     const bar = document.querySelector('.kb-bar')
     const r = bar && getComputedStyle(bar).display !== 'none' ? bar.getBoundingClientRect() : null
-    let h = r && r.height ? Math.ceil(r.bottom) : (id === 'crafting' ? 48 : 0)
+    let h = r && r.height ? Math.ceil(r.bottom) : (id === 'crafting' || id === 'world' ? 48 : 0)
     // Menu and Settings keep the game bar (header.top) above the panel (read.css 2.5.523); start below it too.
     // On phones that bar wraps to two rows, so the old fixed 68px left the panel's Close under it.
     if (id === 'menu' || id === 'settings') {
       const hud = document.querySelector('header.top')
       const hr = hud && getComputedStyle(hud).display !== 'none' ? hud.getBoundingClientRect() : null
       if (hr && hr.height) h = Math.max(h, Math.ceil(hr.bottom))
+    }
+    if (id === 'world' && window.innerWidth <= 600) {
+      const hud = document.getElementById('top')
+      const hr = hud && hud.offsetWidth ? hud.getBoundingClientRect() : null
+      if (hr && hr.height && hr.top < h + 8 && hr.bottom < window.innerHeight / 2) h = Math.max(h, Math.ceil(hr.bottom))
     }
     if (!h) { sheet.style.removeProperty('top'); return }
     sheet.style.setProperty('top', h + 'px', 'important')

@@ -3902,3 +3902,20 @@ for (const [lang, row] of Object.entries(CRAFT065)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.592: Load my saved world feedback. fa-AF, rw, and ti are machine drafts.
+const OLD592 = {
+  en: { oldLoading: 'Looking for your old saved world…', oldLoaded: 'Old world loaded', oldNone: 'No old save found' },
+  simple: { oldLoading: 'Looking for your old world…', oldLoaded: 'Old world is back', oldNone: 'No old save found' },
+  uk: { oldLoading: 'Шукаємо твій старий збережений світ…', oldLoaded: 'Старий світ завантажено', oldNone: 'Старого збереження не знайдено' },
+  ru: { oldLoading: 'Ищем твой старый сохранённый мир…', oldLoaded: 'Старый мир загружен', oldNone: 'Старое сохранение не найдено' },
+  es: { oldLoading: 'Buscando tu mundo guardado anterior…', oldLoaded: 'Mundo anterior cargado', oldNone: 'No hay una partida anterior' },
+  ar: { oldLoading: 'نبحث عن عالمك القديم المحفوظ…', oldLoaded: 'تم تحميل العالم القديم', oldNone: 'لا يوجد حفظ قديم' },
+  'fa-AF': { oldLoading: 'در حال پیدا کردن جهان ذخیره‌شده قدیمی تو…', oldLoaded: 'جهان قدیمی بار شد', oldNone: 'ذخیره قدیمی پیدا نشد' },
+  rw: { oldLoading: 'Turashaka isi yawe ya kera wabitse…', oldLoaded: 'Isi ya kera yafunguwe', oldNone: 'Nta isi ya kera yabonetse' },
+  ti: { oldLoading: 'ናይ ቀደም ዝተዓቀበ ዓለምካ ንደሊ ኣለና…', oldLoaded: 'ናይ ቀደም ዓለም ተጻዒኑ', oldNone: 'ናይ ቀደም ምዕቃብ ኣይተረኽበን' },
+}
+for (const [lang, row] of Object.entries(OLD592)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
