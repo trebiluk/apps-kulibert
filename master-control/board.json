@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-26",
+  "updated": "2026-11-01",
   "rows": [
     {
       "id": "bertopia",
@@ -8,6 +8,14 @@
       "lane": "Game",
       "status": "Live",
       "note": "Student door is /bertopia/."
+    },
+    {
+      "id": "pinchy",
+      "app": "Berty & Bizzy",
+      "version": "1.8.2",
+      "lane": "Robot arm",
+      "status": "Live",
+      "note": "Turnable 3D view, protractor dials, compact header."
     },
     {
       "id": "rampfill",
