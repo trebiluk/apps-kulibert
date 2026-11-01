@@ -15,7 +15,7 @@ if (!existsSync(path.join(__dir, '../node_modules/puppeteer-core'))) {
   const ci = spawnSync('npm', ['ci'], { cwd: path.resolve(__dir, '..'), stdio: 'inherit' })
   if (ci.status) { console.error('npm ci failed'); process.exit(1) }
 }
-const chrome = ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => existsSync(p))
 if (!chrome) { console.error('No Chrome/Chromium found. Install Chrome or set a browser path.'); process.exit(1) }
 
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css' }

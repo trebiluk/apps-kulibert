@@ -78,7 +78,7 @@ const out = '/tmp/interact-check'
 const art = '/workspace/artifacts'
 mkdirSync(out, { recursive: true })
 mkdirSync(art, { recursive: true })
-const chrome = ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
 if (!chrome) { console.error('No Chrome'); process.exit(1) }
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.wasm': 'application/wasm' }
 const server = createServer(async (req, res) => {

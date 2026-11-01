@@ -24,7 +24,7 @@ const port = 8916
 const shots = '/workspace/artifacts/gfx4-shots'
 mkdirSync(shots, { recursive: true })
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.txt': 'text/plain' }
-const chrome = [
+const chrome = process.env.CHROME_PATH || [
   '/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell',
   '/opt/pw-browsers/chromium-1148/chrome-linux/chrome',
 ].find((p) => existsSync(p))
@@ -71,8 +71,11 @@ async function boot(page, query) {
   await sleep(400)
 }
 
-const base = JSON.parse(readFileSync('/tmp/gfx4-baseline.json', 'utf8'))
-const beforeFps = base.fps
+// The 915 walk fps is compared with an earlier run on the same machine. With no baseline yet (a fresh machine),
+// this run writes one and skips only the fps compare; every other line still counts. GFX4_BASELINE sets the path.
+const basePath = process.env.GFX4_BASELINE || '/tmp/gfx4-baseline.json'
+const base = existsSync(basePath) ? JSON.parse(readFileSync(basePath, 'utf8')) : null
+const beforeFps = base ? base.fps : null
 
 async function settle(page) {
   await page.evaluate(async () => {
@@ -356,7 +359,10 @@ const walk = await walkPage.page.evaluate(async () => {
 })
 const afterFps = Math.round(walk.avg * 100) / 100
 console.log('FPS before ' + beforeFps + ' after ' + afterFps + ' n=' + walk.n + ' gfx=' + walk.name)
-eq(afterFps + 0.05 >= beforeFps * 0.92, '915 walk fps', 'before ' + beforeFps + ' after ' + afterFps)
+if (beforeFps == null) {
+  writeFileSync(basePath, JSON.stringify({ fps: afterFps, n: walk.n, gfx: walk.name, at: new Date().toISOString() }) + '\n')
+  console.log('NOTE 915 walk fps: no baseline at ' + basePath + ', wrote ' + afterFps + ' (compare runs from the next run on)')
+} else eq(afterFps + 0.05 >= beforeFps * 0.92, '915 walk fps', 'before ' + beforeFps + ' after ' + afterFps)
 eq(walkPage.errs.length === 0, 'walk console', walkPage.errs.slice(0, 3).join(' | '))
 
 const litePage = await openPage(915, 412)

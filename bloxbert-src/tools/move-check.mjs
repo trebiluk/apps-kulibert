@@ -1,10 +1,13 @@
 // PC auto-step, saved climb migration, underwater view, and pitch clamp.
 import puppeteer from 'puppeteer-core'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { serveRepo } from './lib/serve.mjs'
 
-const chrome = ['/usr/bin/google-chrome', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/usr/bin/google-chrome', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome'].find((p) => existsSync(p))
 if (!chrome) throw new Error('no chrome')
-const URL = process.argv[2] || 'http://127.0.0.1:8875/blocks-test/?smoke=1'
+// No URL given: serve the built test bundle ourselves (no server needs to be running first).
+const own = process.argv[2] ? null : await serveRepo(8875)
+const URL = process.argv[2] || own.base + '/blocks-test/?smoke=1'
 const out = '/tmp/move-check'
 mkdirSync(out, { recursive: true })
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -342,4 +345,5 @@ try {
 writeFileSync(out + '/report.json', JSON.stringify(report, null, 2))
 console.log(report.fail ? 'FAIL ' + report.fail : 'PASS move-check')
 await browser.close()
+if (own) await own.close()
 process.exit(report.fail ? 1 : 0)

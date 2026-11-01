@@ -9,7 +9,7 @@ import { STR } from '../src/strings.js'
 import { EXTRA } from '../src/strings-extra.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
-const chrome = ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
+const chrome = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
 const LANGS = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']
 const NAMES = ['planks', 'dyeWhite', 'daisy', 'woodTool']
 const fail = []
