@@ -384,6 +384,29 @@
     }
 
     var rimPts = null;
+    var orbit = { yaw: 0, pitch: 0 };
+    var lastArgs = null;
+    function turn(dYaw, dPitch) {
+      orbit.yaw += dYaw;
+      orbit.pitch = Math.max(-0.2, Math.min(0.9, orbit.pitch + (dPitch || 0)));
+      frameCamera();
+      if (lastArgs) render(lastArgs[0], lastArgs[1], lastArgs[2]);
+    }
+    function resetTurn() { orbit.yaw = 0; orbit.pitch = 0; turn(0, 0); }
+    if (canvas.id === "view") {
+      var drag = null;
+      canvas.style.touchAction = "none";
+      canvas.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; try { canvas.setPointerCapture(e.pointerId); } catch (er) {} });
+      canvas.addEventListener("pointermove", function (e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        drag.x = e.clientX; drag.y = e.clientY;
+        turn(-dx * 0.01, dy * 0.006);
+      });
+      var end = function () { drag = null; };
+      canvas.addEventListener("pointerup", end);
+      canvas.addEventListener("pointercancel", end);
+    }
     function frameCamera() {
       camera.fov = 38;
       camera.aspect = Math.max(0.2, (canvas.clientWidth || 1) / (canvas.clientHeight || 1));
@@ -397,7 +420,11 @@
         xs.forEach(function (x) { zs.forEach(function (z) { ys.forEach(function (y) { rimPts.push(new THREE.Vector3(x, y, z)); }); }); });
       }
       var target = new THREE.Vector3(bx * 0.42, 70, 60);
-      var dir = new THREE.Vector3(0.3, 0.35, 1).normalize();
+      // 1.8.1: the view can be turned (drag it, or the turn buttons). Yaw spins around the work area; pitch tilts.
+      var baseDir = new THREE.Vector3(0.3, 0.35, 1).normalize();
+      var flat = Math.atan2(baseDir.x, baseDir.z) + orbit.yaw;
+      var elev = Math.max(0.12, Math.min(1.25, Math.asin(baseDir.y) + orbit.pitch));
+      var dir = new THREE.Vector3(Math.sin(flat) * Math.cos(elev), Math.sin(elev), Math.cos(flat) * Math.cos(elev));
       var lo = 200;
       var hi = 2000;
       var best = hi;
@@ -676,6 +703,7 @@
 
     function render(state, level, opts) {
       if (!state || !root.PINCHY) return;
+      lastArgs = [state, level, opts];
       labelQueue = [];
       resize();
       clearDyn();
@@ -770,7 +798,7 @@
       renderer.render(scene, camera);
     }
 
-    return { render: render, resize: resize };
+    return { render: render, resize: resize, turn: turn, resetTurn: resetTurn };
   }
 
   function buildStatic(parent, level) {
@@ -780,7 +808,8 @@
     var rows = G.ROWS;
     var c, r, spot, mesh, name, here, marked;
     here = level.kind === "spot" ? level.spot : "";
-    for (c = 0; c < cols.length; c++) {
+    // 1.8.1: the A1-C3 spots only appear on a level that uses them; other floors stay clear.
+    for (c = 0; c < (level.kind === "spot" ? cols.length : 0); c++) {
       for (r = 0; r < rows.length; r++) {
         name = cols[c][0] + rows[r][0];
         spot = vec(rows[r][1], 1.4, cols[c][1]);
@@ -920,6 +949,8 @@
 
   root.PINCHY_VIEW = {
     mount: mount,
+    turn: function (canvas, dYaw, dPitch) { var v = mount(canvas); if (v && v.turn) v.turn(dYaw, dPitch || 0); },
+    resetTurn: function (canvas) { var v = mount(canvas); if (v && v.resetTurn) v.resetTurn(); },
     frame: function (canvas, state, level, opts) {
       var view = mount(canvas);
       if (!view || view.failed) return false;
