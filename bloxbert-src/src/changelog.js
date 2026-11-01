@@ -54,6 +54,18 @@ export const CHANGELOG = [
     'fa-AF': ['2.5.571 — ساختن فقط چیزهایی را نشان می‌دهد که واقعاً می‌توانی بسازی: چیزهای فلزی تا باز شدن پله کوره قفل دارند. میزهای کار با نوار حالا از هر نوع تخته، سنگ یا پشم می‌سازند.', 'چراغ زمینی و چراغ دیواری در کارگاه چوب «پله فلز لازم است» را نشان می‌دهند تا پله کوره باز شود. قالی نه. (draft translation)'],
     rw: ['2.5.571 — Gukora byerekana gusa ibyo ushobora gukora: ibintu by\'icyuma bigaragaza urufunguzo kugeza urwego rw\'isaturire rufunguwe. Ameza akoresha umugozi ubu akora ku mbaho, amabuye cyangwa ubwoya ubwo ari bwo bwose.', 'Itara ryo hasi n\'itara ryo ku rukuta mu muciro w\'imbaho bigaragaza Ikeneye urwego rw\'icyuma kugeza urwego rw\'isaturire rufunguwe. Agatapi ntabwo. (draft translation)'],
     ti: ['2.5.571 — ምስራሕ ብሓቂ ክትሰርሖ እትኽእል ጥራይ የርኢ፡ ናይ ብረት ነገራት ደረጃ መፍለሒ ክሳብ ዝኽፈት መፍትሕ የርእዩ። ብመተሓላለፊ ዝምገቡ ጣውላታት ሕጂ ካብ ዝኾነ ዓይነት ሰሌዳ፡ እምኒ ወይ ጸምሪ ይሰርሑ።', 'ናይ መሬት መብራህቲን ናይ ግድሚ መብራህቲን ኣብ ናይ ዕንጨይት ዕዮ ደረጃ ብረት የድሊ የርእዩ፡ መፍለሒ ደረጃ ክሳብ ዝኽፈት። መንጸፍ ኣይኮነን። (draft translation)'],
+    } },
+  // 2.5.570 save chip (brief 0056). rw, ti, and fa-AF are machine drafts.
+  { v: '2.5.570', date: '2026-10-31', lines: {
+    en: ['2.5.570 — Saved shows once after each real save, and a tap under it still places your block. If a save fails, you see Not saved.'],
+    simple: ['2.5.570 — Saved shows once. A tap under it still works. If saving fails, you see Not saved.'],
+    uk: ['2.5.570 — «Збережено» з\'являється один раз після справжнього збереження, а дотик під ним усе одно ставить блок. Якщо зберегти не вдалося, побачиш «Не збережено».'],
+    ru: ['2.5.570 — «Сохранено» показывается один раз после настоящего сохранения, а нажатие под ним всё равно ставит блок. Если сохранить не удалось, увидишь «Не сохранено».'],
+    es: ['2.5.570 — Guardado aparece una vez tras cada guardado real, y un toque debajo sigue poniendo tu bloque. Si falla el guardado, ves No guardado.'],
+    ar: ['2.5.570 — تظهر «تم الحفظ» مرة واحدة بعد كل حفظ حقيقي، والنقر تحتها ما زال يضع الكتلة. إذا فشل الحفظ ترى «لم يُحفظ».'],
+    'fa-AF': ['2.5.570 — «ذخیره شد» بعد از هر ذخیره واقعی یک بار نشان داده می‌شود و ضربه زیر آن هنوز بلاک را می‌گذارد. اگر ذخیره ناکام شد، «ذخیره نشد» را می‌بینی.'],
+    rw: ['2.5.570 — Byabitswe bigaragara rimwe nyuma ya buri kubika nyakuri, kandi gukanda munsi yabyo biracyashyiraho ibuye ryawe. Kubika binaniranye, ubona Ntibyabitswe.'],
+    ti: ['2.5.570 — «ተዓቂቡ» ድሕሪ ነፍሲ ወከፍ ናይ ሓቂ ምዕቃብ ሓንሳብ ይርአ፡ ኣብ ትሕቲኡ ምጥዋቕ ድማ ገና ብሎክካ የቐምጥ። ምዕቃብ እንተ ፈሺሉ «ኣይተዓቀበን» ትርኢ።'],
   } },
   // 2.5.550 lighter textures, art part 1, centered panels. rw, ti, and fa-AF are machine drafts.
   { v: '2.5.550', date: '2026-10-30', lines: {

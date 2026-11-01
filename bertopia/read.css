@@ -1831,6 +1831,8 @@ html body.menu-open #chip-lane > #update-chip {
 }
 #chip-lane > button,
 #chip-lane > #update-chip { min-width: 44px; min-height: 44px; }
+/* 0056: the "Saved" chip is a status, not a button. Taps go through to the ghost under it; the top-bar Save is the button. */
+#chip-lane > #save-chip { pointer-events: none; }
 #chip-lane > [data-wait] { display: none !important; }
 body:has(#sheet:not([hidden])) #chip-lane > :not(#update-chip) { display: none !important; }
 html body:has(#sheet:not([hidden])) #play-chip { display: none !important; } /* 2.5.390: Bag / Menu open -> no "Click to play" hint beside it */
