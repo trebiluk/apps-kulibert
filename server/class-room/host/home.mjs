@@ -340,7 +340,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
+      case '/owner/state': return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())
@@ -413,6 +413,14 @@ function shutdown() {
   server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 1500)
 }
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown)
+// A launcher that started us (the Python launcher) asks for a clean stop by writing "stop" on our stdin: Windows has
+// no SIGTERM, and a hard kill would skip the final save. Only when it asked for this channel.
+if (process.env.BT_STDIN_STOP === '1') {
+  let buf = ''
+  process.stdin.setEncoding('utf8')
+  process.stdin.on('data', (d) => { buf += d; if (/(^|\n)stop\s*\n/.test(buf)) shutdown() })
+  process.stdin.on('end', () => shutdown())   // the launcher went away: stop cleanly rather than run headless
+}
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   server.listen(cfg.port, cfg.listen, () => {
@@ -420,7 +428,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(cfg.listen === '127.0.0.1' ? '[home] this PC only (owner page: "Let other computers join" for the LAN)' : '[home] players on this network join at ' + lanAddrs().map((a) => `http://${a}:${cfg.port}/`).join('  or  '))
     console.log('[home] data: ' + DATA + (GAME ? ' | game: ' + GAME : ' | no game build yet: run `npm run build:home` in bloxbert-src; / shows the plain join page'))
     if (cfg.world) { const n = cfg.world; cfg.world = null; openWorld(n); console.log('[home] reopened world ' + n + ' (start a session to let people in)') }
-    if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }).unref() } catch (e) {} }) }
+    if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { const c = cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }); c.on('error', () => console.log('[home] could not open a browser: open ' + u + ' yourself')); c.unref() } catch (e) {} }) }
   })
 }
 export { cfg, door, rooms, worlds, openWorld, closeWorld, startSession, endSession, live }
