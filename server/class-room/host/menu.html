@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bertopia local host</title>
+<style>
+  :root { --bg:#0b1220; --card:#111a2e; --line:#22304d; --ink:#f8fafc; --dim:#94a3b8; --teal:#2dd4bf; --warn:#fbbf24; --bad:#f87171; --ok:#4ade80; }
+  * { box-sizing:border-box }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui, sans-serif }
+  header { display:flex; align-items:center; gap:14px; padding:12px 18px; border-bottom:1px solid var(--line); flex-wrap:wrap }
+  header h1 { font-size:18px; margin:0; letter-spacing:.3px }
+  .pill { border:1px solid var(--line); border-radius:999px; padding:6px 12px; color:var(--dim); font-size:13px; white-space:nowrap }
+  .pill.on { border-color:var(--ok); color:var(--ok) }
+  .pill.off { border-color:var(--bad); color:var(--bad) }
+  main { display:grid; gap:14px; padding:14px 18px; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); max-width:1366px; margin:0 auto }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; min-width:0 }
+  h2 { font-size:15px; margin:0 0 10px; color:var(--teal); text-transform:uppercase; letter-spacing:.6px }
+  button { min-height:44px; min-width:44px; background:#1e293b; color:var(--ink); border:1px solid #475569; border-radius:10px; padding:8px 14px; font:inherit; cursor:pointer }
+  button:hover { border-color:var(--teal) }
+  button.go { background:#134e4a; border-color:var(--teal) }
+  button.bad { border-color:var(--bad); color:var(--bad) }
+  button:disabled { opacity:.45; cursor:default }
+  input, select { min-height:44px; background:#0b1220; color:var(--ink); border:1px solid #475569; border-radius:10px; padding:8px 12px; font:inherit; max-width:100% }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0 }
+  .tbl { overflow-x:auto } table { width:100%; border-collapse:collapse; font-size:14px }
+  td, th { text-align:left; padding:7px 6px; border-top:1px solid var(--line); vertical-align:middle }
+  th { color:var(--dim); font-weight:600; border-top:0 }
+  code { background:#0b1220; border:1px solid var(--line); border-radius:6px; padding:2px 7px; font-size:14px; letter-spacing:1px }
+  .dim { color:var(--dim) } .ok { color:var(--ok) } .warn { color:var(--warn) }
+  .addr { font-size:17px; word-break:break-all }
+  #toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:#1e293b; border:1px solid var(--teal); border-radius:12px; padding:10px 16px; display:none }
+  @media (max-width:600px) { main { padding:10px } section { padding:12px } header { padding:10px 12px } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bertopia local host</h1>
+  <span id="st-world" class="pill off">no world open</span>
+  <span id="st-lan" class="pill">this PC only</span>
+  <span id="st-online" class="pill">0 online</span>
+  <span style="flex:1"></span>
+  <button id="btn-stop" class="bad" title="Stops the server. Players are disconnected; worlds are saved first.">Stop server</button>
+</header>
+<main>
+  <section>
+    <h2>Join address</h2>
+    <p class="dim" id="lan-help">Start with <code>--lan</code> to let other devices on this Wi-Fi join.</p>
+    <div id="addrs"></div>
+    <p class="dim">Players open that address on their phone, tablet or Chromebook and type their join code.</p>
+    <div class="row">
+      <label>World rules <select id="cfg"></select></label>
+      <label><input type="checkbox" id="lock"> Locked: only the host's own players marked "host" can join</label>
+    </div>
+  </section>
+
+  <section>
+    <h2>Worlds</h2>
+    <div class="row"><input id="new-world" placeholder="new world name: 8+ letters, digits, - _" maxlength="40" minlength="8"><button id="btn-new" class="go">Create and open</button></div>
+    <table id="worlds"><thead><tr><th>Name</th><th>Size</th><th>Changed</th><th></th></tr></thead><tbody></tbody></table>
+    <div class="row"><button id="btn-backup">Back up open world</button><button id="btn-close">Close world</button></div>
+    <details><summary class="dim">Backups</summary><table id="backups"><tbody></tbody></table></details>
+  </section>
+
+  <section>
+    <h2>Players</h2>
+    <div class="row"><input id="nick" placeholder="nickname (no real names)" maxlength="24"><select id="role"><option value="kid">player</option><option value="teacher">host (can edit anywhere)</option></select><button id="btn-add" class="go">Add</button></div>
+    <div class="tbl"><table id="players"><thead><tr><th>Nickname</th><th>Role</th><th>Join code</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+    <p class="dim" id="host-hint"></p>
+    <p class="dim">A join code is like a key: anyone with it plays as that nickname. Remove and re-add to change it.</p>
+  </section>
+
+  <section>
+    <h2>Live</h2>
+    <div class="row"><span>Edits so far: <b id="head">0</b></span><span class="dim" id="rooms"></span></div>
+    <table id="recent"><thead><tr><th>#</th><th>Who</th><th>What</th><th>Where</th><th>When</th></tr></thead><tbody></tbody></table>
+    <h2 style="margin-top:14px">Who built this?</h2>
+    <div class="row"><input id="bx" placeholder="x" size="5"><input id="by" placeholder="y" size="5"><input id="bz" placeholder="z" size="5"><button id="btn-built">Look up</button></div>
+    <table id="built"><tbody></tbody></table>
+  </section>
+</main>
+<div id="toast"></div>
+<script>
+const key = new URLSearchParams(location.search).get('k')
+const $ = (id) => document.getElementById(id)
+const api = async (p, body) => { const r = await fetch('/host/' + p, { method: body ? 'POST' : 'GET', headers: { 'x-host-key': key, 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }); return r.json() }
+let toastT
+const toast = (m) => { const t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => (t.style.display = 'none'), 2500) }
+const kb = (n) => (n > 1e6 ? (n / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB')
+const ago = (t) => { const s = Math.max(0, (Date.now() - t) / 1000); return s < 60 ? Math.round(s) + ' s ago' : s < 3600 ? Math.round(s / 60) + ' min ago' : new Date(t).toLocaleString() }
+const CFGS = { solvay: 'free build, shared', semester: 'semester world', period: 'one class', game: 'game rules', loot: 'loot and bosses', contest: 'plots and grief protection', seed: 'custom seed' }
+let state = null
+function render(s) {
+  state = s
+  $('st-world').textContent = s.world ? 'world: ' + s.world : 'no world open'; $('st-world').className = 'pill ' + (s.world ? 'on' : 'off')
+  $('st-lan').textContent = s.lan ? 'on this Wi-Fi' : 'this PC only'
+  const online = s.live.rooms.reduce((a, r) => a + r.players.length, 0)
+  $('st-online').textContent = online + ' online'
+  $('lan-help').style.display = s.lan ? 'none' : ''
+  $('addrs').innerHTML = (s.lan && s.addrs.length ? s.addrs : ['localhost']).map((a) => `<div class="addr"><code>http://${a}:${s.port}/play</code></div>`).join('')
+  const cfg = $('cfg'); if (!cfg.options.length) for (const [k, v] of Object.entries(CFGS)) cfg.add(new Option(k + ': ' + v, k)); cfg.value = s.cfg
+  $('lock').checked = s.locked
+  $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}</td><td>${kb(w.bytes)}</td><td class="dim">${ago(w.changed)}</td><td>${w.open ? '' : `<button data-open="${w.name}">Open</button>`} <button data-bk="${w.name}">Back up</button></td></tr>`).join('') || '<tr><td colspan="4" class="dim">No worlds yet. Create one above.</td></tr>'
+  $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
+  const onlineBy = new Set(s.live.rooms.flatMap((r) => r.players.map((p) => p.alias)))
+  $('players').querySelector('tbody').innerHTML = s.players.map((p) => `<tr><td>${p.alias}</td><td>${p.role === 'teacher' ? 'host' : 'player'}</td><td><code>${p.code}</code></td><td>${onlineBy.has(p.alias) ? '<span class="ok">online</span>' : '<span class="dim">off</span>'}</td><td>${onlineBy.has(p.alias) ? `<button data-kick="${p.code}">Kick</button>` : ''} <button data-rm="${p.code}" class="bad">Remove</button></td></tr>`).join('') || '<tr><td colspan="5" class="dim">No players yet. Add a nickname.</td></tr>'
+  const hostOn = s.live.rooms.some((r) => r.players.some((p) => p.role !== 'kid'))
+  $('host-hint').innerHTML = s.world && !hostOn ? '<span class="warn">Players can join only while a "host" player is in the world. Join as your host nickname first (your own join code works on this PC too).</span>' : ''
+  $('head').textContent = s.live.head
+  $('rooms').textContent = s.live.rooms.map((r) => r.name.replace(/^.*-r/, 'room ') + ': ' + r.players.map((p) => p.alias).join(', ')).join(' | ')
+  $('recent').querySelector('tbody').innerHTML = s.live.recent.map((o) => `<tr><td class="dim">${o.s}</td><td>${o.who}</td><td>${o.b === o.i ? 'touched' : o.i === 0 ? 'broke ' + o.b : o.b === 0 ? 'placed ' + o.i : o.b + ' → ' + o.i}</td><td>${o.x}, ${o.y}, ${o.z}</td><td class="dim">${ago(o.t)}</td></tr>`).join('') || '<tr><td colspan="5" class="dim">Nothing built yet.</td></tr>'
+  $('btn-backup').disabled = $('btn-close').disabled = !s.world
+}
+async function refresh() { try { render(await api('state')) } catch (e) { $('st-world').textContent = 'server stopped'; $('st-world').className = 'pill off' } }
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button'); if (!b) return
+  const d = b.dataset
+  if (d.open) await api('world/open', { name: d.open })
+  else if (d.bk) { const r = await api('world/backup', { name: d.bk }); toast(r.ok ? 'Backed up: ' + r.file : 'Backup failed') }
+  else if (d.rs) { if (confirm('Restore ' + d.rs + '? The current copy is backed up first.')) { const r = await api('world/restore', { file: d.rs }); toast(r.ok ? 'Restored ' + r.name : 'Restore failed') } }
+  else if (d.kick) { const r = await api('player/kick', { code: d.kick }); toast('Kicked ' + r.kicked) }
+  else if (d.rm) { if (confirm('Remove this player and their join code?')) await api('player/remove', { code: d.rm }) }
+  else if (b.id === 'btn-new') { const name = $('new-world').value.trim(); if (!name) return; const r = await api('world/open', { name }); if (r.error) toast('World names: 8 to 40 letters, digits, - or _'); else $('new-world').value = '' }
+  else if (b.id === 'btn-backup') { const r = await api('world/backup', {}); toast(r.ok ? 'Backed up: ' + r.file : 'Backup failed') }
+  else if (b.id === 'btn-close') await api('world/close', {})
+  else if (b.id === 'btn-add') { const r = await api('player/add', { nick: $('nick').value, role: $('role').value }); if (r.error === 'taken') toast('That nickname is taken'); else if (r.error) toast('Nicknames: letters, digits and spaces'); else { $('nick').value = ''; toast('Join code for ' + r.alias + ': ' + r.code) } }
+  else if (b.id === 'btn-built') { const r = await api('built', { x: $('bx').value, y: $('by').value, z: $('bz').value }); $('built').querySelector('tbody').innerHTML = r.entries.map((x) => `<tr><td>${x.who}</td><td>${x.action} ${x.block}</td><td class="dim">${ago(x.t)}</td></tr>`).join('') || '<tr><td class="dim">No edits at that block in the last 7 days.</td></tr>'; return }
+  else if (b.id === 'btn-stop') { if (confirm('Stop the server? Everyone is disconnected; worlds are saved.')) { await api('stop', {}); toast('Stopped. You can close this tab.') } return }
+  else return
+  refresh()
+})
+$('cfg').addEventListener('change', async () => { await api('world/cfg', { cfg: $('cfg').value }); toast('Rules apply to the next players who join'); refresh() })
+$('lock').addEventListener('change', async () => { await api('lock', { on: $('lock').checked }); refresh() })
+refresh(); setInterval(refresh, 2000)
+</script>
+</body>
+</html>
