@@ -262,7 +262,7 @@ assert.match(page, /Q turns the base left/);
 assert.match(page, /in 3D/);
 assert.match(page, /The 3D arm turns on its base/);
 assert.match(page, /scene-labels/);
-assert.match(page, /font:\s*600 14px/);
+assert.match(page, /font:\s*700 16px\/1\.2 "IBM Plex Mono"/); // 0055: floor labels are 16px
 assert.match(page, /fill:\s*none/);
 assert.match(page, /star\.classList\.toggle\("is-on", i <= view\.stars\)/);
 const wonStars = { kind: "won", n: 3, note: "The shoulder matches the mark. 1 block, 0.5 s." };
@@ -357,7 +357,7 @@ assert.doesNotMatch(page, /LeRobot/i);
 assert.doesNotMatch(page, /butter/i);
 assert.doesNotMatch(page, /blur\(/i);
 assert.doesNotMatch(page, /shake/i);
-assert.equal((page.match(/box-shadow/g) || []).length, 1);
+assert.ok((page.match(/box-shadow/g) || []).length <= 1); // 0055: the E-STOP is matte now, so its shadow is gone
 assert.match(hub, /href="\/berty-bizzy\/"/);
 assert.match(hub, /data-door="\/berty-bizzy\/"[^>]*><a href="\/berty-bizzy\/">Berty &amp; Bizzy <strong>v1\.7\.0<\/strong>/);
 assert.doesNotMatch(hub, /href="\/pinchy\/"/);

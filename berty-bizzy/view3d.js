@@ -126,6 +126,24 @@
   function addLabel(parent, text, position) {
     labelQueue.push({ text: text, position: position.clone() });
   }
+  // 0055: the place to go ("thick mark") has a label that pulses gently (CSS; still when reduced motion is on).
+  function addMark(text, position) {
+    labelQueue.push({ text: text, position: position.clone(), mark: true });
+  }
+  // 0055: a thick dashed ring on the floor marks the target by shape, not only by colour.
+  var RING_MAT = null;
+  function dashedRing(radius, thick) {
+    if (!RING_MAT) RING_MAT = new THREE.MeshBasicMaterial({ color: 0x1d1b18, side: THREE.DoubleSide });
+    var g = new THREE.Group();
+    var n = 14;
+    var step = Math.PI * 2 / n;
+    for (var k = 0; k < n; k++) {
+      var seg = new THREE.Mesh(new THREE.RingGeometry(radius - thick / 2, radius + thick / 2, 6, 1, k * step, step * 0.6), RING_MAT);
+      seg.rotation.x = -Math.PI / 2;
+      g.add(seg);
+    }
+    return g;
+  }
   // Two small line icons, one per arm, so the chips tell the arms apart without colour.
   var CHIP_ICON = {
     berty: '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4 20h7M7 20V11l8-5 4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="11" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/></svg>',
@@ -159,7 +177,10 @@
     var placed = [];
     var i, item, p, x, y, span, box, k, dx, dy, ang, rad, ok, j, other;
     // The two arm chips are placed first, so a crowded view never drops them.
-    var ordered = labelQueue.filter(function (q) { return q.chip; }).concat(labelQueue.filter(function (q) { return !q.chip; }));
+    // The target's label goes right after them (0055), so a small view keeps the place to go.
+    var ordered = labelQueue.filter(function (q) { return q.chip; })
+      .concat(labelQueue.filter(function (q) { return !q.chip && q.mark; }))
+      .concat(labelQueue.filter(function (q) { return !q.chip && !q.mark; }));
     for (i = 0; i < ordered.length; i++) {
       item = ordered[i];
       p = item.position.clone().project(camera);
@@ -173,7 +194,10 @@
         // On a small view the arm tags show only the name, so they cover less of the arms.
         span.lastChild.textContent = h < 170 ? String(item.text).split(" \u00b7 ")[0] : item.text;
         if (item.title) span.title = item.title;
-      } else span.textContent = item.text;
+      } else {
+        span.textContent = item.text;
+        if (item.mark) span.className = "is-mark";
+      }
       span.style.left = x + "px";
       span.style.top = y + "px";
       layer.appendChild(span);
@@ -183,8 +207,8 @@
       ok = false;
       var cx = x;
       var cy = y;
-      for (k = 0; k < 16 && !ok; k++) {
-        rad = k === 0 ? 0 : 8 + k * 12;
+      for (k = 0; k < 30 && !ok; k++) {
+        rad = k === 0 ? 0 : 8 + k * 9;
         ang = k * 2.4;
         dx = Math.cos(ang) * rad;
         dy = Math.sin(ang) * rad * 0.7;
@@ -689,7 +713,10 @@
       if (ghostRig.root.visible) {
         var code = document.documentElement.lang || "en";
         var targetWord = root.PINCHY && root.PINCHY.uiText ? root.PINCHY.uiText(code, "Target") : "Target";
-        addLabel(ghostRig.root, "\u25CC " + targetWord, new THREE.Vector3(0, 28, 36));
+        // 0055: the Target label sits at the ghost claw, over the dashed ring on the floor below it.
+        var gt = level.target;
+        var gp = root.PINCHY.pose({ base: gt.base, shoulder: gt.shoulder, elbow: gt.elbow, wrist: gt.wrist || 0, open: gt.open !== false, gap: root.PINCHY.LAYOUT.gapOpen });
+        addMark("\u25CC " + targetWord, vec(gp.cx, gp.cy + 18, gt.base));
       }
       var lang = document.documentElement.lang || "en";
       var T = root.PINCHY.uiText;
@@ -735,7 +762,12 @@
         );
         mesh.position.copy(spot);
         parent.add(mesh);
-        addLabel(parent, name, spot.clone().setY(11), 22, 6);
+        if (marked) {
+          var spotRing = dashedRing(19, 4);
+          spotRing.position.copy(spot).setY(1.9);
+          parent.add(spotRing);
+          addMark(name, spot.clone().setY(11));
+        } else addLabel(parent, name, spot.clone().setY(11), 22, 6);
       }
     }
     var bins = G.binsOf(level);
