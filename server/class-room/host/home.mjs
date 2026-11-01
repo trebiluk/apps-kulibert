@@ -13,7 +13,9 @@ import './runtime.mjs'
 import { acceptKey, roomCtx, worldCtx, rpc } from './runtime.mjs'
 import { Room } from '../src/room.js'
 import { World } from '../src/world-do.js'
-import { PROTOCOL } from '../src/protocol.js'
+import { PROTOCOL, parsePos } from '../src/protocol.js'
+import { decodeChunk, cellAt } from '../src/world/chunks.js'
+import { LIMITS } from '../src/rules.js'
 import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
 import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
@@ -176,9 +178,34 @@ function importWorld(req, res, name) {
 // ---------------------------------------------------------------- session (the door) + owner tools
 let lastCode = null                  // shown on the owner page until the owner dismisses it; never written to disk
 let rules = makeRuleset(cfg.ruleset)   // the live ruleset (host/rules.mjs); hello carries it, a change is broadcast
-const RULE_FRAMES = new Set(['craft', 'st', 'hit'])   // home-only frames the Room does not know; answered here
+const RULE_FRAMES = new Set(['craft', 'st', 'hit'])   // (+ home-only: chat, ev, all)   // home-only frames the Room does not know; answered here
 const chatGate = makeChatGate()       // typed chat: one gap per player; nothing is stored
 const events = makeEvents()           // shared boss fight news
+// The whole map for a joining game (home only; the school path asks chunk by chunk). Every changed cell of the open
+// world plus the seq it is good up to; live ops after that seq come through the normal fan-out. One per player / 5 s.
+const ALL_BATCH = 4000, ALL_GAP_MS = 5000
+const allAsked = new Map()   // ref -> last time
+function worldCells() {
+  const w = cfg.world && worlds.get(cfg.world); if (!w) return null
+  const h = w.obj.hub
+  const head = h.world.head()
+  try { h.flush() } catch (e) {}
+  const out = []
+  for (const { cx, cz } of w.ctx.db.prepare('SELECT cx, cz FROM chunks').all()) {
+    const r = h.world.chunk(cx, cz); if (r.error) continue
+    const c = decodeChunk(r.d); if (c.error) continue
+    for (const [idx, id] of c.edits) { const { x, y, z } = cellAt(cx, cz, idx); out.push([x, y, z, id]) }
+  }
+  return { head, cells: out }
+}
+function sendAll(ws, p) {
+  const t = Date.now(), last = allAsked.get(p.ref) || 0
+  if (t - last < ALL_GAP_MS) { try { ws.send(JSON.stringify({ t: 'no', c: 'all-slow' })) } catch (e) {} ; return }
+  allAsked.set(p.ref, t)
+  const wc = worldCells(); if (!wc) return
+  const n = Math.max(1, Math.ceil(wc.cells.length / ALL_BATCH))
+  for (let i = 0; i < n; i++) { try { ws.send(JSON.stringify({ t: 'all', s: wc.head, i, n, c: wc.cells.slice(i * ALL_BATCH, (i + 1) * ALL_BATCH) })) } catch (e) { return } }
+}
 const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
@@ -238,7 +265,17 @@ function homeFrame(room, ws, p, text) {
   const staff = p.role !== 'kid'
   const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
   if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } return false }
-  if (m.t === 'p') { const why = rules.flyWhy(m, staff); if (why) { no(why); return true } return false }
+  if (m.t === 'p') {
+    const why = rules.flyWhy(m, staff); if (why) { no(why); return true }
+    // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
+    // teleports would trip the school's speed check, which kicks after 5 strikes. Sequence must still go up.
+    if (room.frozen && !staff && p.pos) return false                       // a freeze still snaps back (Room)
+    const pos = parsePos(m)
+    if (!pos || !Number.isInteger(m.q) || m.q <= p.lastQ || pos.y < LIMITS.yMin || pos.y > LIMITS.yMax) return false   // the Room refuses it
+    p.lastQ = m.q; p.pos = pos; p.posAt = Date.now(); p.dirty = true
+    return true
+  }
+  if (m.t === 'all') { sendAll(ws, p); return true }
   if (RULE_FRAMES.has(m.t)) {
     const why = m.t === 'craft' ? rules.craftWhy(m, staff) : m.t === 'st' ? rules.stationWhy(m, staff) : rules.hitWhy(m, staff)
     if (why) no(why, m.t === 'st' ? { k: m.k } : {}); else try { ws.send(JSON.stringify({ t: 'ok', a: m.t })) } catch (e) {}
@@ -349,7 +386,7 @@ async function handle(req, res) {
       case '/owner/ruleset': return json(res, RULESETS.includes(b.ruleset) ? 200 : 400, setRuleset(String(b.ruleset || '')))
       case '/owner/rule': { const r = setRule(String(b.id || ''), b.v); return json(res, r.error ? 400 : 200, r) }
       case '/owner/rules': return json(res, 200, { ...rules.snapshot(), presets: Object.keys(PRESETS) })
-      case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws' }) : json(res, 400, { error: 'no session' }) }
+      case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws', world: cfg.world, name: String(b.name || 'Owner').slice(0, 20) }) : json(res, 400, { error: 'no session' }) }
       case '/owner/world/open': return json(res, 200, openWorld(String(b.name || '')))
       case '/owner/world/close': endSession(); closeWorld(); return json(res, 200, { ok: true })
       case '/owner/world/backup': return json(res, 200, backupWorld(String(b.name || cfg.world || '')))
@@ -401,7 +438,7 @@ server.on('upgrade', async (req, tcp, head) => {
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 

@@ -217,6 +217,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { createAvatars } from './home/avatars.js' // HOME_HOST only (part 7): unused, so dropped, in the student build
 import * as HOME from './home/home.js' // HOME_HOST only: every use is inside `if (__HOME_HOST__)`, so the student build drops it (tools/home-leak-check.mjs)
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
@@ -2583,6 +2584,36 @@ const edits = createEdits({
   setVoxel,
   invalidate: (box) => noa.world.invalidateVoxelsInAABB(box),
 })
+// Home build (part 7): the host's map is shared. Every local edit through applyEdit (hand, tools, chop, bot) also
+// goes to the host; the host's edits come in through homeRemote() and change only this game's view: no undo entry,
+// no save mark, never sent back.
+if (__HOME_HOST__) {
+  const realApply = edits.applyEdit
+  edits.applyEdit = (ops, meta) => {
+    const send = __HOME_HOST__ && HOME.homeShared() && !(meta && meta.source === 'remote')
+    const before = send ? ops.map(([x, y, z]) => getVoxel(x, y, z)) : null
+    const group = realApply(ops, meta)
+    if (send) ops.forEach(([x, y, z, id], i) => { if (before[i] !== id && getVoxel(x, y, z) === id) { if (__HOME_HOST__) HOME.homeEdit(x, y, z, id, before[i]) } })
+    return group
+  }
+}
+function homeRemote(cells) {
+  voxelQuiet = true
+  try { for (const c of cells) { if (getVoxel(c[0], c[1], c[2]) !== c[3]) setVoxel(c[0], c[1], c[2], c[3]) } } finally { voxelQuiet = false }
+}
+// The host's map replaces this game's world: same generated terrain (same game version) + every cell the host has.
+async function homeShare() {
+  const w = await (__HOME_HOST__ && HOME.homeWorld())
+  if (!w) return
+  saved.clear(); edits.clear(); paintUndo()
+  homeRemote(w.cells)
+  noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
+  if (__HOME_HOST__) HOME.onHomeOps((ops) => homeRemote(ops.map((o) => [o[1], o[2], o[3], o[4]])))
+  if (__HOME_HOST__) HOME.onHomeResync((cells) => { homeRemote(cells); noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] }) })
+  if (__HOME_HOST__) HOME.onHomeRefused((x, y, z, v) => homeRemote([[x, y, z, v]]))
+  if (__HOME_HOST__) toast(HOME.homeStrings.en.in.replace('{w}', (homeSession && homeSession.world) || '').replace('{n}', (homeSession && homeSession.name) || ''))
+}
+let homeAvatars = null
 const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
 function edit(x, y, z, v) {
   if (zoneLocked(x, y, z)) return false
@@ -12435,6 +12466,12 @@ function paintBossBar() {
 }
 
 noa.on('beforeRender', (dt) => {
+  if (__HOME_HOST__ && homeSession && HOME.homeShared()) {   // part 7: send my spot (~5 Hz, throttled in home.js), draw the others
+    const me = playerPos()
+    if (me && __HOME_HOST__) HOME.homePos(me[0], me[1], me[2], noa.camera.heading, flying)
+    if (!homeAvatars) homeAvatars = createAvatars({ scene: () => noa.rendering.getScene(), addMesh: (m) => noa.rendering.addMeshToScene(m, false), toLocal: (p) => noa.globalToLocal(p, null, []) })
+    homeAvatars.step(__HOME_HOST__ ? HOME.homePlayers() : [], 1000 / 60)
+  }
   if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar(); if (__HOME_HOST__) HOME.homeBossTick(mobs && mobs.list ? mobs.list().find((m) => m.kind === 'overseer') || null : null) }
   // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
@@ -13233,7 +13270,9 @@ window.__bertopiaRotateCheck = function () {
 let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
 ;(bootLoad = (async () => {
   if (__HOME_HOST__ && HOME.isHomePage()) { try { HOME.registerHomeRules(); HOME.setHomeToast(toast); homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
-  return load()
+  if (__HOME_HOST__ && homeSession) WORLD = HOME.homeSlot()   // this host world's own slot: your single-player world is never loaded or saved over
+  await load()
+  if (__HOME_HOST__ && homeSession) await homeShare()
 })()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()

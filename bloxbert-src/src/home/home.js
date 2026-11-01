@@ -166,7 +166,7 @@ function connect(j, T, version, resolve, root) {
   hello = null; info = { name: j.name, world: j.world, ruleset: j.ruleset, ws: j.ws, server: j.version }
   setHomeEndpoints({ ws: j.ws, join: j.ws.replace(/^ws/, 'http').replace(/\/rt\/ws$/, '/join') })
   sock = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } else homeFrame(f) }
+  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; shareHello(f); if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } else homeFrame(f) }
   sock.onclose = (e) => { if (!hello && root && root.querySelector('#hj-out')) badText(root.querySelector('#hj-out'), e.reason ? errText(T, e.reason) : T.errs.network); hello = null }
   sock.onerror = () => {}
   const beat = setInterval(() => { if (!sock || sock.readyState !== 1) return clearInterval(beat); try { sock.send(JSON.stringify({ v: 0, t: 'ping', n: ++q })) } catch (e) {} }, 10000)
@@ -250,7 +250,97 @@ function bossNews(f) {
 }
 // the socket's home-only frames (called from connect's onmessage)
 function homeFrame(f) {
+  if (shareFrame(f)) return
   if (f.t === 'chat') chatLine(f)
   else if (f.t === 'ev') bossNews(f)
   else if (f.t === 'no' && typeof f.c === 'string' && (f.c.startsWith('chat-') || f.c === 'rule:chat.typed')) chatRefused(f)
+}
+
+
+// ---------------------------------------------------------------- shared world (part 7) — home only
+// The host's map is the map: the game asks for every changed cell once ({t:'all'}), applies them over the same
+// generated terrain, then applies live ops ({t:'o'}) after that point. Your edits go to the host ({t:'b'}), paced
+// under the server's edit rate; a refused one is put back. Positions go out ~5 times a second; the other players
+// come in through hello / join / leave / snapshots. main.js wires these into the game behind __HOME_HOST__.
+const EDITS_PER_SEC = 8, POS_MS = 200
+let world = null              // { head, cells } once the download finished
+let worldWait = null, worldBuf = null, worldParts = null, heldOps = []
+let opsFn = null, resyncFn = null, refusedFn = null
+const others = new Map()      // id -> { a, x, y, z, r, f, at }
+let posQ = 0, lastPos = null, lastPosAt = 0
+const editQ = [], pendingEdits = new Map()
+let editTimer = null
+
+function shareHello(f) {
+  others.clear()
+  for (const p of f.players || []) others.set(p.i, { a: p.a, ...(Array.isArray(p.p) ? posOf(p.p) : {}), at: Date.now() })
+  askWorld()
+}
+const posOf = (a) => ({ x: a[0], y: a[1], z: a[2], r: a[3], f: a[4] })
+function askWorld() { worldParts = []; worldBuf = null; heldOps = []; homeSend({ t: 'all' }) }
+function shareFrame(f) {
+  if (f.t === 'all') {
+    if (!worldParts) worldParts = []
+    worldParts[f.i] = f.c
+    if (worldParts.filter(Boolean).length === f.n) {
+      const fresh = { head: f.s, cells: [].concat(...worldParts) }
+      const again = !!world; world = fresh; worldParts = null
+      const later = heldOps.filter((o) => o[0] > fresh.head); heldOps = []
+      if (again && resyncFn) resyncFn(fresh.cells)
+      if (worldWait) { worldWait(fresh); worldWait = null }
+      if (later.length && opsFn) opsFn(later)
+    }
+    return true
+  }
+  if (f.t === 'o') { if (!world || worldParts) heldOps.push(...f.o); else if (opsFn) opsFn(f.o); for (const o of f.o) pendingEdits.delete(o[1] + ',' + o[2] + ',' + o[3]); return true }
+  if (f.t === 'rs') { askWorld(); return true }
+  if (f.t === 'join') { others.set(f.i, { a: f.a, at: Date.now() }); return true }
+  if (f.t === 'leave') { others.delete(f.i); return true }
+  if (f.t === 's') {
+    if (f.f) for (const id of [...others.keys()]) if (!f.p.some((p) => p[0] === id)) others.delete(id)
+    for (const p of f.p) { const o = others.get(p[0]) || { a: '' }; Object.assign(o, posOf(p.slice(1)), { at: Date.now() }); others.set(p[0], o) }
+    return true
+  }
+  if (f.t === 'no' && Number.isInteger(f.x) && Number.isInteger(f.y) && Number.isInteger(f.z)) {
+    const k = f.x + ',' + f.y + ',' + f.z, was = pendingEdits.get(k)
+    if (was !== undefined) { pendingEdits.delete(k); if (refusedFn) refusedFn(f.x, f.y, f.z, Number.isInteger(f.cur) ? f.cur : was, f.c) }
+    return true
+  }
+  return false
+}
+// true while this game is joined to a home server (main.js then plays the host's map)
+export const homeShared = () => !!(sock && hello)
+// the map, once: -> Promise<{ head, cells: [[x,y,z,id], ...] }>
+export function homeWorld() { return world && !worldParts ? Promise.resolve(world) : new Promise((r) => { worldWait = r }) }
+export function onHomeOps(fn) { opsFn = fn }            // fn([[s,x,y,z,id], ...]) live edits, yours included (echo)
+export function onHomeResync(fn) { resyncFn = fn }      // fn(cells) the map again after a gap
+export function onHomeRefused(fn) { refusedFn = fn }    // fn(x,y,z,idToPutBack,code)
+// one local edit -> the host. b = the block it replaced (the host checks it). Paced at 8/s; a position goes first.
+export function homeEdit(x, y, z, id, b) {
+  if (!homeShared()) return
+  editQ.push({ x, y, z, id, b }); pendingEdits.set(x + ',' + y + ',' + z, b)
+  if (!editTimer) drainEdits()
+}
+function drainEdits() {
+  if (!editQ.length || !homeShared()) { editTimer = null; return }
+  if (lastPos) sendPos(true)
+  const e = editQ.shift()
+  homeSend({ t: 'b', x: e.x, y: e.y, z: e.z, id: e.id, b: e.b })
+  editTimer = setTimeout(drainEdits, 1000 / EDITS_PER_SEC)
+}
+// the local player's spot; sent at most every 200 ms (or right before an edit, so the host's reach check is fresh)
+export function homePos(x, y, z, r, flying) { lastPos = { x, y, z, r, f: flying ? 1 : 0 }; if (Date.now() - lastPosAt >= POS_MS) sendPos() }
+function sendPos(force) {
+  if (!lastPos || !homeShared()) return
+  if (!force && Date.now() - lastPosAt < POS_MS) return
+  lastPosAt = Date.now()
+  homeSend({ t: 'p', q: ++posQ, x: lastPos.x, y: lastPos.y, z: lastPos.z, r: lastPos.r, f: lastPos.f })
+}
+// the other players for drawing: [{ id, name, x, y, z, r, f }] (only those with a known position)
+export const homePlayers = () => [...others].filter(([, o]) => Number.isFinite(o.x)).map(([id, o]) => ({ id, name: o.a, x: o.x, y: o.y, z: o.z, r: o.r || 0, f: o.f || 0 }))
+// the local save slot for this host's world: your bag and spot per host world, never your single-player world
+export function homeSlot() {
+  const k = String((info && info.ws) || '') + '|' + String((info && info.world) || '')
+  let h = 0; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0
+  return 'home-' + h.toString(36)
 }
