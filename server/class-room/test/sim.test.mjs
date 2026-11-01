@@ -41,19 +41,20 @@ test('sim advances the day clock by elapsed time, nothing before the first step'
   assert.equal(world.clock(), 15000)
 })
 
-test('ovens and belts advance only in chunks that hold a machine; plain chunks are untouched', () => {
+// Part 2 (items): an oven's state is its slots now (test/oven.test.mjs); these P4 timing tests use belts.
+test('machines advance only in chunks that hold one; plain chunks are untouched', () => {
   const { world, db } = fresh()
-  put(world, 1, 64, 1, OVEN)      // chunk 0,0
+  put(world, 1, 64, 1, BELT)      // chunk 0,0
   put(world, 20, 64, 1, BELT)     // chunk 1,0
   put(world, 40, 64, 1, STONE)    // chunk 2,0: no machine
   world.sim(T0)
   const head = world.head()
-  world.sim(T0 + OVEN_MS)         // one bake, 20 belt steps
+  world.sim(T0 + OVEN_MS)         // 20 belt steps
   assert.equal(world.machineChunks(), 2)
   world.flush()
   const oven = machine(world, 1, 64, 1)
-  assert.ok(oven, 'oven row saved in its chunk')
-  assert.deepEqual(stateOf(OVEN, oven[2]), { done: 1 })
+  assert.ok(oven, 'machine row saved in its chunk')
+  assert.deepEqual(stateOf(BELT, oven[2]), { step: 20 % BELT_SLOTS })
   const belt = chunkOf(world, 1, 0).m[0]
   assert.deepEqual(stateOf(BELT, belt[2]), { step: 20 % BELT_SLOTS })
   assert.deepEqual(chunkOf(world, 2, 0).m, [], 'no machine rows in a plain chunk')
@@ -66,35 +67,35 @@ test('ovens and belts advance only in chunks that hold a machine; plain chunks a
 
 test('a machine that is broken leaves the index and its row; one placed later starts at zero', () => {
   const { world } = fresh()
-  put(world, 1, 64, 1, OVEN)
+  put(world, 1, 64, 1, BELT)
   world.sim(T0)
-  world.sim(T0 + OVEN_MS)
-  world.apply([{ x: 1, y: 64, z: 1, id: 0, b: OVEN }], 7, T0 + OVEN_MS)
+  world.sim(T0 + BELT_MS)
+  world.apply([{ x: 1, y: 64, z: 1, id: 0, b: BELT }], 7, T0 + BELT_MS)
   assert.equal(world.machineChunks(), 0)
-  world.sim(T0 + 2 * OVEN_MS)
+  world.sim(T0 + 2 * BELT_MS)
   world.flush()
   assert.deepEqual(chunkOf(world, 0, 0).m, [])
-  put(world, 1, 64, 1, OVEN, T0 + 2 * OVEN_MS)
-  world.sim(T0 + 2 * OVEN_MS + 1)
-  assert.deepEqual(stateOf(OVEN, machine(world, 1, 64, 1) ? machine(world, 1, 64, 1)[2] : 0), { done: 0 })
+  put(world, 1, 64, 1, BELT, T0 + 2 * BELT_MS)
+  world.sim(T0 + 2 * BELT_MS + 1)
+  assert.deepEqual(stateOf(BELT, machine(world, 1, 64, 1) ? machine(world, 1, 64, 1)[2] : 0), { step: 0 })
 })
 
 test('catch-up after a sleep is capped at 60 minutes of world time, for the clock and for every machine', () => {
   const { world } = fresh()
-  put(world, 1, 64, 1, OVEN)
+  put(world, 1, 64, 1, BELT)
   world.sim(T0)
   world.sim(T0 + 3 * DAY)        // three days idle, then someone links
   assert.equal(world.clock(), CATCHUP_MS)
   world.flush()
-  assert.deepEqual(stateOf(OVEN, machine(world, 1, 64, 1)[2]), { done: CATCHUP_MS / OVEN_MS })
+  assert.equal(machine(world, 1, 64, 1)[2], CATCHUP_MS, 'the machine counter got exactly the cap')
   assert.equal(grant(0, 10, 60), 10)
   assert.equal(grant(0, 100, 60), 60)
   assert.equal(grant(100, 10, 60), 0, 'a clock that went backwards grants nothing')
 })
 
-test('a catch-up equals a never-slept run (within the cap): same clock, same oven and belt states', () => {
+test('a catch-up equals a never-slept run (within the cap): same clock, same machine states', () => {
   const slept = fresh(), awake = fresh()
-  for (const w of [slept.world, awake.world]) { put(w, 1, 64, 1, OVEN); put(w, 3, 64, 1, BELT); w.sim(T0) }
+  for (const w of [slept.world, awake.world]) { put(w, 1, 64, 1, BELT); put(w, 3, 64, 1, BELT); w.sim(T0) }
   // 40 minutes: the awake world steps every 7.5 s; the slept world does one catch-up
   const end = T0 + 40 * MIN
   for (let t = T0 + SIM_MS; t <= end; t += SIM_MS) awake.world.sim(t)
@@ -104,22 +105,22 @@ test('a catch-up equals a never-slept run (within the cap): same clock, same ove
   assert.equal(slept.world.clock(), awake.world.clock())
   const s = chunkOf(slept.world, 0, 0).m, a = chunkOf(awake.world, 0, 0).m
   assert.deepEqual(s.map((r) => [r[0], r[1], stateOf(r[1], r[2])]), a.map((r) => [r[0], r[1], stateOf(r[1], r[2])]))
-  assert.deepEqual(stateOf(OVEN, s[0][2]), { done: 120 })
+  assert.equal(s[0][2], 40 * MIN)
   assert.deepEqual(stateOf(BELT, s[1][2]), { step: (40 * MIN / BELT_MS) % BELT_SLOTS })
 })
 
 test('a step handles at most 64 machine chunks, round robin; each chunk advances by its own elapsed time', () => {
   const { world } = fresh()
-  for (let i = 0; i < 70; i++) put(world, i * 16 + 1, 64, 1, OVEN)   // 70 chunks
+  for (let i = 0; i < 70; i++) put(world, i * 16 + 1, 64, 1, BELT)   // 70 chunks
   assert.equal(world.sim(T0).chunks, 64)              // starts chunks 0..63
   world.flush()
   assert.equal(chunkOf(world, 69, 0).m.length, 0, 'chunk 69 not reached in the first round')
   assert.equal(world.sim(T0 + OVEN_MS).chunks, 64)    // 64..69 start, 0..57 get one bake
   assert.equal(world.sim(T0 + 2 * OVEN_MS).chunks, 64) // 58..69 and 0..51
   world.flush()
-  assert.deepEqual(stateOf(OVEN, machine(world, 1, 64, 1)[2]), { done: 2 }, 'chunk 0: stepped at T0, +1, +2')
-  assert.deepEqual(stateOf(OVEN, machine(world, 58 * 16 + 1, 64, 1)[2]), { done: 2 }, 'chunk 58: started at T0, next seen at +2, granted both bakes')
-  assert.deepEqual(stateOf(OVEN, machine(world, 69 * 16 + 1, 64, 1)[2]), { done: 1 }, 'chunk 69: started at +1, seen at +2')
+  assert.equal(machine(world, 1, 64, 1)[2], 2 * OVEN_MS, 'chunk 0: stepped at T0, +1, +2')
+  assert.equal(machine(world, 58 * 16 + 1, 64, 1)[2], 2 * OVEN_MS, 'chunk 58: started at T0, next seen at +2, granted both steps')
+  assert.equal(machine(world, 69 * 16 + 1, 64, 1)[2], OVEN_MS, 'chunk 69: started at +1, seen at +2')
 })
 
 test('an older world without an index gets one built from its chunks on first use', () => {
@@ -137,14 +138,14 @@ test('sim results reach rooms through the fan-out like any edit', async () => {
   const sent = []
   const hub = makeHub({ db: memDb(), send: async (id, msg) => { sent.push([id, msg]); return true }, gen: () => 0 })
   hub.link('room-a')
-  hub.world.apply([{ x: 1, y: 64, z: 1, id: OVEN, b: 0 }], 7, T0)
+  hub.world.apply([{ x: 1, y: 64, z: 1, id: BELT, b: 0 }], 7, T0)
   await hub.fan.tick(T0)
   hub.sim(T0)
-  hub.sim(T0 + OVEN_MS)
-  await hub.fan.tick(T0 + OVEN_MS)
+  hub.sim(T0 + BELT_MS)
+  await hub.fan.tick(T0 + BELT_MS)
   const ops = sent.flatMap(([, m]) => m.ops || [])
   // the kid's edit, then a touch when the machine starts counting, then a touch when a bake is done
-  assert.deepEqual(ops.map((o) => [o.x, o.y, o.z, o.i, o.w]), [[1, 64, 1, OVEN, 7], [1, 64, 1, OVEN, 0], [1, 64, 1, OVEN, 0]])
+  assert.deepEqual(ops.map((o) => [o.x, o.y, o.z, o.i, o.w]), [[1, 64, 1, BELT, 7], [1, 64, 1, BELT, 0], [1, 64, 1, BELT, 0]])
 })
 
 test('7-day history: every edit has a row, rows older than 7 days are purged, newer ones stay', () => {
@@ -227,13 +228,13 @@ test('World object: a kid joining mid-period sees the correct world after a slee
   const a = fakeWorld(T0)
   try {
     await a.w.link('room-a')
-    a.w.hub.world.apply([{ x: 1, y: 64, z: 1, id: OVEN, b: 0 }], 7, T0)
+    a.w.hub.world.apply([{ x: 1, y: 64, z: 1, id: BELT, b: 0 }], 7, T0)
     a.w.hub.sim(T0)
     a.w.unlink('room-a'); clearInterval(a.w.timer); a.w.timer = null
     a.tick(25 * MIN)
     await a.w.link('room-b')                        // wake 25 minutes later
     const row = chunkOf(a.w.hub.world, 0, 0).m[0]
-    assert.deepEqual(stateOf(OVEN, row[2]), { done: 25 * MIN / OVEN_MS })
+    assert.equal(row[2], 25 * MIN)
     assert.equal(a.w.hub.clock(), 25 * MIN)
   } finally { clearInterval(a.w.timer); a.w.timer = null; a.restore() }
 })

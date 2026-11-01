@@ -13,6 +13,38 @@ export const validMove = (n) => Number.isInteger(n) && n >= 1 && n <= MOVE_MAX
 
 export const emptySlots = (id) => Array.from({ length: slotsOf(id) }, () => null)
 
+// ---- Oven (part 2). Slots have meaning: 0 input, 1 fuel, 2 output. Numbers from the game:
+// recipes from bloxbert-src/src/data/recipes.js (at: 'oven'), fuel from stations.js BAKES, ids from
+// data/ids.js FROZEN. Only items with a frozen numeric id can live on the server, so the farm-pack oven
+// recipes (flour, bread, cupcake) and pinecone fuel wait for an item-id table.
+export const OVEN = 23
+export const OVEN_IN = 0, OVEN_FUEL = 1, OVEN_OUT = 2
+export const FUEL = { 10: 1, 11: 4, 5: 8 }                      // planks 1 bake, log 4, coal 8
+export const OVEN_RECIPES = {
+  6: { n: 2, out: 20, k: 1, ms: 5000 },                         // sand x2 -> glass x1, 5 s
+  19: { n: 2, out: 8, k: 1, ms: 5000 },                         // red sand x2 -> red brick x1, 5 s
+}
+// Which slot an item may be put into. -> slot index, or null if this container does not take it there.
+export function slotFor(containerId, item) {
+  if (containerId !== OVEN) return undefined                    // undefined = any slot (a box)
+  if (Object.prototype.hasOwnProperty.call(FUEL, item)) return OVEN_FUEL
+  if (Object.prototype.hasOwnProperty.call(OVEN_RECIPES, item)) return OVEN_IN
+  return null                                                   // the output slot is never put into
+}
+// Put into a container, honouring slot roles. -> { slots, left } or { error:'slot' }
+export function putInto(containerId, slots, item, n) {
+  const at = slotFor(containerId, item)
+  if (at === undefined) return put(slots, item, n)
+  if (at === null) return { error: 'slot' }
+  const out = slots.map((q) => (q ? { ...q } : null))
+  const cur = out[at]
+  if (cur && cur.id !== item) return { slots: out, left: n }    // the slot holds something else: nothing fits
+  const have = cur ? cur.n : 0
+  const k = Math.min(STACK - have, n)
+  if (k > 0) out[at] = { id: item, n: have + k }
+  return { slots: out, left: n - k }
+}
+
 // Put n of item into slots: top up matching stacks first, then empty slots. -> { slots, left }
 export function put(slots, id, n) {
   const out = slots.map((s) => (s ? { ...s } : null))

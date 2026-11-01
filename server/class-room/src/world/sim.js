@@ -2,9 +2,10 @@
 // machine (oven, belt) a kid has placed advance on the server, by elapsed time, whether or not
 // anyone is online. Nothing here touches storage or sockets; world.js / world-do.js call it.
 //
-// Model (block ids only live on the server, so a machine is a counter, not an inventory):
-//   oven  (id 23): prog = ms of work; done = floor(prog / OVEN_MS) bakes finished. The client maps
-//                  "done" to finished items. Ovens finish for offline kids (Diego, 0068).
+// Model:
+//   oven  (id 23): since item transport part 2 an oven bakes real items in its slots (oven.js; world.js
+//                  runs bake() with the same capped grant before this step). prog = ms into the current
+//                  bake, left = bakes left in the burning fuel item. Ovens finish for offline kids (0068).
 //   belt  (id 74): prog = ms of motion; step = floor(prog / BELT_MS) mod BELT_SLOTS, the belt phase.
 // A machine is "working" when it is in the chunk's edits (a kid placed it). There is no power model.
 //
@@ -32,8 +33,10 @@ export function machinesIn(edits) {
 }
 
 // One machine's public state from its counter.
+// Part 2: an oven's public state is its slots (items.js), changed by bake() in world.js, so the
+// counter here only keeps the oven's row alive; it does not advance on its own any more.
 export function stateOf(id, prog) {
-  if (MACHINES[id] === 'oven') return { done: Math.floor(prog / OVEN_MS) }
+  if (MACHINES[id] === 'oven') return {}
   if (MACHINES[id] === 'belt') return { step: Math.floor(prog / BELT_MS) % BELT_SLOTS }
   return {}
 }
@@ -47,8 +50,9 @@ export function stepChunk(edits, m, nowMs, cap = CATCHUP_MS) {
   for (const { idx, id } of machinesIn(edits)) {
     const prev = m.get(idx)
     if (!prev || prev.id !== id) { next.set(idx, { id, prog: 0, at: nowMs }); changed.push(idx); continue }
-    const prog = prev.prog + grant(prev.at, nowMs, cap)
-    next.set(idx, { id, prog, at: nowMs })
+    // ovens: world.js already ran bake() with this grant; their counter is the bake progress it left
+    const prog = MACHINES[id] === 'oven' ? prev.prog : prev.prog + grant(prev.at, nowMs, cap)
+    next.set(idx, { ...prev, id, prog, at: nowMs })
     if (JSON.stringify(stateOf(id, prog)) !== JSON.stringify(stateOf(id, prev.prog))) changed.push(idx)
   }
   return { m: next, changed }
@@ -61,11 +65,15 @@ export function touchOps(cx, cz, m, changed) {
 }
 
 // Machine rows for a chunk save: [[idx, id, prog, at], ...]. decodeMachines reads them back.
-export const encodeMachines = (m) => [...m].map(([idx, s]) => [idx, s.id, s.prog, s.at])
+export const encodeMachines = (m) => [...m].map(([idx, s]) => (s.left ? [idx, s.id, s.prog, s.at, s.left] : [idx, s.id, s.prog, s.at]))
 export function decodeMachines(rows) {
   const m = new Map()
   for (const r of Array.isArray(rows) ? rows : []) {
-    if (Array.isArray(r) && Number.isInteger(r[0]) && Number.isInteger(r[1]) && Number.isFinite(r[2]) && Number.isFinite(r[3])) m.set(r[0], { id: r[1], prog: r[2], at: r[3] })
+    if (Array.isArray(r) && Number.isInteger(r[0]) && Number.isInteger(r[1]) && Number.isFinite(r[2]) && Number.isFinite(r[3])) {
+      const row = { id: r[1], prog: r[2], at: r[3] }
+      if (Number.isInteger(r[4]) && r[4] > 0) row.left = r[4]          // oven: bakes left in the burning fuel (part 2)
+      m.set(r[0], row)
+    }
   }
   return m
 }
