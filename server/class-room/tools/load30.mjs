@@ -59,7 +59,7 @@ function connect(label, token, { origin = ORIGIN, protocols } = {}) {
     }
     const ws = new WebSocket(URL, protocols ?? [PROTOCOL, token], { origin })
     c.ws = ws
-    ws.on('unexpected-response', (req, res) => { c.status = res.statusCode; res.resume(); resolve(c) })
+    ws.on('unexpected-response', (req, res) => { c.status = res.statusCode; c.body = ''; res.on('data', (d) => { c.body += d }); res.on('end', () => resolve(c)) })
     ws.on('error', () => {})
     ws.on('close', (code) => { c.closeCode = code; resolve(c) })
     ws.on('message', (data) => {
@@ -98,7 +98,8 @@ async function main() {
 
   // ---- 0. a closed room refuses kids; the teacher opens it
   const early = await connect('early-kid', await mint(99))
-  check(early.status === 403, 'before any teacher joins, a kid is refused (403 closed)')
+  // the body must say closed: a 403 for any other reason (wrong origin, config) is not this check passing
+  check(early.status === 403 && /closed/.test(early.body || ''), 'before any teacher joins, a kid is refused (403 closed)' + (early.status === 403 && !/closed/.test(early.body || '') ? ' [got 403 "' + early.body + '"]' : ''))
   const teacher = await connect('teacher', await mintTeacher())
   check(!!teacher.id, 'a teacher ticket (with a passkey claim) opens the room')
   const teacherPing = setInterval(() => teacher.ws.send(JSON.stringify({ v: 0, t: 'ping', n: ++teacher.pingN })), 10000)
