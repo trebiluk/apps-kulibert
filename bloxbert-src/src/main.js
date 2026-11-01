@@ -538,6 +538,16 @@ function layoutLane() {
   }
   lane.style.left = left + 'px'
   lane.style.right = right + 'px'
+  // 2.5.588: reserve the real hotbar height so the quest card and stick never sit on it.
+  const hot = document.getElementById('hotbar')
+  if (hot && !hot.hidden) {
+    const hr = hot.getBoundingClientRect()
+    if (hr.height > 8) {
+      document.documentElement.style.setProperty('--hotbar-h', Math.ceil(hr.height) + 'px')
+      const stick = document.getElementById('stick-pad')
+      if (stick) stick.style.bottom = 'calc(var(--hotbar-h) + 12px + env(safe-area-inset-bottom, 0px))'
+    }
+  }
   capLane()
   seatToasts()
 }
