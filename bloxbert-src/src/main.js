@@ -11381,7 +11381,7 @@ Effect.ShadersStore.bertSkyFragmentShader = [
   // clumps: a big cell decides where a cloud is, small cells inside it make the blocky outline. No grid seams.
   'if(uHillOn>0.5&&n.y>0.1){vec2 cp=n.xz/n.y*3.0+vec2(uTime*0.012,0.0);',
   'float big=fract(sin(dot(floor(cp/4.0),vec2(12.9898,78.233)))*43758.5453);float sm=fract(sin(dot(floor(cp),vec2(39.346,11.135)))*43758.5453);',
-  'float cl=step(0.72,big)*step(0.3,sm)*smoothstep(0.1,0.22,n.y);vec3 cc3=mix(vec3(0.95,0.96,0.97),uHorizon,0.3)*lum+uGlowCol*uGlowAmt*0.3;',
+  'float cl=step(0.72,big)*step(0.3,sm)*smoothstep(0.1,0.22,n.y);vec3 cc3=max(mix(vec3(0.95,0.96,0.97),uHorizon,0.3)*lum+uGlowCol*uGlowAmt*0.3,col*1.18+vec3(0.02,0.025,0.035));',
   'col=mix(col,cc3,cl*0.7);}',
   // never brighter than about #EEF3F7
   'col=min(col,vec3(0.93,0.95,0.96));',
@@ -11391,7 +11391,7 @@ Effect.ShadersStore.bertSkyFragmentShader = [
   'if(uHillOn>0.5&&n.y<0.3){float raz=atan(n.z,n.x)*0.15915494+0.5;float az=(floor(raz*64.0)+0.5)/64.0;vec3 hh=floor(texture2D(uHills,vec2(az,0.5)).rgb*0.2/0.008)*0.008;',
   'float fade=smoothstep(-0.12,0.02,n.y);',
   'vec3 mc=mix(mix(uZenith,vec3(0.40,0.43,0.50),0.6),uHorizon,0.45)*mix(0.7,1.0,lum);vec3 snow=mix(vec3(0.86,0.89,0.92),uHorizon,0.35)*lum;',
-  'float ma=step(n.y,hh.b);float tip=step(hh.b-0.024,n.y)*step(0.07,hh.b);col=mix(col,mix(uHorizon,mix(mc,snow,tip),fade),ma);',
+  'float ma=step(n.y,hh.b);float tip=step(hh.b-0.03,n.y)*step(0.075,hh.b)*step(hh.g+0.012,n.y);col=mix(col,mix(uHorizon,mix(mc,snow,tip),fade),ma);',
   'float fa=step(n.y,hh.g);col=mix(col,mix(uHorizon,uHillFar,fade),fa);',
   'float tb=floor(fract(sin(floor(raz*512.0)*91.7)*4375.85)*3.0)*0.006;',
   'float na=step(n.y,hh.r+tb);col=mix(col,mix(uHorizon,uHillNear*0.85,fade),na);}',

@@ -98,7 +98,7 @@ export const HILL_MAX = 0.2 // largest ridge height stored, as sin(elevation). A
 const RADII = [150, 320]
 const LIFT = [14, 34] // base hill height in blocks at 'near' and 'far'. Far is taller so both ridges show.
 const MOUNT_R = 640 // far mountains sit behind both ridges
-const MOUNT_LIFT = 30
+const MOUNT_LIFT = 46
 
 // Texel i looks at this compass angle, matching atan(z, x) in the sky shader.
 export function texelAngle(i, n = HILL_N) { return ((i + 0.5) / n - 0.5) * 2 * Math.PI }
@@ -130,7 +130,7 @@ export function hillSamples(heightAt, rough, cx, cz, baseY, n = HILL_N) {
     const z = Math.round(cz + Math.sin(a) * MOUNT_R)
     const big = rough(Math.round(x / 90) * 90 + 501, Math.round(z / 90) * 90 - 307)
     const small = rough(x + 911, z - 433)
-    m[i] = Math.min(HILL_MAX * 0.98, Math.max(0.03, (MOUNT_LIFT + big * 70 + small * 18) / MOUNT_R))
+    m[i] = Math.min(HILL_MAX * 0.98, Math.max(0.04, (MOUNT_LIFT + big * big * 120 + small * 16) / MOUNT_R))
   }
   for (let pass = 0; pass < 2; pass++) {
     const src = m.slice()
