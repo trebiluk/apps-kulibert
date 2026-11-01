@@ -4,7 +4,7 @@
     {
       "id": "bertopia",
       "app": "Bertopia",
-      "version": "2.5.495",
+      "version": "BT 2.5.596",
       "lane": "Game",
       "status": "Live",
       "note": "Student door is /bertopia/."
@@ -12,7 +12,7 @@
     {
       "id": "pinchy",
       "app": "Berty & Bizzy",
-      "version": "1.8.2",
+      "version": "v1.8.2",
       "lane": "Robot arm",
       "status": "Live",
       "note": "Turnable 3D view, protractor dials, compact header."
@@ -20,7 +20,7 @@
     {
       "id": "rampfill",
       "app": "Ramp & Fill",
-      "version": "RF 1.0.21",
+      "version": "RF 1.0.26",
       "lane": "Ramp",
       "status": "Live",
       "note": "Pour Lines part 3 is still open."
@@ -28,7 +28,7 @@
     {
       "id": "dj-berty",
       "app": "DJ Berty",
-      "version": "MU 2.36.60",
+      "version": "MU 2.36.65",
       "lane": "Music",
       "status": "Live",
       "note": "A click you turned on comes back."
@@ -124,7 +124,7 @@
     {
       "id": "visualizer",
       "app": "Visualizer",
-      "version": "Viz 0.9.0",
+      "version": "Viz 0.9.2",
       "lane": "",
       "status": "Live",
       "note": ""
@@ -148,7 +148,7 @@
     {
       "id": "holdit",
       "app": "HoldIt",
-      "version": "HI 1.1.22",
+      "version": "HI 1.1.24",
       "lane": "",
       "status": "Live",
       "note": ""
@@ -180,7 +180,7 @@
     {
       "id": "drawin",
       "app": "Drawin'",
-      "version": "DS 0.3.1",
+      "version": "DS 0.3.3",
       "lane": "",
       "status": "Live",
       "note": ""
@@ -188,7 +188,7 @@
     {
       "id": "catapult",
       "app": "Bertapult",
-      "version": "JC 2.4.3",
+      "version": "JC 2.4.5",
       "lane": "",
       "status": "Live",
       "note": ""
@@ -196,7 +196,7 @@
     {
       "id": "bertybots",
       "app": "Berty's Botz",
-      "version": "BB 0.19.30",
+      "version": "BB 0.19.42",
       "lane": "",
       "status": "Live",
       "note": ""
@@ -212,7 +212,7 @@
     {
       "id": "voltduel",
       "app": "Volt Duel",
-      "version": "VD 1.0.20",
+      "version": "VD 1.0.21",
       "lane": "",
       "status": "Live",
       "note": ""
