@@ -25,7 +25,7 @@ They never hear of the Verge or the Makers, and they never find a Maker Page. Th
 | **The Makers** | ❌ | 0 hits. `maker.js` is the World Maker tool, which is a different thing. |
 | Berty's Bot (teal, beeps) | ⚠️ | A bot exists (`src/bot`). Check the colour against canon. |
 | Rogue robots, "lost not angry" | ✅ | Rustbot, Keeper and Overseer are *rebooted*, not killed. The first reboot opens a Bertodex card. |
-| Rustbot / Keeper / Overseer names | ⚠️ | Not in the glossary. The canon lists Hawkbots. **Add Rustbot, Keeper and Foundry Overseer to §7.** |
+| Rustbot / Keeper / Overseer names | ✅ | Canon as of Nov 1 (Diego). LORE §3 and §7 updated, Hawkbot retired. |
 | Verge creatures (Shiver, Purrlet…) | ❌ | None in game. |
 | 8 biomes with lore lines | ❌ | Only forest and plains. No biome chip. |
 | 8 landmarks (Clock Gate, Prism Observatory…) | ❌ | The C5 Foundry arena and Console are the closest thing ("Sleeping Foundry"). |
