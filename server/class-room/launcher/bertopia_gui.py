@@ -16,6 +16,7 @@ class App:
         self.log = core.Log(debug=self.settings['debug'])
         self.node = None; self.busy = False; self.closed = False
         self.server = core.Server(on_line=lambda l: self.say(l, 'server'))
+        self.tunnel = core.Tunnel(on_line=lambda l: self.say(l, 'warn' if 'ERR' in l else 'server'))
         root.title('Bertopia Home launcher')
         root.configure(bg=BG); root.minsize(760, 600); root.geometry('900x760')
         self._style(); self._build()
@@ -55,7 +56,7 @@ class App:
 
         card = ttk.Frame(r, style='Card.TFrame', padding=14); card.pack(fill='x', padx=16, pady=6)
         self.st = {}
-        for i, (k, label) in enumerate((('node', 'Node'), ('code', 'Code'), ('game', 'Game'), ('server', 'Server'))):
+        for i, (k, label) in enumerate((('node', 'Node'), ('code', 'Code'), ('game', 'Game'), ('server', 'Server'), ('tunnel', 'Internet'))):
             ttk.Label(card, text=label, style='Key.TLabel', width=8).grid(row=i, column=0, sticky='w', pady=3)
             v = ttk.Label(card, text='checking ...', wraplength=700, justify='left'); v.grid(row=i, column=1, sticky='w', pady=3); self.st[k] = v
         card.columnconfigure(1, weight=1)
@@ -76,7 +77,7 @@ class App:
         opts = ttk.Frame(r, padding=(12, 4)); opts.pack(fill='x')
         self.vars = {}
         for k, text in (('auto_update', 'Update automatically before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS, kept up to date)"),
-                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('show_chat', 'Show chat messages in the activity feed below'), ('debug', 'Debug log (more detail in the log file)')):
+                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('tunnel', 'Let people join from the internet (Cloudflare tunnel, HTTPS; needs tunnel.json in the data folder)'), ('show_chat', 'Show chat messages in the activity feed below'), ('debug', 'Debug log (more detail in the log file)')):
             v = tk.BooleanVar(value=self.settings[k]); self.vars[k] = v
             ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).pack(anchor='w')
 
@@ -107,7 +108,7 @@ class App:
         except queue.Empty:
             pass
         if self.server.proc and not self.server.running and not self.busy:
-            code = self.server.stop(); self.say('server stopped (exit %s)' % code, 'warn' if code else 'info'); self.paint()
+            self.tunnel.stop(); code = self.server.stop(); self.say('server stopped (exit %s)' % code, 'warn' if code else 'info'); self.paint()
         self.root.after(100, self.pump)
 
     def work(self, name, fn):
@@ -124,6 +125,8 @@ class App:
     def paint(self):
         up = self.server.running
         self.set_status('server', ('running · ' + (self.server.owner_url or 'starting ...').split('?')[0].replace('/owner', '/')) if up else 'stopped', False)
+        ti = core.tunnel_info()
+        self.set_status('tunnel', ('on · https://%s/' % ti['hostname'] + ('' if self.tunnel.up else ' (connecting ...)')) if self.tunnel.running else ('off · ready: https://%s/' % ti['hostname'] if ti else 'not set up (no tunnel.json in the data folder)'), bool(not ti and self.settings['tunnel']))
         st = lambda b, on: b.configure(state='normal' if on else 'disabled')
         st(self.b_start, not self.busy and not up); st(self.b_stop, up); st(self.b_owner, up and bool(self.server.owner_url))
         st(self.b_check, not self.busy); st(self.b_build, not self.busy and not up); st(self.b_diag, not self.busy)
@@ -181,7 +184,15 @@ class App:
         if not core.prepare_game(n, on_line=lambda l: self.say(l, 'build')): raise RuntimeError('install or build failed (see the lines above)')
         self.show_game()
         self.say('starting the server ...')
-        if not self.server.start(n, extra=(['--show-chat'] if self.settings['show_chat'] else [])): raise RuntimeError('the server stopped right away (see the lines above)')
+        ti = core.tunnel_info() if self.settings['tunnel'] else None
+        if self.settings['tunnel'] and not ti: self.say('internet: tunnel.json is missing from the data folder; starting on this network only', 'warn')
+        extra = (['--show-chat'] if self.settings['show_chat'] else []) + (['--tunnel-host', ti['hostname']] if ti else [])
+        if not self.server.start(n, extra=extra): raise RuntimeError('the server stopped right away (see the lines above)')
+        if ti:
+            self.say('internet: starting the tunnel to https://%s/ ...' % ti['hostname'])
+            exe = core.ensure_cloudflared(log=self.say)
+            if self.tunnel.start(ti, exe): self.say('internet: ' + ('people can join at https://%s/ with the code' % ti['hostname'] if self.tunnel.up else 'tunnel started, still connecting (see [tunnel] lines)'))
+            else: self.say('internet: the tunnel did not start (see the lines above); the server is on this network only', 'warn')
         self.q.put(('call', self.paint))
         if self.server.owner_url: self.q.put(('call', lambda: webbrowser.open(self.server.owner_url)))
 
@@ -201,7 +212,7 @@ class App:
 
     def on_stop(self):
         def stop():
-            self.say('stopping the server (saving the world) ...'); code = self.server.stop()
+            self.tunnel.stop(); self.say('stopping the server (saving the world) ...'); code = self.server.stop()
             self.say('server stopped (exit %s)' % code); self.q.put(('call', self.paint))
         self.work('stop', stop) if not self.busy else threading.Thread(target=stop, daemon=True).start()
 
@@ -221,7 +232,7 @@ class App:
     def on_close(self):
         if self.server.running:
             if not messagebox.askyesno('Stop the server?', 'The server is running. Stop it (the world is saved) and close the launcher?'): return
-            self.say('stopping the server before closing ...'); self.server.stop()
+            self.say('stopping the server before closing ...'); self.tunnel.stop(); self.server.stop()
         self.quit()
 
     def quit(self):
@@ -260,5 +271,5 @@ def main(argv=None):
                 except ImportError:            # no Pillow: ImageMagick's `import` (Linux checks)
                     subprocess.run(['import', '-window', 'root', '-crop', '%dx%d+%d+%d' % (w, h, x, y), os.environ['BT_LAUNCHER_SHOT']], timeout=20)
             root.after(max(100, ms - 400), shot)
-        root.after(ms, lambda: (app.log.write('selftest done'), app.server.stop(), app.quit()))
+        root.after(ms, lambda: (app.log.write('selftest done'), app.tunnel.stop(), app.server.stop(), app.quit()))
     root.mainloop()

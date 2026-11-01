@@ -54,7 +54,7 @@ const cfg = Object.assign({
   secret: randomBytes(32).toString('hex'),        // the home secret: generated once, never printed, never the school's
   ownerKey: randomBytes(16).toString('hex'),      // the owner page's own URL key (PIN is asked on top)
   pin: null,                                      // salt$scrypt, set on first run
-  port: 8890, listen: '127.0.0.1', origins: [], maxPlayers: DEFAULT_MAX_PLAYERS,
+  port: 8890, listen: '127.0.0.1', origins: [], tunnelHost: '', maxPlayers: DEFAULT_MAX_PLAYERS,
   world: null, ruleset: 'home-survival', usedCodes: [],
 }, loadCfg() || {})
 if (flag('lan')) cfg.listen = '0.0.0.0'
@@ -332,7 +332,8 @@ function live() {
 const lanAddrs = () => Object.values(os.networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address)
 const rawIp = (req) => (req.socket.remoteAddress || '').replace(/^::ffff:/, '')
 // A loopback connection may carry X-Forwarded-For (a local TLS proxy per the README, or a check); anything else is its real address.
-const ipOf = (req) => { const r = rawIp(req); const f = r === '127.0.0.1' || r === '::1' ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : ''; return f || r }
+// A loopback peer may be a local TLS proxy or the Cloudflare tunnel (which sends the visitor in CF-Connecting-IP).
+const ipOf = (req) => { const r = rawIp(req); const f = r === '127.0.0.1' || r === '::1' ? String(req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || '').split(',')[0].trim() : ''; return f || r }
 const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req))
 // Behind a local TLS proxy (README: Caddy/nginx on this PC) the page is https, so the socket must be wss://. Only a
 // loopback peer may say so; anyone else gets plain ws:// for their LAN address.
@@ -349,7 +350,8 @@ const readBody = (req, res) => new Promise((r) => {
 })
 const ownerTokens = new Map()         // token -> expiry; issued after a PIN check, per owner browser session
 const ownerOk = (req) => { const tkn = req.headers['x-owner']; const exp = tkn && ownerTokens.get(tkn); return isLocal(req) && !!exp && exp > Date.now() }
-const originOk = (req) => { const o = req.headers.origin; if (!o) return true; const mine = ['http://localhost:' + cfg.port, 'http://127.0.0.1:' + cfg.port, ...lanAddrs().map((a) => 'http://' + a + ':' + cfg.port), ...cfg.origins]; return mine.includes(o) }
+const tunnelHost = () => String(arg('tunnel-host', cfg.tunnelHost || '')).toLowerCase().replace(/[^a-z0-9.-]/g, '')
+const originOk = (req) => { const o = req.headers.origin; if (!o) return true; const mine = ['http://localhost:' + cfg.port, 'http://127.0.0.1:' + cfg.port, ...lanAddrs().map((a) => 'http://' + a + ':' + cfg.port), ...cfg.origins, ...(tunnelHost() ? ['https://' + tunnelHost()] : [])]; return mine.includes(o) }
 
 export const server = http.createServer((req, res) => handle(req, res).catch((e) => { console.error('[home] request failed:', e && e.message); try { json(res, 500, { error: 'server' }) } catch (_) {} }))
 async function handle(req, res) {
@@ -393,7 +395,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
+      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())

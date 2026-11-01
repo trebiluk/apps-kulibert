@@ -14,7 +14,7 @@ Standard library only. Works on Windows (the target) and Linux (where the checks
 import datetime, hashlib, io, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, traceback, urllib.request, zipfile
 from pathlib import Path
 
-LAUNCHER_VERSION = '1.2.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
+LAUNCHER_VERSION = '1.3.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
 
 HERE = Path(__file__).resolve().parent
 ROOM = HERE.parent                       # server/class-room (set_repo() moves all three)
@@ -64,7 +64,7 @@ def app_dir():
 
 
 # ---------------------------------------------------------------- settings
-DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True}
+DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True, 'tunnel': False}
 RELEASE_BRANCH = 'bertopia-home'   # always points at the newest home-host part; the launcher follows it
 
 def load_settings():
@@ -352,6 +352,67 @@ def diagnostics(log=None, node=None, settings=None):
 def crash_text(exc_type, exc, tb):
     return redact(''.join(traceback.format_exception(exc_type, exc, tb)))
 
+
+# ---------------------------------------------------------------- the internet (Cloudflare tunnel)
+# tunnel.json ({tunnel_id, hostname, token}) and cloudflared(.exe) live in the data folder (Documents\Bertopia Home):
+# the token is the key to the tunnel, so it stays there, never in the repo, the log or the window. The tunnel program
+# is the official cloudflared release; the launcher fetches it when missing, checked against GitHub's published SHA-256.
+CFD_RELEASE = os.environ.get('BT_CFD_RELEASE', 'https://api.github.com/repos/cloudflare/cloudflared/releases/latest')
+
+def tunnel_file(): return data_dir() / 'tunnel.json'
+def tunnel_info():
+    try:
+        d = json.loads(tunnel_file().read_text('utf-8'))
+        if isinstance(d, dict) and d.get('token') and d.get('hostname'): return {'hostname': str(d['hostname']), 'tunnel_id': str(d.get('tunnel_id', '')), 'token': str(d['token'])}
+    except Exception: pass
+    return None
+def cfd_exe(): return data_dir() / ('cloudflared.exe' if WIN else 'cloudflared')
+
+def ensure_cloudflared(log=print):
+    """-> path of cloudflared; fetched from the official GitHub release when missing (SHA-256 from the release listing)"""
+    exe = cfd_exe()
+    if exe.exists(): return str(exe)
+    name = 'cloudflared-windows-amd64.exe' if WIN else 'cloudflared-linux-amd64'
+    rel = json.loads(_get(CFD_RELEASE, 30))
+    a = next((x for x in rel.get('assets', []) if x.get('name') == name), None)
+    if not a: raise RuntimeError('no %s in the latest cloudflared release' % name)
+    want = str(a.get('digest', '')).split(':', 1)[-1].lower()
+    if len(want) != 64: raise RuntimeError('the cloudflared release lists no SHA-256 for %s' % name)
+    log('Downloading cloudflared %s (%d MB) ...' % (rel.get('tag_name', ''), (a.get('size') or 0) // 1000000))
+    data = _get(a['browser_download_url'], 600)
+    if hashlib.sha256(data).hexdigest() != want: raise RuntimeError('checksum mismatch for %s: not kept' % name)
+    data_dir().mkdir(parents=True, exist_ok=True); exe.write_bytes(data)
+    if not WIN: exe.chmod(0o755)
+    (data_dir() / 'cloudflared.version').write_text(str(rel.get('tag_name', '')), 'utf-8')
+    log('cloudflared %s is ready (checksum OK).' % rel.get('tag_name', ''))
+    return str(exe)
+
+class Tunnel:
+    """cloudflared as a child process: start with the saved token (never on the command line: TUNNEL_TOKEN env), stop."""
+    def __init__(self, on_line=print): self.proc, self.on_line, self.up = None, on_line, False
+    @property
+    def running(self): return bool(self.proc and self.proc.poll() is None)
+    def start(self, info, exe):
+        if self.running: return True
+        self.up = False
+        self.proc = subprocess.Popen([exe, 'tunnel', '--no-autoupdate', 'run'], env={**os.environ, 'TUNNEL_TOKEN': info['token']}, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace', creationflags=NO_WINDOW)
+        def pump():
+            for line in self.proc.stdout:
+                line = line.rstrip('\n')
+                if 'Registered tunnel connection' in line: self.up = True
+                if 'ERR' in line or 'WRN' in line or 'Registered tunnel connection' in line: self.on_line('[tunnel] ' + redact(line.split(' ', 2)[-1] if line[:4].isdigit() else line))
+        threading.Thread(target=pump, daemon=True).start()
+        for _ in range(200):
+            if self.up or not self.running: break
+            time.sleep(0.1)
+        return self.running
+    def stop(self):
+        if not self.proc: return
+        try: self.proc.terminate(); self.proc.wait(5)
+        except Exception:
+            try: self.proc.kill()
+            except Exception: pass
+        self.proc = None; self.up = False
 
 def data_dir():
     return Path(os.path.expanduser('~')) / 'Documents' / 'Bertopia Home'

@@ -1,7 +1,7 @@
 """Checks for the Python launcher (core, self-update, the real host, the window). Standard library unittest.
     python3 -m unittest -v test_launcher            (from server/class-room/launcher)
 The window test needs tkinter and a display (xvfb-run on Linux); it skips otherwise."""
-import hashlib, http.server, io, json, os, shutil, subprocess, sys, tarfile, tempfile, threading, time, unittest, zipfile
+import hashlib, http.server, io, json, os, pathlib, shutil, subprocess, sys, tarfile, tempfile, threading, time, unittest, zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -55,7 +55,7 @@ class Logs(unittest.TestCase):
     def test_settings_survive_junk(self):
         (core.app_dir() / 'launcher.json').write_text('{"auto_update": "yes", "own_node": true, "evil": 1}')
         s = core.load_settings()
-        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True})
+        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True, 'tunnel': False})
         core.save_settings({**s, 'debug': True}); self.assertTrue(core.load_settings()['debug'])
 
     def test_diagnostics_are_redacted(self):
@@ -174,6 +174,33 @@ class Code(unittest.TestCase):
         ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('staying on feat/p6', msg)                 # local edits are never thrown away
         self.assertEqual((b / 'f.txt').read_text(), 'mine'); self.assertEqual(self.g(b, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.strip(), 'feat/p6')
 
+
+class TunnelBits(unittest.TestCase):
+    def test_tunnel_info_and_cloudflared_fetch(self):
+        d = core.data_dir
+        core.data_dir = lambda: TMP / 'data-t'; (TMP / 'data-t').mkdir(exist_ok=True)
+        try:
+            self.assertIsNone(core.tunnel_info())
+            core.tunnel_file().write_text(json.dumps({'tunnel_id': 'abc', 'hostname': 'adultopia.kulibert.net', 'token': 'eyJ-secret'}))
+            self.assertEqual(core.tunnel_info()['hostname'], 'adultopia.kulibert.net')
+            core.tunnel_file().write_text('{"hostname": "x"}'); self.assertIsNone(core.tunnel_info())      # no token: not set up
+            root = TMP / 'cfd'; root.mkdir(exist_ok=True); blob = b'#!/bin/sh\necho cloudflared 2026.1.0\n'
+            (root / 'cloudflared-linux-amd64').write_bytes(blob)
+            h = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=str(root), **k)
+            srv = http.server.ThreadingHTTPServer(('127.0.0.1', 0), h); threading.Thread(target=srv.serve_forever, daemon=True).start()
+            base = 'http://127.0.0.1:%d' % srv.server_address[1]
+            def listing(digest): (root / 'release.json').write_text(json.dumps({'tag_name': '2026.1.0', 'assets': [{'name': 'cloudflared-linux-amd64', 'size': len(blob), 'digest': 'sha256:' + digest, 'browser_download_url': base + '/cloudflared-linux-amd64'}]}))
+            core.CFD_RELEASE = base + '/release.json'
+            listing('0' * 64)
+            with self.assertRaisesRegex(RuntimeError, 'checksum mismatch'): core.ensure_cloudflared(log=lambda *_: None)
+            self.assertFalse(core.cfd_exe().exists())
+            listing(hashlib.sha256(blob).hexdigest()); lines = []
+            exe = core.ensure_cloudflared(log=lines.append)
+            self.assertTrue(pathlib.Path(exe).exists() and any('checksum OK' in l for l in lines))
+            self.assertEqual(core.ensure_cloudflared(), exe)
+            srv.shutdown()
+        finally:
+            core.data_dir = d
 
 class SelfUpdate(unittest.TestCase):
     def make(self, where, version, broken=False):
