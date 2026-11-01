@@ -3958,6 +3958,10 @@ const LOOK562 = {
   ti: { lookHead: 'መልክዕ', packClassic: 'ክላሲክ ቶፕያ', packMystical: 'ምስጢራዊ ቶፕያ' },
 }
 for (const [lang, row] of Object.entries(LOOK562)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 // 2.5.582 Supply Cache. fa-AF, rw, and ti are machine drafts for WordBot.
 const LOOT582 = {
   en: {
@@ -4127,6 +4131,23 @@ const PAINT597 = {
   ti: { ptResetAll: 'ኩሉ ብሎካት መልስ', ptAllBack: 'ኩሉ ብሎካት ናብ {pack} ተመሊሶም ✓', ptReset: 'ናይ መጀመርታ ብሎክ', ptResetDone: '{block} ናብ {pack} ተመሊሱ ✓' },
 }
 for (const [lang, row] of Object.entries(PAINT597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// 2.5.572: the oven panel names the belt slot (moved here from stations.js). rw, ti, and fa-AF are draft translations.
+const BELT572 = {
+  en: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  simple: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  uk: { beltFrom: 'зі стрічки', beltEmpty: 'стрічка: порожньо' },
+  ru: { beltFrom: 'с ленты', beltEmpty: 'лента: пусто' },
+  es: { beltFrom: 'de la cinta', beltEmpty: 'cinta: vacía' },
+  ar: { beltFrom: 'من السير', beltEmpty: 'السير: فارغ' },
+  'fa-AF': { beltFrom: 'از نوار', beltEmpty: 'نوار: خالی' },
+  rw: { beltFrom: 'kuva ku mugozi', beltEmpty: 'umugozi: ubusa' },
+  ti: { beltFrom: 'ካብ መተሓላለፊ', beltEmpty: 'መተሓላለፊ: ባዶ' },
+}
+for (const [lang, row] of Object.entries(BELT572)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

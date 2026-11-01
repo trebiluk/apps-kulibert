@@ -3482,7 +3482,6 @@ html[data-kp-motion="less"] #sheet[data-panel="station"] .belt-fed * {
   animation: none !important;
   transition: none !important;
 }
-=======
 /* Holo Hand part 1: the held item as a small flat amber hologram, lower corner on the main-hand side.
    holo.js picks a spot clear of the hotbar and every button; no spot means no hologram. */
 html body #holo-hand {

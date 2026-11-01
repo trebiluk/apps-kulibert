@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.598', date: '2026-11-01', lines: {
+    en: ["2.5.598 — Lots of waiting fixes land at once: phones fit better and the bag fits the screen, a Creative world reopens in Creative, Saved stops eating taps, belts can feed ovens, your hand is an amber hologram, My Look outfits, a Supply Cache, and stuck players get free."],
+    simple: ["2.5.598 — Many fixes at once. Phones fit better. Belts feed ovens. Your hand is a hologram. New outfits. Stuck players get free."],
+  } },
   { v: '2.5.597', date: '2026-11-01', lines: {
     en: ["2.5.597 — Water runs into holes you dig beside it. The block painter can put one block back to your pack's look. Panels on phones are easier to close."],
     simple: ["2.5.597 — Water fills holes next to it. Put one painted block back. Phone panels close easier."],

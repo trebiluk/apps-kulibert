@@ -3104,3 +3104,460 @@ html body .daily-mark-star { font-size: 20px; line-height: 1; }
 
 /* 2.5.597: the Notebook's Goals list spans the whole tile grid (it sat in one 79 px cell at 412, one word per line). */
 html body #sheet .ggrid > .goals-list { grid-column: 1 / -1 !important; width: auto !important; min-width: 0; }
+/* #87 r3: the Bag fits the screen height (session.js fitBag sets --bag-tile when the 15 slots would overflow). */
+html body #sheet#sheet[data-panel=inventory] .bag-layout[data-fit="1"] .wells .well.gtile {
+  height: var(--bag-tile) !important;
+  min-height: var(--bag-tile) !important;
+  max-height: var(--bag-tile) !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  overflow: hidden !important;
+}
+html body #sheet#sheet[data-panel=inventory] .bag-layout[data-fit="1"] .wells { gap: 6px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+/* 2.5.588: small phones keep the 9-slot hotbar on one row. #hotbar#hotbar outranks the 2.5.560 phone-dock rules
+   (html body.mode-creative #hotbar ... and body:not(.mode-creative) #hotbar ...), which won after main moved on. */
+@media (max-width: 412px) {
+  html body #hotbar#hotbar {
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+  html body #hotbar#hotbar .item-strip {
+    /* centred flex content that overflows spills off the LEFT edge where it cannot be scrolled to; start at the left */
+    justify-content: flex-start !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  html body #hotbar#hotbar .slot:not(.bag-tile) {
+    flex: 0 0 36px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: start;
+  }
+  html body #hotbar#hotbar .item-strip::after {
+    content: "→";
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 44px;
+    font-size: 18px;
+    color: #E2E8F0;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  html body #hotbar#hotbar .item-strip:not(:hover)::-webkit-scrollbar { height: 4px; }
+/* 2.5.562: the Arabic and Dari names in the language list draw from Bertopia's own Noto Sans Arabic, so the row is never blank when the page font has no Arabic letters. The name sits next to the check like the other rows; the word itself stays right to left. */
+@font-face {
+  font-family: "Bertopia Arabic";
+  src: url("/fonts/noto-sans-arabic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bertopia Arabic";
+  src: url("/fonts/noto-sans-arabic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+html body #sheet .lang-opt[data-lang="ar"] .lang-name,
+html body #sheet .lang-opt[data-lang="fa-AF"] .lang-name {
+  font-family: "Bertopia Arabic", "Noto Sans Arabic", Tahoma, "Segoe UI", sans-serif !important;
+  font-size: 18px;
+  line-height: 1.4;
+  color: inherit;
+  opacity: 1;
+  unicode-bidi: isolate;
+
+/* ===============================================================================   2.5.560 phone HUD dock.
+   --hud-top is measured in main.js refit(): the real bottom edge of the shared bar plus the Bertopia header.
+   Goals, Pause, Full screen, the chip lane and every panel hang from that one number, so a header that wraps
+   to another row can never slide the bars over them. Targets stay 44px or more. Every label stays beside its icon.
+   Nothing here adds colour, glow, brightness changes or motion.
+   ====================================================================================== */
+:root { --hud-top-safe: calc(var(--kb-h, 48px) + var(--top-h, 60px)); }
+html body header.top #day-clock { min-height: 44px !important; }
+
+@media (max-width: 520px), (max-height: 500px) {
+  html body button#goals-hud#goals-hud,
+  html body button#pause-btn#pause-btn,
+  html body button#fs-btn#fs-btn {
+    top: calc(var(--hud-top, var(--hud-top-safe)) + 8px) !important;
+  }
+  html body #toast:not(.nice-chip) { top: calc(var(--hud-top, var(--hud-top-safe)) + 64px) !important; }
+  html body #menu-hint { top: calc(var(--hud-top, var(--hud-top-safe)) + 72px) !important; }
+  html body { --lane-top: calc(var(--hud-top, var(--hud-top-safe)) + 8px) !important; }
+  /* Every panel starts under the bars that are showing. On upright phones the shared bar can be two rows tall,
+     and a panel that began at the very top hid its own title and Close behind it. */
+  html:root body #sheet#sheet[data-panel]:not([hidden]),
+  html:root body #sheet#sheet:not([hidden]) {
+    top: calc(var(--hud-top, var(--hud-top-safe)) + 4px) !important;
+  }
+}
+
+/* Upright phones. Row 1: clock left, Survival/Creative right, both with words. Row 2: Undo, Redo, Save, Hub. */
+@media (max-width: 520px) {
+  html body { --lane-top: calc(var(--hud-top, var(--hud-top-safe)) + 72px) !important; }
+  html body header.top {
+    padding: 4px 8px !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    row-gap: 6px !important;
+  }
+  html body header.top #day-clock { order: 1 !important; }
+  html body header.top #mode-pill {
+    position: static !important;
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    margin: 0 0 0 auto !important;
+    height: 44px !important;
+    z-index: auto !important;
+  }
+  html body header.top #mode-pill button { min-width: 44px !important; height: 44px !important; padding: 2px 8px !important; }
+  html body header.top #mode-pill .tl {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    font-size: 11px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
+  html body header.top .tools {
+    order: 3 !important;
+    flex: 1 1 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  /* Hotbar: the Bag tile joins the slots on the same rows, so nine slots take two rows, not four. */
+  html body #hotbar#hotbar .hot-tray {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+  html body #hotbar#hotbar .hot-tray .item-strip {
+    flex: 0 1 auto !important;
+    gap: 2px !important;
+    max-width: calc(100% - 52px) !important;
+    justify-content: flex-start !important;
+  }
+  /* The stick and the Jump column ride on top of whatever height the hotbar really has. */
+  html body .stickpad,
+  html body .jumpcol {
+    bottom: calc(var(--hotbar-h, 76px) + 12px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  /* Suit sits just above the stick. Click to play sits beside the stick, clear of the stick and the Jump column. */
+  html body #suit-bar {
+    bottom: calc(var(--hotbar-h, 76px) + 12px + 120px + 8px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html body #play-chip:not([hidden]) {
+    left: 140px !important;
+    transform: none !important;
+    max-width: calc(100vw - 140px - 84px) !important;
+    bottom: calc(var(--hotbar-h, 76px) + 12px + 32px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Short windows (sideways phones, small Chromebook windows). One header row, fewer duplicates, panels below the bars. */
+@media (max-height: 500px) {
+  html body header.top .brand { display: none !important; }
+  html body header.top {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    row-gap: 6px !important;
+    padding: 4px 8px !important;
+  }
+  html body header.top .tools {
+    flex-wrap: nowrap !important;
+    margin-inline-start: auto !important;
+    max-width: 100% !important;
+  }
+
+  /* Panels start under both bars and scroll inside. The title bar, Back and Close never leave the panel. */
+  html:root body #sheet#sheet[data-panel]:not([hidden]),
+  html:root body #sheet#sheet:not([hidden]) {
+    top: calc(var(--hud-top, var(--hud-top-safe)) + 4px) !important;
+    max-height: calc(100vh - var(--hud-top, var(--hud-top-safe)) - 8px) !important;
+    max-height: calc(100dvh - var(--hud-top, var(--hud-top-safe)) - 8px) !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  /* The Bag keeps the hotbar clear on sideways phones, so slots stay tappable while it is open. */
+  html:root body #sheet#sheet[data-panel="inventory"]:not([hidden]) {
+    max-height: calc(100vh - var(--hud-top, var(--hud-top-safe)) - 4px - var(--hotbar-h, 76px) - 20px) !important;
+    max-height: calc(100dvh - var(--hud-top, var(--hud-top-safe)) - 4px - var(--hotbar-h, 76px) - 20px) !important;
+  }
+  html:root body #sheet#sheet:not([hidden]) > .sheet-bar { flex: 0 0 auto !important; position: relative !important; top: auto !important; }
+  html:root body #sheet#sheet:not([hidden]) > #sheet-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+}
+
+/* 2.5.560 round 1: the Menu on short windows. The tile groups used to be taller than their row and spilled UP over the BERTOPIA
+   plate and Resume, where they could not be scrolled to. Plate and Resume stay on top; the groups scroll under them. */
+@media (max-height: 500px) {
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) > #sheet-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .ggrid {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+  }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .kd-groups {
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    align-self: stretch !important;
+    padding-bottom: 12px;
+  }
+}
+/* About 240 tall there is no room for the plate row: Resume, Exit and Close share the first row and the groups take the rest. */
+@media (max-height: 330px) {
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .kd-plate { display: none !important; }
+  html:root body #sheet#sheet[data-panel="menu"]:not([hidden]) .ggrid {
+    grid-template-areas: "go exit close" "groups groups groups" !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+  }
+}
+
+/* Sideways phones: Goals moves right of the stick, Suit right of Goals, and the Jump column drops to the corner,
+   clear of Pause and Full screen. A left-handed layout (stick on the right) keeps Goals where it was. */
+@media (max-height: 420px) {
+  html body:not(.stick-right) button#goals-hud#goals-hud { left: 124px !important; }
+  html body:not(.stick-right) #suit-bar { left: 204px !important; }
+  html body .jumpcol { bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important; }
+  html body.touch #pick-chip { bottom: calc(var(--hotbar-h, 76px) + 20px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+/* Very short windows (about 240 tall): the panel takes everything under the bars, the stick sits in the corner,
+   Crouch and Jump sit side by side in the other corner, Suit moves up beside Goals, and the chip lane waits. */
+@media (max-height: 330px) {
+  html:root body #sheet#sheet:not([hidden]) { bottom: 0 !important; }
+  html:root body #sheet#sheet[data-panel="inventory"]:not([hidden]) {
+    max-height: calc(100vh - var(--hud-top, var(--hud-top-safe)) - 8px) !important;
+    max-height: calc(100dvh - var(--hud-top, var(--hud-top-safe)) - 8px) !important;
+  }
+  html body .stickpad { bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important; }
+  html body .jumpcol {
+    flex-direction: row !important;
+    width: auto !important;
+    height: auto !important;
+    gap: 8px !important;
+  }
+  html body #suit-bar {
+    top: calc(var(--hud-top, var(--hud-top-safe)) + 8px) !important;
+    bottom: auto !important;
+  }
+  html body #chip-lane > :not(#update-chip) { display: none !important; }
+  html body.touch #pick-chip { bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important; right: calc(16px + 120px + 8px) !important; }
+/* 2.5.572: oven belt slot. Inside the panel, icon + words, 16px text, no motion, no glow. */
+html body #sheet[data-panel="station"] .belt-fed {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 4px 8px;
+  position: static;
+  overflow: visible;
+  border: 2px solid #1F8A8A;
+  border-radius: 8px;
+  background: #0E1A22;
+  color: #E6EEF2;
+  font-family: var(--read);
+  font-weight: 700;
+  line-height: 1.25;
+}
+html body #sheet[data-panel="station"] .belt-fed-art {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  color: #E6EEF2;
+}
+html body #sheet[data-panel="station"] .belt-fed-art svg,
+html body #sheet[data-panel="station"] .belt-fed-art canvas,
+html body #sheet[data-panel="station"] .belt-fed-art img {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+html body #sheet[data-panel="station"] .belt-fed-count,
+html body #sheet[data-panel="station"] .belt-fed-lab {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #E6EEF2;
+}
+html body #sheet[data-panel="station"] .belt-fed-lab {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html body #sheet[data-panel="station"] .belt-fed:focus-visible {
+  outline: 3px solid #F6C453;
+  outline-offset: 2px;
+}
+html body #sheet[data-panel="station"] .belt-fed:focus:not(:focus-visible) {
+  outline: none;
+}
+@media (max-width: 430px) {
+  html body #sheet[data-panel="station"] .ks-machine {
+    flex-direction: column !important;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  html body #sheet[data-panel="station"] .ks-main,
+  html body #sheet[data-panel="station"] .ks-zones,
+  html body #sheet[data-panel="station"] .ks-inputs {
+    max-width: 100%;
+    min-width: 0;
+  }
+  html body #sheet[data-panel="station"] .belt-fed {
+    position: static !important;
+    z-index: auto;
+  }
+  html body #sheet[data-panel="station"] .ks-bag {
+    position: static !important;
+    clear: both;
+    margin-top: 8px;
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #sheet[data-panel="station"] .belt-fed,
+  html body #sheet[data-panel="station"] .belt-fed * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-kp-motion="less"] #sheet[data-panel="station"] .belt-fed,
+html[data-kp-motion="less"] #sheet[data-panel="station"] .belt-fed * {
+  animation: none !important;
+  transition: none !important;
+}
+/* Holo Hand part 1: the held item as a small flat amber hologram, lower corner on the main-hand side.
+   holo.js picks a spot clear of the hotbar and every button; no spot means no hologram. */
+html body #holo-hand {
+  position: fixed;
+  z-index: 4;
+  width: 88px;
+  height: 88px;
+  pointer-events: none;
+  display: none;
+  contain: layout paint;
+}
+html body #holo-hand[data-on="1"][data-room="1"] { display: block; }
+html body #holo-hand .holo-bob {
+  width: 100%;
+  height: 100%;
+  animation: holo-bob 3s ease-in-out infinite;
+  will-change: transform;
+}
+html body #holo-hand[data-side="left"] .holo-pic { transform: scaleX(-1); }
+html body #holo-hand[data-side="left"] .holo-palm svg { transform: scaleX(-1); }
+html body #holo-hand .holo-pic,
+html body #holo-hand .holo-palm,
+html body #holo-hand .holo-palm svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+html body #holo-hand .holo-palm { display: none; opacity: 0.55; }
+html body #holo-hand[data-state="empty"] .holo-pic { display: none; }
+html body #holo-hand[data-state="empty"] .holo-palm { display: block; }
+@keyframes holo-bob {
+  0%, 100% { transform: translateY(3px); }
+  50% { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #holo-hand .holo-bob { animation: none; }
+}
+html[data-kp-motion="less"] body #holo-hand .holo-bob { animation: none; }
+html body #holo-note {
+  position: fixed;
+  z-index: 30;
+  bottom: 120px;
+  right: 8px;
+  max-width: 60vw;
+  padding: 6px 10px;
+  border: 2px solid #8A5A22;
+  border-radius: 8px;
+  background: #1F262E;
+  color: #EEF3F7;
+  font: 700 15px/1.2 system-ui, sans-serif;
+  pointer-events: none;
+}
+html body #holo-note[data-side="left"] { right: auto; left: 8px; }
+html body #holo-note[hidden] { display: none; }
+html body .hand-pair { display: inline-flex; gap: 6px; }
+html body .hand-pair .pill { min-width: 64px; min-height: 44px; }
+
+/* Holo Hand part 2: the beam canvas sits under the HUD and over the world; the word sits under the crosshair ring. */
+html body #holo-beam { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+html body #holo-word {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + 34px);
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 4px 10px;
+  border: 2px solid #8A5A22;
+  border-radius: 8px;
+  background: #1F262E;
+  color: #EEF3F7;
+  font: 700 15px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html body #holo-word[hidden] { display: none; }
+html body #holo-word[data-kind="far"] { border-style: dashed; color: #C5D0D6; }
+/* place-cue ("Fits") already sits one row under the crosshair, so the word takes the next row while a cue shows */
+html body:has(#place-cue:not([hidden])) #holo-word { top: calc(50% + 66px); }

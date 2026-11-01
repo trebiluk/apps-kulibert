@@ -13,14 +13,6 @@ let retry = null
 let wrap = null
 let retryFn = null
 
-function flagOn() {
-  try {
-    if (typeof location !== 'undefined' && /(?:\?|&)sync=1(?:&|$)/.test(location.search)) return true
-    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('bt-sync') === '1') return true // same key server-sync.js persists
-  } catch (e) {}
-  return false
-}
-
 async function signedIn() {
   try {
     const res = await fetch(WHO, { credentials: 'include' })

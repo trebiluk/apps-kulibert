@@ -5,22 +5,7 @@ import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
 import { EXTRA } from './strings-extra.js'
 import { decorMetalLocked } from './craft.js'
-// 2.5.572: the oven panel names the belt slot. rw, ti, and fa-AF are draft translations.
-const BELT_SLOT = {
-  en: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
-  simple: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
-  uk: { beltFrom: 'зі стрічки', beltEmpty: 'стрічка: порожньо' },
-  ru: { beltFrom: 'с ленты', beltEmpty: 'лента: пусто' },
-  es: { beltFrom: 'de la cinta', beltEmpty: 'cinta: vacía' },
-  ar: { beltFrom: 'من السير', beltEmpty: 'السير: فارغ' },
-  'fa-AF': { beltFrom: 'از نوار', beltEmpty: 'نوار: خالی' },
-  rw: { beltFrom: 'kuva ku mugozi', beltEmpty: 'umugozi: ubusa' },
-  ti: { beltFrom: 'ካብ መተሓላለፊ', beltEmpty: 'መተሓላለፊ: ባዶ' },
-}
-for (const lang of Object.keys(BELT_SLOT)) {
-  if (!EXTRA[lang]) EXTRA[lang] = {}
-  Object.assign(EXTRA[lang], BELT_SLOT[lang])
-}
+// 2.5.572 belt-slot words (beltFrom, beltEmpty) live in strings-extra.js (BELT572) with the other strings.
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8, pinecone: 1 }
 let slotsOf = () => []
