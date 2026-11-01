@@ -64,6 +64,7 @@ export function applyHomeRules(f, toast, lang) {
   chatLang = lang || 'en'
   const r = { ...f.r }; const mode = r.mode; delete r.mode
   setChatOn(r['chat.typed'] === true)
+  if (Array.isArray(f.menu)) paintMenu(f.menu, Array.isArray(f.warps) ? f.warps : [])
   try { Rules.load(r) } catch (e) {}
   keep = { on: r['survival.keep'] !== false, from: f.keep === 'player' ? 'player' : 'world' }
   if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev }
@@ -211,9 +212,9 @@ function ensureDock() {
   if (dock || typeof document === 'undefined') return dock
   const T = cs()
   dock = document.createElement('div'); dock.id = 'home-chat'; dock.dir = document.documentElement.dir || 'ltr'
-  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}</style>' +
+  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}</style>' +
     '<button type="button" class="hc-toggle" aria-expanded="false" aria-controls="hc-panel"></button>' +
-    '<div class="hc-panel" id="hc-panel" hidden><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
+    '<div class="hc-panel" id="hc-panel" hidden><div class="hc-cmds" role="group" aria-label="Commands"></div><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
   const toggle = dock.querySelector('.hc-toggle'), panel = dock.querySelector('.hc-panel'), input = dock.querySelector('input'), form = dock.querySelector('form')
   input.setAttribute('aria-label', T.ph); input.placeholder = T.ph; form.querySelector('button').textContent = T.send
   toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) { unread = 0; input.focus() } paintToggle() }
@@ -224,17 +225,19 @@ function ensureDock() {
   let shiftHeld = false
   input.addEventListener('keydown', (e) => { shiftHeld = e.shiftKey })
   const backToGame = () => { input.blur(); const c = document.querySelector('#stage canvas') || document.body; try { c.focus({ preventScroll: true }) } catch (e) { c.focus() } }
-  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay(''); if (!(e.submitter && e.submitter.dataset.stay) && !shiftHeld) backToGame() }
+  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); if (!m.startsWith('/') && !chatOn) return chatSay(cs().errs['rule:chat.typed']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay(''); if (!(e.submitter && e.submitter.dataset.stay) && !shiftHeld) backToGame() }
 
   document.body.append(dock); paintToggle()
   return dock
 }
-function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = '💬 ' + T.chat + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : ''); b.setAttribute('aria-label', b.textContent) }
+function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = (chatOn ? '💬 ' + T.chat : '⌘ Commands') + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : '') + ' (T)'; b.setAttribute('aria-label', b.textContent) }
 function chatSay(text) { if (dock) dock.querySelector('.hc-msg').textContent = text }
 function setChatOn(on) {
   chatOn = !!on
-  if (chatOn) { ensureDock(); if (dock) dock.hidden = false }
-  else if (dock) { dock.hidden = true; dock.querySelector('.hc-panel').hidden = true; dock.querySelector('.hc-toggle').setAttribute('aria-expanded', 'false') }
+  ensureDock(); if (!dock) return
+  dock.hidden = false   // the dock is also the command line (part 8): it stays even with chat off
+  const input = dock.querySelector('input'); input.placeholder = chatOn ? cs().ph : 'Commands only (chat is off): /help'
+  paintToggle()
 }
 function chatLine(f) {
   if (!chatOn || !ensureDock()) return
@@ -274,6 +277,9 @@ function bossNews(f) {
 // the socket's home-only frames (called from connect's onmessage)
 function homeFrame(f) {
   if (shareFrame(f)) return
+  if (f.t === 'tp') { if (tpFn) tpFn(f.x, f.y, f.z); if (toastFn && f.by && info && f.by !== info.name) toastFn(f.by + ' moved you'); return }
+  if (f.t === 'cmdok') { if (f.msg) sysLine(f.msg); return }
+  if (f.t === 'cmdno') { sysLine(f.why || 'That did not work.'); return }
   if (f.t === 'chat') chatLine(f)
   else if (f.t === 'ev') bossNews(f)
   else if (f.t === 'no' && typeof f.c === 'string' && (f.c.startsWith('chat-') || f.c === 'rule:chat.typed')) chatRefused(f)
@@ -366,4 +372,58 @@ export function homeSlot() {
   const k = String((info && info.ws) || '') + '|' + String((info && info.world) || '')
   let h = 0; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0
   return 'home-' + h.toString(36)
+}
+
+
+// ---------------------------------------------------------------- commands (part 8): buttons + typed, same server path
+// The rules frame carries the menu for this role. A button either sends {t:'cmd', c} at once, or asks for its argument
+// (a player, a warp, a text) with a second row of buttons / a prompt, then sends. Typed '/...' lines go through chat.
+let tpFn = null
+export function onHomeTeleport(fn) { tpFn = fn }        // main.js: moves the player (safe landing is the game's)
+function sysLine(text) {
+  if (!ensureDock()) return
+  const log = dock.querySelector('.hc-log'), li = document.createElement('li'); li.style.color = '#fde68a'; li.textContent = String(text)
+  log.append(li); while (log.children.length > CHAT_LINES) log.firstChild.remove(); log.scrollTop = log.scrollHeight
+  if (dock.querySelector('.hc-panel').hidden && toastFn) toastFn(String(text))
+}
+let menuNow = [], warpsNow = []
+function paintMenu(menu, warps) {
+  menuNow = menu; warpsNow = warps
+  if (!ensureDock()) return
+  const bar = dock.querySelector('.hc-cmds'); bar.textContent = ''
+  for (const m of menu) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = m.label; b.dataset.c = m.c
+    b.onclick = () => runButton(m)
+    bar.append(b)
+  }
+}
+function pickRow(title, items, onPick) {
+  const bar = dock.querySelector('.hc-cmds'); const old = dock.querySelector('.hc-pick'); if (old) old.remove()
+  const row = document.createElement('div'); row.className = 'hc-pick'; row.setAttribute('role', 'group'); row.setAttribute('aria-label', title)
+  const lab = document.createElement('span'); lab.textContent = title + ' '; lab.style.alignSelf = 'center'; row.append(lab)
+  for (const it of items) { const b = document.createElement('button'); b.type = 'button'; b.textContent = it.label; b.onclick = () => { row.remove(); onPick(it) }; row.append(b) }
+  const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Cancel'); x.onclick = () => row.remove(); row.append(x)
+  bar.after(row); const first = row.querySelector('button'); if (first) first.focus()
+}
+function runButton(m) {
+  if (!m.arg) { homeSend({ t: 'cmd', c: m.c }); return }
+  if (m.arg === 'player') {
+    const ps = homePlayers().map((p) => ({ label: p.name, id: p.id })).concat([...others].filter(([id, o]) => !Number.isFinite(o.x)).map(([id, o]) => ({ label: o.a, id })))
+    if (!ps.length) return sysLine('Nobody else is in right now.')
+    return pickRow(m.label + ':', ps, (it) => homeSend(m.c === 'unmute' ? { t: 'cmd', c: 'mute', id: it.id, on: 0 } : m.c === 'mute' ? { t: 'cmd', c: 'mute', id: it.id, on: 1 } : { t: 'cmd', c: m.c, id: it.id }))
+  }
+  if (m.arg === 'warp') {
+    if (!warpsNow.length) return sysLine('No warps yet: "Set warp here" first.')
+    return pickRow('Warp to:', warpsNow.map((w, i) => ({ label: w, i: i + 1, name: w })), (it) => homeSend({ t: 'chat', m: '/warp ' + it.name }))
+  }
+  if (m.arg === 'text') {
+    const input = dock.querySelector('input'); input.value = '/' + m.c + ' '; input.focus(); sysLine(m.c === 'announce' ? 'Type the announcement, then Enter.' : 'Type the warp name, then Enter.')
+  }
+}
+// T opens the panel (main.js calls this; the key is free at home: the teacher's rules key is a school thing)
+export function homeOpenChat() {
+  if (!ensureDock()) return false
+  const panel = dock.querySelector('.hc-panel'), toggle = dock.querySelector('.hc-toggle')
+  panel.hidden = false; toggle.setAttribute('aria-expanded', 'true'); unread = 0; paintToggle(); dock.querySelector('input').focus()
+  return true
 }

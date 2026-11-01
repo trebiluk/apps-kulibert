@@ -133,6 +133,24 @@ try {
     eq(/1 new/.test(badge) && !/new/.test(unread), `${tag} chat: a closed panel counts new messages in words ("${badge}"), not colour alone`)
     await P.keyboard.press('Escape')
 
+    // commands (part 8): buttons in the panel per role; a pick row for a player; T opens the panel; a tp frame moves
+    const pm = await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
+    const om = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
+    eq(pm.join() === 'spawn,sethome,home' && om.includes('bring') && om.includes('announce'), `${tag} commands: the player sees 3 buttons, the owner sees the staff set too`)
+    await P.evaluate(() => { window.tpGot = []; window.HOME.onHomeTeleport((x, y, z) => window.tpGot.push([x, y, z])) })
+    await P.evaluate(() => { document.querySelector('#home-chat .hc-toggle').click(); document.querySelector('#home-chat .hc-cmds button[data-c=spawn]').click() }); await sleep(400)
+    eq((await P.evaluate(() => window.tpGot)).length === 1, `${tag} commands: the Spawn button teleports the player through the tp hook`)
+    await O.evaluate(() => { document.querySelector('#home-chat .hc-cmds button[data-c=bring]').click() }); await sleep(150)
+    const pick = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-pick button')].map((b) => b.textContent))
+    eq(pick.includes(round === 1 ? 'Ana Play' : 'Bo Play') && pick.includes('✕'), `${tag} commands: "Bring player" asks which player with buttons (${pick.filter((x) => x !== '✕').join(', ')}) and a Cancel`)
+    await O.evaluate((n) => { [...document.querySelectorAll('#home-chat .hc-pick button')].find((b) => b.textContent === n).click() }, round === 1 ? 'Ana Play' : 'Bo Play'); await sleep(400)
+    eq((await P.evaluate(() => window.tpGot)).length === 2 && (await P.evaluate(() => window.toasts.join('|'))).includes('Diego moved you'), `${tag} commands: the player is brought and told who did it`)
+    await P.evaluate(() => { document.querySelector('#home-chat .hc-toggle').click() })   // close
+    await P.keyboard.press('Escape'); await P.focus('body'); await P.evaluate(() => window.HOME.homeOpenChat())
+    eq(await P.evaluate(() => !document.querySelector('#home-chat .hc-panel').hidden && document.activeElement === document.querySelector('#home-chat input')), `${tag} commands: homeOpenChat (the T key) opens the panel with the cursor in the box`)
+    await P.keyboard.type('/help'); await P.keyboard.press('Enter'); await sleep(300)
+    eq((await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1))).startsWith('Commands: /spawn'), `${tag} commands: a typed /help answers in the panel`)
+
     // keep inventory: the world value arrives with the rules; the owner sets this player apart
     const k0 = await P.evaluate(() => window.HOME.homeKeep())
     const pref = (await (await fetch(H + '/owner/state', { headers: { 'x-owner': token } })).json()).live.players.find((p) => p.role === 'player').ref
@@ -156,7 +174,7 @@ try {
     await P.screenshot({ path: path.join(os.tmpdir(), `home-play-${w}.png`) })
     eq(!errs.length, `${tag} no page errors${errs.length ? ': ' + errs.join(' / ') : ''}`)
     await api('rule', { id: 'chat.typed', v: false }); await sleep(200)
-    eq(await P.evaluate(() => document.querySelector('#home-chat').hidden), `${tag} chat: the owner turning it off hides the button`)
+    eq(await P.evaluate(() => !document.querySelector('#home-chat').hidden && /Commands/.test(document.querySelector('#home-chat .hc-toggle').textContent) && /Commands only/.test(document.querySelector('#home-chat input').placeholder)), `${tag} chat: with chat off the panel stays as "Commands" (buttons and /commands still work)`)
     await api('rule', { id: 'chat.typed', v: true })
     await oc.close(); await pc.close()
   }

@@ -2611,6 +2611,7 @@ async function homeShare() {
   if (__HOME_HOST__) HOME.onHomeOps((ops) => homeRemote(ops.map((o) => [o[1], o[2], o[3], o[4]])))
   if (__HOME_HOST__) HOME.onHomeResync((cells) => { homeRemote(cells); noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] }) })
   if (__HOME_HOST__) HOME.onHomeRefused((x, y, z, v) => homeRemote([[x, y, z, v]]))
+  if (__HOME_HOST__) HOME.onHomeTeleport((x, y, z) => { noa.entities.setPosition(noa.playerEntity, [x, y + 0.05, z]); if (playerBody) playerBody.velocity[1] = 0 })
   if (__HOME_HOST__) toast(HOME.homeStrings.en.in.replace('{w}', (homeSession && homeSession.world) || '').replace('{n}', (homeSession && homeSession.name) || ''))
 }
 let homeAvatars = null
@@ -9931,6 +9932,7 @@ document.addEventListener('keydown', (e) => {
   if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
   const sheet = $('sheet')
   if (sheet && !sheet.hidden) return
+  if (__HOME_HOST__ && homeSession && HOME.homeOpenChat()) { e.preventDefault(); releaseLook(); return }   // home: T = chat + commands
   if (!(teacherOn() || staffOn())) return
   e.preventDefault()
   releaseLook()

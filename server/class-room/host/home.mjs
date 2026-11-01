@@ -20,6 +20,7 @@ import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_
 import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
 import { makeEvents } from './events.mjs'
+import { makeCommands } from './commands.mjs'
 import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
 import { undoPlan, applyUndo } from '../src/world/undo.js'
@@ -180,6 +181,35 @@ let lastCode = null                  // shown on the owner page until the owner 
 let rules = makeRuleset(cfg.ruleset)   // the live ruleset (host/rules.mjs); hello carries it, a change is broadcast
 const RULE_FRAMES = new Set(['craft', 'st', 'hit'])   // (+ home-only: chat, ev, all)   // home-only frames the Room does not know; answered here
 const chatGate = makeChatGate()       // typed chat: one gap per player; nothing is stored
+// Server commands (part 8): buttons send {t:'cmd', c}, typed chat sends '/tp Trebby'; both end in src/essentials.js.
+const SPAWN = { x: 8.5, y: 8, z: 1.5 }   // the game's own spawn (bloxbert-src main.js SPAWN)
+const commands = makeCommands({ spawn: () => SPAWN, players: () => players().map(({ p }) => ({ id: p.id, ref: p.ref, alias: p.alias, staff: p.role !== 'kid', pos: p.pos })) })
+const CMD_WHY = { role: 'Only the owner can do that.', cooldown: 'Wait a few seconds.', 'no-home': 'No home set yet: /sethome where you stand.', 'no-such-player': 'No player by that name.', 'no-such-warp': 'No warp by that name (/warps lists them).', 'warp-name': 'Warp names: letters, digits, - or _ (up to 20).', unknown: 'Unknown command. /help lists them.', who: 'Who? Add a player name.', what: 'Say what? Add the text.', pos: 'Stand somewhere first.', 'not-here': 'You cannot set a home here.' }
+function runCommand(room, ws, p, cmd, text) {
+  const me = { id: p.id, ref: p.ref, staff: p.role !== 'kid', pos: p.pos }
+  const r = commands.run(me, cmd, text)
+  const tell = (o) => { try { ws.send(JSON.stringify(o)) } catch (e) {} }
+  if (r.error) { tell({ t: 'cmdno', c: cmd.c, why: CMD_WHY[r.error] || r.error }); return }
+  for (const f of r.fx) {
+    if (f.k === 'tp') { const t = players().find(({ p: q }) => q.id === f.id); if (t) { try { t.p.ws.send(JSON.stringify({ t: 'tp', x: f.pos.x, y: f.pos.y, z: f.pos.z, by: p.alias })) } catch (e) {} ; if (t.p.id !== p.id) tell({ t: 'cmdok', c: cmd.c, msg: t.p.alias + ' is on the way.' }); else tell({ t: 'cmdok', c: cmd.c }) } }
+    else if (f.k === 'spawnall') { broadcastAll({ t: 'tp', x: f.pos.x, y: f.pos.y, z: f.pos.z, by: p.alias }); feed('owner sent everyone to spawn') }
+    else if (f.k === 'home-set') tell({ t: 'cmdok', c: cmd.c, msg: 'Home set.' })
+    else if (f.k === 'announce') { broadcastAll({ t: 'chat', a: '📣 ' + p.alias, m: String(f.text || ''), at: Date.now() }); feed('owner announced: ' + String(f.text || '')) }
+    else if (f.k === 'mute') { const t = players().find(({ p: q }) => q.id === f.id); if (t) { t.p.muted = !!f.on; feed('owner ' + (f.on ? 'muted ' : 'unmuted ') + t.p.alias); tell({ t: 'cmdok', c: cmd.c, msg: t.p.alias + (f.on ? ' muted.' : ' unmuted.') }) } }
+    else if (f.k === 'muteall') { for (const { p: q } of players()) if (q.role === 'kid') q.muted = !!f.on; feed('owner ' + (f.on ? 'muted' : 'unmuted') + ' everyone'); tell({ t: 'cmdok', c: cmd.c, msg: f.on ? 'Everyone muted.' : 'Everyone unmuted.' }) }
+  }
+}
+function typedCommand(room, ws, p, line) {
+  const staff = p.role !== 'kid'
+  const r = commands.parse(line, staff)
+  const tell = (o) => { try { ws.send(JSON.stringify(o)) } catch (e) {} }
+  if (r.help) return tell({ t: 'cmdok', c: 'help', msg: 'Commands: ' + r.help })
+  if (r.error) return tell({ t: 'cmdno', c: 'typed', why: CMD_WHY[r.error] || r.error })
+  if (r.local === 'warps') return tell({ t: 'cmdok', c: 'warps', msg: commands.warpList().length ? 'Warps: ' + commands.warpList().join(', ') : 'No warps yet: /setwarp <name> where you stand.' })
+  if (r.local === 'setwarp') { const x = commands.setWarp(r.name, p.pos); if (x.error) return tell({ t: 'cmdno', c: 'setwarp', why: CMD_WHY[x.error] }); broadcastRules(); return tell({ t: 'cmdok', c: 'setwarp', msg: 'Warp "' + r.name + '" set.' }) }
+  if (r.local === 'delwarp') { const x = commands.delWarp(r.name); if (x.error) return tell({ t: 'cmdno', c: 'delwarp', why: CMD_WHY[x.error] }); broadcastRules(); return tell({ t: 'cmdok', c: 'delwarp', msg: 'Warp "' + r.name + '" removed.' }) }
+  runCommand(room, ws, p, r.cmd, r.text)
+}
 const events = makeEvents()           // shared boss fight news
 // The whole map for a joining game (home only; the school path asks chunk by chunk). Every changed cell of the open
 // world plus the seq it is good up to; live ops after that seq come through the normal fan-out. One per player / 5 s.
@@ -259,7 +289,8 @@ const keepFor = new Map()            // ref -> true | false
 function rulesFor(ref) {
   const s = rules.snapshot()
   const own = keepFor.has(ref)
-  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'] }, keep: own ? 'player' : 'world' }
+  const me = players().find(({ p }) => p.ref === ref), staff = !!(me && me.p.role !== 'kid')
+  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'] }, keep: own ? 'player' : 'world', menu: commands.menuFor(staff), warps: commands.warpList() }
 }
 const sendRules = (ws, ref) => { try { ws.send(JSON.stringify(rulesFor(ref))) } catch (e) {} }
 // Everyone hears a rules change as {t:'rules', ...}: the client shows a calm toast and applies it.
@@ -298,6 +329,8 @@ function homeFrame(room, ws, p, text) {
   }
   if (m.t === 'q' && p.muted) return true   // quick chat from a muted player: dropped quietly, as at school
   // world chat (home-only): on unless the owner turned it off; plain text, 200 chars, burst 5 then 1/s, no word filter, never stored
+  if (m.t === 'cmd') { if (m.c === 'setwarp' || m.c === 'delwarp') typedCommand(room, ws, p, '/' + m.c + ' ' + String(m.name || '')); else if (m.c === 'announce') typedCommand(room, ws, p, '/announce ' + String(m.text || '')); else runCommand(room, ws, p, { c: String(m.c), ...(m.id !== undefined ? { id: m.id } : {}), ...(m.i !== undefined ? { i: m.i } : {}), ...(m.on !== undefined ? { on: m.on } : {}) }); return true }
+  if (m.t === 'chat' && typeof m.m === 'string' && m.m.trim().startsWith('/')) { typedCommand(room, ws, p, m.m); return true }
   if (m.t === 'chat') {
     const off = rules.chatWhy(m, staff); if (off) { no(off); return true }
     if (p.muted) { no('chat-muted'); return true }
@@ -463,7 +496,7 @@ server.on('upgrade', async (req, tcp, head) => {
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 
