@@ -1,4 +1,5 @@
 // Icon-tile panels. main.js wires the actions.
+import { paintPages, isPageNote } from './lore/pages.js'
 import { menuIcon, menuPlate } from './icons.js'
 export function mountPanels(api) {
   const sheet = document.getElementById('sheet')
@@ -500,8 +501,9 @@ export function mountPanels(api) {
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
         if (api.paintGoals) api.paintGoals(g)
-        const lines = api.notes ? api.notes() : []
-        if (!lines.length) {
+        const all = api.notes ? api.notes() : []
+        const lines = all.filter((id) => !isPageNote(id))
+        if (!lines.length && lines.length === all.length) {
           const p = document.createElement('p')
           p.className = 'gnote'
           p.textContent = api.t('notebookEmpty')
@@ -515,6 +517,7 @@ export function mountPanels(api) {
             g.append(p)
           }
         }
+        paintPages(g, all, api.t)
         const crewHead = document.createElement('p')
         crewHead.className = 'gnote'
         crewHead.textContent = api.t('c4tCrew') || 'Crew badges'

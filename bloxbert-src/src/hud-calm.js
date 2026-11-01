@@ -107,7 +107,8 @@ export function createCalm(api) {
     if (!text) return
     const job = { text, act: act || null }
     if (holding) {
-      const i = wait.findIndex((row) => !row.chip && !row.nice)
+      // a waiting Maker Page line (📜, lore/pages.js) is a one-time story moment: never replace it
+      const i = wait.findIndex((row) => !row.chip && !row.nice && !String(row.text || '').startsWith('📜'))
       if (i >= 0) wait[i] = job
       else wait.push(job)
       return
