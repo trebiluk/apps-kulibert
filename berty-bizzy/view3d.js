@@ -447,8 +447,12 @@
       cable: new THREE.BoxGeometry(2.2, 2.2, 5),
       foot: new THREE.BoxGeometry(8, 4, 8),
       base: new THREE.BoxGeometry(48, 14, 42),
-      jaw: new THREE.BoxGeometry(7, 22, 5),
-      pad: new THREE.BoxGeometry(4.2, 14, 1.3)
+      // Parallel gripper (mechanically joined): a palm bar on the end of the wrist link, and two fingers that
+      // slide along it, the same length as the engine's jaws. x = across the gap, y = along the fingers, z = depth.
+      jaw: new THREE.BoxGeometry(5, root.PINCHY.LAYOUT.jaw, 8),
+      pad: new THREE.BoxGeometry(1.4, root.PINCHY.LAYOUT.jaw - 8, 6.5),
+      palm: new THREE.BoxGeometry(root.PINCHY.LAYOUT.gapOpen + 14, 5, 11),
+      rail: new THREE.BoxGeometry(root.PINCHY.LAYOUT.gapOpen + 10, 1.6, 2.2)
     };
     Object.keys(GEO).forEach(function (k) { sharedGeo[GEO[k].uuid] = true; });
     function aim(obj, dir) {
@@ -530,10 +534,29 @@
       g.userData.finger = finger;
       if (!ghost) {
         var pad = mesh(GEO.pad, MATS.pad, false);
+        pad.position.y = 2;
         g.add(pad);
         g.userData.pad = pad;
       }
       return g;
+    }
+    function makePalm(ghost) {
+      var g = new THREE.Group();
+      g.add(mesh(GEO.palm, ghost ? MATS.ghost : MATS.link, !ghost));
+      if (!ghost) {
+        var rail = mesh(GEO.rail, MATS.screw, false);
+        rail.position.set(0, 3.3, 3.6);
+        g.add(rail);
+      }
+      return g;
+    }
+    // Rotation whose x axis is `side`, y axis is `along`, z axis is their cross product.
+    var BASIS = new THREE.Matrix4();
+    function orient(obj, side, along) {
+      var z = new THREE.Vector3().crossVectors(side, along).normalize();
+      var x = new THREE.Vector3().crossVectors(along, z).normalize();
+      BASIS.makeBasis(x, along, z);
+      obj.quaternion.setFromRotationMatrix(BASIS);
     }
     function buildRig(ghost, hornMat, offsetX) {
       var rootG = new THREE.Group();
@@ -555,7 +578,8 @@
           }
         }
         rootG.add(base);
-        for (i = 0; i < 6; i++) {
+        // Five servos for five joints: base, shoulder, elbow, wrist, gripper (no extra roll servo).
+        for (i = 0; i < 5; i++) {
           var servo = makeServo(hornMat);
           servos.push(servo);
           rootG.add(servo);
@@ -564,6 +588,8 @@
       var jaws = [makeJaw(ghost), makeJaw(ghost)];
       rootG.add(jaws[0]);
       rootG.add(jaws[1]);
+      var palm = makePalm(ghost);
+      rootG.add(palm);
       if (ghost) {
         var ghostBase = new THREE.Group();
         var ghostBlock = mesh(GEO.base, MATS.ghost, false);
@@ -574,7 +600,7 @@
       scene.add(rootG);
       rootG.position.x = offsetX || 0;
       rootG.visible = !ghost;
-      return { root: rootG, links: links, servos: servos, jaws: jaws };
+      return { root: rootG, links: links, servos: servos, jaws: jaws, palm: palm };
     }
     var bertyBlob = blob(78);
     scene.add(bertyBlob);
@@ -600,23 +626,6 @@
       placeLink(rig.links[2], elbow, wrist);
       placeLink(rig.links[3], wrist, grip);
       var yawAxis = new THREE.Vector3(Math.cos(yaw * Math.PI / 180), 0, -Math.sin(yaw * Math.PI / 180));
-      var rollDir = new THREE.Vector3().subVectors(grip, wrist);
-      if (rollDir.lengthSq() < 1) rollDir.copy(up);
-      if (rig.servos.length) {
-        var spots = [
-          [new THREE.Vector3(0, 16, 0), up],
-          [shoulder, yawAxis],
-          [elbow, yawAxis],
-          [wrist, yawAxis],
-          [wrist.clone().lerp(grip, 0.45), rollDir],
-          [grip, yawAxis]
-        ];
-        var s;
-        for (s = 0; s < rig.servos.length; s++) {
-          rig.servos[s].position.copy(spots[s][0]);
-          aim(rig.servos[s], spots[s][1]);
-        }
-      }
       var yawRad = yaw * Math.PI / 180;
       var along = new THREE.Vector3(Math.sin(yawRad) * pose.px, pose.py, Math.cos(yawRad) * pose.px);
       var side = new THREE.Vector3(Math.sin(yawRad) * pose.nx, pose.ny, Math.cos(yawRad) * pose.nx);
@@ -624,20 +633,40 @@
       if (side.lengthSq() < 0.01) side.set(1, 0, 0);
       along.normalize();
       side.normalize();
-      var offsets = [-5, Math.max(6, pose.gap * 0.55)];
+      // The gripper servo sits on the back of the palm; the palm bolts to the end of the wrist link.
+      var palmAt = grip.clone().addScaledVector(along, -2.5);
+      if (rig.servos.length) {
+        var spots = [
+          [new THREE.Vector3(0, 16, 0), up],
+          [shoulder, yawAxis],
+          [elbow, yawAxis],
+          [wrist, yawAxis]
+        ];
+        var s;
+        for (s = 0; s < 4; s++) {
+          rig.servos[s].position.copy(spots[s][0]);
+          aim(rig.servos[s], spots[s][1]);
+        }
+        var clawServo = rig.servos[4];
+        clawServo.position.copy(palmAt).addScaledVector(along, -6.5).addScaledVector(side, 9);
+        orient(clawServo, along.clone().negate(), side);
+      }
+      rig.palm.position.copy(palmAt);
+      orient(rig.palm, side, along);
+      // Fingers: same length as the engine's jaws, one on each side of the gap, both riding the palm's rail.
+      var jawLen = layout.jaw;
+      // A held part stops the fingers at its sides (they never pass through it).
+      var gapNow = Math.max(pose.gap, 0);
+      if (state.holding && state.part && state.part.hw) gapNow = Math.max(gapNow, state.part.hw * 2);
+      var half = gapNow / 2 + 2.5;
       var j;
       for (j = 0; j < 2; j++) {
-        var a = grip.clone().addScaledVector(side, offsets[j]);
-        var b = a.clone().addScaledVector(along, 22);
+        var sign = j === 0 ? -1 : 1;
         var jaw = rig.jaws[j];
         if (jaw.parent !== rig.root) rig.root.attach(jaw);
-        jaw.position.copy(a).lerp(b, 0.5);
-        aim(jaw, along);
-        jaw.userData.finger.scale.z = Math.abs(offsets[j]) > 8 ? 0.7 : 1;
-        if (jaw.userData.pad) {
-          jaw.userData.pad.position.set(offsets[j] > 0 ? -3.1 : 3.1, 0, 0);
-        }
-        if (!rig.servos.length) rig.links[3].attach(jaw);
+        jaw.position.copy(grip).addScaledVector(side, sign * half).addScaledVector(along, jawLen / 2);
+        orient(jaw, side, along);
+        if (jaw.userData.pad) jaw.userData.pad.position.x = -sign * 3.2;
       }
     }
 

@@ -27,7 +27,9 @@
   // 1.5.0: Bizzy is a second copy of the rig, 190 to the right of Berty, facing the same way.
   var BIZZY_X = 190;
   var HIT_GAP = 11;
-  var PARKED = { base: 0, shoulder: 75, elbow: -120, wrist: 0 };
+  // Resting pose for an arm that is not in the level: upright, forearm forward, gripper pointing down, clear of
+  // its own links (the old folded pose put the gripper inside the upper arm).
+  var PARKED = { base: 0, shoulder: 75, elbow: -75, wrist: -60 };
 
   // Every non-English language is a machine draft (1.3.2): the table marks it and the app shows the badge. ar and fa-AF are RTL.
   var LANGS = [
