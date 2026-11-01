@@ -1,4 +1,5 @@
 // Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
+import { rollWildBush } from './loot-tables.js'
 export const DROP_CAP = 256
 export function lostWhyKey(why) {
   if (why === 'bag') return 'lostWhyBag'
@@ -82,11 +83,11 @@ export function intoBag(name) {
   return null
 }
 
-// Wild berry bush break. 1-2 Berries every time, and a Bush Sprout 1 time in 4.
-// Planted bushes do not use this. Leaf berries stay on their own roll.
+// Wild berry bush. Same 1-2 berries, and a sprout 1 time in 4. The shared table owns the roll.
 export function wildBushLoot(x, y, z) {
-  const h = (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263) ^ Math.imul(68, 374761393)) >>> 0
-  return { berries: 1 + (h % 2), sprout: ((h >>> 3) % 4) === 0 }
+  const drops = rollWildBush(x, y, z)
+  const berry = drops.find((d) => d.item === 'berry')
+  return { berries: berry ? berry.n : 0, sprout: drops.some((d) => d.item === 'bushSprout') }
 }
 
 export function pullLoose(ground, lost, bagCount, bagTake, item, n) {

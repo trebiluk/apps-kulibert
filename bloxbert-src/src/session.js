@@ -9,7 +9,8 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { slotArt, menuIcon } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys } from './drops.js'
+import { rollWildBush, rollSupply } from './loot-tables.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots, closeTip } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
@@ -19,6 +20,8 @@ import { berryTuft } from './worldgen.js'
 import { floraExtra } from './packs/flora/pack.js'
 import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
+
+if (!ITEMS.scrap) ITEMS.scrap = { letter: 'Sc', base: 0, sell: false, stack: 64 }
 
 export function createSession(api) {
   if (api && api.close) {
@@ -2839,7 +2842,11 @@ export function createSession(api) {
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (api.townKept && api.townKept(x, y, z)) return false
     if (id === 24 || id === 26) return false
-    if (id === 27) spillBox(x, y, z)
+    if (id === 27) {
+      const supply = meta.get(x + ',' + y + ',' + z)
+      if (supply && supply.kind === 'supply') { api.toast(t('supplyCache')); return false }
+      spillBox(x, y, z)
+    }
     const wildBush = id >= 65 && id <= 68 && api.wildBush && api.wildBush(x, y, z)
     const drop = wildBush ? null : dropOf(id)
     let got = 0
@@ -2847,10 +2854,10 @@ export function createSession(api) {
     const wasEmpty = !bag.slots[hot]
     const beforeSlots = slotSnap()
     if (wildBush) {
-      const loot = wildBushLoot(x, y, z)
-      giveLoose('berry', loot.berries, x, y, z)
-      if (loot.sprout) giveLoose('bushSprout', 1, x, y, z)
-      got = loot.berries
+      const loot = rollWildBush(x, y, z)
+      for (const d of loot) giveLoose(d.item, d.n, x, y, z)
+      const berry = loot.find((d) => d.item === 'berry')
+      got = berry ? berry.n : 0
     } else if (drop) {
       markFound(drop)
       const left = bag.add(drop, 1)
@@ -3367,6 +3374,7 @@ export function createSession(api) {
     }
     if (id === 27) {
       const rec = meta.get(key)
+      if (rec && rec.kind === 'supply') return false
       if (rec && rec.slots) for (const s of rec.slots) if (s && s.n) take(s.item, s.n)
       take('box', 1)
       meta.delete(key)
@@ -3826,6 +3834,38 @@ export function createSession(api) {
     return energy.bolts
   }
   function energyState() { return { bolts: energy.bolts, acc: energy.acc } }
+  function supplyWho(alias) {
+    return String(alias || 'kid').slice(0, 24)
+  }
+  function supplyPeek(x, y, z, alias) {
+    const rec = meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0))
+    if (!rec || rec.kind !== 'supply') return null
+    const who = supplyWho(alias)
+    const prev = (rec.opened || []).find((o) => o && o.alias === who)
+    return { already: !!prev, item: prev ? prev.item || '' : '', n: prev ? prev.n | 0 : 0 }
+  }
+  function openSupply(x, y, z, alias) {
+    const key = (x | 0) + ',' + (y | 0) + ',' + (z | 0)
+    const rec = meta.get(key)
+    if (!rec || rec.kind !== 'supply') return null
+    const who = supplyWho(alias)
+    const list = Array.isArray(rec.opened) ? rec.opened.slice() : []
+    const prev = list.find((o) => o && o.alias === who)
+    if (prev) return { already: true, item: prev.item || '', n: prev.n | 0 }
+    const drop = rollSupply(x | 0, y | 0, z | 0, who)
+    if (!drop || !drop.item) return { already: false, item: '', n: 0 }
+    if (!ITEMS[drop.item]) ITEMS[drop.item] = { letter: 'Sc', base: 0, sell: false, stack: 64 }
+    const left = bag.add(drop.item, drop.n)
+    const got = (drop.n | 0) - (left | 0)
+    if (got) paintHotbar()
+    if (left) spawnDrop(drop.item, left, (x | 0) + 0.5, (y | 0) + 0.5, (z | 0) + 0.5, 'full')
+    list.push({ alias: who, item: drop.item, n: got })
+    rec.opened = list
+    meta.set(key, rec)
+    if (api.markDirty) api.markDirty()
+    if (api.saveNow) api.saveNow()
+    return { already: false, item: drop.item, n: got }
+  }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     get bag() { return bag },
@@ -3877,6 +3917,7 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
+    supplyPeek, openSupply,
     useHeld, selectOwned, holdItem, mountEnergy, isFood: isFoodItem,
     fillFacts(host, spec) {
       if (!host || !spec || !spec.item || !ITEMS[spec.item]) return
