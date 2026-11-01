@@ -344,6 +344,7 @@ export function mountPanels(api) {
       menuGroup('settings', api.t('settings'), [
         keyTile('gear', 'settings', api.t('settings'), () => open('settings')),
         keyTile('eye', 'a11y', api.t('a11y'), () => open('a11y')),
+        keyTile('mylook', 'mylook', api.t('myLook'), () => open('mylook')), // 2.5.555: Avatar Outfits
         keyTile('full', 'fs', api.t('fs'), () => api.fullScreen()),
         keyTile('scroll', 'log', api.t('changelog'), () => open('log')),
       ]),
@@ -419,6 +420,7 @@ export function mountPanels(api) {
         }
         requestAnimationFrame(focusGo)
       },
+      mylook: () => show('mylook', api.t('myLook'), (g) => { if (api.paintMyLook) api.paintMyLook(g) }), // 2.5.555
       inventory: () => show('inventory', api.t('inventory'), (g) => api.paintBag(g)),
       crafting: () => show('crafting', api.t('crafting'), (g) => api.paintCraft(g)),
       shop: () => show('shop', api.t('shop'), (g) => api.paintShop(g)),
