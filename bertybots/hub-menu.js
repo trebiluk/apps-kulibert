@@ -460,11 +460,11 @@
         news.setAttribute("data-hub-key", item.key);
         news.setAttribute("data-hub-action", "whats");
         var kicker = el("strong", "hub-menu-kicker hub-menu-text");
-        kicker.textContent = COPY.en.whatsNew;
+        kicker.textContent = pack().whatsNew;
         news.appendChild(kicker);
         news.appendChild(document.createTextNode(" "));
         var line = el("span", "hub-menu-line");
-        line.textContent = COPY.en.line;
+        line.textContent = pack().line;
         news.appendChild(line);
         panel.appendChild(news);
         return;
@@ -709,3 +709,4 @@
 
   root.HubMenu = { links: LINKS, scan: scan };
 })(typeof window !== "undefined" ? window : globalThis);
+
