@@ -42,12 +42,19 @@ const browser = await puppeteer.launch({
   protocolTimeout: 180000,
   args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-dev-shm-usage'],
 })
-const page = await browser.newPage()
-const cdp = await page.createCDPSession()
-page.setDefaultTimeout(120000)
 const errors = []
-page.on('pageerror', (e) => errors.push('page:' + e.message))
-page.on('console', (msg) => { if (msg.type() === 'error' && !/404|Failed to load/.test(msg.text())) errors.push(msg.text()) })
+let page = null
+let cdp = null
+// Each size gets its own incognito context: a fresh kid with no save, gifts or hung tools from the last size.
+async function freshPage() {
+  if (page) await page.browserContext().close().catch(() => {})
+  const ctx = await browser.createBrowserContext()
+  page = await ctx.newPage()
+  cdp = await page.createCDPSession()
+  page.setDefaultTimeout(120000)
+  page.on('pageerror', (e) => errors.push('page:' + e.message))
+  page.on('console', (msg) => { if (msg.type() === 'error' && !/404|Failed to load/.test(msg.text())) errors.push(msg.text()) })
+}
 
 const report = { steps: [] }
 function note(name, ok, detail) {
@@ -66,7 +73,10 @@ async function cdpClick(x, y, button) {
   await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: btn, clickCount: 1 })
 }
 
+let curTouch = false
 async function boot(w, h, touch) {
+  curTouch = !!touch
+  await freshPage()
   await page.setViewport({ width: w, height: h, hasTouch: !!touch, isLandscape: w > h, deviceScaleFactor: 1 })
   await page.goto('http://127.0.0.1:8877/?q=lite&smoke=1' + (touch ? '&touch=1' : ''), { waitUntil: 'domcontentloaded', timeout: 60000 })
   await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__blocks, { timeout: 45000 })
@@ -85,6 +95,9 @@ async function startItems() {
     window.__blocks.give('handSaw', 1)
     window.__blocks.give('hammer', 1)
     window.__blocks.give('ironIngot', 4)
+    // 2.5.571 (6b1fad66) locks the iron lamps until the metal tier (T4) is open. A kid holding ingots has been
+    // through the smelter, so open T4 the way the ladder does.
+    if (s.gate) s.gate('T4')
     window.__blocks.give('glass', 4)
     window.__blocks.give('stick', 4)
     window.__blocks.give('woolBlue', 8)
@@ -137,8 +150,24 @@ async function aimAndClick(cx, cy, cz, button) {
   return spot
 }
 
+// Since 2.5.211 (df9a1a61) a desktop kid's first left click only grabs the mouse ("Your first click just grabs the
+// mouse"); the world click comes after. Do what a kid does: click into play once, then click the block.
+async function enterPlay() {
+  const box = await page.evaluate(() => {
+    if (document.pointerLockElement) return null
+    const c = document.querySelector('#stage canvas')
+    const r = c.getBoundingClientRect()
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  })
+  if (!box) return true
+  await cdpClick(box.x, box.y, 'left')
+  await sleep(300)
+  return page.evaluate(() => !!document.pointerLockElement)
+}
+
 async function openWoodshop() {
   await page.evaluate(() => window.__smoke.plant(60, 5, 60, 69))
+  await enterPlay()
   const spot = await aimAndClick(60, 5, 60, 'left'); console.log('SPOT', JSON.stringify(spot))
   await sleep(500)
   const dbg = await page.evaluate(() => { const s = window.__smoke; return { v: s.voxel(60,5,60), aim: s.aim() } })
@@ -154,6 +183,7 @@ async function openWoodshop() {
 }
 
 async function hangAndCraft() {
+  await dismissSafety()
   await page.evaluate(() => {
     for (const s of document.querySelectorAll('.wall-slot')) s.click()
   })
@@ -188,7 +218,10 @@ async function selectItem(item) {
   }, item)
 }
 async function placeToggleLight() {
-  await page.evaluate(() => window.__smoke.close())
+  await dismissSafety()
+  // Worldgen can leave a dirt bump right where the checker stands (62,5,66 on some runs), which puts the eye inside
+  // a block and the aim on the bump. Clear a work bay in front of the target, the way a kid would dig one.
+  await page.evaluate(() => { const s = window.__smoke; s.close(); for (let x = 60; x <= 66; x++) for (let z = 63; z <= 69; z++) for (let y = 5; y <= 7; y++) s.plant(x, y, z, 0); for (let x = 60; x <= 66; x++) for (let z = 63; z <= 69; z++) s.plant(x, 4, z, 3) })
   await selectItem('floorLamp')
   for (let attempt = 0; attempt < 3; attempt++) {
     const spot = await aimAndClick(62, 5, 62, 'right')
@@ -226,20 +259,81 @@ async function placeToggleLight() {
   return { lampCell, toggled, light, off }
 }
 
+// Hold the left button on a cell the way a kid does: in play (mouse grabbed), aimed at the cell, one real press.
+// The Woodshop shows the shop-safety rules once; a kid taps OK before playing on. Do the same.
+async function dismissSafety() {
+  await page.evaluate(() => { const b = document.querySelector('#shop-safe button'); if (b) b.click() })
+}
+
+async function holdOn(c, ms, low = 0.5) {
+  await dismissSafety()
+  // Chrome refuses a new pointer lock for about a second after one ends, so try again after a short wait.
+  // On a touch screen there is no mouse to grab; the kid just presses and holds.
+  let locked = curTouch
+  for (let i = 0; i < 4 && !locked; i++) { locked = await enterPlay(); if (!locked) await sleep(1200) }
+  const box = await page.evaluate(() => { const r = document.querySelector('#stage canvas').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })
+  // Find a pose that aims at the cell, then keep that pose for the whole hold: a steady hand. (Headless Chrome sends
+  // a stray locked mousemove on press that would swing the camera; a kid's hand does not jump 600 px.)
+  const pose = await page.evaluate(async (c) => {
+    const s = window.__smoke
+    const frame = () => new Promise((r) => requestAnimationFrame(r))
+    for (const dist of [2.2, 2.8, 3.4]) {
+      for (let i = 0; i < 12; i++) {
+        const tx = c.x + 0.5, ty = c.y + c.low, tz = c.z + 0.5
+        const ex = tx, ey = c.y + 1.4, ez = tz + dist
+        const p = [ex, ey - 1.62, ez, Math.atan2(tx - ex, tz - ez), Math.atan2(-(ty - ey), Math.hypot(tx - ex, tz - ez) || 0.001)]
+        s.stand(...p)
+        await frame(); await frame()
+        const a = s.aim()
+        if (a && a.x === c.x && a.y === c.y && a.z === c.z) return p
+        // a rug answers from any of its 4 cells
+        if (a && c.id >= 1104 && (a.id === 1104 || a.id === 1105)) return p
+      }
+    }
+    return null
+  }, { ...c, low })
+  if (!pose) return false
+  await page.evaluate((p) => {
+    window.__steady = true
+    const tick = () => { if (!window.__steady) return; window.__smoke.stand(...p); requestAnimationFrame(tick) }
+    tick()
+  }, pose)
+  if (curTouch) {
+    // A finger presses the block itself. On a sideways phone the camera-view chip sits over the middle of the
+    // screen (2.5.595), so find a spot on the block that the canvas actually owns.
+    const spot = await page.evaluate((c) => {
+      const s = window.__smoke
+      const canvas = document.querySelector('#stage canvas')
+      const r = canvas.getBoundingClientRect()
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2
+      for (const [dx, dy] of [[0, 0], [0, -30], [0, 30], [-40, 0], [40, 0], [0, -60], [0, 60], [-80, 0], [80, 0]]) {
+        const x = cx + dx, y = cy + dy
+        if (document.elementFromPoint(x, y) !== canvas) continue
+        const h = s.hit(x, y)
+        if (h && ((h.x === c.x && h.y === c.y && h.z === c.z) || (c.id >= 1104 && (h.id === 1104 || h.id === 1105)))) return { x, y }
+      }
+      return null
+    }, c)
+    const at = spot || box
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: at.x, y: at.y, id: 1 }] })
+    await sleep(ms)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  } else {
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: box.x, y: box.y, button: 'left', buttons: 1, clickCount: 1 })
+    await sleep(ms)
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: box.x, y: box.y, button: 'left', buttons: 0, clickCount: 1 })
+  }
+  await page.evaluate(() => { window.__steady = false })
+  await sleep(300)
+  const aimed = true
+  return locked && aimed
+}
+
 async function pickupSaveReload(lampCell) {
   if (!lampCell) return { cell: -1, bag: 0 }
-  await page.evaluate(async (c) => {
-    const s = window.__smoke
-    const canvas = document.querySelector('#stage canvas')
-    const frame = () => new Promise((r) => requestAnimationFrame(r))
-    s.stand(c.x + 0.5, c.y - 1, c.z + 2.6, Math.atan2(0, -1), 0.1)
-    await frame(); await frame()
-    const r = canvas.getBoundingClientRect()
-    const common = { bubbles: true, cancelable: true, pointerId: 5, pointerType: 'mouse', clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, isPrimary: true, button: 0, buttons: 1 }
-    canvas.dispatchEvent(new PointerEvent('pointerdown', common))
-    await new Promise((res) => setTimeout(res, 800))
-    canvas.dispatchEvent(new PointerEvent('pointerup', { ...common, buttons: 0 }))
-  }, lampCell)
+  await page.evaluate(() => window.__smoke.close())
+  const aimed = await holdOn(lampCell, 1400)
+  const before = await page.evaluate((c) => ({ cell: window.__smoke.voxel(c.x, c.y, c.z), bag: window.__smoke.count('floorLamp') }), lampCell)
   await sleep(400)
   const save = await page.$('#save-btn')
   if (save) await save.click()
@@ -247,12 +341,14 @@ async function pickupSaveReload(lampCell) {
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 }).catch(() => {})
   await sleep(700)
-  return page.evaluate((c) => ({ cell: window.__smoke.voxel(c.x, c.y, c.z), bag: window.__smoke.count('floorLamp') }), lampCell)
+  const after = await page.evaluate((c) => ({ cell: window.__smoke.voxel(c.x, c.y, c.z), bag: window.__smoke.count('floorLamp') }), lampCell)
+  return { ...after, aimed, before }
 }
 
 
 async function rugPickupWalk() {
-  await page.evaluate(() => window.__smoke.close())
+  // a block to aim at, with a clear 2x2 in front of its +z face for the rug
+  await page.evaluate(() => { const s = window.__smoke; s.close(); s.plant(64, 5, 64, 3); for (const [x, z] of [[64, 65], [65, 65], [64, 66], [65, 66]]) s.plant(x, 5, z, 0) })
   await selectItem('rug')
   // place via real aim+right-click
   let placed = null
@@ -271,29 +367,23 @@ async function rugPickupWalk() {
     if (placed) break
   }
   if (!placed) return { placed: false, voxels: -1, bag: 0, walked: false }
-  // aim and hold left (real CDP) to pick up whole rug
-  const canvasBox = await page.evaluate(() => {
-    const c = document.querySelector('#stage canvas')
-    const r = c.getBoundingClientRect()
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
-  })
-  await aimAndClick(placed.x, placed.y, placed.z, 'left')
-  // hold left via CDP
-  await cdp.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: canvasBox.x, y: canvasBox.y, button: 'left', clickCount: 1 })
-  await sleep(900)
-  await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: canvasBox.x, y: canvasBox.y, button: 'left', clickCount: 1 })
-  await sleep(400)
+  // hold left on the rug (real press) to pick up the whole rug
+  const held = await holdOn(placed, 1400, 0.05)
   const after = await page.evaluate((p) => {
     const s = window.__smoke
     const cells = [[p.x, p.y, p.z], [p.x+1, p.y, p.z], [p.x, p.y, p.z+1], [p.x+1, p.y, p.z+1]]
     const zeros = cells.filter(([x,y,z]) => s.voxel(x,y,z) === 0).length
-    return { zeros, bag: s.count('rug') }
+    return { zeros, bag: s.count('rug'), ids: cells.map(([x,y,z]) => s.voxel(x,y,z)) }
   }, placed)
   // place again and walk over with keys
   await selectItem('rug')
-  await aimAndClick(placed.x, placed.y, placed.z, 'right')
+  await aimAndClick(64, 5, 64, 'right')
   await page.evaluate(() => { const b = document.getElementById('t-place'); if (b) b.click() })
   await sleep(400)
+  // take the aim block away so the walk crosses the rug and nothing else
+  await page.evaluate(() => { const s = window.__smoke; s.plant(64, 5, 64, 0); s.stand(64.5, 5, 68.5, Math.PI, 0.2) })
+  // let the kid land before the walk (re-placing can leave them a step up)
+  await page.evaluate(async () => { const n = window.__blocks.noa; let last = -1; for (let i = 0; i < 60; i++) { await new Promise((r) => setTimeout(r, 50)); const y = n.ents.getPositionData(n.playerEntity).position[1]; if (Math.abs(y - last) < 0.001) break; last = y } })
   const beforeY = await page.evaluate(() => {
     try { return window.__blocks.noa.ents.getPositionData(window.__blocks.noa.playerEntity).position[1] } catch (e) { return null }
   })
@@ -306,10 +396,12 @@ async function rugPickupWalk() {
     try { return window.__blocks.noa.ents.getPositionData(window.__blocks.noa.playerEntity).position[1] } catch (e) { return null }
   })
   const walked = beforeY != null && afterY != null && Math.abs(afterY - beforeY) < 0.15
-  return { placed: true, voxels: after.zeros, bag: after.bag, walked, beforeY, afterY }
+  return { placed: true, at: placed, held, ids: after.ids, voxels: after.zeros, bag: after.bag, walked, beforeY, afterY }
 }
 
-for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
+// DECOR_SIZES=412x915t,1366x768 runs other sizes ("t" = touch). Default: 1366 desk and 915x412 touch.
+const SIZES = (process.env.DECOR_SIZES || '1366x768,915x412t').split(',').map((v) => { const m = v.match(/(\d+)x(\d+)(t?)/); return [+m[1], +m[2], !!m[3]] })
+for (const [w, h, touch] of SIZES) {
   await boot(w, h, touch)
   const items = await startItems()
   note('items ' + w, items.tools === 1 && items.iron >= 1, JSON.stringify(items))

@@ -3134,14 +3134,16 @@ function tellNoRoom(key, msg) {
   const el = $('toast')
   if (el) el.classList.add('fx-pop')
 }
+// 2.5.449 (61152a5b) replaced the amber ghost material with blockedMat (red outline, no fill) but left this caller on
+// the removed amberMat, so a blocked Woodshop placement threw "amberMat is not defined". Use the blocked look.
 function showShopAmber(x, y, z, sx, sy, sz) {
-  if (!placeGhost || !amberMat) return
-  placeGhost.material = amberMat
+  if (!placeGhost || !blockedMat) return
+  placeGhost.material = blockedMat
   const lp = noa.globalToLocal([x + 0.5, y + 0.5, z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
   if (placeGhostSide) {
-    placeGhostSide.material = amberMat
+    placeGhostSide.material = blockedMat
     const lp2 = noa.globalToLocal([sx + 0.5, sy + 0.5, sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)
@@ -3494,10 +3496,14 @@ function breakAt(x, y, z, hold) {
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105) {
     const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
     const item = (id === 1100 || id === 1101) ? 'floorLamp' : (id === 1102 || id === 1103) ? 'wallLamp' : 'rug'
-    const cells = (id === 1104 || id === 1105) ? rugSpan(x, y, z) : [[x, y, z]]
+    // A rug part knows its anchor; pick up the whole rug from any of its 4 cells, not a 2x2 from the touched cell.
+    const anc = rec && typeof rec.anchor === 'string' ? rec.anchor.split(',').map(Number) : null
+    const cells = (id === 1104 || id === 1105) ? (anc && anc.length === 3 ? rugSpan(anc[0], anc[1], anc[2]) : rugSpan(x, y, z)) : [[x, y, z]]
     if (session && session.give) session.give(item, 1)
     if (rec && rec.design) stampDecor(item, rec.design)
     for (const [cx, cy, cz] of cells) {
+      const cid = getVoxel(cx, cy, cz)
+      if (cells.length > 1 && cid !== 1104 && cid !== 1105) continue
       if (session && session.meta) session.meta.delete(cx + ',' + cy + ',' + cz)
       edit(cx, cy, cz, 0)
     }
@@ -4291,7 +4297,7 @@ function overHud() {
   try { el = document.elementFromPoint(lastClient.x, lastClient.y) } catch (e) { return false }
   return hudEl(el)
 }
-window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (!e.pointerType || e.pointerType !== 'touch') lastPointing = performance.now(); if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
+window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (!e.pointerType || e.pointerType !== 'touch') lastPointing = performance.now(); if (leftPress && !(e.buttons & 1) && !document.pointerLockElement) dropLeft() }, true)
 window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
 noa.inputs.down.on('fire', () => {
   if (!leftPress || leftPress.acted) return
