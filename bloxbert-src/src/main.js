@@ -198,6 +198,7 @@ import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanv
 import { dayCap } from './econ/cogs.js'
 import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
+import { createLore } from './lore/pages.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -3134,14 +3135,16 @@ function tellNoRoom(key, msg) {
   const el = $('toast')
   if (el) el.classList.add('fx-pop')
 }
+// 2.5.449 (61152a5b) replaced the amber ghost material with blockedMat (red outline, no fill) but left this caller on
+// the removed amberMat, so a blocked Woodshop placement threw "amberMat is not defined". Use the blocked look.
 function showShopAmber(x, y, z, sx, sy, sz) {
-  if (!placeGhost || !amberMat) return
-  placeGhost.material = amberMat
+  if (!placeGhost || !blockedMat) return
+  placeGhost.material = blockedMat
   const lp = noa.globalToLocal([x + 0.5, y + 0.5, z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
   if (placeGhostSide) {
-    placeGhostSide.material = amberMat
+    placeGhostSide.material = blockedMat
     const lp2 = noa.globalToLocal([sx + 0.5, sy + 0.5, sz + 0.5], null, ghostLocal2)
     placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
     placeGhostSide.setEnabled(true)
@@ -3494,10 +3497,14 @@ function breakAt(x, y, z, hold) {
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105) {
     const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
     const item = (id === 1100 || id === 1101) ? 'floorLamp' : (id === 1102 || id === 1103) ? 'wallLamp' : 'rug'
-    const cells = (id === 1104 || id === 1105) ? rugSpan(x, y, z) : [[x, y, z]]
+    // A rug part knows its anchor; pick up the whole rug from any of its 4 cells, not a 2x2 from the touched cell.
+    const anc = rec && typeof rec.anchor === 'string' ? rec.anchor.split(',').map(Number) : null
+    const cells = (id === 1104 || id === 1105) ? (anc && anc.length === 3 ? rugSpan(anc[0], anc[1], anc[2]) : rugSpan(x, y, z)) : [[x, y, z]]
     if (session && session.give) session.give(item, 1)
     if (rec && rec.design) stampDecor(item, rec.design)
     for (const [cx, cy, cz] of cells) {
+      const cid = getVoxel(cx, cy, cz)
+      if (cells.length > 1 && cid !== 1104 && cid !== 1105) continue
       if (session && session.meta) session.meta.delete(cx + ',' + cy + ',' + cz)
       edit(cx, cy, cz, 0)
     }
@@ -4291,7 +4298,7 @@ function overHud() {
   try { el = document.elementFromPoint(lastClient.x, lastClient.y) } catch (e) { return false }
   return hudEl(el)
 }
-window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (!e.pointerType || e.pointerType !== 'touch') lastPointing = performance.now(); if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
+window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (!e.pointerType || e.pointerType !== 'touch') lastPointing = performance.now(); if (leftPress && !(e.buttons & 1) && !document.pointerLockElement) dropLeft() }, true)
 window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY; if (leftPress && !(e.buttons & 1)) dropLeft() }, true)
 noa.inputs.down.on('fire', () => {
   if (!leftPress || leftPress.acted) return
@@ -6116,6 +6123,7 @@ function paintDayClock() {
   if (tim) tim.textContent = face.text
   btn.dataset.lock = face.locked ? 'day' : ''
   btn.dataset.phase = face.phase
+  if (face.day >= 2 && loreRef && session && session.mode === 'survival') loreRef.on('day2')
   const label = face.locked ? t('alwaysDay') : t('clockDay').replace('{n}', String(face.day)) + ' · ' + face.text
   btn.setAttribute('aria-label', label)
 }
@@ -6423,6 +6431,7 @@ let actThisClick = false
 let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
+let loreRef = null // Maker Pages (lore/pages.js); mobs fire before learn exists
 let lastPointer = null
 let calmRepaint = false
 calm = createCalm({
@@ -6754,10 +6763,11 @@ const mobs = createMobs({
     paintSuit()
   },
   lastBonk: () => lastBonk,
+  onReboot: (kind) => { if (loreRef) loreRef.on('reboot' + kind) },
   scene: () => { try { return noa.rendering.getScene() } catch (e) { return null } },
   addMesh: (mesh) => { try { noa.rendering.addMeshToScene(mesh, false) } catch (e) {} },
 })
-const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
+const stations = createStations({ touch: () => noteMachine(), t, baked: (item) => { if (item === 'glass' && loreRef) loreRef.on('bakeGlass') }, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
@@ -7660,7 +7670,9 @@ const learn = createLearn({
   releaseHint: (kind) => releaseHint(kind),
   laneAdd, laneRelease,
 })
-markPath = (id) => learn.bump(id)
+const lore = createLore({ learn, t, toast })
+loreRef = lore
+markPath = (id) => { learn.bump(id); lore.on(id) }
 learnRef = learn
 paintPath = () => learn.paintPath()
 holdTour = () => learn.cancelAuto()
@@ -8035,6 +8047,7 @@ function sleepNow() {
     paintDayClock()
     sleepBusy = false
   }
+  if (loreRef) loreRef.on('sleep')
   if (!fade) { wake(); return 'night' }
   fade.hidden = false
   requestAnimationFrame(() => fade.classList.add('on'))
@@ -13764,6 +13777,15 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       const armed = stations.arm(key, 'bread')
       return { fueled, armed, flour: session.bag.count('flour'), bread: session.bag.count('bread'), view: stations.view(key) }
     },
+    bakeGlass() { // Maker Page 3 check: a real oven bake of 2 sand into glass (same path as bakeBread)
+      const key = '12,5,8'
+      if (session.bag.count('sand') < 2) session.give('sand', 2)
+      if (!session.bag.count('planks')) session.give('planks', 1)
+      const fueled = stations.addFuel(key, 'planks')
+      const armed = stations.arm(key, 'glass')
+      return { fueled, armed, view: stations.view(key) }
+    },
+    ovenTick() { stations.tick(); return true },
     takeBread() {
       const key = '11,5,8'
       stations.tick()

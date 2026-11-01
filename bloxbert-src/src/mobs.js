@@ -407,6 +407,8 @@ export function createMobs(opts) {
       const fact = m.kind === 'rustbot' ? (t ? t('c4RustFact') : 'Rustbot: rust is iron + oxygen + water') : (t ? t('c4KeeperFact') : 'Keeper: slam opens a weak point')
       try { openDex(m.kind, fact) } catch (e) {}
     }
+    // Maker Pages: a reboot is a first-time story moment (lore/pages.js)
+    if (opts && opts.onReboot) { try { opts.onReboot(m.kind) } catch (e) {} }
     const item = m.stolen || ''
     if (item && giveItem) giveItem(item, 1)
     if (m.kind === 'keeper' && giveItem) giveItem('keeperCore', 1)
