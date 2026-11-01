@@ -69,7 +69,7 @@
     "Sakura": picture("bloom", "rose", "dusk", "glow", false, "rain", "ice"),
     "Arirang": picture("ribbon", "ice", "night", "line", false, "stars", "violet"),
     "Jasmine Flower": picture("bloom", "lime", "aurora", "glow", false, "clouds", "ice"),
-    "Chanda Mama": picture("stars", "ice", "night", "glow", false, "orbit", "violet"),
+    "Sa Re Ga Ma": picture("stars", "ice", "night", "glow", false, "orbit", "violet"),
     "Ode to Joy": picture("fireworks", "amber", "sunset", "glow", false, "rings", "rose"),
     "Korobeiniki": picture("orbit", "cyan", "night", "rgb", true, "tiles", "violet"),
     "Frere Jacques": picture("rings", "violet", "dusk", "glow", false, "stars", "amber"),
@@ -80,7 +80,6 @@
     "Simple Gifts": picture("bloom", "amber", "dusk", "line", false, "clouds", "rose"),
     "Aloha Oe": picture("ribbon", "cyan", "sea", "glow", false, "rain", "ice"),
     "Tumbalalaika": picture("stars", "violet", "night", "glow", false, "orbit", "ice"),
-    "Zum Gali Gali": picture("tiles", "amber", "sunset", "glow", false, "bars", "rose"),
     "Dona Nobis": picture("bloom", "ice", "dusk", "glow", false, "rings", "violet"),
     "Twinkle": picture("stars", "amber", "night", "glow", false, "orbit", "cyan"),
     "Little Lamb": picture("clouds", "ice", "dusk", "line", false, "bloom", "rose"),
@@ -98,6 +97,12 @@
     { id: "ocean", name: "Ocean", viz: picture("rain", "cyan", "sea", "glow", false, "ribbon", "ice") },
   ];
   const VIZ_MAP = "kulibert.music.vizmap";
+  // MU 2.36.63: songs with real notation (key, time, pickup, note lengths) come from songs.js.
+  const richOf = (name) => (window.MU_SONGS && window.MU_SONGS[name]) || null;
+  function richToSong(rich) {
+    return { bpm: rich.bpm, meter: rich.meter, key: rich.key, pickup: rich.pickup, measures: rich.measures };
+  }
+  let songRev = 0; // MU 2.36.64: bumps on every edit to a real-length song, so Play re-reads the song
   let songCatalog = [];
   let openTune = function () {};
   let libraryFilter = "all";
@@ -154,6 +159,11 @@
   }
 
   const GRID = 16;
+  // MU 2.36.61: Tap pad keys and the selected lane (declared early: renderDrums can run before the Tap code).
+  const PAD_KEYS = { KeyA: "kick", KeyS: "snare", KeyD: "hat", KeyF: "clap", KeyG: "tom", KeyH: "shaker", KeyJ: "rim", KeyK: "bell" };
+  let laneSel = "kick";
+  let laneNarrow = null;
+  let laneNow = -2;
   function to16(arr) {
     const src = Array.isArray(arr) ? arr : [];
     const out = Array(GRID).fill(false);
@@ -583,6 +593,16 @@
   function songLen() {
     return Math.max(1, Song.events(state.song).length);
   }
+  // MU 2.36.63: bar and beat of a note. The pickup bar is bar 0 ("Pickup"); full bars count from 1.
+  function barBeat(ev, step) {
+    if (!ev) return { bar: 1, beat: Math.max(0, step) + 1, pickup: false };
+    const pickup = ev.bar === 0;
+    return { bar: ev.bar != null ? ev.bar : ev.measure + 1, beat: ev.beat + 1, pickup: pickup };
+  }
+  function playPosText(bb) {
+    if (bb.pickup) return (mu("playPosPickup") || "Pickup · Beat {beat}").replace("{beat}", String(bb.beat));
+    return (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bb.bar)).replace("{beat}", String(bb.beat));
+  }
   function paintMeters() {
     const box = $("meters");
     if (!box) return;
@@ -590,9 +610,25 @@
     ["2/4", "3/4", "4/4", "6/8"].forEach((meter) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "btn" + (state.song.meter === meter ? " on" : "");
-      b.textContent = meter;
+      b.className = "btn meter-btn" + (state.song.meter === meter ? " on" : "");
+      b.setAttribute("aria-pressed", state.song.meter === meter ? "true" : "false");
+      // MU 2.36.65: a row of beat dots (a shape, not a colour) and the numbers. 6/8 shows two groups of three.
+      const dots = document.createElement("span");
+      dots.className = "mt-dots";
+      dots.setAttribute("aria-hidden", "true");
+      const beats = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter];
+      for (let d = 0; d < beats; d++) {
+        const dot = document.createElement("i");
+        if (meter === "6/8" && d === 3) dot.className = "gap";
+        dots.appendChild(dot);
+      }
+      const label = document.createElement("span");
+      label.className = "mt-text";
+      label.textContent = meter;
+      b.appendChild(dots);
+      b.appendChild(label);
       b.addEventListener("click", () => {
+        if (isRichSong()) { sayScore(mu("richMeterStays")); return; }
         Song.setMeter(state.song, meter);
         state.cursor = 0;
         keep();
@@ -624,6 +660,7 @@
   }
   function writeAt(ev, pitch) {
     if (!ev) return;
+    if (isRichSong()) { richWrite(ev, pitch); return; }
     const pen = state.pen || "quarter";
     if (pen === "eighth" && Song.setEighths) Song.setEighths(state.song, ev.measure, ev.beat, pitch);
     else if (pen === "tie" && Song.toggleTie) Song.toggleTie(state.song, ev.measure, ev.beat);
@@ -682,6 +719,10 @@
             tie: mu("lessonPenTie"),
             rest: mu("lessonPenRest"),
           };
+          if (isRichSong()) {
+            sayScore(mu("richHelp_" + id) || "");
+            return;
+          }
           $("lesson").textContent = help[id] || "";
         });
         pen.appendChild(b);
@@ -739,7 +780,7 @@
     if (pen) {
       [...pen.children].forEach((btn) => {
         if (!btn.dataset.pen) return;
-        const word = mu("pen_" + btn.dataset.pen);
+        const word = isRichSong() && btn.dataset.pen === "quarter" ? mu("richPenNote") : mu("pen_" + btn.dataset.pen);
         if (word) btn.textContent = word;
       });
     }
@@ -772,6 +813,254 @@
     });
   }
 
+  // MU 2.36.64: editing real note lengths (Score tab). A note is picked (the dashed box), then a length, a rest, a tie or a letter
+  // changes it. Every change keeps the bar exactly as long as it was. When it cannot fit, nothing changes and a calm line says why.
+  function isRichSong() {
+    return !!(Song.isRich && Song.isRich(state.song));
+  }
+  function sayScore(text) {
+    const box = $("score-note");
+    if (!box) return;
+    box.textContent = text || "";
+    box.hidden = !text;
+  }
+  function lenWord(d, rest) {
+    return mu((rest ? "richRest_" : "richLen_") + d) || "";
+  }
+  function describeAt(i) {
+    const evs = Song.events(state.song);
+    const ev = evs[i];
+    if (!ev) return "";
+    const where = ev.bar === 0 ? (mu("pickupWord") || "Pickup") : mu("richWhere", { bar: ev.bar });
+    let n = 0;
+    for (let j = 0; j <= i; j++) if (evs[j].measure === ev.measure) n += 1;
+    const len = lenWord(ev.dur, ev.rest);
+    const what = ev.rest ? len : (ev.label ? ev.label + ", " : "") + len;
+    return mu("richNoteSay", { where: where, n: n, what: what });
+  }
+  function clampCursor() {
+    const n = Song.events(state.song).length;
+    state.cursor = Math.max(0, Math.min(Math.max(0, n - 1), state.cursor || 0));
+    return state.cursor;
+  }
+  function failText(r, ev) {
+    if (r.why === "overflow") {
+      let fit = 0;
+      (Song.LENGTHS || []).forEach((L) => { if (L <= r.room) fit = L; });
+      if (ev && fit > ev.dur) return mu("richNoRoomMax", { len: lenWord(fit, ev.rest) });
+      return mu("richNoRoom");
+    }
+    return mu({ noDot: "richNoDot", tieEnd: "richNoTieEnd", tieDiff: "richNoTieDiff", tieRest: "richNoTieRest", rest: "richRestFirst", top: "richTop", bottom: "richBottom" }[r.why] || "richNoRoom");
+  }
+  // Run one edit. A refused edit leaves the song as it was; an accepted one is saved, drawn, and heard on the next note.
+  function finishEdit(r, doneKey, ev) {
+    if (!r || !r.ok) {
+      sayScore(failText(r || { why: "" }, ev));
+      paintSelection();
+      return false;
+    }
+    if (r.index != null) state.cursor = r.index;
+    clampCursor();
+    if (!state.playing) state.step = state.cursor;
+    songRev += 1;
+    keep();
+    renderStaff();
+    paintInks();
+    paintKeypad();
+    paintCount();
+    paintPlayPos();
+    const now = Song.events(state.song)[state.cursor];
+    const said = doneKey === "len" && now ? mu("richLenDone", { len: lenWord(now.dur, now.rest) })
+      : doneKey === "rest" ? mu("richRestDone")
+      : doneKey === "tie" ? mu(r.tied ? "richTieOn" : "richTieOff")
+      : doneKey === "split" ? mu(r.advanced ? "richSplit" : "richLenDone", { len: lenWord(1, false) })
+      : mu("lessonSaved");
+    sayScore(said + " " + describeAt(state.cursor));
+    return true;
+  }
+  function pickedEv() {
+    return Song.events(state.song)[clampCursor()];
+  }
+  function richWrite(ev, pitch) {
+    const idx = ev.glyph != null ? ev.glyph : Song.events(state.song).indexOf(ev);
+    state.cursor = idx;
+    const pen = state.pen || "quarter";
+    if (pen === "eighth") finishEdit(Song.splitEighthIdx(state.song, idx, pitch), "split", ev);
+    else if (pen === "tie") finishEdit(Song.toggleTieIdx(state.song, idx), "tie", ev);
+    else if (pen === "rest") finishEdit(Song.setRestIdx(state.song, idx), "rest", ev);
+    else if (pen === "quarter") finishEdit(ev.pitch === pitch ? Song.setRestIdx(state.song, idx) : Song.setPitchIdx(state.song, idx, pitch), ev.pitch === pitch ? "rest" : "pitch", ev);
+    else sayScore(mu("richNoMark"));
+  }
+  function editLength(d) {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (!ev) return;
+    finishEdit(Song.setLengthIdx(state.song, state.cursor, d), "len", ev);
+  }
+  function editDot() {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (!ev) return;
+    finishEdit(Song.toggleDotIdx(state.song, state.cursor), "len", ev);
+  }
+  function editRest() {
+    if (!isRichSong()) return;
+    const ev = pickedEv();
+    if (ev) finishEdit(Song.setRestIdx(state.song, state.cursor), "rest", ev);
+  }
+  function moveCursor(i) {
+    const n = Song.events(state.song).length;
+    state.cursor = Math.max(0, Math.min(n - 1, i));
+    if (!state.playing) state.step = state.cursor;
+    paintSelection();
+    paintLen();
+    paintCount();
+    sayScore(describeAt(state.cursor));
+    const mark = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest")[(pickedEv() || {}).glyph];
+    if (mark) followNote(mark);
+  }
+  // The length row: Eighth, Quarter, Half, Whole and a Dot. It shows the length of the picked note.
+  const LEN_ICON = {
+    1: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 7 18)"/><path d="M11.4 17V3M11.4 3c1 4 6 5 6 10" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    2: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 7 18)"/><path d="M11.4 17V3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    4: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="7" cy="18" rx="4.3" ry="3" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-20 7 18)"/><path d="M11.4 17V3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    8: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><ellipse cx="10" cy="12" rx="6.5" ry="4.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    dot: '<svg aria-hidden="true" viewBox="0 0 20 24" width="20" height="24"><circle cx="10" cy="12" r="3.4" fill="currentColor"/></svg>',
+  };
+  function paintLen() {
+    const host = $("len");
+    if (!host) return;
+    const rich = isRichSong();
+    host.hidden = !rich;
+    if (!rich) return;
+    if (!host.childElementCount) {
+      [[1, "1"], [2, "2"], [4, "3"], [8, "4"], ["dot", "."]].forEach(([d, hint]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.len = String(d);
+        b.addEventListener("click", () => (d === "dot" ? editDot() : editLength(d)));
+        const icon = document.createElement("span");
+        icon.className = "len-icon";
+        icon.innerHTML = LEN_ICON[d];
+        const word = document.createElement("span");
+        word.className = "len-word";
+        const key = document.createElement("kbd");
+        key.textContent = hint;
+        b.append(icon, word, key);
+        host.appendChild(b);
+      });
+    }
+    host.setAttribute("aria-label", mu("richLenGroup") || "Length of the picked note");
+    const ev = pickedEv();
+    const d = ev ? ev.dur : 0;
+    const base = d === 3 ? 2 : d === 6 ? 4 : d;
+    [...host.children].forEach((b) => {
+      const kind = b.dataset.len;
+      const word = kind === "dot" ? (mu("richDot") || "Dot") : (mu("richLenBtn_" + kind) || kind);
+      b.querySelector(".len-word").textContent = word;
+      const on = kind === "dot" ? (d === 3 || d === 6) : Number(kind) === base;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-label", kind === "dot" ? word : (mu("richLen_" + kind) || word));
+      b.setAttribute("aria-keyshortcuts", kind === "dot" ? "." : ({ 1: "1", 2: "2", 4: "3", 8: "4" })[kind]);
+    });
+  }
+  // The picked note gets a dashed box (a shape, so it is not shown by colour alone). It sits inside the staff picture, so it scrolls with it.
+  function paintSelection() {
+    const svg = document.querySelector("#staff svg");
+    if (!svg) return;
+    svg.querySelectorAll(".sel-box").forEach((n) => n.remove());
+    svg.querySelectorAll(".picked").forEach((n) => n.classList.remove("picked"));
+    // MU 2.36.65 round 1: every song shows the picked note (the one a letter or a length changes), not only the real-length songs.
+    // The box is a shape and the note itself gets a thicker stroke (see styles.css), so it never depends on colour.
+    const ev = pickedEv();
+    const node = ev && svg.querySelectorAll(".abcjs-note, .abcjs-rest")[ev.glyph];
+    if (!node) return;
+    let box;
+    try { box = node.getBBox(); } catch (err) { return; }
+    if (!box || !box.width) return;
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("class", "sel-box");
+    rect.setAttribute("x", String(box.x - 3));
+    rect.setAttribute("y", String(box.y - 3));
+    rect.setAttribute("width", String(box.width + 6));
+    rect.setAttribute("height", String(box.height + 6));
+    rect.setAttribute("rx", "3");
+    rect.setAttribute("aria-hidden", "true");
+    node.appendChild(rect);
+    node.classList.add("picked");
+    followNote(node); // keep the picked note inside the staff panel after the staff is drawn again
+  }
+  // Everything the staff needs after it is drawn: the length row, the picked-note box, and a place the keyboard can land.
+  function paintRichEdit() {
+    const rich = isRichSong();
+    document.body.classList.toggle("rich-edit", rich);
+    const wrap = document.querySelector("#notes-pane .staff-wrap");
+    if (wrap) {
+      if (rich) {
+        wrap.setAttribute("tabindex", "0");
+        wrap.setAttribute("role", "group");
+        wrap.setAttribute("aria-label", mu("richStaffLabel") || "Staff");
+        wrap.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight ArrowUp ArrowDown 1 2 3 4 . Delete");
+      } else {
+        ["tabindex", "role", "aria-label", "aria-keyshortcuts"].forEach((a) => wrap.removeAttribute(a));
+      }
+    }
+    if (!rich) sayScore("");
+    paintLen();
+    paintSelection();
+    paintKeypad();
+  }
+  // Keys on the Score tab, for songs with real note lengths. They work with the staff or any Score control in focus.
+  function scoreKeys(e) {
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!document.body.classList.contains("tab-score") || !isRichSong()) return;
+    const t = e.target;
+    const tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
+    const here = !t || t === document.body || t === document.documentElement || (t.closest && t.closest("#notes-pane"));
+    if (!here) return;
+    if (document.body.classList.contains("menu-open") || ($("looks-drawer") && !$("looks-drawer").hidden)) return;
+    const n = Song.events(state.song).length;
+    if (!n) return;
+    const at = clampCursor();
+    const k = e.key;
+    let used = true;
+    if (k === "ArrowLeft") moveCursor(at - 1);
+    else if (k === "ArrowRight") moveCursor(at + 1);
+    else if (k === "Home") moveCursor(0);
+    else if (k === "End") moveCursor(n - 1);
+    else if (k === "ArrowUp" || k === "ArrowDown") finishEdit(Song.stepPitchIdx(state.song, at, k === "ArrowUp" ? 1 : -1), "pitch", pickedEv());
+    else if (k === "1" || k === "2" || k === "3" || k === "4") editLength({ 1: 1, 2: 2, 3: 4, 4: 8 }[k]);
+    else if (k === "." || e.code === "NumpadDecimal") editDot();
+    else if (k === "Delete" || k === "Backspace") editRest();
+    else used = false;
+    if (used) e.preventDefault();
+  }
+  window.addEventListener("keydown", scoreKeys);
+
+  // MU 2.36.62: spread the bars evenly over the lines, so the last line is never one lonely bar.
+  function balanceAbc(abc, wide, oneLine) {
+    const m = abc.match(/^([\s\S]*\nK:[^\n]*\n)([\s\S]*)$/);
+    if (!m) return abc;
+    const bars = m[2].replace(/\n/g, " ").split("|").map((x) => x.trim()).filter(Boolean);
+    const total = bars.length;
+    const base = wide < 420 ? 2 : wide < 760 ? 3 : 4;
+    if (!total) return abc;
+    let lines = oneLine ? 1 : Math.ceil(total / base);
+    if (!oneLine && total % base === 1 && lines > 1) lines -= 1;
+    const out = [];
+    let at = 0;
+    for (let i = 0; i < lines; i++) {
+      const n = Math.floor(total / lines) + (i < total % lines ? 1 : 0);
+      out.push(bars.slice(at, at + n).join(" | ") + " |");
+      at += n;
+    }
+    return m[1] + out.join("\n") + "\n";
+  }
+  // MU 2.36.62: the engraving keeps its real size, so every notehead stays about 9px wide.
+  // It used to be squeezed to a fixed height, which shrank the heads to 4 to 6px and left only the stems.
   function renderStaff() {
     const host = $("staff");
     if (!host) return;
@@ -779,6 +1068,8 @@
     let abc = Song.toAbc(state.song);
     const both = state.mode === "both" || document.body.classList.contains("tab-score");
     if (both || window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
+    const strip = window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+    host.classList.toggle("staff-strip", strip);
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
       nameLooseSvgs();
@@ -787,14 +1078,19 @@
     try {
       const pane = host.closest("#notes-pane") || host.parentElement || host;
       const wide = Math.max(280, (pane.clientWidth || host.clientWidth || 640) - 12);
-      window.ABCJS.renderAbc(host, abc, {
-        responsive: "resize",
-        add_classes: true,
-        staffwidth: wide,
-        wrap: { minSpacing: 1.6, maxSpacing: 2.4, preferredMeasuresPerLine: wide < 420 ? 2 : 4 },
-        paddingleft: 8,
-        paddingright: 8,
-      });
+      if (strip) {
+        const flat = balanceAbc(abc, wide, true).replace(/^Q:.*\n/m, "");
+        const bars = Math.max(1, flat.split("|").length - 1);
+        window.ABCJS.renderAbc(host, flat, { add_classes: true, staffwidth: Math.max(wide, bars * 190 + 90), paddingleft: 8, paddingright: 8 });
+      } else {
+        window.ABCJS.renderAbc(host, balanceAbc(abc, wide), {
+          responsive: "resize",
+          add_classes: true,
+          staffwidth: wide,
+          paddingleft: 8,
+          paddingright: 8,
+        });
+      }
     } catch (err) {
       host.textContent = abc;
     }
@@ -802,33 +1098,37 @@
     if (svg) {
       svg.setAttribute("role", "img");
       svg.setAttribute("aria-label", "Staff for this song");
-      svg.style.width = "100%";
-      svg.style.maxWidth = "none";
-      svg.removeAttribute("height");
       svg.addEventListener("pointerdown", placeNote);
-      if (state.mode === "both") {
-        const wrap = host.parentElement;
-        const desk = document.querySelector(".desk");
-        const cap = Math.max(120, Math.round((desk ? desk.clientHeight : window.innerHeight) * 0.4));
-        window.requestAnimationFrame(() => {
-          const box = svg.getBoundingClientRect();
-          if (box.height > 8) {
-            const h = Math.min(box.height, cap);
-            svg.style.height = h + "px";
-            svg.style.width = "100%";
-            if (wrap) {
-              wrap.style.height = h + "px";
-              wrap.style.maxHeight = cap + "px";
-              wrap.style.overflow = "hidden";
-            }
-          }
-        });
+      if (!strip) {
+        svg.style.width = "100%";
+        svg.style.maxWidth = "none";
+        svg.style.height = "auto";
+        svg.removeAttribute("height");
       }
     }
     nameLooseSvgs();
+    paintRichEdit();
   }
 
-
+  // MU 2.36.62: the note that is playing lights up on the staff (it only did after you tapped a note, never during Play).
+  function paintStaffNow(step) {
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    if (!marks.length) return;
+    const evNow = step >= 0 ? Song.events(state.song)[step] : null;
+    marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
+  }
+  // Keep the lit note inside the staff panel. Only the panel scrolls, never the page.
+  function followNote(node) {
+    const wrap = node.closest && node.closest(".staff-wrap");
+    if (!wrap || !(wrap.scrollHeight > wrap.clientHeight + 2 || wrap.scrollWidth > wrap.clientWidth + 2)) return;
+    const a = node.getBoundingClientRect();
+    const r = wrap.getBoundingClientRect();
+    if (a.top < r.top + 4) wrap.scrollTop += a.top - r.top - 12;
+    else if (a.bottom > r.bottom - 4) wrap.scrollTop += a.bottom - r.bottom + 12;
+    if (a.left < r.left + 4) wrap.scrollLeft += a.left - r.left - 48;
+    else if (a.right > r.right - 4) wrap.scrollLeft += a.right - r.right + 48;
+  }
   function nameLooseSvgs() {
     document.querySelectorAll("svg[role='img']").forEach((svg) => {
       if (svg.getAttribute("aria-label") || svg.getAttribute("aria-labelledby")) return;
@@ -852,6 +1152,15 @@
       });
     }
     const ev = evs.find((item) => item.glyph === glyph) || evs[Math.min(glyph, evs.length - 1)];
+    if (isRichSong() && (state.pen || "quarter") === "quarter" && marks[glyph]) {
+      // MU 2.36.64: a tap on the note itself only picks it, so you can then give it a length. A tap beside it writes the letter.
+      const r = marks[glyph].getBoundingClientRect();
+      const pad = 8;
+      if (e.clientX >= r.left - pad && e.clientX <= r.right + pad && e.clientY >= r.top - pad && e.clientY <= r.bottom + pad) {
+        moveCursor(evs.indexOf(ev));
+        return;
+      }
+    }
     const box = (host.querySelector(".abcjs-staff") || svg).getBoundingClientRect();
     const top = box.top - box.height * 0.15;
     const span = Math.max(1, box.height * 1.5);
@@ -913,6 +1222,7 @@
         box.appendChild(row);
       });
     });
+    if (typeof paintTapStrip === "function" && $("tap-strip")) paintTapStrip();
   }
 
   function paintLooks() {
@@ -1248,6 +1558,7 @@
   function bindPad(el, id) {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
+      try { el.focus({ preventScroll: true }); } catch (err) { /* the tap still plays */ }
       state.held[id] = true;
       try { el.setPointerCapture(e.pointerId); } catch (err) { /* a tap still counts */ }
       strike(id, el);
@@ -1266,9 +1577,7 @@
       b.textContent = word;
       b.setAttribute("aria-label", word);
       b.setAttribute("data-mu", "drum_" + id);
-      b.setAttribute("data-i18n", "drum_" + id);
       b.setAttribute("data-mu-label", "drum_" + id);
-      b.setAttribute("data-i18n-label", "drum_" + id);
       bindPad(b, id);
       box.appendChild(b);
     });
@@ -1303,10 +1612,9 @@
   function sayNow(step) {
     const evs = Song.events(state.song);
     const ev = evs[Math.max(0, step)];
-    const bar = ev ? ev.measure + 1 : 1;
-    const beat = ev ? ev.beat + 1 : Math.max(0, step) + 1;
+    const bb = barBeat(ev, step);
     const heard = namesAt(Math.max(0, step)).join(mu("tapAnd") || " and ");
-    const core = mu("tapNow", { bar: bar, beat: beat, heard: heard });
+    const core = bb.pickup ? mu("tapNowPickup", { beat: bb.beat, heard: heard }) : mu("tapNow", { bar: bb.bar, beat: bb.beat, heard: heard });
     if ($("now-line") && core) $("now-line").textContent = core;
   }
   function hookTurnNow() {
@@ -1459,13 +1767,14 @@
     if (!counting) {
       const isRest = !(ev && ev.label);
       const note = isRest ? (mu("rest") || "Rest") : ev.label;
-      const bar = ev ? ev.measure + 1 : 1;
-      const beat = ev ? ev.beat + 1 : step + 1;
+      const bb = barBeat(ev, step);
       const heard = namesAt(drum).join(mu("tapAnd") || " and ");
-      const core = mu("tapNow", { bar: bar, beat: beat, heard: heard }) || ("Bar " + bar + ", beat " + beat + ". Now: " + heard + ".");
+      const core = bb.pickup
+        ? (mu("tapNowPickup", { beat: bb.beat, heard: heard }) || ("Pickup, beat " + bb.beat + ". Now: " + heard + "."))
+        : (mu("tapNow", { bar: bb.bar, beat: bb.beat, heard: heard }) || ("Bar " + bb.bar + ", beat " + bb.beat + ". Now: " + heard + "."));
       $("now-line").textContent = lead + off + core;
       const pos = $("play-pos");
-      if (pos) pos.textContent = (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bar)).replace("{beat}", String(beat));
+      if (pos) pos.textContent = playPosText(bb);
       if (!state.along) paintFeel(note, isRest ? "" : "on");
       const teach = $("teach");
       if (teach) {
@@ -1481,6 +1790,7 @@
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     const evNow = evs[step];
     marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
+    if (evNow && marks[evNow.glyph]) followNote(marks[evNow.glyph]);
     document.querySelectorAll(".cell").forEach((cell) => {
       cell.classList.toggle("now", Number(cell.dataset.step) === drum);
     });
@@ -1563,7 +1873,7 @@
         const freq = ev.freq || (Song.freqOf ? Song.freqOf(ev.pitch, state.song.key) : null);
         const hold = (60 / Math.max(70, state.song.bpm || 96)) * Math.max(0.35, ev.durBeats || 1);
         if (state.orch !== "beep") sectionTone(freq, hold, state.orch, ev.dyn || state.dyn, when);
-        else tone(freq, Math.min(0.45, hold), state.wave, 0.22 * side("notes"), when);
+        else tone(freq, Math.min(ev.at != null ? 3 : 0.45, hold), state.wave, 0.22 * side("notes"), when);
       }
     }
     if ((state.bass || state.parts.bass) && state.drums.kick && state.drums.kick[grid]) {
@@ -1620,10 +1930,8 @@
     const n = evs.length || 1;
     const idx = state.step < 0 ? 0 : ((state.step % n) + n) % n;
     const ev = evs[idx];
-    const bar = ev ? ev.measure + 1 : Math.floor(Math.max(0, state.grid) / 8) + 1;
-    const beat = ev ? ev.beat + 1 : (Math.max(0, state.grid) % 8) + 1;
-    const tpl = mu("playPos") || "Bar {bar} · Beat {beat}";
-    pos.textContent = tpl.replace("{bar}", String(bar)).replace("{beat}", String(beat));
+    const bb = ev ? barBeat(ev, idx) : { bar: Math.floor(Math.max(0, state.grid) / 8) + 1, beat: (Math.max(0, state.grid) % 8) + 1, pickup: false };
+    pos.textContent = playPosText(bb);
   }
   function paintBeat(grid) {
     paintPlayPos();
@@ -1766,23 +2074,48 @@
     const spe = stepsPerEvent();
     const start = ctx.currentTime + 0.04;
     let grid = 0;
+    let tick = 0;
     let ev = 0;
+    let sounding = 0;
     let next = start;
     let eventCount = 0;
-    const songN = songLen();
+    // MU 2.36.63: every note has its own start. A song with real note lengths (events carry `at`, in eighths) places a note
+    // where it is written, so half notes, dotted notes, rests and a pickup bar last as long as they should.
+    // Beat-cell songs keep one event per beat, exactly as before (event i starts at step i * spe).
+    let evList = Song.events(state.song);
+    let songN = Math.max(1, evList.length);
+    let timed = evList.length > 0 && evList[0].at != null;
+    const startOf = (i) => (timed ? evList[i].at * 2 : i * spe);
+    let totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
+    let seenRev = songRev;
     state.plan = [];
     const schedule = () => {
       if (gen !== playGen || !state.playing || !ctx) return;
+      if (seenRev !== songRev) {
+        // MU 2.36.64: the song was edited while it plays. Read it again and carry on from the same spot in time.
+        seenRev = songRev;
+        evList = Song.events(state.song);
+        songN = Math.max(1, evList.length);
+        timed = evList.length > 0 && evList[0].at != null;
+        totalSteps = timed ? Math.max(1, (evList[songN - 1].at + evList[songN - 1].dur) * 2) : songN * spe;
+        const here = tick % totalSteps;
+        let first = 0;
+        while (first < evList.length && startOf(first) < here) first += 1;
+        ev = evList.length ? first % songN : 0;
+        sounding = Math.min(songN - 1, Math.max(0, first - 1));
+      }
       const horizon = ctx.currentTime + 0.12;
       while (next < horizon) {
-        const melody = grid % spe === 0;
-        scheduleHit(grid, ev, next, melody);
-        state.plan.push({ when: next, grid: grid, event: ev });
+        const melody = evList.length > 0 && startOf(ev) === tick % totalSteps;
+        if (melody) sounding = ev;
+        scheduleHit(grid, sounding, next, melody);
+        // plan.event is the note that is sounding at this step (it used to be the next note for 3 of every 4 steps)
+        state.plan.push({ when: next, grid: grid, event: sounding });
         if (state.plan.length > 48) state.plan.shift();
         if (melody) {
           eventCount += 1;
           if (state.once && eventCount >= songN) {
-            const endAt = next + stepSeconds(grid);
+            const endAt = next + (timed ? evList[sounding].dur * 2 : 1) * stepSeconds(grid);
             state.timer = window.setTimeout(() => {
               stop();
               if (state.showing) bow();
@@ -1793,6 +2126,7 @@
         }
         next += stepSeconds(grid);
         grid = (grid + 1) % GRID;
+        tick += 1;
       }
       state.timer = window.setTimeout(schedule, 25);
     };
@@ -1818,6 +2152,7 @@
         }
         if (hit.grid !== state.seenGrid) {
           state.seenGrid = hit.grid;
+          paintStaffNow(hit.event);
           hearDrop(hit.grid);
           advanceTurn();
           paintBeat(hit.grid);
@@ -1840,6 +2175,7 @@
   function stop() {
     silenceOwner();
     state.playing = false;
+    paintStaffNow(-1);
     resetDrop();
     document.body.classList.remove("playing");
     fitViz();
@@ -2878,6 +3214,7 @@
     return state.tab || "songs";
   }
   function paintTabs(tab) {
+    if (tab !== "score" && document.body.classList.contains("score-tools-open")) setScoreTools(false); // MU 2.36.65: the Score tools drawer shuts when you leave Score
     if (TABS.indexOf(tab) < 0) tab = "songs";
     state.tab = tab;
     TABS.forEach((name) => document.body.classList.toggle("tab-" + name, name === tab));
@@ -3789,6 +4126,10 @@
     nodes: () => state.made,
     ctx: () => (ctx ? ctx.state : "none"),
     grid: () => state.grid,
+    step: () => state.step,
+    now: () => (ctx ? ctx.currentTime : -1),
+    song: () => state.song,
+    events: () => Song.events(state.song),
     classes: () => readClass(),
   };
   $("menu-btn").addEventListener("click", () => {
@@ -3853,6 +4194,18 @@
     }
   }
   paintTheme(document.documentElement.getAttribute("data-theme"), false);
+  // MU 2.36.62: until the kid flips the switch, the theme follows the computer's light/dark setting, live.
+  try {
+    const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
+    const followScheme = (e) => {
+      let saved = "";
+      try { saved = localStorage.getItem("kulibert.music.theme") || ""; } catch (err) { saved = ""; }
+      if (saved === "dark" || saved === "calm") return;
+      paintTheme(e.matches ? "dark" : "calm", false);
+    };
+    if (darkMq.addEventListener) darkMq.addEventListener("change", followScheme);
+    else if (darkMq.addListener) darkMq.addListener(followScheme);
+  } catch (eMq) { /* the switch still works */ }
   const themeBtn = $("theme-switch");
   if (themeBtn) themeBtn.addEventListener("click", () => {
     paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
@@ -4285,6 +4638,8 @@
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
+      // MU 2.36.61: Space on a Tap pad or lane step presses that button; everywhere else it still plays.
+      if (e.target && e.target.closest && e.target.closest("#tap-pads, #tap-strip, #len, #score-bar, #meters, #song-more")) return; // MU 2.36.65: the Score tools buttons take Space too
       e.preventDefault();
       $("play-btn").click();
     }
@@ -4312,16 +4667,91 @@
   paintMeters();
   paintInks();
   paintKeypad();
-  $("add-bar").addEventListener("click", () => {
+  // MU 2.36.65: the Score tools bar. "Add a bar" and the "Score tools" button sit in a row above the staff, so they are in plain reach by tap
+  // and by Tab. The button opens the drawer (time signatures first) under the length row; the staff and the length row stay in view.
+  function setScoreTools(open, how) {
+    const drawer = $("song-more");
+    const toggle = $("tools-toggle");
+    const want = !!open && document.body.classList.contains("tab-score");
+    document.body.classList.toggle("score-tools-open", want);
+    if (drawer) drawer.open = want;
+    if (toggle) toggle.setAttribute("aria-expanded", want ? "true" : "false");
+    if (!how) return;
+    if (want) {
+      // by keyboard the drawer is far from the button in Tab order, so focus goes in; by finger it stays where it is
+      if (how === "key") {
+        const first = document.querySelector("#meters .btn");
+        if (first) first.focus();
+      }
+      if (drawer && drawer.scrollIntoView) drawer.scrollIntoView({ block: "nearest" });
+    } else if (how === "key" && toggle) {
+      toggle.focus();
+    }
+  }
+  function wireScoreTools() {
+    const toggle = $("tools-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", (e) => {
+        const now = document.body.classList.contains("score-tools-open");
+        setScoreTools(!now, e.detail === 0 ? "key" : "tap");
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || e.defaultPrevented || !document.body.classList.contains("score-tools-open")) return;
+      if (document.body.classList.contains("menu-open") || ($("looks-drawer") && !$("looks-drawer").hidden)) return;
+      e.preventDefault();
+      const inside = document.activeElement && document.activeElement.closest && document.activeElement.closest("#song-more");
+      setScoreTools(false, inside || document.activeElement === document.body ? "key" : "tap");
+    });
+  }
+  // MU 2.36.65 round 1: the first note of the newest bar, and a scroll that brings it into the staff panel. "nearest" moves nothing when it is
+  // already in view; the motion is instant when the reader asked for reduced motion.
+  function newBarMark() {
+    const evs = Song.events(state.song);
+    const last = state.song.measures.length - 1;
+    const first = evs.find((ev) => ev.measure === last);
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    return (first && marks[first.glyph != null ? first.glyph : evs.indexOf(first)]) || marks[marks.length - 1] || null;
+  }
+  function revealNewBar() {
+    const mark = newBarMark();
+    if (!mark || !mark.scrollIntoView) return;
+    const calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    mark.scrollIntoView({ block: "nearest", inline: "nearest", behavior: calm ? "auto" : "smooth" });
+  }
+  function addBarNow() {
     const before = state.song.measures.length;
     Song.addMeasure(state.song);
     keep();
     renderStaff();
     paintCount();
-    $("lesson").textContent = state.song.measures.length === before
-      ? "That is 32 bars. That is a long song."
-      : "A new bar is on the score. It is saved.";
-  });
+    const grew = state.song.measures.length !== before;
+    if (isRichSong()) {
+      songRev += 1;
+      paintRichEdit();
+    }
+    // MU 2.36.65: the line under the staff answers on every song, and the picked note moves to the new bar so the keys go there.
+    if (grew && Song.events) {
+      const evs = Song.events(state.song);
+      const first = evs.findIndex((ev) => ev.measure === state.song.measures.length - 1);
+      if (first >= 0) {
+        if (isRichSong()) moveCursor(first);
+        else { state.cursor = first; if (!state.playing) state.step = first; paintSelection(); paintCount(); }
+      }
+    }
+    sayScore(grew ? (mu("richBarAdded") || "A new bar is on the score. Every bar is full.") : "That is 32 bars. That is a long song.");
+    // The calm line changes the height of the staff panel, so the scroll comes after it, and once more when the page has settled.
+    if (grew) {
+      revealNewBar();
+      window.requestAnimationFrame(revealNewBar);
+    }
+    $("lesson").textContent = grew
+      ? "A new bar is on the score. It is saved."
+      : "That is 32 bars. That is a long song.";
+  }
+  $("add-bar").addEventListener("click", addBarNow);
+  if ($("bar-add")) $("bar-add").addEventListener("click", addBarNow);
+  wireScoreTools();
   $("expert-btn").addEventListener("click", () => {
     state.expert = !state.expert;
     keep();
@@ -4361,8 +4791,12 @@
     const name = $("songbar-name");
     const meta = $("songbar-meta");
     const cover = $("song-cover");
-    if (name) setBdi(name, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
-    if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
+    if (name) {
+      const full = songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song);
+      setBdi(name, full);
+      name.title = full; // a long name is cut with an ellipsis in the bar; the whole name shows on hover and to a screen reader
+    }
+    if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4") + (song.pickup ? " · " + (mu("pickupWord") || "Pickup") : "");
     document.documentElement.classList.add("tempo-known");
     if (cover) {
       const ink = { cyan: "#22d3ee", amber: "#fbbf24", violet: "#a78bfa", rose: "#fb7185", lime: "#a3e635", ice: "#bae6fd" };
@@ -4370,7 +4804,6 @@
       cover.style.background = "linear-gradient(145deg, " + (color || "#22d3ee") + ", #10203f)";
     }
   }
-  const BIRTHDAY = ["F", "F", "G", "F", "B", "c", "F", "F", "G", "F", "c", "B", "F", "F", "F", "D", "B", "A", "G", "c", "c", "B", "G", "A", "F", null, null];
   function placeSong(opts) {
     const wasPlaying = !!state.playing;
     silenceOwner();
@@ -4379,7 +4812,7 @@
     const per = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter] || 4;
     const notes = opts.notes || [];
     const measures = [];
-    for (let i = 0; notes.length ? i < notes.length && measures.length < 32 : measures.length < 1; i += per) {
+    for (let i = 0; !opts.rich && (notes.length ? i < notes.length && measures.length < 32 : measures.length < 1); i += per) {
       const beats = [];
       for (let b = 0; b < per; b++) beats.push(notes[i + b] == null ? null : notes[i + b]);
       measures.push({ id: "in-" + measures.length, label: String(measures.length + 1), beats: beats });
@@ -4387,7 +4820,7 @@
     }
     const TitlesNow = window.KulibertTitles;
     const alias = opts.alias || (TitlesNow && TitlesNow.partsOf(state.song.alias) ? state.song.alias : (TitlesNow ? TitlesNow.starterTitle() : ""));
-    state.song = Song.normalize({
+    state.song = Song.normalize(Object.assign({
       alias: alias,
       bpm: opts.bpm || 96,
       meter: meter,
@@ -4396,7 +4829,7 @@
       viz: opts.viz || null,
       why: {},
       from: opts.from || [],
-    });
+    }, opts.rich ? { bpm: opts.bpm || opts.rich.bpm, meter: opts.rich.meter, key: opts.rich.key, pickup: opts.rich.pickup, measures: opts.rich.measures } : {}));
     state.cursor = 0;
     state.step = 0;
     if (!opts.drums) {
@@ -4445,6 +4878,7 @@
   function openShelfSong(item, remix) {
     placeSong({
       notes: item.notes,
+      rich: item.rich || null,
       bpm: item.bpm,
       meter: item.meter || "4/4",
       key: item.key || "C",
@@ -4487,7 +4921,7 @@
     const saveBox = $("my-saves");
     if (openBox) {
       openBox.innerHTML = "";
-      const rows = [{ name: "Happy Birthday", from: "public domain", notes: BIRTHDAY, bpm: 90, meter: "3/4", key: "F", feel: "bright" }].concat(songCatalog.filter((item) => item.name !== "Happy Birthday"));
+      const rows = songCatalog.filter((item) => item.name === "Happy Birthday").concat(songCatalog.filter((item) => item.name !== "Happy Birthday"));
       rows.slice(0, 28).forEach((item) => {
         const row = document.createElement("div");
         row.className = "song-row";
@@ -4495,7 +4929,7 @@
         const strong = document.createElement("strong");
         setBdi(strong, item.name);
         const span = document.createElement("span");
-        span.textContent = (placeWord(item.from) || mu("classWord") || "class") + " · " + (item.meter || "4/4");
+        span.textContent = (placeWord(item.from) || mu("classWord") || "class") + " · " + (item.meter || "4/4") + " · " + (item.key || "C");
         text.append(strong, span);
         const open = document.createElement("button");
         open.type = "button";
@@ -5086,30 +5520,113 @@
     }
     document.querySelectorAll("#tap-pads .pad").forEach((btn) => btn.classList.toggle("guide", btn.dataset.pad === next));
   }
+  // MU 2.36.61: one 16-step lane for the selected pad. It reads and writes state.drums, so a saved song is unchanged.
+  // Two rows of 8 on a phone upright and on a phone sideways; one row of 16 elsewhere.
+  function laneIsNarrow() { return window.matchMedia("(max-width: 499px), (orientation: landscape) and (max-height: 500px)").matches; }
+  function laneWord(id) { return mu("drum_" + id) || id.charAt(0).toUpperCase() + id.slice(1); }
+  function paintPadSel() {
+    document.querySelectorAll("#tap-pads .pad").forEach((btn) => {
+      const on = btn.dataset.pad === laneSel;
+      btn.classList.toggle("sel", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  function buildLane(strip, narrow) {
+    strip.innerHTML = "";
+    strip.classList.toggle("is-narrow", narrow);
+    const per = narrow ? 8 : GRID;
+    const head = document.createElement("div");
+    head.className = "lane-head";
+    const name = document.createElement("span");
+    name.className = "lane-name";
+    head.appendChild(name);
+    const track = document.createElement("span");
+    track.className = "lane-track";
+    track.setAttribute("aria-hidden", "true");
+    for (let k = 0; k < per; k++) {
+      const m = document.createElement("i");
+      m.className = "lane-mark";
+      m.dataset.slot = String(k);
+      m.textContent = "\u25B6";
+      track.appendChild(m);
+    }
+    head.appendChild(track);
+    strip.appendChild(head);
+    const cells = document.createElement("div");
+    cells.className = "lane-cells";
+    for (let i = 0; i < GRID; i++) {
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "lane-cell";
+      cell.dataset.step = String(i);
+      cell.addEventListener("click", () => {
+        const row = state.drums[laneSel] || (state.drums[laneSel] = []);
+        row[i] = !row[i];
+        state.touched = true;
+        if (row[i]) { arm(); hitSound(laneSel); }
+        keep();
+        renderDrums();
+      });
+      cells.appendChild(cell);
+    }
+    strip.appendChild(cells);
+    laneNarrow = narrow;
+    laneNow = -2;
+  }
   function paintTapStrip() {
     const strip = $("tap-strip");
     if (!strip) return;
-    strip.innerHTML = "";
-    ["kick", "snare", "hat", "clap"].forEach((id) => {
-      const row = document.createElement("div");
-      row.className = "tap-row";
-      for (let i = 0; i < GRID; i++) {
-        const dot = document.createElement("i");
-        dot.className = "tap-dot" + (state.drums[id] && state.drums[id][i] ? " on" : "") + (state.grid === i ? " now" : "");
-        dot.dataset.step = String(i);
-        row.appendChild(dot);
-      }
-      strip.appendChild(row);
+    const narrow = laneIsNarrow();
+    if (laneNarrow !== narrow || !strip.querySelector(".lane-cell")) buildLane(strip, narrow);
+    const word = laneWord(laneSel);
+    const row = state.drums[laneSel] || [];
+    strip.setAttribute("aria-label", (mu("laneFor", { drum: word }) || (word + ": 16 steps")));
+    const name = strip.querySelector(".lane-name");
+    const pad = document.querySelector("#tap-pads .pad[data-pad='" + laneSel + "']");
+    const ico = pad && pad.querySelector("svg");
+    if (name) {
+      name.innerHTML = "";
+      if (ico) name.appendChild(ico.cloneNode(true));
+      const b = document.createElement("b");
+      b.textContent = word;
+      name.appendChild(b);
+    }
+    strip.querySelectorAll(".lane-cell").forEach((cell) => {
+      const i = Number(cell.dataset.step);
+      const on = !!row[i];
+      cell.classList.toggle("on", on);
+      cell.textContent = on ? "\u25CF" : "";
+      cell.setAttribute("aria-pressed", on ? "true" : "false");
+      cell.setAttribute("aria-label", word + ", " + (mu("beatN") || "Beat {n}").replace("{n}", String(i + 1)) + ", " + (on ? (mu("onWord") || "on") : (mu("offWord") || "off")));
     });
+    paintPadSel();
+    paintLaneNow(laneNow, true);
     const read = $("playhead-read");
     if (read) {
-      const word = (mu("beatN") || "Beat {n}").replace("{n}", String((state.grid % 8) + 1));
-      read.textContent = word;
-      read.setAttribute("aria-label", word);
+      const w = (mu("beatN") || "Beat {n}").replace("{n}", String((Math.max(0, state.grid) % 8) + 1));
+      read.textContent = w;
+      read.setAttribute("aria-label", w);
     }
   }
+  function paintLaneNow(step, force) {
+    const strip = $("tap-strip");
+    if (!strip || (step === laneNow && !force)) return;
+    laneNow = step;
+    const narrow = strip.classList.contains("is-narrow");
+    const slot = step < 0 ? -1 : (narrow ? step % 8 : step);
+    strip.querySelectorAll(".lane-mark").forEach((m) => m.classList.toggle("here", Number(m.dataset.slot) === slot));
+    strip.querySelectorAll(".lane-cell").forEach((c) => c.classList.toggle("now", Number(c.dataset.step) === step));
+  }
+  function laneTick() {
+    if (!document.hidden && document.body.classList.contains("tab-tap")) {
+      paintLaneNow(state.playing || tapOn ? Math.max(0, state.grid) : -1);
+    }
+    window.setTimeout(laneTick, 70);
+  }
+  window.addEventListener("resize", () => { if ($("tap-strip") && laneNarrow !== laneIsNarrow()) paintTapStrip(); });
   function hitPad(id, btn) {
     state.touched = true;
+    laneSel = id;
     if (btn) {
       btn.classList.add("lit");
       window.setTimeout(() => btn.classList.remove("lit"), 160);
@@ -5123,8 +5640,8 @@
       state.drums[id][step] = true;
       keep();
       renderDrums();
-      paintTapStrip();
     }
+    paintTapStrip();
     paintGuide();
   }
   function stopTapWrite() {
@@ -5219,8 +5736,15 @@
       btn.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         hitPad(btn.dataset.pad, btn);
+        // preventDefault stops the browser from focusing the pad, so Tab would start again at the top (the menu and the bottom nav).
+        try { btn.focus({ preventScroll: true }); } catch (err) { /* the tap still played */ }
+      });
+      // Space or Enter on a focused pad: pointer taps already played on pointerdown (detail > 0).
+      btn.addEventListener("click", (e) => {
+        if (e.detail === 0) hitPad(btn.dataset.pad, btn);
       });
     });
+    laneTick();
     if (!window.__djTapKeys) {
       window.__djTapKeys = 1;
       window.addEventListener("keydown", (e) => {
@@ -5228,7 +5752,7 @@
         const tag = e.target && e.target.tagName;
         if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
         if (!document.body.classList.contains("tab-tap")) return;
-        const map = { KeyA: "kick", KeyS: "snare", KeyD: "hat", KeyF: "clap" };
+        const map = PAD_KEYS;
         if (!map[e.code]) return;
         e.preventDefault();
         hitPad(map[e.code], pads.querySelector("[data-pad='" + map[e.code] + "']"));
@@ -5247,7 +5771,12 @@
   }
   bootTapWrite();
   function fitTapRows() {
-    if (!document.body.classList.contains("tab-tap")) return;
+    if (!document.body.classList.contains("tab-tap")) {
+      // MU 2.36.62: the Tap sizes must not stay on #drums after you leave Tap, or the Score beat grid cannot scroll and runs under the player bar.
+      const loose = $("drums");
+      if (loose && loose.style.length) ["flex", "height", "max-height"].forEach((prop) => loose.style.removeProperty(prop));
+      return;
+    }
     const box = $("drums");
     const pane = $("drums-pane");
     if (!box || !pane) return;
@@ -5319,7 +5848,11 @@
   }
   keep();
 
+  // MU 2.36.62: music's own words first (strings.js). The shared pack is only a fallback for a key music does not own,
+  // so a failed shared fetch no longer logs one "missing" warning per drum word.
   function i18nWord(key, fallback) {
+    const own = mu(key);
+    if (own) return own;
     try {
       const api = window.KulibertI18n;
       if (api && api.t) {
@@ -5327,7 +5860,7 @@
         if (v && v !== key) return v;
       }
     } catch (err) { /* music words still work */ }
-    return mu(key) || fallback || "";
+    return fallback || "";
   }
   function paintClick() {
     const btn = $("click-btn");
@@ -5370,7 +5903,7 @@
       slider.max = "100";
       slider.value = String(state.mix[id] || 0);
       slider.setAttribute("data-drum", id);
-      slider.setAttribute("data-i18n-label", "loud_" + id);
+      slider.setAttribute("data-mu-label", "loud_" + id);
       slider.setAttribute("aria-label", label + " loudness");
       const read = document.createElement("b");
       read.textContent = slider.value;
@@ -5577,15 +6110,16 @@
         silenceOwner();
         state.playing = false;
         const measures = [];
+        const rich = richOf(name);
         const bars = Math.ceil(notes.length / 4);
-        for (let i = 0; i < bars; i++) {
+        for (let i = 0; !rich && i < bars; i++) {
           measures.push({
             id: "tune-" + i,
             label: String(i + 1),
             beats: [0, 1, 2, 3].map((b) => notes[i * 4 + b] || null),
           });
         }
-        state.song = Song.normalize({
+        state.song = Song.normalize(Object.assign({
           alias: state.song.alias,
           bpm: bpm || 96,
           meter: "4/4",
@@ -5593,7 +6127,7 @@
           viz: PICTURES[name] || null,
           why: {},
           from: [name],
-        });
+        }, rich ? Object.assign(richToSong(rich), { bpm: bpm || rich.bpm }) : {}));
         state.cursor = 0;
         state.step = 0;
         if (state.song.viz) applyViz(state.song.viz);
@@ -5687,36 +6221,36 @@
           ["Shosholoza", "Southern Africa", ["C", "E", "E", "E", "G", "G", "E", "D", "C", "E", "E", "E", "G", "E", "D", "C"], 108],
         ]],
         ["East Asia", [
-          ["Sakura", "Japan", ["A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "D", "C", "A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "C", null], 80],
+          ["Sakura", "Japan", null, 80],
           ["Arirang", "Korea", ["G", "A", "c", "A", "G", "E", "E", "D", "E", "G", "A", "G", "E", "D", "C", null], 88],
           ["Jasmine Flower", "China", ["E", "G", "A", "G", "E", "D", "C", null, "D", "E", "G", "A", "G", "E", "D", "C"], 84],
         ]],
         ["South Asia", [
-          ["Chanda Mama", "India", ["C", "E", "G", "A", "G", "E", "C", null, "D", "F", "E", "D", "C", null, null, null], 86],
+          ["Sa Re Ga Ma", "India", null, 86],
         ]],
         ["Europe", [
-          ["Ode to Joy", "Germany", ["E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "E", "D", "D", null, "E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "D", "C", "C", null], 104],
+          ["Ode to Joy", "Germany", null, 104],
           ["Korobeiniki", "Russia", ["E", "G", "A", "c", "A", "G", "F", "E", "D", "F", "G", "B", "G", "F", "E", "D", "C", "E", "F", "A", "G", "F", "E", "D", "C", null, null, null], 120],
-          ["Frere Jacques", "France", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null], 96],
+          ["Frere Jacques", "France", null, 96],
           ["Scarborough Fair", "England", ["A", "A", "E", "F", "E", "D", "C", null, "D", "E", "F", "E", "D", "A", "A", null], 76],
         ]],
         ["Americas", [
+          ["Happy Birthday", "United States", null, 90],
           ["The Saints", "United States", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null], 112],
-          ["La Cucaracha", "Mexico", ["C", "C", "C", "F", "A", "A", "A", null, "F", "F", "F", "A", "c", "c", "c", null, "G", "G", "G", "B", "c", "A", "F", null], 116],
+          ["La Cucaracha", "Mexico", null, 116],
           ["Cielito Lindo", "Mexico", ["C", "E", "G", "G", "A", "G", "E", "C", "D", "E", "F", "E", "D", "C", null, null], 100],
-          ["Simple Gifts", "United States", ["C", "C", "D", "E", "G", "E", null, null, "D", "E", "F", "E", "D", "C", null, null, "C", "C", "D", "E", "G", "E", "D", "C", "D", "E", "C", null], 96],
+          ["Simple Gifts", "United States", null, 96],
         ]],
         ["Islands and more", [
           ["Aloha Oe", "Hawaiʻi", ["C", "E", "G", "A", "G", "E", "C", null, "E", "G", "A", "G", "E", "D", "C", null], 84],
           ["Tumbalalaika", "Yiddish folk", ["E", "G", "A", "B", "c", "A", "G", "E", "D", "G", "A", "B", "A", "G", "E", null], 92],
-          ["Zum Gali Gali", "Israel", ["C", "C", "C", "G", "A", "G", "E", "C", "C", "C", "C", "G", "A", "G", "E", "C"], 108],
           ["Dona Nobis", "a round", ["C", "D", "E", "G", "A", "G", "E", "C", "E", "F", "G", "c", "B", "A", "G", "E", "G", "A", "c", "B", "A", "G", "E", "C"], 80],
         ]],
         ["Lullabies", [
-          ["Twinkle", "many places", ["C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null, "G", "G", "F", "F", "E", "E", "D", null, "C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null], 96],
-          ["Little Lamb", "United States", ["E", "D", "C", "D", "E", "E", "E", null, "D", "D", "D", null, "E", "G", "G", null, "E", "D", "C", "D", "E", "E", "E", "E", "D", "D", "E", "D", "C", null, null, null], 96],
-          ["Amazing Grace", "many places", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null], 72],
-          ["Jingle Bells", "United States", ["E", "E", "E", null, "E", "E", "E", null, "E", "G", "C", "D", "E", null, null, null, "F", "F", "F", "F", "F", "E", "E", "E", "E", "D", "D", "E", "D", "G", null, null], 120],
+          ["Twinkle", "many places", null, 96],
+          ["Little Lamb", "United States", null, 96],
+          ["Amazing Grace", "many places", null, 72],
+          ["Jingle Bells", "United States", null, 120],
         ]],
       ];
       shelves.forEach(([place, songs]) => {
@@ -5727,9 +6261,10 @@
         classics.appendChild(h);
         const grid = document.createElement("div");
         grid.className = "shelf-songs";
-        songs.forEach(([name, from, notes, bpm]) => {
-          if (name === "Ode to Joy") odeNotes = notes;
-          catalog.push({ name: name, from: from, notes: notes, bpm: bpm, feel: bpm < 90 ? "calm" : bpm > 110 ? "drive" : "bright" });
+        songs.forEach(([name, from, notes0, bpm]) => {
+          const rich = richOf(name);
+          const notes = notes0 || [];
+          catalog.push({ name: name, from: from, notes: notes, rich: rich, key: rich ? rich.key : "C", meter: rich ? rich.meter : "4/4", pickup: rich ? rich.pickup : 0, bpm: bpm, feel: bpm < 90 ? "calm" : bpm > 110 ? "drive" : "bright" });
           const b = document.createElement("button");
           b.type = "button";
           b.className = "btn";
