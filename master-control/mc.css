@@ -8,7 +8,7 @@ body {
   padding: calc(var(--kb-h, 48px) + 16px) 16px 32px;
 }
 main {
-  max-width: 720px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 h1 {
@@ -157,3 +157,15 @@ textarea {
     scroll-behavior: auto;
   }
 }
+
+/* MC 2 */
+.age { margin: 0 0 8px; color: #9fb0c6; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 6px 12px; border-radius: 999px; }
+.chip strong { font-variant-numeric: tabular-nums; }
+.find { margin-top: 12px; max-width: 420px; }
+.drift dt, .drift em { color: #e2b15a; font-style: normal; font-weight: 700; }
+.meta a { color: #8fd3e0; }
+.none { color: #9fb0c6; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+@media (min-width: 900px) { .board { grid-template-columns: 1fr 1fr; } }
