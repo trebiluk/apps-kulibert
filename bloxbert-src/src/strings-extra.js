@@ -3954,3 +3954,20 @@ for (const [lang, row] of Object.entries(LORE597)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// Painter: put one block back to the active pack's default. {pack} is the pack's own name. fa-AF, rw, and ti are machine drafts.
+const PAINT597 = {
+  en: { ptResetAll: 'Reset all blocks', ptAllBack: 'All blocks are back to {pack} ✓', ptReset: 'Default block', ptResetDone: '{block} is back to {pack} ✓' },
+  simple: { ptResetAll: 'Reset all blocks', ptAllBack: 'All blocks look like {pack} again ✓', ptReset: 'Default block', ptResetDone: '{block} looks like {pack} again ✓' },
+  uk: { ptResetAll: 'Скинути всі блоки', ptAllBack: 'Усі блоки знову як у {pack} ✓', ptReset: 'Блок за замовчуванням', ptResetDone: '{block} знову як у {pack} ✓' },
+  ru: { ptResetAll: 'Сбросить все блоки', ptAllBack: 'Все блоки снова как в {pack} ✓', ptReset: 'Блок по умолчанию', ptResetDone: '{block} снова как в {pack} ✓' },
+  es: { ptResetAll: 'Restablecer todos', ptAllBack: 'Todos los bloques vuelven a {pack} ✓', ptReset: 'Bloque original', ptResetDone: '{block} vuelve a {pack} ✓' },
+  ar: { ptResetAll: 'إعادة كل المكعبات', ptAllBack: 'عادت كل المكعبات إلى {pack} ✓', ptReset: 'المكعب الأصلي', ptResetDone: 'عاد {block} إلى {pack} ✓' },
+  'fa-AF': { ptResetAll: 'بازگرداندن همه بلاک‌ها', ptAllBack: 'همه بلاک‌ها دوباره مثل {pack} شدند ✓', ptReset: 'بلاک اصلی', ptResetDone: '{block} دوباره مثل {pack} شد ✓' },
+  rw: { ptResetAll: 'Subiza block zose', ptAllBack: 'Block zose zasubiye kuri {pack} ✓', ptReset: 'Block y\'umwimerere', ptResetDone: '{block} yasubiye kuri {pack} ✓' },
+  ti: { ptResetAll: 'ኩሉ ብሎካት መልስ', ptAllBack: 'ኩሉ ብሎካት ናብ {pack} ተመሊሶም ✓', ptReset: 'ናይ መጀመርታ ብሎክ', ptResetDone: '{block} ናብ {pack} ተመሊሱ ✓' },
+}
+for (const [lang, row] of Object.entries(PAINT597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

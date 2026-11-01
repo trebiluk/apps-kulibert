@@ -31,6 +31,7 @@ export function packList() {
   return [PACKS.classic, PACKS.mystical]
 }
 
+export function packName(id) { const p = PACKS[id || currentPackId()] || PACKS.classic; return p.name }
 export function currentPackId() {
   try {
     const id = localStorage.getItem(STORE)
