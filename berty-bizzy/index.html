@@ -233,7 +233,12 @@ try {
   .scene-labels span.is-mark { border: 2px dashed var(--pz-yellow); animation: bb-mark 1.6s ease-in-out infinite; }
   @keyframes bb-mark { 50% { transform: translate(-50%, -50%) scale(1.12); } }
   @media (prefers-reduced-motion: reduce) { .scene-labels span.is-mark { animation: none; } }
-  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 8px; min-height: 64px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; min-height: 0; align-items: center; }
+  /* 1.8.2: compact header: languages live in one menu. */
+  .langs > .lang { display: none; }
+  .lang-pick { min-height: 44px; font: inherit; font-weight: 700; padding: 0 10px; border: 2px solid currentColor; border-radius: 6px; background: var(--pz-panel); color: inherit; }
+  #chrome-slot { display: flex; gap: 8px; align-items: center; }
+  .top { padding-block: 6px; }
   button.lang[aria-pressed="true"] { border-width: 3px; border-color: var(--ember); }
   #draft-note { margin: 0 0 0 10px; padding: 2px 8px; font: 750 12px/1.2 "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; color: var(--pz-ink, #1d1b16); background: var(--pz-yellow); border: 2px solid var(--pz-on-yellow); border-radius: 999px; max-width: 46vw; }
   #draft-note[hidden] { display: none; }
@@ -690,7 +695,7 @@ try {
 </head>
 <body class="pz-light">
 <header class="top">
-  <h1 class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.8.1</span></small></h1>
+  <h1 class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.8.2</span></small></h1>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -955,11 +960,11 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.8.1" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.8.2" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="physics.js?v=1.8.1"></script>
-<script src="game.js?v=1.8.1"></script>
-<script src="view3d.js?v=1.8.1"></script>
+<script src="physics.js?v=1.8.2"></script>
+<script src="game.js?v=1.8.2"></script>
+<script src="view3d.js?v=1.8.2"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -3114,7 +3119,7 @@ var bbInit = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.8.1") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.8.2") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.programs2.push([]);
@@ -3286,6 +3291,20 @@ var boot = function () {
     b.addEventListener("click", function () { applyLang(item.id); });
     langNav.appendChild(b);
   });
+  // 1.8.2: one compact language menu instead of a row of 8 buttons (the buttons stay for scripts, hidden).
+  var langSel = document.createElement("select");
+  langSel.id = "lang-pick";
+  langSel.className = "lang-pick";
+  langSel.setAttribute("aria-label", "Language");
+  PINCHY.LANGS.forEach(function (item) {
+    var o = document.createElement("option");
+    o.value = item.id; o.textContent = item.name; o.lang = item.id;
+    langSel.appendChild(o);
+  });
+  langSel.addEventListener("change", function () { applyLang(langSel.value); });
+  langNav.insertBefore(langSel, langNav.firstChild);
+  new MutationObserver(function () { var l = document.documentElement.getAttribute("lang"); if (l && langSel.value !== l) langSel.value = l; })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   var startLang = "en";
   var knownLang = function (c) { return !!c && PINCHY.langMeta(c).id === c; };
   try {

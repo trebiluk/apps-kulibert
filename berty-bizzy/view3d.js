@@ -414,9 +414,10 @@
       var bx = (root.PINCHY && root.PINCHY.LAYOUT.bizzyX) || 190;
       if (!rimPts) {
         rimPts = [];
-        var xs = [-95, bx + 70];
-        var zs = [-30, 175];
-        var ys = [0, 240];
+        // 1.8.2: frame the arms and their reach, not the whole round table (less empty floor).
+        var xs = [-70, bx + 50];
+        var zs = [-10, 140];
+        var ys = [0, 215];
         xs.forEach(function (x) { zs.forEach(function (z) { ys.forEach(function (y) { rimPts.push(new THREE.Vector3(x, y, z)); }); }); });
       }
       var target = new THREE.Vector3(bx * 0.42, 70, 60);
@@ -585,6 +586,61 @@
       BASIS.makeBasis(x, along, z);
       obj.quaternion.setFromRotationMatrix(BASIS);
     }
+    // 1.8.2: protractor dials on the base and on each joint, so students can read every angle on the robot.
+    var dialTex = null;
+    function protractorTexture(mirror) {
+      var cv = document.createElement("canvas");
+      cv.width = cv.height = 256;
+      var c = cv.getContext("2d"), R = 120, i;
+      c.translate(128, 128);
+      if (mirror) c.scale(-1, 1);
+      c.fillStyle = "rgba(255,250,235,0.9)";
+      c.beginPath(); c.arc(0, 0, R, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = "#1d1b18"; c.lineWidth = 4; c.stroke();
+      for (i = -165; i <= 180; i += 15) {
+        var a = -i * Math.PI / 180, big = i % 45 === 0;
+        c.lineWidth = big ? 5 : 2.5;
+        c.beginPath();
+        c.moveTo(Math.cos(a) * (R - (big ? 26 : 14)), Math.sin(a) * (R - (big ? 26 : 14)));
+        c.lineTo(Math.cos(a) * R, Math.sin(a) * R);
+        c.stroke();
+        if (big) {
+          c.save();
+          c.translate(Math.cos(a) * (R - 46), Math.sin(a) * (R - 46));
+          if (mirror) c.scale(-1, 1);
+          c.fillStyle = i === 0 ? "#b3261e" : "#1d1b18";
+          c.font = "bold 22px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle";
+          c.fillText(String(i), 0, 0);
+          c.restore();
+        }
+      }
+      var t = new THREE.CanvasTexture(cv);
+      return t;
+    }
+    function makeDial(radius) {
+      if (!dialTex) dialTex = [protractorTexture(false), protractorTexture(true)];
+      var g = new THREE.Group();
+      var geo = new THREE.CircleGeometry(radius, 48);
+      var front = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: dialTex[0], transparent: true, side: THREE.FrontSide }));
+      var back = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: dialTex[1], transparent: true, side: THREE.FrontSide }));
+      back.rotation.y = Math.PI;
+      g.add(front); g.add(back);
+      var needle = new THREE.Group();
+      var bar = new THREE.Mesh(new THREE.BoxGeometry(radius * 0.92, 1.4, 1.2), new THREE.MeshBasicMaterial({ color: 0xb3261e }));
+      bar.position.x = radius * 0.46;
+      needle.add(bar);
+      g.add(needle);
+      g.userData.needle = needle;
+      return g;
+    }
+    var dialM = new THREE.Matrix4();
+    function setDial(dial, at, x, y, needleRad) {
+      var z = new THREE.Vector3().crossVectors(x, y).normalize();
+      dialM.makeBasis(x, y, z);
+      dial.quaternion.setFromRotationMatrix(dialM);
+      dial.position.copy(at);
+      dial.userData.needle.rotation.z = needleRad;
+    }
     function buildRig(ghost, hornMat, offsetX) {
       var rootG = new THREE.Group();
       var links = [makeLink(ghost), makeLink(ghost), makeLink(ghost), makeLink(ghost)];
@@ -605,6 +661,8 @@
           }
         }
         rootG.add(base);
+        var dials = [makeDial(25), makeDial(16), makeDial(15), makeDial(12)];
+        for (i = 0; i < dials.length; i++) rootG.add(dials[i]);
         // Five servos for five joints: base, shoulder, elbow, wrist, gripper (no extra roll servo).
         for (i = 0; i < 5; i++) {
           var servo = makeServo(hornMat);
@@ -627,7 +685,7 @@
       scene.add(rootG);
       rootG.position.x = offsetX || 0;
       rootG.visible = !ghost;
-      return { root: rootG, links: links, servos: servos, jaws: jaws, palm: palm };
+      return { root: rootG, links: links, servos: servos, jaws: jaws, palm: palm, dials: ghost ? null : dials };
     }
     var bertyBlob = blob(78);
     scene.add(bertyBlob);
@@ -677,6 +735,24 @@
         var clawServo = rig.servos[4];
         clawServo.position.copy(palmAt).addScaledVector(along, -6.5).addScaledVector(side, 9);
         orient(clawServo, along.clone().negate(), side);
+      }
+      if (rig.dials) {
+        // Base dial lies flat on the base: 0 points straight ahead, + turns toward Berty's right.
+        setDial(rig.dials[0], new THREE.Vector3(0, 15.4, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), yawRad);
+        // Joint dials stand beside each joint, lined up with the link before it, so they read that joint's own angle.
+        var out = new THREE.Vector3(Math.sin(yawRad), 0, Math.cos(yawRad));
+        var chain = [[shoulder, out, elbow], [elbow, null, wrist], [wrist, null, grip]];
+        var prev = out, k;
+        for (k = 0; k < 3; k++) {
+          var at = chain[k][0], nxt = chain[k][2];
+          var dx = prev.clone().normalize();
+          var dy = new THREE.Vector3().crossVectors(dx, yawAxis).normalize();
+          var child = nxt.clone().sub(at);
+          var ang = Math.atan2(child.dot(dy), child.dot(dx));
+          var dz = new THREE.Vector3().crossVectors(dx, dy).normalize();
+          setDial(rig.dials[k + 1], at.clone().addScaledVector(dz, 10.5), dx, dy, ang);
+          prev = child.lengthSq() > 0.01 ? child : prev;
+        }
       }
       rig.palm.position.copy(palmAt);
       orient(rig.palm, side, along);
