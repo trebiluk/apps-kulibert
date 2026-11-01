@@ -19,6 +19,7 @@ import { berryTuft } from './worldgen.js'
 import { floraExtra } from './packs/flora/pack.js'
 import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
+import * as DECAY from './home/decay.js'   // home build only: every use is behind the typeof-safe __HOME_HOST__ flag
 
 export function createSession(api) {
   if (api && api.close) {
@@ -52,6 +53,59 @@ export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
   let bag = bags.survival
   bindStationBag(() => bag.slots)
+  // Home build (adults 18+): decay — food rots, the survival bag wears (src/home/decay.js). null in the student build.
+  const decay = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? DECAY.makeState() : null
+  if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__)) bags.survival.hook = DECAY.bagHook(decay, bags.survival.slots.length)
+  let queasyUntil = 0
+  // ---- home build: decay (src/home/decay.js). Only reached when the home flag is on.
+  const homeDecay = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function (ms) {
+    const r = DECAY.tick(decay, bags.survival.slots, ms)
+    for (const item of r.rotted) api.toast(t('foodRotted').replace('{item}', itemName(item)))
+    if (r.torn > 0) api.toast(t('bagTore'))
+    if (r.rotted.length || r.torn) { paintHotbar(); refreshBag(); if (api.markDirty) api.markDirty() }
+  } : null
+  const takeHot = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function () { const s = bag.slots[hot]; s.n -= 1; if (s.n <= 0) bag.slots[hot] = null } : null
+  // -> a name (handled) or null (not a decay thing: the normal path runs)
+  const homeUse = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function (item) {
+    const s = bag.slots[hot]
+    if (!s || s.item !== item) return null
+    const done = (say) => { paintHotbar(); refreshBag(); if (say) api.toast(say); if (api.markDirty) api.markDirty(); return itemName(item) }
+    if (item === DECAY.PATCH) {
+      if (!DECAY.patch(decay)) return done(t('bagFine'))
+      takeHot()
+      return done(t('bagPatched').replace('{p}', Math.round(decay.wear)))
+    }
+    if (item === DECAY.ROTTEN) {
+      const e = DECAY.eatRotten()
+      takeHot(); ateSinceTip = true
+      if (energyOn && e.bolts) { energy.bolts = Math.max(0, Math.min(10, energy.bolts + e.bolts)); if (energy.bolts > 0) energy.toasted = false; paintEnergy() }
+      if (e.slowMs) { queasyUntil = Date.now() + e.slowMs; syncDig() }
+      return done(t(e.say))
+    }
+    if (DECAY.isFood(item) && energyOn && FEED[item]) {
+      if (energy.bolts >= 10) { api.toast(t('energyFull')); return itemName(item) }
+      const gain = DECAY.feedFor(s, FEED[item])
+      takeHot(); ateSinceTip = true
+      energy.bolts = Math.min(10, energy.bolts + gain); if (energy.bolts > 0) energy.toasted = false
+      paintEnergy(); syncDig()
+      return done(t('ate').replace('{item}', itemName(item)) + (gain < FEED[item] ? ' (' + t('foodStale') + ')' : ''))
+    }
+    return null
+  } : null
+  // freshness bar on food, a torn mark on torn slots; both also in words (label and tooltip), never colour alone
+  const homeTile = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function (b, s, i) {
+    if (!document.getElementById('home-decay-css')) {
+      const st = document.createElement('style'); st.id = 'home-decay-css'
+      st.textContent = '.wear.fresh .fill{background:#84cc16}.torn{border-style:dashed!important}.torn-mark{position:absolute;top:2px;inset-inline-start:3px;font-size:12px;line-height:1}'
+      document.head.append(st)
+    }
+    const f = DECAY.freshness(s)
+    if (f !== null) { const bar = document.createElement('span'); bar.className = 'wear fresh'; const fill = document.createElement('span'); fill.className = 'fill'; fill.style.width = Math.round(f * 100) + '%'; bar.append(fill); b.append(bar) }
+    const torn = bag === bags.survival && DECAY.isTorn(decay, i, bag.slots.length)
+    if (torn) { b.classList.add('torn'); const m = document.createElement('span'); m.className = 'torn-mark'; m.textContent = '✂'; m.setAttribute('aria-hidden', 'true'); b.append(m) }
+    const words = [DECAY.foodState(s) === 'stale' ? t('foodStale') : '', torn ? t('bagTornSlot') : ''].filter(Boolean).join(' · ')
+    if (words) { b.setAttribute('aria-label', (b.getAttribute('aria-label') || '') + ' · ' + words); b.title = (b.title || b.getAttribute('aria-label') || '') + ' · ' + words }
+  } : null
   const wallet = createWallet(ECON, () => paintChip())
   const meta = new Map()
   let mode = 'survival'
@@ -465,6 +519,7 @@ export function createSession(api) {
       if (s) b.dataset.item = s.item
       b.setAttribute('aria-pressed', String(i === hot))
       b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
+      if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && s && mode === 'survival') homeTile(b, s, i)
       b.addEventListener('click', () => {
         if (i === hot) useHeld()
         else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
@@ -524,6 +579,7 @@ export function createSession(api) {
   function useHeld() {
     const item = selectedItem()
     if (!item || slotMuted(item)) return ''
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && mode === 'survival') { const r = homeUse(item); if (r !== null) return r }
     if (energyOn && mode === 'survival' && FEED[item]) {
       if (energy.bolts >= 10) {
         api.toast(t('energyFull'))
@@ -597,6 +653,7 @@ export function createSession(api) {
     const a = bag.slots[from]
     if (!a) return false
     const b = bag.slots[to]
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && bag === bags.survival && DECAY.isTorn(decay, to, bag.slots.length) && (!b || b.item === a.item)) { api.toast(t('bagTornSlot')); return false }
     const follow = () => {
       if (hot === from) hot = to
       else if (hot === to) hot = from
@@ -611,6 +668,7 @@ export function createSession(api) {
       const room = stackCap(a.item) - b.n
       if (room <= 0) return false
       const moveN = Math.min(room, a.n)
+      if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && DECAY.isFood(a.item)) b.age = ((b.age || 0) * b.n + (a.age || 0) * moveN) / (b.n + moveN)
       b.n += moveN
       a.n -= moveN
       if (a.n <= 0) {
@@ -1041,6 +1099,7 @@ export function createSession(api) {
       return
     }
     if (title) title.textContent = t('bag')
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && title) title.textContent = t('bag') + ' · ' + t('bagWear').replace('{p}', Math.round(decay.wear)).replace('{n}', DECAY.usableSlots(decay, bag.slots.length))
     if (bagSel >= bag.slots.length || (bagSel >= 0 && !bag.slots[bagSel])) bagSel = -1
     const asideN = lost.reduce((sum, d) => sum + (d && d.why === 'aside' ? d.n : 0), 0)
     const rest = lost.filter((d) => d && d.why !== 'aside')
@@ -1114,6 +1173,7 @@ export function createSession(api) {
       b.setAttribute('aria-pressed', String(i === bagSel))
       b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
       b.title = s ? faceName(s.item) : t('emptySlot')
+      if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && s) homeTile(b, s, i)
       b.addEventListener('pointerdown', (e) => {
         if (blockSlot(e)) return
         startDrag(b, e, {
@@ -3532,6 +3592,7 @@ export function createSession(api) {
         table: api.tableOn(),
         tray: { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
+        ...((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? { decay: DECAY.dumpState(decay) } : {}),
         hud: api.hudDump ? api.hudDump() : null,
         wins: { log: wins.log ? 1 : 0, make: wins.make ? 1 : 0, place: wins.place ? 1 : 0, wall: wins.wall ? 1 : 0 },
       },
@@ -3566,6 +3627,7 @@ export function createSession(api) {
         toasted: !!savedEnergy.toasted && (savedEnergy.bolts | 0) === 0,
       }
     } else energy = { bolts: 10, acc: 0, toasted: false }
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__)) decay.wear = DECAY.loadState(p.decay).wear
     wallet.load(doc.econ)
     if (!wallet.state.ledger.length) wallet.post({ kind: 'start', cogs: 0, by: 'you' })
     meta.clear()
@@ -3665,6 +3727,7 @@ export function createSession(api) {
     if (api.onMode) api.onMode()
   }
   function pace() {
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && Date.now() < queasyUntil) return 0.7
     if (!energyOn || mode !== 'survival' || energy.bolts > 0) return 1
     return 0.7
   }
@@ -3716,6 +3779,7 @@ export function createSession(api) {
   }
   function play(ms, force) {
     syncDig()
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && mode === 'survival' && ms > 0 && (force || !(paused || (typeof document !== 'undefined' && document.hidden)))) homeDecay(ms)
     if (!energyOn || mode !== 'survival') { paintEnergy(); return }
     if (!force && (paused || (typeof document !== 'undefined' && document.hidden))) return
     if (!(ms > 0) || energy.bolts <= 0) { paintEnergy(); return }
@@ -3841,6 +3905,8 @@ export function createSession(api) {
     give(item, n) { giveItem(item, n) },
     seedCount(kind, x, y, z) { return kind === 'tuft' ? tuftSeedCount(x, y, z) : wheatSeedCount(x, y, z) },
     blockForHot() { const k = selectedItem(); if (!k || slotMuted(k)) return 0; return ITEMS[k] && ITEMS[k].block },
+    // home build: take one of the held item (compost on a crop uses one Rotten food); absent in the student build
+    ...((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? { takeHeldOne(item) { if (!(typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) || mode !== 'survival') return false; const h = bag.slots[hot]; if (!h || h.item !== item) return false; takeHot(); paintHotbar(); refreshBag(); if (api.markDirty) api.markDirty(); return true } } : {}),
     toolTier() { const k = selectedItem(); return (k && ITEMS[k] && ITEMS[k].tool) || 'hand' },
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
