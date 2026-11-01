@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join Bertopia</title>
+<style>
+  html { background:#0b1220 } body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#0b1220; color:#f8fafc; font:17px/1.5 system-ui, sans-serif }
+  .card { background:#111a2e; border:1px solid #22304d; border-radius:16px; padding:22px 24px; width:min(92vw, 420px) }
+  h1 { font-size:20px; margin:0 0 6px } p { color:#94a3b8; margin:6px 0 }
+  input { width:100%; min-height:52px; font:24px system-ui; letter-spacing:4px; text-transform:uppercase; text-align:center; background:#0b1220; color:#f8fafc; border:1px solid #475569; border-radius:12px; margin:10px 0 }
+  button { width:100%; min-height:52px; font:inherit; font-weight:600; background:#134e4a; color:#f8fafc; border:1px solid #2dd4bf; border-radius:12px; cursor:pointer }
+  #out { margin-top:12px; min-height:1.5em } .ok { color:#4ade80 } .bad { color:#f87171 }
+  ul { color:#94a3b8; padding-left:18px; font-size:14px }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Join Bertopia</h1>
+  <p>Type the join code the host gave you.</p>
+  <input id="code" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="A1B2C3">
+  <button id="go">Join</button>
+  <div id="out"></div>
+  <ul id="how" hidden>
+    <li>You're in as <b id="who"></b>. The game itself connects in part 2; for now this proves the server accepts you.</li>
+    <li>Keep this page open; the host sees you online.</li>
+  </ul>
+</div>
+<script>
+const $ = (id) => document.getElementById(id)
+let ws = null
+$('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click() })
+$('go').addEventListener('click', async () => {
+  const code = $('code').value.trim().toUpperCase()
+  if (code.length < 4) return
+  $('out').innerHTML = 'Asking the host…'
+  let j
+  try { j = await (await fetch('/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code }) })).json() } catch (e) { j = { error: 'network' } }
+  if (j.error) { $('out').innerHTML = '<span class="bad">' + ({ code: 'That code is not on the list.', 'no world open': 'The host has no world open yet.', locked: 'The world is locked right now.', 'no host': 'The host is not in the world yet. Ask them to join first, then try again.', network: 'Could not reach the host.' }[j.error] || j.error) + '</span>'; return }
+  if (ws) try { ws.close() } catch (e) {}
+  ws = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
+  let q = 0
+  ws.onopen = () => { $('out').innerHTML = '<span class="ok">Connected to world “' + j.world + '”</span>'; $('who').textContent = j.alias; $('how').hidden = false
+    const beat = setInterval(() => { if (ws.readyState !== 1) return clearInterval(beat); ws.send(JSON.stringify({ v: 0, t: 'p', q: q++, x: 8.5, y: 64, z: 1.5, r: 0, f: 0 })) }, 4000) }
+  ws.onmessage = (m) => { try { const f = JSON.parse(m.data); if (f.t === 'hello') $('out').innerHTML += '<br><span class="ok">' + (f.players.length ? f.players.length + ' other' + (f.players.length > 1 ? 's' : '') + ' here: ' + f.players.map((p) => p.a).join(', ') : 'You are the first one here.') + '</span>' } catch (e) {} }
+  ws.onclose = (e) => { $('out').innerHTML = '<span class="bad">Disconnected' + (e.reason ? ' (' + e.reason + ')' : '') + '. Press Join to try again.</span>'; $('how').hidden = true }
+})
+</script>
+</body>
+</html>
