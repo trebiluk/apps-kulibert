@@ -1,16 +1,43 @@
 import { gateOpen } from './data/gates.js'
 import { ITEMS } from './data/items.js'
+import { RECIPES } from './data/recipes.js'
 const WOOL = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
-const STONE = ['stone', 'slate', 'coal']
+const STONE = ['stone', 'coal']
 const PLANKS = ['planks', 'birchPlanks', 'pinePlanks']
 export function isWool(item) { return WOOL.indexOf(item) >= 0 }
 export function isStone(item) { return STONE.indexOf(item) >= 0 }
 export function isPlank(item) { return PLANKS.indexOf(item) >= 0 }
-function anyList(item) {
+export function anyList(item) {
   if (item === 'woolAny') return WOOL
   if (item === 'stoneAny') return STONE
   if (item === 'plankAny') return PLANKS
   return null
+}
+// 0065: metal only comes from the smelter (tier T4). A recipe that needs metal directly, or needs an item that is
+// itself made from metal, is locked until T4 opens, instead of showing as "almost" forever.
+const METAL = ['ironIngot', 'copperIngot', 'zincIngot', 'steel']
+const metalMemo = new Map()
+export function needsMetal(recipe, recipes) {
+  if (!recipe || !Array.isArray(recipe.in)) return false
+  const key = recipe.id || ''
+  if (key && metalMemo.has(key)) return metalMemo.get(key)
+  let hit = recipe.in.some(([item]) => METAL.indexOf(item) >= 0)
+  const list = Array.isArray(recipes) ? recipes : RECIPES
+  if (!hit) {
+    for (const [item] of recipe.in) {
+      const maker = list.find((r) => r && r.out && r.out[0] === item)
+      if (maker && maker.in.some(([k]) => METAL.indexOf(k) >= 0)) { hit = true; break }
+    }
+  }
+  if (key) metalMemo.set(key, hit)
+  return hit
+}
+export function resetMetalMemo() { metalMemo.clear() }
+// Woodshop floor lamp and wall lamp are not in the Crafting book. One check on the DECOR inputs:
+// any metal ingredient stays locked until T4 opens. Rug inputs are wool, so they stay out of this.
+export function decorMetalLocked(ins, creative) {
+  if (gateOpen('T4', !!creative)) return false
+  return Array.isArray(ins) && ins.some((row) => row && METAL.indexOf(row[0]) >= 0)
 }
 export function countOf(bag, item) {
   if (!bag || !bag.count) return 0
@@ -39,7 +66,7 @@ function takeOf(bag, item, n) {
   }
   return spent
 }
-export function craftStatus(recipe, bag, near, creative) {
+export function craftStatus(recipe, bag, near, creative, recipes) {
   const needs = []
   let missing = 0
   for (const [item, n] of recipe.in) {
@@ -52,7 +79,8 @@ export function craftStatus(recipe, bag, near, creative) {
     : recipe.at === 'smelter' && !near.smelter ? 'smelter'
     : recipe.at === 'forge' && !near.forge ? 'forge'
     : recipe.at === 'fabricator' && !near.fabricator ? 'fabricator' : ''
-  const gate = recipe.tier && !gateOpen(recipe.tier, !!creative) ? recipe.tier : ''
+  let gate = recipe.tier && !gateOpen(recipe.tier, !!creative) ? recipe.tier : ''
+  if (!gate && !gateOpen('T4', !!creative) && needsMetal(recipe, recipes)) gate = 'metal' // 0065
   const bakeOnly = recipe.id === 'bread'
   const ok = !station && missing === 0 && !gate && !bakeOnly
   let group = gate ? 'gated' : ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
