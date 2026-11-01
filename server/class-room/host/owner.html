@@ -17,7 +17,7 @@
   button.go { background:#134e4a; border-color:var(--teal) } button.bad { border-color:var(--bad); color:var(--bad) } button:disabled { opacity:.45; cursor:default }
   button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--teal); outline-offset:2px }
   input, select { min-height:44px; background:#0b1220; color:var(--ink); border:1px solid #475569; border-radius:10px; padding:8px 12px; font:inherit; max-width:100% }
-  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0 } .tbl { overflow-x:auto }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0 } .tbl { overflow-x:auto } .acts { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end }
   table { width:100%; border-collapse:collapse; font-size:14px } td, th { text-align:left; padding:7px 6px; border-top:1px solid var(--line); vertical-align:middle } th { color:var(--dim); font-weight:600; border-top:0 }
   code { background:#0b1220; border:1px solid var(--line); border-radius:6px; padding:2px 7px; font-size:14px; letter-spacing:1px }
   .code-big { font:600 30px/1.2 ui-monospace, monospace; letter-spacing:5px; background:#0b1220; border:1px solid var(--teal); border-radius:12px; padding:12px 16px; display:inline-block }
@@ -78,7 +78,7 @@
   <section>
     <h2>Worlds</h2>
     <div class="row"><input id="new-world" placeholder="new world: 8+ letters, digits, - _" minlength="8" maxlength="40"><button id="btn-new" class="go">Create and open</button></div>
-    <div class="tbl"><table id="worlds"><thead><tr><th>Name</th><th>Size</th><th>Changed</th><th></th></tr></thead><tbody></tbody></table></div>
+    <div class="tbl"><table id="worlds"><thead><tr><th>Name</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="row"><button id="btn-backup">Back up open world</button><button id="btn-close">Close world</button></div>
     <details><summary class="dim">Backups</summary><table id="backups"><tbody></tbody></table></details>
     <h2 style="margin-top:14px">Import a world file</h2>
@@ -129,7 +129,7 @@ function render(s) {
   $('players').querySelector('tbody').innerHTML = s.live.players.map((p) => `<tr><td>${p.name}</td><td>${p.role}</td><td>${p.muted ? 'yes' : ''}</td><td><button data-keep="${p.ref}" data-on="${p.keep ? 0 : 1}" aria-label="Keep inventory for ${p.name}: ${p.keep ? 'on' : 'off'}${p.keepOwn ? '' : ' (world)'}">${p.keep ? 'Keep' : 'Lose'}${p.keepOwn ? '' : ' (world)'}</button>${p.keepOwn ? ` <button data-keepworld="${p.ref}">Use world</button>` : ''}</td><td>${p.role === 'player' ? `<button data-mute="${p.ref}" data-on="${p.muted ? 0 : 1}">${p.muted ? 'Unmute' : 'Mute'}</button> <button data-rb="${p.ref}">Undo theirs</button> <button data-kick="${p.ref}">Kick</button> <button data-ban="${p.ref}" class="bad">Ban</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="dim">Nobody in yet.</td></tr>'
   $('btn-freeze').textContent = s.live.frozen ? 'Unfreeze building' : 'Freeze building'
   $('bans').querySelector('tbody').innerHTML = s.live.bans.map((b) => `<tr><td>${b.name || b.ref}</td><td class="dim">${ago(b.at)}</td><td><button data-unban="${b.ref}">Unban</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
-  $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}</td><td>${kb(w.bytes)}</td><td class="dim">${ago(w.changed)}</td><td>${w.open ? '' : `<button data-open="${w.name}">Open</button>`} <button data-bk="${w.name}">Back up</button> <button data-dl="${w.name}">Download</button></td></tr>`).join('') || '<tr><td colspan="4" class="dim">No worlds yet.</td></tr>'
+  $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}<br><span class="dim">${kb(w.bytes)} · ${ago(w.changed)}</span></td><td><div class="acts">${w.open ? '' : `<button data-open="${w.name}">Open</button>`}<button data-bk="${w.name}">Back up</button><button data-dl="${w.name}">Download</button></div></td></tr>`).join('') || '<tr><td colspan="2" class="dim">No worlds yet.</td></tr>'
   $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('btn-backup').disabled = $('btn-close').disabled = !s.world
   const rr = s.live.rules; $('chat-on').checked = !!(rr && rr.r['chat.typed']); $('keep-on').checked = !!(rr && rr.r['survival.keep']); $('chat-on').disabled = $('keep-on').disabled = !rr
