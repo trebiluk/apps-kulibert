@@ -16,6 +16,18 @@ Data (worlds, backups, `home.json`) lives in `Documents/Bertopia Home` unless `-
 Needs Node 22 or newer. The host itself installs nothing and needs no internet. Without a home build, `/` shows a
 plain join page instead of the game.
 
+## Windows package (double-click, nothing to install)
+```
+cd bloxbert-src && npm ci && npm run build:home       # the game, once per version
+cd ../server/class-room && npm run pack:windows       # -> dist/Bertopia-Home-Windows-<version>.zip
+```
+The zip carries the host, the home game build, an official portable Node (win-x64, SHA-256 checked against
+nodejs.org) and a launcher. On the Windows PC: unpack it, double-click **Bertopia Home.cmd**; the owner page opens.
+**Create desktop shortcut.cmd** adds an icon; **Open data folder.cmd** opens `Documents\Bertopia Home`. Your data never
+lives in the package folder, so a newer package replaces the old folder and keeps your worlds. Options:
+`--no-node` (use an installed Node 22.13+), `--node 22.x.y`, `--game <folder>`, `--out <folder>`. Without a home
+game build the zip is marked `host-only` (players get the plain join page).
+
 ## First run
 The owner page asks you to choose a **PIN** (6 to 12 digits). It is stored hashed and never shown or logged.
 You need it every time you open the owner page. Five wrong tries lock it for ten minutes.

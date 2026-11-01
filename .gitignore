@@ -2,3 +2,6 @@
 
 alice-src/node_modules
 voltduel-src/node_modules
+
+# Windows launcher packages (server/class-room/tools/pack-windows.mjs)
+/dist/
