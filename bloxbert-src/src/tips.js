@@ -174,6 +174,8 @@ function sheetToastDock(el) {
     [Math.round(sheetR.right + 8), Math.max(8, Math.round(sheetR.top))],
     [Math.round(sheetR.left - 8 - tw), Math.max(8, Math.round(sheetR.top))],
     [Math.round(sheetR.right + 8), Math.max(8, Math.round(sheetR.top + 8))],
+    // 2.5.592 r2: a panel right under the top bar leaves no room above it, so try just below the panel too
+    [Math.round(Math.max(8, (window.innerWidth - tw) / 2)), Math.round(sheetR.bottom + 8)],
   ]
   let pick = null
   for (const pair of candidates) {
@@ -191,7 +193,14 @@ function sheetToastDock(el) {
   if (!pick) {
     let t = Math.round(sheetR.top - 8 - th)
     let l = Math.round(Math.max(8, Math.min(sheetR.left, window.innerWidth - tw - 8)))
-    if (t < 0) t = 0
+    // never under the top bar or the game HUD row
+    let hud = 0
+    for (const node of [document.querySelector('header.top'), document.querySelector('.kb-bar'), document.getElementById('top')]) {
+      if (!node || node.hidden) continue
+      const r = node.getBoundingClientRect()
+      if (r.width > 4 && r.height > 4 && r.bottom < window.innerHeight / 2) hud = Math.max(hud, r.bottom)
+    }
+    if (t < hud + 8) t = Math.round(hud + 8)
     pick = [l, t]
   }
   el.style.setProperty('left', Math.round(pick[0]) + 'px', 'important')
@@ -517,7 +526,7 @@ function presentToast(job) {
     })
   }
   el.classList.remove('toast-nudge')
-  const ms = TOAST_MS
+  const ms = Math.max(TOAST_MS, job.ms | 0) // 2.5.592 r2: a caller can ask for a longer stay
   slot = { kind: 'toast', id: job.id || '', text: job.text || '', timer: setTimeout(() => endToast({ fade: true }), ms) }
   lastLiveAt = performance.now()
   toastTrace('show', job.text || '')

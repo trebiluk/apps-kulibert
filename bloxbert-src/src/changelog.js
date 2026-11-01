@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.595', date: '2026-10-31', lines: {
+    en: ["2.5.595 — Closing the tab right after an edit still sends that edit to the school copy, once."],
+    simple: ["2.5.595 — Close the tab after an edit. The edit still saves to school."],
+  } },
+  { v: '2.5.589', date: '2026-10-31', lines: {
+    en: ["2.5.589 — Every save reaches the server or shows Not saved. Quick edits are no longer lost, and no fake Two copies found card."],
+    simple: ["2.5.589 — Saves always reach the server, or you see Not saved."],
+  } },
+  { v: '2.5.592', date: '2026-10-31', lines: {
+    en: ["2.5.592 — Bertopia has one address now. Old /blocks/ links open /bertopia/, and the old offline copy clears itself."],
+    simple: ["2.5.592 — Old Bertopia links open the new one. The old offline copy clears itself."],
+  } },
   { v: '2.5.590', date: '2026-10-31', lines: {
     en: ["2.5.590 — Mystical is the look for a new player. Your saved look stays as it was."],
     simple: ["2.5.590 — New players get the Mystical look. Your saved look stays."],
