@@ -17,9 +17,19 @@
   var LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   var MAX = 32;
 
+  // BS 0.5.0: notes outside the C4 to C5 palette. PITCHES (the palette other apps draw) is not changed.
+  var PITCHES_EXT = [
+    { id: "G,", abc: "G,", tone: "G3", label: "Low G" },
+    { id: "A,", abc: "A,", tone: "A3", label: "Low A" },
+    { id: "B,", abc: "B,", tone: "B3", label: "Low B" },
+    { id: "d", abc: "d", tone: "D5", label: "Hi D" },
+    { id: "e", abc: "e", tone: "E5", label: "Hi E" },
+  ];
+
   function pitchById(id) {
     var i;
     for (i = 0; i < PITCHES.length; i++) if (PITCHES[i].id === id) return PITCHES[i];
+    for (i = 0; i < PITCHES_EXT.length; i++) if (PITCHES_EXT[i].id === id) return PITCHES_EXT[i];
     return null;
   }
 
@@ -39,7 +49,8 @@
   var ART = { staccato: 1, accent: 1, tenuto: 1 };
   var DYN = { pp: 1, p: 1, mf: 1, f: 1, ff: 1 };
   var KEYS = { C: "C", G: "G", D: "D", F: "F", Bb: "Bb" };
-  var SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11, c: 12 };
+  var SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11, c: 12, d: 14, e: 16, "G,": -5, "A,": -3, "B,": -1 };
+  var SEMI_EXT = { d: 1, e: 1, "G,": 1, "A,": 1, "B,": 1 };
   var KEY_ALT = { C: {}, G: { F: 1 }, D: { F: 1, C: 1 }, F: { B: -1 }, Bb: { B: -1, E: -1 } };
 
   function cellFrom(raw) {
@@ -70,6 +81,68 @@
     };
   }
 
+  // BS 0.5.0: real note lengths. A "rich" measure holds notes [{ p, d, tie, art, dyn }] where d counts eighths:
+  // 1 eighth, 2 quarter, 3 dotted quarter, 4 half, 6 dotted half, 8 whole. p null is a rest. A song may start with a pickup bar
+  // (song.pickup = eighths in that first bar). Songs without notes keep the old beat cells and the old output, byte for byte.
+  var LENGTHS = [1, 2, 3, 4, 6, 8];
+  var BAR_EIGHTHS = { "2/4": 4, "3/4": 6, "4/4": 8, "6/8": 6 };
+
+  function barEighths(meter) {
+    return BAR_EIGHTHS[meter] || 8;
+  }
+
+  function cleanLength(d) {
+    var n = Math.round(Number(d)) || 2;
+    var best = 1;
+    var i;
+    for (i = 0; i < LENGTHS.length; i++) if (LENGTHS[i] <= n) best = LENGTHS[i];
+    return best;
+  }
+
+  function cleanNotes(list) {
+    var out = [];
+    var i;
+    for (i = 0; i < list.length && out.length < 64; i++) {
+      var raw = list[i] || {};
+      var p = pitchById(raw.p) ? raw.p : null;
+      out.push({
+        p: p,
+        d: cleanLength(raw.d),
+        tie: !!raw.tie && !!p,
+        art: raw.art && ART[raw.art] ? raw.art : "",
+        dyn: raw.dyn && DYN[raw.dyn] ? raw.dyn : "",
+      });
+    }
+    return out;
+  }
+
+  function beatsToNotes(beats, meter) {
+    var unit = meter === "6/8" ? 1 : 2;
+    var out = [];
+    (beats || []).forEach(function (raw) {
+      var c = cellFrom(raw);
+      if (c.eighths && unit === 2) {
+        out.push({ p: c.eighths[0] || null, d: 1, tie: false, art: c.art, dyn: c.dyn });
+        out.push({ p: c.eighths[1] || null, d: 1, tie: false, art: "", dyn: "" });
+      } else {
+        out.push({ p: c.p || null, d: unit, tie: !!c.tie && !!c.p, art: c.art, dyn: c.dyn });
+      }
+    });
+    return out;
+  }
+
+  function richMeasure(label, notes, id, count) {
+    var m = measure(label, [], id, count);
+    m.notes = cleanNotes(notes);
+    return m;
+  }
+
+  function isRich(song) {
+    var i;
+    for (i = 0; song && song.measures && i < song.measures.length; i++) if (song.measures[i] && song.measures[i].notes) return true;
+    return false;
+  }
+
   function measure(label, beats, id, count) {
     var n = count || BEATS;
     var row = [];
@@ -97,13 +170,23 @@
     var i;
     for (i = 0; i < list.length && measures.length < MAX; i++) {
       var src = list[i] || {};
-      measures.push(measure(src.label || LETTERS[measures.length] || String(measures.length + 1), src.beats, src.id ? String(src.id).slice(0, 16) : "", count));
+      var label = src.label || LETTERS[measures.length] || String(measures.length + 1);
+      var mid = src.id ? String(src.id).slice(0, 16) : "";
+      if (Array.isArray(src.notes) && src.notes.length) measures.push(richMeasure(label, src.notes, mid, count));
+      else measures.push(measure(label, src.beats, mid, count));
     }
+    var rich = isRich({ measures: measures });
+    if (rich) {
+      measures.forEach(function (m) {
+        if (!m.notes) m.notes = cleanNotes(beatsToNotes(m.beats, meter));
+      });
+    }
+    var pickup = rich ? Math.max(0, Math.min(barEighths(meter) - 1, Math.round(Number(raw && raw.pickup)) || 0)) : 0;
     if (!measures.length) {
       measures.push(measure("A", ["C", null, "E", null], "start-a"));
     }
     var bpm = Math.max(60, Math.min(160, Math.round(Number(raw && (raw.bpm || raw.tempo)) || 96)));
-    return {
+    var out = {
       family: "kulibert.song",
       rev: 1,
       app: "bertyscore",
@@ -122,6 +205,8 @@
       why: cleanWhy(raw && raw.why),
       from: cleanFrom(raw && raw.from),
     };
+    if (pickup) out.pickup = pickup;
+    return out;
   }
 
   function stamp(song) {
@@ -194,7 +279,9 @@
 
   function freqOf(id, key) {
     if (!SEMI.hasOwnProperty(id)) return null;
-    var alt = (KEY_ALT[KEYS[key] ? key : "C"] || {})[id] || 0;
+    var table = KEY_ALT[KEYS[key] ? key : "C"] || {};
+    var alt = table[id] || 0;
+    if (!alt && SEMI_EXT[id]) alt = table[id.replace(",", "").toUpperCase()] || 0;
     return Math.round(261.63 * Math.pow(2, (SEMI[id] + alt) / 12) * 100) / 100;
   }
 
@@ -220,8 +307,97 @@
     return dyn + art + head + suf;
   }
 
+  function engraveRich(s) {
+    var barLen = barEighths(s.meter);
+    var unit = s.meter === "6/8" ? 1 : 2;
+    var pk = s.pickup || 0;
+    var flat = [];
+    s.measures.forEach(function (m, mi) {
+      m.notes.forEach(function (n, k) { flat.push({ mi: mi, k: k, n: n }); });
+    });
+    // tie chains: the first note holds the whole chain, the notes after it are heard as held
+    var tiedFrom = [];
+    var hold = [];
+    flat.forEach(function (it, i) {
+      tiedFrom[i] = i > 0 && !!flat[i - 1].n.tie && !!it.n.p && flat[i - 1].n.p === it.n.p;
+    });
+    flat.forEach(function (it, i) {
+      var d = it.n.d;
+      var j = i;
+      while (flat[j].n.tie && flat[j + 1] && tiedFrom[j + 1]) { d += flat[j + 1].n.d; j += 1; }
+      hold[i] = d;
+    });
+    var events = [];
+    var lines = [];
+    var line = [];
+    var at = 0;
+    var gi = 0;
+    var mi;
+    for (mi = 0; mi < s.measures.length; mi++) {
+      var notes = s.measures[mi].notes;
+      var isPickup = pk > 0 && mi === 0;
+      var pos = isPickup ? barLen - pk : 0;
+      var toks = [];
+      var k;
+      for (k = 0; k < notes.length; k++) {
+        var n = notes[k];
+        var p = pitchById(n.p);
+        var dyn = n.dyn ? "!" + n.dyn + "!" : "";
+        var art = n.art === "staccato" ? "." : n.art === "accent" ? "!accent!" : n.art === "tenuto" ? "!tenuto!" : "";
+        var text = dyn + art + (p ? p.abc : "z") + (n.d > 1 ? String(n.d) : "") + (tiedFrom[gi + 1] ? "-" : "");
+        toks.push({ text: text, d: n.d, pos: pos });
+        var tf = tiedFrom[gi];
+        events.push({
+          measure: mi,
+          beat: Math.floor(pos / unit),
+          pitch: p ? p.id : null,
+          tone: p ? p.tone : null,
+          label: p ? p.label : "",
+          sound: Boolean(p) && !tf,
+          tiedFrom: tf,
+          durBeats: tf ? 0 : hold[gi] / unit,
+          eighths: null,
+          art: n.art || "",
+          dyn: n.dyn || "",
+          chord: [],
+          freq: p ? freqOf(p.id, s.key) : null,
+          glyph: gi,
+          at: at,
+          dur: n.d,
+          bar: pk > 0 ? mi : mi + 1,
+          pos: pos,
+          rest: !p,
+        });
+        pos += n.d;
+        at += n.d;
+        gi += 1;
+      }
+      var text2 = "";
+      toks.forEach(function (t, i) {
+        var next = toks[i + 1];
+        text2 += t.text + (next && t.d === 1 && next.d === 1 && t.pos % 2 === 0 ? "" : (next ? " " : ""));
+      });
+      line.push(text2);
+      if (line.length === 4 || mi === s.measures.length - 1) {
+        lines.push(line.join(" | "));
+        line = [];
+      }
+    }
+    var abc = [
+      "X:1",
+      "T:" + (s.alias || "Score"),
+      "M:" + s.meter,
+      "L:1/8",
+      "Q:1/4=" + s.bpm,
+      "K:" + s.key,
+      lines.join(" |\n") + " |",
+    ].join("\n");
+    return { abc: abc, events: events };
+  }
+
   function engrave(song) {
     var s = normalize(song);
+    if (isRich(s)) return engraveRich(s);
     var events = [];
     var glyph = 0;
     var lines = [];
@@ -301,7 +477,230 @@
     return m.beats[bi];
   }
 
+  // BS 0.5.0: on a song with real note lengths, tapping a note changes its pitch and keeps its length. Length edits come later.
+  function setPitchAt(song, mi, bi, pitch) {
+    var m = song.measures[mi];
+    var s = normalize(song);
+    var unit = s.meter === "6/8" ? 1 : 2;
+    var pk = s.pickup || 0;
+    var pos = mi === 0 && pk > 0 ? barEighths(s.meter) - pk : 0;
+    var target = bi * unit;
+    var k;
+    for (k = 0; k < m.notes.length; k++) {
+      var d = cleanLength(m.notes[k].d);
+      if (target >= pos && target < pos + d) {
+        m.notes[k].p = pitchById(pitch) ? pitch : null;
+        if (!m.notes[k].p) m.notes[k].tie = false;
+        return stamp(song);
+      }
+      pos += d;
+    }
+    return song;
+  }
+
+  // BS 0.6.0: editing real lengths (songs with notes in their bars). Every edit keeps the bar it touches exactly as long as it was,
+  // so a full bar stays full. An edit that cannot fit changes nothing and says why: { ok: false, why, room }.
+  // Notes are named by their event number (the same number as the glyph on the staff and the cursor in the app).
+  var DOT_OF = { 2: 3, 3: 2, 4: 6, 6: 4 };
+  var BY_PITCH = PITCHES.concat(PITCHES_EXT).sort(function (a, b) { return SEMI[a.id] - SEMI[b.id]; });
+
+  function fail(why, room) {
+    var out = { ok: false, why: why };
+    if (room != null) out.room = room;
+    return out;
+  }
+
+  // Every bar of a real-length song holds notes (a bar added the old way is turned into rests), so event numbers match the staff.
+  function settle(song) {
+    if (!isRich(song)) return false;
+    song.measures.forEach(function (m) {
+      if (!m.notes) m.notes = cleanNotes(beatsToNotes(m.beats, song.meter));
+    });
+    return true;
+  }
+
+  function flatNotes(song) {
+    var out = [];
+    song.measures.forEach(function (m, mi) {
+      m.notes.forEach(function (n, k) { out.push({ mi: mi, k: k, n: n }); });
+    });
+    return out;
+  }
+
+  // Where note k starts in its bar, counted in eighths from the start of a full bar (a pickup bar starts part-way in).
+  function startIn(song, mi, k) {
+    var pk = Math.max(0, Math.round(Number(song.pickup)) || 0);
+    var pos = mi === 0 && pk > 0 ? barEighths(song.meter) - pk : 0;
+    var list = song.measures[mi].notes;
+    var i;
+    for (i = 0; i < k; i++) pos += list[i].d;
+    return pos;
+  }
+
+  // Cut a gap into rests a reader expects: bigger rests start on a beat, a half rest on beat 1 or 3 of 4/4, a whole rest on beat 1.
+  function restsFor(gap, pos, meter) {
+    var six = meter === "6/8";
+    var bar = barEighths(meter);
+    var order = six ? [6, 3, 1] : [8, 6, 4, 3, 2, 1];
+    var out = [];
+    while (gap > 0) {
+      var pick = 1;
+      var i;
+      for (i = 0; i < order.length; i++) {
+        var L = order[i];
+        if (L > gap) continue;
+        if (L > 1 && pos % (six ? 3 : 2) !== 0) continue;
+        if (L === 4 && pos % (bar === 8 ? 4 : 2) !== 0) continue;
+        if (L === 8 && pos % 8 !== 0) continue;
+        pick = L;
+        break;
+      }
+      out.push({ p: null, d: pick, tie: false, art: "", dyn: "" });
+      pos += pick;
+      gap -= pick;
+    }
+    return out;
+  }
+
+  // A tie only means something between two notes of the same pitch. Anything else is let go, so the score and the sound agree.
+  function fixTies(song) {
+    var flat = flatNotes(song);
+    flat.forEach(function (it, i) {
+      var next = flat[i + 1];
+      if (it.n.tie && (!it.n.p || !next || !next.n.p || next.n.p !== it.n.p)) it.n.tie = false;
+    });
+  }
+
+  function setLengthIdx(song, idx, d) {
+    if (!settle(song)) return fail("notRich");
+    d = Math.round(Number(d));
+    if (LENGTHS.indexOf(d) < 0) return fail("badLength");
+    var it = flatNotes(song)[idx];
+    if (!it) return fail("noNote");
+    var list = song.measures[it.mi].notes;
+    var cur = cleanLength(it.n.d);
+    if (d === cur) return { ok: true, index: idx, changed: false };
+    var start = startIn(song, it.mi, it.k);
+    if (d < cur) {
+      // shorter: what was left over joins the rests already after it, and they are cut into the fewest rests a reader expects
+      var free = cur - d;
+      var upto = it.k + 1;
+      while (upto < list.length && !list[upto].p) { free += list[upto].d; upto += 1; }
+      it.n.d = d;
+      list.splice.apply(list, [it.k + 1, upto - it.k - 1].concat(restsFor(free, start + d, song.meter)));
+    } else {
+      // longer: it may use the rests right after it in the same bar, never a note
+      var pool = 0;
+      var j = it.k + 1;
+      while (j < list.length && !list[j].p) { pool += list[j].d; j += 1; }
+      if (pool < d - cur) return fail("overflow", cur + pool);
+      it.n.d = d;
+      list.splice.apply(list, [it.k + 1, j - it.k - 1].concat(restsFor(pool - (d - cur), start + d, song.meter)));
+    }
+    fixTies(song);
+    stamp(song);
+    return { ok: true, index: idx, changed: true };
+  }
+
+  function toggleDotIdx(song, idx) {
+    if (!settle(song)) return fail("notRich");
+    var it = flatNotes(song)[idx];
+    if (!it) return fail("noNote");
+    var to = DOT_OF[cleanLength(it.n.d)];
+    if (!to) return fail("noDot");
+    return setLengthIdx(song, idx, to);
+  }
+
+  function setRestIdx(song, idx) {
+    if (!settle(song)) return fail("notRich");
+    var it = flatNotes(song)[idx];
+    if (!it) return fail("noNote");
+    var was = !!it.n.p;
+    it.n.p = null;
+    it.n.tie = false;
+    it.n.art = "";
+    it.n.dyn = "";
+    fixTies(song);
+    stamp(song);
+    return { ok: true, index: idx, changed: was };
+  }
+
+  // A new letter on a note keeps its length. A note tied to others changes together with them. A rest becomes a note.
+  function setPitchIdx(song, idx, pitch) {
+    if (!settle(song)) return fail("notRich");
+    if (!pitchById(pitch)) return fail("badPitch");
+    var flat = flatNotes(song);
+    var it = flat[idx];
+    if (!it) return fail("noNote");
+    var lo = idx;
+    var hi = idx;
+    var i;
+    if (it.n.p) {
+      while (lo > 0 && flat[lo - 1].n.tie && flat[lo - 1].n.p === it.n.p) lo -= 1;
+      while (flat[hi].n.tie && flat[hi + 1] && flat[hi + 1].n.p === it.n.p) hi += 1;
+    }
+    var changed = false;
+    for (i = lo; i <= hi; i++) {
+      if (flat[i].n.p !== pitch) changed = true;
+      flat[i].n.p = pitch;
+    }
+    stamp(song);
+    return { ok: true, index: idx, changed: changed };
+  }
+
+  // Up or down one letter. A rest has no letter to move.
+  function stepPitchIdx(song, idx, dir) {
+    if (!settle(song)) return fail("notRich");
+    var it = flatNotes(song)[idx];
+    if (!it) return fail("noNote");
+    if (!it.n.p) return fail("rest");
+    var at = -1;
+    var i;
+    for (i = 0; i < BY_PITCH.length; i++) if (BY_PITCH[i].id === it.n.p) at = i;
+    var to = at + (dir < 0 ? -1 : 1);
+    if (at < 0 || to < 0 || to >= BY_PITCH.length) return fail(dir < 0 ? "bottom" : "top");
+    return setPitchIdx(song, idx, BY_PITCH[to].id);
+  }
+
+  // The "Fast" pen: the note becomes an eighth with the letter you tapped, and the rest of its time is rests. Tap again on the next one.
+  function splitEighthIdx(song, idx, pitch) {
+    if (!settle(song)) return fail("notRich");
+    if (!pitchById(pitch)) return fail("badPitch");
+    var it = flatNotes(song)[idx];
+    if (!it) return fail("noNote");
+    var wasLong = cleanLength(it.n.d) > 1;
+    if (wasLong) {
+      var cut = setLengthIdx(song, idx, 1);
+      if (!cut.ok) return cut;
+    }
+    var set = setPitchIdx(song, idx, pitch);
+    if (!set.ok) return set;
+    return { ok: true, index: wasLong ? idx + 1 : idx, changed: true, advanced: wasLong };
+  }
+
+  // Tie this note to the next one. A rest after it becomes the same letter. Tie again to take it off.
+  function toggleTieIdx(song, idx) {
+    if (!settle(song)) return fail("notRich");
+    var flat = flatNotes(song);
+    var it = flat[idx];
+    if (!it) return fail("noNote");
+    if (!it.n.p) return fail("tieRest");
+    if (it.n.tie) {
+      it.n.tie = false;
+      stamp(song);
+      return { ok: true, index: idx, changed: true, tied: false };
+    }
+    var next = flat[idx + 1];
+    if (!next) return fail("tieEnd");
+    if (next.n.p && next.n.p !== it.n.p) return fail("tieDiff");
+    if (!next.n.p) next.n.p = it.n.p;
+    it.n.tie = true;
+    stamp(song);
+    return { ok: true, index: idx, changed: true, tied: true };
+  }
+
   function setBeat(song, mi, bi, pitch) {
+    if (song.measures[mi] && song.measures[mi].notes) return setPitchAt(song, mi, bi, pitch);
     var cell = cellAt(song, mi, bi);
     if (!cell) return song;
     cell.p = pitchById(pitch) ? pitch : null;
@@ -315,6 +714,7 @@
   }
 
   function setEighths(song, mi, bi, pitch) {
+    if (song.measures[mi] && song.measures[mi].notes) return song;
     var cell = cellAt(song, mi, bi);
     if (!cell || !pitchById(pitch)) return song;
     if (!cell.eighths) cell.eighths = [pitch, null];
@@ -327,6 +727,7 @@
   }
 
   function toggleTie(song, mi, bi) {
+    if (song.measures[mi] && song.measures[mi].notes) return song;
     var cell = cellAt(song, mi, bi);
     var m = song.measures[mi];
     if (!cell || !cell.p || cell.eighths) return song;
@@ -336,6 +737,7 @@
   }
 
   function setArt(song, mi, bi, art) {
+    if (song.measures[mi] && song.measures[mi].notes) return song;
     var cell = cellAt(song, mi, bi);
     if (!cell) return song;
     cell.art = cell.art === art ? "" : (ART[art] ? art : "");
@@ -343,6 +745,7 @@
   }
 
   function addChord(song, mi, bi, pitch) {
+    if (song.measures[mi] && song.measures[mi].notes) return song;
     var cell = cellAt(song, mi, bi);
     if (!cell || !cell.p || !pitchById(pitch) || pitch === cell.p) return song;
     var i = cell.chord.indexOf(pitch);
@@ -352,6 +755,7 @@
   }
 
   function setDyn(song, mi, bi, dyn) {
+    if (song.measures[mi] && song.measures[mi].notes) return song;
     var cell = cellAt(song, mi, bi);
     if (!cell || !DYN[dyn]) return song;
     cell.dyn = cell.dyn === dyn ? "" : dyn;
@@ -365,7 +769,7 @@
   }
 
   function setMeter(song, meter) {
-    if (!METERS[meter]) return song;
+    if (!METERS[meter] || isRich(song)) return song;
     var n = METERS[meter];
     song.meter = meter;
     song.measures.forEach(function (m) {
@@ -385,32 +789,78 @@
     return String(song.measures.length + 1);
   }
 
+  function sumOf(notes) {
+    var t = 0;
+    notes.forEach(function (n) { t += n.d; });
+    return t;
+  }
+
   function addMeasure(song) {
     if (song.measures.length >= MAX) return song;
+    if (settle(song)) {
+      // a song that ends one beat-run short (it has a pickup) becomes a full bar before the new one follows it
+      var last = song.measures[song.measures.length - 1];
+      var have = sumOf(last.notes);
+      var full = barEighths(song.meter);
+      if (have < full) last.notes = cleanNotes(last.notes.concat(restsFor(full - have, have, song.meter)));
+    }
     song.measures.push(measure(nextLabel(song), [], "", beatsFor(song.meter)));
+    if (settle(song)) fixTies(song);
     return stamp(song);
   }
 
   function duplicateMeasure(song, mi) {
     var m = song.measures[mi];
     if (!m || song.measures.length >= MAX) return song;
-    song.measures.splice(mi + 1, 0, measure(nextLabel(song), m.beats.slice(), "", m.beats.length));
+    if (m.notes && sumOf(m.notes) !== barEighths(song.meter)) return song; // a pickup or a short last bar cannot be copied
+    var copy = measure(nextLabel(song), m.beats.slice(), "", m.beats.length);
+    if (m.notes) copy.notes = cleanNotes(m.notes);
+    song.measures.splice(mi + 1, 0, copy);
+    if (settle(song)) fixTies(song);
     return stamp(song);
   }
 
+  // A song with a pickup keeps it: the pickup bar stays first.
+  function holdsPickup(song, mi) {
+    return isRich(song) && (Math.round(Number(song.pickup)) || 0) > 0 && mi === 0;
+  }
+
   function removeMeasure(song, mi) {
-    if (song.measures.length < 2) return song;
+    if (song.measures.length < 2 || holdsPickup(song, mi)) return song;
     song.measures.splice(mi, 1);
+    if (settle(song)) fixTies(song);
     return stamp(song);
   }
 
   function moveMeasure(song, mi, dir) {
     var next = mi + dir;
     if (next < 0 || next >= song.measures.length) return song;
+    if (holdsPickup(song, mi) || holdsPickup(song, next)) return song;
+    if (isRich(song) && (Math.round(Number(song.pickup)) || 0) > 0 && (mi === song.measures.length - 1 || next === song.measures.length - 1)) return song; // the short last bar stays last
     var item = song.measures[mi];
     song.measures[mi] = song.measures[next];
     song.measures[next] = item;
+    if (settle(song)) fixTies(song);
     return stamp(song);
+  }
+
+  // Does every bar add up? The pickup bar holds song.pickup eighths and the last bar holds what is left of a full bar.
+  function barsAdd(song) {
+    var s = normalize(song);
+    var len = barEighths(s.meter);
+    var pk = s.pickup || 0;
+    return s.measures.map(function (m, i) {
+      var notes = m.notes || beatsToNotes(m.beats, s.meter);
+      var sum = 0;
+      notes.forEach(function (n) { sum += n.d; });
+      var expect = len;
+      var ok;
+      if (pk > 0 && i === 0) expect = pk;
+      else if (pk > 0 && i === s.measures.length - 1) expect = len - pk;
+      ok = sum === expect;
+      if (pk > 0 && i > 0 && i === s.measures.length - 1 && sum === len) ok = true; // the last bar may also be a full one
+      return { bar: pk > 0 ? i : i + 1, eighths: sum, expect: expect, ok: ok };
+    });
   }
 
   function serialize(song) {
@@ -523,8 +973,12 @@
   }
 
   global.KulibertSong = {
-    CHIP: "BS 0.4.0",
+    CHIP: "BS 0.6.0",
     PITCHES: PITCHES,
+    PITCHES_EXT: PITCHES_EXT,
+    barEighths: barEighths,
+    barsAdd: barsAdd,
+    isRich: isRich,
     BEATS: BEATS,
     METERS: METERS,
     KEYS: ["C", "G", "D", "F", "Bb"],
@@ -537,6 +991,14 @@
     toAbc: toAbc,
     events: events,
     setBeat: setBeat,
+    setLengthIdx: setLengthIdx,
+    toggleDotIdx: toggleDotIdx,
+    setRestIdx: setRestIdx,
+    setPitchIdx: setPitchIdx,
+    stepPitchIdx: stepPitchIdx,
+    splitEighthIdx: splitEighthIdx,
+    toggleTieIdx: toggleTieIdx,
+    LENGTHS: LENGTHS,
     setEighths: setEighths,
     toggleTie: toggleTie,
     setArt: setArt,

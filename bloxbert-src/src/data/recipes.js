@@ -59,7 +59,7 @@ function mountFarmRecipes() {
   }
   for (const id of ['birchPlanks', 'pinePlanks', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple', 'techLine', 'techSwitch', 'techButton', 'circuitLens']) {
     if (RECIPES.some((r) => r.id === id)) continue
-    const row = packRecipes().find((r) => r.id === id)
+    const row = farm.find((r) => r.id === id) // 0065: packRecipes() was called once per id
     if (row) RECIPES.push(row)
   }
 }

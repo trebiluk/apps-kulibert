@@ -58,6 +58,9 @@ export function makeHub({ db, send, gen, now = Date.now }) {
     chunk: (cx, cz) => world.chunk(cx, cz),
     since: (s, n) => world.since(s, n),
     flush: () => world.flush(),
+    sim: (t = now()) => world.sim(t),
+    clock: () => world.clock(),
+    simAt: () => world.simAt(),
     who: h32,
   }
 }
