@@ -4427,6 +4427,54 @@ async function ungz(b64) {
   const ds = new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))
   return new Uint16Array(await new Response(ds).arrayBuffer())
 }
+// 2.5.595: synchronous gzip for the save on the way out (CompressionStream is async). Fixed-Huffman deflate with run-length matches
+// (distance 1 or 2: voxel ids are u16, so a run of one block id repeats every 2 bytes). Output is ordinary gzip.
+let crcT = null
+function crc32(u8) {
+  if (!crcT) {
+    crcT = new Uint32Array(256)
+    for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; crcT[n] = c >>> 0 }
+  }
+  let c = 0xffffffff
+  for (let i = 0; i < u8.length; i++) c = crcT[(c ^ u8[i]) & 255] ^ (c >>> 8)
+  return (c ^ 0xffffffff) >>> 0
+}
+const LBASE = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
+const LEXT = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0]
+function gzSync(u16) {
+  const src = new Uint8Array(u16.buffer, u16.byteOffset, u16.byteLength)
+  const out = [0x1f, 0x8b, 8, 0, 0, 0, 0, 0, 0, 255]
+  let acc = 0, nb = 0
+  const put = (v, n) => { acc |= v << nb; nb += n; while (nb >= 8) { out.push(acc & 255); acc >>>= 8; nb -= 8 } }
+  const huff = (code, n) => { let r = 0; for (let i = 0; i < n; i++) { r = (r << 1) | (code & 1); code >>= 1 } put(r, n) }
+  const sym = (s) => { if (s < 144) huff(0x30 + s, 8); else if (s < 256) huff(0x190 + s - 144, 9); else if (s < 280) huff(s - 256, 7); else huff(0xc0 + s - 280, 8) }
+  put(1, 1); put(1, 2) // last block, fixed Huffman
+  const n = src.length
+  let i = 0
+  while (i < n) {
+    let best = 0, dist = 0
+    for (const d of [2, 1]) {
+      if (i < d) continue
+      let L = 0
+      while (L < 258 && i + L < n && src[i + L] === src[i + L - d]) L++
+      if (L > best) { best = L; dist = d }
+    }
+    if (best >= 3) {
+      let c = LBASE.length - 1
+      while (LBASE[c] > best) c--
+      sym(257 + c); if (LEXT[c]) put(best - LBASE[c], LEXT[c])
+      huff(dist - 1, 5)
+      i += best
+    } else { sym(src[i]); i++ }
+  }
+  sym(256)
+  if (nb > 0) { out.push(acc & 255); acc = 0; nb = 0 }
+  const crc = crc32(src), len = src.length >>> 0
+  out.push(crc & 255, (crc >>> 8) & 255, (crc >>> 16) & 255, crc >>> 24, len & 255, (len >>> 8) & 255, (len >>> 16) & 255, len >>> 24)
+  const buf = Uint8Array.from(out)
+  let bin = ''; for (let k = 0; k < buf.length; k += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(k, k + 0x8000))
+  return btoa(bin)
+}
 let pondAid = false
 function waterWithin(r) {
   const sx = 8.5
@@ -4812,6 +4860,15 @@ async function snapshot() {
       for (const [k, v] of copies) chunks[k] = await gz(v)
     }
   }
+  return docWith(chunks)
+}
+// 2.5.595: the same doc, built at once (no await) for a tab that is closing.
+function snapshotNow() {
+  const chunks = {}
+  for (const [k, v] of copySaved()) chunks[k] = gzSync(v)
+  return docWith(chunks)
+}
+function docWith(chunks) {
   const p = noa.entities.getPosition(noa.playerEntity)
   const rules = Rules.dump()
   const effects = Effects.dump()
@@ -5889,7 +5946,13 @@ document.addEventListener('visibilitychange', () => {
 try { mountSyncChip() } catch (e) {}
   }
 })
-window.addEventListener('pagehide', () => { writeSpot(); flushSave() })
+// 2.5.595: a closing tab cannot finish save() (it awaits the lock, gzip and IndexedDB), so an edit made just before close was
+// lost. If there is unsaved work, build the doc at once and hand it to sync, which sends it with fetch keepalive.
+function pushOnHide() {
+  if (!(dirty && allowSave && !savePaused) || oldSwap || readOnlySave) return
+  try { maybePush(snapshotNow()) } catch (e) {}
+}
+window.addEventListener('pagehide', () => { writeSpot(); flushSave(); pushOnHide() })
 claimSaveLock()
 setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
