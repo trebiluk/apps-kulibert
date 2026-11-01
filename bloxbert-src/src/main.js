@@ -144,6 +144,22 @@ for (const [lang, row] of Object.entries(WN549)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+// 2.5.562 what's new. rw, ti, and fa-AF are machine drafts.
+const WN562 = {
+  en: { whatsNewBody: '2.5.562 — Menus, the Look list and the language list now show in your language. Arabic shows clearly in the language list.' },
+  simple: { whatsNewBody: '2.5.562 — More words in your language. Arabic is easy to see in the language list.' },
+  uk: { whatsNewBody: '2.5.562 — Меню, список «Вигляд» і список мов тепер твоєю мовою. Арабська добре видно у списку мов.' },
+  ru: { whatsNewBody: '2.5.562 — Меню, список «Вид» и список языков теперь на твоём языке. Арабский хорошо виден в списке языков.' },
+  es: { whatsNewBody: '2.5.562 — Los menús, la lista de Aspecto y la de idiomas ya están en tu idioma. El árabe se ve bien en la lista de idiomas.' },
+  ar: { whatsNewBody: '2.5.562 — القوائم وقائمة المظهر وقائمة اللغات أصبحت بلغتك. العربية تظهر بوضوح في قائمة اللغات.' },
+  'fa-AF': { whatsNewBody: '2.5.562 — منوها، فهرست نما و فهرست زبان‌ها حالا به زبان تو هستند. عربی در فهرست زبان‌ها واضح دیده می‌شود.' },
+  rw: { whatsNewBody: '2.5.562 — Menu, urutonde rw\'Isura n\'urutonde rw\'indimi ubu biri mu rurimi rwawe. Icyarabu kigaragara neza ku rutonde rw\'indimi.' },
+  ti: { whatsNewBody: '2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።' },
+}
+for (const [lang, row] of Object.entries(WN562)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
+}
 // 2.5.571 what's new (brief 0065). rw, ti, and fa-AF are machine drafts.
 const WN571 = {
   en: { whatsNewBody: '2.5.571 — Crafting only lists what you can really make: metal things show a lock until the smelter tier opens. Belt-fed benches now craft from any kind of planks, stone or wool.' },
@@ -750,7 +766,7 @@ function guardTest() {
 guardTest()
 const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
-if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
+if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy', true)
 
 function normLang(code) {
   const raw = String(code || '').trim()
@@ -1102,6 +1118,8 @@ function applyI18n() {
   for (const el of document.querySelectorAll('[data-i18n-label]')) { if (!sharedI18n(el)) el.setAttribute('aria-label', t(el.dataset.i18nLabel)) }
   for (const el of document.querySelectorAll('[data-i18n-title]')) { if (!sharedI18n(el)) el.setAttribute('title', t(el.dataset.i18nTitle)) }
   for (const el of document.querySelectorAll('[data-i18n-placeholder]')) { if (!sharedI18n(el)) el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)) } // 2.5.559: sign-in popup inputs
+  // Bertopia-only keys: data-bt, so the shared /shared/ painter never sees them.
+  for (const el of document.querySelectorAll('[data-bt]')) el.textContent = t(el.dataset.bt)
   for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
   for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
@@ -9213,8 +9231,8 @@ function mountGoalsHud() {
   const b = document.createElement('button')
   b.type = 'button'
   b.id = 'goals-hud'
-  b.dataset.i18n = 'goals'
-  b.dataset.i18nLabel = 'goals'
+  b.dataset.bt = 'goals'
+  b.dataset.btLabel = 'goals'
   b.textContent = t('goals')
   b.setAttribute('aria-label', t('goals'))
   const menu = document.getElementById('game-menu')
@@ -10760,7 +10778,7 @@ function paintTextOpts(g) {
 function paintPackLook(g) {
   const lookHead = document.createElement('p')
   lookHead.className = 'gnote ghead'
-  lookHead.textContent = 'Look'
+  lookHead.textContent = t('lookHead')
   const packRow = document.createElement('div')
   packRow.className = 'set-line'
   packRow.id = 'look-packs'
@@ -10808,8 +10826,9 @@ function paintPackLook(g) {
     }
     face.src = 'assets/packs/' + pack.id + '/atlas32.png'
     const word = document.createElement('span')
-    word.textContent = pack.name
-    b.setAttribute('aria-label', pack.name)
+    const packName = pack.name === 'Classic Topia' ? t('packClassic') : pack.name === 'Mystical Topia' ? t('packMystical') : pack.name
+    word.textContent = packName
+    b.setAttribute('aria-label', packName)
     b.append(icon, word)
     const choose = () => {
       if (b.dataset.busy === '1') return
@@ -14050,8 +14069,8 @@ function paintLangRow(g) {
     opt.type = 'button'
     opt.className = 'pill lang-opt'
     opt.setAttribute('role', 'option')
-    opt.lang = code === 'ar' ? 'ar' : code
-    opt.dir = code === 'ar' ? 'rtl' : 'ltr'
+    opt.lang = code
+    opt.dir = 'ltr'
     opt.dataset.lang = code
     const on = code === cur
     opt.setAttribute('aria-selected', on ? 'true' : 'false')
@@ -14063,6 +14082,8 @@ function paintLangRow(g) {
     mark.textContent = on ? '✓' : ''
     const word = document.createElement('span')
     word.className = 'lang-name'
+    word.lang = code
+    word.dir = code === 'ar' || code === 'fa-AF' ? 'rtl' : 'ltr'
     word.textContent = name
     opt.append(mark, word)
     opt.addEventListener('pointerdown', (e) => {

@@ -3942,6 +3942,23 @@ for (const [lang, row] of Object.entries(TEX550)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// 2.5.562 Look heading and pack names. fa-AF, rw, and ti are machine drafts.
+const LOOK562 = {
+  en: { lookHead: 'Look', packClassic: 'Classic Topia', packMystical: 'Mystical Topia' },
+  simple: { lookHead: 'Look', packClassic: 'Classic Topia', packMystical: 'Mystical Topia' },
+  uk: { lookHead: 'Вигляд', packClassic: 'Класична Топія', packMystical: 'Чарівна Топія' },
+  ru: { lookHead: 'Вид', packClassic: 'Классическая Топия', packMystical: 'Волшебная Топия' },
+  es: { lookHead: 'Aspecto', packClassic: 'Topia clásica', packMystical: 'Topia mística' },
+  ar: { lookHead: 'المظهر', packClassic: 'توبيا الكلاسيكية', packMystical: 'توبيا السحرية' },
+  'fa-AF': { lookHead: 'نما', packClassic: 'توپیای کلاسیک', packMystical: 'توپیای جادویی' },
+  rw: { lookHead: 'Isura', packClassic: 'Topia isanzwe', packMystical: 'Topia y\'amayobera' },
+  ti: { lookHead: 'መልክዕ', packClassic: 'ክላሲክ ቶፕያ', packMystical: 'ምስጢራዊ ቶፕያ' },
+}
+for (const [lang, row] of Object.entries(LOOK562)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 // 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
 const CRAFT065 = {
   en: { needsMetal: '🔒 Needs metal tier' },
