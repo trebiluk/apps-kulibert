@@ -887,6 +887,37 @@ export function createSession(api) {
     if (!item && !k) return document.createElement('span')
     return slotNode(k, item)
   }
+  // #87 r3: the 15-slot Bag is sized from the screen height. Tiles shrink (never below 56 px, so the tap target stays
+  // over 44 px) until every row fits the sheet; only when even that does not fit (a short sideways phone) does it scroll.
+  function fitBag(layout) {
+    const run = () => {
+      if (!layout || !layout.isConnected) return
+      const body = document.getElementById('sheet-body')
+      if (!body) return
+      delete layout.dataset.fit
+      layout.style.removeProperty('--bag-tile')
+      const tiles = [...layout.querySelectorAll('.wells .well')]
+      if (!tiles.length) return
+      const over = body.scrollHeight - body.clientHeight
+      if (over <= 1) return
+      const natural = tiles[0].getBoundingClientRect().height
+      const rows = new Set(tiles.map((el) => Math.round(el.getBoundingClientRect().top))).size || 1
+      const h = Math.max(56, Math.floor(natural - (over + 2) / rows))
+      layout.style.setProperty('--bag-tile', h + 'px')
+      layout.dataset.fit = '1'
+    }
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(run)
+  if (typeof setTimeout === 'function') setTimeout(run, 300) // again once fonts and icons have settled
+    else run()
+    if (!fitBag.bound && typeof addEventListener === 'function') {
+      fitBag.bound = true
+      addEventListener('resize', () => {
+        const sheet = document.getElementById('sheet')
+        const lay = sheet && !sheet.hidden && sheet.dataset.panel === 'inventory' ? sheet.querySelector('.bag-layout') : null
+        if (lay) fitBag(lay)
+      })
+    }
+  }
   function paintBag(g) {
     clearPocketDot()
     const title = document.getElementById('sheet-title')
@@ -1089,6 +1120,7 @@ export function createSession(api) {
     layout.append(main)
     if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
     g.append(layout)
+    fitBag(layout)
     function one(s, i) {
       const b = document.createElement('button')
       b.type = 'button'

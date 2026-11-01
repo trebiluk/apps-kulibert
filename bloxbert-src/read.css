@@ -3093,3 +3093,14 @@ html body .daily-mark-star { font-size: 20px; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   html body .daily-card, html body .daily-card * { transition: none !important; animation: none !important; }
 }
+
+/* #87 r3: the Bag fits the screen height (session.js fitBag sets --bag-tile when the 15 slots would overflow). */
+html body #sheet#sheet[data-panel=inventory] .bag-layout[data-fit="1"] .wells .well.gtile {
+  height: var(--bag-tile) !important;
+  min-height: var(--bag-tile) !important;
+  max-height: var(--bag-tile) !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  overflow: hidden !important;
+}
+html body #sheet#sheet[data-panel=inventory] .bag-layout[data-fit="1"] .wells { gap: 6px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
