@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var APP_VERSION = "1.8.1";
+  var APP_VERSION = "1.8.2";
   // 1.7.0: the touch level runs on a fixed 1/120 s physics step (physics.js).
   var PHYS = (typeof require === "function" && typeof module === "object" && module.exports) ? require("./physics.js") : globalThis.BBPHYS;
   var UPPER = 108;
