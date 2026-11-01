@@ -76,7 +76,7 @@ class App:
         opts = ttk.Frame(r, padding=(12, 4)); opts.pack(fill='x')
         self.vars = {}
         for k, text in (('auto_update', 'Update automatically before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS, kept up to date)"),
-                        ('start_on_open', 'Start the server when the launcher opens'), ('debug', 'Debug log (more detail in the log file)')):
+                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('debug', 'Debug log (more detail in the log file)')):
             v = tk.BooleanVar(value=self.settings[k]); self.vars[k] = v
             ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).pack(anchor='w')
 
@@ -167,7 +167,7 @@ class App:
 
     def do_start(self):
         if self.settings['auto_update']:
-            ok, msg = core.pull(); self.say('code: ' + msg, 'info' if ok else 'warn'); pulled = ok
+            ok, msg = core.pull(follow_release=self.settings['follow_release']); self.say('code: ' + msg, 'info' if ok else 'warn'); pulled = ok
             newer = core.repo_launcher_version()
             if newer and core.version_tuple(newer) > core.version_tuple(core.LAUNCHER_VERSION):
                 self.say('The launcher itself was updated (%s). Restarting it ...' % newer, 'warn')

@@ -55,7 +55,7 @@ class Logs(unittest.TestCase):
     def test_settings_survive_junk(self):
         (core.app_dir() / 'launcher.json').write_text('{"auto_update": "yes", "own_node": true, "evil": 1}')
         s = core.load_settings()
-        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False})
+        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True})
         core.save_settings({**s, 'debug': True}); self.assertTrue(core.load_settings()['debug'])
 
     def test_diagnostics_are_redacted(self):
@@ -142,17 +142,37 @@ class Code(unittest.TestCase):
         self.g(TMP, 'init', '-q', '--bare', '-b', 'main', str(up)); self.g(TMP, 'clone', '-q', str(up), str(a))
         (a / 'f.txt').write_text('1'); self.g(a, 'add', '-A'); self.g(a, 'commit', '-qm', 'one'); self.g(a, 'push', '-q', 'origin', 'HEAD:main')
         self.g(TMP, 'clone', '-q', str(up), str(b))
-        self.assertEqual(core.code_status(cwd=b)['behind'], 0); self.assertEqual(core.pull(cwd=b), (True, 'code is up to date'))
+        self.assertEqual(core.code_status(cwd=b)['behind'], 0); self.assertEqual(core.pull(cwd=b, follow_release=False), (True, 'code is up to date'))
         for i in (2, 3): (a / 'f.txt').write_text(str(i)); self.g(a, 'commit', '-qam', str(i))
         self.g(a, 'push', '-q', 'origin', 'HEAD:main')
         st = core.code_status(cwd=b); self.assertEqual((st['behind'], st['fetched']), (2, True))
         (b / 'f.txt').write_text('mine')
-        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('local changes (f.txt)', msg)
+        ok, msg = core.pull(cwd=b, follow_release=False); self.assertFalse(ok); self.assertIn('local changes (f.txt)', msg)
         self.g(b, 'checkout', '--', 'f.txt'); (b / 'new-untracked.txt').write_text('x')
-        self.assertEqual(core.pull(cwd=b), (True, 'pulled 2 updates')); self.assertEqual((b / 'f.txt').read_text(), '3')
+        self.assertEqual(core.pull(cwd=b, follow_release=False), (True, 'pulled 2 updates')); self.assertEqual((b / 'f.txt').read_text(), '3')
         self.g(b, 'checkout', '-q', '-b', 'local-only')
         self.assertIn('tracks no remote', core.code_status(cwd=b)['note'])
         self.assertFalse(core.code_status(cwd=TMP)['git'])
+
+    def test_follows_the_release_branch(self):
+        """Diego's case: on part 6's branch, part 7 lands on `bertopia-home`; one Update & start moves him there"""
+        up, a, b = TMP / 'rel.git', TMP / 'rel-a', TMP / 'rel-b'
+        self.g(TMP, 'init', '-q', '--bare', '-b', 'main', str(up)); self.g(TMP, 'clone', '-q', str(up), str(a))
+        (a / 'f.txt').write_text('p6'); self.g(a, 'add', '-A'); self.g(a, 'commit', '-qm', 'p6'); self.g(a, 'push', '-q', 'origin', 'HEAD:main')
+        self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/feat/p6')
+        self.g(TMP, 'clone', '-q', '-b', 'feat/p6', str(up), str(b))
+        (b / 'bertopia-home' ).mkdir(); (b / 'bertopia-home' / 'index.html').write_text('built')    # untracked: a game build
+        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('no bertopia-home branch', msg)        # release branch not there yet
+        (a / 'f.txt').write_text('p7'); self.g(a, 'commit', '-qam', 'p7'); self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/' + core.RELEASE_BRANCH)
+        ok, msg = core.pull(cwd=b)
+        self.assertTrue(ok, msg); self.assertIn('switched from feat/p6 to ' + core.RELEASE_BRANCH, msg)
+        self.assertEqual((b / 'f.txt').read_text(), 'p7'); self.assertTrue((b / 'bertopia-home' / 'index.html').exists())
+        self.assertEqual(self.g(b, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.strip(), core.RELEASE_BRANCH)
+        (a / 'f.txt').write_text('p8'); self.g(a, 'commit', '-qam', 'p8'); self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/' + core.RELEASE_BRANCH)
+        self.assertEqual(core.pull(cwd=b), (True, 'pulled 1 update')); self.assertEqual((b / 'f.txt').read_text(), 'p8')
+        self.g(b, 'checkout', '-q', 'feat/p6'); (b / 'f.txt').write_text('mine')
+        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('staying on feat/p6', msg)                 # local edits are never thrown away
+        self.assertEqual((b / 'f.txt').read_text(), 'mine'); self.assertEqual(self.g(b, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.strip(), 'feat/p6')
 
 
 class SelfUpdate(unittest.TestCase):
