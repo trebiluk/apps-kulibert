@@ -3919,3 +3919,20 @@ for (const [lang, row] of Object.entries(OLD592)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// Quality: Max (sees farthest). fa-AF, rw, and ti are machine drafts.
+const QMAX = {
+  en: { max: 'Max', maxHint: 'Sees farthest. For strong computers.' },
+  simple: { max: 'Max', maxHint: 'See very far. Needs a fast computer.' },
+  uk: { max: 'Максимум', maxHint: 'Найдальший огляд. Для потужних комп’ютерів.' },
+  ru: { max: 'Максимум', maxHint: 'Самый дальний обзор. Для мощных компьютеров.' },
+  es: { max: 'Máximo', maxHint: 'Se ve lo más lejos. Para computadoras potentes.' },
+  ar: { max: 'الأقصى', maxHint: 'أبعد رؤية. للحواسيب القوية.' },
+  'fa-AF': { max: 'بیشترین', maxHint: 'دورترین دید. برای کمپیوترهای قوی.' },
+  rw: { max: 'Ntarengwa', maxHint: 'Ureba kure cyane. Ni iya mudasobwa zikomeye.' },
+  ti: { max: 'ዝለዓለ', maxHint: 'ዝረሓቐ ምርኣይ። ንሓያላት ኮምፒተራት።' },
+}
+for (const [lang, row] of Object.entries(QMAX)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
