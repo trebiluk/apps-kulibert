@@ -168,10 +168,12 @@ async function enterPlay() {
 async function openWoodshop() {
   await page.evaluate(() => window.__smoke.plant(60, 5, 60, 69))
   await enterPlay()
-  const spot = await aimAndClick(60, 5, 60, 'left'); console.log('SPOT', JSON.stringify(spot))
-  await sleep(500)
-  const dbg = await page.evaluate(() => { const s = window.__smoke; return { v: s.voxel(60,5,60), aim: s.aim() } })
-  console.log('AIM', JSON.stringify(dbg))
+  // A tap can land before the camera settles (touch hit test returns nothing); a kid just taps again.
+  for (let i = 0; i < 3; i++) {
+    await aimAndClick(60, 5, 60, 'left')
+    await sleep(500)
+    if (await page.evaluate(() => { const s = document.getElementById('sheet'); return !!(s && !s.hidden && s.dataset.panel === 'woodshop') })) break
+  }
   return page.evaluate(() => {
     const sheet = document.getElementById('sheet')
     const open = sheet && !sheet.hidden

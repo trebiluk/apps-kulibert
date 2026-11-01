@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.596', date: '2026-11-01', lines: {
+    en: ["2.5.596 — Find Maker Pages: the Makers left 20 pages around the Verge. Six are out there now; found pages go in your Notebook. Lamps and rugs pick up faster, and a rug always comes up whole."],
+    simple: ["2.5.596 — Find Maker Pages. They go in your Notebook. Lamps and rugs pick up faster."],
+  } },
   { v: '2.5.595', date: '2026-10-31', lines: {
     en: ["2.5.595 — Closing the tab right after an edit still sends that edit to the school copy, once."],
     simple: ["2.5.595 — Close the tab after an edit. The edit still saves to school."],
