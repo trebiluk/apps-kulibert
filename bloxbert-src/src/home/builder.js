@@ -54,6 +54,15 @@ export function createBuilder({ api, toast }) {
     }
     root.append(list)
     const row = el('div', 'row'); row.append(btn('+ New plugin', () => { cur = fresh(); paintEditor() }, 'go')); root.append(row)
+    // the cloud library (part 12): every save here lands there on its own; Pull brings the other servers' edits in
+    const cloud = el('div', 'row cloud'); const note = el('span', 'dim', '')
+    api('library/status', {}).then((st) => {
+      if (!st || !st.on) { note.textContent = 'Cloud library: not linked (owner page → Plugin library).'; cloud.append(note); return }
+      note.textContent = 'Cloud library: linked' + (st.v ? ' (v' + st.v + ')' : '') + '. Saves go up on their own.'
+      cloud.append(btn('☁ Pull', async () => { const r = await api('library/pull', {}); if (r.error === 'conflict' && confirm('The library is older than this world\'s copy. Pull anyway?')) await api('library/pull', { force: true }); else if (r.error) alert('Pull failed: ' + r.error); await refresh(); paintList() }),
+        btn('☁ Push', async () => { const r = await api('library/push', {}); if (r.error === 'conflict' && confirm('The library changed since this world last synced. Overwrite it with this world\'s plugins?')) await api('library/push', { force: true }); else if (r.error) alert('Push failed: ' + r.error); await refresh(); paintList() }), note)
+    }).catch(() => { note.textContent = ''; })
+    root.append(cloud)
     root.append(el('h2', '', 'Examples'))
     const exl = el('div', 'list')
     for (const p of examples) { const b = btn(p.name + ' — ' + (p.about || ''), () => { cur = JSON.parse(JSON.stringify(p)); cur.id = p.id + '-' + Math.random().toString(36).slice(2, 5); cur.by = 'owner'; paintEditor() }); exl.append(b) }

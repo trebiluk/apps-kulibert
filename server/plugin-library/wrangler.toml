@@ -1,0 +1,16 @@
+name = "bertopia-plugin-library"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = false
+routes = [{ pattern = "plugins.kulibert.net", custom_domain = true }]   # the 18+ plugin library (part 12)
+
+[[durable_objects.bindings]]
+name = "LIBRARIES"
+class_name = "Library"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Library"]
+
+[observability]
+enabled = false

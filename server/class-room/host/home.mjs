@@ -60,9 +60,11 @@ const cfg = Object.assign({
   port: 8890, listen: '127.0.0.1', origins: [], tunnelHost: '', maxPlayers: DEFAULT_MAX_PLAYERS,
   world: null, ruleset: 'home-survival', usedCodes: [],
   guard: { on: true, breaks: 70, window: 10, undo: true },
-  access: { team: '', aud: '', email: '' },   // part 11: owner page through the tunnel, only behind Cloudflare Access (team name, app AUD, the owner's email)   // griefer guard (part 10): breaks per window (s) before an auto-kick (70 = faster than the best tool, under the Room's 10/s cap); a repeat is a ban; undo their last minute
+  access: { team: '', aud: '', email: '' },
+  library: { url: '', key: '' },   // part 12: the cloud plugin library (plugins.kulibert.net); the key lives here only   // part 11: owner page through the tunnel, only behind Cloudflare Access (team name, app AUD, the owner's email)   // griefer guard (part 10): breaks per window (s) before an auto-kick (70 = faster than the best tool, under the Room's 10/s cap); a repeat is a ban; undo their last minute
 }, loadCfg() || {})
 if (!cfg.access || typeof cfg.access !== 'object') cfg.access = { team: '', aud: '', email: '' }
+if (!cfg.library || typeof cfg.library !== 'object') cfg.library = { url: '', key: '' }
 if (!cfg.guard || typeof cfg.guard !== 'object') cfg.guard = { on: true, breaks: 70, window: 10, undo: true }
 if (flag('lan')) cfg.listen = '0.0.0.0'
 cfg.port = Number(arg('port', cfg.port))
@@ -116,7 +118,7 @@ function closeWorld({ forget = true } = {}) {
 }
 function openWorld(name) {
   if (!/^[A-Za-z0-9_-]{8,40}$/.test(name)) return { error: 'name' }
-  closeWorld(); cfg.world = name; saveCfg(); worldOf(name); loadPlugins()
+  closeWorld(); cfg.world = name; saveCfg(); worldOf(name); loadPlugins(); if (libOn()) libPull(true).then((r) => { if (r.error) feed('plugin library: ' + r.error + ' (using the world\'s own copy)') })
   return { ok: true, name }
 }
 function backupWorld(name) {
@@ -304,10 +306,74 @@ function putPlugin(p) {
   const clean = { id: p.id, name: String(p.name).trim(), by: String(p.by || 'owner').slice(0, 20), about: String(p.about || '').slice(0, 200), on: !!p.on, v: 1, rules: p.rules }
   if (i < 0) pluginList.push(clean); else pluginList[i] = clean
   savePlugins(); feed('plugin ' + (i < 0 ? 'added' : 'saved') + ': ' + clean.name + (clean.on ? ' (on)' : ' (off)'))
+  libAutoPush()
   return { ok: true, plugin: clean }
 }
+// ---------------------------------------------------------------- the cloud library (part 12) + files
+// Pull: the library's plugins become this world's (this world's on/off choice for a plugin it already had is kept:
+// "turn on/off per server"). Push: this world's plugins become the library's. Both carry the library's version so two
+// editors never silently overwrite each other; pull/push with force:true skip that check. Files: the same list as
+// plugins/<id>.json in the data folder, to work on in any editor and load back.
+const LIB_TIMEOUT = 8000
+const libOn = () => !!(cfg.library.url && /^lk_[0-9a-f]{32}$/.test(cfg.library.key || ''))
+async function libCall(method, p, body) {
+  if (!libOn()) return { error: 'no-library' }
+  try {
+    const r = await fetch(cfg.library.url.replace(/\/+$/, '') + p, { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + cfg.library.key }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(LIB_TIMEOUT) })
+    const j = await r.json().catch(() => ({ error: 'bad reply' }))
+    return r.ok ? j : { error: j.error || ('http ' + r.status), ...(j.v !== undefined ? { v: j.v } : {}) }
+  } catch (e) { return { error: 'unreachable' } }
+}
+let libV = null   // the library version this world last synced with
+async function libNew(url) {
+  const u = String(url || cfg.library.url || '').replace(/\/+$/, ''); if (!/^https?:\/\//.test(u)) return { error: 'url' }
+  let j; try { j = await (await fetch(u + '/lib/new', { method: 'POST', signal: AbortSignal.timeout(LIB_TIMEOUT) })).json() } catch (e) { return { error: 'unreachable' } }
+  if (!j || !j.key) return { error: j && j.error || 'no key' }
+  cfg.library = { url: u, key: j.key }; saveCfg(); libV = j.v; feed('owner made a new plugin library at ' + u)
+  return { ok: true, url: u }   // the key stays in home.json; the owner page never shows it again
+}
+async function libPull(force) {
+  if (!dbOf()) return { error: 'no world' }
+  const r = await libCall('GET', '/lib'); if (r.error) return r
+  if (!force && libV !== null && r.v < libV) return { error: 'conflict', v: r.v, mine: libV }
+  const mine = new Map(pluginList.map((p) => [p.id, p]))
+  pluginList = r.plugins.slice(0, PLUGIN_LIMITS.plugins).map((p) => ({ ...p, on: mine.has(p.id) ? !!mine.get(p.id).on : !!p.on }))
+  savePlugins(); libV = r.v; feed('plugins pulled from the library: ' + pluginList.length + ' (v' + r.v + ')')
+  return { ok: true, v: r.v, count: pluginList.length }
+}
+async function libPush(force) {
+  if (!dbOf()) return { error: 'no world' }
+  const r = await libCall('PUT', '/lib', { plugins: pluginList, ...(force || libV === null ? {} : { v: libV }) })
+  if (r.error) return r
+  libV = r.v; feed('plugins pushed to the library: ' + pluginList.length + ' (v' + r.v + ')')
+  return { ok: true, v: r.v, count: pluginList.length }
+}
+const PLUGIN_DIR = path.join(DATA, 'plugins')
+function filesSave() {
+  fs.mkdirSync(PLUGIN_DIR, { recursive: true })
+  for (const p of pluginList) fs.writeFileSync(path.join(PLUGIN_DIR, p.id + '.json'), JSON.stringify(p, null, 2))
+  feed('plugins saved as files: ' + pluginList.length + ' in ' + PLUGIN_DIR)
+  return { ok: true, count: pluginList.length, dir: PLUGIN_DIR }
+}
+function filesLoad() {
+  if (!dbOf()) return { error: 'no world' }
+  let names = []; try { names = fs.readdirSync(PLUGIN_DIR).filter((n) => /^[A-Za-z0-9-]{2,40}\.json$/.test(n)).sort() } catch (e) { return { error: 'no files', dir: PLUGIN_DIR } }
+  const bad = [], list = []
+  for (const n of names) {
+    let p; try { p = JSON.parse(fs.readFileSync(path.join(PLUGIN_DIR, n), 'utf8')) } catch (e) { bad.push(n + ': not JSON'); continue }
+    const why = p && typeof p === 'object' ? checkPlugin(p, 'adult') : 'not a plugin'
+    if (why) { bad.push(n + ': ' + why); continue }
+    if (p.id + '.json' !== n) { bad.push(n + ': the file name must be the plugin id'); continue }
+    if (list.length < PLUGIN_LIMITS.plugins) list.push({ id: p.id, name: String(p.name).trim(), by: String(p.by || 'owner').slice(0, 20), about: String(p.about || '').slice(0, 200), on: !!p.on, v: 1, rules: p.rules })
+  }
+  if (bad.length && !list.length) return { error: 'no good files', bad }
+  pluginList = list; savePlugins(); feed('plugins loaded from files: ' + list.length + (bad.length ? ' (' + bad.length + ' skipped)' : '')); libAutoPush()
+  return { ok: true, count: list.length, bad }
+}
 function togglePlugin(id, on) { const p = pluginList.find((x) => x.id === id); if (!p) return { error: 'no such plugin' }; p.on = !!on; savePlugins(); feed('plugin ' + (on ? 'on' : 'off') + ': ' + p.name); return { ok: true } }
-function dropPlugin(id) { const i = pluginList.findIndex((x) => x.id === id); if (i < 0) return { error: 'no such plugin' }; feed('plugin removed: ' + pluginList[i].name); pluginList.splice(i, 1); savePlugins(); return { ok: true } }
+function dropPlugin(id) { const i = pluginList.findIndex((x) => x.id === id); if (i < 0) return { error: 'no such plugin' }; feed('plugin removed: ' + pluginList[i].name); pluginList.splice(i, 1); savePlugins(); libAutoPush(); return { ok: true } }
+// an in-game edit lands in the library too (so every server the owner runs sees it on its next pull); on/off stays per server
+function libAutoPush() { if (libOn()) libPush(true).then((r) => { if (r.error) feed('plugin library push failed: ' + r.error) }) }
 // an event from the world -> run the plugins, carry out what they say. -> true when the event is denied
 function pluginEvent(ev) {
   if (!pluginList.length) return false
@@ -532,7 +598,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA, guard: cfg.guard, invites: door.invites, access: { on: access.on, team: cfg.access.team || '', email: cfg.access.email || '', remote: !isLocal(req) } })
+      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA, guard: cfg.guard, invites: door.invites, library: { on: libOn(), url: cfg.library.url || '', v: libV }, access: { on: access.on, team: cfg.access.team || '', email: cfg.access.email || '', remote: !isLocal(req) } })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())
@@ -543,6 +609,18 @@ async function handle(req, res) {
       case '/owner/rules': return json(res, 200, { ...rules.snapshot(), presets: Object.keys(PRESETS) })
       case '/owner/plugins': return json(res, 200, { list: pluginList, examples: EXAMPLES })
       case '/owner/plugin/put': { const r = putPlugin(raw && raw.plugin); return json(res, r.error ? 400 : 200, r) }
+      case '/owner/library/status': return json(res, 200, { on: libOn(), url: cfg.library.url || '', v: libV, dir: PLUGIN_DIR })
+      case '/owner/library/new': { if (!isLocal(req)) return json(res, 403, { error: 'host only' }); const r = await libNew(b.url); return json(res, r.error ? 400 : 200, r) }
+      case '/owner/library/link': { if (!isLocal(req)) return json(res, 403, { error: 'host only' })   // the key is typed on the host PC only
+        const u = String(b.url || '').replace(/\/+$/, ''), k = String(b.key || '').trim()
+        if (b.off === true) { cfg.library = { url: '', key: '' }; saveCfg(); libV = null; feed('owner unlinked the plugin library'); return json(res, 200, { ok: true, on: false }) }
+        if (!/^https?:\/\//.test(u) || !/^lk_[0-9a-f]{32}$/.test(k)) return json(res, 400, { error: 'url and key' })
+        cfg.library = { url: u, key: k }; saveCfg(); libV = null; const r = await libCall('GET', '/lib'); if (r.error) { cfg.library = { url: '', key: '' }; saveCfg(); return json(res, 400, r) }
+        feed('owner linked the plugin library at ' + u + ' (' + r.plugins.length + ' plugins)'); return json(res, 200, { ok: true, on: true, count: r.plugins.length, v: r.v }) }
+      case '/owner/library/pull': { const r = await libPull(b.force === true); return json(res, r.error ? (r.error === 'conflict' ? 409 : 400) : 200, r) }
+      case '/owner/library/push': { const r = await libPush(b.force === true); return json(res, r.error ? (r.error === 'conflict' ? 409 : 400) : 200, r) }
+      case '/owner/plugins/files/save': return json(res, 200, filesSave())
+      case '/owner/plugins/files/load': { const r = filesLoad(); return json(res, r.error ? 400 : 200, r) }
       case '/owner/plugin/on': return json(res, 200, togglePlugin(String(b.id || ''), !!b.on))
       case '/owner/plugin/drop': return json(res, 200, dropPlugin(String(b.id || '')))
       case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws', world: cfg.world, name: String(b.name || 'Owner').slice(0, 20) }) : json(res, 400, { error: 'no session' }) }

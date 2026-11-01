@@ -305,7 +305,9 @@ class Server:
 # ---------------------------------------------------------------- logs and diagnostics
 SECRET_RE = [(re.compile(r'([?&]k=)[0-9a-f]{8,}'), r'\1[hidden]'),                       # owner-page key
              (re.compile(r'\b[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4} ?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}\b'), '[code hidden]'),   # session codes
-             (re.compile(r'("?(?:token|ticket|secret|pin|password)"?\s*[:=]\s*"?)[^"\s,}]+', re.I), r'\1[hidden]')]
+             (re.compile(r'("?(?:token|ticket|secret|pin|password|key)"?\s*[:=]\s*"?)[^"\s,}]+', re.I), r'\1[hidden]'),
+             (re.compile(r'\blk_[0-9a-f]{32}\b'), 'lk_[hidden]'),                                 # plugin library keys (part 12)
+             (re.compile(r'\bADLT-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}\b'), 'ADLT-[hidden]')]   # invite keys (part 10)
 
 def redact(text):
     for rx, rep in SECRET_RE: text = rx.sub(rep, text)

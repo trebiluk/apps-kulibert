@@ -37,6 +37,10 @@ class Versions(unittest.TestCase):
 
 
 class Logs(unittest.TestCase):
+    def test_redact_keys(self):
+        t = core.redact('library lk_0123456789abcdef0123456789abcdef invite ADLT-7K2M-QX9D-4HJB "key":"lk_x"')
+        self.assertNotIn('0123456789abcdef', t); self.assertNotIn('7K2M', t); self.assertIn('lk_[hidden]', t); self.assertIn('ADLT-[hidden]', t)
+
     def test_redact(self):
         t = core.redact('owner page: http://localhost:8890/owner?k=c3e94dafefb00251d87659083505c400 code SR36 GN58 / SR36GN58 {"token":"abc"} pin=246810 game 2.5.596 world gibberland')
         for secret in ('c3e94daf', 'SR36', 'GN58', 'abc', '246810'): self.assertNotIn(secret, t)

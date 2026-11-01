@@ -195,6 +195,16 @@ Setup (once, in Zero Trust → Access → Applications): a self-hosted app for `
 policy allowing your email, and the app's **AUD tag** (Additional settings). Owner page → *Owner page from anywhere*
 (host PC only to change): team name, AUD, email → saved in `home.json` as `access`. Zero Trust Free covers it.
 
+## Plugin library (cloud) and plugin files
+Your plugins live in each world's file. Linked to the **cloud library** (`server/plugin-library`, a Worker at
+`plugins.kulibert.net`; one library per key `lk_…`, made from the owner page with **New library** or linked with
+**Link** + a key, host PC only; the key stays in `home.json`), every world you open pulls the library's plugins
+(each world keeps its own on/off — "turn on/off per server"), every Save & run or Remove in the Code builder goes up,
+and **Pull / Push** are on the owner page and in the builder. The library is versioned: a push older than the library
+is refused (409) and asks before overwriting. Files: **Save as files** writes `Documents\Bertopia Home\plugins\<id>.json`
+(one per plugin, the id is the file name); edit them in any editor; **Load files** validates and loads them (bad ones
+are listed and skipped) and pushes. The library holds plugins only: no names, no emails; the Worker never logs keys.
+
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
 address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
@@ -213,8 +223,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check`: the command menu and typed commands; the plugin engine (tiers, limits,
-  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate;
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files);
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
