@@ -16,6 +16,30 @@ Data (worlds, backups, `home.json`) lives in `Documents/Bertopia Home` unless `-
 Needs Node 22 or newer. The host itself installs nothing and needs no internet. Without a home build, `/` shows a
 plain join page instead of the game.
 
+## The launcher window (Windows; recommended)
+Double-click **Bertopia Launcher.pyw** at the repo root (needs Python 3 with tkinter, which the python.org and
+Chocolatey installers include). Or make an .exe once: double-click `server\class-room\launcher\build-exe.cmd`. It builds
+`dist\Bertopia Launcher.exe` (PyInstaller, for your user only) and puts a **Bertopia Launcher** shortcut on your desktop.
+
+- **Status:** Node, code (branch, updates ready, local changes), game build, server.
+- **Update & start** does everything:
+  1. pulls the code (fast-forward, only with no local changes);
+  2. makes sure Node can run the host. It uses your Node when it is 22.13+, or *Bertopia's own Node*: the official
+     Node 22 LTS, SHA-256 checked, kept in `%LOCALAPPDATA%\Bertopia` and refreshed to the newest 22 LTS on each
+     update. Your own Node is never touched;
+  3. installs and builds the game only when something changed;
+  4. starts the server and opens the owner page.
+- **Stop server** asks the server to stop cleanly, so the world is saved. Closing the window asks first.
+- **Updates the launcher itself.** The launcher is in the repo, so a pull brings new launcher code. The .exe runs the
+  repo's newer launcher (`LAUNCHER_VERSION`) without a rebuild, and falls back to its own copy if that one does not
+  load. When an update changes the launcher, it restarts itself and carries on.
+- **Logs and debugging:**
+  - **Open logs**: one file a day in `%LOCALAPPDATA%\Bertopia\logs`, the last 10 kept;
+  - **Debug log** adds detail;
+  - **Copy diagnostics** puts a report on the clipboard (versions, Node found, git state, build plan, the last log
+    lines). Owner keys, session codes, tokens and PINs are hidden in the logs and the report;
+  - crashes are written to the log.
+
 ## One-click start from a repo checkout
 Double-click **Start Bertopia Home.cmd** at the repo root (or `npm run start:home` here, or
 `node server/class-room/tools/home-launch.mjs`). It does the setup for you, each time:

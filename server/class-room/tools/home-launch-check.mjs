@@ -83,9 +83,10 @@ eq(nodePlan('22.4.0').exe === null && nodePlan('20.11.1').exe === null && /too o
   fs.writeFileSync(path.join(R, 'bloxbert-src', '.gitignore'), 'node_modules/\n')
   const g = (...a) => spawnSync('git', a, { cwd: R, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } })
   g('init', '-q'); g('add', '-A'); g('commit', '-qm', 'base')
-  fs.mkdirSync(BIN); fs.writeFileSync(path.join(BIN, 'npm'), `#!/bin/sh\necho "$@" >> "${CALLS}"\nif [ "$1" = ci ]; then mkdir -p node_modules; fi\nif [ "$1" = run ]; then mkdir -p ../bertopia-home && echo '<meta name="bertopia-home" content="1">' > ../bertopia-home/index.html; fi\n`, { mode: 0o755 })
+  fs.mkdirSync(BIN); const FAKE = path.join(BIN, 'npm-cli.js')   // a stand-in npm, run by this Node like the real npm-cli.js
+  fs.writeFileSync(FAKE, `const fs = require('fs'); const a = process.argv.slice(2); fs.appendFileSync(${JSON.stringify(CALLS)}, a.join(' ') + '\\n'); if (a[0] === 'ci') fs.mkdirSync('node_modules', { recursive: true }); if (a[0] === 'run') { fs.mkdirSync('../bertopia-home', { recursive: true }); fs.writeFileSync('../bertopia-home/index.html', '<meta name="bertopia-home" content="1">') }`)
   const once = async (port) => {
-    const c = spawn(process.execPath, [path.join(R, 'server/class-room/tools/home-launch.mjs'), '--', '--port', String(port), '--data', path.join(TMP, 'd' + port)], { env: { ...process.env, PATH: BIN + path.delimiter + process.env.PATH }, stdio: ['ignore', 'pipe', 'pipe'] })
+    const c = spawn(process.execPath, [path.join(R, 'server/class-room/tools/home-launch.mjs'), '--', '--port', String(port), '--data', path.join(TMP, 'd' + port)], { env: { ...process.env, BT_NPM_CLI: FAKE }, stdio: ['ignore', 'pipe', 'pipe'] })
     let out = ''; c.stdout.on('data', (d) => (out += d)); c.stderr.on('data', (d) => (out += d))
     for (let i = 0; i < 160 && !/\[home\] Bertopia personal host/.test(out); i++) await sleep(50)
     try { const H = 'http://127.0.0.1:' + port, key = /k=([0-9a-f]+)/.exec(out)[1]; const tok = (await (await fetch(H + '/owner/pin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key, pin: '246810' }) })).json()).token; await fetch(H + '/owner/stop', { method: 'POST', headers: { 'x-owner': tok } }) } catch (e) { out += '\nSTOP FAILED ' + e.message }
@@ -104,7 +105,11 @@ eq(nodePlan('22.4.0').exe === null && nodePlan('20.11.1').exe === null && /too o
 // the double-click file
 {
   const cmd = fs.readFileSync(path.resolve(path.dirname(LAUNCH), '..', '..', '..', 'Start Bertopia Home.cmd'), 'latin1')
-  eq(cmd.includes('\r\n') && !/[^\r]\n/.test(cmd) && /node "%~dp0server\\class-room\\tools\\home-launch\.mjs" %\*/.test(cmd) && /if errorlevel 1 pause/.test(cmd) && /nodejs\.org/.test(cmd), 'Start Bertopia Home.cmd: CRLF, runs the launcher with the options passed through, stays open on errors, says where to get Node')
+  eq(cmd.includes('\r\n') && !/[^\r]\n/.test(cmd) && /"%NODE%" "%~dp0server\\class-room\\tools\\home-launch\.mjs" %\*/.test(cmd) && /if errorlevel 1 pause/.test(cmd) && /nodejs\.org/.test(cmd), 'Start Bertopia Home.cmd: CRLF, runs the launcher with the options passed through, stays open on errors, says where to get Node')
+  eq(/where node/.test(cmd) && /%ProgramFiles%\\nodejs\\node\.exe/.test(cmd) && /%LOCALAPPDATA%\\Programs\\nodejs/.test(cmd) && /NVM_SYMLINK/.test(cmd) && /get-node\.ps1/.test(cmd) && /Bertopia\\node-v22\*/.test(cmd), 'Start Bertopia Home.cmd: finds Node on PATH, in the usual install folders (a just-updated Node that Explorer has not picked up yet), or fetches it')
+  eq(!cmd.split('\r\n').some((l) => /^\s*(if|for)\b.*\(\s*$/i.test(l) || /^\s*\)/.test(l)), 'Start Bertopia Home.cmd: no multi-line ( ) blocks — a folder name with brackets cannot break it')
+  const ps = fs.readFileSync(path.join(path.dirname(LAUNCH), 'get-node.ps1'), 'utf8')
+  eq(/Tls12/.test(ps) && /v22\.\*/.test(ps) && /\$_\.lts/.test(ps) && /win-x64-zip/.test(ps) && /SHASUMS256\.txt/.test(ps) && /Get-FileHash -Algorithm SHA256/.test(ps) && /\$want -ne \$have\) \{ Remove-Item \$zip -Force; throw/.test(ps) && ps.indexOf('Expand-Archive') > ps.indexOf('Get-FileHash') && /LOCALAPPDATA/.test(ps), 'get-node.ps1: official Node 22 LTS win-x64, SHA-256 checked BEFORE unpacking, a mismatch deletes the download; per-user folder only')
   const ga = fs.readFileSync(path.resolve(path.dirname(LAUNCH), '..', '..', '..', '.gitattributes'), 'utf8')
   eq(/^\*\.cmd text eol=crlf$/m.test(ga), '.gitattributes keeps .cmd files CRLF on every checkout')
 }

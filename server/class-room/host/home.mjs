@@ -413,6 +413,14 @@ function shutdown() {
   server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 1500)
 }
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown)
+// A launcher that started us (the Python launcher) asks for a clean stop by writing "stop" on our stdin: Windows has
+// no SIGTERM, and a hard kill would skip the final save. Only when it asked for this channel.
+if (process.env.BT_STDIN_STOP === '1') {
+  let buf = ''
+  process.stdin.setEncoding('utf8')
+  process.stdin.on('data', (d) => { buf += d; if (/(^|\n)stop\s*\n/.test(buf)) shutdown() })
+  process.stdin.on('end', () => shutdown())   // the launcher went away: stop cleanly rather than run headless
+}
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   server.listen(cfg.port, cfg.listen, () => {

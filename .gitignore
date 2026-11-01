@@ -7,3 +7,7 @@ voltduel-src/node_modules
 /dist/
 # the personal host's home game build (bloxbert-src: npm run build:home): made on each machine, never committed
 /bertopia-home/
+
+# Python launcher caches
+__pycache__/
+*.pyc

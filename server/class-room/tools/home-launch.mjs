@@ -39,7 +39,13 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex')
 // git with HTTPS for GitHub ssh:// deps, for this process tree only (git 2.31+ reads GIT_CONFIG_COUNT)
 export const GIT_ENV = { GIT_CONFIG_COUNT: '2', GIT_CONFIG_KEY_0: 'url.https://github.com/.insteadOf', GIT_CONFIG_VALUE_0: 'ssh://git@github.com/', GIT_CONFIG_KEY_1: 'url.https://github.com/.insteadOf', GIT_CONFIG_VALUE_1: 'git@github.com:' }
 const git = (args, cwd = REPO) => { const r = spawnSync('git', args, { cwd, encoding: 'utf8' }); return r.status === 0 ? r.stdout.trim() : null }
-const run = (cmd, args, cwd, env) => { if (DRY) { say('(dry run) would run: ' + [cmd, ...args].join(' ') + '  in ' + path.relative(REPO, cwd || REPO)); return 0 } const r = spawnSync(cmd, args, { cwd, stdio: 'inherit', env: { ...process.env, ...env }, shell: WIN }); return r.status === null ? 1 : r.status }
+// Children get THIS Node first on PATH (npm scripts call `node`), whatever the PATH key is called (Windows: "Path").
+const pathKey = Object.keys(process.env).find((k) => k.toUpperCase() === 'PATH') || 'PATH'
+const childEnv = (extra) => ({ ...process.env, [pathKey]: path.dirname(process.execPath) + path.delimiter + (process.env[pathKey] || ''), ...extra })
+const run = (cmd, args, cwd, env, shell = false) => { if (DRY) { say('(dry run) would run: ' + [cmd, ...args].join(' ') + '  in ' + path.relative(REPO, cwd || REPO)); return 0 } const r = spawnSync(cmd, args, { cwd, stdio: 'inherit', env: childEnv(env), shell }); return r.status === null ? 1 : r.status }
+// npm: the copy that ships with this Node (so it works when Node is not on PATH, e.g. the fetched one), else PATH's npm
+export const NPM_CLI = process.env.BT_NPM_CLI || [path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js'), path.join(path.dirname(process.execPath), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js')].find((f) => fs.existsSync(f)) || null
+const npm = (args, cwd, env) => (NPM_CLI ? run(process.execPath, [NPM_CLI, ...args], cwd, env) : run('npm', args, cwd, env, WIN))
 
 // ---- 2. which Node runs the host -> { exe, flags } or { error }
 export function nodePlan(version = process.versions.node) {
@@ -79,7 +85,13 @@ export function installPlan({ src = SRC, lockstamp = LOCKSTAMP } = {}) {
   return was === want ? { need: false, why: 'packages up to date', want } : { need: true, why: 'package-lock.json changed', want }
 }
 
+// --status: what would happen, as JSON (the Python launcher shows it), then exit
+function status() {
+  const n = nodePlan(process.env.BT_FAKE_NODE || process.versions.node), b = buildPlan(), i = installPlan()
+  return { node: { version: process.versions.node, ok: !!n.exe, flags: n.flags, why: n.why }, install: { need: i.need, why: i.why }, build: { need: b.need, why: b.why, built: fs.existsSync(path.join(GAME, 'index.html')) }, hostArgs: ['--no-warnings', ...n.flags, '--import', './host/register.mjs', 'host/home.mjs'], hostCwd: ROOM }
+}
 async function main() {
+  if (has('status')) { console.log(JSON.stringify(status())); return 0 }
   say('Bertopia Home (adults 18+): getting everything ready')
   // 1. update
   if (has('no-update')) say('update: skipped (--no-update)')
@@ -105,14 +117,15 @@ async function main() {
     const ip = installPlan()
     if (ip.need) {
       say('install: ' + ip.why + ' (npm ci, about a minute)')
-      if (run('npm', ['ci', '--no-audit', '--no-fund'], SRC, GIT_ENV) !== 0) { say('install failed: the lines above say why. Check your internet connection and run this again.'); return 1 }
+      if (npm(['ci', '--no-audit', '--no-fund'], SRC, GIT_ENV) !== 0) { say('install failed: the lines above say why. Check your internet connection and run this again.'); return 1 }
       if (!DRY) fs.writeFileSync(LOCKSTAMP, ip.want)
     } else say('install: ' + ip.why)
     say('build: making the home game (about a minute)')
-    if (run('npm', ['run', 'build:home'], SRC) !== 0) { say('build failed: the lines above say why. The server was not started.'); return 1 }
+    if (npm(['run', 'build:home'], SRC) !== 0) { say('build failed: the lines above say why. The server was not started.'); return 1 }
     if (!DRY && bp.fp) fs.writeFileSync(STAMP, bp.fp)
   }
-  // 5. start
+  // 5. start (--no-start: stop here; the Python launcher starts and stops the host itself)
+  if (has('no-start')) { say('ready: install and build are done'); return 0 }
   const args = ['--no-warnings', ...node.flags, '--import', './host/register.mjs', 'host/home.mjs', '--open', ...pass]
   if (DRY) { say('(dry run) would start: ' + [node.exe, ...args].join(' ') + '  in server/class-room'); return 0 }
   say('starting the server. Keep this window open while people play; "Stop server" on the owner page ends it.')
