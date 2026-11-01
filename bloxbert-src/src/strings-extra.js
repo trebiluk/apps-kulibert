@@ -4008,6 +4008,22 @@ for (const [lang, row] of Object.entries(LOOT582)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// Holo Hand part 1: heading over the controls in Settings. fa-AF, rw, and ti are machine drafts.
+const HOLO1 = {
+  en: { controlsHead: 'Controls', holoKeyHint: '{key}: show or hide the hand hologram.' },
+  simple: { controlsHead: 'Controls', holoKeyHint: 'Press {key} to show or hide the hand.' },
+  uk: { controlsHead: 'Керування', holoKeyHint: '{key}: показати або сховати голограму руки.' },
+  ru: { controlsHead: 'Управление', holoKeyHint: '{key}: показать или скрыть голограмму руки.' },
+  es: { controlsHead: 'Controles', holoKeyHint: '{key}: mostrar u ocultar el holograma de la mano.' },
+  ar: { controlsHead: 'التحكم', holoKeyHint: '{key}: أظهر أو أخفِ صورة اليد المجسّمة.' },
+  'fa-AF': { controlsHead: 'کنترول‌ها', holoKeyHint: '{key}: هولوگرام دست را نشان بده یا پنهان کن.' },
+  rw: { controlsHead: 'Igenzura', holoKeyHint: '{key}: erekana cyangwa uhishe ishusho y\'ukuboko.' },
+  ti: { controlsHead: 'መቆጻጸሪ', holoKeyHint: '{key}: ሆሎግራም ኢድ ኣርኢ ወይ ሕባእ።' },
+}
+for (const [lang, row] of Object.entries(HOLO1)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
 // 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
 const CRAFT065 = {
   en: { needsMetal: '🔒 Needs metal tier' },

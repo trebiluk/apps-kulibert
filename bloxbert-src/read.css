@@ -3387,7 +3387,6 @@ html body header.top #day-clock { min-height: 44px !important; }
   }
   html body #chip-lane > :not(#update-chip) { display: none !important; }
   html body.touch #pick-chip { bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important; right: calc(16px + 120px + 8px) !important; }
-=======
 /* 2.5.572: oven belt slot. Inside the panel, icon + words, 16px text, no motion, no glow. */
 html body #sheet[data-panel="station"] .belt-fed {
   display: flex;
@@ -3483,3 +3482,61 @@ html[data-kp-motion="less"] #sheet[data-panel="station"] .belt-fed * {
   animation: none !important;
   transition: none !important;
 }
+=======
+/* Holo Hand part 1: the held item as a small flat amber hologram, lower corner on the main-hand side.
+   holo.js picks a spot clear of the hotbar and every button; no spot means no hologram. */
+html body #holo-hand {
+  position: fixed;
+  z-index: 4;
+  width: 88px;
+  height: 88px;
+  pointer-events: none;
+  display: none;
+  contain: layout paint;
+}
+html body #holo-hand[data-on="1"][data-room="1"] { display: block; }
+html body #holo-hand .holo-bob {
+  width: 100%;
+  height: 100%;
+  animation: holo-bob 3s ease-in-out infinite;
+  will-change: transform;
+}
+html body #holo-hand[data-side="left"] .holo-pic { transform: scaleX(-1); }
+html body #holo-hand[data-side="left"] .holo-palm svg { transform: scaleX(-1); }
+html body #holo-hand .holo-pic,
+html body #holo-hand .holo-palm,
+html body #holo-hand .holo-palm svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+html body #holo-hand .holo-palm { display: none; opacity: 0.55; }
+html body #holo-hand[data-state="empty"] .holo-pic { display: none; }
+html body #holo-hand[data-state="empty"] .holo-palm { display: block; }
+@keyframes holo-bob {
+  0%, 100% { transform: translateY(3px); }
+  50% { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #holo-hand .holo-bob { animation: none; }
+}
+html[data-kp-motion="less"] body #holo-hand .holo-bob { animation: none; }
+html body #holo-note {
+  position: fixed;
+  z-index: 30;
+  bottom: 120px;
+  right: 8px;
+  max-width: 60vw;
+  padding: 6px 10px;
+  border: 2px solid #8A5A22;
+  border-radius: 8px;
+  background: #1F262E;
+  color: #EEF3F7;
+  font: 700 15px/1.2 system-ui, sans-serif;
+  pointer-events: none;
+}
+html body #holo-note[data-side="left"] { right: auto; left: 8px; }
+html body #holo-note[hidden] { display: none; }
+html body .hand-pair { display: inline-flex; gap: 6px; }
+html body .hand-pair .pill { min-width: 64px; min-height: 44px; }

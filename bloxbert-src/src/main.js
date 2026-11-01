@@ -157,6 +157,19 @@ const WN562 = {
   ti: { whatsNewBody: '2.5.562 — ዝርዝራት፡ ዝርዝር መልክዕን ዝርዝር ቋንቋታትን ሕጂ ብቋንቋኻ እዮም። ዓረብኛ ኣብ ዝርዝር ቋንቋታት ብንጹር ይርአ።' },
 }
 for (const [lang, row] of Object.entries(WN562)) {
+// 2.5.564 what's new. rw, ti, and fa-AF are machine drafts.
+const WN564 = {
+  en: { whatsNewBody: '2.5.564 — Your hand is now a small amber hologram of what you hold. Settings has Controls, with Left and Right buttons for your main hand.' },
+  simple: { whatsNewBody: '2.5.564 — Your hand is a small amber picture of what you hold. Settings: pick Left or Right hand.' },
+  uk: { whatsNewBody: '2.5.564 — Рука тепер маленька бурштинова голограма того, що ти тримаєш. У Налаштуваннях є Керування з кнопками Ліва і Права для головної руки.' },
+  ru: { whatsNewBody: '2.5.564 — Рука теперь маленькая янтарная голограмма того, что ты держишь. В Настройках есть Управление с кнопками Левая и Правая для главной руки.' },
+  es: { whatsNewBody: '2.5.564 — Tu mano ahora es un pequeño holograma ámbar de lo que sostienes. Ajustes tiene Controles, con botones Izquierda y Derecha para tu mano principal.' },
+  ar: { whatsNewBody: '2.5.564 — يدك الآن صورة مجسمة كهرمانية صغيرة لما تحمله. في الإعدادات قسم التحكم، مع زري يسار ويمين ليدك الرئيسية.' },
+  'fa-AF': { whatsNewBody: '2.5.564 — دست شما حالا یک هولوگرام کوچک کهربایی از چیزی است که در دست دارید. در تنظیمات بخش کنترول‌ها با دکمه‌های چپ و راست برای دست اصلی هست.' },
+  rw: { whatsNewBody: '2.5.564 — Ukuboko kwawe ubu ni ishusho ntoya y\'umuhondo y\'icyo ufashe. Igenamiterere rifite Igenzura, n\'utubuto Ibumoso n\'Iburyo ku kuboko kwawe nyamukuru.' },
+  ti: { whatsNewBody: '2.5.564 — ኢድካ ሕጂ ናይቲ ሒዝካዮ ዘለኻ ንእሽቶ ቡናዊ ሆሎግራም እያ። ኣብ ቅጥዕታት መቆጻጸሪ ኣሎ፡ ንቀንዲ ኢድካ ጸጋምን የማንን መጠወቒታት።' },
+}
+for (const [lang, row] of Object.entries(WN564)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
@@ -332,6 +345,8 @@ Badges.onBadge((id) => { // 2.5.472: pay 10 bronze cogs once
 CrewBadges.setHost({ t: t, markDirty: function () { dirty = true }, laneAdd: laneAdd, capLane: capLane })
 import { rollWildBush, lootLines } from './loot-tables.js'
 import { createHands } from './hands.js'
+import { wildBushLoot } from './drops.js'
+import { createHolo } from './holo.js' // Holo Hand part 1: replaces the first-person hand (hands.js is no longer mounted)
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
@@ -3599,6 +3614,7 @@ function syncGlasses() {
   if (glassesMesh) glassesMesh.setEnabled(on)
 }
 let hands = null
+let holo = null
 function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
   if (!hold && !leftPress && !(look && look.pt === 'touch')) { window.__ghostBreaks = (window.__ghostBreaks || 0) + 1; return false }
@@ -10200,6 +10216,13 @@ document.addEventListener('keydown', (e) => {
       return
     }
   }
+  if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && $('sheet') && $('sheet').hidden) { // Holo Hand: H shows or hides the hand hologram
+    e.preventDefault()
+    showHand = !showHand
+    applyLook()
+    if (holo) holo.announce(t('showHand') + ': ' + (showHand ? t('switchOn') : t('switchOff')))
+    return
+  }
   if (e.key === 'v' || e.key === 'V') { // 2.5.441: V toggles the camera view
     if (!e.ctrlKey && !e.metaKey && !e.repeat && $('sheet') && $('sheet').hidden) {
       e.preventDefault()
@@ -11293,6 +11316,13 @@ function paintPackLook(g) {
     g.insertBefore(hint, g.firstChild)
   }
 }
+function holoKeyNote() { // Holo Hand: the H key does the same as the Show hand switch
+  const p = document.createElement('p')
+  p.className = 'gnote'
+  p.dataset.holoKey = '1'
+  p.textContent = t('holoKeyHint').replace('{key}', 'H')
+  return p
+}
 function paintLook(g) {
   const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')
   const range = document.createElement('input')
@@ -11307,14 +11337,40 @@ function paintLook(g) {
     if (sens._val) sens._val.textContent = lookSens.toFixed(1) + '×'
     applyLook()
   })
+  const ctlHead = document.createElement('p')
+  ctlHead.className = 'gnote ghead'
+  ctlHead.textContent = t('controlsHead')
+  // Holo Hand part 1: Main hand is two buttons, Left and Right; the chosen one is pressed. Saved with the look prefs.
   const side = lookLine(t('mainHand'), null, 'hand')
-  const sideBtn = document.createElement('button')
-  sideBtn.type = 'button'
-  sideBtn.className = 'pill on'
-  const paintSide = () => { sideBtn.textContent = mainHand === 'left' ? t('left') : t('right') }
+  const sidePair = document.createElement('span')
+  sidePair.className = 'hand-pair'
+  sidePair.setAttribute('role', 'group')
+  sidePair.setAttribute('aria-label', t('mainHand'))
+  const sideBtns = ['left', 'right'].map((v) => {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'pill'
+    b.dataset.hand = v
+    b.textContent = t(v)
+    b.addEventListener('click', () => {
+      if (mainHand === v) return
+      mainHand = v
+      applyLook()
+      paintSide()
+      if (holo) holo.announce(t('mainHand') + ': ' + t(v))
+    })
+    return b
+  })
+  const paintSide = () => {
+    for (const b of sideBtns) {
+      const on = b.dataset.hand === mainHand
+      b.classList.toggle('on', on)
+      b.setAttribute('aria-pressed', String(on))
+    }
+  }
   paintSide()
-  sideBtn.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
-  side.append(sideBtn)
+  sidePair.append(...sideBtns)
+  side.append(sidePair)
   const cam = lookLine(t('cameraView'), null, 'camera')
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
@@ -11375,12 +11431,14 @@ function paintLook(g) {
   paintClothes()
   clothes.append(clothesLab, clothesGroup)
   g.append(
+    ctlHead,
     sens,
     range,
     lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert', 'invert'),
     lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }, '', 'wide'),
     lookPill(t('autoJump'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
     lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
+    ...(TOUCH_UI ? [] : [holoKeyNote()]),
     side,
     cam,
     clothes,
@@ -12801,21 +12859,14 @@ function poseBerty(dt) {
   heldMat.diffuseColor.set(c[0], c[1], c[2])
   heldMat.emissiveColor.set(c[0] * 0.45, c[1] * 0.45, c[2] * 0.45)
 }
-hands = createHands({
-  scene,
-  camera: noa.rendering.camera,
-  noa,
+// Holo Hand part 1: a flat amber hologram of the held item replaces the first-person hand. Same show / hide rules as before.
+holo = createHolo({
   held: fillHeld,
   wandMode: () => wandMode,
   side: () => mainHand,
   show: () => showHand,
   hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open') || noa.camera.zoomDistance > 0.5,
   wet: () => underWater,
-  lite: () => quality === 'lite' || REDUCE,
-  speed: () => {
-    const b = noa.ents.getPhysicsBody(noa.playerEntity)
-    return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
-  },
 })
 paintBertySuit()
 let beltAt = 0
@@ -13020,6 +13071,7 @@ noa.on('beforeRender', (dt) => {
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
+  if (holo) holo.update()
   poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
@@ -13451,6 +13503,7 @@ if (!__BLOX_STUDENT__) {
     hold: (st, v) => { noa.inputs.state[st] = v },
     get climb() { return autoClimb },
     hand() {
+      if (holo) return { show: showHand, side: mainHand, ...holo.info() } // Holo Hand part 1
       return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
     },
     handSwing(kind) { pokeHand(kind) },
