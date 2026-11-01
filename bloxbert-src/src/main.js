@@ -199,6 +199,7 @@ import { dayCap } from './econ/cogs.js'
 import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
 import { createLore } from './lore/pages.js'
+import { createWater } from './water.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -3525,6 +3526,7 @@ function breakAt(x, y, z, hold) {
   const wheatBack = id === WILD_WHEAT && session && session.mode === 'survival' && wildWheatCell(x, y, z)
   if (session && !session.onBreak(x, y, z, id)) return false
   const gone = edit(x, y, z, 0)
+  if (gone && waterFlow) waterFlow.opened(x, y, z) // water runs into a hole dug beside it (water.js)
   if (gone && wild) forage.remove(x, y, z)
   if (gone && wheatBack) {
     forage.add(x, y, z, 'wheat', Date.now())
@@ -6432,6 +6434,7 @@ let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
 let loreRef = null // Maker Pages (lore/pages.js); mobs fire before learn exists
+const waterFlow = createWater({ getVoxel: (x, y, z) => getVoxel(x, y, z), setVoxel: (x, y, z, v) => setVoxel(x, y, z, v), WATER, reduce: () => REDUCE, after: () => saveSoon() })
 let lastPointer = null
 let calmRepaint = false
 calm = createCalm({
@@ -12005,7 +12008,8 @@ function ghostCell() {
     // 2.5.550: blocked cells still get a ghost, drawn red with a reason (was hidden, so red never showed).
     if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return Object.assign({}, spot, { why: 'standing' })
   }
-  if (getVoxel(spot.x, spot.y, spot.z)) return Object.assign({}, spot, { why: 'noRoom' })
+  // same rule as placeBlock: water, tufts and wheat are fine to build into (was a red 'No room' over water)
+  if (!placeableCell(getVoxel(spot.x, spot.y, spot.z))) return Object.assign({}, spot, { why: 'noRoom' })
   return spot
 }
 function ghostBedScale(on) {
@@ -13531,6 +13535,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     close() { if (panels) panels.close() },
     arm() { armResume = 0; playLockWanted = false; lockSwallowUntil = 0 },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
+    dig(x, y, z) { return breakAt(x, y, z, true) }, // the same break the hold-to-break loop calls (water-check)
+    waterBusy() { return waterFlow.busy() },
     chop(x, y, z) {
       const id = getVoxel(x, y, z)
       const ok = session.onBreak(x, y, z, id)
