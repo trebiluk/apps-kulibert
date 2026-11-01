@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Master Control">
+  <rect width="128" height="128" rx="28" fill="#0b1220"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#F4C95D" stroke-width="3"/>
+  <rect x="24" y="30" width="80" height="50" rx="6" fill="#16233a" stroke="#F4C95D" stroke-width="4"/>
+  <path d="M34 66l12-14 10 8 14-18 12 10" fill="none" stroke="#5BD39A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="38" cy="98" r="7" fill="#5BD39A"/>
+  <circle cx="64" cy="98" r="7" fill="#F4C95D"/>
+  <circle cx="90" cy="98" r="7" fill="#E5534B"/>
+</svg>
