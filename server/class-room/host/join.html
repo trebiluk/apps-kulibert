@@ -40,23 +40,27 @@ const MSG = { code: 'That session code is not right.', ended: 'There is no sessi
   full: 'The server is full right now.', 'no-owner': 'The owner is not in the world yet. Ask them to press "Play as owner" first.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', version: 'Your game needs an update to join this server.', network: 'Could not reach that server address.' }
 $('addr').value = location.origin
 try { if (sessionStorage.getItem('bt-home-adults') === '1') $('adults').checked = true } catch (e) {}
-let ws = null, q = 0
+let ws = null, q = 0, here = null
+// Text only: replies come from whatever address was typed, so nothing from them is parsed as HTML.
+const say = (...parts) => { const o = $('out'); o.textContent = ''; parts.forEach((x, i) => { if (i) o.append(document.createElement('br')); const s = document.createElement('span'); if (x[0]) s.className = x[0]; s.textContent = x[1]; o.append(s) }) }
+const msgOf = (e) => (Object.prototype.hasOwnProperty.call(MSG, e) ? MSG[e] : String(e))
+if (/^https?:$/.test(location.protocol) && !$('addr').value) $('addr').value = location.origin
 $('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click() })
 $('go').addEventListener('click', async () => {
   const base = $('addr').value.trim().replace(/\/+$/, '')
   const body = { code: $('code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('name').value, password: $('pw').value || undefined, adults: $('adults').checked }
-  if (!/^https?:\/\//.test(base)) { $('out').innerHTML = '<span class="bad">The address starts with http:// or https://.</span>'; return }
+  if (!/^https?:\/\//.test(base)) { say(['bad', 'The address starts with http:// or https://.']); return }
   $('out').textContent = 'Asking the host…'
   let j
   try { j = await (await fetch(base + '/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json() } catch (e) { j = { error: 'network' } }
-  if (j.error) { if (j.error === 'password') $('pw-row').hidden = false; $('out').innerHTML = '<span class="bad">' + (MSG[j.error] || j.error) + (j.wait ? ' (' + j.wait + ' s)' : '') + '</span>'; return }
+  if (j.error) { if (j.error === 'password') $('pw-row').hidden = false; say(['bad', msgOf(j.error) + (j.wait ? ' (' + Number(j.wait) + ' s)' : '')]); return }
   try { sessionStorage.setItem('bt-home-adults', '1') } catch (e) {}
   if (ws) try { ws.close() } catch (e) {}
   ws = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  ws.onopen = () => { $('out').innerHTML = '<span class="ok">Connected to “' + j.world + '” as ' + j.name + '. Rules: ' + j.ruleset.replace('home-', '') + '.</span><br><span>The game itself connects in part 2; keep this page open and the host sees you online.</span>'
+  ws.onopen = () => { say(['ok', 'Connected to “' + j.world + '” as ' + j.name + '. Rules: ' + String(j.ruleset).replace('home-', '') + '.'], ['', 'Keep this page open; the host sees you online.']); here = null
     const beat = setInterval(() => { if (ws.readyState !== 1) return clearInterval(beat); ws.send(JSON.stringify({ v: 0, t: 'p', q: q++, x: 8.5, y: 64, z: 1.5, r: 0, f: 0 })) }, 4000) }
-  ws.onmessage = (m) => { try { const f = JSON.parse(m.data); if (f.t === 'hello' && f.players.length) $('out').innerHTML += '<br><span class="ok">Here now: ' + f.players.map((p) => p.a).join(', ') + '</span>' } catch (e) {} }
-  ws.onclose = (e) => { $('out').innerHTML = '<span class="bad">Disconnected' + (e.reason ? ' (' + e.reason + ')' : '') + '.</span>' }
+  ws.onmessage = (m) => { try { const f = JSON.parse(m.data); if (f.t === 'hello' && f.players.length) { if (!here) { $('out').append(document.createElement('br')); here = document.createElement('span'); here.className = 'ok'; $('out').append(here) } here.textContent = 'Here now: ' + f.players.map((p) => p.a).join(', ') } } catch (e) {} }
+  ws.onclose = (e) => say(['bad', 'Disconnected' + (e.reason ? ' (' + e.reason + ')' : '') + '.'])
 })
 </script>
 </body>

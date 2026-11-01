@@ -89,6 +89,8 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
     return null
   }
   const touch = () => { if (session) session.lastSeen = now() }
+  // limiter entries that have been quiet for an hour are forgotten (bounded memory under a code-guessing bot)
+  const forget = (map) => { const t = now(); for (const [k, e] of map) if (!(e.until && t < e.until) && t - e.bucket.at > 60 * 60 * 1000) map.delete(k) }
 
   const door = {
     ipTag,
@@ -116,7 +118,7 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
     setCfg(cfg) { if (session && RULESETS.includes(cfg)) session.cfg = cfg },
     info() { return session ? { id: session.id, startedAt: session.startedAt, lastSeen: session.lastSeen, cfg: session.cfg, world: session.world, password: !!session.password, rotated: session.rotated, players: names.size } : null },
     // Called by the host on its own clock: a session with nobody in it for 24 h ends.
-    sweep(playersOnline) { if (session && playersOnline === 0 && now() - session.lastSeen > IDLE_END_MS) { door.end(); return true } return false },
+    sweep(playersOnline) { forget(joinBuckets); forget(pinBuckets); if (session && playersOnline === 0 && now() - session.lastSeen > IDLE_END_MS) { door.end(); return true } return false },
     noteActivity: touch,
 
     // Player join: everything in docs §3 step 3, in that order. ip is the raw address (hashed here, never stored).
