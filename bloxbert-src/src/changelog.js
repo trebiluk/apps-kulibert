@@ -1,4 +1,8 @@
 export const CHANGELOG = [
+  { v: '2.5.597', date: '2026-11-01', lines: {
+    en: ["2.5.597 — Water runs into holes you dig beside it. The block painter can put one block back to your pack's look. Panels on phones are easier to close."],
+    simple: ["2.5.597 — Water fills holes next to it. Put one painted block back. Phone panels close easier."],
+  } },
   { v: '2.5.596', date: '2026-11-01', lines: {
     en: ["2.5.596 — Find Maker Pages: the Makers left 20 pages around the Verge. Six are out there now; found pages go in your Notebook. Lamps and rugs pick up faster, and a rug always comes up whole."],
     simple: ["2.5.596 — Find Maker Pages. They go in your Notebook. Lamps and rugs pick up faster."],
