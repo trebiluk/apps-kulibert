@@ -3919,3 +3919,38 @@ for (const [lang, row] of Object.entries(OLD592)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// Maker Pages L01 (BERTOPIA-LORE §6, BERTOPIA-LORE-EVAL). "Makers" and "Verge" stay as names in every language.
+// fa-AF, rw, and ti are machine drafts.
+const LORE596 = {
+  en: { makerPages: 'Maker Pages {n}/{total}', mpFound: 'Maker Page {n} found! Read it in your Notebook.', mpNone: 'No pages yet. The Makers left 20 of them around the Verge.', mpLabel: 'Page {n}:', mp1: 'We came to the Verge to learn how everything works.', mp4: 'The robots in the salt were our helpers. We gave them simple instructions.', mp10: "Our robots forgot their instructions after we left. They aren't angry. They're lost." },
+  simple: { makerPages: 'Maker Pages {n}/{total}', mpFound: 'You found Maker Page {n}! It is in your Notebook.', mpNone: 'No pages yet. Look for 20 of them.', mpLabel: 'Page {n}:', mp1: 'We came here to learn how things work.', mp4: 'The robots were our helpers. We gave them easy jobs.', mp10: 'Our robots forgot their jobs when we left. They are not angry. They are lost.' },
+  uk: { makerPages: 'Сторінки Творців {n}/{total}', mpFound: 'Знайдено сторінку Творців {n}! Читай її в Зошиті.', mpNone: 'Ще немає сторінок. Творці залишили 20 по всьому Верж.', mpLabel: 'Сторінка {n}:', mp1: 'Ми прийшли у Верж, щоб дізнатися, як усе працює.', mp4: 'Роботи в солі були нашими помічниками. Ми давали їм прості інструкції.', mp10: 'Наші роботи забули свої інструкції, коли ми пішли. Вони не злі. Вони загубилися.' },
+  ru: { makerPages: 'Страницы Создателей {n}/{total}', mpFound: 'Найдена страница Создателей {n}! Читай её в Тетради.', mpNone: 'Пока нет страниц. Создатели оставили 20 по всему Верж.', mpLabel: 'Страница {n}:', mp1: 'Мы пришли в Верж, чтобы узнать, как всё устроено.', mp4: 'Роботы в соли были нашими помощниками. Мы давали им простые инструкции.', mp10: 'Наши роботы забыли свои инструкции, когда мы ушли. Они не злые. Они потерялись.' },
+  es: { makerPages: 'Páginas Maker {n}/{total}', mpFound: '¡Encontraste la Página Maker {n}! Léela en tu Cuaderno.', mpNone: 'Aún no hay páginas. Los Makers dejaron 20 por el Verge.', mpLabel: 'Página {n}:', mp1: 'Vinimos al Verge para aprender cómo funciona todo.', mp4: 'Los robots de la sal eran nuestros ayudantes. Les dimos instrucciones simples.', mp10: 'Nuestros robots olvidaron sus instrucciones cuando nos fuimos. No están enojados. Están perdidos.' },
+  ar: { makerPages: 'صفحات الصانعين {n}/{total}', mpFound: 'وجدت صفحة الصانعين رقم {n}! اقرأها في دفترك.', mpNone: 'لا صفحات بعد. ترك الصانعون عشرين صفحة في أنحاء فيرج.', mpLabel: 'الصفحة {n}:', mp1: 'جئنا إلى فيرج لنتعلم كيف يعمل كل شيء.', mp4: 'كانت الروبوتات في الملح مساعدينا. أعطيناها تعليمات بسيطة.', mp10: 'نسيت روبوتاتنا تعليماتها بعد أن غادرنا. هي ليست غاضبة. هي تائهة.' },
+  'fa-AF': { makerPages: 'صفحه‌های سازندگان {n}/{total}', mpFound: 'صفحه سازندگان شماره {n} پیدا شد! آن را در کتابچه‌ات بخوان.', mpNone: 'هنوز صفحه‌ای نیست. سازندگان بیست صفحه در سراسر ورج گذاشتند.', mpLabel: 'صفحه {n}:', mp1: 'ما به ورج آمدیم تا یاد بگیریم همه چیز چطور کار می‌کند.', mp4: 'روبات‌های داخل نمک کمک‌کنندگان ما بودند. ما به آن‌ها دستورهای ساده دادیم.', mp10: 'روبات‌های ما پس از رفتن ما دستورهای خود را فراموش کردند. آن‌ها قهر نیستند. آن‌ها گم شده‌اند.' },
+  rw: { makerPages: 'Impapuro za Makers {n}/{total}', mpFound: 'Wabonye Urupapuro rwa Makers {n}! Urusome mu Gitabo cyawe.', mpNone: 'Nta mpapuro uraabona. Makers basize 20 hirya no hino muri Verge.', mpLabel: 'Urupapuro {n}:', mp1: 'Twaje muri Verge kwiga uko ibintu byose bikora.', mp4: 'Robo zo mu munyu zari abafasha bacu. Twazihaye amabwiriza yoroshye.', mp10: 'Robo zacu zibagiwe amabwiriza yazo tumaze kugenda. Ntizirakaye. Zarazimiye.' },
+  ti: { makerPages: 'ገጻት ፈጠርቲ {n}/{total}', mpFound: 'ገጽ ፈጠርቲ {n} ተረኺቡ! ኣብ መጽሓፍካ ኣንብቦ።', mpNone: 'ገና ገጽ የለን። ፈጠርቲ ኣብ መላእ ቨርጅ 20 ገጻት ገዲፎም።', mpLabel: 'ገጽ {n}:', mp1: 'ኩሉ ነገር ብኸመይ ከም ዝሰርሕ ክንመሃር ናብ ቨርጅ መጺእና።', mp4: 'እቶም ኣብ ጨው ዝነበሩ ሮቦታት ሓገዝቲ ነይሮም። ቀሊል መምርሒታት ሂብናዮም።', mp10: 'ሮቦታትና ምስ ከድና መምርሒታቶም ረሲዖም። ኣይሓረቑን። ጠፊኦም እዮም።' },
+}
+for (const [lang, row] of Object.entries(LORE596)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Maker Pages L02: pages 2, 3 and 5. "Clock Gate" stays a name in Latin-script packs. fa-AF, rw, and ti are machine drafts.
+const LORE597 = {
+  en: { mp2: 'The Clock Gate keeps time for the whole land. Keep it turning.', mp3: 'Light bends in the glass trees. We used it to send messages.', mp5: 'The tide is a clock too. Everything here is a machine if you look.' },
+  simple: { mp2: 'The Clock Gate keeps time here. Keep it turning.', mp3: 'Light bends in glass trees. We used it to send messages.', mp5: 'The tide is a clock too. Look close: everything here is a machine.' },
+  uk: { mp2: 'Годинникова Брама відмірює час для всієї землі. Нехай вона обертається.', mp3: 'Світло заломлюється в скляних деревах. Ми надсилали ним повідомлення.', mp5: 'Приплив — це теж годинник. Придивися: тут усе — машина.' },
+  ru: { mp2: 'Часовые Врата отмеряют время для всей земли. Пусть они крутятся.', mp3: 'Свет преломляется в стеклянных деревьях. Мы посылали им сообщения.', mp5: 'Прилив — это тоже часы. Присмотрись: здесь всё — машина.' },
+  es: { mp2: 'El Clock Gate marca la hora de toda la tierra. Mantenlo girando.', mp3: 'La luz se dobla en los árboles de vidrio. La usábamos para enviar mensajes.', mp5: 'La marea también es un reloj. Si miras bien, todo aquí es una máquina.' },
+  ar: { mp2: 'بوابة الساعة تحفظ الوقت للأرض كلها. أبقها تدور.', mp3: 'ينكسر الضوء في أشجار الزجاج. استخدمناه لإرسال الرسائل.', mp5: 'المد ساعة أيضا. إذا نظرت جيدا، فكل شيء هنا آلة.' },
+  'fa-AF': { mp2: 'دروازه ساعت وقت همه سرزمین را نگه می‌دارد. بگذار بچرخد.', mp3: 'نور در درختان شیشه‌ای خم می‌شود. ما با آن پیام می‌فرستادیم.', mp5: 'مد دریا هم یک ساعت است. اگر خوب نگاه کنی، همه چیز اینجا یک ماشین است.' },
+  rw: { mp2: "Clock Gate ibara igihe cy'igihugu cyose. Komeza uyizengurutse.", mp3: "Urumuri rugorama mu biti by'ibirahure. Twarukoreshaga kohereza ubutumwa.", mp5: 'Umuhengeri nawo ni isaha. Nureba neza, byose hano ni imashini.' },
+  ti: { mp2: 'ኣፍደገ ሰዓት ንመላእ ምድሪ ግዜ ይሕሉ። ክዘውር ግደፎ።', mp3: 'ብርሃን ኣብ ኦም መስታወት ይጠውይ። መልእኽቲ ንምልኣኽ ተጠቒምናሉ።', mp5: 'ማዕበል ባሕሪ እውን ሰዓት እዩ። ኣጸቢቕካ እንተ ረኣኻ፡ ኣብዚ ኩሉ ማሽን እዩ።' },
+}
+for (const [lang, row] of Object.entries(LORE597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

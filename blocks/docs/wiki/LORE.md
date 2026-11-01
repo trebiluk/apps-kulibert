@@ -29,7 +29,7 @@ Tone: friendly, curious, a little funny, never scary, no villains to fight. Rogu
 *lore content: GameMaster.* The village power plant. Fusion is how the Sun makes energy: tiny atoms squeeze together and join. It is a kind of nuclear energy. Engineers on Earth are still learning to make it work. How it's built by a crew, and the safe-shutdown story.
 
 ## 7. The bots
-*lore content: GameMaster.* Berty's Bot H1 (the teal crate with a blue accent), the Delivery Drone, Pollinator bots, the Tunnel Bore, and rogue robots (puzzles, never enemies).
+*lore content: GameMaster.* Berty's Bot H1 (the teal crate with a blue accent), the Delivery Drone, Pollinator bots, the Tunnel Bore, and rogue robots (puzzles, never enemies): the **Rustbot**, the **Keeper** and the **Foundry Overseer**. Kids reboot them; they are lost, not angry.
 
 ## 8. Critters
 *lore content: GameMaster.* Fireflies, butterflies, songbirds, frogs, prairie dogs, the cat, and the Pet Rock joke.

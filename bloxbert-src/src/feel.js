@@ -17,6 +17,7 @@ export const HAND_S = {
   wheat: 0.4, reed: 0.4, sapling: 0.4, tuft: 0.3, door: 1.5, doorOpen: 1.5,
   cropSprout: 0.4, cropLeafy: 0.4, cropTall: 0.4, cropRipe: 0.4,
   bushYoung: 0.4, bushLeaf: 0.4, bushFull: 0.4, bushFruit: 0.4,
+  floorLampOff: 0.8, floorLampOn: 0.8, wallLampOff: 0.8, wallLampOn: 0.8, rugAnchor: 0.8, rugPart: 0.8,
 }
 
 export function jumpHeight(v = JUMP_V, g = 32) {

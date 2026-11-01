@@ -39,8 +39,10 @@ export function createStations(api) {
   function finish(rec) {
     if (!rec || rec.kind !== 'oven' || !rec.until) return
     if (Date.now() < rec.until) return
-    rec.output.push(rec.pending || 'glass')
+    const made = rec.pending || 'glass'
+    rec.output.push(made)
     rec.pending = null
+    if (api.baked) { try { api.baked(made) } catch (e) {} }
     rec.until = 0
     rec.left = Math.max(0, rec.left - 1)
     rec.fuel = rec.left
