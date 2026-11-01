@@ -121,8 +121,25 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
   const rtl = /^(ar|fa)/.test(lang)
   let last = {}; try { last = JSON.parse(localStorage.getItem(KEY_LAST) || '{}') } catch (e) {}
   const owner = (() => { try { const o = JSON.parse(sessionStorage.getItem('bt-home-owner-ticket') || 'null'); sessionStorage.removeItem('bt-home-owner-ticket'); return o } catch (e) { return null } })()
+  // The owner's ticket is one-use, so a reload of the game tab (refresh, update, crash) used to drop the owner on the
+  // guest join card. The owner page also left its 12-hour owner token in this tab: ask the host for a fresh owner
+  // ticket with it instead. Host PC only (the server checks), and only on the ?owner=1 page the owner page opened.
+  let ownerApiNow = null
+  try { ownerApiNow = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {}
+  if (owner && owner.name && ownerApiNow) try { sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ ...ownerApiNow, name: owner.name })) } catch (e) {}
+  const ownerAgain = !owner && /[?&]owner=1(&|$)/.test(location.search) && ownerApiNow && ownerApiNow.token ? ownerApiNow : null
   return new Promise((resolve) => {
     if (owner && owner.ticket) { connect(owner, T, version, resolve); return }
+    if (ownerAgain) {
+      fetch(ownerAgain.base + '/owner/play', { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerAgain.token }, body: JSON.stringify({ name: ownerAgain.name || 'Owner' }) })
+        .then((r) => r.json()).catch(() => ({ error: 'network' }))
+        .then((j) => { if (j && j.ticket) connect(j, T, version, resolve); else showCard(resolve) })
+      return
+    }
+    showCard(resolve)
+  })
+
+  function showCard(resolve) {
     const root = card(css + `<div class="hc" dir="${rtl ? 'rtl' : 'ltr'}"><h1>${T.title}</h1><p>${T.intro}</p>
       <label for="hj-addr">${T.addr}</label><input type="text" id="hj-addr" autocomplete="off" spellcheck="false" value="${(last.addr || location.origin).replace(/"/g, '')}">
       <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="9" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH">
@@ -146,7 +163,7 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
       try { sessionStorage.setItem(KEY_ADULTS, '1'); localStorage.setItem(KEY_LAST, JSON.stringify({ addr: base, name: j.name })) } catch (e) {}
       connect(j, T, version, resolve, root)
     }
-  })
+  }
 }
 
 function updateCard(root, T, server, client, retry) {
