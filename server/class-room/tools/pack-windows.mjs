@@ -74,7 +74,7 @@ async function pickNode() {
   if (!ok) throw new Error('no Node 22 LTS for win-x64 in nodejs.org/dist/index.json')
   return ok.version
 }
-async function nodeExe() {
+export async function nodeWin() {
   const v = await pickNode(); const [a, b] = v.slice(1).split('.').map(Number)
   if (a < NODE_MIN[0] || (a === NODE_MIN[0] && b < NODE_MIN[1])) throw new Error(`Node ${v} is too old: the host needs ${NODE_MIN.join('.')}+ (node:sqlite)`)
   const name = `node-${v}-win-x64.zip`, cached = path.join(CACHE, name)
@@ -180,7 +180,7 @@ function addTree(entries, from, to, skip = () => false) {
 export async function pack({ withNode = !flag('no-node'), game = arg('game', path.join(REPO, 'bertopia-home')), out = OUT } = {}) {
   const gameVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'bloxbert-src', 'package.json'), 'utf8')).version
   const hasGame = !!game && fs.existsSync(path.join(game, 'index.html')) && fs.readFileSync(path.join(game, 'index.html'), 'utf8').includes('bertopia-home')
-  const node = withNode ? await nodeExe() : null
+  const node = withNode ? await nodeWin() : null
   const entries = []
   const A = ROOT + '/app'
   entries.push({ name: A + '/server/class-room/package.json', data: fs.readFileSync(path.join(ROOM, 'package.json')) })

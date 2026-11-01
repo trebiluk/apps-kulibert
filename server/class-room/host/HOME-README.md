@@ -16,6 +16,18 @@ Data (worlds, backups, `home.json`) lives in `Documents/Bertopia Home` unless `-
 Needs Node 22 or newer. The host itself installs nothing and needs no internet. Without a home build, `/` shows a
 plain join page instead of the game.
 
+## One-click start from a repo checkout
+Double-click **Start Bertopia Home.cmd** at the repo root (or `npm run start:home` here, or
+`node server/class-room/tools/home-launch.mjs`). It does the setup for you, each time:
+1. **update**: `git pull --ff-only`, only when you have no local changes;
+2. **Node**: 22.13+ as is; 22.5–22.12 gets `--experimental-sqlite`; older Node on Windows fetches the official Node 22
+   LTS once (SHA-256 checked) into `%LOCALAPPDATA%\Bertopia`;
+3. **install**: `npm ci` in `bloxbert-src` only when `package-lock.json` changed. The noa engine (a GitHub `ssh://`
+   dependency) is fetched over HTTPS through settings for this run only; your git config is not changed;
+4. **build**: `npm run build:home` only when the game source changed since the last build;
+5. **start**: the host, owner page in your browser.
+Options: `--no-update`, `--no-build`, `--rebuild`, `--dry-run` (show the plan), and host options after `--`.
+
 ## Windows package (double-click, nothing to install)
 ```
 cd bloxbert-src && npm ci && npm run build:home       # the game, once per version

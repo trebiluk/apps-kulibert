@@ -420,7 +420,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(cfg.listen === '127.0.0.1' ? '[home] this PC only (owner page: "Let other computers join" for the LAN)' : '[home] players on this network join at ' + lanAddrs().map((a) => `http://${a}:${cfg.port}/`).join('  or  '))
     console.log('[home] data: ' + DATA + (GAME ? ' | game: ' + GAME : ' | no game build yet: run `npm run build:home` in bloxbert-src; / shows the plain join page'))
     if (cfg.world) { const n = cfg.world; cfg.world = null; openWorld(n); console.log('[home] reopened world ' + n + ' (start a session to let people in)') }
-    if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }).unref() } catch (e) {} }) }
+    if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { const c = cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }); c.on('error', () => console.log('[home] could not open a browser: open ' + u + ' yourself')); c.unref() } catch (e) {} }) }
   })
 }
 export { cfg, door, rooms, worlds, openWorld, closeWorld, startSession, endSession, live }
