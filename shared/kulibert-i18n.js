@@ -2,7 +2,7 @@
 (function (root) {
   // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
   // Apps: do not edit.
-  var I18N_REV = "2026-10-31-class-server";
+  var I18N_REV = "2026-10-27-sign-carry";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -40,7 +40,7 @@
   "errNeedBoth": "Enter the 5-character code and the 4-digit PIN.",
   "errNoMatch": "That code or PIN does not match.",
   "errNotListed": "That code is not on the list.",
-  "errOffline": "Can't reach the class server. Try again on the school network.",
+  "errOffline": "TechWorks did not answer. Try again on the school network.",
   "searchHint": "Search or paste a link",
   "more": "More",
   "gotIt": "Got it",

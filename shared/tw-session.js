@@ -146,7 +146,7 @@
     "That code or PIN does not match.": "errNoMatch",
     "Wait a moment, then try again.": "errWait",
     "Enter the 5-character code and the 4-digit PIN.": "errNeedBoth",
-    "Can't reach the class server. Try again on the school network.": "errOffline",
+    "TechWorks did not answer. Try again on the school network.": "errOffline",
     "The code and the PIN come from your teacher.": "signTeacher"
   };
   function sayNote(pop, key, fallback) {
@@ -254,7 +254,7 @@
         if (api && api.flush) api.flush();
         done();
       }).catch(function () {
-        sayNote(pop, "errOffline", "Can't reach the class server. Try again on the school network.");
+        sayNote(pop, "errOffline", "TechWorks did not answer. Try again on the school network.");
       });
     });
     var closeBtn = pop.querySelector(".tw-close");
