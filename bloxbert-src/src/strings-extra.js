@@ -1353,7 +1353,7 @@ for (const [lang, row] of Object.entries(ZONE_UI)) if (EXTRA[lang]) Object.assig
 const BELT_UI = {
   en: {
     conveyor: 'Conveyor',
-    beltHint: 'Belt the Smelter to the Box',
+    beltHint: 'Belt the Oven to the Box',
     beltIn: 'In: Conveyor',
     beltOut: 'Out: Conveyor',
     beltMove: 'Input {inn} -> 4/sec -> Output {outn}',
@@ -1363,7 +1363,7 @@ const BELT_UI = {
   },
   uk: {
     conveyor: 'Конвеєр',
-    beltHint: 'Стрічка: Плавильня до Скриня',
+    beltHint: 'Стрічка: Піч до Скрині',
     beltIn: 'Вхід: Конвеєр',
     beltOut: 'Вихід: Конвеєр',
     beltMove: 'Вхід {inn} -> 4/сек -> Вихід {outn}',
@@ -1373,7 +1373,7 @@ const BELT_UI = {
   },
   ru: {
     conveyor: 'Конвейер',
-    beltHint: 'Лента: Плавильня до Сундук',
+    beltHint: 'Лента: Печь до Сундука',
     beltIn: 'Вход: Конвейер',
     beltOut: 'Выход: Конвейер',
     beltMove: 'Вход {inn} -> 4/сек -> Выход {outn}',
@@ -1383,7 +1383,7 @@ const BELT_UI = {
   },
   es: {
     conveyor: 'Transportador',
-    beltHint: 'Cinta de la Fundidora a la Caja',
+    beltHint: 'Cinta del Horno a la Caja',
     beltIn: 'Entra: Transportador',
     beltOut: 'Sale: Transportador',
     beltMove: 'Entrada {inn} -> 4/s -> Salida {outn}',
@@ -1393,7 +1393,7 @@ const BELT_UI = {
   },
   ar: {
     conveyor: 'سير',
-    beltHint: 'صِل مصهر إلى صندوق',
+    beltHint: 'صِل الفرن إلى الصندوق',
     beltIn: 'داخل: سير',
     beltOut: 'خارج: سير',
     beltMove: 'مدخل {inn} -> 4/ث -> مخرج {outn}',
@@ -1403,7 +1403,7 @@ const BELT_UI = {
   },
   'fa-AF': {
     conveyor: 'نوار',
-    beltHint: 'کوره گداز را به صندوق برسان',
+    beltHint: 'داش را به صندوق برسان',
     beltIn: 'ورود: نوار',
     beltOut: 'خروج: نوار',
     beltMove: 'ورود {inn} -> ۴/ث -> خروج {outn}',
@@ -1413,7 +1413,7 @@ const BELT_UI = {
   },
   rw: {
     conveyor: 'Umugozi',
-    beltHint: 'Huza Isaturire na Agasanduku',
+    beltHint: 'Huza Ifuru na Agasanduku',
     beltIn: 'Injira: Umugozi',
     beltOut: 'Sohoka: Umugozi',
     beltMove: 'Iwinjira {inn} -> 4/seg -> Ibisohoka {outn}',
@@ -1423,7 +1423,7 @@ const BELT_UI = {
   },
   ti: {
     conveyor: 'መተሓላለፊ',
-    beltHint: 'መፍለሒ ናብ ሳንዱቅ',
+    beltHint: 'እቶን ናብ ሳንዱቕ',
     beltIn: 'እታይ: መተሓላለፊ',
     beltOut: 'ወጻኢ: መተሓላለፊ',
     beltMove: 'እታይ {inn} -> 4/ሰ -> ወጻኢ {outn}',

@@ -3,7 +3,24 @@ import { RECIPES, BED_SHOP } from './data/recipes.js'
 import { ITEMS } from './data/items.js'
 import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
+import { EXTRA } from './strings-extra.js'
 import { decorMetalLocked } from './craft.js'
+// 2.5.572: the oven panel names the belt slot. rw, ti, and fa-AF are draft translations.
+const BELT_SLOT = {
+  en: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  simple: { beltFrom: 'from belt', beltEmpty: 'belt: empty' },
+  uk: { beltFrom: 'зі стрічки', beltEmpty: 'стрічка: порожньо' },
+  ru: { beltFrom: 'с ленты', beltEmpty: 'лента: пусто' },
+  es: { beltFrom: 'de la cinta', beltEmpty: 'cinta: vacía' },
+  ar: { beltFrom: 'من السير', beltEmpty: 'السير: فارغ' },
+  'fa-AF': { beltFrom: 'از نوار', beltEmpty: 'نوار: خالی' },
+  rw: { beltFrom: 'kuva ku mugozi', beltEmpty: 'umugozi: ubusa' },
+  ti: { beltFrom: 'ካብ መተሓላለፊ', beltEmpty: 'መተሓላለፊ: ባዶ' },
+}
+for (const lang of Object.keys(BELT_SLOT)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], BELT_SLOT[lang])
+}
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8, pinecone: 1 }
 let slotsOf = () => []
@@ -56,6 +73,7 @@ export function createStations(api) {
     }
     if (!(rec.left > 0) || !(rec.fuelN > 0)) { rec.fuelItem = ''; rec.fuelN = 0; rec.fuelSpent = 0 }
     touch()
+    startFromBelt(rec) // 0066: a belt-fed oven keeps going while it has input and fuel
   }
   function tick() {
     for (const rec of map.values()) finish(rec)
@@ -123,7 +141,7 @@ export function createStations(api) {
     const secs = r.secs || 5
     const left = r.until ? Math.max(0, Math.ceil((r.until - Date.now()) / 1000)) : 0
     const ring = r.until ? (secs - left) / secs : 0
-    return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left }
+    return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left, beltIn: r.beltIn ? { ...r.beltIn } : null }
   }
   function itemName(item) { return api.name ? api.name(item) : item }
   function bakesItem(item) { return OVEN.some((recipe) => recipe.in.some(([it]) => it === item)) }
@@ -1205,7 +1223,54 @@ export function createStations(api) {
       t: (key) => api.t(key),
       belt: () => (api.belt ? api.belt(k) : null),
     })
-    g._ksDestroy = panel.destroy
+    // Belt-fed sand waits here before it bakes. Always an icon plus words, never a blank box.
+    const beltHost = document.createElement('div')
+    beltHost.className = 'belt-fed'
+    beltHost.tabIndex = 0
+    beltHost.setAttribute('role', 'status')
+    beltHost.setAttribute('aria-live', 'polite')
+    const beltArt = document.createElement('span')
+    beltArt.className = 'belt-fed-art'
+    beltArt.setAttribute('aria-hidden', 'true')
+    const beltCount = document.createElement('span')
+    beltCount.className = 'belt-fed-count'
+    const beltLab = document.createElement('span')
+    beltLab.className = 'belt-fed-lab'
+    beltHost.append(beltArt, beltCount, beltLab)
+    const beltHome = g.querySelector('.ks-inputs') || g.querySelector('.ks-main') || g
+    beltHome.append(beltHost)
+    let beltSig = ''
+    const paintBelt = () => {
+      const rec = get(k, 'oven')
+      const held = rec.beltIn && rec.beltIn.item && rec.beltIn.n > 0 ? rec.beltIn : null
+      const sig = held ? held.item + ':' + held.n : 'empty'
+      if (sig === beltSig) return
+      beltSig = sig
+      beltArt.replaceChildren()
+      if (held) {
+        const icon = face(held.item)
+        if (icon) beltArt.append(icon)
+        beltCount.hidden = false
+        beltCount.textContent = String(held.n)
+        beltLab.textContent = api.t('beltFrom')
+        beltHost.dataset.state = 'full'
+        beltHost.setAttribute('aria-label', itemName(held.item) + ' ' + held.n + ', ' + api.t('beltFrom'))
+      } else {
+        beltArt.innerHTML = '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M3 16h18M5 16v3h2.5v-3M16.5 16v3H19v-3M4 13h16l-1.5-4h-13z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'
+        beltCount.hidden = true
+        beltCount.textContent = ''
+        beltLab.textContent = api.t('beltEmpty')
+        beltHost.dataset.state = 'empty'
+        beltHost.setAttribute('aria-label', api.t('beltEmpty'))
+      }
+    }
+    paintBelt()
+    const beltTimer = setInterval(paintBelt, 250)
+    const killPanel = panel.destroy
+    g._ksDestroy = () => {
+      clearInterval(beltTimer)
+      if (killPanel) killPanel()
+    }
   }
   function baking() {
     const out = []
@@ -1213,6 +1278,59 @@ export function createStations(api) {
       if (rec && rec.until && Date.now() < rec.until) out.push(key)
     }
     return out
+  }
+  // 0066: belts feed the oven without a kid's bag. Fuel goes to the fuel slot (one kind at a time, up to FUEL_CAP
+  // items); a bakeable item waits in a belt-in slot (one kind, up to 64) and starts a single-input bake as soon as
+  // there is enough of it, fuel is loaded and nothing is baking. Returns false when the oven cannot take the item,
+  // which the belt shows as Full until it can.
+  const FUEL_CAP = 64
+  function singleRecipe(item) {
+    return OVEN.find((recipe) => recipe.in.length === 1 && recipe.in[0][0] === item) || null
+  }
+  function startFromBelt(r) {
+    if (!r || r.kind !== 'oven' || r.until || !(r.left > 0)) return false
+    const b = r.beltIn
+    if (!b || !b.item || !(b.n > 0)) return false
+    const recipe = singleRecipe(b.item)
+    if (!recipe) return false
+    const need = recipe.in[0][1]
+    if (b.n < need) return false
+    b.n -= need
+    if (b.n <= 0) r.beltIn = null
+    r.picking = false
+    r.pick = recipe.id
+    r.input = [b.item]
+    r.inputN = need
+    r.pending = recipe.out[0]
+    r.secs = recipe.secs || 5
+    r.until = Date.now() + r.secs * 1000
+    r.staged = null
+    touch()
+    return true
+  }
+  function pushIn(key, item) {
+    if (!item) return false
+    const r = get(key, 'oven')
+    if (BAKES[item]) {
+      if (r.fuelItem && r.fuelItem !== item && r.fuelN > 0) return false
+      if ((r.fuelN || 0) >= FUEL_CAP) return false
+      r.fuelItem = item
+      r.fuelN = (r.fuelN || 0) + 1
+      r.left = (r.left || 0) + BAKES[item]
+      r.fuel = r.left
+      r.fuelNote = ''
+      startFromBelt(r)
+      touch()
+      return true
+    }
+    if (!singleRecipe(item)) return false
+    const b = r.beltIn
+    if (b && b.item && b.item !== item && b.n > 0) return false
+    if (b && b.n >= 64) return false
+    r.beltIn = b && b.item === item ? { item, n: b.n + 1 } : { item, n: 1 }
+    startFromBelt(r)
+    touch()
+    return true
   }
   function pullOut(key) {
     const r = map.get(key)
@@ -1222,10 +1340,10 @@ export function createStations(api) {
   function slotCounts(key) {
     const r = map.get(key)
     if (!r) return { inn: 0, outn: 0 }
-    const inn = r.input && r.input.length ? (r.inputN || r.input.length) : 0
+    const inn = (r.input && r.input.length ? (r.inputN || r.input.length) : 0) + (r.beltIn && r.beltIn.n > 0 ? r.beltIn.n : 0)
     return { inn, outn: r.output ? r.output.length : 0 }
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, pullOut, slotCounts, dump: () => {
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, pullOut, pushIn, slotCounts, dump: () => {
     const out = {}
     for (const [k, v] of map) out[k] = JSON.parse(JSON.stringify(v))
     return out

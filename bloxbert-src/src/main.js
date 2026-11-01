@@ -213,6 +213,21 @@ for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']
   if (!lines || !lines.length) continue
   if (!EXTRA[lang]) EXTRA[lang] = {}
   EXTRA[lang].whatsNewBody = lines.join(' ')
+// 2.5.572 what's new (brief 0066). rw, ti, and fa-AF are machine drafts.
+const WN572 = {
+  en: { whatsNewBody: '2.5.572 — Belts can feed an oven now: logs and coal become fuel, sand becomes glass. The belt hint asks for the oven-to-box loop, which you can finish.' },
+  simple: { whatsNewBody: '2.5.572 — Belts can feed an oven. Logs and coal are fuel. Sand makes glass. The belt hint is oven to box.' },
+  uk: { whatsNewBody: '2.5.572 — Стрічки тепер можуть годувати піч: колоди й вугілля стають паливом, пісок — склом. Підказка стрічки просить коло «піч до скрині», яке можна завершити.' },
+  ru: { whatsNewBody: '2.5.572 — Ленты теперь могут кормить печь: брёвна и уголь становятся топливом, песок — стеклом. Подсказка ленты просит круг «печь до сундука», который можно закончить.' },
+  es: { whatsNewBody: '2.5.572 — Las cintas ya pueden alimentar un horno: troncos y carbón son combustible, la arena se vuelve vidrio. La pista de la cinta pide el circuito horno-caja, que sí se puede terminar.' },
+  ar: { whatsNewBody: '2.5.572 — السيور تغذّي الفرن الآن: الجذوع والفحم وقود، والرمل يصير زجاجاً. تلميح السير يطلب حلقة الفرن إلى الصندوق، ويمكن إنهاؤها.' },
+  'fa-AF': { whatsNewBody: '2.5.572 — نوارها حالا می‌توانند داش را پر کنند: چوب و ذغال سوخت می‌شوند و ریگ شیشه می‌شود. راهنمای نوار حلقه داش به صندوق را می‌خواهد که می‌توان تمامش کرد.' },
+  rw: { whatsNewBody: '2.5.572 — Imigozi ubu ishobora kugaburira ifuru: ibiti n\'amakara biba lisansi, umucanga uba ikirahure. Inama y\'umugozi isaba uruziga ifuru-agasanduku, rushobora kurangira.' },
+  ti: { whatsNewBody: '2.5.572 — መተሓላለፊታት ሕጂ ንእቶን ክምግቡ ይኽእሉ፡ ዕንጸይትን ከሰልን ነዳዲ ይኾኑ፡ ሑጻ መስትያት ይኸውን። ምኽሪ መተሓላለፊ ናይ እቶን-ሳንዱቕ ዑደት ይሓትት፡ እዚ ድማ ክውዳእ ይከኣል።' },
+}
+for (const [lang, row] of Object.entries(WN572)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
 function dailyOverride() {
   try {
@@ -7020,6 +7035,7 @@ belts = createBelts({
     return list
   },
   pullOven: (x, y, z) => stations.pullOut(beltKey(x, y, z)) || '',
+  pushOven: (x, y, z, item) => stations.pushIn(beltKey(x, y, z), item), // 0066: belts feed ovens
   ovenCounts: (x, y, z) => stations.slotCounts(beltKey(x, y, z)),
   pushBox(x, y, z, item) {
     const rec = session && session.meta && session.meta.get(beltKey(x, y, z))
