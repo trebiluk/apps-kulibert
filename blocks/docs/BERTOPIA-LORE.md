@@ -22,7 +22,10 @@ The Verge is a beautiful land at the edge of the map, "our world, only slightly 
 - **The player** — a **Verge Engineer**: a new arrival who figures out how things work. Players use aliases only.
 - **Berty's Bot** — the kid's first helper robot (teal with a blue accent). Beeps, never speaks words.
 - **Townsfolk bots** — shopkeeper, Trade Post clerk, Glideway conductor, job-board bot. Plain helpful lines only.
-- **Rogue robots** — Maker machines that lost their instructions (like the Hawkbots). Shut them down, repair or reprogram them for parts. Never "killed."
+- **Rogue robots** — Maker machines that lost their instructions. Kids **reboot** them (Bonk, then reboot); never "killed." Canon names (Diego, Nov 1 2026; these replace "Hawkbots"):
+  - **Rustbot** — small rusty helper that wanders at night and grabs common blocks. Lost, not angry. Bertodex: rust is iron + oxygen + water.
+  - **Keeper** — a bigger guard bot that still tries to keep a place safe. A slam opens its weak point; rebooted it leaves a Keeper Core.
+  - **Foundry Overseer** — the boss bot of the Sleeping Foundry, woken at the Foundry Console. Needs a crew; its helpers power down with it.
 - **Verge creatures** (Shiver, Tangler, Purrlet, Woofle, Squeakbun, Slinkoil, Featherkit) — real animals' cousins, calmed or befriended, never hurt.
 - **No named human villains. No real people as characters.**
 
@@ -58,7 +61,7 @@ Found pages (one per landmark, plus 12 hidden in ruins) collect in the Engineeri
 - **Canon answer, crew only:** the Makers were engineers like the players. They left for the sky (the Hanging Isles and beyond) and left the Verge as a place to learn. The Fusion Core is their unfinished project, so the whole-class Legend goal is literally finishing the story. Never state this outright before page 20.
 
 ## 7. Names glossary (use exactly)
-Bertopia (the game) · the Verge (the land) · Bertyville (the town) · the Makers · Verge Engineer · Coreplate · Boundary Clay · Geology Night · Cogs (Copper, Silver, Gold, Platinum, Iridium) · Bertodex · Engineering Notebook · Maker Page · Site Card · Field Scanner · Beat Brick · Gizmo (teacher) · Glideway · Breaker Pod · Wonder Lab · Trade Post · Vault Network · Fusion Core · Sky Lift.
+Bertopia (the game) · the Verge (the land) · Bertyville (the town) · the Makers · Verge Engineer · Coreplate · Boundary Clay · Geology Night · Cogs (Copper, Silver, Gold, Platinum, Iridium) · Bertodex · Engineering Notebook · Maker Page · Site Card · Field Scanner · Beat Brick · Gizmo (teacher) · Glideway · Breaker Pod · Wonder Lab · Trade Post · Vault Network · Fusion Core · Sky Lift. · Rustbot · Keeper · Keeper Core · Foundry Overseer · Foundry Console · Sleeping Foundry
 
 ## 8. Wiki entry pattern (for Debugzy's master list)
 `name` · `kind` (block/item/machine/ore/biome/creature/landmark/page) · `kid line` (≤20 words, grade 5–6) · `science line` (real fact, Curriculum-checked, source id) · `lore line` (optional, from this file) · `recipe` · `found in` · `icon` · `availableFrom` (live/world-1/world-2/…) · 8-language keys.

@@ -58,7 +58,7 @@ The standing rules apply to every item:
 | L05 | Coreplate line: the first time a kid stands on the Coreplate, show its lore line and science line | Depth check in the existing 10 Hz tick | L | L01 |
 | L06 | Bertodex fill-in: real-science facts for every rebootable bot plus blocks seen (glass, iron, coal), from the wiki entry pattern §8 | learn.js openDex | M | Curriculum fact pass |
 | L07 | Biome chip v1: name the two biomes that exist ("Bertyville Commons", "Glasswood edge" for forest), shown once on entry with icon + text | worldgen biomeAt + HUD chip | M | L03 |
-| L08 | Glossary sync: add Rustbot, Keeper and Foundry Overseer to LORE §7 and the wiki; retire Hawkbot or map it to Rustbot | docs only | L | Diego/GameMaster call |
+| L08 | ✅ Done (Diego, Nov 1): Rustbot, Keeper and Foundry Overseer are canon in LORE §3/§7 and the wiki; Hawkbot retired | docs only | L | — |
 | L09 | Hidden pages 11–19: one page per machine family, dropped by the machine's first use (belt, oven, quarry…) | stations.js, conveyor.js | M | L02 |
 | L10 | Clock Gate in Bertyville: a small working gear landmark (gear ratios), Site Card, Page 2 moves here from L02 | town.js | H | GO from Diego |
 | L11 | Boundary Clay stripe and Geology Night | worldgen part B | H | WORLDGEN-EVAL B-series |
@@ -67,5 +67,5 @@ The standing rules apply to every item:
 **Order:** L01 → L02 → L03 → L05 → L04 → L06 → L08 → L07 → L09. L10–L12 need a GO and other lanes first.
 
 ## Questions for Diego / GameMaster
-1. Rustbot vs Hawkbot: keep Rustbot (it's live, and kids know it) and add it to canon? (Recommended.)
+1. ~~Rustbot vs Hawkbot~~ Decided Nov 1: Rustbot, Keeper and Foundry Overseer are canon; Hawkbot is retired.
 2. Can page text appear before the Archive Door order? Pages are found in any order by design, so yes; L01 assumes this.
