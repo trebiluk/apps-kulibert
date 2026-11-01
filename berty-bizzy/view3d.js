@@ -373,7 +373,7 @@
         xs.forEach(function (x) { zs.forEach(function (z) { ys.forEach(function (y) { rimPts.push(new THREE.Vector3(x, y, z)); }); }); });
       }
       var target = new THREE.Vector3(bx * 0.42, 70, 60);
-      var dir = new THREE.Vector3(0.55, 0.52, 1).normalize();
+      var dir = new THREE.Vector3(0.3, 0.35, 1).normalize();
       var lo = 200;
       var hi = 2000;
       var best = hi;
@@ -696,8 +696,20 @@
       var dof = T(lang, "dof");
       var dofTitle = T(lang, "dofTitle");
       var bx = root.PINCHY.LAYOUT.bizzyX || 190;
-      addChip("berty", T(lang, "nameBerty") + " \u00b7 " + dof, dofTitle, new THREE.Vector3(0, 150, 0));
-      addChip("bizzy", T(lang, "nameBizzy") + " \u00b7 " + dof, dofTitle, new THREE.Vector3(bx, 150, 0));
+      // 0054: each tag floats just above the highest point of its own arm, so it never sits on the arm.
+      var tagAbove = function (st, offsetX) {
+        var L = root.PINCHY.LAYOUT;
+        var pp = root.PINCHY.pose(st);
+        var pts = [[0, L.sy], [pp.ex, pp.ey], [pp.wx, pp.wy], [pp.gx, pp.gy]];
+        var top = pts[0];
+        for (var ti = 1; ti < pts.length; ti++) if (pts[ti][1] > top[1]) top = pts[ti];
+        var v = vec(top[0], top[1] + 34, st.base || 0);
+        v.x += offsetX;
+        return v;
+      };
+      var joints = T(lang, "joints5");
+      addChip("berty", T(lang, "nameBerty") + " \u00b7 " + joints, dofTitle, tagAbove(state, 0));
+      addChip("bizzy", T(lang, "nameBizzy") + " \u00b7 " + joints, dofTitle, tagAbove(bz, bx));
       placeLabels(canvas, camera);
       renderer.render(scene, camera);
     }
