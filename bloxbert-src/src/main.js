@@ -13217,7 +13217,7 @@ window.__bertopiaRotateCheck = function () {
 }
 let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
 ;(bootLoad = (async () => {
-  if (__HOME_HOST__ && HOME.isHomePage()) { try { homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
+  if (__HOME_HOST__ && HOME.isHomePage()) { try { HOME.registerHomeRules(); HOME.setHomeToast(toast); homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
   return load()
 })()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
@@ -13296,6 +13296,7 @@ let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; nu
   else paintBar()
   if (sentToSurvival) toast(t('studentWorld'))
   markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
+  if (__HOME_HOST__) HOME.armOwnerEditor()
   showRulesCard({ teacher: !!(teacherOn() || staffOn() || (__HOME_HOST__ && HOME.homeOwnerOn())), lang: LANG, world: WORLD })
   if (location.search.includes('shot=1')) armShot()
   if (location.search.includes('craft=1')) armCraft()
