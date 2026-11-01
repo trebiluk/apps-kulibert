@@ -3099,3 +3099,6 @@ html body .daily-mark-star { font-size: 20px; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   html body .daily-card, html body .daily-card * { transition: none !important; animation: none !important; }
 }
+
+/* 2.5.597: the Notebook's Goals list spans the whole tile grid (it sat in one 79 px cell at 412, one word per line). */
+html body #sheet .ggrid > .goals-list { grid-column: 1 / -1 !important; width: auto !important; min-width: 0; }

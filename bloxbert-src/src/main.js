@@ -1241,6 +1241,14 @@ function pinKeysLine() {
   const sheet = document.getElementById('sheet')
   if (sheet && !sheet.hidden) return
   pinAboveBar(el)
+  // 2.5.597: on a sideways phone "above the hotbar" is the middle of the screen, so the camera-view chip sat on the
+  // crosshair and ate taps aimed there. Same row, slid right of centre.
+  const r = el.getBoundingClientRect()
+  const cx = innerWidth / 2, cy = innerHeight / 2
+  if (r.width && r.top < cy + 48 && r.bottom > cy - 48 && r.left < cx + 48 && r.right > cx - 48) {
+    const left = Math.max(8, Math.min(innerWidth - 8 - r.width, Math.round(cx + 56)))
+    el.style.setProperty('left', left + 'px', 'important')
+  }
 }
 function bindKeysChip() {
   const btn = document.getElementById('keys-chip')
@@ -9071,7 +9079,10 @@ function liftMenuButton() {
   if (document.getElementById('bert-menu-hit')) return
   const css = document.createElement('style')
   css.id = 'bert-menu-hit'
-  css.textContent = 'html body .kb-bar{z-index:90!important;pointer-events:auto!important}html body .kb-bar .kb-menu{position:relative!important;z-index:6!important;pointer-events:auto!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar{display:flex!important;pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;z-index:90!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important;display:inline-flex!important}'
+  css.textContent = 'html body .kb-bar{z-index:90!important;pointer-events:auto!important}html body .kb-bar .kb-menu{position:relative!important;z-index:6!important;pointer-events:auto!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar{display:flex!important;pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;z-index:90!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important;display:inline-flex!important}' +
+    // 2.5.597: while a panel is open only Menu stays on the bar. Home, the title, Sign in and the practice chip floated over the
+    // panel (z 90 over 40) and covered its Close button at 412.
+    'html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar *{visibility:hidden!important;pointer-events:none!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu,html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu *{visibility:visible!important}html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar .kb-menu{pointer-events:auto!important}'
   document.head.append(css)
 }
 function bindBarMenu() {
