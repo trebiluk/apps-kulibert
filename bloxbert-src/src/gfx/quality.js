@@ -13,10 +13,13 @@ const SOLID_REM = [2.5, 2]
 export const QP = {
   auto: { aa: false, add: [1.5, 1], rem: [2.5, 2] },
   lite: { aa: false, scale: 1.75, add: [1.5, 1], rem: [2.5, 2] },
-  full: { aa: true, scale: 1, add: [2, 1.5], rem: [3, 2.5] },
+  full: { aa: true, scale: 1, add: [2.5, 1.5], rem: [3.5, 2.5] }, // Full sees farther (Diego, Nov 1); Auto and Lite stay at the Chromebook floor
+  // Max (Diego, Nov 1): strong computers only. About twice Full's distance; fog follows (fogFor). Same AA as Full, so
+  // switching Full <-> Max needs no reload. Never picked automatically.
+  max: { aa: true, scale: 1, add: [4, 2], rem: [5, 3] },
 }
 
-const NAMES = { auto: 'Auto', lite: 'Lite', full: 'Full' }
+const NAMES = { auto: 'Auto', lite: 'Lite', full: 'Full', max: 'Max' }
 
 function roundStep(n) {
   return Math.round(n * 100) / 100

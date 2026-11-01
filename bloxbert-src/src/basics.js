@@ -24,8 +24,12 @@ export function createBasics(api) {
   const badges = new Set()
   let card = ''
   let cardN = 0
+  // Debug sky pin (2.5.563, ?debug=1&clock=). Time of day for the sky and clock face only. Session-only: never saved, never in dump().
+  let pin = null
   function now() { return ms + (api.now() - anchor) }
+  function skyT() { return pin !== null ? pin : now() }
   function skyRule() {
+    if (pin !== null) return 'cycle'
     let v = 'cycle'
     try { v = Rules.value('survival.daynight') } catch (e) {}
     return v === 'day' || v === 'night' ? v : 'cycle'
@@ -34,12 +38,13 @@ export function createBasics(api) {
     const mode = skyRule()
     if (mode === 'night') return 'night'
     if (mode === 'day') return 'day'
-    return phaseName(now(), always)
+    return phaseName(skyT(), pin !== null ? false : always)
   }
   function lumNow() {
     const mode = skyRule()
     if (mode === 'night') return skyK(DAY + DUSK + 1000, false, false)
     if (mode === 'day') return skyK(now(), true, false)
+    if (pin !== null) return skyK(pin, false, false)
     return skyK(now(), always, bright)
   }
   function teacher() { return !!(teacherStub || (api.teacher && api.teacher())) }
@@ -327,6 +332,10 @@ export function createBasics(api) {
     get always() { return always },
     get bright() { return bright },
     lum() { const v = lumNow(); return Number.isFinite(v) ? v : 1 },
+    // Cycle position in ms, or null when a rule or Always Day locks the sky. The horizon blends colors from this.
+    clockMs() { if (pin !== null) return pin; if (always || skyRule() !== 'cycle') return null; const c = cycleMs(); return ((now() % c) + c) % c },
+    pinSky(n) { pin = Number.isFinite(n) ? ((n % cycleMs()) + cycleMs()) % cycleMs() : null },
+    get pinned() { return pin !== null },
     phase() { const v = phaseNow(); return v === 'night' || v === 'day' || v === 'dusk' || v === 'dawn' ? v : 'day' },
     clock(n) { if (!Number.isFinite(n)) return; ms += n; applyLights(n); lastT = now(); flush() },
     seek(n) { if (!Number.isFinite(n)) return; placeInDay(n) },
@@ -359,14 +368,14 @@ export function createBasics(api) {
     },
     face() {
       const cycle = cycleMs()
-      const t = now()
+      const t = skyT()
       const tod = ((t % cycle) + cycle) % cycle
       const mins = Math.floor(tod / cycle * 24 * 60)
       const shifted = (mins + 6 * 60) % (24 * 60)
       const hh = Math.floor(shifted / 60)
       const mm = shifted % 60
       const mode = skyRule()
-      const locked = mode === 'day' || always
+      const locked = pin === null && (mode === 'day' || always)
       const phase = phaseNow()
       const nightAt = DAY + DUSK
       const untilNight = tod < nightAt ? nightAt - tod : cycle - tod + nightAt

@@ -25,6 +25,8 @@ import ATLAS from '../assets/atlas.json'
 import { BLOCKS } from './data/blocks-list.js';
 import { installPacks, packList, setPack, currentPackId, smallTextures, setSmallTextures, autoTex32 } from './gfx/packs.js'
 import { initPainter, addPaintButton } from './gfx/painter.js'
+import { REST, blendSky, bodies, glowFor, hillSamples, hillBytes, hillColors, HILL_N } from './gfx/horizon.js'
+import { readDebug, aimFor, DEBUG_CLOCK } from './debug-params.js'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 // What's new comes from the running version's own CHANGELOG entry, in every language (2.5.560). A language the entry
@@ -84,7 +86,7 @@ import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { holdTip, dropTip, showToast, pinAboveBar } from './tips.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT, plotInterior } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, hash as worldHash, worldTune, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
 import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
@@ -147,7 +149,6 @@ import { createHoloBeam } from './holo-beam.js' // Holo Hand part 2: beam and st
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
-import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder'
 import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
@@ -6463,8 +6464,10 @@ function armBrief() {
   }
   window.__briefReady = true
 }
+const DEBUG = readDebug(location.search)
 function armClock() {
   const q = location.search
+  if (DEBUG) return
   if (!q.includes('clock=')) return
   try { Rules.set('survival.daynight', q.includes('clock=lock') ? 'day' : 'cycle') } catch (e) {}
   if (basics) {
@@ -6479,6 +6482,21 @@ function armClock() {
   try { applySky() } catch (e) {}
   paintDayClock()
   window.__clockReady = true
+}
+// 2.5.563 debug params. Only with ?debug=1. The clock pin lives in basics and is never written to the save.
+function armDebug() {
+  if (!DEBUG) return
+  if (DEBUG.clock && basics && basics.pinSky) {
+    basics.pinSky(DEBUG_CLOCK[DEBUG.clock])
+    try { applySky() } catch (e) {}
+    paintDayClock()
+  }
+  if (DEBUG.cam) {
+    const aim = () => { const a = aimFor(DEBUG.cam, basics && basics.clockMs ? basics.clockMs() : null); setLook(a.h, a.p) }
+    aim()
+    setTimeout(aim, 1200)
+  }
+  window.__debugParams = { clock: DEBUG.clock, cam: DEBUG.cam }
 }
 window.__clock = {
   face: () => basics && basics.face ? basics.face() : null,
@@ -11762,26 +11780,116 @@ gfx.applyFog = (next) => {
   scene.fogEnd = 12
 }
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uFlat;uniform float uStars;uniform vec3 uZenith;uniform vec3 uHorizon;void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);gl_FragColor=vec4(col,1.0);}'
-const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon'] })
+Effect.ShadersStore.bertSkyFragmentShader = [
+  'precision highp float;varying vec3 vPos;',
+  'uniform float uTime;uniform float uFlat;uniform float uStars;uniform float uHillOn;uniform float uGlowAmt;',
+  'uniform vec3 uZenith;uniform vec3 uHorizon;uniform vec3 uGlowDir;uniform vec3 uGlowCol;uniform vec3 uHillNear;uniform vec3 uHillFar;',
+  'uniform sampler2D uHills;uniform vec3 uSunDir;uniform vec3 uMoonDir;uniform float uSunVis;uniform float uMoonVis;uniform vec3 uSunCol;uniform vec3 uMoonCol;',
+  // blocky body: a square on the sky, a lighter square core. Drawn here (not as a billboard) so the hills drawn after it cover it.
+  'float body(vec3 n,vec3 d,float rimSz,float coreSz){float c=dot(n,d);if(c<=0.0)return 0.0;vec3 ax=normalize(abs(d.y)>0.99?vec3(1.0,0.0,0.0):cross(vec3(0.0,1.0,0.0),d));vec3 ay=cross(d,ax);vec2 p=vec2(dot(n,ax),dot(n,ay))/c;float q=max(abs(p.x),abs(p.y));return step(q,rimSz)+step(q,coreSz);}',
+  'void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;',
+  // soft glow around the sun or moon, strongest low on the horizon
+  'float d=max(dot(n,uGlowDir),0.0);float low=1.0-smoothstep(0.1,0.75,n.y);',
+  'col+=uGlowCol*(pow(d,5.0)*0.45+pow(d,40.0)*0.55)*uGlowAmt*mix(0.5,1.0,low);',
+  'float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));',
+  'col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);',
+  // the sun and moon, blocky; 1 = rim, 2 = core
+  'float sb=body(n,normalize(uSunDir),0.05,0.03)*uSunVis;col=mix(col,uSunCol*0.92,min(sb,1.0));col=mix(col,uSunCol,clamp(sb-1.0,0.0,1.0));',
+  'float mb=body(n,normalize(uMoonDir),0.04,0.024)*uMoonVis;col=mix(col,uMoonCol*0.85,min(mb,1.0));col=mix(col,uMoonCol,clamp(mb-1.0,0.0,1.0));',
+  // blocky clouds on a flat layer overhead: big square cells, seen in perspective toward the horizon, drifting slowly
+  // (uTime does not move with reduced motion). Tinted by the sunset glow, dimmed at night. Only with the hills (not Lite).
+  'float lum=clamp(dot(uHorizon,vec3(0.36,0.4,0.24))/0.8,0.15,1.0);',
+  // clumps: a big cell decides where a cloud is, small cells inside it make the blocky outline. No grid seams.
+  'if(uHillOn>0.5&&n.y>0.1){vec2 cp=n.xz/n.y*3.0+vec2(uTime*0.012,0.0);',
+  'float big=fract(sin(dot(floor(cp/4.0),vec2(12.9898,78.233)))*43758.5453);float sm=fract(sin(dot(floor(cp),vec2(39.346,11.135)))*43758.5453);',
+  'float cl=step(0.72,big)*step(0.3,sm)*smoothstep(0.1,0.22,n.y);vec3 cc3=max(mix(vec3(0.95,0.96,0.97),uHorizon,0.3)*lum+uGlowCol*uGlowAmt*0.3,col*1.18+vec3(0.02,0.025,0.035));',
+  'col=mix(col,cc3,cl*0.7);}',
+  // never brighter than about #EEF3F7
+  'col=min(col,vec3(0.93,0.95,0.96));',
+  // far hills: two ridgelines from a 64x1 strip, hazed toward the horizon color, fading out below the horizon
+  // blocky: one flat-topped column per strip texel (no blending between them) and heights in whole steps, hard edges
+  // three blocky layers, back to front: far mountains (snow on the tops), far hills, the near treeline (bumpy tree tops)
+  'if(uHillOn>0.5&&n.y<0.3){float raz=atan(n.z,n.x)*0.15915494+0.5;float az=(floor(raz*64.0)+0.5)/64.0;vec3 hh=floor(texture2D(uHills,vec2(az,0.5)).rgb*0.2/0.008)*0.008;',
+  'float fade=smoothstep(-0.12,0.02,n.y);',
+  'vec3 mc=mix(mix(uZenith,vec3(0.40,0.43,0.50),0.6),uHorizon,0.45)*mix(0.7,1.0,lum);vec3 snow=mix(vec3(0.86,0.89,0.92),uHorizon,0.35)*lum;',
+  'float ma=step(n.y,hh.b);float tip=step(hh.b-0.03,n.y)*step(0.075,hh.b)*step(hh.g+0.012,n.y);col=mix(col,mix(uHorizon,mix(mc,snow,tip),fade),ma);',
+  'float fa=step(n.y,hh.g);col=mix(col,mix(uHorizon,uHillFar,fade),fa);',
+  'float tb=floor(fract(sin(floor(raz*512.0)*91.7)*4375.85)*3.0)*0.006;',
+  'float na=step(n.y,hh.r+tb);col=mix(col,mix(uHorizon,uHillNear*0.85,fade),na);}',
+  'gl_FragColor=vec4(col,1.0);}',
+].join('')
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon', 'uGlowDir', 'uGlowCol', 'uGlowAmt', 'uHillOn', 'uHillNear', 'uHillFar', 'uSunDir', 'uMoonDir', 'uSunVis', 'uMoonVis', 'uSunCol', 'uMoonCol'], samplers: ['uHills'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
 skyMat.fogEnabled = false
 skyMat.setFloat('uTime', 0)
 skyMat.setFloat('uFlat', 0)
 skyMat.setFloat('uStars', 0)
+skyMat.setFloat('uHillOn', 0)
+skyMat.setFloat('uGlowAmt', 0)
 skyMat.setColor3('uZenith', new Color3(0.20, 0.38, 0.62))
 skyMat.setColor3('uHorizon', new Color3(0.70, 0.80, 0.86))
+skyMat.setVector3('uGlowDir', new Vector3(0, -1, 0))
+skyMat.setColor3('uGlowCol', new Color3(0.9, 0.82, 0.58))
+skyMat.setColor3('uHillNear', new Color3(0.4, 0.5, 0.5))
+skyMat.setColor3('uHillFar', new Color3(0.5, 0.6, 0.65))
+skyMat.setVector3('uSunDir', new Vector3(0, 1, 0))
+skyMat.setVector3('uMoonDir', new Vector3(0, -1, 0))
+skyMat.setFloat('uSunVis', 0)
+skyMat.setFloat('uMoonVis', 0)
+skyMat.setColor3('uSunCol', new Color3(0.93, 0.88, 0.66))
+skyMat.setColor3('uMoonCol', new Color3(0.86, 0.89, 0.93))
+// The hills live in the sky shader: one 64x1 strip, built once from the world. No extra mesh, no extra draw call.
+const hillTex = new DynamicTexture('far-hills', { width: HILL_N, height: 1 }, scene, false, Texture.NEAREST_SAMPLINGMODE)
+hillTex.wrapU = Texture.WRAP_ADDRESSMODE
+hillTex.wrapV = Texture.CLAMP_ADDRESSMODE
+skyMat.setTexture('uHills', hillTex)
+let hillKey = ''
+function buildHills() {
+  const w = worldTune()
+  const key = w.hills + ',' + w.water + ',' + w.trees + ',' + w.seed
+  if (key === hillKey) return
+  hillKey = key
+  try {
+    const rows = hillSamples((x, z) => surfaceY(x, z), (x, z) => worldHash(x, z), SPAWN_XZ_H[0], SPAWN_XZ_H[1], 4)
+    const ctx = hillTex.getContext()
+    const img = ctx.createImageData(HILL_N, 1)
+    img.data.set(hillBytes(rows))
+    ctx.putImageData(img, 0, 0)
+    hillTex.update(false)
+  } catch (e) { console.warn('hills', e) }
+}
+const SPAWN_XZ_H = [8, 1]
 const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
 sky.material = skyMat
 sky.isPickable = false
 sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
-function skyDisc(name, rgb, local) {
-  const mesh = CreateDisc(name, { radius: 2.25, tessellation: 32 }, scene) // 2.5.550: round sun and moon
+// Soft sun and moon: a round glow baked into a small texture. Same two meshes as before, now placed by the clock.
+function discTexture(name, core) {
+  const tex = new DynamicTexture(name, { width: 64, height: 64 }, scene, false)
+  tex.hasAlpha = true
+  const ctx = tex.getContext()
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+  g.addColorStop(0, 'rgba(255,255,255,1)')
+  g.addColorStop(core, 'rgba(255,255,255,0.95)')
+  g.addColorStop(Math.min(0.98, core + 0.12), 'rgba(255,255,255,0.28)')
+  g.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.clearRect(0, 0, 64, 64)
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 64, 64)
+  tex.update()
+  return tex
+}
+const SKY_DIST = 380
+function skyDisc(name, rgb, size, core) {
+  const mesh = CreatePlane(name, { size }, scene)
   const mat = new StandardMaterial(name + '-m', scene)
+  const tex = discTexture(name + '-t', core)
   mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
+  // Not mat.emissiveTexture: Babylon ADDS an emissive texture to emissiveColor, so the white gradient made the disc white (#FCFBFB).
+  mat.opacityTexture = tex
   mat.disableLighting = true
   mat.backFaceCulling = false
   mat.fogEnabled = false
@@ -11789,17 +11897,21 @@ function skyDisc(name, rgb, local) {
   mesh.isPickable = false
   mesh.infiniteDistance = true
   mesh.billboardMode = Mesh.BILLBOARDMODE_ALL
-  mesh.parent = noa.rendering.camera
-  mesh.position.set(local[0], local[1], local[2])
   mesh.alwaysSelectAsActiveMesh = true
+  mesh.setEnabled(false)
   noa.rendering.addMeshToScene(mesh, false)
   return mesh
 }
-const sunQuad = skyDisc('sun-quad', [0.95, 0.90, 0.66], [-6, 11, 22])
-const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], [7, 10, 22])
+const sunQuad = skyDisc('sun-quad', [0.95, 0.90, 0.66], 70, 0.30)
+const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], 52, 0.38)
 const skyZen = new Color3(0.20, 0.38, 0.62)
 const skyHor = new Color3(0.70, 0.80, 0.86)
-const skyEase = { phase: '', z: [0.20, 0.38, 0.62], h: [0.70, 0.80, 0.86], f: [0.625, 0.71, 0.735], stars: 0, sun: 1, moon: 0, fromZ: null, fromH: null, fromF: null, fromStars: 0, fromSun: 1, fromMoon: 0, t0: 0 }
+const skyNear = new Color3(0.4, 0.5, 0.5)
+const skyFar = new Color3(0.5, 0.6, 0.65)
+const skyGlowCol = new Color3(0.9, 0.82, 0.58)
+const skyGlowDir = new Vector3(0, -1, 0)
+// Eased values. They chase the clock target with a short lag, so a clock jump (sleep, a time switch) never flashes.
+const skyEase = { ready: false, z: [0.20, 0.38, 0.62], h: [0.70, 0.80, 0.86], hill: [0.27, 0.41, 0.37], glow: [0.9, 0.82, 0.58], glowAmt: 0, stars: 0, sun: 1, moon: 0, t0: 0 }
 function skyGlideMs() {
   try {
     if (document.documentElement.getAttribute('data-kp-motion') === 'less') return 1000
@@ -11807,54 +11919,67 @@ function skyGlideMs() {
   } catch (e) {}
   return 3000
 }
-function mix3(out, from, to, u) {
-  out[0] = from[0] + (to[0] - from[0]) * u
-  out[1] = from[1] + (to[1] - from[1]) * u
-  out[2] = from[2] + (to[2] - from[2]) * u
+function chase(cur, to, a) {
+  for (let i = 0; i < cur.length; i++) cur[i] += (to[i] - cur[i]) * a
 }
 function applySky() {
   const phase = basics && basics.phase ? basics.phase() : 'day'
-  const row = gfxLook.sky(phase)
-  const tz = row.zenith
-  const th = row.horizon
-  const tf = atmosphereFog(phase, row)
-  const now = performance.now()
-  if (!skyEase.fromZ || skyEase.phase !== phase) {
-    if (!skyEase.fromZ) {
-      skyEase.z = tz.slice()
-      skyEase.h = th.slice()
-      skyEase.f = tf.slice()
-      skyEase.stars = row.stars
-      skyEase.sun = row.sun
-      skyEase.moon = row.moon
-    }
-    skyEase.fromZ = skyEase.z.slice()
-    skyEase.fromH = skyEase.h.slice()
-    skyEase.fromF = skyEase.f.slice()
-    skyEase.fromStars = skyEase.stars
-    skyEase.fromSun = skyEase.sun
-    skyEase.fromMoon = skyEase.moon
-    skyEase.phase = phase
-    skyEase.t0 = now
+  const flat = !!gfxLook.sky(phase).flat
+  const cm = basics && basics.clockMs ? basics.clockMs() : null
+  const ms = cm === null ? (REST[phase] || REST.day) : cm
+  const tgt = blendSky(ms)
+  const bod = bodies(ms)
+  const glow = glowFor(tgt, bod)
+  if (flat) {
+    // Lite: one flat color, no hills.
+    const m = [(tgt.zenith[0] + tgt.horizon[0]) * 0.5, (tgt.zenith[1] + tgt.horizon[1]) * 0.5, (tgt.zenith[2] + tgt.horizon[2]) * 0.5]
+    tgt.horizon = m
   }
-  const u = Math.min(1, (now - skyEase.t0) / skyGlideMs())
-  mix3(skyEase.z, skyEase.fromZ, tz, u)
-  mix3(skyEase.h, skyEase.fromH, th, u)
-  mix3(skyEase.f, skyEase.fromF, tf, u)
-  skyEase.stars = skyEase.fromStars + (row.stars - skyEase.fromStars) * u
-  skyEase.sun = skyEase.fromSun + (row.sun - skyEase.fromSun) * u
-  skyEase.moon = skyEase.fromMoon + (row.moon - skyEase.fromMoon) * u
+  const now = performance.now()
+  const dt = skyEase.ready ? Math.min(1000, Math.max(0, now - skyEase.t0)) : 0
+  skyEase.t0 = now
+  const a = skyEase.ready ? 1 - Math.exp(-dt / (skyGlideMs() / 3)) : 1
+  skyEase.ready = true
+  chase(skyEase.z, tgt.zenith, a)
+  chase(skyEase.h, tgt.horizon, a)
+  chase(skyEase.hill, tgt.hill, a)
+  chase(skyEase.glow, glow.col, a)
+  skyEase.glowAmt += (glow.amt - skyEase.glowAmt) * a
+  skyEase.stars += (tgt.stars - skyEase.stars) * a
+  skyEase.sun += (bod.sun.vis - skyEase.sun) * a
+  skyEase.moon += (bod.moon.vis - skyEase.moon) * a
   skyZen.set(skyEase.z[0], skyEase.z[1], skyEase.z[2])
   skyHor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
   skyMat.setColor3('uZenith', skyZen)
   skyMat.setColor3('uHorizon', skyHor)
-  skyMat.setFloat('uFlat', row.flat ? 1 : 0)
+  skyMat.setFloat('uFlat', flat ? 1 : 0)
   skyMat.setFloat('uStars', skyEase.stars)
-  sunQuad.setEnabled(skyEase.sun > 0.2)
-  moonQuad.setEnabled(skyEase.moon > 0.2)
+  skyGlowCol.set(skyEase.glow[0], skyEase.glow[1], skyEase.glow[2])
+  skyGlowDir.set(glow.dir[0], glow.dir[1], glow.dir[2])
+  skyMat.setColor3('uGlowCol', skyGlowCol)
+  skyMat.setVector3('uGlowDir', skyGlowDir)
+  skyMat.setFloat('uGlowAmt', skyEase.glowAmt)
+  // Hills: gradient-only on Lite. Haze them toward the horizon color so they read as far away.
+  const hillsOn = !flat
+  skyMat.setFloat('uHillOn', hillsOn ? 1 : 0)
+  if (hillsOn) {
+    buildHills()
+    const hc = hillColors({ hill: skyEase.hill, horizon: skyEase.h })
+    skyNear.set(hc.near[0], hc.near[1], hc.near[2])
+    skyFar.set(hc.far[0], hc.far[1], hc.far[2])
+    skyMat.setColor3('uHillNear', skyNear)
+    skyMat.setColor3('uHillFar', skyFar)
+  }
+  // Sun and moon are drawn by the sky shader now (blocky, and behind the far hills). The billboards stay off.
+  sunQuad.setEnabled(false)
+  moonQuad.setEnabled(false)
+  skyMat.setVector3('uSunDir', new Vector3(bod.sun.dir[0], bod.sun.dir[1], bod.sun.dir[2]))
+  skyMat.setVector3('uMoonDir', new Vector3(bod.moon.dir[0], bod.moon.dir[1], bod.moon.dir[2]))
+  skyMat.setFloat('uSunVis', skyEase.sun > 0.02 ? Math.min(1, skyEase.sun) : 0)
+  skyMat.setFloat('uMoonVis', skyEase.moon > 0.02 ? Math.min(1, skyEase.moon * 0.9) : 0)
   if (!underWater) {
-    const fog = skyEase.f
-    scene.fogColor.set(fog[0], fog[1], fog[2])
+    // Fog is the horizon color, exactly, so far chunks melt into the sky with no pale wall.
+    scene.fogColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
     if (scene.clearColor) scene.clearColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2], 1)
     if (gfxLook.name !== 'lite') {
       const end = scene.fogEnd || 32
@@ -11863,16 +11988,12 @@ function applySky() {
     }
   }
 }
-function atmosphereFog(phase, row) {
-  const h = row.horizon
-  if (gfxLook.name === 'lite') return h
-  const cap = (c) => Math.min(0.85, c)
-  let out
-  if (phase === 'dusk') out = [h[0] * 0.38 + 0.32, h[1] * 0.38 + 0.28, h[2] * 0.38 + 0.24]
-  else if (phase === 'dawn') out = [h[0] * 0.45 + 0.26, h[1] * 0.45 + 0.24, h[2] * 0.45 + 0.22]
-  else if (phase === 'night') out = [h[0] * 0.55 + 0.05, h[1] * 0.55 + 0.06, h[2] * 0.55 + 0.07]
-  else out = [h[0] * 0.75 + 0.10, h[1] * 0.75 + 0.11, h[2] * 0.75 + 0.09]
-  return [cap(out[0]), cap(out[1]), cap(out[2])]
+function placeBody(mesh, body, easedVis, strength) {
+  const on = easedVis > 0.02
+  mesh.setEnabled(on)
+  if (!on) return
+  mesh.position.set(body.dir[0] * SKY_DIST, body.dir[1] * SKY_DIST, body.dir[2] * SKY_DIST)
+  mesh.material.alpha = Math.min(1, easedVis) * strength
 }
 const lampLights = []
 for (let i = 0; i < 4; i++) {
@@ -13971,6 +14092,7 @@ window.__bertopiaRotateCheck = function () {
   } catch (e) { console.warn('[bt-foundry] skip', e && e.message) }
   try { ensureSupplyCaches() } catch (e) { console.warn('[supply] skip', e && e.message) }
   armClock()
+  armDebug()
   runBtTest()
   paintDayClock()
   armBrief()
