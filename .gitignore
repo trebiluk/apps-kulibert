@@ -5,3 +5,5 @@ voltduel-src/node_modules
 
 # Windows launcher packages (server/class-room/tools/pack-windows.mjs)
 /dist/
+# the personal host's home game build (bloxbert-src: npm run build:home): made on each machine, never committed
+/bertopia-home/

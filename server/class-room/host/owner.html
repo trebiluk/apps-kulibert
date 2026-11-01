@@ -40,6 +40,7 @@
   <h1>Bertopia home server</h1>
   <span id="st-world" class="pill off">no world</span>
   <span id="st-session" class="pill off">no session</span>
+  <span id="st-game" class="pill off" hidden title="Players get the plain join page until the home game is built">⚠ no game build</span>
   <span id="st-online" class="pill">0 online</span>
   <span style="flex:1"></span>
   <button id="btn-play" class="go" title="Open the join page as the owner">Play as owner</button>
@@ -118,7 +119,8 @@ function render(s) {
   $('st-world').textContent = s.world ? 'world: ' + s.world : 'no world'; $('st-world').className = 'pill ' + (s.world ? 'on' : 'off')
   $('st-session').textContent = s.live.session ? 'session live · ' + RULES[s.live.session.cfg] : 'no session'; $('st-session').className = 'pill ' + (s.live.session ? 'on' : 'off')
   $('st-online').textContent = s.live.players.length + ' online'
-  $('ver').textContent = 'server ' + s.version + ' · ' + s.data
+  $('ver').textContent = (s.game ? 'game ' + s.game + ' · ' : '') + 'server ' + s.version + ' · ' + s.data
+  $('st-game').hidden = !!s.gameBuilt   // the launcher (Start Bertopia Home.cmd) builds it; README: npm run build:home
   if (s.code) { $('code-box').hidden = false; $('code').textContent = s.code.slice(0, 4) + ' ' + s.code.slice(4) } else $('code-box').hidden = true
   const rs = $('ruleset'); if (!rs.options.length) for (const id of s.rulesets) rs.add(new Option(RULES[id] || id, id)); rs.value = s.live.session ? s.live.session.cfg : s.live.ruleset
   $('session-info').textContent = (s.live.rules ? (s.live.rules.locked ? 'Rules locked to the student defaults. ' : 'Edit single rules in-game (Play as owner → Rules). ') : '') + (s.live.session ? 'Started ' + ago(s.live.session.startedAt) + (s.live.session.password ? ' · password on' : '') + (s.live.session.rotated ? ' · code rotated ' + s.live.session.rotated + '×' : '') + ' · max ' + s.maxPlayers + ' players' : 'Open a world, pick rules, then Start session to get a code.')

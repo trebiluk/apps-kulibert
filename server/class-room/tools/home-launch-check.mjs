@@ -67,6 +67,40 @@ eq(nodePlan('22.4.0').exe === null && nodePlan('20.11.1').exe === null && /too o
     eq(child.exitCode === 0 && !/TypeError|ReferenceError|Unhandled/.test(log), 'launcher: "Stop server" ends it with code 0 (the window closes; errors would keep it open)')
   } catch (e) { eq(false, 'launcher run threw: ' + e.message) } finally { if (child.exitCode === null) child.kill() }
 }
+// the update step is not blocked by the home build or other untracked files; the build output is never committed
+{
+  const repo = path.resolve(path.dirname(LAUNCH), '..', '..', '..')
+  const gi = spawnSync('git', ['check-ignore', '-q', '--no-index', 'bertopia-home/index.html'], { cwd: repo }).status
+  const src = fs.readFileSync(LAUNCH, 'utf8')
+  eq(gi === 0 && /'status', '--porcelain', '--untracked-files=no'/.test(src), 'update: bertopia-home/ is git-ignored, and new untracked files never stop the pull')
+}
+// the whole flow twice in a throwaway repo with a stand-in npm: run 1 installs, builds and starts; run 2 only starts
+{
+  const repo0 = path.resolve(path.dirname(LAUNCH), '..', '..', '..')
+  const R = path.join(TMP, 'repo'), BIN = path.join(TMP, 'bin'), CALLS = path.join(TMP, 'npm-calls')
+  for (const d of ['server/class-room/host', 'server/class-room/src', 'server/class-room/tools']) fs.cpSync(path.join(repo0, d), path.join(R, d), { recursive: true })
+  for (const f of ['server/class-room/package.json', 'bloxbert-src/package.json', 'bloxbert-src/package-lock.json', '.gitignore']) { fs.mkdirSync(path.dirname(path.join(R, f)), { recursive: true }); fs.copyFileSync(path.join(repo0, f), path.join(R, f)) }
+  fs.writeFileSync(path.join(R, 'bloxbert-src', '.gitignore'), 'node_modules/\n')
+  const g = (...a) => spawnSync('git', a, { cwd: R, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } })
+  g('init', '-q'); g('add', '-A'); g('commit', '-qm', 'base')
+  fs.mkdirSync(BIN); fs.writeFileSync(path.join(BIN, 'npm'), `#!/bin/sh\necho "$@" >> "${CALLS}"\nif [ "$1" = ci ]; then mkdir -p node_modules; fi\nif [ "$1" = run ]; then mkdir -p ../bertopia-home && echo '<meta name="bertopia-home" content="1">' > ../bertopia-home/index.html; fi\n`, { mode: 0o755 })
+  const once = async (port) => {
+    const c = spawn(process.execPath, [path.join(R, 'server/class-room/tools/home-launch.mjs'), '--', '--port', String(port), '--data', path.join(TMP, 'd' + port)], { env: { ...process.env, PATH: BIN + path.delimiter + process.env.PATH }, stdio: ['ignore', 'pipe', 'pipe'] })
+    let out = ''; c.stdout.on('data', (d) => (out += d)); c.stderr.on('data', (d) => (out += d))
+    for (let i = 0; i < 160 && !/\[home\] Bertopia personal host/.test(out); i++) await sleep(50)
+    try { const H = 'http://127.0.0.1:' + port, key = /k=([0-9a-f]+)/.exec(out)[1]; const tok = (await (await fetch(H + '/owner/pin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key, pin: '246810' }) })).json()).token; await fetch(H + '/owner/stop', { method: 'POST', headers: { 'x-owner': tok } }) } catch (e) { out += '\nSTOP FAILED ' + e.message }
+    for (let i = 0; i < 60 && c.exitCode === null; i++) await sleep(50); if (c.exitCode === null) c.kill()
+    return out
+  }
+  const P = 19690 + (process.pid % 100)
+  const r1 = await once(P), calls1 = fs.readFileSync(CALLS, 'utf8').trim().split('\n')
+  eq(/update: this branch tracks no remote/.test(r1) && calls1.join('|') === 'ci --no-audit --no-fund|run build:home' && /\[home\] Bertopia personal host/.test(r1) && /game: /.test(r1), 'flow, run 1: installs, builds the home game, starts the server')
+  eq(fs.existsSync(path.join(R, 'bertopia-home', '.bt-built-from')) && fs.existsSync(path.join(R, 'bloxbert-src', 'node_modules', '.bt-lock-sha256')) && g('status', '--porcelain', '--untracked-files=no').stdout === '', 'flow, run 1: remembers what it built and installed; the checkout stays clean')
+  const r2 = await once(P + 1), calls2 = fs.readFileSync(CALLS, 'utf8').trim().split('\n')
+  eq(calls2.length === 2 && /game build is up to date/.test(r2) && /\[home\] Bertopia personal host/.test(r2), 'flow, run 2: nothing to install or build, straight to the server')
+  fs.appendFileSync(path.join(R, 'bloxbert-src', 'package.json'), '\n'); const r3 = await once(P + 2), calls3 = fs.readFileSync(CALLS, 'utf8').trim().split('\n')
+  eq(calls3.length === 3 && calls3[2] === 'run build:home' && /source changed/.test(r3) && /update: you have local changes.*bloxbert-src\/package\.json/.test(r3), 'flow, run 3: a local edit to the game rebuilds (no reinstall), and the update step names the edited file')
+}
 // the double-click file
 {
   const cmd = fs.readFileSync(path.resolve(path.dirname(LAUNCH), '..', '..', '..', 'Start Bertopia Home.cmd'), 'latin1')

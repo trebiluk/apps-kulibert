@@ -4,7 +4,8 @@
 //   node server/class-room/tools/home-launch.mjs [--no-update] [--no-build] [--rebuild] [--dry-run] [-- <host options>]
 //
 // Steps (each says what it did, and a failure says what to do):
-//  1. update   `git pull --ff-only`, only when the folder has no local changes and the branch tracks a remote.
+//  1. update   `git pull --ff-only`, only when no tracked file has local changes (new untracked files, like the
+//              home build, never block a fast-forward) and the branch tracks a remote.
 //  2. Node     22.13+: as is. 22.5-22.12: adds --experimental-sqlite (node:sqlite is there behind a flag).
 //              Older: on Windows, fetches the official Node 22 LTS (SHA-256 checked) into %LOCALAPPDATA%\Bertopia.
 //  3. install  `npm ci` in bloxbert-src when node_modules is missing or package-lock.json changed. GitHub ssh:// deps
@@ -83,7 +84,7 @@ async function main() {
   // 1. update
   if (has('no-update')) say('update: skipped (--no-update)')
   else if (git(['rev-parse', '--is-inside-work-tree']) !== 'true') say('update: not a git checkout, skipped')
-  else if (git(['status', '--porcelain'])) say('update: you have local changes, so nothing is pulled (your files stay as they are)')
+  else if (git(['status', '--porcelain', '--untracked-files=no'])) { const ch = (git(['diff', '--name-only', 'HEAD']) || '').split('\n').filter(Boolean); say('update: you have local changes, so nothing is pulled (your files stay as they are): ' + ch.slice(0, 3).join(', ') + (ch.length > 3 ? ' and ' + (ch.length - 3) + ' more' : '')) }
   else if (!git(['rev-parse', '--abbrev-ref', '@{u}'])) say('update: this branch tracks no remote, skipped')
   else {
     const before = git(['rev-parse', 'HEAD'])

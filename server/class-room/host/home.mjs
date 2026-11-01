@@ -340,7 +340,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
+      case '/owner/state': return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())
