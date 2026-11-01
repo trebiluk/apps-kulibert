@@ -534,6 +534,8 @@ function seatToasts() {
   try {
     const floor = Math.round(Math.max(
       shownBottom(document.querySelector('header.top')),
+      shownBottom(document.querySelector('.kb-bar')), // 2.5.592 r2: the shared top bar and the game HUD row too
+      shownBottom(document.getElementById('top')),
       shownBottom(document.getElementById('chip-lane')),
       shownBottom(document.getElementById('boss-bar'))
     ) + 8)
@@ -4427,6 +4429,54 @@ async function ungz(b64) {
   const ds = new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))
   return new Uint16Array(await new Response(ds).arrayBuffer())
 }
+// 2.5.595: synchronous gzip for the save on the way out (CompressionStream is async). Fixed-Huffman deflate with run-length matches
+// (distance 1 or 2: voxel ids are u16, so a run of one block id repeats every 2 bytes). Output is ordinary gzip.
+let crcT = null
+function crc32(u8) {
+  if (!crcT) {
+    crcT = new Uint32Array(256)
+    for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; crcT[n] = c >>> 0 }
+  }
+  let c = 0xffffffff
+  for (let i = 0; i < u8.length; i++) c = crcT[(c ^ u8[i]) & 255] ^ (c >>> 8)
+  return (c ^ 0xffffffff) >>> 0
+}
+const LBASE = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
+const LEXT = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0]
+function gzSync(u16) {
+  const src = new Uint8Array(u16.buffer, u16.byteOffset, u16.byteLength)
+  const out = [0x1f, 0x8b, 8, 0, 0, 0, 0, 0, 0, 255]
+  let acc = 0, nb = 0
+  const put = (v, n) => { acc |= v << nb; nb += n; while (nb >= 8) { out.push(acc & 255); acc >>>= 8; nb -= 8 } }
+  const huff = (code, n) => { let r = 0; for (let i = 0; i < n; i++) { r = (r << 1) | (code & 1); code >>= 1 } put(r, n) }
+  const sym = (s) => { if (s < 144) huff(0x30 + s, 8); else if (s < 256) huff(0x190 + s - 144, 9); else if (s < 280) huff(s - 256, 7); else huff(0xc0 + s - 280, 8) }
+  put(1, 1); put(1, 2) // last block, fixed Huffman
+  const n = src.length
+  let i = 0
+  while (i < n) {
+    let best = 0, dist = 0
+    for (const d of [2, 1]) {
+      if (i < d) continue
+      let L = 0
+      while (L < 258 && i + L < n && src[i + L] === src[i + L - d]) L++
+      if (L > best) { best = L; dist = d }
+    }
+    if (best >= 3) {
+      let c = LBASE.length - 1
+      while (LBASE[c] > best) c--
+      sym(257 + c); if (LEXT[c]) put(best - LBASE[c], LEXT[c])
+      huff(dist - 1, 5)
+      i += best
+    } else { sym(src[i]); i++ }
+  }
+  sym(256)
+  if (nb > 0) { out.push(acc & 255); acc = 0; nb = 0 }
+  const crc = crc32(src), len = src.length >>> 0
+  out.push(crc & 255, (crc >>> 8) & 255, (crc >>> 16) & 255, crc >>> 24, len & 255, (len >>> 8) & 255, (len >>> 16) & 255, len >>> 24)
+  const buf = Uint8Array.from(out)
+  let bin = ''; for (let k = 0; k < buf.length; k += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(k, k + 0x8000))
+  return btoa(bin)
+}
 let pondAid = false
 function waterWithin(r) {
   const sx = 8.5
@@ -4812,6 +4862,15 @@ async function snapshot() {
       for (const [k, v] of copies) chunks[k] = await gz(v)
     }
   }
+  return docWith(chunks)
+}
+// 2.5.595: the same doc, built at once (no await) for a tab that is closing.
+function snapshotNow() {
+  const chunks = {}
+  for (const [k, v] of copySaved()) chunks[k] = gzSync(v)
+  return docWith(chunks)
+}
+function docWith(chunks) {
   const p = noa.entities.getPosition(noa.playerEntity)
   const rules = Rules.dump()
   const effects = Effects.dump()
@@ -4839,7 +4898,9 @@ async function snapshot() {
     ...(Object.keys(effects).length ? { effects } : {}),
   }
 }
+let oldSwap = false // 2.5.592: true while Load my saved world swaps the old save in; saves wait it out
 async function saveBody() {
+  if (oldSwap) return -1
   if (!(await waitWriter())) {
     pauseOtherTab()
     const err = new Error('paused')
@@ -4926,6 +4987,11 @@ saveSoon = () => {
     if (!(bytes >= 0)) return bytes
     paintSaveChip(navigator.onLine ? 'saved' : 'offline')
     return bytes
+  }).catch((e) => {
+    // Topia sync P1: a failed save (quota full, held, newer copy) says "Not saved" instead of an uncaught rejection.
+    // A paused tab already shows its own pause chip.
+    if (!(e && e.code === 'paused')) showNotSavedChip()
+    return -1
   })
 }
 async function saveClicked() {
@@ -5882,7 +5948,13 @@ document.addEventListener('visibilitychange', () => {
 try { mountSyncChip() } catch (e) {}
   }
 })
-window.addEventListener('pagehide', () => { writeSpot(); flushSave() })
+// 2.5.595: a closing tab cannot finish save() (it awaits the lock, gzip and IndexedDB), so an edit made just before close was
+// lost. If there is unsaved work, build the doc at once and hand it to sync, which sends it with fetch keepalive.
+function pushOnHide() {
+  if (!(dirty && allowSave && !savePaused) || oldSwap || readOnlySave) return
+  try { maybePush(snapshotNow()) } catch (e) {}
+}
+window.addEventListener('pagehide', () => { writeSpot(); flushSave(); pushOnHide() })
 claimSaveLock()
 setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
@@ -7373,7 +7445,7 @@ panels = mountPanels({
   workbenchOn: () => calm.workbenchOn(),
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
-  load: () => load(),
+  load: () => loadOldClicked(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
@@ -8426,7 +8498,8 @@ function rescueToGround(fromVoid) {
     playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
     if (!tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
   }
-  console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
+  // Debug only (?debug=1): normal loads keep the console quiet.
+  if (/[?&]debug=1(&|$)/.test(location.search)) console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
   if (fromVoid !== false) {
     const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
     toast(usedHome ? t('poofBunk') : t('poofTown'))
@@ -9024,7 +9097,153 @@ $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contain
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))
 $('m-save').addEventListener('click', () => { saveClicked() })
-$('m-load').addEventListener('click', () => load())
+// 2.5.592: "Load my saved world" brings in the OLD bloxbert save (IndexedDB kuliblocks-test / worlds, the pre-/bertopia/ door).
+// It used to call load(), which only re-read the current world, so nothing changed and nothing was said.
+function readOldSave() {
+  return Promise.race([
+    new Promise((res) => {
+      let req
+      try { req = indexedDB.open('kuliblocks-test') } catch (e) { res(null); return }
+      req.onupgradeneeded = (e) => { e.target.transaction.abort(); res(null) }
+      req.onsuccess = () => {
+        const db = req.result
+        if (!db.objectStoreNames.contains('worlds')) { db.close(); res(null); return }
+        const g = db.transaction('worlds', 'readonly').objectStore('worlds').get(WORLD)
+        g.onsuccess = () => { db.close(); res(g.result || null) }
+        g.onerror = () => { db.close(); res(null) }
+      }
+      req.onerror = () => res(null)
+    }),
+    new Promise((r) => setTimeout(() => r(null), 3000)),
+  ])
+}
+// 2.5.592 test path for ShipCheck: ?debug=1&seedOldSave=1 writes a small fixture world in the OLD bloxbert storage
+// (IndexedDB kuliblocks-test / worlds / <world>), so "Load my saved world" has something to load. Game data only, no names.
+async function seedOldSave() {
+  const q = location.search
+  if (!/[?&]debug=1(&|$)/.test(q) || !/[?&]seedOldSave=1(&|$)/.test(q)) return false
+  try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {} // skip the boot "Bring my old world?" card so the test uses the button
+  // Two chunks around the town spawn (x 8.5, z 1.5): grass floor, plus a red wool fence 3 high and a blue wool post you see on load.
+  const near = new Uint16Array(S * S * S)
+  const far = new Uint16Array(S * S * S)
+  const at = (x, y, z, id) => { const c = z < 0 ? far : near; c[x * S * S + y * S + (z < 0 ? z + S : z)] = id }
+  for (let x = 0; x < S; x++) for (let z = -S; z < S; z++) { for (let y = 0; y < 4; y++) at(x, y, z, 3); at(x, 4, z, 1) }
+  for (let x = 3; x <= 14; x++) for (let z = -4; z <= 7; z++) if (x === 3 || x === 14 || z === -4 || z === 7) for (let y = 5; y <= 7; y++) at(x, y, z, 15)
+  for (let y = 5; y <= 10; y++) at(12, y, 5, 13)
+  const palette = ['air', 'grass', 'dirt', 'stone', 'slate', 'coal', 'sand', 'gravel', 'brickRed', 'brickGrey', 'planks', 'log', 'leaves', 'woolBlue', 'woolGreen', 'woolRed', 'woolTan', 'snow', 'ice', 'redSand', 'glass', 'coreplate', 'workbench', 'oven', 'vend', 'storeCounter', 'bunk', 'box', 'wheat', 'reed', 'door', 'doorOpen', 'glowPebble']
+  const doc = { format: 'kuliblocks', v: 2, chunkSize: S, palette, chunks: { '0,0,0': await gz(near), '0,0,-1': await gz(far) }, spawn: [8.5, 6, 1.5], player: { mode: 'survival', bag: [], hot: 0 }, fixture: 'seedOldSave' }
+  return new Promise((res) => {
+    const req = indexedDB.open('kuliblocks-test', 1)
+    req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('worlds')) req.result.createObjectStore('worlds') }
+    req.onsuccess = () => {
+      const db = req.result
+      const tx = db.transaction('worlds', 'readwrite')
+      tx.objectStore('worlds').put(doc, WORLD)
+      tx.oncomplete = () => { db.close(); console.info('[bertopia] seedOldSave: fixture written to kuliblocks-test/' + WORLD); res(true) }
+      tx.onerror = tx.onabort = () => { db.close(); res(false) }
+    }
+    req.onerror = () => res(false)
+  })
+}
+window.__bertopiaOldSeed = seedOldSave()
+// 2.5.589 dev-only place hook for ShipCheck: exists ONLY with ?debug=1. Goes through placeBlock -> edit -> saveSoon (dirty, autosave, sync push).
+if (/[?&]debug=1(&|$)/.test(location.search)) {
+  const btHold = (id) => {
+    if (!id) return
+    if (survivalOn() && session) {
+      if (!session.selectOwned(id)) {
+        const key = Object.keys(ITEMS).find((k) => ITEMS[k] && ITEMS[k].block === id)
+        if (key) { session.give(key, 1); session.selectOwned(id) }
+      }
+    } else current = id
+  }
+  const btPlaceAt = (x, y, z, id) => {
+    x = Math.floor(x); y = Math.floor(y); z = Math.floor(z)
+    kidActed = true // the hook stands in for a kid tap, so the Saved chip shows
+    btHold(id)
+    const below = getVoxel(x, y - 1, z)
+    const face = { id: below, blockID: below, position: [x, y - 1, z], adjacent: [x, y, z], normal: [0, 1, 0] }
+    const ok = !!placeBlock(face)
+    return { ok, at: [x, y, z], id: getVoxel(x, y, z) }
+  }
+  window.__bt = {
+    placeAt: btPlaceAt,
+    // blockAt: the block id at that cell (0 = air), or null if x/y/z aren't numbers
+    blockAt(x, y, z) {
+      if (![x, y, z].every(Number.isFinite)) return null
+      return getVoxel(Math.floor(x), Math.floor(y), Math.floor(z)) || 0
+    },
+    placeTest(id) {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const h = noa.camera ? noa.camera.heading : 0
+      const dx = Math.round(Math.sin(h)), dz = Math.round(Math.cos(h))
+      const bx = Math.floor(p[0]), by = Math.floor(p[1]), bz = Math.floor(p[2])
+      const tries = [[dx * 2, dz * 2], [dx, dz], [2, 0], [-2, 0], [0, 2], [0, -2]]
+      for (const [ox, oz] of tries) {
+        for (const oy of [0, 1, -1]) {
+          const x = bx + ox, y = by + oy, z = bz + oz
+          if (getVoxel(x, y, z) || !getVoxel(x, y - 1, z)) continue
+          const r = btPlaceAt(x, y, z, id || ID.planks)
+          if (r.ok) return r
+        }
+      }
+      return { ok: false }
+    },
+  }
+}
+let bootLoad = Promise.resolve() // set to the first load() below, so an early click waits for it
+async function loadOldClicked() {
+  const btn = $('m-load')
+  if (loadOldClicked.busy) return
+  loadOldClicked.busy = true
+  if (btn) btn.setAttribute('aria-busy', 'true')
+  // 2.5.592 r2: each of these stays at least 4 s, so a kid can read it
+  const say = (key) => { showToast(t(key), { ms: 4500 }); seatToasts() }
+  // The toast can wait in line behind another one, so count the 4 s from when it is really on screen.
+  let shownAt = 0
+  const t0 = performance.now()
+  const watch = setInterval(() => {
+    const el = document.getElementById('toast')
+    if (!shownAt && el && !el.hidden && (el.textContent || '').indexOf(t('oldLoading')) !== -1) shownAt = performance.now()
+    if (shownAt || performance.now() - t0 > 6000) clearInterval(watch)
+  }, 50)
+  const after4 = async () => {
+    while (!shownAt && performance.now() - t0 < 6000) await new Promise((r) => setTimeout(r, 50))
+    const from = shownAt || t0
+    await new Promise((r) => setTimeout(r, Math.max(0, 4300 - (performance.now() - from)))) // 4 s readable plus the fade-in
+  }
+  say('oldLoading')
+  markSave(t('oldLoading'))
+  try {
+    try { await window.__bertopiaOldSeed } catch (e) {}
+    try { await bootLoad } catch (e) {}
+    const old = await readOldSave()
+    if (!old || old.format !== 'kuliblocks') { await after4(); say('oldNone'); markSave(t('oldNone')); return false }
+    try {
+      const now = new Date()
+      await backups.backup(t('backupBefore').replace('{time}', String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')))
+    } catch (e) {}
+    oldSwap = true // no autosave of the current world may land on top of the old one
+    try { await saveChain } catch (e) {}
+    await idbPut(WORLD, old)
+    try { localStorage.removeItem(SPOT_KEY) } catch (e) {} // stand where the old world left you, not where this one did
+    try { localStorage.setItem('bert-oldworld-done', '1') } catch (e) {}
+    const ok = await load()
+    await after4()
+    if (!ok) { say('saveKept'); return false }
+    say('oldLoaded')
+    markSave(t('oldLoaded'))
+    return true
+  } catch (e) {
+    say('saveKept')
+    return false
+  } finally {
+    oldSwap = false
+    loadOldClicked.busy = false
+    if (btn) btn.removeAttribute('aria-busy')
+  }
+}
+$('m-load').addEventListener('click', () => { loadOldClicked() })
 $('m-export').addEventListener('click', () => exportJSON())
 $('m-import').addEventListener('click', () => $('import-file').click())
 $('import-file').addEventListener('change', async (e) => {
@@ -12984,7 +13203,7 @@ window.__bertopiaRotateCheck = function () {
     resetCount: bertRotateResets,
   }
 }
-load().catch(() => {}).finally(() => {
+;(bootLoad = load()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
   if (allowSave) window.__bertOpen = true
