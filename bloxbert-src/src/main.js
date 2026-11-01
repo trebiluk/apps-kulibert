@@ -198,6 +198,7 @@ import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanv
 import { dayCap } from './econ/cogs.js'
 import { paintDailyCard } from './daily/card.js'
 import { createMobs } from './mobs.js'
+import { createLore } from './lore/pages.js'
 import { placeFoundryArena, onConsoleUse } from './foundry.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -6423,6 +6424,7 @@ let actThisClick = false
 let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
+let loreRef = null // Maker Pages (lore/pages.js); mobs fire before learn exists
 let lastPointer = null
 let calmRepaint = false
 calm = createCalm({
@@ -6754,6 +6756,7 @@ const mobs = createMobs({
     paintSuit()
   },
   lastBonk: () => lastBonk,
+  onReboot: (kind) => { if (loreRef) loreRef.on('reboot' + kind) },
   scene: () => { try { return noa.rendering.getScene() } catch (e) { return null } },
   addMesh: (mesh) => { try { noa.rendering.addMeshToScene(mesh, false) } catch (e) {} },
 })
@@ -7660,7 +7663,9 @@ const learn = createLearn({
   releaseHint: (kind) => releaseHint(kind),
   laneAdd, laneRelease,
 })
-markPath = (id) => learn.bump(id)
+const lore = createLore({ learn, t, toast })
+loreRef = lore
+markPath = (id) => { learn.bump(id); lore.on(id) }
 learnRef = learn
 paintPath = () => learn.paintPath()
 holdTour = () => learn.cancelAuto()
