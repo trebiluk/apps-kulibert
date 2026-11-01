@@ -60,8 +60,8 @@ export function createSession(api) {
   // ---- home build: decay (src/home/decay.js). Only reached when the home flag is on.
   const homeDecay = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function (ms) {
     const r = DECAY.tick(decay, bags.survival.slots, ms)
-    for (const item of r.rotted) api.toast(t('foodRotted').replace('{item}', itemName(item)))
-    if (r.torn > 0) api.toast(t('bagTore'))
+    for (const item of r.rotted) api.toast(DECAY.say('foodRotted').replace('{item}', itemName(item)))
+    if (r.torn > 0) api.toast(DECAY.say('bagTore'))
     if (r.rotted.length || r.torn) { paintHotbar(); refreshBag(); if (api.markDirty) api.markDirty() }
   } : null
   const takeHot = (typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) ? function () { const s = bag.slots[hot]; s.n -= 1; if (s.n <= 0) bag.slots[hot] = null } : null
@@ -71,16 +71,16 @@ export function createSession(api) {
     if (!s || s.item !== item) return null
     const done = (say) => { paintHotbar(); refreshBag(); if (say) api.toast(say); if (api.markDirty) api.markDirty(); return itemName(item) }
     if (item === DECAY.PATCH) {
-      if (!DECAY.patch(decay)) return done(t('bagFine'))
+      if (!DECAY.patch(decay)) return done(DECAY.say('bagFine'))
       takeHot()
-      return done(t('bagPatched').replace('{p}', Math.round(decay.wear)))
+      return done(DECAY.say('bagPatched').replace('{p}', Math.round(decay.wear)))
     }
     if (item === DECAY.ROTTEN) {
       const e = DECAY.eatRotten()
       takeHot(); ateSinceTip = true
       if (energyOn && e.bolts) { energy.bolts = Math.max(0, Math.min(10, energy.bolts + e.bolts)); if (energy.bolts > 0) energy.toasted = false; paintEnergy() }
       if (e.slowMs) { queasyUntil = Date.now() + e.slowMs; syncDig() }
-      return done(t(e.say))
+      return done(DECAY.say(e.say))
     }
     if (DECAY.isFood(item) && energyOn && FEED[item]) {
       if (energy.bolts >= 10) { api.toast(t('energyFull')); return itemName(item) }
@@ -88,7 +88,7 @@ export function createSession(api) {
       takeHot(); ateSinceTip = true
       energy.bolts = Math.min(10, energy.bolts + gain); if (energy.bolts > 0) energy.toasted = false
       paintEnergy(); syncDig()
-      return done(t('ate').replace('{item}', itemName(item)) + (gain < FEED[item] ? ' (' + t('foodStale') + ')' : ''))
+      return done(t('ate').replace('{item}', itemName(item)) + (gain < FEED[item] ? ' (' + DECAY.say('foodStale') + ')' : ''))
     }
     return null
   } : null
@@ -103,7 +103,7 @@ export function createSession(api) {
     if (f !== null) { const bar = document.createElement('span'); bar.className = 'wear fresh'; const fill = document.createElement('span'); fill.className = 'fill'; fill.style.width = Math.round(f * 100) + '%'; bar.append(fill); b.append(bar) }
     const torn = bag === bags.survival && DECAY.isTorn(decay, i, bag.slots.length)
     if (torn) { b.classList.add('torn'); const m = document.createElement('span'); m.className = 'torn-mark'; m.textContent = '✂'; m.setAttribute('aria-hidden', 'true'); b.append(m) }
-    const words = [DECAY.foodState(s) === 'stale' ? t('foodStale') : '', torn ? t('bagTornSlot') : ''].filter(Boolean).join(' · ')
+    const words = [DECAY.foodState(s) === 'stale' ? DECAY.say('foodStale') : '', torn ? DECAY.say('bagTornSlot') : ''].filter(Boolean).join(' · ')
     if (words) { b.setAttribute('aria-label', (b.getAttribute('aria-label') || '') + ' · ' + words); b.title = (b.title || b.getAttribute('aria-label') || '') + ' · ' + words }
   } : null
   const wallet = createWallet(ECON, () => paintChip())
@@ -653,7 +653,7 @@ export function createSession(api) {
     const a = bag.slots[from]
     if (!a) return false
     const b = bag.slots[to]
-    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && bag === bags.survival && DECAY.isTorn(decay, to, bag.slots.length) && (!b || b.item === a.item)) { api.toast(t('bagTornSlot')); return false }
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && bag === bags.survival && DECAY.isTorn(decay, to, bag.slots.length) && (!b || b.item === a.item)) { api.toast(DECAY.say('bagTornSlot')); return false }
     const follow = () => {
       if (hot === from) hot = to
       else if (hot === to) hot = from
@@ -1099,7 +1099,7 @@ export function createSession(api) {
       return
     }
     if (title) title.textContent = t('bag')
-    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && title) title.textContent = t('bag') + ' · ' + t('bagWear').replace('{p}', Math.round(decay.wear)).replace('{n}', DECAY.usableSlots(decay, bag.slots.length))
+    if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && title) title.textContent = t('bag') + ' · ' + DECAY.say('bagWear').replace('{p}', Math.round(decay.wear)).replace('{n}', DECAY.usableSlots(decay, bag.slots.length))
     if (bagSel >= bag.slots.length || (bagSel >= 0 && !bag.slots[bagSel])) bagSel = -1
     const asideN = lost.reduce((sum, d) => sum + (d && d.why === 'aside' ? d.n : 0), 0)
     const rest = lost.filter((d) => d && d.why !== 'aside')

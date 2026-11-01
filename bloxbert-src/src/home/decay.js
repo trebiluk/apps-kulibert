@@ -111,6 +111,9 @@ export const DECAY_STRINGS = {
   bagWear: 'Bag wear {p}% · {n} slots', bagTornSlot: 'Torn slot: nothing new fits here', bagTore: 'Your bag is wearing out: a slot tore. Make a Bag patch in the craft list.',
   bagPatched: 'Bag patched. Wear {p}%.', bagFine: 'Your bag is in good shape.',
 }
+// Home text is read straight from here (English-only), not through the game's t(): the game's string check
+// (tools/check-strings.mjs) only knows the shared string tables, and these words never ship to students.
+export const say = (k) => (Object.prototype.hasOwnProperty.call(DECAY_STRINGS, k) ? DECAY_STRINGS[k] : k)
 // the two home items and the patch recipe, in the game's own shapes (data/items.js, data/recipes.js)
 export const DECAY_ITEMS = {   // literal keys (= ROTTEN, PATCH) so the student build can drop this file whole
   rotten: { letter: 'Ro', cat: 'Food', base: 0, sell: false },

@@ -11,7 +11,7 @@ import { Rules } from '../rules.js'
 import { ITEMS } from '../data/items.js'
 import { RECIPES } from '../data/recipes.js'
 import { EXTRA } from '../strings-extra.js'
-import { DECAY_ITEMS, DECAY_RECIPES, DECAY_STRINGS, compost } from './decay.js'
+import { DECAY_ITEMS, DECAY_RECIPES, DECAY_STRINGS, compost, say } from './decay.js'
 
 // Home-only rules (docs §5). Registered from here, so the student build never has them. The personal host is
 // adults-only and English-only (Diego, Nov 1): labels are English; the game falls back to English for every language.
@@ -22,10 +22,11 @@ function registerDecay() {
   if (decayIn) return
   for (const [k, def] of Object.entries(DECAY_ITEMS)) if (!ITEMS[k]) ITEMS[k] = def
   for (const r of DECAY_RECIPES) if (!RECIPES.some((x) => x.id === r.id)) RECIPES.push(r)
-  if (EXTRA.en) for (const [k, v] of Object.entries(DECAY_STRINGS)) if (!EXTRA.en[k]) EXTRA.en[k] = v
+  if (EXTRA.en) for (const k of ['rotten', 'bagPatch']) if (!EXTRA.en[k]) EXTRA.en[k] = DECAY_STRINGS[k]   // item names: the game looks them up by key
   decayIn = true
 }
 export const homeCompostCrop = (crop, cap) => compost(crop, cap) > 0
+export const homeSay = say
 export function registerHomeRules() {
   registerDecay()
   Rules.register({ id: 'combat.pvp', type: 'bool', def: false, group: 'combat', display: 'survival', icon: '⚔',
