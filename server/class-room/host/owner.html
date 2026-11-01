@@ -61,6 +61,11 @@
     <p class="dim" id="session-info"></p>
     <div class="row"><label class="check"><input type="checkbox" id="chat-on"> World chat (everyone in the world; 200 characters, no word filter, never saved)</label></div>
     <div class="row"><label class="check"><input type="checkbox" id="keep-on"> Keep inventory (whole world; set players one by one under Players)</label></div>
+    <h2 style="margin-top:14px">Invite keys</h2>
+    <p class="dim">A key for one person instead of the shared code: it skips the password, is used once (or N times), expires, and can be taken back. Keys are shown once; the link lands on the join card with the key filled in.</p>
+    <div class="row"><input id="inv-label" type="text" maxlength="40" placeholder="who it is for (shown in the feed)"><input id="inv-max" type="number" min="1" max="50" value="1" style="width:5em" aria-label="Uses"> use(s) <input id="inv-hours" type="number" min="1" max="720" value="24" style="width:5em" aria-label="Hours"> h <input id="inv-name" type="text" maxlength="20" placeholder="lock to a name (optional)"><button id="btn-invite" class="go">Make invite</button></div>
+    <div id="inv-box" hidden><div class="row"><span class="code-big" id="inv-key"></span><button id="btn-inv-copy">Copy key</button><button id="btn-inv-link">Copy link</button><button id="btn-inv-hide">Hide</button></div><p class="dim" id="inv-link"></p></div>
+    <details><summary class="dim">Keys made this run</summary><table id="invites"><tbody></tbody></table></details>
     <h2 style="margin-top:14px">Join address</h2>
     <div id="addrs"></div>
     <div id="tunnel-box" hidden><p class="dim">On the internet (Cloudflare tunnel, HTTPS). Anyone with the code can join from anywhere:</p><div><code id="tunnel-addr"></code></div></div>
@@ -75,6 +80,8 @@
     <h2 style="margin-top:14px">Rollback</h2>
     <div class="row"><input id="rb-min" type="number" min="1" max="10080" value="5" style="width:7em"> minutes <button id="btn-rollback" class="bad">Undo everyone's edits</button></div>
     <details><summary class="dim">Banned this session</summary><table id="bans"><tbody></tbody></table></details>
+    <h2 style="margin-top:14px">Griefer guard</h2>
+    <div class="row"><label class="check"><input type="checkbox" id="guard-on"> On</label> <input id="guard-breaks" type="number" min="10" max="500" style="width:5em" aria-label="Breaks"> breaks in <input id="guard-window" type="number" min="2" max="60" style="width:4em" aria-label="Seconds"> s = a block storm: kick, undo their last minute <label class="check"><input type="checkbox" id="guard-undo"> undo</label>; a second storm is a ban. Owner and staff are never guarded. <button id="btn-guard">Save</button></div>
   </section>
 
   <section>
@@ -132,6 +139,8 @@ function render(s) {
   $('lan').checked = s.lan
   $('players').querySelector('tbody').innerHTML = s.live.players.map((p) => `<tr><td>${p.name}</td><td>${p.role}</td><td>${p.muted ? 'yes' : ''}</td><td><button data-keep="${p.ref}" data-on="${p.keep ? 0 : 1}" aria-label="Keep inventory for ${p.name}: ${p.keep ? 'on' : 'off'}${p.keepOwn ? '' : ' (world)'}">${p.keep ? 'Keep' : 'Lose'}${p.keepOwn ? '' : ' (world)'}</button>${p.keepOwn ? ` <button data-keepworld="${p.ref}">Use world</button>` : ''}</td><td>${p.role === 'player' ? `<button data-mute="${p.ref}" data-on="${p.muted ? 0 : 1}">${p.muted ? 'Unmute' : 'Mute'}</button> <button data-rb="${p.ref}">Undo theirs</button> <button data-kick="${p.ref}">Kick</button> <button data-ban="${p.ref}" class="bad">Ban</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="dim">Nobody in yet.</td></tr>'
   $('btn-freeze').textContent = s.live.frozen ? 'Unfreeze building' : 'Freeze building'
+  $('invites').querySelector('tbody').innerHTML = (s.invites || []).map((i) => `<tr><td>${i.label || i.id}${i.name ? ' <span class="dim">(as ' + i.name + ')</span>' : ''}<br><span class="dim">${i.uses}/${i.max} used · ${i.live ? 'until ' + new Date(i.exp).toLocaleString() : 'done'}${i.used.length ? ' · ' + i.used.map((u) => u.name).join(', ') : ''}</span></td><td>${i.live ? `<button data-revoke="${i.id}">Revoke</button>` : ''}</td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
+  if (s.guard && document.activeElement !== $('guard-breaks') && document.activeElement !== $('guard-window')) { $('guard-on').checked = s.guard.on !== false; $('guard-breaks').value = s.guard.breaks; $('guard-window').value = s.guard.window; $('guard-undo').checked = s.guard.undo !== false }
   $('bans').querySelector('tbody').innerHTML = s.live.bans.map((b) => `<tr><td>${b.name || b.ref}</td><td class="dim">${ago(b.at)}</td><td><button data-unban="${b.ref}">Unban</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}<br><span class="dim">${kb(w.bytes)} · ${ago(w.changed)}</span></td><td><div class="acts">${w.open ? '' : `<button data-open="${w.name}">Open</button>`}<button data-bk="${w.name}">Back up</button><button data-dl="${w.name}">Download</button></div></td></tr>`).join('') || '<tr><td colspan="2" class="dim">No worlds yet.</td></tr>'
   $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
@@ -169,6 +178,16 @@ document.addEventListener('click', async (e) => {
   else if (d.kick) await api('kick', { ref: d.kick })
   else if (d.ban) { if (confirm('Ban this player for the rest of the session (name and address)?')) await api('ban', { ref: d.ban }) }
   else if (d.unban) await api('unban', { ref: d.unban })
+  else if (d.revoke) { await api('invite/revoke', { id: d.revoke }); toast('Invite revoked') }
+  else if (b.id === 'btn-invite') {
+    const r = await api('invite', { label: $('inv-label').value.trim(), max: Number($('inv-max').value) || 1, hours: Number($('inv-hours').value) || 24, name: $('inv-name').value.trim() || null })
+    if (r.error) return toast(r.error === 'too-many-invites' ? 'Too many live keys (64). Revoke some first.' : r.error)
+    $('inv-box').hidden = false; $('inv-key').textContent = r.key; $('inv-link').textContent = r.link; $('inv-box').dataset.link = r.link; $('inv-label').value = ''; $('inv-name').value = ''
+  }
+  else if (b.id === 'btn-inv-copy') { try { await navigator.clipboard.writeText($('inv-key').textContent); toast('Key copied') } catch (e) { toast('Select and copy the key') } }
+  else if (b.id === 'btn-inv-link') { try { await navigator.clipboard.writeText($('inv-box').dataset.link || ''); toast('Link copied') } catch (e) { toast('Select and copy the link') } }
+  else if (b.id === 'btn-inv-hide') { $('inv-box').hidden = true; $('inv-key').textContent = ''; $('inv-link').textContent = ''; $('inv-box').dataset.link = '' }
+  else if (b.id === 'btn-guard') { await api('guard', { on: $('guard-on').checked, breaks: Number($('guard-breaks').value), window: Number($('guard-window').value), undo: $('guard-undo').checked }); toast('Guard saved') }
   else if (d.mute) await api('mute', { ref: d.mute, on: d.on === '1' })
   else if (d.rb) { const m = Number($('rb-min').value) || 5; if (confirm('Undo this player\'s edits of the last ' + m + ' minutes?')) { const r = await api('rollback', { minutes: m, ref: d.rb }); toast('Undid ' + r.applied + ' blocks') } }
   else if (b.id === 'btn-start') { const r = await api('session/start', { ruleset: $('ruleset').value, password: $('pw').value || null }); if (r.error) toast(r.error === 'no world' ? 'Open a world first' : r.error); $('pw').value = '' }

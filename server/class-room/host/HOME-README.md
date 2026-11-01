@@ -171,6 +171,20 @@ Four examples come with the game (Welcome, No digging here, Dinner bell, /hi). P
 `{player}` in a text is the player's name. The kid tier (for the school build later) allows join/place/break/command/
 timer, block/zone/player/not, say/tell/set only; nothing here runs in the student game.
 
+## Invite keys (one person, one key)
+Owner page → *Invite keys*: a key like `ADLT-7K2M-QX9D-4HJB` for one person (or N uses), good for 24 h (1 h to 30 days),
+optionally locked to a name. It skips the session password, still needs the 18+ box, and goes in the code field; the
+**Copy link** button gives `https://adultopia.kulibert.net/?invite=…` (the tunnel address when it is on, else this PC)
+which lands on the join card with the key filled in. Keys are shown once and only hashed in memory (gone when the
+host restarts); the feed says *"Lee joined with invite Lee (1/1)"*; revoke any key from the list. Guessing keys spends
+the same 5-a-minute join tries as guessing codes. At most 64 live keys.
+
+## Griefer guard
+On by default: more than 70 breaks in 10 s from a player (faster than the best tool; the Room already caps edits at
+10/s) is a block storm → kicked and their last minute undone; a second storm in the session → banned (name and
+address). Owner and staff are never guarded. Owner page → *Griefer guard* to tune or turn off (saved in `home.json`).
+Everything else stays as it was: per-player rollback (Players → Undo), kick, ban, mute, freeze.
+
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
 address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
@@ -189,8 +203,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-cmd-check` / `home-plugin-check`: the command menu and typed commands; the plugin engine (tiers, limits,
-  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API;
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard;
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag

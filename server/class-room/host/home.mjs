@@ -58,6 +58,7 @@ const cfg = Object.assign({
   pin: null,                                      // salt$scrypt, set on first run
   port: 8890, listen: '127.0.0.1', origins: [], tunnelHost: '', maxPlayers: DEFAULT_MAX_PLAYERS,
   world: null, ruleset: 'home-survival', usedCodes: [],
+  guard: { on: true, breaks: 70, window: 10, undo: true },   // griefer guard (part 10): breaks per window (s) before an auto-kick (70 = faster than the best tool, under the Room's 10/s cap); a repeat is a ban; undo their last minute
 }, loadCfg() || {})
 if (flag('lan')) cfg.listen = '0.0.0.0'
 cfg.port = Number(arg('port', cfg.port))
@@ -252,6 +253,25 @@ function tallyEdit(alias, placed) {
 }
 const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
 
+// ---------------------------------------------------------------- griefer guard (part 10)
+// Breaking blocks faster than a person can (cfg.guard.breaks in cfg.guard.window seconds) is a storm: the player is
+// kicked, their last minute is undone (cfg.guard.undo), and a second storm in the session is a ban. Owner and staff
+// are never guarded. Memory only; the owner tunes it on the owner page (/owner/guard).
+const storms = new Map()   // ref -> { times: [ms...], strikes }
+function guardBreak(p) {
+  const g = cfg.guard || {}; if (g.on === false || p.role !== 'kid') return false
+  const limit = Math.max(10, Number(g.breaks) || 70), win = Math.max(2, Number(g.window) || 10) * 1000, t = Date.now()
+  let e = storms.get(p.ref); if (!e) { e = { times: [], strikes: 0 }; storms.set(p.ref, e) }
+  e.times.push(t); while (e.times.length && e.times[0] < t - win) e.times.shift()
+  if (e.times.length <= limit) return false
+  e.times.length = 0; e.strikes++
+  const f = findPlayer(p.ref)
+  if (g.undo !== false) { try { const r = rollback(1, p.ref); feed('guard undid ' + (r.cells || 0) + ' cell' + (r.cells === 1 ? '' : 's') + ' of ' + p.alias) } catch (err) {} }
+  if (e.strikes >= 2) { feed('guard banned ' + p.alias + ' (second block storm)'); door.ban(p.ref, p.alias, f ? f.p.ip : ''); if (f) f.room.drop(f.p.id, 4006, 'banned') }
+  else { feed('guard kicked ' + p.alias + ' (block storm: ' + limit + '+ breaks in ' + win / 1000 + ' s)'); if (f) f.room.drop(f.p.id, 4006, 'kicked') }
+  return true
+}
+
 // ---------------------------------------------------------------- plugins (part 9: the in-game code builder)
 // 18+: a world's plugins live IN the world file (meta 'plugins'), so they travel with exports and backups; the cloud
 // library (option 2) syncs the same JSON later. Only plugins with on:true run. The owner edits them in-game.
@@ -369,7 +389,7 @@ function homeFrame(room, ws, p, text) {
   if (!m || m.v !== 0 || typeof m.t !== 'string') return false
   const staff = p.role !== 'kid'
   const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
-  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } if (pluginEvent({ e: m.id === 0 ? 'break' : 'place', player: evPlayer(p), x: m.x, y: m.y, z: m.z, block: m.id === 0 ? m.b : m.id, before: m.b })) { no('plugin', { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
+  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } if (m.id === 0 && guardBreak(p)) return true; if (pluginEvent({ e: m.id === 0 ? 'break' : 'place', player: evPlayer(p), x: m.x, y: m.y, z: m.z, block: m.id === 0 ? m.b : m.id, before: m.b })) { no('plugin', { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
   if (m.t === 'p') {
     const why = rules.flyWhy(m, staff); if (why) { no(why); return true }
     // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
@@ -449,6 +469,9 @@ const readBody = (req, res) => new Promise((r) => {
 })
 const ownerTokens = new Map()         // token -> expiry; issued after a PIN check, per owner browser session
 const ownerOk = (req) => { const tkn = req.headers['x-owner']; const exp = tkn && ownerTokens.get(tkn); return isLocal(req) && !!exp && exp > Date.now() }
+const inviteJoins = new Map()   // ref -> join reply with invite fields, until the socket opens
+// the link a person opens to land on the join card with the key filled in: the internet address when the tunnel is on, else this PC's
+const joinLink = (key) => (tunnelHost() ? 'https://' + tunnelHost() : 'http://localhost:' + cfg.port) + '/?invite=' + encodeURIComponent(key)
 const tunnelHost = () => String(arg('tunnel-host', cfg.tunnelHost || '')).toLowerCase().replace(/[^a-z0-9.-]/g, '')
 const originOk = (req) => { const o = req.headers.origin; if (!o) return true; const mine = ['http://localhost:' + cfg.port, 'http://127.0.0.1:' + cfg.port, ...lanAddrs().map((a) => 'http://' + a + ':' + cfg.port), ...cfg.origins, ...(tunnelHost() ? ['https://' + tunnelHost()] : [])]; return mine.includes(o) }
 
@@ -470,6 +493,7 @@ async function handle(req, res) {
     // the hub opens a world when a staff seat (here: the owner) is in it; say so instead of handing out a ticket that dies at the door
     if (!r.error && !ownerSeated) return json(res, 403, { error: 'no-owner' })
     if (r.error) return json(res, r.error === 'slow-down' ? 429 : r.error === 'full' ? 503 : 403, { error: r.error, ...(r.wait ? { wait: r.wait } : {}) })
+    if (r.invite) inviteJoins.set(r.ref, r)   // the socket open names it in the feed
     return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: wsBase(req) + '/rt/ws', version: PKG.gameVersion || PKG.version })
   }
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
@@ -494,7 +518,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA })
+      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA, guard: cfg.guard, invites: door.invites })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())
@@ -512,6 +536,10 @@ async function handle(req, res) {
       case '/owner/world/close': endSession(); closeWorld(); return json(res, 200, { ok: true })
       case '/owner/world/backup': return json(res, 200, backupWorld(String(b.name || cfg.world || '')))
       case '/owner/world/restore': return json(res, 200, restoreWorld(String(b.file || '')))
+      case '/owner/invite': { const r = door.invite({ label: b.label, name: b.name || null, max: b.max, ttlMs: Number(b.hours) ? Number(b.hours) * 3600 * 1000 : undefined }); if (r.error) return json(res, 400, r); feed('owner made invite ' + (r.label || r.id) + (b.label ? ' (' + String(b.label).slice(0, 40) + ')' : '') + ', ' + r.max + ' use' + (r.max === 1 ? '' : 's')); return json(res, 200, { ...r, link: joinLink(r.key) }) }
+      case '/owner/invites': return json(res, 200, { list: door.invites })
+      case '/owner/invite/revoke': { const r = door.revokeInvite(String(b.id || '')); if (!r.error) feed('owner revoked invite ' + String(b.id || '')); return json(res, r.error ? 404 : 200, r) }
+      case '/owner/guard': { if (b.on !== undefined || b.breaks !== undefined || b.window !== undefined || b.undo !== undefined) { cfg.guard = { on: b.on === undefined ? cfg.guard.on !== false : b.on === true, breaks: Math.max(10, Math.min(500, Number(b.breaks) || cfg.guard.breaks || 70)), window: Math.max(2, Math.min(60, Number(b.window) || cfg.guard.window || 10)), undo: b.undo === undefined ? cfg.guard.undo !== false : b.undo === true }; saveCfg(); feed('owner set guard: ' + (cfg.guard.on ? cfg.guard.breaks + ' breaks / ' + cfg.guard.window + ' s' + (cfg.guard.undo ? ', undo' : '') : 'off')) } return json(res, 200, { guard: cfg.guard }) }
       case '/owner/kick': return json(res, 200, kick(String(b.ref || '')))
       case '/owner/ban': return json(res, 200, ban(String(b.ref || '')))
       case '/owner/unban': door.unban(String(b.ref || '')); return json(res, 200, { ok: true })
@@ -554,7 +582,8 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
-  feed(c.alias + (c.role !== 'kid' ? ' (owner)' : '') + ' joined · ' + players().length + ' in')
+  const inv = inviteJoins.get(c.ref); inviteJoins.delete(c.ref)
+  feed(c.alias + (c.role !== 'kid' ? ' (owner)' : '') + ' joined' + (inv ? ' with invite ' + (inv.inviteLabel || inv.invite) + ' (' + inv.inviteUse + '/' + inv.inviteMax + ')' : '') + ' · ' + players().length + ' in')
   sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
   { const ev = events.current(); if (ev) try { ws.send(JSON.stringify(ev)) } catch (e) {} }   // and a boss fight already going
   // plugins last: a 'join' greeting must land after the rules frame, which is what turns the player's chat on

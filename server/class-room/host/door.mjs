@@ -19,6 +19,16 @@ export const PIN_BACKOFF_MS = 10 * 60 * 1000
 export const CONNS_PER_IP = 3
 export const NAME_MIN = 2, NAME_MAX = 20
 export const DEFAULT_MAX_PLAYERS = 16
+// Invite keys (part 10): a per-person way in the owner hands out. ADLT-XXXX-XXXX-XXXX from the code alphabet (60 bits),
+// one-use by default, 24 h by default, at most 64 live at once. Only the hash is kept; a key is shown once.
+export const INVITE_PREFIX = 'ADLT'
+export const INVITE_LEN = 12
+export const INVITE_TTL_MS = 24 * 60 * 60 * 1000
+export const INVITE_MAX_TTL_MS = 30 * 24 * 60 * 60 * 1000
+export const INVITE_MAX_USES = 50
+export const INVITES_MAX = 64
+export const isInviteKey = (s) => /^ADLT[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{12}$/.test(normCode(s))
+export const prettyInvite = (k) => INVITE_PREFIX + '-' + normCode(k).slice(INVITE_PREFIX.length).match(/.{1,4}/g).join('-')
 
 // ONE home config id for tickets and claims (a world's config is pinned by the hub, as at school). It is disjoint from
 // the 7 school ids. The RULESET (survival, creative, ...) is session state: the door reports it, hello carries it and
@@ -78,6 +88,7 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
   const pinBuckets = new Map()
   const conns = new Map()               // ipTag -> count (the host updates it on socket open/close)
   const bans = new Map()                // ref -> { name, ipTag, at }  (this process only)
+  const invites = new Map()             // id -> { hash, label, name|null, max, uses, exp, at, revoked, used: [{ name, at }] }  (this process only)
   const names = new Map()               // folded name -> ref  (unique per session)
   const ipTag = (ip) => createHash('sha256').update(codeSalt + '|' + String(ip || 'local')).digest('hex').slice(0, 16)
 
@@ -115,6 +126,21 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
       return { code }                          // people already in stay in: their sockets are accepted already
     },
     end() { session = null; names.clear() },
+    // Invites: make (key returned ONCE), list (no keys), revoke. They outlive a session's code, not the process.
+    invite({ label = '', name = null, max = 1, ttlMs = INVITE_TTL_MS } = {}) {
+      for (const [id, inv] of invites) if (inv.exp <= now()) invites.delete(id)   // spent and revoked ones stay listed until they expire (the owner sees who used them)
+      if (invites.size >= INVITES_MAX) return { error: 'too-many-invites' }
+      const uses = Math.max(1, Math.min(INVITE_MAX_USES, Math.floor(Number(max) || 1)))
+      const ttl = Math.max(60 * 1000, Math.min(INVITE_MAX_TTL_MS, Number(ttlMs) || INVITE_TTL_MS))
+      let key; do { key = INVITE_PREFIX; for (let i = 0; i < INVITE_LEN; i++) key += CODE_ALPHABET[rand(CODE_ALPHABET.length)] } while ([...invites.values()].some((i) => same(i.hash, hashCode(key, codeSalt))))
+      const lock = name ? checkName(name, { filter }) : null
+      if (lock && lock.error) return { error: lock.error }
+      const id = 'inv-' + randomBytes(4).toString('hex')
+      invites.set(id, { hash: hashCode(key, codeSalt), label: String(label || '').slice(0, 40), name: lock ? lock.name : null, max: uses, uses: 0, exp: now() + ttl, at: now(), revoked: false, used: [] })
+      return { id, key: prettyInvite(key), exp: now() + ttl, max: uses }
+    },
+    get invites() { const t = now(); return [...invites.entries()].map(([id, i]) => ({ id, label: i.label, name: i.name, max: i.max, uses: i.uses, exp: i.exp, at: i.at, live: !i.revoked && i.exp > t && i.uses < i.max, used: i.used.slice(-10) })) },
+    revokeInvite(id) { const i = invites.get(id); if (!i) return { error: 'no such invite' }; i.revoked = true; return { ok: true } },
     setPassword(pw) { if (session) session.password = pw ? String(pw) : null },
     setCfg(cfg) { if (session && RULESETS.includes(cfg)) session.cfg = cfg },
     info() { return session ? { id: session.id, startedAt: session.startedAt, lastSeen: session.lastSeen, cfg: session.cfg, world: session.world, password: !!session.password, rotated: session.rotated, players: names.size } : null },
@@ -128,10 +154,21 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
       const lim = limited(joinBuckets, tag, JOIN_PER_MIN, JOIN_BACKOFF_MS)
       if (lim) return { error: 'slow-down', wait: lim.wait }
       if (!session) return { error: 'ended' }
-      if (!same(hashCode(code, codeSalt), session.codeHash)) return { error: 'code' }   // counted above: a wrong code spends a try
-      if (session.password && String(password || '') !== session.password) return { error: 'password' }
+      // an invite key in the code field: the owner's per-person way in (its own expiry and use count; no session password)
+      let inv = null, invId = null
+      if (isInviteKey(code)) {
+        const h = hashCode(code, codeSalt)
+        for (const [id, i] of invites) if (same(i.hash, h)) { inv = i; invId = id }
+        if (!inv) return { error: 'code' }   // counted above: a wrong key spends a try
+        if (inv.revoked) return { error: 'invite-revoked' }
+        if (inv.exp <= now()) return { error: 'invite-expired' }
+        if (inv.uses >= inv.max) return { error: 'invite-used' }
+      } else {
+        if (!same(hashCode(code, codeSalt), session.codeHash)) return { error: 'code' }   // counted above: a wrong code spends a try
+        if (session.password && String(password || '') !== session.password) return { error: 'password' }
+      }
       if (adults !== true) return { error: 'adults' }
-      const n = checkName(name, { filter })
+      const n = checkName(inv && inv.name ? inv.name : name, { filter })   // a name-locked invite joins as that name
       if (n.error) return { error: n.error }
       if ((conns.get(tag) || 0) >= CONNS_PER_IP) return { error: 'too-many' }
       if (playersOnline >= maxPlayers) return { error: 'full' }
@@ -140,8 +177,9 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
       let ref = names.get(key)
       if (!ref) { ref = 'homeref-' + randomBytes(8).toString('hex'); names.set(key, ref) }
       touch()
+      if (inv) { inv.uses++; inv.used.push({ name: n.name, at: now() }) }
       const ticket = await signToken({ v: 1, ref, world: session.world, alias: n.name, exp: Math.floor(now() / 1000) + TICKET_TTL_SEC, jti: 'hj-' + randomBytes(8).toString('hex'), role: 'kid', cfg: HOME_CFG, iss: ISSUER }, secret)
-      return { ticket, name: n.name, ref, ruleset: session.cfg, world: session.world }
+      return { ticket, name: n.name, ref, ruleset: session.cfg, world: session.world, ...(inv ? { invite: invId, inviteLabel: inv.label, inviteUse: inv.uses, inviteMax: inv.max } : {}) }
     },
     // Owner play ticket (role admin = the Room's staff path: kick, freeze, mute, edit anywhere).
     async ownerTicket(name = 'Owner') {

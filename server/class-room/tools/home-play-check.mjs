@@ -201,6 +201,18 @@ try {
     await oc.close(); await pc.close()
   }
 
+  // invite link (part 10): ?invite=KEY lands on the join card with the key in, the key out of the address bar; the name is all that is asked
+  { const ic = await browser.newContext({ viewport: { width: 412, height: 915 }, extraHTTPHeaders: { 'x-forwarded-for': '203.0.113.77' } }), I = await ic.newPage()   // its own address: the 5-a-minute join limit is per address
+    const inv = await api('invite', { label: 'Link Lee', max: 1 })
+    await I.goto(inv.link.replace('http://localhost:' + PORT, H)); await I.waitForSelector('#hj-go'); await sleep(200)
+    const got = await I.evaluate(() => ({ code: document.querySelector('#hj-code').value, url: location.search, focus: document.activeElement && document.activeElement.id, label: document.querySelector('label[for=hj-code]').textContent }))
+    await I.fill('#hj-name', 'Link Lee'); await I.check('#hj-adults'); await I.click('#hj-go'); await I.waitForFunction(() => window.session, null, { timeout: 8000 }).catch(() => {})
+    const inAfter = await I.evaluate(() => !!window.session), out = await I.evaluate(() => document.querySelector('#hj-out') ? document.querySelector('#hj-out').textContent : '(card gone)')
+    eq(got.code === inv.key && got.url === '' && got.focus === 'hj-name' && /invite key/.test(got.label) && inAfter, `invite link: key filled ${got.code === inv.key}, url clean ${got.url === ''}, focus ${got.focus}, label ok ${/invite key/.test(got.label)}, joined ${inAfter}${inAfter ? '' : ' (' + out + ')'}`)
+    await I.goto(H + '/?invite=' + encodeURIComponent(inv.key)); await I.waitForSelector('#hj-go'); await I.fill('#hj-name', 'Link Two'); await I.check('#hj-adults'); await I.click('#hj-go'); await sleep(600)
+    eq(/used up/.test(await I.evaluate(() => document.querySelector('#hj-out').textContent)), 'invite link: a second use of a one-use key is told it is used up')
+    await ic.close() }
+
   // Update card: an old game is told to update instead of joining
   const uc = await browser.newContext({ viewport: { width: 412, height: 915 } }), U = await uc.newPage()
   await U.goto(H + '/?v=0.0.1-old'); await U.waitForSelector('#hj-go')

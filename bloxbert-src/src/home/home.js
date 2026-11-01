@@ -84,8 +84,8 @@ export function homeReload() {
 let sock = null, hello = null, info = null, q = 0
 
 const S = {
-  en: { title: 'Join a home server', intro: 'Run by a person you know, not by the school.', addr: 'Server address', code: 'Session code', name: 'Display name', pw: 'Password (the host set one)', adults: 'This server is for adults 18+. I confirm I am 18 or older.', join: 'Join', asking: 'Asking the host…', in: 'In world “{w}” as {n}', update: 'Your game needs an update to join this server.', updateHow: 'The server runs {s}; this game is {c}. Reload the page from the host address.', retry: 'Try again', solo: 'Play alone instead', rules: 'Rules: {r}',
-    errs: { code: 'That session code is not right.', ended: 'There is no session running. Ask the host to start one.', password: 'That password is not right.', adults: 'Please confirm you are 18 or older.', name: 'Names are 2 to 20 letters, digits, spaces, _ or -.', 'name-reserved': 'That name looks like a host or owner name. Pick another.', 'name-filtered': 'That name is not allowed here. Pick another.', 'name-taken': 'That name is taken in this session.', full: 'The server is full right now.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', 'no-owner': 'The owner is not in the world yet. Ask them to press “Play as owner”.', network: 'Could not reach that server address.' } },
+  en: { title: 'Join a home server', intro: 'Run by a person you know, not by the school.', addr: 'Server address', code: 'Session code or invite key', name: 'Display name', pw: 'Password (the host set one)', adults: 'This server is for adults 18+. I confirm I am 18 or older.', join: 'Join', asking: 'Asking the host…', in: 'In world “{w}” as {n}', update: 'Your game needs an update to join this server.', updateHow: 'The server runs {s}; this game is {c}. Reload the page from the host address.', retry: 'Try again', solo: 'Play alone instead', rules: 'Rules: {r}',
+    errs: { code: 'That session code is not right.', ended: 'There is no session running. Ask the host to start one.', password: 'That password is not right.', adults: 'Please confirm you are 18 or older.', name: 'Names are 2 to 20 letters, digits, spaces, _ or -.', 'name-reserved': 'That name looks like a host or owner name. Pick another.', 'name-filtered': 'That name is not allowed here. Pick another.', 'name-taken': 'That name is taken in this session.', full: 'The server is full right now.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', 'no-owner': 'The owner is not in the world yet. Ask them to press “Play as owner”.', 'invite-used': 'That invite key has been used up. Ask the host for another.', 'invite-expired': 'That invite key has expired. Ask the host for another.', 'invite-revoked': 'That invite key was taken back by the host.', network: 'Could not reach that server address.' } },
 }
 const RULE_NAMES = { 'home-school': 'Same as school', 'home-survival': 'Survival', 'home-creative': 'Creative', 'home-peaceful': 'Peaceful', 'home-pvp': 'PvP on', 'home-hardcore': 'Hardcore' }
 const str = (lang) => ({ ...S.en, lang })   // English-only (adults 18+, Diego Nov 1)
@@ -153,14 +153,17 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
   function showCard(resolve) {
     const root = card(css + `<div class="hc" dir="${rtl ? 'rtl' : 'ltr'}"><h1>${T.title}</h1><p>${T.intro}</p>
       <label for="hj-addr">${T.addr}</label><input type="text" id="hj-addr" autocomplete="off" spellcheck="false" value="${(last.addr || location.origin).replace(/"/g, '')}">
-      <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="9" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH">
+      <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH or ADLT-…">
       <label for="hj-name">${T.name}</label><input type="text" id="hj-name" maxlength="20" autocomplete="off" value="${(last.name || '').replace(/"/g, '')}">
       <div id="hj-pwrow" hidden><label for="hj-pw">${T.pw}</label><input type="password" id="hj-pw" autocomplete="off"></div>
       <label class="ad"><input type="checkbox" id="hj-adults"><span>${T.adults}</span></label>
       <button id="hj-go">${T.join}</button><button id="hj-solo" class="alt">${T.solo}</button><div class="out" id="hj-out" aria-live="polite"></div></div>`)
     const $ = (id) => root.querySelector('#' + id)
     try { if (sessionStorage.getItem(KEY_ADULTS) === '1') $('hj-adults').checked = true } catch (e) {}
-    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 9); $('hj-adults').checked = true; setTimeout(() => $('hj-go').click(), 50); again = null }
+    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 24); $('hj-adults').checked = true; setTimeout(() => $('hj-go').click(), 50); again = null }
+    // an invite link (?invite=ADLT-…): the key goes in the code field and out of the address bar; the person adds a name
+    let invited = ''; try { invited = new URLSearchParams(location.search).get('invite') || '' } catch (e) {}
+    if (/^ADLT/i.test(invited.replace(/[\s-]/g, ''))) { $('hj-code').value = invited.toUpperCase().slice(0, 24); $('hj-addr').value = location.origin; try { history.replaceState(null, '', location.pathname) } catch (e) {} setTimeout(() => $('hj-name').focus(), 50) }
     $('hj-solo').onclick = () => { root.remove(); resolve(null) }
     $('hj-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('hj-go').click() })
     $('hj-go').onclick = async () => {
