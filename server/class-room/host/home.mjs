@@ -25,6 +25,19 @@ const flag = (k) => argv.includes('--' + k)
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const FORBIDDEN_PORTS = [8787, 8788, 8877, 8879, 8881]
 const PKG = JSON.parse(fs.readFileSync(path.join(HERE, '..', 'package.json'), 'utf8'))
+// The game: ../../bertopia-home (npm run build:home in bloxbert-src), served at /. Without it, / is the plain join page.
+const REPO = path.resolve(HERE, '..', '..', '..')
+const GAME = [arg('game', ''), path.join(REPO, 'bertopia-home')].filter(Boolean).map((d) => path.resolve(d)).find((d) => fs.existsSync(path.join(d, 'index.html'))) || null
+const SHARED = path.join(REPO, 'shared')
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.txt': 'text/plain; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.woff': 'font/woff', '.webmanifest': 'application/manifest+json', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg' }
+function serveFile(res, root, rel) {
+  const p = path.normalize(path.join(root, rel))
+  if (!p.startsWith(root) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) return false
+  const ext = path.extname(p).toLowerCase()
+  res.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': ext === '.html' ? 'no-store' : 'max-age=300' })
+  res.end(fs.readFileSync(p)); return true
+}
+try { PKG.gameVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'bloxbert-src', 'package.json'), 'utf8')).version } catch (e) {}
 
 // ---------------------------------------------------------------- config (home.json): secret, PIN hash, settings. No PII.
 const DATA = path.resolve(arg('data', path.join(os.homedir(), 'Documents', 'Bertopia Home')))
@@ -173,7 +186,11 @@ const originOk = (req) => { const o = req.headers.origin; if (!o) return true; c
 export const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x')
   if (!originOk(req)) return text(res, 403, 'origin')
-  if (url.pathname === '/') return page(res, 'join.html')
+  if (url.pathname === '/' || url.pathname === '/index.html') return GAME ? serveFile(res, GAME, 'index.html') : page(res, 'join.html')
+  if (url.pathname === '/join.html') return page(res, 'join.html')
+  if (url.pathname.startsWith('/shared/') && serveFile(res, SHARED, url.pathname.slice('/shared/'.length))) return
+  if (url.pathname.startsWith('/fonts/') && serveFile(res, path.join(REPO, 'fonts'), url.pathname.slice('/fonts/'.length))) return
+  if (GAME && !url.pathname.startsWith('/rt/') && !url.pathname.startsWith('/owner') && url.pathname !== '/join' && url.pathname !== '/version' && serveFile(res, GAME, url.pathname.slice(1))) return
   if (url.pathname === '/owner') return isLocal(req) ? page(res, 'owner.html') : text(res, 403, 'the owner page is for the host PC only')
   if (url.pathname === '/rt/health') return text(res, 200, 'ok')
   if (url.pathname === '/version') return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null })
@@ -183,7 +200,7 @@ export const server = http.createServer(async (req, res) => {
     // the hub opens a world when a staff seat (here: the owner) is in it; say so instead of handing out a ticket that dies at the door
     if (!r.error && !ownerSeated) return json(res, 403, { error: 'no-owner' })
     if (r.error) return json(res, r.error === 'slow-down' ? 429 : r.error === 'full' ? 503 : 403, { error: r.error, ...(r.wait ? { wait: r.wait } : {}) })
-    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: 'ws://' + req.headers.host + '/rt/ws', version: PKG.version })
+    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: 'ws://' + req.headers.host + '/rt/ws', version: PKG.gameVersion || PKG.version })
   }
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
   if (url.pathname.startsWith('/owner/')) {
@@ -274,7 +291,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   server.listen(cfg.port, cfg.listen, () => {
     console.log(`[home] Bertopia personal host (adults 18+)  owner page: http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`)
     console.log(cfg.listen === '127.0.0.1' ? '[home] this PC only (owner page: "Let other computers join" for the LAN)' : '[home] players on this network join at ' + lanAddrs().map((a) => `http://${a}:${cfg.port}/`).join('  or  '))
-    console.log('[home] data: ' + DATA)
+    console.log('[home] data: ' + DATA + (GAME ? ' | game: ' + GAME : ' | no game build yet: run `npm run build:home` in bloxbert-src; / shows the plain join page'))
     if (cfg.world) { const n = cfg.world; cfg.world = null; openWorld(n); console.log('[home] reopened world ' + n + ' (start a session to let people in)') }
     if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }).unref() } catch (e) {} }) }
   })

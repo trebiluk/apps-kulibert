@@ -46,8 +46,14 @@ export function pick(cfg, loc, store) {
   }
 }
 
+// HOME_HOST only (docs/bertopia/HOME-HOST.md §8): the home client sets the endpoints it got from the join screen.
+// At school nothing ever calls this, and the stricter school rules in pick() stay the only path.
+let home = null
+export function setHomeEndpoints(e) { home = e && typeof e.ws === 'string' ? { ws: e.ws, join: e.join || null, status: null, ticket: null } : null }
+
 export function endpoints() {
   try {
+    if (home) return home
     return pick(
       { flag: CLASS_SERVER, ws: CLASS_WS_URL, ticket: CLASS_TICKET_URL, status: CLASS_STATUS_URL },
       location,

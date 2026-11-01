@@ -11,7 +11,11 @@ import { fileURLToPath } from 'url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 process.chdir(HERE)
 const i = process.argv.indexOf('--out')
-const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLOX_OUT || '../blocks')
+// --home: the personal-host build (docs/bertopia/HOME-HOST.md). Sets __HOME_HOST__ and writes to ../bertopia-home/.
+// Never set for the student doors: tools/home-leak-check.mjs proves their bundles carry none of it.
+const HOME = process.argv.includes('--home')
+const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLOX_OUT || (HOME ? '../bertopia-home' : '../blocks'))
+if (HOME && ['blocks', 'bertopia', 'blocks-test'].includes(path.basename(OUT))) throw new Error('a home build never goes into a student door')
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
 import { spawnSync } from 'child_process'
 const PKG = JSON.parse(readFileSync(path.join(HERE, 'package.json'), 'utf8'))
@@ -32,7 +36,7 @@ const saves = spawnSync(process.execPath, ['tools/save-check.mjs'], { stdio: 'in
 if (saves.status) process.exit(saves.status)
 mkdirSync(OUT + '/assets', { recursive: true })
 const STUDENT = ['blocks', 'bertopia'].includes(path.basename(OUT)) // 2.5.473: both doors are student
-console.log('student build:', STUDENT, OUT)
+console.log('student build:', STUDENT, 'home build:', HOME, OUT)
 // These includes are pulled in by StandardMaterial but only run behind defines the
 // game never sets (shadows, bones, morphs, bump, decals, OIT, prepass). The
 // uvOffset line in bumpFragment stays, because the lit shader always uses it.
@@ -55,7 +59,7 @@ await build({
   pure: ['console.debug'],
   plugins: [trimUnusedShaders],
   banner: { js: '/*! Bertopia ' + PKG.version + ' */' },
-  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', '__BLOX_DOOR__': JSON.stringify('/' + path.basename(OUT) + '/'), PKG_VERSION: JSON.stringify(PKG.version) },
+  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', '__BLOX_DOOR__': JSON.stringify('/' + path.basename(OUT) + '/'), '__HOME_HOST__': HOME ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 // Icon test entry — no main.js, just the contact sheet
 await build({
@@ -63,6 +67,14 @@ await build({
   outfile: OUT + '/icons-test.js', loader: { '.json': 'json' }, legalComments: 'eof',
 })
 let indexSrc = readFileSync('index.html', 'utf8')
+if (HOME) {
+  // The home page is the student page minus the school sign-in and the kw-test gate, plus the home marker.
+  // Derived here so the two never drift; the host serves /shared/* itself.
+  indexSrc = indexSrc.replace(/<script src="\/shared\/hub-staff-auth\.js"><\/script>\n?/, '')
+  indexSrc = indexSrc.replace(/<script[^>]*kw-test[^>]*><\/script>\n?/g, '')
+  indexSrc = indexSrc.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="bertopia-home" content="1">')
+  if (/hub-staff-auth|kw-test/.test(indexSrc)) throw new Error('home index still carries school sign-in')
+}
 const ver = JSON.parse(readFileSync('package.json', 'utf8')).version
 // Replace version plate, chip data-version, and app.js query
 indexSrc = indexSrc.replace(/id="ver-plate">[^<]+</, 'id="ver-plate">' + ver + '<')
@@ -75,6 +87,7 @@ if (!indexSrc.includes('<title>Bertopia ' + ver + '</title>') || !indexSrc.inclu
   process.exit(1)
 }
 writeFileSync(OUT + '/index.html', indexSrc)
+if (!HOME) { const leak = spawnSync(process.execPath, ['tools/home-leak-check.mjs', OUT], { stdio: 'inherit' }); if (leak.status) process.exit(leak.status) }
 cpSync('read.css', OUT + '/read.css')
 cpSync('icons-test.html', OUT + '/icons-test.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
