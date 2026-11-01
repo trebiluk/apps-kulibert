@@ -195,6 +195,48 @@ for (const [w, h, touch] of [[1366, 768, false], [412, 915, true], [915, 412, tr
   await ctx.close()
 }
 
+// Part 2: beam and words. Needs the test hook window.__blocks.holo2() from main.js.
+{
+  const { ctx, page, errors } = await boot(1366, 768, false)
+  const has = await page.evaluate(() => !!(window.__blocks && window.__blocks.holo2))
+  note('p2 hook present', has)
+  if (has) {
+    const idle = await page.evaluate(() => window.__blocks.holo2())
+    note('p2 idle: no beam, no word', idle.beam.alpha === 0 && !idle.beam.word, JSON.stringify(idle.beam))
+    // aim at a block in reach and hold dig
+    await page.evaluate(() => {
+      const B = window.__blocks
+      B.lookHand({ show: true, side: 'right' })
+      B.mode('survival')
+      B.setLook(0, 0.35)
+    })
+    await sleep(300)
+    await page.mouse.move(683, 384)
+    await page.mouse.down({ button: 'left' })
+    await sleep(700)
+    const mining = await page.evaluate(() => window.__blocks.holo2())
+    await page.mouse.up({ button: 'left' })
+    note('p2 mining: beam on, "Mining N%"', mining.beam.alpha === 1 && /\d+%/.test(mining.beam.word), JSON.stringify(mining.beam))
+    note('p2 mining: no white in beam', mining.beam.brightest > 0 && mining.beam.brightest <= 0xEE, 'max ' + mining.beam.brightest)
+    await sleep(400)
+    const after = await page.evaluate(() => window.__blocks.holo2())
+    note('p2 release: beam gone within 400 ms', after.beam.alpha === 0, JSON.stringify(after.beam))
+    // creative place: ghost + "Place"
+    await page.evaluate(() => { window.__blocks.mode('creative'); window.__blocks.setLook(0, 0.5) })
+    await sleep(900)
+    const placing = await page.evaluate(() => window.__blocks.holo2())
+    note('p2 placing: beam + dashed ghost + word', placing.beam.kind === 'place' && placing.ghostDash && !!placing.beam.word, JSON.stringify({ k: placing.beam.kind, w: placing.beam.word, dash: placing.ghostDash }))
+    // too far: look up at the sky, no block anywhere near -> no word; look at a far block -> "Too far"
+    await page.evaluate(() => window.__blocks.setLook(0, -1.2))
+    await sleep(400)
+    const sky = await page.evaluate(() => window.__blocks.holo2())
+    note('p2 sky: no beam, no word', sky.beam.alpha === 0 && !sky.beam.word, JSON.stringify(sky.beam))
+    note('p2 no screen flash element', await page.evaluate(() => { const p = document.getElementById('poof'); return !p || p.hidden }))
+  }
+  note('p2 no page errors', errors.length === 0, errors.join(' | '))
+  await ctx.close()
+}
+
 await browser.close()
 server.close()
 console.log(failed ? 'holo hand: ' + failed + ' FAIL' : 'holo hand: all PASS')

@@ -4024,6 +4024,7 @@ for (const [lang, row] of Object.entries(HOLO1)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
 // 0065: Crafting chip for recipes that need metal before the smelter tier is open. fa-AF, rw, and ti are machine drafts.
 const CRAFT065 = {
   en: { needsMetal: '🔒 Needs metal tier' },
@@ -4037,6 +4038,23 @@ const CRAFT065 = {
   ti: { needsMetal: '🔒 ደረጃ ብረት የድሊ' },
 }
 for (const [lang, row] of Object.entries(CRAFT065)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
+// Holo Hand part 2: the words by the crosshair. Icon glyphs stay in every language. fa-AF, rw, and ti are machine drafts.
+const HOLO2 = {
+  en: { holoMining: 'Mining {n}%', holoPlace: 'Place ▢', holoOpen: 'Open ⇲', holoTooFar: 'Too far ⟂' },
+  simple: { holoMining: 'Digging {n}%', holoPlace: 'Put block ▢', holoOpen: 'Open ⇲', holoTooFar: 'Too far ⟂' },
+  uk: { holoMining: 'Копаю {n}%', holoPlace: 'Поставити ▢', holoOpen: 'Відкрити ⇲', holoTooFar: 'Задалеко ⟂' },
+  ru: { holoMining: 'Копаю {n}%', holoPlace: 'Поставить ▢', holoOpen: 'Открыть ⇲', holoTooFar: 'Слишком далеко ⟂' },
+  es: { holoMining: 'Picando {n}%', holoPlace: 'Poner ▢', holoOpen: 'Abrir ⇲', holoTooFar: 'Muy lejos ⟂' },
+  ar: { holoMining: 'تعدين {n}٪', holoPlace: 'ضع ▢', holoOpen: 'افتح ⇲', holoTooFar: 'بعيد جداً ⟂' },
+  'fa-AF': { holoMining: 'کندن {n}٪', holoPlace: 'بگذار ▢', holoOpen: 'باز کن ⇲', holoTooFar: 'خیلی دور ⟂' },
+  rw: { holoMining: 'Gucukura {n}%', holoPlace: 'Shyiraho ▢', holoOpen: 'Fungura ⇲', holoTooFar: 'Kure cyane ⟂' },
+  ti: { holoMining: 'ምኹዓት {n}%', holoPlace: 'ኣቐምጥ ▢', holoOpen: 'ክፈት ⇲', holoTooFar: 'ኣዝዩ ርሑቕ ⟂' },
+}
+for (const [lang, row] of Object.entries(HOLO2)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

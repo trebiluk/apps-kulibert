@@ -3540,3 +3540,25 @@ html body #holo-note[data-side="left"] { right: auto; left: 8px; }
 html body #holo-note[hidden] { display: none; }
 html body .hand-pair { display: inline-flex; gap: 6px; }
 html body .hand-pair .pill { min-width: 64px; min-height: 44px; }
+
+/* Holo Hand part 2: the beam canvas sits under the HUD and over the world; the word sits under the crosshair ring. */
+html body #holo-beam { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+html body #holo-word {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + 34px);
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 4px 10px;
+  border: 2px solid #8A5A22;
+  border-radius: 8px;
+  background: #1F262E;
+  color: #EEF3F7;
+  font: 700 15px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html body #holo-word[hidden] { display: none; }
+html body #holo-word[data-kind="far"] { border-style: dashed; color: #C5D0D6; }
+/* place-cue ("Fits") already sits one row under the crosshair, so the word takes the next row while a cue shows */
+html body:has(#place-cue:not([hidden])) #holo-word { top: calc(50% + 66px); }
