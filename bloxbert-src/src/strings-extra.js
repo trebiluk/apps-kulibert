@@ -3937,3 +3937,20 @@ for (const [lang, row] of Object.entries(LORE596)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// Maker Pages L02: pages 2, 3 and 5. "Clock Gate" stays a name in Latin-script packs. fa-AF, rw, and ti are machine drafts.
+const LORE597 = {
+  en: { mp2: 'The Clock Gate keeps time for the whole land. Keep it turning.', mp3: 'Light bends in the glass trees. We used it to send messages.', mp5: 'The tide is a clock too. Everything here is a machine if you look.' },
+  simple: { mp2: 'The Clock Gate keeps time here. Keep it turning.', mp3: 'Light bends in glass trees. We used it to send messages.', mp5: 'The tide is a clock too. Look close: everything here is a machine.' },
+  uk: { mp2: 'Годинникова Брама відмірює час для всієї землі. Нехай вона обертається.', mp3: 'Світло заломлюється в скляних деревах. Ми надсилали ним повідомлення.', mp5: 'Приплив — це теж годинник. Придивися: тут усе — машина.' },
+  ru: { mp2: 'Часовые Врата отмеряют время для всей земли. Пусть они крутятся.', mp3: 'Свет преломляется в стеклянных деревьях. Мы посылали им сообщения.', mp5: 'Прилив — это тоже часы. Присмотрись: здесь всё — машина.' },
+  es: { mp2: 'El Clock Gate marca la hora de toda la tierra. Mantenlo girando.', mp3: 'La luz se dobla en los árboles de vidrio. La usábamos para enviar mensajes.', mp5: 'La marea también es un reloj. Si miras bien, todo aquí es una máquina.' },
+  ar: { mp2: 'بوابة الساعة تحفظ الوقت للأرض كلها. أبقها تدور.', mp3: 'ينكسر الضوء في أشجار الزجاج. استخدمناه لإرسال الرسائل.', mp5: 'المد ساعة أيضا. إذا نظرت جيدا، فكل شيء هنا آلة.' },
+  'fa-AF': { mp2: 'دروازه ساعت وقت همه سرزمین را نگه می‌دارد. بگذار بچرخد.', mp3: 'نور در درختان شیشه‌ای خم می‌شود. ما با آن پیام می‌فرستادیم.', mp5: 'مد دریا هم یک ساعت است. اگر خوب نگاه کنی، همه چیز اینجا یک ماشین است.' },
+  rw: { mp2: "Clock Gate ibara igihe cy'igihugu cyose. Komeza uyizengurutse.", mp3: "Urumuri rugorama mu biti by'ibirahure. Twarukoreshaga kohereza ubutumwa.", mp5: 'Umuhengeri nawo ni isaha. Nureba neza, byose hano ni imashini.' },
+  ti: { mp2: 'ኣፍደገ ሰዓት ንመላእ ምድሪ ግዜ ይሕሉ። ክዘውር ግደፎ።', mp3: 'ብርሃን ኣብ ኦም መስታወት ይጠውይ። መልእኽቲ ንምልኣኽ ተጠቒምናሉ።', mp5: 'ማዕበል ባሕሪ እውን ሰዓት እዩ። ኣጸቢቕካ እንተ ረኣኻ፡ ኣብዚ ኩሉ ማሽን እዩ።' },
+}
+for (const [lang, row] of Object.entries(LORE597)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

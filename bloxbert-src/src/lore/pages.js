@@ -4,12 +4,16 @@
 
 export const PAGE_TOTAL = 20
 export const PAGE_TOAST_DELAY = 2500
+export const PAGE_TOAST_GAP = 4000
 
 // event -> page. Events come from existing first-time moments only (no new world content in L01).
 export const PAGE_TRIGGERS = {
   pathTool: 1, // first tool made: "We came to the Verge to learn how everything works."
   rebootkeeper: 4, // first Keeper rebooted: "The robots in the salt were our helpers…"
   rebootrustbot: 10, // first Rustbot rebooted: "Our robots forgot their instructions… They're lost."
+  sleep: 2, // first night slept in a bed: "The Clock Gate keeps time for the whole land. Keep it turning."
+  bakeGlass: 3, // first glass out of an oven: "Light bends in the glass trees. We used it to send messages."
+  day2: 5, // first time the kid lives to Day 2: "The tide is a clock too. Everything here is a machine if you look."
 }
 
 export function pageIds(notes) {
@@ -28,6 +32,9 @@ export function isPageNote(id) { return /^mp\d{1,2}$/.test(String(id)) }
 
 export function createLore({ learn, t, toast }) {
   const say = (k) => (t ? t(k) : k)
+  // Two pages can land together (sleeping also turns Day 1 into Day 2). The calm queue lets a newer plain toast
+  // replace a waiting one, so lore spaces its own lines PAGE_TOAST_GAP apart.
+  let nextFree = 0
   function found() { return pageIds(learn && learn.notes ? learn.notes() : []) }
   function find(n) {
     n = n | 0
@@ -37,11 +44,19 @@ export function createLore({ learn, t, toast }) {
     // the page has its own toast ("Wood Tool!", "Rebooted!"), and the calm queue lets a newer plain toast replace a
     // waiting one, so posting at the same instant would lose the page line.
     // Short on purpose: a 60-word page overflows the toast box at 1366, so the page itself lives in the Notebook.
-    if (toast) setTimeout(() => toast('📜 ' + say('mpFound').replace('{n}', n)), PAGE_TOAST_DELAY)
+    const now = Date.now()
+    const wait = Math.max(PAGE_TOAST_DELAY, nextFree - now)
+    nextFree = now + wait + PAGE_TOAST_GAP
+    // The first Rustbot/Keeper reboot also opens the full-screen Bertodex card; hold the line until it closes.
+    const post = (tries) => {
+      if (typeof document !== 'undefined' && document.getElementById('bertodex-card') && tries < 120) { setTimeout(() => post(tries + 1), 500); return }
+      toast('📜 ' + say('mpFound').replace('{n}', n))
+    }
+    if (toast) setTimeout(() => post(0), wait)
     return true
   }
   function on(evt) {
-    const n = PAGE_TRIGGERS[String(evt || '').toLowerCase()] || PAGE_TRIGGERS[evt]
+    const n = PAGE_TRIGGERS[evt] || PAGE_TRIGGERS[String(evt || '').toLowerCase()]
     return n ? find(n) : false
   }
   return { found, find, on }

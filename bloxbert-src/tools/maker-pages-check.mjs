@@ -38,10 +38,20 @@ async function boot(w, h, touch, lang) {
   await page.goto('http://127.0.0.1:8879/?q=lite&smoke=1&proof=1' + (touch ? '&touch=1' : ''), { waitUntil: 'domcontentloaded', timeout: 60000 })
   await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__blocks, { timeout: 60000 })
   await page.evaluate(() => { try { window.__blocks.noa.setPaused(false) } catch (e) {} ; window.__blocks.mode('survival') })
+  page.__seen = []
+  await page.exposeFunction('__mpSeen', (txt) => { if (!page.__seen.includes(txt)) page.__seen.push(txt) })
+  await page.evaluate(() => {
+    const el = document.getElementById('toast')
+    if (el) new MutationObserver(() => { const t = el.textContent || ''; if (/📜/.test(t)) window.__mpSeen(t) }).observe(el, { childList: true, subtree: true, characterData: true })
+  })
   return page
 }
 const toastText = (page) => page.evaluate(() => (document.getElementById('toast') || {}).textContent || '')
+const waitSaw = async (page, n, ms = 15000) => { const end = Date.now() + ms; while (Date.now() < end) { if (saw(page, n)) return true; await sleep(250) } return false }
+const saw = (page, n) => page.__seen.some((x) => new RegExp('\\b' + n + '\\b').test(x))
 async function reboot(page, kind) {
+  // a kid closes the Bertodex card that the first reboot opens
+  setTimeout(() => page.evaluate(() => { const b = document.getElementById('dex-close'); if (b) b.click() }).catch(() => {}), 1500)
   return page.evaluate((kind) => { const P = window.__BT_PROOF; if (!P) return false; const m = P.spawnMob(kind); return m && m.id ? (P.rebootMob(m.id), true) : false }, kind)
 }
 async function notebook(page) {
@@ -70,18 +80,18 @@ for (const [w, h, touch] of [[1366, 768, false], [412, 915, true]]) {
   })
   await sleep(2900) // the page line waits 2.5 s behind the moment's own toast
   const t1 = await toastText(page)
-  note('page 1 on first tool ' + w, made && made.ok !== false && /📜/.test(t1), JSON.stringify(made) + ' ' + t1)
+  note('page 1 on first tool ' + w, made && made.ok !== false && await waitSaw(page, 1), JSON.stringify(made) + ' ' + page.__seen.join(' / '))
   const rb = await reboot(page, 'rustbot')
-  await sleep(2900)
+  await sleep(5000) // pages are spaced 4 s apart so a newer toast can't replace a waiting one
   const t10 = await toastText(page)
-  note('page 10 on first Rustbot reboot ' + w, rb && /📜/.test(t10) && /10/.test(t10), t10)
+  note('page 10 on first Rustbot reboot ' + w, rb && await waitSaw(page, 10), page.__seen.join(' / '))
   await reboot(page, 'rustbot')
   await sleep(300)
   const again = await toastText(page)
   const kp = await reboot(page, 'keeper')
-  await sleep(2900)
+  await sleep(7000)
   const t4 = await toastText(page)
-  note('page 4 on first Keeper reboot ' + w, kp && /📜/.test(t4), t4)
+  note('page 4 on first Keeper reboot ' + w, kp && await waitSaw(page, 4), page.__seen.join(' / '))
   const nb = await notebook(page)
   note('notebook lists pages ' + w, nb.head.includes('3/20') && nb.pages.join(',') === '1,4,10' && nb.stray === 0 && !nb.none, JSON.stringify(nb))
   await page.evaluate(() => { const h = document.querySelector('#sheet .mp-head'); if (h) h.scrollIntoView({ block: 'start' }) })
@@ -97,6 +107,25 @@ for (const [w, h, touch] of [[1366, 768, false], [412, 915, true]]) {
   await sleep(600)
   const kept = await notebook(page)
   note('pages kept after reload ' + w, kept.pages.join(',') === '1,4,10', JSON.stringify(kept) + ' again=' + JSON.stringify(again))
+  await page.browserContext().close()
+}
+
+// L02: page 2 on the first sleep (night, then bed), page 5 on Day 2 (sleeping turns the day), page 3 on first glass
+for (const [w, h, touch] of [[1366, 768, false], [412, 915, true]]) {
+  const page = await boot(w, h, touch)
+  const seen = page.__seen
+  const slept = await page.evaluate(() => { window.__clock.night(); return window.__clock.sleep() })
+  await sleep(10500) // two pages land together: 2.5 s, then 4 s apart
+  const nb = await notebook(page)
+  const two = seen.filter((x) => /\b2\b/.test(x)).length, five = seen.filter((x) => /\b5\b/.test(x)).length
+  note('pages 2 and 5 on first sleep ' + w, slept === 'night' && nb.pages.includes(2) && nb.pages.includes(5) && two >= 1 && five >= 1, JSON.stringify({ slept, pages: nb.pages, seen }))
+  await page.evaluate(() => window.__smoke.close())
+  const bake = await page.evaluate(() => window.__smoke.bakeGlass())
+  await sleep(6500) // glass takes 5 s
+  await page.evaluate(() => window.__smoke.ovenTick())
+  await sleep(2900)
+  const nb3 = await notebook(page)
+  note('page 3 on first glass baked ' + w, nb3.pages.includes(3) && seen.some((x) => /\b3\b/.test(x)), JSON.stringify({ bake: { fueled: bake.fueled, armed: bake.armed }, pages: nb3.pages, seen: seen.length }))
   await page.browserContext().close()
 }
 

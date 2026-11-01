@@ -6117,6 +6117,7 @@ function paintDayClock() {
   if (tim) tim.textContent = face.text
   btn.dataset.lock = face.locked ? 'day' : ''
   btn.dataset.phase = face.phase
+  if (face.day >= 2 && loreRef && session && session.mode === 'survival') loreRef.on('day2')
   const label = face.locked ? t('alwaysDay') : t('clockDay').replace('{n}', String(face.day)) + ' · ' + face.text
   btn.setAttribute('aria-label', label)
 }
@@ -6760,7 +6761,7 @@ const mobs = createMobs({
   scene: () => { try { return noa.rendering.getScene() } catch (e) { return null } },
   addMesh: (mesh) => { try { noa.rendering.addMeshToScene(mesh, false) } catch (e) {} },
 })
-const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
+const stations = createStations({ touch: () => noteMachine(), t, baked: (item) => { if (item === 'glass' && loreRef) loreRef.on('bakeGlass') }, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
@@ -8040,6 +8041,7 @@ function sleepNow() {
     paintDayClock()
     sleepBusy = false
   }
+  if (loreRef) loreRef.on('sleep')
   if (!fade) { wake(); return 'night' }
   fade.hidden = false
   requestAnimationFrame(() => fade.classList.add('on'))
@@ -13769,6 +13771,15 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       const armed = stations.arm(key, 'bread')
       return { fueled, armed, flour: session.bag.count('flour'), bread: session.bag.count('bread'), view: stations.view(key) }
     },
+    bakeGlass() { // Maker Page 3 check: a real oven bake of 2 sand into glass (same path as bakeBread)
+      const key = '12,5,8'
+      if (session.bag.count('sand') < 2) session.give('sand', 2)
+      if (!session.bag.count('planks')) session.give('planks', 1)
+      const fueled = stations.addFuel(key, 'planks')
+      const armed = stations.arm(key, 'glass')
+      return { fueled, armed, view: stations.view(key) }
+    },
+    ovenTick() { stations.tick(); return true },
     takeBread() {
       const key = '11,5,8'
       stations.tick()
