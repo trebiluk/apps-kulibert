@@ -217,6 +217,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import * as HOME from './home/home.js' // HOME_HOST only: every use is inside `if (__HOME_HOST__)`, so the student build drops it (tools/home-leak-check.mjs)
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -5959,7 +5960,7 @@ function pushOnHide() {
   if (!(dirty && allowSave && !savePaused) || oldSwap || readOnlySave) return
   try { maybePush(snapshotNow()) } catch (e) {}
 }
-window.addEventListener('pagehide', () => { writeSpot(); flushSave(); pushOnHide() })
+window.addEventListener('pagehide', () => { writeSpot(); flushSave(); pushOnHide(); if (__HOME_HOST__) HOME.homeLeave() })
 claimSaveLock()
 setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
@@ -13214,7 +13215,11 @@ window.__bertopiaRotateCheck = function () {
     resetCount: bertRotateResets,
   }
 }
-;(bootLoad = load()).catch(() => {}).finally(() => {
+let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
+;(bootLoad = (async () => {
+  if (__HOME_HOST__ && HOME.isHomePage()) { try { homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
+  return load()
+})()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
   if (allowSave) window.__bertOpen = true
@@ -13291,7 +13296,7 @@ window.__bertopiaRotateCheck = function () {
   else paintBar()
   if (sentToSurvival) toast(t('studentWorld'))
   markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
-  showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
+  showRulesCard({ teacher: !!(teacherOn() || staffOn() || (__HOME_HOST__ && HOME.homeOwnerOn())), lang: LANG, world: WORLD })
   if (location.search.includes('shot=1')) armShot()
   if (location.search.includes('craft=1')) armCraft()
   if (location.search.includes('use=')) armUse()
