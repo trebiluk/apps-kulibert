@@ -11363,23 +11363,29 @@ Effect.ShadersStore.bertSkyFragmentShader = [
   'precision highp float;varying vec3 vPos;',
   'uniform float uTime;uniform float uFlat;uniform float uStars;uniform float uHillOn;uniform float uGlowAmt;',
   'uniform vec3 uZenith;uniform vec3 uHorizon;uniform vec3 uGlowDir;uniform vec3 uGlowCol;uniform vec3 uHillNear;uniform vec3 uHillFar;',
-  'uniform sampler2D uHills;',
+  'uniform sampler2D uHills;uniform vec3 uSunDir;uniform vec3 uMoonDir;uniform float uSunVis;uniform float uMoonVis;uniform vec3 uSunCol;uniform vec3 uMoonCol;',
+  // blocky body: a square on the sky, a lighter square core. Drawn here (not as a billboard) so the hills drawn after it cover it.
+  'float body(vec3 n,vec3 d,float rimSz,float coreSz){float c=dot(n,d);if(c<=0.0)return 0.0;vec3 ax=normalize(abs(d.y)>0.99?vec3(1.0,0.0,0.0):cross(vec3(0.0,1.0,0.0),d));vec3 ay=cross(d,ax);vec2 p=vec2(dot(n,ax),dot(n,ay))/c;float q=max(abs(p.x),abs(p.y));return step(q,rimSz)+step(q,coreSz);}',
   'void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;',
   // soft glow around the sun or moon, strongest low on the horizon
   'float d=max(dot(n,uGlowDir),0.0);float low=1.0-smoothstep(0.1,0.75,n.y);',
   'col+=uGlowCol*(pow(d,5.0)*0.45+pow(d,40.0)*0.55)*uGlowAmt*mix(0.5,1.0,low);',
   'float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));',
   'col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);',
+  // the sun and moon, blocky; 1 = rim, 2 = core
+  'float sb=body(n,normalize(uSunDir),0.05,0.03)*uSunVis;col=mix(col,uSunCol*0.92,min(sb,1.0));col=mix(col,uSunCol,clamp(sb-1.0,0.0,1.0));',
+  'float mb=body(n,normalize(uMoonDir),0.04,0.024)*uMoonVis;col=mix(col,uMoonCol*0.85,min(mb,1.0));col=mix(col,uMoonCol,clamp(mb-1.0,0.0,1.0));',
   // never brighter than about #EEF3F7
   'col=min(col,vec3(0.93,0.95,0.96));',
   // far hills: two ridgelines from a 64x1 strip, hazed toward the horizon color, fading out below the horizon
-  'if(uHillOn>0.5&&n.y<0.3){float az=atan(n.z,n.x)*0.15915494+0.5;vec2 hh=texture2D(uHills,vec2(az,0.5)).rg*0.2;',
+  // blocky: one flat-topped column per strip texel (no blending between them) and heights in whole steps, hard edges
+  'if(uHillOn>0.5&&n.y<0.3){float az=(floor((atan(n.z,n.x)*0.15915494+0.5)*64.0)+0.5)/64.0;vec2 hh=floor(texture2D(uHills,vec2(az,0.5)).rg*0.2/0.008)*0.008;',
   'float fade=smoothstep(-0.12,0.02,n.y);',
-  'float fa=1.0-smoothstep(hh.g-0.002,hh.g+0.002,n.y);col=mix(col,mix(uHorizon,uHillFar,fade),fa);',
-  'float na=1.0-smoothstep(hh.r-0.002,hh.r+0.002,n.y);col=mix(col,mix(uHorizon,uHillNear,fade),na);}',
+  'float fa=step(n.y,hh.g);col=mix(col,mix(uHorizon,uHillFar,fade),fa);',
+  'float na=step(n.y,hh.r);col=mix(col,mix(uHorizon,uHillNear,fade),na);}',
   'gl_FragColor=vec4(col,1.0);}',
 ].join('')
-const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon', 'uGlowDir', 'uGlowCol', 'uGlowAmt', 'uHillOn', 'uHillNear', 'uHillFar'], samplers: ['uHills'] })
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon', 'uGlowDir', 'uGlowCol', 'uGlowAmt', 'uHillOn', 'uHillNear', 'uHillFar', 'uSunDir', 'uMoonDir', 'uSunVis', 'uMoonVis', 'uSunCol', 'uMoonCol'], samplers: ['uHills'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
 skyMat.fogEnabled = false
@@ -11394,8 +11400,14 @@ skyMat.setVector3('uGlowDir', new Vector3(0, -1, 0))
 skyMat.setColor3('uGlowCol', new Color3(0.9, 0.82, 0.58))
 skyMat.setColor3('uHillNear', new Color3(0.4, 0.5, 0.5))
 skyMat.setColor3('uHillFar', new Color3(0.5, 0.6, 0.65))
+skyMat.setVector3('uSunDir', new Vector3(0, 1, 0))
+skyMat.setVector3('uMoonDir', new Vector3(0, -1, 0))
+skyMat.setFloat('uSunVis', 0)
+skyMat.setFloat('uMoonVis', 0)
+skyMat.setColor3('uSunCol', new Color3(0.93, 0.88, 0.66))
+skyMat.setColor3('uMoonCol', new Color3(0.86, 0.89, 0.93))
 // The hills live in the sky shader: one 64x1 strip, built once from the world. No extra mesh, no extra draw call.
-const hillTex = new DynamicTexture('far-hills', { width: HILL_N, height: 1 }, scene, false, Texture.BILINEAR_SAMPLINGMODE)
+const hillTex = new DynamicTexture('far-hills', { width: HILL_N, height: 1 }, scene, false, Texture.NEAREST_SAMPLINGMODE)
 hillTex.wrapU = Texture.WRAP_ADDRESSMODE
 hillTex.wrapV = Texture.CLAMP_ADDRESSMODE
 skyMat.setTexture('uHills', hillTex)
@@ -11525,8 +11537,13 @@ function applySky() {
     skyMat.setColor3('uHillNear', skyNear)
     skyMat.setColor3('uHillFar', skyFar)
   }
-  placeBody(sunQuad, bod.sun, skyEase.sun, 1)
-  placeBody(moonQuad, bod.moon, skyEase.moon, 0.9)
+  // Sun and moon are drawn by the sky shader now (blocky, and behind the far hills). The billboards stay off.
+  sunQuad.setEnabled(false)
+  moonQuad.setEnabled(false)
+  skyMat.setVector3('uSunDir', new Vector3(bod.sun.dir[0], bod.sun.dir[1], bod.sun.dir[2]))
+  skyMat.setVector3('uMoonDir', new Vector3(bod.moon.dir[0], bod.moon.dir[1], bod.moon.dir[2]))
+  skyMat.setFloat('uSunVis', skyEase.sun > 0.02 ? Math.min(1, skyEase.sun) : 0)
+  skyMat.setFloat('uMoonVis', skyEase.moon > 0.02 ? Math.min(1, skyEase.moon * 0.9) : 0)
   if (!underWater) {
     // Fog is the horizon color, exactly, so far chunks melt into the sky with no pale wall.
     scene.fogColor.set(skyEase.h[0], skyEase.h[1], skyEase.h[2])
