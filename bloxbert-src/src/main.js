@@ -3569,7 +3569,22 @@ function useHoldReady(dig, now) {
   if (isDoor(dig.id)) return false
   return now - (dig.t0 || now) >= 500
 }
+// Home build (adults 18+): Rotten food used on a crop or bush is compost (src/home/decay.js). Survival only.
+function homeCompostAt(hit) {
+  if (!hit || !hit.position || !session || !survivalOn() || !session.selectedItem || session.selectedItem() !== 'rotten') return false
+  const [x, y, z] = hit.position
+  const id = hit.blockID != null ? hit.blockID : hit.id
+  if (!(isCropId(id) || isBushId(id))) return false
+  const crop = farm.get(x, y, z)
+  if (!crop || !canReach([x, y, z])) return false
+  advance(crop, Date.now())
+  if (!(__HOME_HOST__ && HOME.homeCompostCrop(crop, capOf(crop)))) { toast(HOME.homeSay('compostRipe')); return true }
+  session.takeHeldOne('rotten')
+  if (__HOME_HOST__) toast(HOME.homeSay('composted'))
+  return true
+}
 function useAt(hit) {
+  if (__HOME_HOST__ && homeCompostAt(hit)) return true
   // C5 Foundry Console: Override Key on the arena Console
   try {
     if (hit && hit.position && isFoundryConsole(hit.id != null ? hit.id : hit.blockID, hit.position[0], hit.position[2])) {

@@ -56,6 +56,17 @@ or the 💬 rule in the game. What stays, because it is about spam and safety ra
 Each player's game is told its own value. Note: today nothing in Bertopia takes items away (running out of energy only
 slows you down), so *Lose* has no effect yet; it is ready for when a faint or drop rule exists.
 
+## Decay (survival)
+Things age while you play survival (not while the game is closed or hidden; never in creative):
+- **Food rots.** Berries go stale after about 10 minutes of play and rot after 20; cupcakes after 20/40; bread after
+  30/60. Stale food gives half the energy (the bag shows a freshness bar and says *stale*). Fresh food added to a stack
+  freshens it a little (the stack's age is the average).
+- **Rotten food** can be eaten (a gamble: nothing, +1 energy, or −1 energy and slower for 20 s), thrown out (Drop),
+  or used on a crop or bush as compost (it grows a quarter of the way at once).
+- **The bag wears**: about 20% an hour with a full bag (10+ slots used), about 6% an hour with a light one. Every 20%
+  tears one pocket slot (✂, and the slot says so); the 9 hotbar slots never tear. A torn slot keeps what is in it, but
+  nothing new goes in. The Bag title shows wear and usable slots. A **Bag patch** (1 tan wool, craft list) mends 20%.
+
 ## Boss fights
 Creatures run in each player's own game. When someone starts a Foundry Overseer fight, everyone else gets a note
 ("… started a Foundry Overseer fight. Come help!"), and another when it is over. One fight per world at a time. It ends
@@ -119,6 +130,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
+- in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
+  with and without the home flag, and the home vs student game compile);
 - `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes,
   Update card, 44 px targets, focus rings). It runs the full game too when `bertopia-home/` has been built. It needs
   esbuild (`npm ci` in `bloxbert-src`) and Playwright, and says SKIP when they are missing.

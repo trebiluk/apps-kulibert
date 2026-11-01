@@ -8,10 +8,27 @@
 // adults-only and its own text is English-only (Diego, Nov 1); the game itself keeps all its languages.
 import { setHomeEndpoints } from '../classnet/config.js'
 import { Rules } from '../rules.js'
+import { ITEMS } from '../data/items.js'
+import { RECIPES } from '../data/recipes.js'
+import { EXTRA } from '../strings-extra.js'
+import { DECAY_ITEMS, DECAY_RECIPES, DECAY_STRINGS, compost, say } from './decay.js'
 
 // Home-only rules (docs §5). Registered from here, so the student build never has them. The personal host is
 // adults-only and English-only (Diego, Nov 1): labels are English; the game falls back to English for every language.
+// Decay (food rots, the bag wears): the two home items, the Bag patch recipe and their English words, added at boot.
+// Called from registerHomeRules (main.js boot, under __HOME_HOST__), before the world and the craft list exist.
+let decayIn = false
+function registerDecay() {
+  if (decayIn) return
+  for (const [k, def] of Object.entries(DECAY_ITEMS)) if (!ITEMS[k]) ITEMS[k] = def
+  for (const r of DECAY_RECIPES) if (!RECIPES.some((x) => x.id === r.id)) RECIPES.push(r)
+  if (EXTRA.en) for (const k of ['rotten', 'bagPatch']) if (!EXTRA.en[k]) EXTRA.en[k] = DECAY_STRINGS[k]   // item names: the game looks them up by key
+  decayIn = true
+}
+export const homeCompostCrop = (crop, cap) => compost(crop, cap) > 0
+export const homeSay = say
 export function registerHomeRules() {
+  registerDecay()
   Rules.register({ id: 'combat.pvp', type: 'bool', def: false, group: 'combat', display: 'survival', icon: '⚔',
     label: { en: 'Player fights' },
     desc: { en: 'Players can hit each other.' } })
