@@ -167,12 +167,14 @@ class App:
 
     def do_start(self):
         if self.settings['auto_update']:
-            ok, msg = core.pull(); self.say('code: ' + msg, 'info' if ok else 'warn')
+            ok, msg = core.pull(); self.say('code: ' + msg, 'info' if ok else 'warn'); pulled = ok
             newer = core.repo_launcher_version()
             if newer and core.version_tuple(newer) > core.version_tuple(core.LAUNCHER_VERSION):
                 self.say('The launcher itself was updated (%s). Restarting it ...' % newer, 'warn')
                 self.q.put(('call', lambda: restart(autostart=True))); return
-        self.show_code(core.code_status(fetch=False))
+        else: pulled = False
+        st = core.code_status(fetch=False); st['fetched'] = pulled or st.get('fetched')   # pull() just fetched: no second trip
+        self.show_code(st)
         n = self.find_node(fetch_if_needed=True)
         if not n: raise RuntimeError('no usable Node')
         self.say('game: checking the build (installs and builds only when something changed) ...')

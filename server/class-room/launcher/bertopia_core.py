@@ -14,7 +14,7 @@ Standard library only. Works on Windows (the target) and Linux (where the checks
 import datetime, hashlib, io, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, traceback, urllib.request, zipfile
 from pathlib import Path
 
-LAUNCHER_VERSION = '1.0.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
+LAUNCHER_VERSION = '1.0.1'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
 
 HERE = Path(__file__).resolve().parent
 ROOM = HERE.parent                       # server/class-room (set_repo() moves all three)
