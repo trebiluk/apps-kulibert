@@ -1,6 +1,6 @@
 // Part 2 check (docs/bertopia/HOME-HOST.md §10). Two halves:
 //   A. source guard (always): every use of the home module in main.js sits inside an `if (__HOME_HOST__)` guard or an
-//      expression `(__HOME_HOST__ && …)`, the student index has no home marker, and the home strings exist in 9 languages.
+//      expression `(__HOME_HOST__ && …)`, the student index has no home marker, and the home strings are English-only.
 //   B. build + join (needs esbuild, i.e. node_modules): builds ../bertopia-home with --home, proves the home bundle carries
 //      the join screen and the student bundles do not (home-leak-check), then starts a real personal host serving the
 //      home bundle and joins it with a headless browser if playwright is available (else a plain fetch of / and /join).
@@ -27,7 +27,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   const idx = readFileSync(path.join(SRC, 'index.html'), 'utf8')
   eq(!/bertopia-home/.test(idx) && /hub-staff-auth\.js/.test(idx), 'index.html (student): no home marker; school sign-in still present')
   const home = readFileSync(path.join(SRC, 'src/home/home.js'), 'utf8')
-  for (const lang of ['en', 'simple', 'uk', 'ru', 'es', 'ar', "'fa-AF'", 'rw', 'ti']) eq(new RegExp('^  ' + lang.replace(/'/g, "'") + ': \\{', 'm').test(home), 'home strings: ' + lang.replace(/'/g, ''))
+  // English-only (Diego, Nov 1: the personal host is adults-only; its own text is English, every language falls back to it)
+  eq(/^  en: \{/m.test(home) && !/^  (simple|uk|ru|es|ar|'fa-AF'|rw|ti): \{/m.test(home) && /const str = \(lang\) => \(\{ \.\.\.S\.en, lang \}\)/.test(home), 'home strings: English only, every language falls back to English')
   eq(/homeWsOk/.test(home) && /wss:/.test(home) && home.includes('192') && home.includes('168'), 'home client: ws:// only for this machine and private networks, wss:// otherwise')
   const cfg = readFileSync(path.join(SRC, 'src/classnet/config.js'), 'utf8')
   eq(/setHomeEndpoints/.test(cfg) && /kulibert\.net/.test(cfg), 'classnet/config.js: home seam added, school rule kept')

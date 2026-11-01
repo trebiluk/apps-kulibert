@@ -9,7 +9,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url))
 const dirs = (process.argv.slice(2).length ? process.argv.slice(2) : ['../bertopia', '../blocks', '../blocks-test']).map((d) => path.resolve(HERE, '..', d)).filter((d) => existsSync(path.join(d, 'app.js')))
 
 // Words and keys that exist only in the home build. Keep this list in step with the home strings (homeStrings in main.js).
-const WORDS = [/join code/i, /session code/i, /homeOwnerOn/, /home-host/i, /bertopia-home/, /hostOwner[A-Z]/, /sessionCode[A-Z]/, /homeJoin[A-Z]/, /"iss":"home"/, /adults 18\+/i, /personal host/i, /__HOME_HOST__/]
+const WORDS = [/join code/i, /session code/i, /homeOwnerOn/, /home-host/i, /bertopia-home/, /hostOwner[A-Z]/, /sessionCode[A-Z]/, /homeJoin[A-Z]/, /"iss":"home"/, /adults 18\+/i, /personal host/i, /__HOME_HOST__/, /homeBossTick/, /hc-panel/, /chat\.typed/, /World chat/, /homeKeep/, /\.bertopia-world/]
 // Origins: anything ws:// (the school only ever uses wss), plain localhost/127.0.0.1 hosts, and any absolute http(s)/wss host outside kulibert.net.
 const ORIGINS = [/\bws:\/\//, /https?:\/\/localhost[:/]/, /https?:\/\/127\.0\.0\.1/]
 const HOST_RE = /\b(?:https?|wss):\/\/([a-z0-9.-]+)/gi

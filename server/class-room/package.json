@@ -8,7 +8,7 @@
     "dev": "wrangler dev --local --port 8787",
     "test": "node --import ./test/shim/register.mjs --test \"test/*.test.mjs\" && npm run test:host && npm run test:home",
     "test:host": "node --no-warnings --import ./host/register.mjs --test test/host.test.mjs",
-    "test:home": "node --no-warnings tools/home-page-check.mjs && node --no-warnings tools/home-join-check.mjs && node --no-warnings tools/home-owner-check.mjs && node --no-warnings tools/home-rules-check.mjs && node --no-warnings tools/home-fuzz-check.mjs",
+    "test:home": "node --no-warnings tools/home-page-check.mjs && node --no-warnings tools/home-join-check.mjs && node --no-warnings tools/home-owner-check.mjs && node --no-warnings tools/home-rules-check.mjs && node --no-warnings tools/home-fuzz-check.mjs && node --no-warnings tools/home-spam-check.mjs && node --no-warnings tools/home-play-check.mjs",
     "host": "node --no-warnings --import ./host/register.mjs host/host.mjs --lan --open",
     "home": "node --no-warnings --import ./host/register.mjs host/home.mjs --open",
     "test:unit": "node --test test/protocol.test.mjs test/rules.test.mjs test/modules.test.mjs",

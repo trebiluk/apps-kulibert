@@ -15,8 +15,10 @@ import { Room } from '../src/room.js'
 import { World } from '../src/world-do.js'
 import { PROTOCOL } from '../src/protocol.js'
 import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
-import { nameOk } from './words.mjs'
 import { makeRuleset, PRESETS } from './rules.mjs'
+import { cleanChat, makeChatGate } from './chat.mjs'
+import { makeEvents } from './events.mjs'
+import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
 import { undoPlan, applyUndo } from '../src/world/undo.js'
 
@@ -60,7 +62,7 @@ const saveCfg = () => fs.writeFileSync(CFG_FILE, JSON.stringify(cfg, null, 2))
 saveCfg()
 registerHome()
 const env = { ROOM_JOIN_SECRET: cfg.secret, ALLOWED_ORIGINS: '', REQUIRE_TLS: '0' }
-const door = makeDoor({ secret: cfg.secret, filter: nameOk, maxPlayers: cfg.maxPlayers })
+const door = makeDoor({ secret: cfg.secret, maxPlayers: cfg.maxPlayers })   // no name filter: adults 18+
 
 // ---------------------------------------------------------------- Durable Objects, in process (as in host.mjs, PR #122)
 const rooms = new Map(), worlds = new Map()
@@ -126,10 +128,58 @@ function restoreWorld(file) {
   return { ok: true, name }
 }
 
+// World files (docs/bertopia/HOME-HOST.md §8): a world leaves as one SQLite file (the same copy a backup makes) and
+// comes back as a NEW world, never over an existing one. An import must be a SQLite file whose tables are exactly the
+// world's own (chunks, ops, meta) and that passes SQLite's integrity check; anything else is deleted unopened by the game.
+const WORLD_FILE_MAX = 256 * 1024 * 1024
+const WORLD_TABLES = { chunks: ['cx', 'cz', 'd'], ops: ['s', 'w', 'x', 'y', 'z', 'b', 'i', 't'], meta: ['k', 'v'] }
+const SQLITE_MAGIC = Buffer.from('SQLite format 3\0', 'latin1')
+function exportWorld(res, name) {
+  if (!/^[A-Za-z0-9_-]{8,40}$/.test(name) || !fs.existsSync(worldFile(name))) return json(res, 404, { error: 'missing' })
+  const r = backupWorld(name); if (r.error) return json(res, 404, r)
+  const file = path.join(DATA, 'backups', r.file)
+  res.writeHead(200, { 'content-type': 'application/octet-stream', 'content-length': fs.statSync(file).size, 'content-disposition': `attachment; filename="${name}.bertopia-world"`, 'cache-control': 'no-store' })
+  fs.createReadStream(file).pipe(res)
+}
+// -> null when the file is a world, else the reason
+function checkWorldFile(file) {
+  const fd = fs.openSync(file, 'r'); const head = Buffer.alloc(16); fs.readSync(fd, head, 0, 16, 0); fs.closeSync(fd)
+  if (!head.equals(SQLITE_MAGIC)) return 'not-a-world'
+  let db = null
+  try {
+    db = new DatabaseSync(file, { readOnly: true })
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type IN ('table','view','trigger') AND name NOT LIKE 'sqlite_%'").all().map((r) => r.name)
+    if (tables.length !== 3 || !Object.keys(WORLD_TABLES).every((t) => tables.includes(t))) return 'not-a-world'
+    for (const [t, cols] of Object.entries(WORLD_TABLES)) { const have = db.prepare(`PRAGMA table_info(${t})`).all().map((c) => c.name); if (have.join() !== cols.join()) return 'not-a-world' }
+    const ok = db.prepare('PRAGMA integrity_check').all(); if (ok.length !== 1 || Object.values(ok[0])[0] !== 'ok') return 'damaged'
+    return null
+  } catch (e) { return 'damaged' } finally { try { db && db.close() } catch (e) {} }
+}
+function importWorld(req, res, name) {
+  if (!/^[A-Za-z0-9_-]{8,40}$/.test(name)) { req.resume(); return json(res, 400, { error: 'name' }) }
+  if (fs.existsSync(worldFile(name))) { req.resume(); return json(res, 409, { error: 'exists' }) }
+  const tmp = path.join(DATA, 'backups', '.import-' + randomBytes(6).toString('hex') + '.sqlite')
+  const out = fs.createWriteStream(tmp); let size = 0, over = false
+  const fail = (status, error) => { try { fs.unlinkSync(tmp) } catch (e) {} ; if (!res.headersSent) json(res, status, { error }) }
+  req.on('data', (d) => { size += d.length; if (size > WORLD_FILE_MAX && !over) { over = true; out.destroy(); req.destroy(); fail(413, 'too-big') } })
+  req.on('error', () => { if (!over) { out.destroy(); fail(400, 'upload') } })
+  req.pipe(out)
+  out.on('finish', () => {
+    if (over) return
+    const why = size ? checkWorldFile(tmp) : 'not-a-world'
+    if (why) return fail(400, why)
+    fs.renameSync(tmp, worldFile(name))
+    json(res, 200, { ok: true, name, bytes: size })
+  })
+}
+
 // ---------------------------------------------------------------- session (the door) + owner tools
 let lastCode = null                  // shown on the owner page until the owner dismisses it; never written to disk
 let rules = makeRuleset(cfg.ruleset)   // the live ruleset (host/rules.mjs); hello carries it, a change is broadcast
 const RULE_FRAMES = new Set(['craft', 'st', 'hit'])   // home-only frames the Room does not know; answered here
+const chatGate = makeChatGate()       // typed chat: one gap per player; nothing is stored
+const events = makeEvents()           // shared boss fight news
+const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
   if (!cfg.world) return { error: 'no world' }
@@ -141,7 +191,7 @@ function startSession({ ruleset, password }) {
   return { ok: true, code: r.code, session: r.session }
 }
 function endSession() {
-  door.end(); lastCode = null; ownerSeated = false
+  door.end(); lastCode = null; ownerSeated = false; events.clear(); keepFor.clear()
   for (const { room, p } of players()) room.drop(p.id, 4006, 'session ended')
 }
 function rotateCode() { const r = door.rotate(); if (!r) return { error: 'ended' }; lastCode = r.code; return { ok: true, code: r.code } }
@@ -161,8 +211,23 @@ function rollback(minutes, ref) {
   const res = applyUndo(hub.world, plan)
   return { ok: true, cells: plan.length, applied: res.filter((r) => r.ok).length }
 }
-// Everyone hears a rules change as {t:'rules', ...snapshot}: the client shows a calm toast and applies it.
-function broadcastRules() { const f = { t: 'rules', ...rules.snapshot() }; for (const r of rooms.values()) r.broadcast(f) }
+// Keep inventory: the world's value (rules 'survival.keep') unless the owner set one for a player (this session only).
+const keepFor = new Map()            // ref -> true | false
+// The rules a player gets: the world's, with their own keep-inventory value. keep says where it came from.
+function rulesFor(ref) {
+  const s = rules.snapshot()
+  const own = keepFor.has(ref)
+  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'] }, keep: own ? 'player' : 'world' }
+}
+const sendRules = (ws, ref) => { try { ws.send(JSON.stringify(rulesFor(ref))) } catch (e) {} }
+// Everyone hears a rules change as {t:'rules', ...}: the client shows a calm toast and applies it.
+function broadcastRules() { for (const { p } of players()) if (p.ws) sendRules(p.ws, p.ref) }
+function setKeep(ref, on) {
+  if (typeof ref !== 'string' || !ref) return { error: 'ref' }
+  if (on === null) keepFor.delete(ref); else if (typeof on === 'boolean') keepFor.set(ref, on); else return { error: 'value' }
+  const f = findPlayer(ref); if (f && f.p.ws) sendRules(f.p.ws, ref)
+  return { ok: true, keep: keepFor.has(ref) ? keepFor.get(ref) : rules.get('survival.keep'), from: keepFor.has(ref) ? 'player' : 'world' }
+}
 function setRuleset(preset) { if (!rules.setPreset(preset)) return { error: 'ruleset' }; cfg.ruleset = preset; door.setCfg(preset); saveCfg(); broadcastRules(); return { ok: true, ...rules.snapshot() } }
 function setRule(id, v) { const r = rules.set(id, v); if (r.error) return r; if (!r.same) broadcastRules(); return { ok: true, ...rules.snapshot() } }
 // The home frame filter: runs BEFORE the (school) Room sees a frame. Enforces the ruleset on edits, answers the
@@ -179,13 +244,28 @@ function homeFrame(room, ws, p, text) {
     if (why) no(why, m.t === 'st' ? { k: m.k } : {}); else try { ws.send(JSON.stringify({ t: 'ok', a: m.t })) } catch (e) {}
     return true
   }
-  if ((m.t === 'q' || m.t === 'chat') && p.muted) return true   // dropped quietly (chat lands in part 4)
+  if (m.t === 'q' && p.muted) return true   // quick chat from a muted player: dropped quietly, as at school
+  // world chat (home-only): on unless the owner turned it off; plain text, 200 chars, burst 5 then 1/s, no word filter, never stored
+  if (m.t === 'chat') {
+    const off = rules.chatWhy(m, staff); if (off) { no(off); return true }
+    if (p.muted) { no('chat-muted'); return true }
+    const c = cleanChat(m.m); if (c.error) { no(c.error); return true }
+    const slow = chatGate.check(p.ref); if (slow) { no('chat-slow', slow); return true }
+    broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now() })
+    return true
+  }
+  // shared events (home-only): a boss fight started, moved on or ended somewhere in the world
+  if (m.t === 'ev') {
+    const r = events.handle({ ref: p.ref, alias: p.alias, staff }, m)
+    if (r.error) no(r.error); else if (r.relay) broadcastAll(r.relay)
+    return true
+  }
   return false
 }
 function live() {
   const w = cfg.world ? worlds.get(cfg.world) : null
   const out = { world: cfg.world, session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
-  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted })
+  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref) })
   if (w) {
     const h = w.obj.hub
     const who = new Map(out.players.map((p) => [h.who(p.ref), p.name]))
@@ -201,6 +281,9 @@ const rawIp = (req) => (req.socket.remoteAddress || '').replace(/^::ffff:/, '')
 // A loopback connection may carry X-Forwarded-For (a local TLS proxy per the README, or a check); anything else is its real address.
 const ipOf = (req) => { const r = rawIp(req); const f = r === '127.0.0.1' || r === '::1' ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : ''; return f || r }
 const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req))
+// Behind a local TLS proxy (README: Caddy/nginx on this PC) the page is https, so the socket must be wss://. Only a
+// loopback peer may say so; anyone else gets plain ws:// for their LAN address.
+const wsBase = (req) => (isLocal(req) && String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? 'wss://' : 'ws://') + req.headers.host
 const json = (res, status, body) => { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)) }
 const text = (res, status, body) => { res.writeHead(status, { 'content-type': 'text/plain', 'cache-control': 'no-store' }); res.end(body) }
 const page = (res, name) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(fs.readFileSync(path.join(HERE, name))) }
@@ -233,11 +316,14 @@ async function handle(req, res) {
     // the hub opens a world when a staff seat (here: the owner) is in it; say so instead of handing out a ticket that dies at the door
     if (!r.error && !ownerSeated) return json(res, 403, { error: 'no-owner' })
     if (r.error) return json(res, r.error === 'slow-down' ? 429 : r.error === 'full' ? 503 : 403, { error: r.error, ...(r.wait ? { wait: r.wait } : {}) })
-    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: 'ws://' + req.headers.host + '/rt/ws', version: PKG.gameVersion || PKG.version })
+    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: wsBase(req) + '/rt/ws', version: PKG.gameVersion || PKG.version })
   }
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
   if (url.pathname.startsWith('/owner/')) {
     if (!isLocal(req)) return json(res, 403, { error: 'host only' })
+    // world files move as raw bytes, so they skip the small JSON body reader (owner only, this PC only)
+    if (url.pathname === '/owner/world/export') return ownerOk(req) ? exportWorld(res, String(url.searchParams.get('name') || cfg.world || '')) : json(res, 401, { error: 'owner' })
+    if (url.pathname === '/owner/world/import' && req.method === 'POST') return ownerOk(req) ? importWorld(req, res, String(url.searchParams.get('name') || '')) : json(res, 401, { error: 'owner' })
     const raw = req.method === 'POST' ? await readBody(req, res) : {}; if (!raw) return
     // owner bodies are small and flat: keep strings, booleans and finite numbers; drop anything else (no objects as ids)
     const b = Object.create(null)
@@ -273,6 +359,7 @@ async function handle(req, res) {
       case '/owner/unban': door.unban(String(b.ref || '')); return json(res, 200, { ok: true })
       case '/owner/freeze': return json(res, 200, freeze(!!b.on))
       case '/owner/mute': return json(res, 200, mute(String(b.ref || '*'), !!b.on))
+      case '/owner/keep': { const r = setKeep(String(b.ref || ''), b.on === undefined ? null : b.on); return json(res, r.error ? 400 : 200, r) }
       case '/owner/rollback': return json(res, 200, rollback(b.minutes, b.ref ? String(b.ref) : null))
       case '/owner/lan': cfg.listen = b.on ? '0.0.0.0' : '127.0.0.1'; saveCfg(); return json(res, 200, { ok: true, restart: true })
       case '/owner/stop': json(res, 200, { ok: true }); setTimeout(shutdown, 100); return
@@ -309,15 +396,16 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
-  try { ws.send(JSON.stringify({ t: 'rules', ...rules.snapshot() })) } catch (e) {}   // right after hello: the active ruleset
+  sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
+  { const ev = events.current(); if (ev) try { ws.send(JSON.stringify(ev)) } catch (e) {} }   // and a boss fight already going
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); if (room) room.webSocketClose(ws, code).catch(() => {}) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 
-setInterval(() => { for (const [k, exp] of ownerTokens) if (exp <= Date.now()) ownerTokens.delete(k); if (door.sweep(players().length)) console.log('[home] session ended: 24 h with nobody in') }, 60 * 1000).unref()
+setInterval(() => { for (const [k, exp] of ownerTokens) if (exp <= Date.now()) ownerTokens.delete(k); chatGate.sweep(); if (door.sweep(players().length)) console.log('[home] session ended: 24 h with nobody in') }, 60 * 1000).unref()
 
 function shutdown() {
   console.log('[home] stopping')
