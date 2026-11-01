@@ -25,6 +25,7 @@ import { checkPlugin, makeRunner, EXAMPLES, LIMITS as PLUGIN_LIMITS } from '../s
 import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
 import { undoPlan, applyUndo } from '../src/world/undo.js'
+import { makeAccess, accessToken } from './access.mjs'
 
 const argv = process.argv.slice(2)
 const arg = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : d }
@@ -58,8 +59,11 @@ const cfg = Object.assign({
   pin: null,                                      // salt$scrypt, set on first run
   port: 8890, listen: '127.0.0.1', origins: [], tunnelHost: '', maxPlayers: DEFAULT_MAX_PLAYERS,
   world: null, ruleset: 'home-survival', usedCodes: [],
-  guard: { on: true, breaks: 70, window: 10, undo: true },   // griefer guard (part 10): breaks per window (s) before an auto-kick (70 = faster than the best tool, under the Room's 10/s cap); a repeat is a ban; undo their last minute
+  guard: { on: true, breaks: 70, window: 10, undo: true },
+  access: { team: '', aud: '', email: '' },   // part 11: owner page through the tunnel, only behind Cloudflare Access (team name, app AUD, the owner's email)   // griefer guard (part 10): breaks per window (s) before an auto-kick (70 = faster than the best tool, under the Room's 10/s cap); a repeat is a ban; undo their last minute
 }, loadCfg() || {})
+if (!cfg.access || typeof cfg.access !== 'object') cfg.access = { team: '', aud: '', email: '' }
+if (!cfg.guard || typeof cfg.guard !== 'object') cfg.guard = { on: true, breaks: 70, window: 10, undo: true }
 if (flag('lan')) cfg.listen = '0.0.0.0'
 cfg.port = Number(arg('port', cfg.port))
 if (FORBIDDEN_PORTS.includes(cfg.port)) { console.error('[home] port ' + cfg.port + ' is used by the game checks or wrangler; pick another'); process.exit(2) }
@@ -449,6 +453,16 @@ const rawIp = (req) => (req.socket.remoteAddress || '').replace(/^::ffff:/, '')
 const ipOf = (req) => { const r = rawIp(req); const f = r === '127.0.0.1' || r === '::1' ? String(req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || '').split(',')[0].trim() : ''; return f || r }
 // "This PC" = a loopback socket that did NOT come through a proxy or the tunnel: anything carrying a forwarded visitor
 // (CF-Connecting-IP, X-Forwarded-For) or the tunnel's own hostname is a visitor, however local the socket looks.
+const access = makeAccess(cfg.access || {}, { certsUrl: process.env.BT_ACCESS_CERTS || '' })   // BT_ACCESS_CERTS: the checks only (a stand-in certs server)
+// The owner page through the tunnel: only with Access on, only on the tunnel host, only with a JWT Cloudflare signed
+// for this app (and this email). Anything else that is not the host PC stays out. PIN + owner key come after.
+const remoteOwnerOk = async (req) => {
+  if (!access.on || !tunnelHost() || !viaTunnel(req)) return false
+  const tok = accessToken(req); if (!tok) return false
+  const r = await access.check(tok)
+  if (!r.ok) { feed('owner page refused through the tunnel (' + r.error + ')'); return false }
+  return true
+}
 const isLocal = (req) => ['127.0.0.1', '::1'].includes(rawIp(req)) && !req.headers['cf-connecting-ip'] && !req.headers['x-forwarded-for'] && !(tunnelHost() && String(req.headers.host || '').toLowerCase().split(':')[0] === tunnelHost())
 // Behind a local TLS proxy (README: Caddy/nginx on this PC) the page is https, so the socket must be wss://. Only a
 // loopback peer may say so; anyone else gets plain ws:// for their LAN address.
@@ -468,7 +482,7 @@ const readBody = (req, res) => new Promise((r) => {
   req.on('close', () => { if (over) r(null) })
 })
 const ownerTokens = new Map()         // token -> expiry; issued after a PIN check, per owner browser session
-const ownerOk = (req) => { const tkn = req.headers['x-owner']; const exp = tkn && ownerTokens.get(tkn); return isLocal(req) && !!exp && exp > Date.now() }
+const ownerOk = (req) => { const tkn = req.headers['x-owner']; const exp = tkn && ownerTokens.get(tkn); return (isLocal(req) || req.btRemoteOk === true) && !!exp && exp > Date.now() }   // btRemoteOk: set by the /owner gate after Cloudflare Access checked out
 const inviteJoins = new Map()   // ref -> join reply with invite fields, until the socket opens
 // the link a person opens to land on the join card with the key filled in: the internet address when the tunnel is on, else this PC's
 const joinLink = (key) => (tunnelHost() ? 'https://' + tunnelHost() : 'http://localhost:' + cfg.port) + '/?invite=' + encodeURIComponent(key)
@@ -484,7 +498,7 @@ async function handle(req, res) {
   if (url.pathname.startsWith('/shared/') && serveFile(res, SHARED, url.pathname.slice('/shared/'.length))) return
   if (url.pathname.startsWith('/fonts/') && serveFile(res, path.join(REPO, 'fonts'), url.pathname.slice('/fonts/'.length))) return
   if (GAME && !url.pathname.startsWith('/rt/') && !url.pathname.startsWith('/owner') && url.pathname !== '/join' && url.pathname !== '/version' && serveFile(res, GAME, url.pathname.slice(1))) return
-  if (url.pathname === '/owner') return isLocal(req) ? page(res, 'owner.html') : text(res, 403, 'the owner page is for the host PC only')
+  if (url.pathname === '/owner') return (isLocal(req) || (await remoteOwnerOk(req))) ? page(res, 'owner.html') : text(res, 403, 'the owner page is for the host PC only')
   if (url.pathname === '/rt/health') return text(res, 200, 'ok')
   if (url.pathname === '/version') return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null })
   if (url.pathname === '/join' && req.method === 'POST') {
@@ -498,7 +512,7 @@ async function handle(req, res) {
   }
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
   if (url.pathname.startsWith('/owner/')) {
-    if (!isLocal(req)) return json(res, 403, { error: 'host only' })
+    if (!isLocal(req)) { if (!(await remoteOwnerOk(req))) return json(res, 403, { error: 'host only' }); req.btRemoteOk = true }
     // world files move as raw bytes, so they skip the small JSON body reader (owner only, this PC only)
     if (url.pathname === '/owner/world/export') return ownerOk(req) ? exportWorld(res, String(url.searchParams.get('name') || cfg.world || '')) : json(res, 401, { error: 'owner' })
     if (url.pathname === '/owner/world/import' && req.method === 'POST') return ownerOk(req) ? importWorld(req, res, String(url.searchParams.get('name') || '')) : json(res, 401, { error: 'owner' })
@@ -518,7 +532,7 @@ async function handle(req, res) {
     if (url.pathname === '/owner/setup') return json(res, 200, { pinSet: !!cfg.pin, keyOk: url.searchParams.get('k') === cfg.ownerKey })
     if (!ownerOk(req)) return json(res, 401, { error: 'owner' })
     switch (url.pathname) {
-      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA, guard: cfg.guard, invites: door.invites })
+      case '/owner/state': return json(res, 200, { version: PKG.version, tunnel: tunnelHost() ? 'https://' + tunnelHost() + '/' : null, game: PKG.gameVersion || null, gameBuilt: !!GAME, port: cfg.port, listen: cfg.listen, lan: cfg.listen !== '127.0.0.1', addrs: cfg.listen === '127.0.0.1' ? [] : lanAddrs(), maxPlayers: cfg.maxPlayers, rulesets: RULESETS, world: cfg.world, worlds: listWorlds(), backups: fs.readdirSync(path.join(DATA, 'backups')).sort().reverse(), code: lastCode, live: live(), data: DATA, guard: cfg.guard, invites: door.invites, access: { on: access.on, team: cfg.access.team || '', email: cfg.access.email || '', remote: !isLocal(req) } })
       case '/owner/session/start': return json(res, 200, startSession(b))
       case '/owner/session/end': endSession(); return json(res, 200, { ok: true })
       case '/owner/session/rotate': return json(res, 200, rotateCode())
@@ -539,6 +553,9 @@ async function handle(req, res) {
       case '/owner/invite': { const r = door.invite({ label: b.label, name: b.name || null, max: b.max, ttlMs: Number(b.hours) ? Number(b.hours) * 3600 * 1000 : undefined }); if (r.error) return json(res, 400, r); feed('owner made invite ' + (r.label || r.id) + (b.label ? ' (' + String(b.label).slice(0, 40) + ')' : '') + ', ' + r.max + ' use' + (r.max === 1 ? '' : 's')); return json(res, 200, { ...r, link: joinLink(r.key) }) }
       case '/owner/invites': return json(res, 200, { list: door.invites })
       case '/owner/invite/revoke': { const r = door.revokeInvite(String(b.id || '')); if (!r.error) feed('owner revoked invite ' + String(b.id || '')); return json(res, r.error ? 404 : 200, r) }
+      case '/owner/access': { if (!isLocal(req)) return json(res, 403, { error: 'host only' })   // only from the host PC: the remote door is not changed from the remote side
+        if (b.team !== undefined || b.aud !== undefined || b.email !== undefined) { Object.assign(cfg.access, { team: String(b.team ?? cfg.access.team ?? '').replace(/[^a-z0-9-]/gi, '').slice(0, 64), aud: String(b.aud ?? cfg.access.aud ?? '').replace(/[^a-f0-9]/gi, '').slice(0, 64), email: String(b.email ?? cfg.access.email ?? '').trim().toLowerCase().slice(0, 120) }); saveCfg(); feed('owner set Cloudflare Access: ' + (access.on ? 'on (' + cfg.access.team + ')' : 'off')) }
+        return json(res, 200, { access: { on: access.on, team: cfg.access.team, email: cfg.access.email, aud: cfg.access.aud ? cfg.access.aud.slice(0, 8) + '…' : '' } }) }
       case '/owner/guard': { if (b.on !== undefined || b.breaks !== undefined || b.window !== undefined || b.undo !== undefined) { cfg.guard = { on: b.on === undefined ? cfg.guard.on !== false : b.on === true, breaks: Math.max(10, Math.min(500, Number(b.breaks) || cfg.guard.breaks || 70)), window: Math.max(2, Math.min(60, Number(b.window) || cfg.guard.window || 10)), undo: b.undo === undefined ? cfg.guard.undo !== false : b.undo === true }; saveCfg(); feed('owner set guard: ' + (cfg.guard.on ? cfg.guard.breaks + ' breaks / ' + cfg.guard.window + ' s' + (cfg.guard.undo ? ', undo' : '') : 'off')) } return json(res, 200, { guard: cfg.guard }) }
       case '/owner/kick': return json(res, 200, kick(String(b.ref || '')))
       case '/owner/ban': return json(res, 200, ban(String(b.ref || '')))

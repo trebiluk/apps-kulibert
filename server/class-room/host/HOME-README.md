@@ -185,6 +185,16 @@ On by default: more than 70 breaks in 10 s from a player (faster than the best t
 address). Owner and staff are never guarded. Owner page → *Griefer guard* to tune or turn off (saved in `home.json`).
 Everything else stays as it was: per-player rollback (Players → Undo), kick, ban, mute, freeze.
 
+## Owner page from anywhere (Cloudflare Access)
+The owner page answers on the host PC only — unless Cloudflare Access stands in front of `/owner` on the tunnel
+address. Then `https://adultopia.kulibert.net/owner?k=…` works from any device: Cloudflare asks for a code sent to the
+one allowed email, adds a signed JWT to every request, and the host checks that JWT itself (RS256 against the team's
+public keys, the app's AUD, the issuer, expiry, the email) before the PIN is even asked. A LAN visitor with a copied
+header, a junk token, another email or an expired login all get the same 403 as before.
+Setup (once, in Zero Trust → Access → Applications): a self-hosted app for `adultopia.kulibert.net` path `owner`, a
+policy allowing your email, and the app's **AUD tag** (Additional settings). Owner page → *Owner page from anywhere*
+(host PC only to change): team name, AUD, email → saved in `home.json` as `access`. Zero Trust Free covers it.
+
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
 address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
@@ -203,8 +213,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-cmd-check` / `home-plugin-check` / `home-invite-check`: the command menu and typed commands; the plugin engine (tiers, limits,
-  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard;
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate;
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
