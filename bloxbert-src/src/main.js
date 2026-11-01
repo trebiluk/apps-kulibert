@@ -5718,8 +5718,13 @@ async function paintOldEntry(host, openList) {
       paintOldEntry(host, openList)
     }))
   }
-  if (makerEnabled()) host.append(menuTile('spark', t('newWorld'), () => openMaker()))
-  if (keys.length) host.append(menuTile('back', t('openOld'), () => { if (openList) openList() }))
+  // 2.5.593: no second "New world" / "Open my old world" pair next to Fresh world and Load my saved world.
+  // Fresh world opens the maker, and each old world is listed here once, by its date.
+  if (keys.length) {
+    const rows = document.createElement('div')
+    host.append(rows)
+    await paintOldList(rows)
+  }
 }
 async function paintOldList(g) {
   g.innerHTML = ''
@@ -7576,6 +7581,8 @@ panels = mountPanels({
   classSnap: () => classSnap(),
   paintBackups: (g) => paintBackups(g),
   paintOldEntry: (host, openList) => paintOldEntry(host, openList),
+  makerOn: () => makerEnabled(),
+  openMaker: () => openMaker(),
   paintOldWorlds: (g) => paintOldList(g),
   setTeacher: (on) => setTeacher(on),
   fullScreen: () => $('fs-btn').click(),
