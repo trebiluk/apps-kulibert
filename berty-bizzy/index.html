@@ -473,6 +473,23 @@ try {
   @media (min-width: 601px) and (min-height: 521px) {
     #pz-menu .pz-narrow { display: none; }
   }
+  /* 1.8.0 Teach: pose Berty with sliders or − / +, Mirror makes Bizzy copy, Record pose adds a Set joints block. */
+  .teach { border-top: 2px solid var(--pz-line); padding: 8px; display: grid; gap: 6px; }
+  .teach-head { margin: 0; font-size: 14px; }
+  .teach-head span { font-weight: 500; color: var(--pz-ink-2); }
+  .teach-row { display: grid; grid-template-columns: minmax(64px, 1fr) 44px minmax(80px, 2fr) 44px 96px; gap: 4px; align-items: center; }
+  .teach-row button { min-width: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .teach-row input[type=range] { width: 100%; min-height: 44px; margin: 0; accent-color: var(--pz-ink); }
+  .teach-row input[type=range].is-limit { border-inline-end: 4px solid var(--pz-ink); }
+  .teach-row output { font: 700 12px/1.2 "IBM Plex Mono", ui-monospace, monospace; overflow-wrap: anywhere; }
+  .teach-row.is-on .teach-name { text-decoration: underline 3px; }
+  .teach-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .teach-tools button { min-height: 44px; }
+  #mirror-btn[aria-pressed="true"] { border-width: 3px; }
+  #teach-note { margin: 0; min-height: 1.2em; font-weight: 650; }
+  #program .chip .set-nums { display: inline-flex; gap: 4px; }
+  #program .chip .set-tag { display: inline-flex; align-items: center; gap: 2px; font-weight: 700; }
+  #program .chip input.set-n { width: 4.2em; min-height: 36px; font: 700 13px "IBM Plex Mono", ui-monospace, monospace; }
   /* 0055 one goal line: the status box shows the current step in big text; the other help lines are in Help (?). */
   #status.is-goal { font-size: 20px; font-weight: 750; line-height: 1.3; }
   #goal, #legend { display: none !important; }
@@ -668,7 +685,7 @@ try {
 </head>
 <body class="pz-light">
 <header class="top">
-  <h1 class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.7.3</span></small></h1>
+  <h1 class="brand" translate="no"><span id="brand-name">BERTY &amp; BIZZY</span><small><span id="brand-full">Move a robot arm</span> · <span id="app-version">v1.8.0</span></small></h1>
   <p id="draft-note" hidden data-k="draftBadge" role="note">Machine draft.</p>
   <span class="sp" style="flex:1"></span>
   <button type="button" class="tool" id="help-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="bb-help" aria-label="Help">?</button>
@@ -680,6 +697,12 @@ try {
   <div class="levels" id="levels" role="group" aria-label="Levels"></div>
 <section id="whats-new" hidden>
   <h2 data-k="whatsTitle">What's new</h2>
+  <p data-k="v180">Version 1.8.0</p>
+  <ul>
+    <li data-k="w180a">Teach: move Berty with sliders or − and +, or press 1 to 5 and the arrow keys.</li>
+    <li data-k="w180b">Mirror makes Bizzy copy Berty, turned the other way. If they would touch, Bizzy waits.</li>
+    <li data-k="w180c">Record pose adds a Set joints block with all 5 angles. Change a number and press Run again.</li>
+  </ul>
   <p data-k="v173">Version 1.7.3</p>
   <ul>
     <li data-k="w173a">The arms are bigger on screen and stay in view while you use the controls. Run sits right under them.</li>
@@ -799,6 +822,15 @@ try {
       <section class="panel">
         <h2 class="panel-label"><span data-ui="JOINTS">JOINTS</span><span>J-01</span></h2>
         <div class="body" id="joint-pad" role="group" aria-label="Joints"></div>
+        <div class="teach" id="teach">
+          <p class="teach-head"><b id="teach-title">Teach</b> <span id="teach-hint">Keys 1 to 5 pick a joint. Left and right arrows move it 15°.</span></p>
+          <div id="teach-pad" role="group" aria-labelledby="teach-title"></div>
+          <div class="teach-tools">
+            <button type="button" id="mirror-btn" aria-pressed="false">⇄ Mirror Off</button>
+            <button type="button" id="record-btn">● Record pose</button>
+          </div>
+          <p id="teach-note" aria-live="polite"></p>
+        </div>
         <div id="base-pad" hidden></div>
       </section>
       <section class="panel">
@@ -911,11 +943,11 @@ try {
     <p class="bb-help-foot"><button type="button" id="bb-help-reset" class="bb-help-reset"></button> <span id="bb-help-live" aria-live="polite"></span></p>
   </div>
 </section>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.7.3" data-rtl="1" data-menu="#levels-btn" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="pinchy" data-name="Berty &amp; Bizzy" data-version="1.8.0" data-rtl="1" data-menu="#levels-btn" defer></script>
 <script src="vendor/three.min.js"></script>
-<script src="physics.js?v=1.7.3"></script>
-<script src="game.js?v=1.7.3"></script>
-<script src="view3d.js?v=1.7.3"></script>
+<script src="physics.js?v=1.8.0"></script>
+<script src="game.js?v=1.8.0"></script>
+<script src="view3d.js?v=1.8.0"></script>
 <script>
 "use strict";
 var VIEW = { x0: -48, x1: 236, y0: -24, y1: 248 };
@@ -959,6 +991,7 @@ var ICONS = {
   "if-red-square": svg('<rect x="4" y="4" width="16" height="16" ' + ST + '/><path d="M7 12 h10" ' + ST + '/>'),
   "if-blue-circle": svg('<circle cx="12" cy="12" r="8" ' + ST + '/><circle cx="12" cy="12" r="2" fill="currentColor"/>'),
   "if-touch": svg('<path d="M8 20 V8 a2 2 0 0 1 4 0 V13 M12 11 a2 2 0 0 1 4 0 V13 M16 12 a2 2 0 0 1 4 0 V16 c0 3 -2 4 -5 4 H11 c-2 0 -3 -1 -4 -3 L5 14 a2 2 0 0 1 3 -2" ' + ST + '/>'),
+  "set": svg('<path d="M5 6 h14 M5 12 h14 M5 18 h14" ' + ST + '/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="8" cy="18" r="2" fill="currentColor"/>'),
   "end-if": svg('<path d="M6 7 h12 M6 12 h8 M6 17 h12" ' + ST + '/>'),
   "spot": svg('<rect x="3" y="3" width="5" height="5" ' + ST + '/><rect x="10" y="3" width="5" height="5" ' + ST + '/><rect x="17" y="3" width="5" height="5" ' + ST + '/><rect x="3" y="10" width="5" height="5" ' + ST + '/><rect x="10" y="10" width="5" height="5" fill="currentColor"/><rect x="17" y="10" width="5" height="5" ' + ST + '/><rect x="3" y="17" width="5" height="5" ' + ST + '/><rect x="10" y="17" width="5" height="5" ' + ST + '/><rect x="17" y="17" width="5" height="5" ' + ST + '/>'),
   "run": svg('<path d="M8 5 L19 12 L8 19 Z" fill="currentColor" stroke="none"/>'),
@@ -1114,7 +1147,7 @@ var renderLaneInto = function (ol, list, now, stop, lane, waiting) {
     idx.textContent = String(i + 1);
     li.appendChild(idx);
     var holder = document.createElement("span");
-    holder.innerHTML = ICONS[list[i]] || "";
+    holder.innerHTML = ICONS[PINCHY.isSet(list[i]) ? "set" : list[i]] || "";
     if (holder.firstChild) li.appendChild(holder.firstChild);
     var name = document.createElement("span");
     name.textContent = labelOf(list[i]);
@@ -1127,10 +1160,212 @@ var renderLaneInto = function (ol, list, now, stop, lane, waiting) {
     var deg = document.createElement("span");
     deg.textContent = angleText(list[i]);
     li.appendChild(deg);
+    if (PINCHY.isSet(list[i])) li.appendChild(setInputs(list, i));
     ol.appendChild(li);
   }
   var current = ol.querySelector(".is-now, .is-stop");
   if (current && current.scrollIntoView) current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+};
+// ---- 1.8.0 Teach + Mirror + Record ----
+var mirrorOn = false;
+var teachJoint = -1;
+var TEACH_JOINTS = ["base", "shoulder", "elbow", "wrist", "claw"];
+var teachWord = function (key, fallback) {
+  var t = PINCHY.uiText(lang, key);
+  return t && t !== key ? t : fallback;
+};
+var teachLimits = function () {
+  var L = PINCHY.setLimits();
+  L.claw = [0, 1];
+  return L;
+};
+// The number boxes in a Set joints block: a kid can change one number and run again.
+var setInputs = function (list, index) {
+  var wrap = document.createElement("span");
+  wrap.className = "set-nums";
+  var t = PINCHY.parseSet(list[index]);
+  var lim = teachLimits();
+  var vals = [t.base, t.shoulder, t.elbow, t.wrist, t.open ? 1 : 0];
+  TEACH_JOINTS.forEach(function (j, k) {
+    var inp = document.createElement("input");
+    inp.type = "number";
+    inp.className = "set-n";
+    inp.min = String(lim[j][0]);
+    inp.max = String(lim[j][1]);
+    inp.step = j === "claw" ? "1" : "15";
+    inp.value = String(vals[k]);
+    inp.disabled = !!playing;
+    inp.setAttribute("aria-label", PINCHY.uiText(lang, j.charAt(0).toUpperCase() + j.slice(1)) + " " + (index + 1));
+    inp.addEventListener("change", function () {
+      var v = Math.round(Number(inp.value));
+      if (!isFinite(v)) v = vals[k];
+      v = Math.max(lim[j][0], Math.min(lim[j][1], v));
+      vals[k] = v;
+      inp.value = String(v);
+      list[index] = "set:" + vals.join(",");
+      updateMetrics();
+    });
+    var tag = document.createElement("label");
+    tag.className = "set-tag";
+    tag.textContent = ["\u27F3", "\u2934", "\u2197", "\u21BB", "\u270B"][k];
+    tag.appendChild(inp);
+    wrap.appendChild(tag);
+  });
+  return wrap;
+};
+var teachArm = function () {
+  return world;
+};
+var renderTeach = function () {
+  var pad = document.getElementById("teach-pad");
+  if (!pad) return;
+  pad.replaceChildren();
+  var lim = teachLimits();
+  TEACH_JOINTS.forEach(function (j, k) {
+    var row = document.createElement("div");
+    row.className = "teach-row";
+    row.dataset.joint = j;
+    var name = document.createElement("span");
+    name.className = "teach-name";
+    name.textContent = (k + 1) + " " + PINCHY.uiText(lang, j.charAt(0).toUpperCase() + j.slice(1));
+    var minus = document.createElement("button");
+    minus.type = "button";
+    minus.textContent = "−";
+    minus.setAttribute("aria-label", name.textContent + " −");
+    var range = document.createElement("input");
+    range.type = "range";
+    range.min = String(lim[j][0]);
+    range.max = String(lim[j][1]);
+    range.step = j === "claw" ? "1" : "15";
+    range.setAttribute("aria-label", name.textContent);
+    var plus = document.createElement("button");
+    plus.type = "button";
+    plus.textContent = "+";
+    plus.setAttribute("aria-label", name.textContent + " +");
+    var out = document.createElement("output");
+    minus.addEventListener("click", function () { teachStep(j, -1); });
+    plus.addEventListener("click", function () { teachStep(j, 1); });
+    range.addEventListener("input", function () { teachTo(j, Number(range.value)); });
+    range.addEventListener("focus", function () { teachJoint = k; paintTeachFocus(); });
+    row.appendChild(name);
+    row.appendChild(minus);
+    row.appendChild(range);
+    row.appendChild(plus);
+    row.appendChild(out);
+    pad.appendChild(row);
+  });
+  document.getElementById("teach-title").textContent = teachWord("teachH", "Teach");
+  document.getElementById("teach-hint").textContent = teachWord("teachHint", "Keys 1 to 5 pick a joint. Left and right arrows move it 15°.");
+  document.getElementById("record-btn").textContent = "● " + teachWord("recordPose", "Record pose");
+  paintMirror();
+  syncTeach();
+};
+var paintMirror = function () {
+  var b = document.getElementById("mirror-btn");
+  if (!b) return;
+  b.setAttribute("aria-pressed", mirrorOn ? "true" : "false");
+  b.textContent = mirrorOn ? teachWord("mirrorOn", "⇄ Mirror On") : teachWord("mirrorOff", "⇄ Mirror Off");
+};
+var paintTeachFocus = function () {
+  var rows = document.querySelectorAll("#teach-pad .teach-row");
+  for (var i = 0; i < rows.length; i++) rows[i].classList.toggle("is-on", i === teachJoint);
+};
+var jointValue = function (arm, j) {
+  if (j === "claw") return arm.open ? 1 : 0;
+  return Math.round(arm[j] || 0);
+};
+var syncTeach = function () {
+  var rows = document.querySelectorAll("#teach-pad .teach-row");
+  if (!rows.length || !world) return;
+  var lim = teachLimits();
+  for (var i = 0; i < rows.length; i++) {
+    var j = rows[i].dataset.joint;
+    var v = jointValue(world, j);
+    var range = rows[i].querySelector("input[type=range]");
+    var out = rows[i].querySelector("output");
+    if (document.activeElement !== range) range.value = String(v);
+    var atLimit = j !== "claw" && (v <= lim[j][0] || v >= lim[j][1]);
+    range.classList.toggle("is-limit", atLimit);
+    out.textContent = j === "claw"
+      ? PINCHY.uiText(lang, v ? "OPEN" : "SHUT")
+      : (atLimit ? teachWord("limitAt", "Limit ⟂ {n}°").replace("{n}", String(v)) : v + "°");
+    var btns = rows[i].querySelectorAll("button");
+    for (var b = 0; b < btns.length; b++) btns[b].disabled = !!playing;
+    range.disabled = !!playing;
+  }
+  var rec = document.getElementById("record-btn");
+  var mir = document.getElementById("mirror-btn");
+  var lvl = PINCHY.LEVELS[session.level];
+  var off = !!(playing || (lvl && (lvl.physics || lvl.debug)));
+  if (rec) rec.disabled = off;
+  if (mir) mir.disabled = !!playing;
+  var teachBox = document.getElementById("teach");
+  if (teachBox) teachBox.hidden = !!(lvl && (lvl.physics || lvl.debug));
+};
+var teachNote = function (text) {
+  var n = document.getElementById("teach-note");
+  if (n) n.textContent = text || "";
+};
+var teachStep = function (j, dir) {
+  var step = j === "claw" ? 1 : 15;
+  teachTo(j, jointValue(world, j) + dir * step);
+};
+// Move Berty to a new value for one joint. Limits stop it at the line; a hit leaves it where it was.
+var teachTo = function (j, value) {
+  if (playing || !world) return;
+  var level = PINCHY.LEVELS[session.level];
+  var lim = teachLimits();
+  var v = Math.max(lim[j][0], Math.min(lim[j][1], Math.round(value)));
+  var next = PINCHY.cloneState(world);
+  if (j === "claw") {
+    var cmd = v ? "claw-open" : "claw-close";
+    if (!!next.open === !!v) { syncTeach(); return; }
+    var r = PINCHY.applyCommand(next, cmd, level);
+    if (!r.ok) { teachNote("✗ " + PINCHY.crashLine(r.msg, 0, lang)); syncTeach(); return; }
+    next = r.state;
+    if (world.bizzy) next.bizzy = world.bizzy;
+  } else {
+    var target = { base: next.base, shoulder: next.shoulder, elbow: next.elbow, wrist: next.wrist || 0, open: next.open };
+    target[j] = v;
+    var res = PINCHY.applyCommand(next, PINCHY.makeSet(target), level);
+    if (!res.ok) { teachNote("✗ " + PINCHY.crashLine(res.msg, 0, lang)); syncTeach(); return; }
+    var bz = world.bizzy;
+    next = res.state;
+    if (bz) next.bizzy = bz;
+  }
+  teachNote("");
+  world = next;
+  if (mirrorOn) mirrorBizzy();
+  paintGame();
+};
+// Mirror: Bizzy copies Berty's pose, turned the other way. If that would make the arms touch, Bizzy holds still.
+var mirrorBizzy = function () {
+  var want = { base: -world.base, shoulder: world.shoulder, elbow: world.elbow, wrist: world.wrist || 0, open: !!world.open, gap: world.gap, holding: false };
+  var hit = PINCHY.armArmHit(
+    { base: world.base, shoulder: world.shoulder, elbow: world.elbow, wrist: world.wrist || 0, gap: world.gap, open: world.open },
+    want
+  );
+  if (hit) {
+    var line = PINCHY.armHitLine(hit, 0, lang).replace(/\s*[(（][^()（）]*\b0\b[^()（）]*[)）]/, "");
+    teachNote("✗ " + line);
+    return;
+  }
+  world.bizzy = want;
+};
+var recordPose = function () {
+  if (playing || !world) return;
+  var lvl = PINCHY.LEVELS[session.level];
+  if (lvl.physics || lvl.debug) return;
+  var arm = (isDuo() && activeLane === 1 && world.bizzy) ? world.bizzy : world;
+  var list = isDuo() ? laneList(activeLane) : session.programs[session.level];
+  if (list.length >= 24) {
+    setRun(PINCHY.settleRun(session.run[session.level], { type: "edit", delta: 0, note: "Program is full at 24 blocks." }));
+    return;
+  }
+  list.push(PINCHY.makeSet(arm));
+  renderProgram(-1, -1);
+  updateMetrics();
+  teachNote("");
 };
 var renderProgram = function (now, stop, now2, stop2, wait1, wait2) {
   renderLaneInto(document.getElementById("program"), session.programs[session.level], now, stop, 0, !!wait1);
@@ -1353,6 +1588,7 @@ var renderPalette = function () {
   if (focusIndex >= focusButtons.length) focusIndex = 0;
   var blocks = jointPad.querySelectorAll("button.block");
   for (i = 0; i < blocks.length; i++) blocks[i].tabIndex = i === focusIndex ? 0 : -1;
+  renderTeach();
 };
 var LAMP_MARK = { ready: "\u25CF ", moving: "\u25B2 ", stopped: "\u25A0 ", crash: "\u25C6 " };
 var LAMP_KEY = { ready: "READY", moving: "MOVING", stopped: "STOPPED", crash: "CRASH" };
@@ -2018,6 +2254,9 @@ var paintView = function (canvas, state, level, opts) {
 };
 var paintGame = function () {
   if (!world) return;
+  // Mirror follows Berty's live pose (on two-arm levels only while not running, since Bizzy has its own lane then).
+  if (mirrorOn && (!isDuo() || !playing)) mirrorBizzy();
+  syncTeach();
   var viewArm = (isDuo() && activeLane === 1 && world.bizzy) ? world.bizzy : world;
   var angleLine = (isDuo() ? laneName(activeLane) + ": " : "") + PINCHY.jointReadout(viewArm, lang);
   var touchEl = document.getElementById("touch-line");
@@ -2863,7 +3102,7 @@ var bbInit = function () {
 };
 
 var boot = function () {
-  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.7.3") return;
+  if (!window.PINCHY || PINCHY.APP_VERSION !== "1.8.0") return;
   while (session.programs.length < PINCHY.LEVELS.length) {
     session.programs.push([]);
     session.programs2.push([]);
@@ -3047,6 +3286,16 @@ var boot = function () {
   watchBar();
   applyLang(startLang);
   bbInit();
+  document.getElementById("mirror-btn").addEventListener("click", function () {
+    mirrorOn = !mirrorOn;
+    paintMirror();
+    if (world) {
+      if (mirrorOn) mirrorBizzy();
+      else if (!isDuo()) delete world.bizzy;
+      paintGame();
+    }
+  });
+  document.getElementById("record-btn").addEventListener("click", recordPose);
   // 0054: Run sits under the scene, except on short sideways screens, where the scene is small and Run stays
   // pinned at the bottom of the program column.
   var actionsEl = document.getElementById("actions");
@@ -3109,6 +3358,27 @@ var boot = function () {
     }
     if (document.getElementById("game").hidden) return;
     var key = e.key;
+    // 1.8.0 Teach: number keys 1 to 5 pick a joint (its slider takes the focus, so the arrows move it 15°).
+    var tgt = e.target;
+    if (tgt && tgt.tagName === "INPUT") {
+      if (tgt.type === "range" && (key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown")) {
+        e.preventDefault();
+        var row = tgt.closest(".teach-row");
+        if (row) teachStep(row.dataset.joint, key === "ArrowRight" || key === "ArrowUp" ? 1 : -1);
+      }
+      if (tgt.type === "number" || tgt.type === "range") return;
+    }
+    if (/^[1-5]$/.test(key) && !e.ctrlKey && !e.metaKey && !e.altKey && !playing) {
+      var lvlNow = PINCHY.LEVELS[session.level];
+      var sliders = document.querySelectorAll("#teach-pad input[type=range]");
+      if (!lvlNow.physics && !lvlNow.debug && sliders[Number(key) - 1]) {
+        e.preventDefault();
+        teachJoint = Number(key) - 1;
+        sliders[teachJoint].focus();
+        paintTeachFocus();
+        return;
+      }
+    }
     if (key === "Enter" && PINCHY.LEVELS[session.level].debug) {
       var target = e.target;
       var onButton = target && target.closest && target.closest("button");
