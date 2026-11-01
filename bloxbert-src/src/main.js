@@ -304,7 +304,7 @@ import { initBot } from './bot/bot.js'
 import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
-import { mountFpsOverlay } from './fps-overlay.js'
+import { mountFpsOverlay, fb } from './fps-overlay.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -2498,7 +2498,7 @@ function drainGen() {
     added++
   }
 }
-noa.on('beforeRender', drainGen)
+noa.on('beforeRender', () => { fb.s(0); drainGen(); fb.e(0) })
 noa.world.on('worldDataNeeded', (id, arr, x, y, z) => {
   const s = saved.get(key(x / S, y / S, z / S))
   if (s) { arr.data.set(s); noa.world.setChunkData(id, arr); return }
@@ -8483,8 +8483,8 @@ noa.on('tick', () => {
   supportBeds()
   // 2.5.447: shared machine animation tick (UV scroll / lever tween driver). Pauses off-screen via noa.
   if (typeof window !== 'undefined') window.__btMachineAnim = (simTick % 16) / 16
-  while (beltAcc >= 250) { beltAcc -= 250; beltStep() }
-  if (simTick % 3 === 0) mobsStep()
+  fb.s(1); while (beltAcc >= 250) { beltAcc -= 250; beltStep() }; fb.e(1)
+  fb.s(2); if (simTick % 3 === 0) mobsStep(); fb.e(2)
   try { if (circuits && circuits.tick) circuits.tick(simTick * (1000/30)) } catch (e) {}
   keepSavedSpot()
   const p = noa.entities.getPosition(noa.playerEntity)
@@ -10433,6 +10433,7 @@ function feelTick(dt) {
   hoverCrop()
 }
 noa.on('tick', (dt) => {
+  fb.s(3)
   paintBonk()
   checkSafeEntry()
   const maxP = 89 * Math.PI / 180
@@ -10467,6 +10468,7 @@ noa.on('tick', (dt) => {
     const moving = !tableMode && !seated && !REDUCE && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
     follow.offset[1] = base + (moving ? Math.sin(performance.now() / 180) * 0.045 : 0)
   }
+  fb.e(3)
 })
 
 const canvas = noa.container.canvas
@@ -12525,7 +12527,7 @@ function paintBossBar() {
 }
 
 noa.on('beforeRender', (dt) => {
-  if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }
+  fb.s(3); if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar() }; fb.e(3)
   // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
@@ -12545,7 +12547,7 @@ noa.on('beforeRender', (dt) => {
     if (toastEl && toastEl.textContent !== t('notTired')) toastEl.hidden = true
   }
   circuitTick(performance.now())
-  stepBelts(performance.now())
+  fb.s(1); stepBelts(performance.now()); fb.e(1)
   paintOutline()
   paintWandBox()
   paintProtectRing()
@@ -14387,4 +14389,4 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
 
 repaintBlocks()
 void T0
-mountFpsOverlay()
+mountFpsOverlay(noa)
