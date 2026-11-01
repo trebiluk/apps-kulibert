@@ -13,7 +13,7 @@ const SOLID_REM = [2.5, 2]
 export const QP = {
   auto: { aa: false, add: [1.5, 1], rem: [2.5, 2] },
   lite: { aa: false, scale: 1.75, add: [1.5, 1], rem: [2.5, 2] },
-  full: { aa: true, scale: 1, add: [2, 1.5], rem: [3, 2.5] },
+  full: { aa: true, scale: 1, add: [2.5, 1.5], rem: [3.5, 2.5] }, // Full sees farther (Diego, Nov 1); Auto and Lite stay at the Chromebook floor
 }
 
 const NAMES = { auto: 'Auto', lite: 'Lite', full: 'Full' }

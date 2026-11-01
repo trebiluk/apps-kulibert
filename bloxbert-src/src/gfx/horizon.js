@@ -97,6 +97,8 @@ export const HILL_N = 64
 export const HILL_MAX = 0.2 // largest ridge height stored, as sin(elevation). About 11.5 degrees.
 const RADII = [150, 320]
 const LIFT = [14, 34] // base hill height in blocks at 'near' and 'far'. Far is taller so both ridges show.
+const MOUNT_R = 640 // far mountains sit behind both ridges
+const MOUNT_LIFT = 30
 
 // Texel i looks at this compass angle, matching atan(z, x) in the sky shader.
 export function texelAngle(i, n = HILL_N) { return ((i + 0.5) / n - 0.5) * 2 * Math.PI }
@@ -120,17 +122,32 @@ export function hillSamples(heightAt, rough, cx, cz, baseY, n = HILL_N) {
       for (let i = 0; i < n; i++) out[r][i] = (src[(i + n - 1) % n] + 2 * src[i] + src[(i + 1) % n]) / 4
     }
   }
+  // Third row: far mountains, seeded only (no terrain under them yet). A few broad peaks, so the far view has a skyline.
+  const m = new Array(n)
+  for (let i = 0; i < n; i++) {
+    const a = texelAngle(i, n)
+    const x = Math.round(cx + Math.cos(a) * MOUNT_R)
+    const z = Math.round(cz + Math.sin(a) * MOUNT_R)
+    const big = rough(Math.round(x / 90) * 90 + 501, Math.round(z / 90) * 90 - 307)
+    const small = rough(x + 911, z - 433)
+    m[i] = Math.min(HILL_MAX * 0.98, Math.max(0.03, (MOUNT_LIFT + big * 70 + small * 18) / MOUNT_R))
+  }
+  for (let pass = 0; pass < 2; pass++) {
+    const src = m.slice()
+    for (let i = 0; i < n; i++) m[i] = (src[(i + n - 1) % n] + 2 * src[i] + src[(i + 1) % n]) / 4
+  }
+  out.push(m)
   return out
 }
 
-// RGBA bytes for the n x 1 strip. R = near ridge, G = far ridge, B unused, A opaque.
+// RGBA bytes for the n x 1 strip. R = near ridge, G = far ridge, B = far mountains, A opaque.
 export function hillBytes(samples) {
   const n = samples[0].length
   const px = new Uint8ClampedArray(n * 4)
   for (let i = 0; i < n; i++) {
     px[i * 4] = Math.round(Math.min(1, samples[0][i] / HILL_MAX) * 255)
     px[i * 4 + 1] = Math.round(Math.min(1, samples[1][i] / HILL_MAX) * 255)
-    px[i * 4 + 2] = 0
+    px[i * 4 + 2] = samples[2] ? Math.round(Math.min(1, samples[2][i] / HILL_MAX) * 255) : 0
     px[i * 4 + 3] = 255
   }
   return px
@@ -139,7 +156,7 @@ export function hillBytes(samples) {
 // Aerial perspective: far things drift toward the horizon color. Far ridge is hazier than near.
 export function hillColors(blend) {
   return {
-    near: mix3(blend.hill, blend.horizon, 0.40),
-    far: mix3(blend.hill, blend.horizon, 0.70),
+    near: mix3(blend.hill, blend.horizon, 0.22), // the treeline reads green, not grey
+    far: mix3(blend.hill, blend.horizon, 0.55),
   }
 }
