@@ -151,6 +151,28 @@ try {
     await P.keyboard.type('/help'); await P.keyboard.press('Enter'); await sleep(300)
     eq((await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].map((l) => l.textContent).at(-1))).startsWith('Commands: /spawn'), `${tag} commands: a typed /help answers in the panel`)
 
+    // the code builder (part 9): owner only; start from an example, change it, save; the host runs it
+    eq(await P.evaluate(() => !window.HOME.homeOpenBuilder() && !document.querySelector('#home-builder')), `${tag} builder: a player cannot open it`)
+    await O.evaluate((t) => sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token: t })), token)
+    eq(await O.evaluate(() => window.HOME.homeOpenBuilder() && !!document.querySelector('#home-builder[role=dialog]')), `${tag} builder: the owner opens it as a dialog`)
+    await sleep(400)
+    const exBtn = await O.evaluate(() => [...document.querySelectorAll('#home-builder .list button')].find((b) => /^Welcome/.test(b.textContent)) ? 'yes' : 'no')
+    eq(exBtn === 'yes', `${tag} builder: the examples are listed`)
+    await O.evaluate(() => [...document.querySelectorAll('#home-builder .list button')].find((b) => /^Welcome/.test(b.textContent)).click()); await sleep(150)
+    const small = await O.evaluate(() => [...document.querySelectorAll('#home-builder button, #home-builder select, #home-builder input')].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).length)
+    eq(small === 0 && (await O.evaluate(() => document.querySelector('#home-builder select').value)) === 'join', `${tag} builder: the editor shows the example's WHEN (join); every control is at least 44 px`)
+    await O.evaluate(() => { const i = [...document.querySelectorAll('#home-builder input.t')].find((x) => x.placeholder.startsWith('text')); i.value = 'Hi {player}, built in the builder'; i.dispatchEvent(new Event('input')) })
+    await O.evaluate(() => [...document.querySelectorAll('#home-builder button')].find((b) => b.textContent === 'Save & run').click()); await sleep(600)
+    eq(await O.evaluate(() => !!document.querySelector('#home-builder') && [...document.querySelectorAll('#home-builder .list b')].some((b) => b.textContent === 'Welcome')), `${tag} builder: Save & run lists the plugin as on`)
+    const nc = await browser.newContext({ viewport: { width: w, height: h } }), NP = await nc.newPage()
+    await NP.goto(H + '/'); await NP.waitForSelector('#hj-go')
+    await NP.fill('#hj-code', CODE); await NP.fill('#hj-name', 'Newcomer'); await NP.check('#hj-adults'); await NP.focus('#hj-code'); await NP.keyboard.press('Enter')
+    await NP.waitForFunction(() => window.session, null, { timeout: 8000 }); await sleep(500)
+    eq(await NP.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].some((l) => /Hi Newcomer, built in the builder/.test(l.textContent))), `${tag} builder: the saved plugin greets the next player who joins`)
+    await nc.close(); await sleep(300)
+    await O.evaluate(() => [...document.querySelectorAll('#home-builder button')].find((b) => b.textContent === '✕ Close').click())
+    await api('plugin/drop', { id: (await api('plugins', {})).list.find((p) => p.name === 'Welcome').id })
+
     // keep inventory: the world value arrives with the rules; the owner sets this player apart
     const k0 = await P.evaluate(() => window.HOME.homeKeep())
     const pref = (await (await fetch(H + '/owner/state', { headers: { 'x-owner': token } })).json()).live.players.find((p) => p.role === 'player').ref

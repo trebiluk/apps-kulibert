@@ -12,6 +12,7 @@ import { ITEMS } from '../data/items.js'
 import { RECIPES } from '../data/recipes.js'
 import { EXTRA } from '../strings-extra.js'
 import { DECAY_ITEMS, DECAY_RECIPES, DECAY_STRINGS, compost, say } from './decay.js'
+import { createBuilder } from './builder.js'
 
 // Home-only rules (docs §5). Registered from here, so the student build never has them. The personal host is
 // adults-only and English-only (Diego, Nov 1): labels are English; the game falls back to English for every language.
@@ -278,6 +279,7 @@ function bossNews(f) {
 function homeFrame(f) {
   if (shareFrame(f)) return
   if (f.t === 'tp') { if (tpFn) tpFn(f.x, f.y, f.z); if (toastFn && f.by && info && f.by !== info.name) toastFn(f.by + ' moved you'); return }
+  if (f.t === 'plugins') { pluginSummary = f.list || []; return }
   if (f.t === 'cmdok') { if (f.msg) sysLine(f.msg); return }
   if (f.t === 'cmdno') { sysLine(f.why || 'That did not work.'); return }
   if (f.t === 'chat') chatLine(f)
@@ -396,6 +398,7 @@ function paintMenu(menu, warps) {
     b.onclick = () => runButton(m)
     bar.append(b)
   }
+  if (homeOwnerOn()) { const b = document.createElement('button'); b.type = 'button'; b.textContent = '⚙ Code builder'; b.dataset.c = 'builder'; b.onclick = () => homeOpenBuilder(); bar.append(b) }
 }
 function pickRow(title, items, onPick) {
   const bar = dock.querySelector('.hc-cmds'); const old = dock.querySelector('.hc-pick'); if (old) old.remove()
@@ -427,3 +430,16 @@ export function homeOpenChat() {
   panel.hidden = false; toggle.setAttribute('aria-expanded', 'true'); unread = 0; paintToggle(); dock.querySelector('input').focus()
   return true
 }
+
+
+// ---------------------------------------------------------------- the code builder (part 9): owner only, in-game
+let builder = null, pluginSummary = []
+const ownerCall = (p, body) => fetch(ownerApi.base + '/owner/' + p, { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerApi.token }, body: JSON.stringify(body || {}) }).then((r) => r.json())
+export function homeOpenBuilder() {
+  if (!homeOwnerOn()) { if (toastFn) toastFn('Only the host can open the code builder.'); return false }
+  if (!ownerApi) { try { ownerApi = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {} }
+  if (!ownerApi || !ownerApi.token) { if (toastFn) toastFn('Open the game from the owner page ("Play as owner") to use the builder.'); return false }
+  if (!builder) builder = createBuilder({ api: ownerCall, toast: (m) => toastFn && toastFn(m) })
+  builder.open(); return true
+}
+export const homePlugins = () => pluginSummary

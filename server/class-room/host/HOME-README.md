@@ -158,6 +158,19 @@ location / {
 ```
 The owner page answers only on this PC, never through the proxy's public address.
 
+## Code builder (plugins)
+Owner only, in the game: open chat (T) and press **⚙ Code builder**. A plugin is a few rules of the form
+**when** something happens → **if** these hold → **do** this. No typing of code; every piece is a block picked from a
+list, and the host refuses anything outside the allowed set.
+- when: join, leave, place, break, chat, a `/command` of your own, or a timer (every 10 s or slower);
+- if: owner, a named player, a block id, a zone (two corners), a count, or `not` any of these;
+- do: say (to all), tell (to that player), announce (also in the host feed), tp / spawn, undo that edit, set a block,
+  kick, mute, deny (the place/break/chat is refused with a calm note).
+Four examples come with the game (Welcome, No digging here, Dinner bell, /hi). Plugins live in the world file
+(`meta.plugins`), so they travel with Download/Import. At most 32 plugins, 32 rules each, 50 actions per event;
+`{player}` in a text is the player's name. The kid tier (for the school build later) allows join/place/break/command/
+timer, block/zone/player/not, say/tell/set only; nothing here runs in the student game.
+
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
 address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
@@ -176,10 +189,12 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
+- `home-cmd-check` / `home-plugin-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API;
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
   with and without the home flag, and the home vs student game compile);
-- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes,
+- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes, the code builder (open, example, edit, Save & run, the greeting reaches the next player),
   Update card, 44 px targets, focus rings). It runs the full game too when `bertopia-home/` has been built. It needs
   esbuild (`npm ci` in `bloxbert-src`) and Playwright, and says SKIP when they are missing.

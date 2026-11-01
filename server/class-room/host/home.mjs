@@ -21,6 +21,7 @@ import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
 import { makeEvents } from './events.mjs'
 import { makeCommands } from './commands.mjs'
+import { checkPlugin, makeRunner, EXAMPLES, LIMITS as PLUGIN_LIMITS } from '../src/plugins.js'
 import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
 import { undoPlan, applyUndo } from '../src/world/undo.js'
@@ -105,12 +106,12 @@ function closeWorld({ forget = true } = {}) {
     try { w.ctx.close() } catch (e) { console.error('[home] close failed', e.message) }
   }
   for (const { room, p } of players()) room.drop(p.id, 4006, 'world closed')
-  rooms.clear()
+  rooms.clear(); pluginList = []; runner.load([])
   if (forget) saveCfg()
 }
 function openWorld(name) {
   if (!/^[A-Za-z0-9_-]{8,40}$/.test(name)) return { error: 'name' }
-  closeWorld(); cfg.world = name; saveCfg(); worldOf(name)
+  closeWorld(); cfg.world = name; saveCfg(); worldOf(name); loadPlugins()
   return { ok: true, name }
 }
 function backupWorld(name) {
@@ -204,6 +205,7 @@ function typedCommand(room, ws, p, line) {
   const r = commands.parse(line, staff)
   const tell = (o) => { try { ws.send(JSON.stringify(o)) } catch (e) {} }
   if (r.help) return tell({ t: 'cmdok', c: 'help', msg: 'Commands: ' + r.help })
+  if (r.error === 'unknown') { const name = (/^\/(\w+)/.exec(line) || [])[1]; if (name && pluginList.some((pl) => pl.on && pl.rules.some((ru) => ru.when.e === 'command' && ru.when.name === name.toLowerCase()))) { pluginEvent({ e: 'command', name: name.toLowerCase(), player: evPlayer(p), text: line }); return } }
   if (r.error) return tell({ t: 'cmdno', c: 'typed', why: CMD_WHY[r.error] || r.error })
   if (r.local === 'warps') return tell({ t: 'cmdok', c: 'warps', msg: commands.warpList().length ? 'Warps: ' + commands.warpList().join(', ') : 'No warps yet: /setwarp <name> where you stand.' })
   if (r.local === 'setwarp') { const x = commands.setWarp(r.name, p.pos); if (x.error) return tell({ t: 'cmdno', c: 'setwarp', why: CMD_WHY[x.error] }); broadcastRules(); return tell({ t: 'cmdok', c: 'setwarp', msg: 'Warp "' + r.name + '" set.' }) }
@@ -249,6 +251,63 @@ function tallyEdit(alias, placed) {
   if (!t.timer) t.timer = setTimeout(() => { editTally.delete(alias); feed(alias + (t.placed ? ' placed ' + t.placed : '') + (t.placed && t.broken ? ',' : '') + (t.broken ? ' broke ' + t.broken : '') + ' block' + (t.placed + t.broken === 1 ? '' : 's')) }, 5000).unref()
 }
 const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
+
+// ---------------------------------------------------------------- plugins (part 9: the in-game code builder)
+// 18+: a world's plugins live IN the world file (meta 'plugins'), so they travel with exports and backups; the cloud
+// library (option 2) syncs the same JSON later. Only plugins with on:true run. The owner edits them in-game.
+const runner = makeRunner()
+let pluginList = []
+const dbOf = () => { const w = cfg.world && worlds.get(cfg.world); return w ? w.ctx.db : null }
+function loadPlugins() {
+  const db = dbOf(); let list = []
+  try { const raw = db && db.prepare('SELECT v FROM meta WHERE k=?').get('plugins'); if (raw && raw.v) list = JSON.parse(raw.v) } catch (e) { list = [] }
+  if (!Array.isArray(list)) list = []
+  if (!db) list = []
+  pluginList = list.filter((p) => !checkPlugin(p, 'adult'))
+  runner.load(pluginList)
+}
+function savePlugins() {
+  const db = dbOf(); if (!db) return
+  db.prepare('INSERT OR REPLACE INTO meta VALUES(?,?)').run('plugins', JSON.stringify(pluginList))
+  runner.load(pluginList); broadcastPlugins()
+}
+const pluginSummary = () => pluginList.map((p) => ({ id: p.id, name: p.name, by: p.by, about: p.about || '', on: !!p.on, rules: p.rules.length }))
+function broadcastPlugins() { const f = { t: 'plugins', list: pluginSummary() }; for (const { p } of players()) if (p.role !== 'kid') try { p.ws.send(JSON.stringify(f)) } catch (e) {} }
+function putPlugin(p) {
+  const why = checkPlugin(p, 'adult'); if (why) return { error: why }
+  const i = pluginList.findIndex((x) => x.id === p.id)
+  if (i < 0 && pluginList.length >= PLUGIN_LIMITS.plugins) return { error: 'up to ' + PLUGIN_LIMITS.plugins + ' plugins per world' }
+  const clean = { id: p.id, name: String(p.name).trim(), by: String(p.by || 'owner').slice(0, 20), about: String(p.about || '').slice(0, 200), on: !!p.on, v: 1, rules: p.rules }
+  if (i < 0) pluginList.push(clean); else pluginList[i] = clean
+  savePlugins(); feed('plugin ' + (i < 0 ? 'added' : 'saved') + ': ' + clean.name + (clean.on ? ' (on)' : ' (off)'))
+  return { ok: true, plugin: clean }
+}
+function togglePlugin(id, on) { const p = pluginList.find((x) => x.id === id); if (!p) return { error: 'no such plugin' }; p.on = !!on; savePlugins(); feed('plugin ' + (on ? 'on' : 'off') + ': ' + p.name); return { ok: true } }
+function dropPlugin(id) { const i = pluginList.findIndex((x) => x.id === id); if (i < 0) return { error: 'no such plugin' }; feed('plugin removed: ' + pluginList[i].name); pluginList.splice(i, 1); savePlugins(); return { ok: true } }
+// an event from the world -> run the plugins, carry out what they say. -> true when the event is denied
+function pluginEvent(ev) {
+  if (!pluginList.length) return false
+  const r = runner.fire(ev)
+  carryOut(r.actions, ev)
+  return r.denied
+}
+function carryOut(actions, ev) {
+  for (const a of actions) {
+    const who = a.to !== undefined ? players().find(({ p }) => p.id === a.to) : null
+    const send = (o) => { if (who) try { who.p.ws.send(JSON.stringify(o)) } catch (e) {} }
+    if (a.a === 'say') broadcastAll({ t: 'chat', a: '⚙ ' + a.plugin, m: a.text, at: Date.now() })
+    else if (a.a === 'tell') send({ t: 'chat', a: '⚙ ' + a.plugin, m: a.text, at: Date.now(), me: true })
+    else if (a.a === 'announce') { broadcastAll({ t: 'chat', a: '📣 ' + a.plugin, m: a.text, at: Date.now() }); feed('plugin ' + a.plugin + ' announced: ' + a.text) }
+    else if (a.a === 'tp') send({ t: 'tp', x: a.x + 0.5, y: a.y, z: a.z + 0.5, by: a.plugin })
+    else if (a.a === 'spawn') send({ t: 'tp', x: SPAWN.x, y: SPAWN.y, z: SPAWN.z, by: a.plugin })
+    else if (a.a === 'kick' && who && who.p.role === 'kid') { feed('plugin ' + a.plugin + ' kicked ' + who.p.alias); who.room.drop(who.p.id, 4006, 'plugin') }
+    else if (a.a === 'mute' && who && who.p.role === 'kid') who.p.muted = !!a.on
+    else if (a.a === 'undo' && who && Number.isFinite(ev.x)) { const w = cfg.world && worlds.get(cfg.world); if (w) { const cur = w.obj.hub.world.cell(ev.x, ev.y, ev.z); if (cur !== undefined && cur !== ev.before) w.obj.hub.world.apply([{ x: ev.x, y: ev.y, z: ev.z, id: ev.before, b: cur }], null) } }
+    else if (a.a === 'set') { const w = cfg.world && worlds.get(cfg.world); if (w) { const cur = w.obj.hub.world.cell(a.x, a.y, a.z); if (cur !== undefined && cur !== a.id) w.obj.hub.world.apply([{ x: a.x, y: a.y, z: a.z, id: a.id, b: cur }], null) } }
+  }
+}
+const evPlayer = (p) => ({ id: p.id, name: p.alias, owner: p.role !== 'kid' })
+setInterval(() => { if (pluginList.length) carryOut(runner.tick(), {}) }, 1000).unref()
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
   if (!cfg.world) return { error: 'no world' }
@@ -310,7 +369,7 @@ function homeFrame(room, ws, p, text) {
   if (!m || m.v !== 0 || typeof m.t !== 'string') return false
   const staff = p.role !== 'kid'
   const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
-  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
+  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } if (pluginEvent({ e: m.id === 0 ? 'break' : 'place', player: evPlayer(p), x: m.x, y: m.y, z: m.z, block: m.id === 0 ? m.b : m.id, before: m.b })) { no('plugin', { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
   if (m.t === 'p') {
     const why = rules.flyWhy(m, staff); if (why) { no(why); return true }
     // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
@@ -336,6 +395,7 @@ function homeFrame(room, ws, p, text) {
     if (p.muted) { no('chat-muted'); return true }
     const c = cleanChat(m.m); if (c.error) { no(c.error); return true }
     const slow = chatGate.check(p.ref); if (slow) { no('chat-slow', slow); return true }
+    if (pluginEvent({ e: 'chat', player: evPlayer(p), text: c.m })) { no('plugin'); return true }
     broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now() })
     if (SHOW_CHAT) feed(p.alias + ': ' + c.m)
     return true
@@ -443,6 +503,10 @@ async function handle(req, res) {
       case '/owner/ruleset': return json(res, RULESETS.includes(b.ruleset) ? 200 : 400, setRuleset(String(b.ruleset || '')))
       case '/owner/rule': { const r = setRule(String(b.id || ''), b.v); return json(res, r.error ? 400 : 200, r) }
       case '/owner/rules': return json(res, 200, { ...rules.snapshot(), presets: Object.keys(PRESETS) })
+      case '/owner/plugins': return json(res, 200, { list: pluginList, examples: EXAMPLES })
+      case '/owner/plugin/put': { const r = putPlugin(raw && raw.plugin); return json(res, r.error ? 400 : 200, r) }
+      case '/owner/plugin/on': return json(res, 200, togglePlugin(String(b.id || ''), !!b.on))
+      case '/owner/plugin/drop': return json(res, 200, dropPlugin(String(b.id || '')))
       case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws', world: cfg.world, name: String(b.name || 'Owner').slice(0, 20) }) : json(res, 400, { error: 'no session' }) }
       case '/owner/world/open': return json(res, 200, openWorld(String(b.name || '')))
       case '/owner/world/close': endSession(); closeWorld(); return json(res, 200, { ok: true })
@@ -493,10 +557,12 @@ server.on('upgrade', async (req, tcp, head) => {
   feed(c.alias + (c.role !== 'kid' ? ' (owner)' : '') + ' joined · ' + players().length + ' in')
   sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
   { const ev = events.current(); if (ev) try { ws.send(JSON.stringify(ev)) } catch (e) {} }   // and a boss fight already going
+  // plugins last: a 'join' greeting must land after the rules frame, which is what turns the player's chat on
+  { const me = players().find(({ p }) => p.ws === ws); if (me) { if (me.p.role !== 'kid') try { ws.send(JSON.stringify({ t: 'plugins', list: pluginSummary() })) } catch (e) {}; pluginEvent({ e: 'join', player: evPlayer(me.p) }) } }
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); { const me = players().find(({ p }) => p.ws === ws); if (me) pluginEvent({ e: 'leave', player: evPlayer(me.p) }) } const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 
