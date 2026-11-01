@@ -741,7 +741,7 @@
     body.hub-classic #my-settings,body.hub-classic #kp-panel,body.hub-classic #kp-help,body.hub-classic .kp-cards{display:none !important}
     html[data-kp-contrast="1"] body.apps-always,html[data-kp-contrast="1"] .shell,html[data-kp-contrast="1"] .shell-header,html[data-kp-contrast="1"] a.tile{background:#000 !important;color:#fff !important;border-color:#ffe14a !important}
     :focus-visible{outline:3px solid #ffe14a;outline-offset:2px}
-    body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic #kb-menu,body.hub-classic #progress{display:none !important}
+    body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic:not(.classic-app-menu) #kb-menu,body.hub-classic #progress{display:none !important}
     .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
     .kb-help,.kb-settings,#kb-menu{min-width:44px;min-height:44px;height:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem}
     #kb-menu{flex:0 0 auto;order:-1}
@@ -3802,7 +3802,7 @@
           }
           if (document.body.classList.contains("is-framed")) {
             event.preventDefault();
-            if (frameMenuOpen && plateState && plateState.menu && !document.body.classList.contains("hub-classic")) {
+            if (frameMenuOpen && plateState && plateState.menu) {
               frameMenuOpen = false;
               var menuBtnEsc = document.getElementById("kb-menu");
               if (menuBtnEsc) menuBtnEsc.setAttribute("aria-expanded", "false");
@@ -4339,12 +4339,16 @@
         var menuBtn = document.getElementById("kb-menu");
         var gear = document.getElementById("kb-settings");
         var framed = document.body.classList.contains("is-framed");
+        /* Classic hub has no hub drawer, but a framed app hides its own menu button and relies on this one
+           (kulibert-bar's dupe rule). So in classic, Menu shows while a framed app reports a menu, and opens that menu. */
+        var classicAppMenu = !!(hubClassic && framed && menu);
+        document.body.classList.toggle("classic-app-menu", classicAppMenu);
         if (hubClassic || !framed) {
           if (plate) plate.hidden = true;
           if (helpBtn) helpBtn.hidden = true;
           if (menuBtn) {
-            menuBtn.hidden = !!hubClassic;
-            if (hubClassic) menuBtn.setAttribute("aria-expanded", "false");
+            menuBtn.hidden = !!hubClassic && !classicAppMenu;
+            if (hubClassic && !classicAppMenu) menuBtn.setAttribute("aria-expanded", "false");
           }
           if (gear) gear.hidden = true;
           return;
@@ -4806,7 +4810,7 @@ document.addEventListener("click", function (event) {
       }
       var kbMenu = document.getElementById("kb-menu");
       if (kbMenu) kbMenu.addEventListener("click", function () {
-        if (!document.body.classList.contains("hub-classic") && document.body.classList.contains("is-framed") && plateState && plateState.menu) {
+        if (document.body.classList.contains("is-framed") && plateState && plateState.menu) {
           var frame = document.getElementById("app-frame");
           if (frame && frame.contentWindow) {
             var opening = kbMenu.getAttribute("aria-expanded") !== "true";
