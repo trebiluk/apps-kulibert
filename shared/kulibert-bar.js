@@ -54,7 +54,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-27-sign-optional");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-11-01-phone-help");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
