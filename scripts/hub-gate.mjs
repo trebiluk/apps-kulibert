@@ -65,7 +65,7 @@ function checkParse(file) {
   }
 }
 checkParse(indexPath);
-["blocks/app.js", "blocks-test/app.js", "bertopia/app.js"].forEach(p => checkParse(root + "/" + p));
+["blocks/app.js", "blocks-test/app.js", "bertopia/app.js", "hub-assets/hub-boot.js", "hub-assets/hub-main.js"].forEach(p => checkParse(root + "/" + p));
 
 // conflict markers + sw.js parse
 function checkMarkers(file) {
