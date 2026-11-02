@@ -1,8 +1,15 @@
 // One motion helper for the Build Tray and the oven crate.
+let reduceQuery = null
+// BN-21: read live every time, so a Hub change, Bertopia's Gentle Mode or the OS setting applies mid-game.
 export function motionLess() {
   if (typeof document === 'undefined') return true
-  if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
-  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) { return false }
+  const el = document.documentElement
+  if (el.getAttribute('data-kp-motion') === 'less') return true // the Hub's "less motion" (kulibert-prefs.js)
+  if (el.getAttribute('data-bt-gentle') === '1') return true // Bertopia's own Gentle Mode, this game only
+  try {
+    if (!reduceQuery) reduceQuery = window.matchMedia('(prefers-reduced-motion: reduce)') // one query; .matches stays live
+    return reduceQuery.matches
+  } catch (e) { return false }
 }
 
 function fade(el) {

@@ -4168,3 +4168,20 @@ for (const [lang, row] of Object.entries(QMAX)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// BN-21: the On / Off word on the High Contrast and Gentle Mode tiles. fa-AF, rw, and ti are machine drafts.
+const A11Y21 = {
+  en: { a11yOn: 'On', a11yOff: 'Off' },
+  simple: { a11yOn: 'On', a11yOff: 'Off' },
+  uk: { a11yOn: 'Увімк.', a11yOff: 'Вимк.' },
+  ru: { a11yOn: 'Вкл.', a11yOff: 'Выкл.' },
+  es: { a11yOn: 'Sí', a11yOff: 'No' },
+  ar: { a11yOn: 'تشغيل', a11yOff: 'إيقاف' },
+  'fa-AF': { a11yOn: 'روشن', a11yOff: 'خاموش' },
+  rw: { a11yOn: 'Birakora', a11yOff: 'Birazimye' },
+  ti: { a11yOn: 'ክፉት', a11yOff: 'ዕጹው' },
+}
+for (const [lang, row] of Object.entries(A11Y21)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
