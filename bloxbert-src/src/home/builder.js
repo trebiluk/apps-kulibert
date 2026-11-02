@@ -8,14 +8,15 @@
 const WHEN = [['join', 'a player joins'], ['leave', 'a player leaves'], ['place', 'a block is placed'], ['break', 'a block is broken'], ['chat', 'someone chats'], ['command', 'someone types /…'], ['timer', 'every N seconds']]
 const IF = [['owner', 'the player is the owner'], ['player', 'the player is named …'], ['block', 'the block is …'], ['zone', 'it happens inside a zone'], ['count', 'more than N in M seconds']]
 const DO = [['tell', 'tell the player …'], ['say', 'say to everyone …'], ['announce', 'announce …'], ['tp', 'teleport the player to x y z'], ['spawn', 'send the player to spawn'], ['undo', 'undo that block'], ['set', 'set a block at x y z'], ['deny', 'refuse it (place/break/chat)'], ['kick', 'kick the player'], ['mute', 'mute / unmute the player']]
-const CSS = `#home-builder{position:fixed;inset:0;z-index:60;background:rgba(2,6,23,.92);color:#f8fafc;font:14px/1.4 system-ui,sans-serif;overflow:auto;padding:16px}
+const CSS = `#home-builder{position:fixed;inset:0;z-index:1000;background:#0b1220;color:#f8fafc;font:14px/1.4 system-ui,sans-serif;overflow:auto;padding:0 16px 16px;max-width:760px;margin:0 auto;box-shadow:0 0 0 100vmax #0b1220}
+#home-builder .top{position:sticky;top:0;z-index:2;background:#0b1220;padding:12px 0 8px;border-bottom:1px solid #22304d;margin:0 0 8px}#home-builder .foot{position:sticky;bottom:0;z-index:2;background:#0b1220;padding:8px 0 4px;border-top:1px solid #22304d;margin:12px 0 0}
 #home-builder *{box-sizing:border-box}#home-builder h1{font-size:20px;margin:0 0 4px}#home-builder h2{font-size:15px;color:#2dd4bf;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.04em}
 #home-builder button,#home-builder select,#home-builder input{min-height:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}
 #home-builder button{min-width:44px;cursor:pointer}#home-builder button.go{background:#0f766e;border-color:#14b8a6}#home-builder button.bad{color:#fca5a5;border-color:#7f1d1d}#home-builder button:focus-visible,#home-builder select:focus-visible,#home-builder input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}
 #home-builder .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}#home-builder .card{background:#111827;border:1px solid #334155;border-radius:12px;padding:12px;margin:8px 0}
 #home-builder .rule{border-left:4px solid #2dd4bf}#home-builder .blk{background:#1f2937;border-radius:10px;padding:8px;margin:6px 0}#home-builder .blk.when{border-left:4px solid #fbbf24}#home-builder .blk.if{border-left:4px solid #60a5fa}#home-builder .blk.do{border-left:4px solid #a3e635}
 #home-builder .dim{color:#94a3b8}#home-builder .err{color:#fde68a;min-height:1.3em}#home-builder input.n{width:7em}#home-builder input.t{flex:1;min-width:12em}#home-builder .list button{display:block;width:100%;text-align:start;margin:4px 0}
-#home-builder .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}`
+#home-builder .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}#home-builder .top h1{display:flex;align-items:center;gap:8px}`
 
 export function createBuilder({ api, toast }) {
   let root = null, plugins = [], examples = [], cur = null, lastErr = ''
@@ -80,7 +81,7 @@ export function createBuilder({ api, toast }) {
     cur.rules.forEach((rule, ri) => root.append(paintRule(rule, ri)))
     const add = el('div', 'row'); add.append(btn('+ Add rule', () => { cur.rules.push({ when: { e: 'join' }, if: [], do: [{ a: 'tell', text: '' }] }); paintEditor() })); root.append(add)
     const err = el('p', 'err'); err.setAttribute('role', 'alert'); err.textContent = lastErr; root.append(err)
-    const save = el('div', 'row'); save.append(btn('Save & run', async () => {
+    const save = el('div', 'row foot'); save.append(btn('Save & run', async () => {
       const r = await api('plugin/put', { plugin: cur })
       if (r.error) { lastErr = r.error; err.textContent = r.error; return }
       lastErr = ''; toast('Plugin saved: ' + cur.name); await refresh(); paintList()

@@ -10,8 +10,13 @@
   header { display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid var(--line); flex-wrap:wrap }
   h1 { font-size:18px; margin:0 } .pill { border:1px solid var(--line); border-radius:999px; padding:6px 12px; color:var(--dim); font-size:13px; white-space:nowrap }
   .pill.on { border-color:var(--ok); color:var(--ok) } .pill.off { border-color:var(--bad); color:var(--bad) }
-  main { display:grid; gap:14px; padding:14px 18px; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); max-width:1366px; margin:0 auto }
-  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; min-width:0 }
+  main { columns:320px; column-gap:14px; padding:14px 18px; max-width:1366px; margin:0 auto }   /* sections flow into as many columns as fit, each as tall as it needs */
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; min-width:0; break-inside:avoid; margin:0 0 14px; display:flow-root }
+  h3 { font-size:14px; margin:14px 0 6px; color:var(--ink); font-weight:600 }
+  label.field { display:inline-flex; align-items:center; gap:8px; color:var(--dim); font-size:14px } label.field input { width:5.5em; color:var(--ink) }
+  details { margin:8px 0 0 } summary { color:var(--dim); cursor:pointer; min-height:44px; display:flex; align-items:center; gap:6px } summary::marker { content:'' } summary::before { content:'▸'; color:var(--teal) } details[open] > summary::before { content:'▾' }
+  section > p:first-of-type, section .row:first-of-type { margin-top:0 } section > .row + .row { margin-top:4px }
+  #lib-info, #acc-info { color:var(--dim); margin:0 0 8px }
   h2 { font-size:15px; margin:0 0 10px; color:var(--teal); text-transform:uppercase; letter-spacing:.6px }
   button { min-height:44px; min-width:44px; background:#1e293b; color:var(--ink); border:1px solid #475569; border-radius:10px; padding:8px 14px; font:inherit; cursor:pointer }
   button.go { background:#134e4a; border-color:var(--teal) } button.bad { border-color:var(--bad); color:var(--bad) } button:disabled { opacity:.45; cursor:default }
@@ -19,13 +24,13 @@
   input, select { min-height:44px; background:#0b1220; color:var(--ink); border:1px solid #475569; border-radius:10px; padding:8px 12px; font:inherit; max-width:100% }
   .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0 } .tbl { overflow-x:auto } .acts { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end }
   table { width:100%; border-collapse:collapse; font-size:14px } td, th { text-align:left; padding:7px 6px; border-top:1px solid var(--line); vertical-align:middle } th { color:var(--dim); font-weight:600; border-top:0 }
-  code { background:#0b1220; border:1px solid var(--line); border-radius:6px; padding:2px 7px; font-size:14px; letter-spacing:1px }
+  code { background:#0b1220; border:1px solid var(--line); border-radius:6px; padding:2px 7px; font-size:14px; letter-spacing:1px; overflow-wrap:anywhere; max-width:100%; display:inline-block; box-sizing:border-box }
   .code-big { font:600 30px/1.2 ui-monospace, monospace; letter-spacing:5px; background:#0b1220; border:1px solid var(--teal); border-radius:12px; padding:12px 16px; display:inline-block }
   .dim { color:var(--dim) } .ok { color:var(--ok) } .warn { color:var(--warn) }
   #gate { position:fixed; inset:0; background:var(--bg); display:grid; place-items:center; z-index:9 } #gate .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; width:min(92vw, 420px) }
   #toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:#1e293b; border:1px solid var(--teal); border-radius:12px; padding:10px 16px; display:none }
   @media (max-width:600px) { main { padding:10px } section { padding:12px } header { padding:10px 12px } }
-  label.check { display:flex; align-items:center; gap:10px; min-height:44px; cursor:pointer }
+  label.check { display:flex; align-items:center; gap:10px; min-height:44px; cursor:pointer } label.check > span { flex:1; min-width:0 } label.check .dim { font-size:13px }
   label.check input { width:22px; height:22px; min-height:0; padding:0; margin:0; flex:none; accent-color:var(--teal) }
 </style>
 </head>
@@ -59,51 +64,72 @@
     </div>
     <div class="row"><button id="btn-start" class="go">Start session</button><button id="btn-rotate">Rotate code</button><button id="btn-end" class="bad">End session</button></div>
     <p class="dim" id="session-info"></p>
-    <div class="row"><label class="check"><input type="checkbox" id="chat-on"> World chat (everyone in the world; 200 characters, no word filter, never saved)</label></div>
-    <div class="row"><label class="check"><input type="checkbox" id="keep-on"> Keep inventory (whole world; set players one by one under Players)</label></div>
-    <h2 style="margin-top:14px">Invite keys</h2>
-    <p class="dim">A key for one person instead of the shared code: it skips the password, is used once (or N times), expires, and can be taken back. Keys are shown once; the link lands on the join card with the key filled in.</p>
-    <div class="row"><input id="inv-label" type="text" maxlength="40" placeholder="who it is for (shown in the feed)"><input id="inv-max" type="number" min="1" max="50" value="1" style="width:5em" aria-label="Uses"> use(s) <input id="inv-hours" type="number" min="1" max="720" value="24" style="width:5em" aria-label="Hours"> h <input id="inv-name" type="text" maxlength="20" placeholder="lock to a name (optional)"><button id="btn-invite" class="go">Make invite</button></div>
-    <div id="inv-box" hidden><div class="row"><span class="code-big" id="inv-key"></span><button id="btn-inv-copy">Copy key</button><button id="btn-inv-link">Copy link</button><button id="btn-inv-hide">Hide</button></div><p class="dim" id="inv-link"></p></div>
-    <details><summary class="dim">Keys made this run</summary><table id="invites"><tbody></tbody></table></details>
-    <h2 style="margin-top:14px">Join address</h2>
-    <div id="addrs"></div>
-    <div id="tunnel-box" hidden><p class="dim">On the internet (Cloudflare tunnel, HTTPS). Anyone with the code or an invite key can join from anywhere:</p><div><code id="tunnel-addr"></code></div></div>
-    <div id="access-box" hidden>
-      <h2 style="margin-top:14px">Owner page from anywhere</h2>
-      <p class="dim">With Cloudflare Access in front of <code>/owner</code> on the tunnel address, you can open this page from any device: Cloudflare asks for a code sent to your email, then this page asks the PIN as usual. The settings below come from the Access app (Zero Trust → Access → Applications): the team name, the application's AUD tag, and the one email allowed. Host PC only to change.</p>
-      <div class="row"><input id="acc-team" type="text" maxlength="64" placeholder="team name (xxx.cloudflareaccess.com)"><input id="acc-aud" type="text" maxlength="64" placeholder="application AUD tag"><input id="acc-email" type="email" maxlength="120" placeholder="your email"><button id="btn-access">Save</button></div>
-      <p class="dim" id="acc-info"></p>
-    </div>
-    <p class="dim" id="lan-help"></p>
-    <div class="row"><label class="check"><input type="checkbox" id="lan"> Let other computers join (this network)</label></div>
+    <label class="check"><input type="checkbox" id="chat-on"><span>World chat <span class="dim">(200 characters, no word filter, never saved)</span></span></label>
+    <label class="check"><input type="checkbox" id="keep-on"><span>Keep inventory <span class="dim">(whole world; per player under Players)</span></span></label>
+  </section>
+
+  <section>
+    <h2>Invite keys</h2>
+    <div class="row"><input id="inv-label" type="text" maxlength="40" placeholder="who it is for" style="flex:1"><input id="inv-name" type="text" maxlength="20" placeholder="lock to a name (optional)" style="flex:1"></div>
+    <div class="row"><label class="field">Uses <input id="inv-max" type="number" min="1" max="50" value="1"></label><label class="field">Hours <input id="inv-hours" type="number" min="1" max="720" value="24"></label><button id="btn-invite" class="go">Make invite</button></div>
+    <div id="inv-box" hidden><div class="row"><span class="code-big" id="inv-key"></span></div><div class="row"><button id="btn-inv-copy">Copy key</button><button id="btn-inv-link">Copy link</button><button id="btn-inv-hide">Hide</button></div><p class="dim" id="inv-link"></p></div>
+    <details><summary>Keys made this run</summary><table id="invites"><tbody></tbody></table></details>
+    <details><summary>How it works</summary><p class="dim">A key for one person instead of the shared code: it skips the password, is used once (or N times), expires, and can be taken back. Keys are shown once; the link lands on the join card with the key filled in.</p></details>
   </section>
 
   <section>
     <h2>Players</h2>
     <div class="tbl"><table id="players"><thead><tr><th>Name</th><th>Role</th><th>Muted</th><th>Keep stuff</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="row"><button id="btn-freeze">Freeze building</button><button id="btn-muteall">Mute all</button><button id="btn-unmuteall">Unmute all</button></div>
-    <h2 style="margin-top:14px">Rollback</h2>
-    <div class="row"><input id="rb-min" type="number" min="1" max="10080" value="5" style="width:7em"> minutes <button id="btn-rollback" class="bad">Undo everyone's edits</button></div>
-    <details><summary class="dim">Banned this session</summary><table id="bans"><tbody></tbody></table></details>
-    <h2 style="margin-top:14px">Plugin library (cloud)</h2>
-    <p class="dim">Your plugins (Code builder) live in this world's file. Linked to the cloud library at <code>plugins.kulibert.net</code>, every world you open pulls the library's plugins (each world keeps its own on/off), and every save in the builder goes up. Work on them as files too: <b>Save as files</b> writes <code>plugins\&lt;id&gt;.json</code> in the data folder; edit; <b>Load files</b>. The library key is kept in <code>home.json</code> only and is never shown again.</p>
-    <p class="dim" id="lib-info"></p>
-    <div class="row"><input id="lib-url" type="url" maxlength="200" placeholder="https://plugins.kulibert.net" value="https://plugins.kulibert.net"><button id="btn-lib-new" class="go">New library</button><input id="lib-key" type="password" maxlength="40" placeholder="or paste a key (lk_…)" autocomplete="off"><button id="btn-lib-link">Link</button><button id="btn-lib-off">Unlink</button></div>
-    <div class="row"><button id="btn-lib-pull">Pull from library</button><button id="btn-lib-push">Push to library</button><button id="btn-files-save">Save as files</button><button id="btn-files-load">Load files</button></div>
-    <h2 style="margin-top:14px">Griefer guard</h2>
-    <div class="row"><label class="check"><input type="checkbox" id="guard-on"> On</label> <input id="guard-breaks" type="number" min="10" max="500" style="width:5em" aria-label="Breaks"> breaks in <input id="guard-window" type="number" min="2" max="60" style="width:4em" aria-label="Seconds"> s = a block storm: kick, undo their last minute <label class="check"><input type="checkbox" id="guard-undo"> undo</label>; a second storm is a ban. Owner and staff are never guarded. <button id="btn-guard">Save</button></div>
+    <h3>Rollback</h3>
+    <div class="row"><label class="field">Minutes <input id="rb-min" type="number" min="1" max="10080" value="5"></label><button id="btn-rollback" class="bad">Undo everyone's edits</button></div>
+    <details><summary>Banned this session</summary><table id="bans"><tbody></tbody></table></details>
+  </section>
+
+  <section>
+    <h2>Griefer guard</h2>
+    <label class="check"><input type="checkbox" id="guard-on"><span>Guard on</span></label>
+    <div class="row"><label class="field">Breaks <input id="guard-breaks" type="number" min="10" max="500"></label><label class="field">in seconds <input id="guard-window" type="number" min="2" max="60"></label></div>
+    <label class="check"><input type="checkbox" id="guard-undo"><span>Undo their last minute too</span></label>
+    <div class="row"><button id="btn-guard">Save</button></div>
+    <details><summary>How it works</summary><p class="dim">More breaks than that in the window is a block storm: the player is kicked (and their last minute undone); a second storm in the session is a ban by name and address. The owner and staff are never guarded. 70 in 10 s is faster than the best tool.</p></details>
   </section>
 
   <section>
     <h2>Worlds</h2>
-    <div class="row"><input id="new-world" placeholder="new world: 8+ letters, digits, - _" minlength="8" maxlength="40"><button id="btn-new" class="go">Create and open</button></div>
+    <div class="row"><input id="new-world" placeholder="new world: 8+ letters, digits, - _" minlength="8" maxlength="40" style="flex:1"><button id="btn-new" class="go">Create and open</button></div>
     <div class="tbl"><table id="worlds"><thead><tr><th>Name</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="row"><button id="btn-backup">Back up open world</button><button id="btn-close">Close world</button></div>
-    <details><summary class="dim">Backups</summary><table id="backups"><tbody></tbody></table></details>
-    <h2 style="margin-top:14px">Import a world file</h2>
-    <p class="dim">A <code>.bertopia-world</code> file from Download. It becomes a new world; it never replaces one.</p>
-    <div class="row"><input type="file" id="imp-file" accept=".bertopia-world,.sqlite" aria-label="World file"><input id="imp-name" placeholder="name for it: 8+ letters, digits, - _" minlength="8" maxlength="40" aria-label="Name for the imported world"><button id="btn-import">Import</button></div>
+    <details><summary>Backups</summary><table id="backups"><tbody></tbody></table></details>
+    <h3>Import a world file</h3>
+    <div class="row"><input type="file" id="imp-file" accept=".bertopia-world,.sqlite" aria-label="World file"></div>
+    <div class="row"><input id="imp-name" placeholder="name for it: 8+ letters, digits, - _" minlength="8" maxlength="40" aria-label="Name for the imported world" style="flex:1"><button id="btn-import">Import</button></div>
+    <p class="dim">A <code>.bertopia-world</code> file from Download becomes a new world; it never replaces one.</p>
+  </section>
+
+  <section>
+    <h2>Plugin library</h2>
+    <p id="lib-info"></p>
+    <div class="row"><input id="lib-url" type="url" maxlength="200" placeholder="https://plugins.kulibert.net" value="https://plugins.kulibert.net" style="flex:1"><button id="btn-lib-new" class="go">New library</button></div>
+    <div class="row"><input id="lib-key" type="password" maxlength="40" placeholder="or paste a key (lk_…)" autocomplete="off" style="flex:1"><button id="btn-lib-link">Link</button><button id="btn-lib-off">Unlink</button></div>
+    <div class="row"><button id="btn-lib-pull">Pull</button><button id="btn-lib-push">Push</button><button id="btn-files-save">Save as files</button><button id="btn-files-load">Load files</button></div>
+    <details><summary>How it works</summary><p class="dim">Plugins (Code builder) live in each world's file. Linked to the cloud library, every world you open pulls the library's plugins (each world keeps its own on/off), and every save in the builder goes up. Files: <b>Save as files</b> writes <code>plugins\&lt;id&gt;.json</code> in the data folder; edit; <b>Load files</b>. The key stays in <code>home.json</code> and is never shown again.</p></details>
+  </section>
+
+  <section>
+    <h2>Network</h2>
+    <h3>Join address</h3>
+    <div id="addrs"></div>
+    <div id="tunnel-box" hidden><p class="dim">On the internet (Cloudflare tunnel, HTTPS), with the code or an invite key:</p><div><code id="tunnel-addr"></code></div></div>
+    <label class="check"><input type="checkbox" id="lan"><span>Let other computers on this network join</span></label>
+    <p class="dim" id="lan-help"></p>
+    <div id="access-box" hidden>
+      <h3>Owner page from anywhere</h3>
+      <p id="acc-info"></p>
+      <div class="row"><input id="acc-team" type="text" maxlength="64" placeholder="team name" style="flex:1"><input id="acc-email" type="email" maxlength="120" placeholder="your email" style="flex:1"></div>
+      <div class="row"><input id="acc-aud" type="text" maxlength="64" placeholder="application AUD tag" style="flex:1"><button id="btn-access">Save</button></div>
+      <details><summary>How it works</summary><p class="dim">With Cloudflare Access in front of <code>/owner</code> on the tunnel address, this page opens from any device: Cloudflare asks for a code sent to your email, then this page asks the PIN as usual. The values come from the Access app (Zero Trust → Access → Applications): team name, the application's AUD tag, the one email allowed. Changed from the host PC only.</p></details>
+    </div>
   </section>
 
   <section>

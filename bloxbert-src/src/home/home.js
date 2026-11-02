@@ -264,10 +264,16 @@ function ensureDock() {
   if (dock || typeof document === 'undefined') return dock
   const T = cs()
   dock = document.createElement('div'); dock.id = 'home-chat'; dock.dir = document.documentElement.dir || 'ltr'
-  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}@media (max-width:480px){#home-chat{top:50%}}</style>' +
+  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-fold{display:none}@media (max-width:480px){#home-chat{top:auto;bottom:calc(var(--hud-lift,92px) + 8px);display:flex;flex-direction:column-reverse;align-items:flex-start}#home-chat .hc-panel{margin:0 0 8px;max-height:min(60vh,calc(100vh - var(--hud-lift,92px) - 80px));overflow:auto}#home-chat .hc-fold{display:inline-flex;margin:0 0 8px}#home-chat .hc-cmds[data-folded="1"]{display:none}}</style>' +
     '<button type="button" class="hc-toggle" aria-expanded="false" aria-controls="hc-panel"></button>' +
-    '<div class="hc-panel" id="hc-panel" hidden><div class="hc-cmds" role="group" aria-label="Commands"></div><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
+    '<div class="hc-panel" id="hc-panel" hidden><button type="button" class="hc-fold" aria-expanded="true" aria-controls="hc-cmds"></button><div class="hc-cmds" id="hc-cmds" role="group" aria-label="Commands"></div><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
   const toggle = dock.querySelector('.hc-toggle'), panel = dock.querySelector('.hc-panel'), input = dock.querySelector('input'), form = dock.querySelector('form')
+  // on a phone the command grid (14 buttons for the owner) folds behind one button so the chat log has room
+  const fold = dock.querySelector('.hc-fold'), cmds = dock.querySelector('.hc-cmds')
+  const paintFold = () => { const n = cmds.querySelectorAll('button').length, open = cmds.dataset.folded !== '1'; fold.textContent = (open ? '▾ ' : '▸ ') + 'Commands (' + n + ')'; fold.setAttribute('aria-expanded', String(open)) }
+  cmds.dataset.folded = matchMedia('(max-width:480px)').matches ? '1' : '0'
+  fold.onclick = () => { cmds.dataset.folded = cmds.dataset.folded === '1' ? '0' : '1'; paintFold() }
+  dock._paintFold = paintFold
   input.setAttribute('aria-label', T.ph); input.placeholder = T.ph; form.querySelector('button').textContent = T.send
   toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) { unread = 0; input.focus() } paintToggle() }
   // keys typed here are chat, not game controls
@@ -282,7 +288,7 @@ function ensureDock() {
   document.body.append(dock); paintToggle()
   // the game's menu sheet is a dialog: the dock (fixed, z 40) used to sit on top of it (seen over Settings, Nov 1)
   const sheet = document.getElementById('sheet')
-  if (sheet && typeof MutationObserver === 'function') { const fit = () => { dock.style.visibility = sheet.hidden ? '' : 'hidden' }; new MutationObserver(fit).observe(sheet, { attributes: true, attributeFilter: ['hidden'] }); fit() }
+  if (typeof MutationObserver === 'function') { const fit = () => { dock.style.visibility = (sheet && !sheet.hidden) || document.getElementById('home-builder') ? 'hidden' : '' }; if (sheet) new MutationObserver(fit).observe(sheet, { attributes: true, attributeFilter: ['hidden'] }); new MutationObserver(fit).observe(document.body, { childList: true }); fit() }
   return dock
 }
 function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = (chatOn ? '💬 ' + T.chat : '⌘ Commands') + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : '') + ' (T)'; b.setAttribute('aria-label', b.textContent) }
@@ -453,6 +459,7 @@ function paintMenu(menu, warps) {
     bar.append(b)
   }
   if (homeOwnerOn()) { const b = document.createElement('button'); b.type = 'button'; b.textContent = '⚙ Code builder'; b.dataset.c = 'builder'; b.onclick = () => homeOpenBuilder(); bar.append(b) }
+  if (dock._paintFold) dock._paintFold()
 }
 function pickRow(title, items, onPick) {
   const bar = dock.querySelector('.hc-cmds'); const old = dock.querySelector('.hc-pick'); if (old) old.remove()

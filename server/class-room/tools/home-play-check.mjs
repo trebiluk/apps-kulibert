@@ -262,6 +262,19 @@ try {
       await O2.evaluate(() => { const t = [...document.querySelectorAll('#sheet-body button.gtile')]; t[0].click() })
       // hotbar (Nov 1 pass): numbered names; on a phone two rows of five (slots 1-5 / 6-9 + bag) and the stick above the bar
       await O2.evaluate(() => { const x = document.getElementById('sheet-x'); if (x && !document.getElementById('sheet').hidden) x.click() }); await sleep(300)
+      // chat dock on a phone (style pass): sits above the hotbar, commands folded behind one button; the builder is opaque with a sticky top bar
+      if (w === 412) {
+        await O2.keyboard.press('t'); await sleep(400)
+        const dk = await O2.evaluate(() => { const d = document.getElementById('home-chat'), r = d.getBoundingClientRect(), hb = document.getElementById('hotbar').getBoundingClientRect(), f = d.querySelector('.hc-fold'); return { above: r.bottom <= hb.top + 1, folded: d.querySelector('.hc-cmds').dataset.folded === '1' && getComputedStyle(d.querySelector('.hc-cmds')).display === 'none', foldText: f.textContent, foldH: Math.round(f.getBoundingClientRect().height) } })
+        await O2.evaluate(() => document.querySelector('#home-chat .hc-fold').click()); await sleep(100)
+        const open = await O2.evaluate(() => getComputedStyle(document.querySelector('#home-chat .hc-cmds')).display !== 'none')
+        eq(dk.above && dk.folded && /Commands \(\d+\)/.test(dk.foldText) && dk.foldH >= 44 && open, `@${w}: chat dock: above the hotbar, "${dk.foldText}" folded by default (${dk.foldH} px) and unfolds on tap`)
+        await O2.evaluate(() => [...document.querySelectorAll('#home-chat button')].find((b) => /Code builder/.test(b.textContent)).click()); await sleep(500)
+        const bd = await O2.evaluate(() => { const b = document.getElementById('home-builder'); const cs = getComputedStyle(b), top = b.querySelector('.top'); return { opaque: cs.backgroundColor === 'rgb(11, 18, 32)', z: Number(cs.zIndex), sticky: getComputedStyle(top).position === 'sticky', dock: getComputedStyle(document.getElementById('home-chat')).visibility } })
+        eq(bd.opaque && bd.z >= 1000 && bd.sticky && bd.dock === 'hidden', `@${w}: builder: opaque over the game, sticky title bar, the chat dock hidden under it`)
+        await O2.evaluate(() => [...document.querySelectorAll('#home-builder button')].find((b) => b.textContent === '✕ Close').click()); await sleep(200)
+        await O2.keyboard.press('Escape'); await sleep(200)
+      }
       const hb = await O2.evaluate(() => { const bar = document.getElementById('hotbar'), rb = bar.getBoundingClientRect(); const slots = [...bar.querySelectorAll('.slot')].map((e) => { const r = e.getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), label: e.getAttribute('aria-label') } }); const rows = new Set(slots.map((s) => Math.round(s.y / 30))).size; return { n: slots.length, rows, h: Math.round(rb.height), small: slots.filter((s) => s.w < 44 || s.h < 44).length, numbered: slots.slice(0, 9).every((s, i) => s.label.endsWith('· ' + (i + 1))), lift: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hud-lift')), centered: Math.abs((rb.left + rb.right) / 2 - innerWidth / 2) < 4 } })
       eq(hb.n === 10 && hb.small === 0 && hb.numbered && (w === 412 ? hb.rows === 2 && hb.h < 170 && hb.lift >= hb.h + 12 && hb.centered : hb.rows === 1), `@${w}: hotbar: ${hb.n} tiles in ${hb.rows} row(s), ${hb.h} px tall, none under 44 px, numbered names${w === 412 ? ', centered, HUD lifted to ' + hb.lift + ' px' : ''}`)
       if (w === 412) {   // touch controls: On -> reload -> the owner is back in, with the touch UI; then back to Auto

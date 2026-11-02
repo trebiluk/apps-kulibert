@@ -19,7 +19,7 @@ class App:
         self.tunnel = core.Tunnel(on_line=lambda l: self.say(l, 'warn' if 'ERR' in l else 'server'))
         root.title('Bertopia Home launcher')
         root.configure(bg=BG); root.minsize(760, 600); root.geometry('900x760')
-        self._style(); self._build()
+        self._style(); self._menu(); self._build()
         root.protocol('WM_DELETE_WINDOW', self.on_close)
         root.report_callback_exception = self.on_crash
         self.say('Bertopia Home launcher %s (adults 18+). Repo: %s' % (core.LAUNCHER_VERSION, core.REPO))
@@ -45,8 +45,43 @@ class App:
         s.map('Go.TButton', background=[('disabled', '#134e4a'), ('active', '#14b8a6')])
         s.configure('Stop.TButton', background='#7f1d1d')
         s.map('Stop.TButton', background=[('disabled', '#3f1d1d'), ('active', '#b91c1c')])
-        s.configure('TCheckbutton', background=BG, foreground=FG, padding=6)
-        s.map('TCheckbutton', background=[('active', BG)])
+        s.configure('TCheckbutton', background=CARD, foreground=FG, padding=(6, 4), indicatorbackground='#0b1220', indicatorforeground=TEAL, indicatormargin=(0, 0, 8, 0))
+        s.map('TCheckbutton', background=[('active', CARD)], indicatorbackground=[('selected', '#134e4a'), ('active', '#1e293b')], indicatorforeground=[('selected', TEAL)])
+        s.configure('Sec.TLabel', background=BG, foreground=TEAL, font=(base[0], 10, 'bold'))     # section heading, like the owner page's
+        s.configure('Dot.TLabel', background=CARD, font=(base[0], 14))                            # the status dot
+        s.configure('Val.TLabel', background=CARD, foreground=FG)
+        s.configure('Val.Warn.TLabel', background=CARD, foreground=WARN)
+        s.configure('Val.Dim.TLabel', background=CARD, foreground=DIM)
+
+    # ---------------------------------------------------------------- menu bar (the same actions as the buttons, plus Help)
+    def _menu(self):
+        r = self.root
+        bar = tk.Menu(r, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG, relief='flat', bd=0)
+        m = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        m.add_command(label='Update & start', command=self.on_start, accelerator='F5')
+        m.add_command(label='Stop server', command=self.on_stop)
+        m.add_command(label='Open owner page', command=self.on_owner, accelerator='F6')
+        m.add_separator()
+        m.add_command(label='Check for updates', command=lambda: self.work('check', self.do_check))
+        m.add_command(label='Rebuild game', command=lambda: self.work('rebuild', self.do_rebuild))
+        m.add_separator()
+        m.add_command(label='Quit', command=self.on_close, accelerator='Ctrl+Q')
+        bar.add_cascade(label='Server', menu=m)
+        f = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        f.add_command(label='Open data folder', command=lambda: self.open_path(core.data_dir()))
+        f.add_command(label='Open plugins folder', command=lambda: self.open_path(os.path.join(core.data_dir(), 'plugins')))
+        f.add_command(label='Open logs', command=lambda: self.open_path(self.log.dir))
+        f.add_separator()
+        f.add_command(label='Copy diagnostics', command=lambda: self.work('diagnostics', self.do_diag))
+        bar.add_cascade(label='Folders', menu=f)
+        h = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        h.add_command(label='Read me (HOME-README.md)', command=lambda: self.open_path(os.path.join(core.REPO, 'server', 'class-room', 'host', 'HOME-README.md')))
+        h.add_command(label='Join address: https://adultopia.kulibert.net/', command=lambda: webbrowser.open('https://adultopia.kulibert.net/'))
+        h.add_separator()
+        h.add_command(label='About', command=lambda: messagebox.showinfo('Bertopia Home', 'Bertopia Home launcher %s\nadults 18+ · personal host\n\nRepo: %s\nData: %s' % (core.LAUNCHER_VERSION, core.REPO, core.data_dir())))
+        bar.add_cascade(label='Help', menu=h)
+        r.configure(menu=bar)
+        r.bind('<F5>', lambda e: self.on_start()); r.bind('<F6>', lambda e: self.on_owner()); r.bind('<Control-q>', lambda e: self.on_close())
 
     def _build(self):
         r = self.root
@@ -54,12 +89,14 @@ class App:
         ttk.Label(top, text='Bertopia Home', style='Head.TLabel').pack(side='left')
         ttk.Label(top, text='  adults 18+ · launcher ' + core.LAUNCHER_VERSION, style='Dim.TLabel').pack(side='left', pady=(6, 0))
 
-        card = ttk.Frame(r, style='Card.TFrame', padding=14); card.pack(fill='x', padx=16, pady=6)
-        self.st = {}
+        ttk.Label(r, text='STATUS', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(6, 0))
+        card = ttk.Frame(r, style='Card.TFrame', padding=14); card.pack(fill='x', padx=16, pady=(2, 6))
+        self.st, self.dots = {}, {}
         for i, (k, label) in enumerate((('node', 'Node'), ('code', 'Code'), ('game', 'Game'), ('server', 'Server'), ('tunnel', 'Internet'))):
-            ttk.Label(card, text=label, style='Key.TLabel', width=8).grid(row=i, column=0, sticky='w', pady=3)
-            v = ttk.Label(card, text='checking ...', wraplength=700, justify='left'); v.grid(row=i, column=1, sticky='w', pady=3); self.st[k] = v
-        card.columnconfigure(1, weight=1)
+            d = ttk.Label(card, text='●', style='Dot.TLabel', foreground=DIM); d.grid(row=i, column=0, sticky='w', padx=(0, 8)); self.dots[k] = d
+            ttk.Label(card, text=label, style='Key.TLabel', width=8).grid(row=i, column=1, sticky='w', pady=3)
+            v = ttk.Label(card, text='checking ...', wraplength=680, justify='left', style='Val.TLabel'); v.grid(row=i, column=2, sticky='w', pady=3); self.st[k] = v
+        card.columnconfigure(2, weight=1)
 
         row1 = ttk.Frame(r, padding=(16, 6)); row1.pack(fill='x')
         self.b_start = ttk.Button(row1, text='▶  Update & start', style='Go.TButton', command=self.on_start)
@@ -74,13 +111,17 @@ class App:
         self.b_diag = ttk.Button(row2, text='Copy diagnostics', command=lambda: self.work('diagnostics', self.do_diag))
         for b in (self.b_check, self.b_build, self.b_data, self.b_logs, self.b_diag): b.pack(side='left', padx=(0, 8))
 
-        opts = ttk.Frame(r, padding=(12, 4)); opts.pack(fill='x')
+        ttk.Label(r, text='SETTINGS', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(8, 0))
+        opts = ttk.Frame(r, style='Card.TFrame', padding=(10, 6)); opts.pack(fill='x', padx=16, pady=(2, 6))
         self.vars = {}
-        for k, text in (('auto_update', 'Update automatically before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS, kept up to date)"),
-                        ('follow_release', 'Follow the newest Bertopia Home release (the "%s" branch)' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('tunnel', 'Let people join from the internet (Cloudflare tunnel, HTTPS; needs tunnel.json in the data folder)'), ('show_chat', 'Show chat messages in the activity feed below'), ('debug', 'Debug log (more detail in the log file)')):
+        for k, text in (('auto_update', 'Update before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS)"),
+                        ('follow_release', 'Follow the newest release ("%s")' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('tunnel', 'Internet join (Cloudflare tunnel; needs tunnel.json)'), ('show_chat', 'Show chat in the console'), ('debug', 'Debug log (more detail in the log file)')):
             v = tk.BooleanVar(value=self.settings[k]); self.vars[k] = v
-            ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).pack(anchor='w')
+            n = len(self.vars) - 1   # two columns, so the console below keeps its room on a 760 px window
+            ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).grid(row=n // 2, column=n % 2, sticky='w', padx=(0, 12))
+        opts.columnconfigure(0, weight=1, uniform='opt'); opts.columnconfigure(1, weight=1, uniform='opt')
 
+        ttk.Label(r, text='CONSOLE', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(8, 0))
         self.out = ScrolledText(r, height=12, bg='#020617', fg='#e2e8f0', insertbackground=FG, relief='flat', font=('Consolas', 10) if core.WIN else ('DejaVu Sans Mono', 9), wrap='word')
         self.out.pack(fill='both', expand=True, padx=16, pady=(6, 14)); self.out.configure(state='disabled')
         self.out.tag_configure('server', foreground='#a7f3d0'); self.out.tag_configure('warn', foreground=WARN); self.out.tag_configure('build', foreground='#cbd5e1')
@@ -102,7 +143,10 @@ class App:
                     self.out.configure(state='normal'); self.out.insert('end', core.redact(m[1]) + '\n', m[2]); n = int(self.out.index('end-1c').split('.')[0])
                     if n > 1500: self.out.delete('1.0', '%d.0' % (n - 1200))
                     self.out.see('end'); self.out.configure(state='disabled')
-                elif m[0] == 'status': self.st[m[1]].configure(text=m[2], foreground=WARN if m[3] else FG)
+                elif m[0] == 'status':
+                    off = m[2].startswith(('stopped', 'off', 'not set up', 'none', 'waiting'))
+                    self.st[m[1]].configure(text=m[2], style='Val.Warn.TLabel' if m[3] else ('Val.Dim.TLabel' if off else 'Val.TLabel'))
+                    self.dots[m[1]].configure(foreground=WARN if m[3] else (DIM if off else TEAL))
                 elif m[0] == 'done': self.busy = False; self.paint()
                 elif m[0] == 'call': m[1]()
         except queue.Empty:
