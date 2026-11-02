@@ -134,6 +134,14 @@
   </section>
 
   <section>
+    <h2>Leaderboard</h2>
+    <div class="row"><label class="field">Board <select id="lb-board"><option value="placed">blocks placed</option><option value="broken">blocks broken</option><option value="time">minutes played</option><option value="chats">chat lines</option><option value="boss">boss fights won</option><option value="warps">teleports</option></select></label><label class="field">World <select id="lb-world"></select></label><button id="btn-lb">Show</button></div>
+    <div class="tbl"><table id="lb"><thead><tr><th>#</th><th>Alias</th><th>Count</th><th></th></tr></thead><tbody><tr><td colspan="4" class="dim">Press Show.</td></tr></tbody></table></div>
+    <div class="row"><button id="btn-lb-reset" class="bad">Reset this world's board</button></div>
+    <details><summary>How it works</summary><p class="dim">Counts per alias, per world, saved in the world's file: blocks placed and broken, minutes played, chat lines, boss fights won, teleports. Players see them with <code>/top</code> (or the Leaderboard button). Aliases only — the 500 most recently seen are kept.</p></details>
+  </section>
+
+  <section>
     <h2>Live</h2>
     <div class="row"><span>Edits: <b id="head">0</b></span><span class="dim" id="ver"></span></div>
     <div class="tbl"><table id="recent"><thead><tr><th>#</th><th>Who</th><th>What</th><th>Where</th><th>When</th></tr></thead><tbody></tbody></table></div>
@@ -191,6 +199,7 @@ function render(s) {
   $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('btn-backup').disabled = $('btn-close').disabled = !s.world
   const rr = s.live.rules; $('chat-on').checked = !!(rr && rr.r['chat.typed']); $('keep-on').checked = !!(rr && rr.r['survival.keep']); $('chat-on').disabled = $('keep-on').disabled = !rr
+  { const sel = $('lb-world'), cur = sel.value; const names = (s.live.worlds || []).map((w) => w.name); if (sel.dataset.list !== names.join()) { sel.dataset.list = names.join(); sel.innerHTML = names.map((n) => `<option value="${n}">${n}</option>`).join(''); if (names.includes(cur)) sel.value = cur } }
   $('head').textContent = s.live.head
   $('recent').querySelector('tbody').innerHTML = s.live.recent.map((o) => `<tr><td class="dim">${o.s}</td><td>${o.who}</td><td>${o.b === o.i ? 'touched' : o.i === 0 ? 'broke ' + o.b : o.b === 0 ? 'placed ' + o.i : o.b + ' → ' + o.i}</td><td>${o.x}, ${o.y}, ${o.z}</td><td class="dim">${ago(o.t)}</td></tr>`).join('') || '<tr><td colspan="5" class="dim">Nothing built yet.</td></tr>'
 }
@@ -240,6 +249,9 @@ document.addEventListener('click', async (e) => {
   else if (b.id === 'btn-lib-push') { let r = await api('library/push', {}); if (r.error === 'conflict' && confirm('The library changed since this world last synced. Overwrite it?')) r = await api('library/push', { force: true }); toast(r.ok ? 'Pushed ' + r.count + ' plugins (v' + r.v + ')' : 'Push: ' + r.error) }
   else if (b.id === 'btn-files-save') { const r = await api('plugins/files/save', {}); toast(r.ok ? r.count + ' files in ' + r.dir : 'Failed') }
   else if (b.id === 'btn-files-load') { const r = await api('plugins/files/load', {}); toast(r.ok ? 'Loaded ' + r.count + (r.bad && r.bad.length ? ' (' + r.bad.length + ' skipped: ' + r.bad[0] + ')' : '') : 'Load: ' + (r.bad ? r.bad.join('; ') : r.error)) }
+  else if (b.id === 'btn-lb') { const r = await api('top', { board: $('lb-board').value, world: $('lb-world').value || undefined }); $('lb').querySelector('tbody').innerHTML = (r.list || []).map((e, i) => `<tr><td>${i + 1}</td><td>${e.alias.replace(/[<>&]/g, '')}</td><td>${e.n}</td><td><button data-lbdrop="${e.alias.replace(/"/g, '')}" aria-label="Remove ${e.alias.replace(/[<>&"]/g, '')} from the board">×</button></td></tr>`).join('') || '<tr><td colspan="4" class="dim">Nobody on this board yet.</td></tr>' }
+  else if (d.lbdrop) { if (confirm('Remove ' + d.lbdrop + ' from this world\'s boards?')) { await api('top/reset', { alias: d.lbdrop, world: $('lb-world').value || undefined }); $('btn-lb').click() } }
+  else if (b.id === 'btn-lb-reset') { if (confirm('Reset every board of ' + ($('lb-world').value || 'the main world') + '?')) { await api('top/reset', { world: $('lb-world').value || undefined }); $('btn-lb').click() } }
   else if (b.id === 'btn-guard') { await api('guard', { on: $('guard-on').checked, breaks: Number($('guard-breaks').value), window: Number($('guard-window').value), undo: $('guard-undo').checked }); toast('Guard saved') }
   else if (d.mute) await api('mute', { ref: d.mute, on: d.on === '1' })
   else if (d.rb) { const m = Number($('rb-min').value) || 5; if (confirm('Undo this player\'s edits of the last ' + m + ' minutes?')) { const r = await api('rollback', { minutes: m, ref: d.rb }); toast('Undid ' + r.applied + ' blocks') } }

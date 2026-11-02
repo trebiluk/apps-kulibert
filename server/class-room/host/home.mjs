@@ -22,6 +22,7 @@ import { cleanChat, makeChatGate } from './chat.mjs'
 import { fold } from './words.mjs'
 import { makeEvents } from './events.mjs'
 import { makeCommands, LOCAL_CMDS } from './commands.mjs'
+import { makeStats, BOARDS, topText } from './stats.mjs'
 import { checkPlugin, makeRunner, EXAMPLES, LIMITS as PLUGIN_LIMITS } from '../src/plugins.js'
 import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
@@ -111,6 +112,7 @@ const listWorlds = () => fs.readdirSync(path.join(DATA, 'worlds')).filter((f) =>
 function closeWorld(name = cfg.world, { forget = true } = {}) {
   if (!name || !isOpen(name)) return
   const w = worlds.get(name)
+  saveStats()
   if (w) {
     for (const r of rooms.values()) if (r.wid === name) { try { w.obj.hub.unlink(r.rid) } catch (e) {} }
     if (w.obj.timer) { clearInterval(w.obj.timer); w.obj.timer = null }
@@ -120,6 +122,7 @@ function closeWorld(name = cfg.world, { forget = true } = {}) {
   }
   for (const { room, p } of players()) if (room.wid === name) room.drop(p.id, 4006, 'world closed')
   for (const [rid, r] of rooms) if (r.wid === name) rooms.delete(rid)
+  statsOf.delete(name)
   cfg.worlds = cfg.worlds.filter((n) => n !== name)
   if (cfg.world === name) { cfg.world = cfg.worlds[0] || null; pluginList = []; runner.load([]); if (cfg.world) loadPlugins() }
   feed('world closed: ' + name + (cfg.world ? ' · main is ' + cfg.world : ''))
@@ -213,7 +216,7 @@ const chatGate = makeChatGate()       // typed chat: one gap per player; nothing
 const SPAWN = { x: 8.5, y: 8, z: 1.5 }   // the game's own spawn (bloxbert-src main.js SPAWN)
 const commands = makeCommands({ spawn: () => SPAWN, players: () => players().map(({ p }) => ({ id: p.id, ref: p.ref, alias: p.alias, staff: p.role !== 'kid', pos: p.pos })) })
 const CMD_WHY = { role: 'Only the owner can do that.', cooldown: 'Wait a few seconds.', 'no-home': 'No home set yet: /sethome where you stand.', 'no-such-player': 'No player by that name.', 'no-such-warp': 'No warp by that name (/warps lists them).', 'warp-name': 'Warp names: letters, digits, - or _ (up to 20).', unknown: 'Unknown command. /help lists them.', who: 'Who? Add a player name.', what: 'Say what? Add the text.', pos: 'Stand somewhere first.', 'not-here': 'You cannot set a home here.',
-  'no-such-world': 'No open world by that name (/world lists them).', 'give-shape': 'Use: /give <player> <item> [count 1-64].', 'give-count': 'Count: 1 to 64.', 'gm-shape': 'Use: /gm creative|survival <player>.', 'too-far': 'Those coordinates are outside the world.', self: 'Not on yourself.', 'chat-off': 'Chat is off.', muted: 'You are muted.', 'not-online': 'That player is not in right now.' }
+  'no-such-world': 'No open world by that name (/world lists them).', 'top-board': 'Boards: placed, broken, time, chats, boss, warps.', 'give-shape': 'Use: /give <player> <item> [count 1-64].', 'give-count': 'Count: 1 to 64.', 'gm-shape': 'Use: /gm creative|survival <player>.', 'too-far': 'Those coordinates are outside the world.', self: 'Not on yourself.', 'chat-off': 'Chat is off.', muted: 'You are muted.', 'not-online': 'That player is not in right now.' }
 // essentials 2 (part 13): per-player state the host keeps for the session
 const frozenAt = new Map()   // ref -> { x, y, z, at } : a frozen player's spot (positions are refused, the client is sent back)
 const modeFor = new Map()    // ref -> 'creative' | 'survival' : a game mode set for one player (/gm), on top of the ruleset's
@@ -231,6 +234,12 @@ function localCommand(room, ws, p, r) {
     if (cfg.worlds.length <= 1) { const names = players().map(({ p: q }) => tag(q)); return ok('In (' + names.length + '): ' + names.join(', ')) }
     const by = new Map(cfg.worlds.map((w) => [w, []])); for (const { room: rm, p: q } of players()) (by.get(rm.wid) || by.set(rm.wid, []).get(rm.wid)).push(tag(q))
     return ok('In (' + players().length + '): ' + [...by].map(([w, names]) => w + (w === cfg.world ? '*' : '') + ' [' + names.length + ']' + (names.length ? ' ' + names.join(', ') : '')).join(' · ') + ' — /world <name> to switch')
+  }
+  if (r.local === 'top') {
+    const board = r.board || 'placed'; const st = statsFor(worldOfPlayer(p)); const list = st ? st.top(board) : []
+    if (r.board === '?' ) return ok(topText(null))
+    const mine = st && st.mine(p.alias)
+    return ok(topText(board, list, p.alias) + (mine ? ' · you: ' + mine[board] : ''))
   }
   if (r.local === 'world') {
     if (!r.name) return ok('Open worlds: ' + cfg.worlds.map((w) => w + (w === cfg.world ? ' (main)' : '')).join(', ') + ' — you are in ' + worldOfPlayer(p))
@@ -266,7 +275,7 @@ function runCommand(room, ws, p, cmd, text) {
   const tell = (o) => { try { ws.send(JSON.stringify(o)) } catch (e) {} }
   if (r.error) { tell({ t: 'cmdno', c: cmd.c, why: CMD_WHY[r.error] || r.error }); return }
   for (const f of r.fx) {
-    if (f.k === 'tp') { const t = players().find(({ p: q }) => q.id === f.id); if (t) { try { t.p.ws.send(JSON.stringify({ t: 'tp', x: f.pos.x, y: f.pos.y, z: f.pos.z, by: p.alias })) } catch (e) {} ; if (t.p.id !== p.id) tell({ t: 'cmdok', c: cmd.c, msg: t.p.alias + ' is on the way.' }); else tell({ t: 'cmdok', c: cmd.c }) } }
+    if (f.k === 'tp') { const t = players().find(({ p: q }) => q.id === f.id); if (t) { stat(t.p, 'warps'); try { t.p.ws.send(JSON.stringify({ t: 'tp', x: f.pos.x, y: f.pos.y, z: f.pos.z, by: p.alias })) } catch (e) {} ; if (t.p.id !== p.id) tell({ t: 'cmdok', c: cmd.c, msg: t.p.alias + ' is on the way.' }); else tell({ t: 'cmdok', c: cmd.c }) } }
     else if (f.k === 'spawnall') { broadcastAll({ t: 'tp', x: f.pos.x, y: f.pos.y, z: f.pos.z, by: p.alias }); feed('owner sent everyone to spawn') }
     else if (f.k === 'home-set') tell({ t: 'cmdok', c: cmd.c, msg: 'Home set.' })
     else if (f.k === 'announce') { broadcastAll({ t: 'chat', a: '📣 ' + p.alias, m: String(f.text || ''), at: Date.now() }); feed('owner announced: ' + String(f.text || '')) }
@@ -323,6 +332,21 @@ function tallyEdit(alias, placed) {
   if (!t.timer) t.timer = setTimeout(() => { editTally.delete(alias); feed(alias + (t.placed ? ' placed ' + t.placed : '') + (t.placed && t.broken ? ',' : '') + (t.broken ? ' broke ' + t.broken : '') + ' block' + (t.placed + t.broken === 1 ? '' : 's')) }, 5000).unref()
 }
 const broadcastAll = (f) => { for (const r of rooms.values()) try { r.broadcast(f) } catch (e) {} }
+
+// ---------------------------------------------------------------- leaderboards (part 15): counters per alias, per world
+const statsOf = new Map()   // world name -> makeStats(); loaded from the world's meta 'stats', saved back 3 s after a change
+function statsFor(name) {
+  if (!name || !isOpen(name)) return null
+  let st = statsOf.get(name)
+  if (!st) { let raw = null; try { const w = worlds.get(name); const r = w && w.ctx.db.prepare('SELECT v FROM meta WHERE k=?').get('stats'); raw = r && r.v } catch (e) {} st = makeStats(raw); statsOf.set(name, st) }
+  return st
+}
+function saveStats() { for (const [name, st] of statsOf) { const j = st.take(); if (!j) continue; try { const w = worlds.get(name); if (w) w.ctx.db.prepare('INSERT OR REPLACE INTO meta VALUES(?,?)').run('stats', j) } catch (e) {} } }
+setInterval(saveStats, 3000).unref()
+const stat = (p, key, n = 1) => { const st = statsFor(worldOfPlayer(p)); if (st) st.add(p.alias, key, n) }
+// time played: counted from join to leave (and every minute while in, so a crash loses at most a minute)
+const joinedAt = new Map()   // ref -> ms
+setInterval(() => { const t = Date.now(); for (const { p } of players()) { const at = joinedAt.get(p.ref); if (at && t - at >= 60000) { stat(p, 'time', Math.floor((t - at) / 1000)); joinedAt.set(p.ref, t) } } }, 60000).unref()
 
 // ---------------------------------------------------------------- griefer guard (part 10)
 // Breaking blocks faster than a person can (cfg.guard.breaks in cfg.guard.window seconds) is a storm: the player is
@@ -527,7 +551,7 @@ function homeFrame(room, ws, p, text) {
   if (!m || m.v !== 0 || typeof m.t !== 'string') return false
   const staff = p.role !== 'kid'
   const no = (c, extra) => { try { ws.send(JSON.stringify({ t: 'no', c, ...(extra || {}) })) } catch (e) {} }
-  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } if (m.id === 0 && guardBreak(p)) return true; if (pluginEvent({ e: m.id === 0 ? 'break' : 'place', player: evPlayer(p), x: m.x, y: m.y, z: m.z, block: m.id === 0 ? m.b : m.id, before: m.b })) { no('plugin', { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); return false }
+  if (m.t === 'b') { const why = rules.editWhy(m, staff); if (why) { no(why, { x: m.x, y: m.y, z: m.z }); return true } if (m.id === 0 && guardBreak(p)) return true; if (pluginEvent({ e: m.id === 0 ? 'break' : 'place', player: evPlayer(p), x: m.x, y: m.y, z: m.z, block: m.id === 0 ? m.b : m.id, before: m.b })) { no('plugin', { x: m.x, y: m.y, z: m.z }); return true } tallyEdit(p.alias, m.id !== 0); stat(p, m.id !== 0 ? 'placed' : 'broken'); return false }
   if (m.t === 'p') {
     const why = rules.flyWhy(m, staff); if (why) { no(why); return true }
     // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
@@ -548,7 +572,7 @@ function homeFrame(room, ws, p, text) {
   }
   if (m.t === 'q' && p.muted) return true   // quick chat from a muted player: dropped quietly, as at school
   // world chat (home-only): on unless the owner turned it off; plain text, 200 chars, burst 5 then 1/s, no word filter, never stored
-  if (m.t === 'cmd' && LOCAL_CMDS.includes(String(m.c)) && !['setwarp', 'delwarp', 'warps'].includes(m.c)) { const c = String(m.c), staff = p.role !== 'kid'; if (!staff && c !== 'list') { try { ws.send(JSON.stringify({ t: 'cmdno', c, why: CMD_WHY.role })) } catch (e) {} return true } localCommand(room, ws, p, ['list', 'day', 'night', 'cycle'].includes(c) ? { local: c } : { local: c, id: Number(m.id) }); return true }
+  if (m.t === 'cmd' && LOCAL_CMDS.includes(String(m.c)) && !['setwarp', 'delwarp', 'warps'].includes(m.c)) { const c = String(m.c), staff = p.role !== 'kid'; if (!staff && !['list', 'top', 'world'].includes(c)) { try { ws.send(JSON.stringify({ t: 'cmdno', c, why: CMD_WHY.role })) } catch (e) {} return true } localCommand(room, ws, p, ['list', 'day', 'night', 'cycle'].includes(c) ? { local: c } : c === 'top' ? { local: 'top', board: 'placed' } : c === 'world' ? { local: 'world', name: String(m.name || '') } : { local: c, id: Number(m.id) }); return true }
   if (m.t === 'cmd') { if (m.c === 'setwarp' || m.c === 'delwarp') typedCommand(room, ws, p, '/' + m.c + ' ' + String(m.name || '')); else if (m.c === 'announce') typedCommand(room, ws, p, '/announce ' + String(m.text || '')); else runCommand(room, ws, p, { c: String(m.c), ...(m.id !== undefined ? { id: m.id } : {}), ...(m.i !== undefined ? { i: m.i } : {}), ...(m.on !== undefined ? { on: m.on } : {}) }); return true }
   if (m.t === 'chat' && typeof m.m === 'string' && m.m.trim().startsWith('/')) { typedCommand(room, ws, p, m.m); return true }
   if (m.t === 'chat') {
@@ -557,6 +581,7 @@ function homeFrame(room, ws, p, text) {
     const c = cleanChat(m.m); if (c.error) { no(c.error); return true }
     const slow = chatGate.check(p.ref); if (slow) { no('chat-slow', slow); return true }
     if (pluginEvent({ e: 'chat', world: room.wid, player: evPlayer(p), text: c.m })) { no('plugin'); return true }
+    stat(p, 'chats')
     broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now(), ...(cfg.worlds.length > 1 ? { w: room.wid } : {}) })   // cross-world: every open world hears it, tagged with where it came from
     if (SHOW_CHAT) feed((cfg.worlds.length > 1 ? '[' + room.wid + '] ' : '') + p.alias + ': ' + c.m)
     return true
@@ -564,7 +589,7 @@ function homeFrame(room, ws, p, text) {
   // shared events (home-only): a boss fight started, moved on or ended somewhere in the world
   if (m.t === 'ev') {
     const r = events.handle({ ref: p.ref, alias: p.alias, staff }, m)
-    if (r.error) no(r.error); else if (r.relay) { broadcastAll(r.relay); if (r.relay.a === 'start') feed(p.alias + ' started a boss fight'); else if (r.relay.a === 'end') feed('the boss fight ended' + (r.relay.won ? ': won' : '')) }
+    if (r.error) no(r.error); else if (r.relay) { broadcastAll(r.relay); if (r.relay.a === 'start') feed(p.alias + ' started a boss fight'); else if (r.relay.a === 'end') { feed('the boss fight ended' + (r.relay.won ? ': won' : '')); if (r.relay.won) stat(p, 'boss') } }
     return true
   }
   return false
@@ -709,6 +734,8 @@ async function handle(req, res) {
       case '/owner/access': { if (!isLocal(req)) return json(res, 403, { error: 'host only' })   // only from the host PC: the remote door is not changed from the remote side
         if (b.team !== undefined || b.aud !== undefined || b.email !== undefined) { Object.assign(cfg.access, { team: String(b.team ?? cfg.access.team ?? '').replace(/[^a-z0-9-]/gi, '').slice(0, 64), aud: String(b.aud ?? cfg.access.aud ?? '').replace(/[^a-f0-9]/gi, '').slice(0, 64), email: String(b.email ?? cfg.access.email ?? '').trim().toLowerCase().slice(0, 120) }); saveCfg(); feed('owner set Cloudflare Access: ' + (access.on ? 'on (' + cfg.access.team + ')' : 'off')) }
         return json(res, 200, { access: { on: access.on, team: cfg.access.team, email: cfg.access.email, aud: cfg.access.aud ? cfg.access.aud.slice(0, 8) + '…' : '' } }) }
+      case '/owner/top': { const name = b.world && isOpen(String(b.world)) ? String(b.world) : cfg.world; const st = statsFor(name); const board = BOARDS.includes(b.board) ? b.board : 'placed'; return json(res, 200, { world: name, board, boards: BOARDS, list: st ? st.top(board, 20) : [], aliases: st ? st.size : 0 }) }
+      case '/owner/top/reset': { const name = b.world && isOpen(String(b.world)) ? String(b.world) : cfg.world; const st = statsFor(name); if (!st) return json(res, 400, { error: 'no world' }); st.reset(b.alias ? String(b.alias) : null); saveStats(); feed('owner reset the leaderboard' + (b.alias ? ' entry of ' + String(b.alias) : '') + ' in ' + name); return json(res, 200, { ok: true }) }
       case '/owner/guard': { if (b.on !== undefined || b.breaks !== undefined || b.window !== undefined || b.undo !== undefined) { cfg.guard = { on: b.on === undefined ? cfg.guard.on !== false : b.on === true, breaks: Math.max(10, Math.min(500, Number(b.breaks) || cfg.guard.breaks || 70)), window: Math.max(2, Math.min(60, Number(b.window) || cfg.guard.window || 10)), undo: b.undo === undefined ? cfg.guard.undo !== false : b.undo === true }; saveCfg(); feed('owner set guard: ' + (cfg.guard.on ? cfg.guard.breaks + ' breaks / ' + cfg.guard.window + ' s' + (cfg.guard.undo ? ', undo' : '') : 'off')) } return json(res, 200, { guard: cfg.guard }) }
       case '/owner/kick': return json(res, 200, kick(String(b.ref || '')))
       case '/owner/ban': return json(res, 200, ban(String(b.ref || '')))
@@ -752,6 +779,7 @@ server.on('upgrade', async (req, tcp, head) => {
   const ws = out.webSocket.server, room = ws.room || null
   if (room) { const p = [...room.players.values()].find((q) => q.ws === ws); if (p) p.ip = ip }
   door.connOpen(ip); door.noteActivity(); if (c.role !== 'kid') ownerSeated = true
+  joinedAt.set(c.ref, Date.now()); { const me = players().find(({ p }) => p.ws === ws); if (me) statsFor(me.room.wid) }
   const inv = inviteJoins.get(c.ref); inviteJoins.delete(c.ref)
   feed(c.alias + (c.role !== 'kid' ? ' (owner)' : '') + ' joined' + (inv ? ' with invite ' + (inv.inviteLabel || inv.invite) + ' (' + inv.inviteUse + '/' + inv.inviteMax + ')' : '') + ' · ' + players().length + ' in')
   sendRules(ws, c.ref)   // right after hello: the active ruleset, with this player's keep-inventory value
@@ -761,7 +789,7 @@ server.on('upgrade', async (req, tcp, head) => {
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); frozenAt.delete(c.ref); modeFor.delete(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); { const me = players().find(({ p }) => p.ws === ws); if (me) pluginEvent({ e: 'leave', player: evPlayer(me.p) }) } const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); frozenAt.delete(c.ref); modeFor.delete(c.ref); { const at = joinedAt.get(c.ref); const me = players().find(({ p }) => p.ws === ws); if (at && me) stat(me.p, 'time', Math.floor((Date.now() - at) / 1000)); joinedAt.delete(c.ref) } feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); { const me = players().find(({ p }) => p.ws === ws); if (me) pluginEvent({ e: 'leave', player: evPlayer(me.p) }) } const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 

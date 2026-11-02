@@ -136,7 +136,7 @@ try {
     // commands (part 8): buttons in the panel per role; a pick row for a player; T opens the panel; a tp frame moves
     const pm = await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
     const om = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
-    eq(pm.join() === 'spawn,sethome,home,list,msg,world' && om.includes('bring') && om.includes('announce') && om.includes('give'), `${tag} commands: the player sees 6 buttons, the owner sees the staff set too`)
+    eq(pm.join() === 'spawn,sethome,home,list,msg,world,top' && om.includes('bring') && om.includes('announce') && om.includes('give'), `${tag} commands: the player sees 7 buttons, the owner sees the staff set too`)
     await P.evaluate(() => { window.tpGot = []; window.HOME.onHomeTeleport((x, y, z) => window.tpGot.push([x, y, z])) })
     await P.evaluate(() => { document.querySelector('#home-chat .hc-toggle').click(); document.querySelector('#home-chat .hc-cmds button[data-c=spawn]').click() }); await sleep(400)
     eq((await P.evaluate(() => window.tpGot)).length === 1, `${tag} commands: the Spawn button teleports the player through the tp hook`)

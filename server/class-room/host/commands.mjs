@@ -14,10 +14,10 @@
 //             /heal <name>  /clear <name>  /gm <creative|survival> <name>  /day  /night  /cycle  /tp <x> <y> <z>
 import { makeEssentials, COOLDOWN_MS } from '../src/essentials.js'
 
-export const PLAYER_CMDS = ['spawn', 'sethome', 'home', 'help', 'list', 'msg', 'world']
+export const PLAYER_CMDS = ['spawn', 'sethome', 'home', 'help', 'list', 'msg', 'world', 'top']
 export const OWNER_CMDS = ['tp', 'bring', 'spawnall', 'warp', 'setwarp', 'delwarp', 'warps', 'mute', 'unmute', 'muteall', 'unmuteall', 'announce',
   'kick', 'ban', 'unban', 'freeze', 'unfreeze', 'give', 'heal', 'clear', 'gm', 'day', 'night', 'cycle']
-export const LOCAL_CMDS = ['world', 'list', 'msg', 'kick', 'ban', 'unban', 'freeze', 'unfreeze', 'give', 'heal', 'clear', 'gm', 'day', 'night', 'cycle', 'tppos', 'warps', 'setwarp', 'delwarp']   // handled by the host, not essentials.js
+export const LOCAL_CMDS = ['top', 'world', 'list', 'msg', 'kick', 'ban', 'unban', 'freeze', 'unfreeze', 'give', 'heal', 'clear', 'gm', 'day', 'night', 'cycle', 'tppos', 'warps', 'setwarp', 'delwarp']   // handled by the host, not essentials.js
 const ITEM_NAME = /^[a-z][A-Za-z0-9_]{1,30}$/
 export const COORD_LIMIT = 100000
 const WARP_NAME = /^[a-z0-9][a-z0-9_-]{0,19}$/i
@@ -25,7 +25,7 @@ const fold = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/[̀
 
 // The menu a client gets in hello/rules: what this role may use, with the words for the buttons (English-only at home)
 export function menuFor(staff) {
-  const me = [{ c: 'spawn', label: 'Go to spawn' }, { c: 'sethome', label: 'Set home here' }, { c: 'home', label: 'Go home' }, { c: 'list', label: 'Who is in' }, { c: 'msg', label: 'Whisper', arg: 'text' }, { c: 'world', label: 'Switch world', arg: 'text' }]
+  const me = [{ c: 'spawn', label: 'Go to spawn' }, { c: 'sethome', label: 'Set home here' }, { c: 'home', label: 'Go home' }, { c: 'list', label: 'Who is in' }, { c: 'msg', label: 'Whisper', arg: 'text' }, { c: 'world', label: 'Switch world', arg: 'text' }, { c: 'top', label: 'Leaderboard' }]
   if (!staff) return me
   return me.concat([{ c: 'tp', label: 'Go to player', arg: 'player' }, { c: 'bring', label: 'Bring player', arg: 'player' }, { c: 'spawnall', label: 'Everyone to spawn' },
     { c: 'warp', label: 'Warp to', arg: 'warp' }, { c: 'setwarp', label: 'Set warp here', arg: 'text' }, { c: 'mute', label: 'Mute player', arg: 'player' }, { c: 'unmute', label: 'Unmute player', arg: 'player' },
@@ -70,6 +70,7 @@ export function makeCommands({ spawn, players, now = Date.now }) {
     // essentials 2: the host carries these out itself
     if (c === 'list' || c === 'day' || c === 'night' || c === 'cycle') return { local: c }
     if (c === 'world') return { local: 'world', name: rest.slice(0, 40) }
+    if (c === 'top') { const b = rest.toLowerCase().trim(); if (b === '?' || b === 'help') return { local: 'top', board: '?' }; if (b && !['placed', 'broken', 'time', 'chats', 'boss', 'warps'].includes(b)) return { error: 'top-board' }; return { local: 'top', board: b || 'placed' } }
     if (c === 'msg') { const sp = rest.indexOf(' '); if (!rest) return { error: 'who' }; const who = sp < 0 ? rest : rest.slice(0, sp), text = sp < 0 ? '' : rest.slice(sp + 1).trim(); const p = byName(who); if (!p) return { error: 'no-such-player' }; if (!text) return { error: 'what' }; return { local: 'msg', id: p.id, text: text.slice(0, 200) } }
     if (['kick', 'ban', 'freeze', 'unfreeze', 'heal', 'clear'].includes(c)) { if (!rest) return { error: 'who' }; const p = byName(rest); if (!p) return { error: 'no-such-player' }; return { local: c, id: p.id } }
     if (c === 'unban') { if (!rest) return { error: 'who' }; return { local: 'unban', name: rest.slice(0, 20) } }

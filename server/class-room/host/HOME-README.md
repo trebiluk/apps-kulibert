@@ -103,6 +103,12 @@ world, and `/world <name>` switches (the game reloads into that world; your bag 
 the server's (kept in the main world's file). **Close** drops that world's players and keeps the rest; the open set
 comes back after a restart.
 
+## Leaderboards
+Per world, per alias, saved in the world's file: blocks placed, blocks broken, minutes played, chat lines, boss fights
+won, teleports. In the game: `/top` (blocks placed), `/top broken|time|chats|boss|warps`, or the **Leaderboard**
+button; your own number is appended. Owner page → Leaderboard: any board of any open world, remove one alias or reset
+the world's boards. Aliases only; the 500 most recently seen aliases are kept.
+
 ## Keep inventory
 **On** in every preset. Two switches on the owner page:
 - **Keep inventory** (Session): the whole world.
@@ -240,8 +246,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check` / `home-worlds-check`: the command menu and typed commands; the plugin engine (tiers, limits,
-  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files); several worlds at once (picker data, cross chat, /world, close one, restart);
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check` / `home-worlds-check` / `home-stats-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files); several worlds at once (picker data, cross chat, /world, close one, restart); leaderboards (counters, /top, restart, reset);
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
