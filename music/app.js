@@ -5623,7 +5623,26 @@
     }
     window.setTimeout(laneTick, 70);
   }
-  window.addEventListener("resize", () => { if ($("tap-strip") && laneNarrow !== laneIsNarrow()) paintTapStrip(); });
+  /* Night round 2: one resize listener runs every layout refit once per frame, so a burst of resizes
+     (phone address bar, rotation, window drag) refits once per frame instead of once per event per listener. */
+  function onResizeFrame(fn) {
+    const q = onResizeFrame.q || (onResizeFrame.q = []);
+    if (!onResizeFrame.wired) {
+      onResizeFrame.wired = true;
+      let pending = 0;
+      window.addEventListener("resize", () => {
+        if (pending) return;
+        pending = window.requestAnimationFrame(() => {
+          pending = 0;
+          q.forEach((f) => {
+            try { f(); } catch (err) { window.setTimeout(() => { throw err; }); }
+          });
+        });
+      });
+    }
+    q.push(fn);
+  }
+  onResizeFrame(() => { if ($("tap-strip") && laneNarrow !== laneIsNarrow()) paintTapStrip(); });
   function hitPad(id, btn) {
     state.touched = true;
     laneSel = id;
@@ -5802,12 +5821,12 @@
     box.style.setProperty("height", next + "px", "important");
     box.style.setProperty("max-height", next + "px", "important");
   }
-  window.addEventListener("resize", () => {
+  onResizeFrame(() => {
     const box = $("drums");
     if (box && box.classList.contains("is-stacked") !== (window.innerWidth < 500)) renderDrums();
-    requestAnimationFrame(fitTapRows);
+    fitTapRows();
   });
-  window.addEventListener("resize", () => {
+  onResizeFrame(() => {
     const tab = state.tab;
     if (!tab) return;
     if (tab !== "songs") document.body.classList.remove("is-home", "is-make", "is-library");
@@ -6921,8 +6940,14 @@
     }
     if (!window.__djPianoResize) {
       window.__djPianoResize = 1;
-      window.addEventListener("resize", () => {
-        [...PIANO_HELD.keys()].forEach(releasePiano);
+      /* Night round 2: a held note is only let go when the width changes and the keys are rebuilt.
+         On a phone the address bar or on-screen keyboard changes only the height, and used to cut the note. */
+      let pianoWidth = window.innerWidth;
+      onResizeFrame(() => {
+        if (window.innerWidth !== pianoWidth) {
+          pianoWidth = window.innerWidth;
+          [...PIANO_HELD.keys()].forEach(releasePiano);
+        }
         const now = window.innerWidth >= 700;
         if (now !== pianoWide) {
           pianoWide = now;
@@ -7036,7 +7061,7 @@
       if (!card.dataset.closed) card.hidden = !tiny;
     };
     paint();
-    window.addEventListener("resize", paint);
+    onResizeFrame(paint);
     const x = $("desktop-site-x");
     if (x) x.addEventListener("click", () => { card.dataset.closed = "1"; card.hidden = true; });
   })();
