@@ -5815,8 +5815,24 @@
   });
   renderStaff();
   nameLooseSvgs();
+  /* Night round 1: redraw the staff only when its layout can change (width, the short-screen title rule,
+     the sideways strip), and once per burst of resizes. A phone's address bar showing and hiding fires
+     height-only resizes while a kid scrolls; each one used to redraw the whole staff. */
+  const staffShape = () => [
+    window.innerWidth,
+    window.innerHeight < 520,
+    window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches,
+  ].join("|");
+  let staffShapeNow = staffShape();
+  let staffResizeTimer = 0;
   window.addEventListener("resize", () => {
-    if (state.mode === "both" || state.mode === "notes" || state.mode === "beat") renderStaff();
+    clearTimeout(staffResizeTimer);
+    staffResizeTimer = setTimeout(() => {
+      const next = staffShape();
+      if (next === staffShapeNow) return;
+      staffShapeNow = next;
+      if (state.mode === "both" || state.mode === "notes" || state.mode === "beat") renderStaff();
+    }, 150);
   });
   renderDrums();
   paintLooks();
