@@ -8,10 +8,12 @@
 // adults-only and its own text is English-only (Diego, Nov 1); the game itself keeps all its languages.
 import { setHomeEndpoints } from '../classnet/config.js'
 import { Rules } from '../rules.js'
+import { packFlags, mySuit } from './flags.js'
 import { ITEMS } from '../data/items.js'
 import { RECIPES } from '../data/recipes.js'
 import { EXTRA } from '../strings-extra.js'
 import { DECAY_ITEMS, DECAY_RECIPES, DECAY_STRINGS, compost, say } from './decay.js'
+import { createBuilder } from './builder.js'
 
 // Home-only rules (docs §5). Registered from here, so the student build never has them. The personal host is
 // adults-only and English-only (Diego, Nov 1): labels are English; the game falls back to English for every language.
@@ -43,6 +45,9 @@ export function registerHomeRules() {
 export const RULE_TOAST = { en: 'Rules changed: {r}' }
 let onRules = null
 export function onHomeRules(fn) { onRules = fn }
+// main.js hands in what a server command may do to THIS game (home build only): give(item, n) -> ok, heal(), clear(), setMode(m)
+let game = {}, modeNow = null
+export function setHomeGame(hooks) { game = hooks && typeof hooks === 'object' ? hooks : {} }
 // The owner's in-game editor (rules-editor.js) calls Rules.set(); at home the server is the authority, so when the owner
 // is in, every set is also sent to the host, which validates it, bumps rev and broadcasts. Players never get this hook.
 let ownerApi = null   // { base, token } from the owner page (sessionStorage), present only for the owner's own session
@@ -64,19 +69,31 @@ export function applyHomeRules(f, toast, lang) {
   chatLang = lang || 'en'
   const r = { ...f.r }; const mode = r.mode; delete r.mode
   setChatOn(r['chat.typed'] === true)
+  if (Array.isArray(f.menu)) paintMenu(f.menu, Array.isArray(f.warps) ? f.warps : [])
   try { Rules.load(r) } catch (e) {}
   keep = { on: r['survival.keep'] !== false, from: f.keep === 'player' ? 'player' : 'world' }
-  if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev }
+  if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev; info.modeFrom = f.modeFrom === 'player' ? 'player' : 'world' }
+  // the game mode is the host's (the ruleset's, or one set for this player with /gm): applied here, once per change
+  if ((mode === 'creative' || mode === 'survival') && mode !== modeNow && game.setMode) { modeNow = mode; try { game.setMode(mode) } catch (e) {} }
   if (onRules) try { onRules({ preset: f.preset, mode, locked: !!f.locked, rev: f.rev, r }) } catch (e) {}
   if (toast && f.rev > 1) toast((RULE_TOAST[lang] || RULE_TOAST[(lang || '').split('-')[0]] || RULE_TOAST.en).replace('{r}', homeRuleName(f.preset)))
 }
 const KEY_ADULTS = 'bt-home-adults'
 const KEY_LAST = 'bt-home-last'           // last server address + display name (no code, no ticket)
+const KEY_AGAIN = 'bt-home-again'         // one-shot rejoin after a deliberate reload (this tab only, removed on read)
+let codeNow = ''                          // the code this player joined with (memory only; written to KEY_AGAIN for a reload)
+// Reload the game and come straight back in: the owner has its token, a player gets the code back once.
+export function homeReload(world = '') {
+  try { if (codeNow && !homeOwnerOn()) sessionStorage.setItem(KEY_AGAIN, JSON.stringify({ code: codeNow, ...(world ? { world } : {}) })) } catch (e) {}
+  try { if (world && homeOwnerOn()) sessionStorage.setItem(KEY_WORLD, world) } catch (e) {}
+  location.reload()
+}
+const KEY_WORLD = 'bt-home-world'          // the owner's picked world for the next /owner/play (part 14)
 let sock = null, hello = null, info = null, q = 0
 
 const S = {
-  en: { title: 'Join a home server', intro: 'Run by a person you know, not by the school.', addr: 'Server address', code: 'Session code', name: 'Display name', pw: 'Password (the host set one)', adults: 'This server is for adults 18+. I confirm I am 18 or older.', join: 'Join', asking: 'Asking the host…', in: 'In world “{w}” as {n}', update: 'Your game needs an update to join this server.', updateHow: 'The server runs {s}; this game is {c}. Reload the page from the host address.', retry: 'Try again', solo: 'Play alone instead', rules: 'Rules: {r}',
-    errs: { code: 'That session code is not right.', ended: 'There is no session running. Ask the host to start one.', password: 'That password is not right.', adults: 'Please confirm you are 18 or older.', name: 'Names are 2 to 20 letters, digits, spaces, _ or -.', 'name-reserved': 'That name looks like a host or owner name. Pick another.', 'name-filtered': 'That name is not allowed here. Pick another.', 'name-taken': 'That name is taken in this session.', full: 'The server is full right now.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', 'no-owner': 'The owner is not in the world yet. Ask them to press “Play as owner”.', network: 'Could not reach that server address.' } },
+  en: { title: 'Join a home server', intro: 'Run by a person you know, not by the school.', addr: 'Server address', code: 'Session code or invite key', name: 'Display name', pw: 'Password (the host set one)', adults: 'This server is for adults 18+. I confirm I am 18 or older.', join: 'Join', asking: 'Asking the host…', in: 'In world “{w}” as {n}', update: 'Your game needs an update to join this server.', updateHow: 'The server runs {s}; this game is {c}. Reload the page from the host address.', retry: 'Try again', solo: 'Play alone instead', rules: 'Rules: {r}',
+    errs: { code: 'That session code is not right.', ended: 'There is no session running. Ask the host to start one.', password: 'That password is not right.', adults: 'Please confirm you are 18 or older.', name: 'Names are 2 to 20 letters, digits, spaces, _ or -.', 'name-reserved': 'That name looks like a host or owner name. Pick another.', 'name-filtered': 'That name is not allowed here. Pick another.', 'name-taken': 'That name is taken in this session.', full: 'The server is full right now.', 'too-many': 'Too many connections from your network.', banned: 'You cannot join this session.', 'slow-down': 'Too many tries. Wait a few minutes.', 'no-owner': 'The owner is not in the world yet. Ask them to press “Play as owner”.', 'invite-used': 'That invite key has been used up. Ask the host for another.', 'invite-expired': 'That invite key has expired. Ask the host for another.', 'invite-revoked': 'That invite key was taken back by the host.', network: 'Could not reach that server address.' } },
 }
 const RULE_NAMES = { 'home-school': 'Same as school', 'home-survival': 'Survival', 'home-creative': 'Creative', 'home-peaceful': 'Peaceful', 'home-pvp': 'PvP on', 'home-hardcore': 'Hardcore' }
 const str = (lang) => ({ ...S.en, lang })   // English-only (adults 18+, Diego Nov 1)
@@ -121,22 +138,60 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
   const rtl = /^(ar|fa)/.test(lang)
   let last = {}; try { last = JSON.parse(localStorage.getItem(KEY_LAST) || '{}') } catch (e) {}
   const owner = (() => { try { const o = JSON.parse(sessionStorage.getItem('bt-home-owner-ticket') || 'null'); sessionStorage.removeItem('bt-home-owner-ticket'); return o } catch (e) { return null } })()
+  // The owner's ticket is one-use, so a reload of the game tab (refresh, update, crash) used to drop the owner on the
+  // guest join card. The owner page also left its 12-hour owner token in this tab: ask the host for a fresh owner
+  // ticket with it instead. Host PC only (the server checks), and only on the ?owner=1 page the owner page opened.
+  let ownerApiNow = null
+  try { ownerApiNow = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {}
+  if (owner && owner.name && ownerApiNow) try { sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ ...ownerApiNow, name: owner.name })) } catch (e) {}
+  const ownerAgain = !owner && /[?&]owner=1(&|$)/.test(location.search) && ownerApiNow && ownerApiNow.token ? ownerApiNow : null
+  let again = null   // a one-shot rejoin after homeReload() (the touch setting needs a fresh page): same tab, used once
+  try { again = JSON.parse(sessionStorage.getItem(KEY_AGAIN) || 'null'); sessionStorage.removeItem(KEY_AGAIN) } catch (e) {}
   return new Promise((resolve) => {
     if (owner && owner.ticket) { connect(owner, T, version, resolve); return }
+    if (ownerAgain) {
+      let pickedWorld = ''; try { pickedWorld = sessionStorage.getItem(KEY_WORLD) || ''; sessionStorage.removeItem(KEY_WORLD) } catch (e) {}
+      fetch(ownerAgain.base + '/owner/play', { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerAgain.token }, body: JSON.stringify({ name: ownerAgain.name || 'Owner', ...(pickedWorld ? { world: pickedWorld } : {}) }) })
+        .then((r) => r.json()).catch(() => ({ error: 'network' }))
+        .then((j) => { if (j && j.ticket) connect(j, T, version, resolve); else showCard(resolve) })
+      return
+    }
+    showCard(resolve)
+  })
+
+  function showCard(resolve) {
     const root = card(css + `<div class="hc" dir="${rtl ? 'rtl' : 'ltr'}"><h1>${T.title}</h1><p>${T.intro}</p>
       <label for="hj-addr">${T.addr}</label><input type="text" id="hj-addr" autocomplete="off" spellcheck="false" value="${(last.addr || location.origin).replace(/"/g, '')}">
-      <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="9" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH">
+      <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH or ADLT-…">
       <label for="hj-name">${T.name}</label><input type="text" id="hj-name" maxlength="20" autocomplete="off" value="${(last.name || '').replace(/"/g, '')}">
       <div id="hj-pwrow" hidden><label for="hj-pw">${T.pw}</label><input type="password" id="hj-pw" autocomplete="off"></div>
+      <div id="hj-worldrow" hidden><label for="hj-world">World</label><select id="hj-world"></select></div>
       <label class="ad"><input type="checkbox" id="hj-adults"><span>${T.adults}</span></label>
       <button id="hj-go">${T.join}</button><button id="hj-solo" class="alt">${T.solo}</button><div class="out" id="hj-out" aria-live="polite"></div></div>`)
     const $ = (id) => root.querySelector('#' + id)
     try { if (sessionStorage.getItem(KEY_ADULTS) === '1') $('hj-adults').checked = true } catch (e) {}
+    let againWorld = ''
+    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 24); $('hj-adults').checked = true; againWorld = again.world || ''; setTimeout(() => $('hj-go').click(), 50); again = null }
+    // an invite link (?invite=ADLT-…): the key goes in the code field and out of the address bar; the person adds a name
+    let invited = ''; try { invited = new URLSearchParams(location.search).get('invite') || '' } catch (e) {}
+    if (/^ADLT/i.test(invited.replace(/[\s-]/g, ''))) { $('hj-code').value = invited.toUpperCase().slice(0, 24); $('hj-addr').value = location.origin; try { history.replaceState(null, '', location.pathname) } catch (e) {} setTimeout(() => $('hj-name').focus(), 50) }
+    // which worlds are open (names and counts only; only while a session is live); more than one -> a picker
+    let worldsSeen = []
+    const askWorlds = async () => {
+      const base = $('hj-addr').value.trim().replace(/\/+$/, ''); if (!/^https?:\/\//.test(base)) return
+      let list = []; try { list = (await (await fetch(base + '/worlds', { signal: AbortSignal.timeout(4000) })).json()).worlds || [] } catch (e) { list = [] }
+      worldsSeen = list.map((w) => String(w.name)); const sel = $('hj-world'); sel.textContent = ''
+      for (const w of list) { const o = document.createElement('option'); o.value = String(w.name); o.textContent = String(w.name) + (w.main ? ' (main)' : '') + ' · ' + Number(w.players) + ' in'; sel.append(o) }
+      const want = againWorld || ''; if (want && worldsSeen.includes(want)) sel.value = want
+      $('hj-worldrow').hidden = list.length < 2
+    }
+    askWorlds(); $('hj-addr').addEventListener('change', askWorlds)
     $('hj-solo').onclick = () => { root.remove(); resolve(null) }
     $('hj-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('hj-go').click() })
     $('hj-go').onclick = async () => {
       const base = $('hj-addr').value.trim().replace(/\/+$/, '')
-      const body = { code: $('hj-code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('hj-name').value, password: $('hj-pw').value || undefined, adults: $('hj-adults').checked }
+      const body = { code: $('hj-code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('hj-name').value, password: $('hj-pw').value || undefined, adults: $('hj-adults').checked, ...(!$('hj-worldrow').hidden && $('hj-world').value ? { world: $('hj-world').value } : againWorld ? { world: againWorld } : {}) }
+      againWorld = ''
       if (!/^https?:\/\//.test(base)) { badText($('hj-out'), 'http:// …'); return }
       $('hj-out').textContent = T.asking
       let j
@@ -144,9 +199,10 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
       if (j.error) { if (j.error === 'password') $('hj-pwrow').hidden = false; badText($('hj-out'), errText(T, j.error) + (j.wait ? ' (' + Number(j.wait) + ' s)' : '')); return }
       if (version && j.version && j.version !== version) { updateCard(root, T, j.version, version, () => location.reload()); return }
       try { sessionStorage.setItem(KEY_ADULTS, '1'); localStorage.setItem(KEY_LAST, JSON.stringify({ addr: base, name: j.name })) } catch (e) {}
+      codeNow = body.code
       connect(j, T, version, resolve, root)
     }
-  })
+  }
 }
 
 function updateCard(root, T, server, client, retry) {
@@ -166,7 +222,7 @@ function connect(j, T, version, resolve, root) {
   hello = null; info = { name: j.name, world: j.world, ruleset: j.ruleset, ws: j.ws, server: j.version }
   setHomeEndpoints({ ws: j.ws, join: j.ws.replace(/^ws/, 'http').replace(/\/rt\/ws$/, '/join') })
   sock = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } else homeFrame(f) }
+  sock.onmessage = (m) => { let f; try { f = JSON.parse(m.data) } catch (e) { return } if (f.t === 'hello') { hello = f; shareHello(f); if (root) root.remove(); resolve({ ...j, hello: f }) } else if (f.t === 'frz') { info.frozen = !!f.on } else if (f.t === 'rules') { applyHomeRules(f, toastFn, T.lang) } else homeFrame(f) }
   sock.onclose = (e) => { if (!hello && root && root.querySelector('#hj-out')) badText(root.querySelector('#hj-out'), e.reason ? errText(T, e.reason) : T.errs.network); hello = null }
   sock.onerror = () => {}
   const beat = setInterval(() => { if (!sock || sock.readyState !== 1) return clearInterval(beat); try { sock.send(JSON.stringify({ v: 0, t: 'ping', n: ++q })) } catch (e) {} }, 10000)
@@ -177,6 +233,43 @@ export function homeSend(frame) { if (sock && sock.readyState === 1) sock.send(J
 export function homeLeave() { if (sock) try { sock.close(1000, 'bye') } catch (e) {} sock = null; hello = null; info = null }
 export const homeRuleName = (id, lang) => (RULE_NAMES[id] || id || '').replace('home-', '')
 export const homeStrings = S
+
+// ---------------------------------------------------------------- Settings rows (home only; English, adults)
+const TOUCH_KEY = 'bloxbert-touch'   // '' (auto) | 'on' | 'off' — main.js reads it at boot, before TOUCH_UI is fixed
+export const homeTouchPref = () => { try { const v = localStorage.getItem(TOUCH_KEY); return v === 'on' || v === 'off' ? v : '' } catch (e) { return '' } }
+const SET = { touch: 'Touch controls', touchHint: 'Auto picks by the device. On shows the stick and tap buttons; Off hides them (mouse and keys). Changing it reloads the game.', auto: 'Auto', on: 'On', off: 'Off', reload: 'Reloading…', host: 'This server', hostHint: 'Game mode, player fights and keep inventory are the host\'s rules for everyone here, not a device setting. The owner changes them with /rules or the owner page.', mode: 'Mode', pvp: 'Player fights', keep: 'Keep inventory', yes: 'on', no: 'off', you: ' (set for you)' }
+export const homeSet = (k) => (Object.prototype.hasOwnProperty.call(SET, k) ? SET[k] : k)
+export function homeSettings(g) {
+  if (!hello || typeof document === 'undefined') return
+  const line = (label) => { const row = document.createElement('div'); row.className = 'set-line'; row.style.flexWrap = 'wrap'; row.style.gap = '8px'; const lab = document.createElement('span'); lab.className = 'set-lab'; lab.textContent = label; row.append(lab); return row }
+  const note = (text) => { const p = document.createElement('p'); p.className = 'gnote'; p.textContent = text; return p }
+  // touch controls: three pills, one radiogroup
+  const head = note(SET.touch); head.classList.add('ghead')
+  const row = line(SET.touch), grp = document.createElement('div'); grp.setAttribute('role', 'radiogroup'); grp.setAttribute('aria-label', SET.touch); grp.style.display = 'flex'; grp.style.gap = '8px'
+  const cur = homeTouchPref()
+  for (const [v, word] of [['', SET.auto], ['on', SET.on], ['off', SET.off]]) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pill' + (v === cur ? ' on' : ''); b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', String(v === cur)); b.setAttribute('aria-label', SET.touch + ': ' + word)
+    b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.textContent = word; b.dataset.touch = v || 'auto'
+    b.onclick = () => { if (v === cur) return; try { if (v) localStorage.setItem(TOUCH_KEY, v); else localStorage.removeItem(TOUCH_KEY) } catch (e) {} for (const k of grp.children) { k.classList.toggle('on', k === b); k.setAttribute('aria-checked', String(k === b)) } if (toastFn) toastFn(SET.reload); setTimeout(homeReload, 400) }
+    grp.append(b)
+  }
+  row.append(grp)
+  // what the host decides (read-only here)
+  let pvp = false; try { pvp = Rules.value('combat.pvp') === true } catch (e) {}
+  const r = { mode: info && info.mode, pvp, keep: keep.on }
+  const hostHead = note(SET.host); hostHead.classList.add('ghead')
+  const vals = note(SET.mode + ': ' + String(r.mode || '—') + (info && info.modeFrom === 'player' ? SET.you : '') + ' · ' + SET.pvp + ': ' + (r.pvp ? SET.yes : SET.no) + ' · ' + SET.keep + ': ' + (r.keep ? SET.yes : SET.no) + (keep.from === 'player' ? SET.you : '')); vals.dataset.homeHost = '1'
+  g.append(head, row, note(SET.touchHint), hostHead, vals, note(SET.hostHint))
+}
+// the Mode panel: at home the mode is the host's; only the Build Table is a local choice
+export const homeModeNote = () => (hello ? SET.hostHint : '')
+// the World panel: this world lives on the host; the owner's Download/Import are on the owner page
+export const homeWorldNote = () => (hello ? 'This world lives on the host and is shared by everyone here. Loading, importing or starting a fresh world happens on the owner page, not on your device. Export saves a copy of what you have seen.' : '')
+// after the join: no school hub to go back to
+export function homeTrimHud() {
+  if (!hello || typeof document === 'undefined') return
+  const hub = document.getElementById('hub-back'); if (hub) hub.hidden = true
+}
 
 // ---------------------------------------------------------------- typed chat (docs §6) — home only
 // Shown only while the server's ruleset has chat.typed on (every preset starts with it off). Plain text both ways:
@@ -194,29 +287,46 @@ function ensureDock() {
   if (dock || typeof document === 'undefined') return dock
   const T = cs()
   dock = document.createElement('div'); dock.id = 'home-chat'; dock.dir = document.documentElement.dir || 'ltr'
-  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}</style>' +
+  dock.innerHTML = '<style>#home-chat{position:fixed;inset-inline-start:12px;top:38%;z-index:40;font:14px/1.35 system-ui,sans-serif;color:#f8fafc;max-width:calc(100vw - 24px)}#home-chat button,#home-chat input{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#f8fafc;font:inherit;padding:0 12px}#home-chat button:focus-visible,#home-chat input:focus-visible{outline:3px solid #2dd4bf;outline-offset:2px}#home-chat .hc-panel{margin-top:8px;width:min(320px,calc(100vw - 24px));background:#0f172a;border:1px solid #475569;border-radius:12px;padding:8px;box-sizing:border-box}#home-chat .hc-log{max-height:28vh;overflow-y:auto;margin:0 0 8px;padding:0;list-style:none;overflow-wrap:anywhere}#home-chat .hc-log li{padding:2px 0}#home-chat .hc-row{display:flex;gap:6px}#home-chat .hc-row input{flex:1;min-width:0}#home-chat .hc-msg{color:#fde68a;min-height:1.2em;margin:4px 0 0}#home-chat b{color:#5eead4}#home-chat .hc-cmds{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-cmds button{padding:0 10px;font-size:13px}#home-chat .hc-pick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}#home-chat .hc-fold{display:none}@media (max-width:480px){#home-chat{top:auto;bottom:calc(var(--hud-lift,92px) + 8px);display:flex;flex-direction:column-reverse;align-items:flex-start}#home-chat .hc-panel{margin:0 0 8px;max-height:min(60vh,calc(100vh - var(--hud-lift,92px) - 80px));overflow:auto}#home-chat .hc-fold{display:inline-flex;margin:0 0 8px}#home-chat .hc-cmds[data-folded="1"]{display:none}}</style>' +
     '<button type="button" class="hc-toggle" aria-expanded="false" aria-controls="hc-panel"></button>' +
-    '<div class="hc-panel" id="hc-panel" hidden><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
+    '<div class="hc-panel" id="hc-panel" hidden><button type="button" class="hc-fold" aria-expanded="true" aria-controls="hc-cmds"></button><div class="hc-cmds" id="hc-cmds" role="group" aria-label="Commands"></div><ul class="hc-log" aria-live="polite" aria-relevant="additions"></ul><form class="hc-row"><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send"><button type="submit"></button></form><p class="hc-msg" role="status"></p></div>'
   const toggle = dock.querySelector('.hc-toggle'), panel = dock.querySelector('.hc-panel'), input = dock.querySelector('input'), form = dock.querySelector('form')
+  // on a phone the command grid (14 buttons for the owner) folds behind one button so the chat log has room
+  const fold = dock.querySelector('.hc-fold'), cmds = dock.querySelector('.hc-cmds')
+  const paintFold = () => { const n = cmds.querySelectorAll('button').length, open = cmds.dataset.folded !== '1'; fold.textContent = (open ? '▾ ' : '▸ ') + 'Commands (' + n + ')'; fold.setAttribute('aria-expanded', String(open)) }
+  cmds.dataset.folded = matchMedia('(max-width:480px)').matches ? '1' : '0'
+  fold.onclick = () => { cmds.dataset.folded = cmds.dataset.folded === '1' ? '0' : '1'; paintFold() }
+  dock._paintFold = paintFold
   input.setAttribute('aria-label', T.ph); input.placeholder = T.ph; form.querySelector('button').textContent = T.send
   toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) { unread = 0; input.focus() } paintToggle() }
   // keys typed here are chat, not game controls
-  for (const ev of ['keydown', 'keyup', 'keypress']) input.addEventListener(ev, (e) => { e.stopPropagation(); if (e.type === 'keydown' && e.key === 'Escape') { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); paintToggle() } })
-  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay('') }
+  for (const ev of ['keydown', 'keyup', 'keypress']) input.addEventListener(ev, (e) => { e.stopPropagation(); if (e.type === 'keydown' && e.key === 'Escape') { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); paintToggle(); input.blur(); const c = document.querySelector('#stage canvas') || document.body; try { c.focus({ preventScroll: true }) } catch (e2) { c.focus() } } })
+  // after Send the keys go back to the game (the box kept the focus, so Enter/Tab/Space never reached the wand or
+  // the player until a mouse click: Diego, Nov 1). Shift+Enter keeps the cursor in the box for another message.
+  let shiftHeld = false
+  input.addEventListener('keydown', (e) => { shiftHeld = e.shiftKey })
+  const backToGame = () => { input.blur(); const c = document.querySelector('#stage canvas') || document.body; try { c.focus({ preventScroll: true }) } catch (e) { c.focus() } }
+  form.onsubmit = (e) => { e.preventDefault(); const m = input.value.trim(); if (!m) return chatSay(cs().errs['chat-empty']); if (!m.startsWith('/') && !chatOn) return chatSay(cs().errs['rule:chat.typed']); homeSend({ t: 'chat', m: m.slice(0, 200) }); input.value = ''; chatSay(''); if (!(e.submitter && e.submitter.dataset.stay) && !shiftHeld) backToGame() }
+
   document.body.append(dock); paintToggle()
+  // the game's menu sheet is a dialog: the dock (fixed, z 40) used to sit on top of it (seen over Settings, Nov 1)
+  const sheet = document.getElementById('sheet')
+  if (typeof MutationObserver === 'function') { const fit = () => { dock.style.visibility = (sheet && !sheet.hidden) || document.getElementById('home-builder') ? 'hidden' : '' }; if (sheet) new MutationObserver(fit).observe(sheet, { attributes: true, attributeFilter: ['hidden'] }); new MutationObserver(fit).observe(document.body, { childList: true }); fit() }
   return dock
 }
-function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = '💬 ' + T.chat + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : ''); b.setAttribute('aria-label', b.textContent) }
+function paintToggle() { if (!dock) return; const T = cs(), b = dock.querySelector('.hc-toggle'); b.textContent = (chatOn ? '💬 ' + T.chat : '⌘ Commands') + (unread ? ' · ' + fillAll(T.unread, { n: unread }) : '') + ' (T)'; b.setAttribute('aria-label', b.textContent) }
 function chatSay(text) { if (dock) dock.querySelector('.hc-msg').textContent = text }
 function setChatOn(on) {
   chatOn = !!on
-  if (chatOn) { ensureDock(); if (dock) dock.hidden = false }
-  else if (dock) { dock.hidden = true; dock.querySelector('.hc-panel').hidden = true; dock.querySelector('.hc-toggle').setAttribute('aria-expanded', 'false') }
+  ensureDock(); if (!dock) return
+  dock.hidden = false   // the dock is also the command line (part 8): it stays even with chat off
+  const input = dock.querySelector('input'); input.placeholder = chatOn ? cs().ph : 'Commands only (chat is off): /help'
+  paintToggle()
 }
 function chatLine(f) {
   if (!chatOn || !ensureDock()) return
   const log = dock.querySelector('.hc-log'), li = document.createElement('li'), who = document.createElement('b')
-  who.textContent = String(f.a || '') + ': '; li.append(who, document.createTextNode(String(f.m || '')))
+  who.textContent = (f.w && info && f.w !== info.world ? '[' + String(f.w) + '] ' : '') + String(f.a || '') + ': '; li.append(who, document.createTextNode(String(f.m || '')))
   log.append(li); while (log.children.length > CHAT_LINES) log.firstChild.remove()
   log.scrollTop = log.scrollHeight
   if (dock.querySelector('.hc-panel').hidden) { unread = Math.min(99, unread + 1); paintToggle() }
@@ -250,7 +360,176 @@ function bossNews(f) {
 }
 // the socket's home-only frames (called from connect's onmessage)
 function homeFrame(f) {
+  if (shareFrame(f)) return
+  if (f.t === 'tp') { if (tpFn) tpFn(f.x, f.y, f.z); if (toastFn && f.by && info && f.by !== info.name) toastFn(f.by + ' moved you'); return }
+  if (f.t === 'plugins') { pluginSummary = f.list || []; return }
+  if (f.t === 'cmdok') { if (f.msg) sysLine(f.msg); return }
+  if (f.t === 'switch' && typeof f.world === 'string') { sysLine('Switching to world ' + f.world + ' …'); if (toastFn) toastFn('Off to ' + f.world); setTimeout(() => homeReload(f.world), 400); return }
+  // essentials 2 (part 13): the owner's give / heal / clear land on this game through the hooks main.js gave us
+  if (f.t === 'give') { const item = String(f.item || ''), n = Math.max(1, Math.min(64, Number(f.n) | 0)); if (game.give && game.give(item, n)) sysLine((f.by || 'The owner') + ' gave you ' + n + ' ' + item + '.'); else sysLine((f.by || 'The owner') + ' tried to give you "' + item + '", which is not an item here.'); return }
+  if (f.t === 'heal') { if (game.heal) game.heal(); sysLine((f.by || 'The owner') + ' healed you.'); return }
+  if (f.t === 'clear') { if (game.clear) game.clear(); sysLine((f.by || 'The owner') + ' cleared your bag.'); return }
+  if (f.t === 'cmdno') { sysLine(f.why || 'That did not work.'); return }
   if (f.t === 'chat') chatLine(f)
   else if (f.t === 'ev') bossNews(f)
   else if (f.t === 'no' && typeof f.c === 'string' && (f.c.startsWith('chat-') || f.c === 'rule:chat.typed')) chatRefused(f)
 }
+
+
+// ---------------------------------------------------------------- shared world (part 7) — home only
+// The host's map is the map: the game asks for every changed cell once ({t:'all'}), applies them over the same
+// generated terrain, then applies live ops ({t:'o'}) after that point. Your edits go to the host ({t:'b'}), paced
+// under the server's edit rate; a refused one is put back. Positions go out ~5 times a second; the other players
+// come in through hello / join / leave / snapshots. main.js wires these into the game behind __HOME_HOST__.
+const EDITS_PER_SEC = 8, POS_MS = 200
+let world = null              // { head, cells } once the download finished
+let worldWait = null, worldBuf = null, worldParts = null, heldOps = []
+let opsFn = null, resyncFn = null, refusedFn = null
+const others = new Map()      // id -> { a, x, y, z, r, f, at }
+let posQ = 0, lastPos = null, lastPosAt = 0
+const editQ = [], pendingEdits = new Map()
+let editTimer = null
+
+function shareHello(f) {
+  others.clear()
+  for (const p of f.players || []) others.set(p.i, { a: p.a, ...(Array.isArray(p.p) ? posOf(p.p) : {}), at: Date.now() })
+  askWorld()
+}
+const posOf = (a) => ({ x: a[0], y: a[1], z: a[2], r: a[3], f: a[4] })
+function askWorld() { worldParts = []; worldBuf = null; heldOps = []; homeSend({ t: 'all' }) }
+function shareFrame(f) {
+  if (f.t === 'all') {
+    if (!worldParts) worldParts = []
+    worldParts[f.i] = f.c
+    if (worldParts.filter(Boolean).length === f.n) {
+      const fresh = { head: f.s, cells: [].concat(...worldParts) }
+      const again = !!world; world = fresh; worldParts = null
+      const later = heldOps.filter((o) => o[0] > fresh.head); heldOps = []
+      if (again && resyncFn) resyncFn(fresh.cells)
+      if (worldWait) { worldWait(fresh); worldWait = null }
+      if (later.length && opsFn) opsFn(later)
+    }
+    return true
+  }
+  if (f.t === 'o') { if (!world || worldParts) heldOps.push(...f.o); else if (opsFn) opsFn(f.o); for (const o of f.o) pendingEdits.delete(o[1] + ',' + o[2] + ',' + o[3]); return true }
+  if (f.t === 'rs') { askWorld(); return true }
+  if (f.t === 'join') { others.set(f.i, { a: f.a, at: Date.now() }); return true }
+  if (f.t === 'leave') { others.delete(f.i); return true }
+  if (f.t === 's') {
+    if (f.f) for (const id of [...others.keys()]) if (!f.p.some((p) => p[0] === id)) others.delete(id)
+    for (const p of f.p) { const o = others.get(p[0]) || { a: '' }; Object.assign(o, posOf(p.slice(1)), { at: Date.now() }); others.set(p[0], o) }
+    return true
+  }
+  if (f.t === 'no' && Number.isInteger(f.x) && Number.isInteger(f.y) && Number.isInteger(f.z)) {
+    const k = f.x + ',' + f.y + ',' + f.z, was = pendingEdits.get(k)
+    if (was !== undefined) { pendingEdits.delete(k); if (refusedFn) refusedFn(f.x, f.y, f.z, Number.isInteger(f.cur) ? f.cur : was, f.c) }
+    return true
+  }
+  return false
+}
+// true while this game is joined to a home server (main.js then plays the host's map)
+export const homeShared = () => !!(sock && hello)
+// the map, once: -> Promise<{ head, cells: [[x,y,z,id], ...] }>
+export function homeWorld() { return world && !worldParts ? Promise.resolve(world) : new Promise((r) => { worldWait = r }) }
+export function onHomeOps(fn) { opsFn = fn }            // fn([[s,x,y,z,id], ...]) live edits, yours included (echo)
+export function onHomeResync(fn) { resyncFn = fn }      // fn(cells) the map again after a gap
+export function onHomeRefused(fn) { refusedFn = fn }    // fn(x,y,z,idToPutBack,code)
+// one local edit -> the host. b = the block it replaced (the host checks it). Paced at 8/s; a position goes first.
+export function homeEdit(x, y, z, id, b) {
+  if (!homeShared()) return
+  editQ.push({ x, y, z, id, b }); pendingEdits.set(x + ',' + y + ',' + z, b)
+  if (!editTimer) drainEdits()
+}
+function drainEdits() {
+  if (!editQ.length || !homeShared()) { editTimer = null; return }
+  if (lastPos) sendPos(true)
+  const e = editQ.shift()
+  homeSend({ t: 'b', x: e.x, y: e.y, z: e.z, id: e.id, b: e.b })
+  editTimer = setTimeout(drainEdits, 1000 / EDITS_PER_SEC)
+}
+// the local player's spot; sent at most every 200 ms (or right before an edit, so the host's reach check is fresh)
+export function homePos(x, y, z, r, flying) { lastPos = { x, y, z, r, f: packFlags(flying, mySuit()) }; if (Date.now() - lastPosAt >= POS_MS) sendPos() }   // f carries flying + the suit (flags.js)
+export const homeMyPos = () => (lastPos ? [lastPos.x, lastPos.y, lastPos.z] : null)
+function sendPos(force) {
+  if (!lastPos || !homeShared()) return
+  if (!force && Date.now() - lastPosAt < POS_MS) return
+  lastPosAt = Date.now()
+  homeSend({ t: 'p', q: ++posQ, x: lastPos.x, y: lastPos.y, z: lastPos.z, r: lastPos.r, f: lastPos.f })
+}
+// the other players for drawing: [{ id, name, x, y, z, r, f }] (only those with a known position)
+export const homePlayers = () => [...others].filter(([, o]) => Number.isFinite(o.x)).map(([id, o]) => ({ id, name: o.a, x: o.x, y: o.y, z: o.z, r: o.r || 0, f: o.f || 0 }))
+// the local save slot for this host's world: your bag and spot per host world, never your single-player world
+export function homeSlot() {
+  const k = String((info && info.ws) || '') + '|' + String((info && info.world) || '')
+  let h = 0; for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0
+  return 'home-' + h.toString(36)
+}
+
+
+// ---------------------------------------------------------------- commands (part 8): buttons + typed, same server path
+// The rules frame carries the menu for this role. A button either sends {t:'cmd', c} at once, or asks for its argument
+// (a player, a warp, a text) with a second row of buttons / a prompt, then sends. Typed '/...' lines go through chat.
+let tpFn = null
+export function onHomeTeleport(fn) { tpFn = fn }        // main.js: moves the player (safe landing is the game's)
+function sysLine(text) {
+  if (!ensureDock()) return
+  const log = dock.querySelector('.hc-log'), li = document.createElement('li'); li.style.color = '#fde68a'; li.textContent = String(text)
+  log.append(li); while (log.children.length > CHAT_LINES) log.firstChild.remove(); log.scrollTop = log.scrollHeight
+  if (dock.querySelector('.hc-panel').hidden && toastFn) toastFn(String(text))
+}
+let menuNow = [], warpsNow = []
+function paintMenu(menu, warps) {
+  menuNow = menu; warpsNow = warps
+  if (!ensureDock()) return
+  const bar = dock.querySelector('.hc-cmds'); bar.textContent = ''
+  for (const m of menu) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = m.label; b.dataset.c = m.c
+    b.onclick = () => runButton(m)
+    bar.append(b)
+  }
+  if (homeOwnerOn()) { const b = document.createElement('button'); b.type = 'button'; b.textContent = '⚙ Code builder'; b.dataset.c = 'builder'; b.onclick = () => homeOpenBuilder(); bar.append(b) }
+  if (dock._paintFold) dock._paintFold()
+}
+function pickRow(title, items, onPick) {
+  const bar = dock.querySelector('.hc-cmds'); const old = dock.querySelector('.hc-pick'); if (old) old.remove()
+  const row = document.createElement('div'); row.className = 'hc-pick'; row.setAttribute('role', 'group'); row.setAttribute('aria-label', title)
+  const lab = document.createElement('span'); lab.textContent = title + ' '; lab.style.alignSelf = 'center'; row.append(lab)
+  for (const it of items) { const b = document.createElement('button'); b.type = 'button'; b.textContent = it.label; b.onclick = () => { row.remove(); onPick(it) }; row.append(b) }
+  const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Cancel'); x.onclick = () => row.remove(); row.append(x)
+  bar.after(row); const first = row.querySelector('button'); if (first) first.focus()
+}
+function runButton(m) {
+  if (!m.arg) { homeSend({ t: 'cmd', c: m.c }); return }
+  if (m.arg === 'player') {
+    const ps = homePlayers().map((p) => ({ label: p.name, id: p.id })).concat([...others].filter(([id, o]) => !Number.isFinite(o.x)).map(([id, o]) => ({ label: o.a, id })))
+    if (!ps.length) return sysLine('Nobody else is in right now.')
+    return pickRow(m.label + ':', ps, (it) => homeSend(m.c === 'unmute' ? { t: 'cmd', c: 'mute', id: it.id, on: 0 } : m.c === 'mute' ? { t: 'cmd', c: 'mute', id: it.id, on: 1 } : { t: 'cmd', c: m.c, id: it.id }))
+  }
+  if (m.arg === 'warp') {
+    if (!warpsNow.length) return sysLine('No warps yet: "Set warp here" first.')
+    return pickRow('Warp to:', warpsNow.map((w, i) => ({ label: w, i: i + 1, name: w })), (it) => homeSend({ t: 'chat', m: '/warp ' + it.name }))
+  }
+  if (m.arg === 'text') {
+    const input = dock.querySelector('input'); input.value = '/' + m.c + ' '; input.focus(); sysLine(m.c === 'announce' ? 'Type the announcement, then Enter.' : 'Type the warp name, then Enter.')
+  }
+}
+// T opens the panel (main.js calls this; the key is free at home: the teacher's rules key is a school thing)
+export function homeOpenChat() {
+  if (!ensureDock()) return false
+  const panel = dock.querySelector('.hc-panel'), toggle = dock.querySelector('.hc-toggle')
+  panel.hidden = false; toggle.setAttribute('aria-expanded', 'true'); unread = 0; paintToggle(); dock.querySelector('input').focus()
+  return true
+}
+
+
+// ---------------------------------------------------------------- the code builder (part 9): owner only, in-game
+let builder = null, pluginSummary = []
+const ownerCall = (p, body) => fetch(ownerApi.base + '/owner/' + p, { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerApi.token }, body: JSON.stringify(body || {}) }).then((r) => r.json())
+export function homeOpenBuilder() {
+  if (!homeOwnerOn()) { if (toastFn) toastFn('Only the host can open the code builder.'); return false }
+  if (!ownerApi) { try { ownerApi = JSON.parse(sessionStorage.getItem('bt-home-owner-api') || 'null') } catch (e) {} }
+  if (!ownerApi || !ownerApi.token) { if (toastFn) toastFn('Open the game from the owner page ("Play as owner") to use the builder.'); return false }
+  if (!builder) builder = createBuilder({ api: ownerCall, toast: (m) => toastFn && toastFn(m) })
+  builder.open(); return true
+}
+export const homePlugins = () => pluginSummary

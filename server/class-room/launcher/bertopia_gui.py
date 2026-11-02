@@ -16,9 +16,10 @@ class App:
         self.log = core.Log(debug=self.settings['debug'])
         self.node = None; self.busy = False; self.closed = False
         self.server = core.Server(on_line=lambda l: self.say(l, 'server'))
+        self.tunnel = core.Tunnel(on_line=lambda l: self.say(l, 'warn' if 'ERR' in l else 'server'))
         root.title('Bertopia Home launcher')
         root.configure(bg=BG); root.minsize(760, 600); root.geometry('900x760')
-        self._style(); self._build()
+        self._style(); self._menu(); self._build()
         root.protocol('WM_DELETE_WINDOW', self.on_close)
         root.report_callback_exception = self.on_crash
         self.say('Bertopia Home launcher %s (adults 18+). Repo: %s' % (core.LAUNCHER_VERSION, core.REPO))
@@ -44,8 +45,43 @@ class App:
         s.map('Go.TButton', background=[('disabled', '#134e4a'), ('active', '#14b8a6')])
         s.configure('Stop.TButton', background='#7f1d1d')
         s.map('Stop.TButton', background=[('disabled', '#3f1d1d'), ('active', '#b91c1c')])
-        s.configure('TCheckbutton', background=BG, foreground=FG, padding=6)
-        s.map('TCheckbutton', background=[('active', BG)])
+        s.configure('TCheckbutton', background=CARD, foreground=FG, padding=(6, 4), indicatorbackground='#0b1220', indicatorforeground=TEAL, indicatormargin=(0, 0, 8, 0))
+        s.map('TCheckbutton', background=[('active', CARD)], indicatorbackground=[('selected', '#134e4a'), ('active', '#1e293b')], indicatorforeground=[('selected', TEAL)])
+        s.configure('Sec.TLabel', background=BG, foreground=TEAL, font=(base[0], 10, 'bold'))     # section heading, like the owner page's
+        s.configure('Dot.TLabel', background=CARD, font=(base[0], 14))                            # the status dot
+        s.configure('Val.TLabel', background=CARD, foreground=FG)
+        s.configure('Val.Warn.TLabel', background=CARD, foreground=WARN)
+        s.configure('Val.Dim.TLabel', background=CARD, foreground=DIM)
+
+    # ---------------------------------------------------------------- menu bar (the same actions as the buttons, plus Help)
+    def _menu(self):
+        r = self.root
+        bar = tk.Menu(r, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG, relief='flat', bd=0)
+        m = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        m.add_command(label='Update & start', command=self.on_start, accelerator='F5')
+        m.add_command(label='Stop server', command=self.on_stop)
+        m.add_command(label='Open owner page', command=self.on_owner, accelerator='F6')
+        m.add_separator()
+        m.add_command(label='Check for updates', command=lambda: self.work('check', self.do_check))
+        m.add_command(label='Rebuild game', command=lambda: self.work('rebuild', self.do_rebuild))
+        m.add_separator()
+        m.add_command(label='Quit', command=self.on_close, accelerator='Ctrl+Q')
+        bar.add_cascade(label='Server', menu=m)
+        f = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        f.add_command(label='Open data folder', command=lambda: self.open_path(core.data_dir()))
+        f.add_command(label='Open plugins folder', command=lambda: self.open_path(os.path.join(core.data_dir(), 'plugins')))
+        f.add_command(label='Open logs', command=lambda: self.open_path(self.log.dir))
+        f.add_separator()
+        f.add_command(label='Copy diagnostics', command=lambda: self.work('diagnostics', self.do_diag))
+        bar.add_cascade(label='Folders', menu=f)
+        h = tk.Menu(bar, tearoff=0, bg=CARD, fg=FG, activebackground='#334155', activeforeground=FG)
+        h.add_command(label='Read me (HOME-README.md)', command=lambda: self.open_path(os.path.join(core.REPO, 'server', 'class-room', 'host', 'HOME-README.md')))
+        h.add_command(label='Join address: https://adultopia.kulibert.net/', command=lambda: webbrowser.open('https://adultopia.kulibert.net/'))
+        h.add_separator()
+        h.add_command(label='About', command=lambda: messagebox.showinfo('Bertopia Home', 'Bertopia Home launcher %s\nadults 18+ · personal host\n\nRepo: %s\nData: %s' % (core.LAUNCHER_VERSION, core.REPO, core.data_dir())))
+        bar.add_cascade(label='Help', menu=h)
+        r.configure(menu=bar)
+        r.bind('<F5>', lambda e: self.on_start()); r.bind('<F6>', lambda e: self.on_owner()); r.bind('<Control-q>', lambda e: self.on_close())
 
     def _build(self):
         r = self.root
@@ -53,12 +89,14 @@ class App:
         ttk.Label(top, text='Bertopia Home', style='Head.TLabel').pack(side='left')
         ttk.Label(top, text='  adults 18+ · launcher ' + core.LAUNCHER_VERSION, style='Dim.TLabel').pack(side='left', pady=(6, 0))
 
-        card = ttk.Frame(r, style='Card.TFrame', padding=14); card.pack(fill='x', padx=16, pady=6)
-        self.st = {}
-        for i, (k, label) in enumerate((('node', 'Node'), ('code', 'Code'), ('game', 'Game'), ('server', 'Server'))):
-            ttk.Label(card, text=label, style='Key.TLabel', width=8).grid(row=i, column=0, sticky='w', pady=3)
-            v = ttk.Label(card, text='checking ...', wraplength=700, justify='left'); v.grid(row=i, column=1, sticky='w', pady=3); self.st[k] = v
-        card.columnconfigure(1, weight=1)
+        ttk.Label(r, text='STATUS', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(6, 0))
+        card = ttk.Frame(r, style='Card.TFrame', padding=14); card.pack(fill='x', padx=16, pady=(2, 6))
+        self.st, self.dots = {}, {}
+        for i, (k, label) in enumerate((('node', 'Node'), ('code', 'Code'), ('game', 'Game'), ('server', 'Server'), ('tunnel', 'Internet'))):
+            d = ttk.Label(card, text='●', style='Dot.TLabel', foreground=DIM); d.grid(row=i, column=0, sticky='w', padx=(0, 8)); self.dots[k] = d
+            ttk.Label(card, text=label, style='Key.TLabel', width=8).grid(row=i, column=1, sticky='w', pady=3)
+            v = ttk.Label(card, text='checking ...', wraplength=680, justify='left', style='Val.TLabel'); v.grid(row=i, column=2, sticky='w', pady=3); self.st[k] = v
+        card.columnconfigure(2, weight=1)
 
         row1 = ttk.Frame(r, padding=(16, 6)); row1.pack(fill='x')
         self.b_start = ttk.Button(row1, text='▶  Update & start', style='Go.TButton', command=self.on_start)
@@ -73,13 +111,17 @@ class App:
         self.b_diag = ttk.Button(row2, text='Copy diagnostics', command=lambda: self.work('diagnostics', self.do_diag))
         for b in (self.b_check, self.b_build, self.b_data, self.b_logs, self.b_diag): b.pack(side='left', padx=(0, 8))
 
-        opts = ttk.Frame(r, padding=(12, 4)); opts.pack(fill='x')
+        ttk.Label(r, text='SETTINGS', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(8, 0))
+        opts = ttk.Frame(r, style='Card.TFrame', padding=(10, 6)); opts.pack(fill='x', padx=16, pady=(2, 6))
         self.vars = {}
-        for k, text in (('auto_update', 'Update automatically before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS, kept up to date)"),
-                        ('start_on_open', 'Start the server when the launcher opens'), ('debug', 'Debug log (more detail in the log file)')):
+        for k, text in (('auto_update', 'Update before starting (code, Node, game)'), ('own_node', "Use Bertopia's own Node (official LTS)"),
+                        ('follow_release', 'Follow the newest release ("%s")' % core.RELEASE_BRANCH), ('start_on_open', 'Start the server when the launcher opens'), ('tunnel', 'Internet join (Cloudflare tunnel; needs tunnel.json)'), ('show_chat', 'Show chat in the console'), ('debug', 'Debug log (more detail in the log file)')):
             v = tk.BooleanVar(value=self.settings[k]); self.vars[k] = v
-            ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).pack(anchor='w')
+            n = len(self.vars) - 1   # two columns, so the console below keeps its room on a 760 px window
+            ttk.Checkbutton(opts, text=text, variable=v, command=self.on_setting).grid(row=n // 2, column=n % 2, sticky='w', padx=(0, 12))
+        opts.columnconfigure(0, weight=1, uniform='opt'); opts.columnconfigure(1, weight=1, uniform='opt')
 
+        ttk.Label(r, text='CONSOLE', style='Sec.TLabel').pack(anchor='w', padx=18, pady=(8, 0))
         self.out = ScrolledText(r, height=12, bg='#020617', fg='#e2e8f0', insertbackground=FG, relief='flat', font=('Consolas', 10) if core.WIN else ('DejaVu Sans Mono', 9), wrap='word')
         self.out.pack(fill='both', expand=True, padx=16, pady=(6, 14)); self.out.configure(state='disabled')
         self.out.tag_configure('server', foreground='#a7f3d0'); self.out.tag_configure('warn', foreground=WARN); self.out.tag_configure('build', foreground='#cbd5e1')
@@ -101,13 +143,16 @@ class App:
                     self.out.configure(state='normal'); self.out.insert('end', core.redact(m[1]) + '\n', m[2]); n = int(self.out.index('end-1c').split('.')[0])
                     if n > 1500: self.out.delete('1.0', '%d.0' % (n - 1200))
                     self.out.see('end'); self.out.configure(state='disabled')
-                elif m[0] == 'status': self.st[m[1]].configure(text=m[2], foreground=WARN if m[3] else FG)
+                elif m[0] == 'status':
+                    off = m[2].startswith(('stopped', 'off', 'not set up', 'none', 'waiting'))
+                    self.st[m[1]].configure(text=m[2], style='Val.Warn.TLabel' if m[3] else ('Val.Dim.TLabel' if off else 'Val.TLabel'))
+                    self.dots[m[1]].configure(foreground=WARN if m[3] else (DIM if off else TEAL))
                 elif m[0] == 'done': self.busy = False; self.paint()
                 elif m[0] == 'call': m[1]()
         except queue.Empty:
             pass
         if self.server.proc and not self.server.running and not self.busy:
-            code = self.server.stop(); self.say('server stopped (exit %s)' % code, 'warn' if code else 'info'); self.paint()
+            self.tunnel.stop(); code = self.server.stop(); self.say('server stopped (exit %s)' % code, 'warn' if code else 'info'); self.paint()
         self.root.after(100, self.pump)
 
     def work(self, name, fn):
@@ -124,6 +169,8 @@ class App:
     def paint(self):
         up = self.server.running
         self.set_status('server', ('running · ' + (self.server.owner_url or 'starting ...').split('?')[0].replace('/owner', '/')) if up else 'stopped', False)
+        ti = core.tunnel_info()
+        self.set_status('tunnel', ('on · https://%s/' % ti['hostname'] + ('' if self.tunnel.up else ' (connecting ...)')) if self.tunnel.running else ('off · ready: https://%s/' % ti['hostname'] if ti else 'not set up (no tunnel.json in the data folder)'), bool(not ti and self.settings['tunnel']))
         st = lambda b, on: b.configure(state='normal' if on else 'disabled')
         st(self.b_start, not self.busy and not up); st(self.b_stop, up); st(self.b_owner, up and bool(self.server.owner_url))
         st(self.b_check, not self.busy); st(self.b_build, not self.busy and not up); st(self.b_diag, not self.busy)
@@ -167,7 +214,7 @@ class App:
 
     def do_start(self):
         if self.settings['auto_update']:
-            ok, msg = core.pull(); self.say('code: ' + msg, 'info' if ok else 'warn'); pulled = ok
+            ok, msg = core.pull(follow_release=self.settings['follow_release']); self.say('code: ' + msg, 'info' if ok else 'warn'); pulled = ok
             newer = core.repo_launcher_version()
             if newer and core.version_tuple(newer) > core.version_tuple(core.LAUNCHER_VERSION):
                 self.say('The launcher itself was updated (%s). Restarting it ...' % newer, 'warn')
@@ -181,7 +228,15 @@ class App:
         if not core.prepare_game(n, on_line=lambda l: self.say(l, 'build')): raise RuntimeError('install or build failed (see the lines above)')
         self.show_game()
         self.say('starting the server ...')
-        if not self.server.start(n): raise RuntimeError('the server stopped right away (see the lines above)')
+        ti = core.tunnel_info() if self.settings['tunnel'] else None
+        if self.settings['tunnel'] and not ti: self.say('internet: tunnel.json is missing from the data folder; starting on this network only', 'warn')
+        extra = (['--show-chat'] if self.settings['show_chat'] else []) + (['--tunnel-host', ti['hostname']] if ti else [])
+        if not self.server.start(n, extra=extra): raise RuntimeError('the server stopped right away (see the lines above)')
+        if ti:
+            self.say('internet: starting the tunnel to https://%s/ ...' % ti['hostname'])
+            exe = core.ensure_cloudflared(log=self.say)
+            if self.tunnel.start(ti, exe): self.say('internet: ' + ('people can join at https://%s/ with the code' % ti['hostname'] if self.tunnel.up else 'tunnel started, still connecting (see [tunnel] lines)'))
+            else: self.say('internet: the tunnel did not start (see the lines above); the server is on this network only', 'warn')
         self.q.put(('call', self.paint))
         if self.server.owner_url: self.q.put(('call', lambda: webbrowser.open(self.server.owner_url)))
 
@@ -201,7 +256,7 @@ class App:
 
     def on_stop(self):
         def stop():
-            self.say('stopping the server (saving the world) ...'); code = self.server.stop()
+            self.tunnel.stop(); self.say('stopping the server (saving the world) ...'); code = self.server.stop()
             self.say('server stopped (exit %s)' % code); self.q.put(('call', self.paint))
         self.work('stop', stop) if not self.busy else threading.Thread(target=stop, daemon=True).start()
 
@@ -221,7 +276,7 @@ class App:
     def on_close(self):
         if self.server.running:
             if not messagebox.askyesno('Stop the server?', 'The server is running. Stop it (the world is saved) and close the launcher?'): return
-            self.say('stopping the server before closing ...'); self.server.stop()
+            self.say('stopping the server before closing ...'); self.tunnel.stop(); self.server.stop()
         self.quit()
 
     def quit(self):
@@ -260,5 +315,5 @@ def main(argv=None):
                 except ImportError:            # no Pillow: ImageMagick's `import` (Linux checks)
                     subprocess.run(['import', '-window', 'root', '-crop', '%dx%d+%d+%d' % (w, h, x, y), os.environ['BT_LAUNCHER_SHOT']], timeout=20)
             root.after(max(100, ms - 400), shot)
-        root.after(ms, lambda: (app.log.write('selftest done'), app.server.stop(), app.quit()))
+        root.after(ms, lambda: (app.log.write('selftest done'), app.tunnel.stop(), app.server.stop(), app.quit()))
     root.mainloop()

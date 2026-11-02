@@ -518,7 +518,7 @@ export function createSession(api) {
       if (wear) b.append(wear)
       if (s) b.dataset.item = s.item
       b.setAttribute('aria-pressed', String(i === hot))
-      b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
+      b.setAttribute('aria-label', (s ? faceName(s.item) + ' ×' + s.n : t('emptySlot')) + ' · ' + (i + 1))   // nine "Empty slot"s read alike; the number tells them apart
       if ((typeof __HOME_HOST__ !== 'undefined' && __HOME_HOST__) && s && mode === 'survival') homeTile(b, s, i)
       b.addEventListener('click', () => {
         if (i === hot) useHeld()

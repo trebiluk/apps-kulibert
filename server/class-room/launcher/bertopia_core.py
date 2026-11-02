@@ -14,7 +14,7 @@ Standard library only. Works on Windows (the target) and Linux (where the checks
 import datetime, hashlib, io, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, traceback, urllib.request, zipfile
 from pathlib import Path
 
-LAUNCHER_VERSION = '1.0.1'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
+LAUNCHER_VERSION = '1.4.0'   # bump on every launcher change: a frozen .exe runs the repo's copy when it is newer
 
 HERE = Path(__file__).resolve().parent
 ROOM = HERE.parent                       # server/class-room (set_repo() moves all three)
@@ -64,7 +64,8 @@ def app_dir():
 
 
 # ---------------------------------------------------------------- settings
-DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False}
+DEFAULTS = {'auto_update': True, 'own_node': False, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True, 'tunnel': False}
+RELEASE_BRANCH = 'bertopia-home'   # always points at the newest home-host part; the launcher follows it
 
 def load_settings():
     try: s = json.loads((app_dir() / 'launcher.json').read_text('utf-8'))
@@ -208,14 +209,34 @@ def code_status(fetch=True, cwd=None):
         a, b = counts.split()[:2]; st['ahead'], st['behind'] = int(a), int(b)
     return st
 
-def pull(cwd=None):
-    """-> (ok, message). Only fast-forwards, only with no local changes to tracked files."""
+def switch_to_release(cwd=None, branch=RELEASE_BRANCH):
+    """Move the checkout onto the release branch (creating it to track origin/<branch> if needed). -> (ok, message)
+    Only when no tracked file has local changes. Untracked files (the game build) come along untouched."""
+    rc, cur, _ = git(['rev-parse', '--abbrev-ref', 'HEAD'], cwd)
+    if rc != 0: return False, 'not a git checkout'
+    if cur == branch: return True, 'on ' + branch
+    changed = [l for l in git(['diff', '--name-only', 'HEAD'], cwd)[1].splitlines() if l]
+    if changed: return False, 'staying on %s: you have local changes (%s)' % (cur, ', '.join(changed[:3]))
+    git(['fetch', '--quiet', 'origin', branch], cwd)
+    if git(['rev-parse', '--verify', '--quiet', 'origin/' + branch], cwd)[0] != 0: return False, 'no %s branch on the server yet; staying on %s' % (branch, cur)
+    if git(['rev-parse', '--verify', '--quiet', branch], cwd)[0] == 0: rc, _, err = git(['checkout', '--quiet', branch], cwd)
+    else: rc, _, err = git(['checkout', '--quiet', '-b', branch, '--track', 'origin/' + branch], cwd)
+    return (True, 'switched from %s to %s' % (cur, branch)) if rc == 0 else (False, 'could not switch to %s: %s' % (branch, err.splitlines()[-1] if err else 'git checkout failed'))
+
+def pull(cwd=None, follow_release=True):
+    """-> (ok, message). Moves onto the release branch (when asked), then fast-forwards; only with no local changes."""
+    notes = []
+    if follow_release:
+        ok, msg = switch_to_release(cwd)
+        if not ok: return False, msg
+        if msg.startswith('switched'): notes.append(msg)
     st = code_status(fetch=True, cwd=cwd)
     if not st.get('git') or not st.get('upstream'): return False, st.get('note', 'updates are off')
     if st['changed']: return False, 'not updating: you have local changes (' + ', '.join(st['changed'][:3]) + (' ...' if len(st['changed']) > 3 else '') + ')'
+    if notes and not st['behind']: return True, notes[0] + ' (up to date)'
     if not st['behind']: return True, 'code is up to date'
     rc, out, err = git(['pull', '--ff-only', '--quiet'], cwd)
-    return (True, 'pulled %d update%s' % (st['behind'], '' if st['behind'] == 1 else 's')) if rc == 0 else (False, 'could not update: ' + (err.splitlines()[-1] if err else 'git pull failed'))
+    return (True, ('; '.join(notes) + '; ' if notes else '') + 'pulled %d update%s' % (st['behind'], '' if st['behind'] == 1 else 's')) if rc == 0 else (False, 'could not update: ' + (err.splitlines()[-1] if err else 'git pull failed'))
 
 
 # ---------------------------------------------------------------- game (install/build) through home-launch.mjs
@@ -284,7 +305,9 @@ class Server:
 # ---------------------------------------------------------------- logs and diagnostics
 SECRET_RE = [(re.compile(r'([?&]k=)[0-9a-f]{8,}'), r'\1[hidden]'),                       # owner-page key
              (re.compile(r'\b[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4} ?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}\b'), '[code hidden]'),   # session codes
-             (re.compile(r'("?(?:token|ticket|secret|pin|password)"?\s*[:=]\s*"?)[^"\s,}]+', re.I), r'\1[hidden]')]
+             (re.compile(r'("?(?:token|ticket|secret|pin|password|key)"?\s*[:=]\s*"?)[^"\s,}]+', re.I), r'\1[hidden]'),
+             (re.compile(r'\blk_[0-9a-f]{32}\b'), 'lk_[hidden]'),                                 # plugin library keys (part 12)
+             (re.compile(r'\bADLT-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-?[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}\b'), 'ADLT-[hidden]')]   # invite keys (part 10)
 
 def redact(text):
     for rx, rep in SECRET_RE: text = rx.sub(rep, text)
@@ -331,6 +354,67 @@ def diagnostics(log=None, node=None, settings=None):
 def crash_text(exc_type, exc, tb):
     return redact(''.join(traceback.format_exception(exc_type, exc, tb)))
 
+
+# ---------------------------------------------------------------- the internet (Cloudflare tunnel)
+# tunnel.json ({tunnel_id, hostname, token}) and cloudflared(.exe) live in the data folder (Documents\Bertopia Home):
+# the token is the key to the tunnel, so it stays there, never in the repo, the log or the window. The tunnel program
+# is the official cloudflared release; the launcher fetches it when missing, checked against GitHub's published SHA-256.
+CFD_RELEASE = os.environ.get('BT_CFD_RELEASE', 'https://api.github.com/repos/cloudflare/cloudflared/releases/latest')
+
+def tunnel_file(): return data_dir() / 'tunnel.json'
+def tunnel_info():
+    try:
+        d = json.loads(tunnel_file().read_text('utf-8'))
+        if isinstance(d, dict) and d.get('token') and d.get('hostname'): return {'hostname': str(d['hostname']), 'tunnel_id': str(d.get('tunnel_id', '')), 'token': str(d['token'])}
+    except Exception: pass
+    return None
+def cfd_exe(): return data_dir() / ('cloudflared.exe' if WIN else 'cloudflared')
+
+def ensure_cloudflared(log=print):
+    """-> path of cloudflared; fetched from the official GitHub release when missing (SHA-256 from the release listing)"""
+    exe = cfd_exe()
+    if exe.exists(): return str(exe)
+    name = 'cloudflared-windows-amd64.exe' if WIN else 'cloudflared-linux-amd64'
+    rel = json.loads(_get(CFD_RELEASE, 30))
+    a = next((x for x in rel.get('assets', []) if x.get('name') == name), None)
+    if not a: raise RuntimeError('no %s in the latest cloudflared release' % name)
+    want = str(a.get('digest', '')).split(':', 1)[-1].lower()
+    if len(want) != 64: raise RuntimeError('the cloudflared release lists no SHA-256 for %s' % name)
+    log('Downloading cloudflared %s (%d MB) ...' % (rel.get('tag_name', ''), (a.get('size') or 0) // 1000000))
+    data = _get(a['browser_download_url'], 600)
+    if hashlib.sha256(data).hexdigest() != want: raise RuntimeError('checksum mismatch for %s: not kept' % name)
+    data_dir().mkdir(parents=True, exist_ok=True); exe.write_bytes(data)
+    if not WIN: exe.chmod(0o755)
+    (data_dir() / 'cloudflared.version').write_text(str(rel.get('tag_name', '')), 'utf-8')
+    log('cloudflared %s is ready (checksum OK).' % rel.get('tag_name', ''))
+    return str(exe)
+
+class Tunnel:
+    """cloudflared as a child process: start with the saved token (never on the command line: TUNNEL_TOKEN env), stop."""
+    def __init__(self, on_line=print): self.proc, self.on_line, self.up = None, on_line, False
+    @property
+    def running(self): return bool(self.proc and self.proc.poll() is None)
+    def start(self, info, exe):
+        if self.running: return True
+        self.up = False
+        self.proc = subprocess.Popen([exe, 'tunnel', '--no-autoupdate', 'run'], env={**os.environ, 'TUNNEL_TOKEN': info['token']}, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace', creationflags=NO_WINDOW)
+        def pump():
+            for line in self.proc.stdout:
+                line = line.rstrip('\n')
+                if 'Registered tunnel connection' in line: self.up = True
+                if 'ERR' in line or 'WRN' in line or 'Registered tunnel connection' in line: self.on_line('[tunnel] ' + redact(line.split(' ', 2)[-1] if line[:4].isdigit() else line))
+        threading.Thread(target=pump, daemon=True).start()
+        for _ in range(200):
+            if self.up or not self.running: break
+            time.sleep(0.1)
+        return self.running
+    def stop(self):
+        if not self.proc: return
+        try: self.proc.terminate(); self.proc.wait(5)
+        except Exception:
+            try: self.proc.kill()
+            except Exception: pass
+        self.proc = None; self.up = False
 
 def data_dir():
     return Path(os.path.expanduser('~')) / 'Documents' / 'Bertopia Home'

@@ -2,6 +2,7 @@
   "name": "apps-kulibert",
   "private": true,
   "scripts": {
-    "check:hub": "node scripts/hub-gate.mjs"
+    "check:hub": "node scripts/hub-gate.mjs",
+    "check:master-control": "node tools/master-control-check.mjs"
   }
 }

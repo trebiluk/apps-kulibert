@@ -45,6 +45,21 @@ Claims (any other claim name is refused, so no name or email can ride along):
 TechWorks must: check the kid is on the roster for that world; mint a new ticket for every connection (reconnect = new ticket); never put a real name or email in any claim; keep the secret only in its own secret store.
 Secrets: `wrangler secret put ROOM_JOIN_SECRET` (32+ random bytes). Rotation: put the old value in `ROOM_JOIN_SECRET_PREV`, deploy the new one to both sides, wait 10 minutes, delete `PREV`. Secrets shorter than 16 characters are rejected. No secret in code, git, chat or docs.
 
+## 4b. Master Control's staff controls (part 2, Nov 1)
+`apps.kulibert.net/master-control/` drives the class server over JSON POSTs from an allowed origin:
+- `POST /rt/staff/login {pass}` → the password's SHA-256 is compared (constant time) to the `STAFF_PASS_HASH` secret;
+  5 wrong tries per address tag then a 10-minute wait; success mints a **control ticket**: the same HMAC ticket as
+  §4 with `role admin`, `amr ["passkey"]`, `room "mc-control-room"` (no Room has that id), alias "Master Control",
+  **300 s**. It is kept in the page's memory only.
+- `POST /rt/control/<action>` with `Authorization: Bearer <control ticket>`: `state` (switches + live rooms),
+  `open {on}` (multiplayer: off = kid sockets refused 503 at the Worker, staff still get in), `chat {on}`,
+  `freeze {room,on}`, `kick {room,alias}`, `rollback {room,minutes}` (the room's whole world, through the World's
+  undo). A staff *game* ticket is not a control ticket (wrong room id) and is refused.
+- The `Control` Durable Object (one, `main`) keeps: the two switches, the live-room registry (room id, world id,
+  kid and staff **counts**, frozen flag, last report time — rooms report on join/leave/freeze and are dropped after
+  10 quiet minutes), and the login counters by address tag. No aliases, refs, addresses or text are ever stored.
+- CORS: only the allowed origins; preflight answered; bodies capped at 4 KB.
+
 ## 5. The server is the boss
 | Check | Phase 0 | Rule |
 |---|---|---|

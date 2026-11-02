@@ -547,7 +547,7 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .craft-tab .gic{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 #sheet[data-panel="crafting"] .craft-tab canvas,#sheet[data-panel="crafting"] .craft-tab svg{width:22px;height:22px}
 #sheet[data-panel="crafting"] .craft-tab .glbl{font-size:12px;font-weight:800;line-height:1.1;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;max-width:72px;max-height:calc(1.1em*2);overflow:hidden;overflow-wrap:anywhere;text-align:center}
-#sheet[data-panel="crafting"] .craft-find{width:100%;min-height:36px;box-sizing:border-box;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;color:#E6EEF2;padding:4px 8px;font:700 14px sans-serif}
+#sheet[data-panel="crafting"] .craft-find{width:100%;min-height:44px;box-sizing:border-box;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;color:#E6EEF2;padding:4px 8px;font:700 14px sans-serif}
 #sheet[data-panel="crafting"] .book-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;align-items:stretch}
 #sheet[data-panel="crafting"] .book .well,
 #sheet[data-panel="crafting"] .book .well.wide{width:100%;min-width:0;max-width:none;height:96px;min-height:96px;max-height:96px;padding:6px 4px 4px;overflow:hidden;align-items:center;justify-content:flex-start;gap:2px}
@@ -1377,9 +1377,15 @@ body.tip-on #held-chip{display:none!important}
 ;(function(){
   var bar = document.getElementById('hotbar')
   if (!bar) return
+  var root = document.documentElement
   function setH(){
     var h = bar.offsetHeight || 76
-    document.documentElement.style.setProperty('--hotbar-h', h + 'px')
+    root.style.setProperty('--hotbar-h', h + 'px')
+    // Nov 1: the stick, jump column, suit bar and chips all stack on --hud-lift (92px, or 76px sideways). When the
+    // hotbar is taller than that (two rows on a phone), lift them with it so nothing sits under the bar.
+    root.style.removeProperty('--hud-lift')
+    var base = parseFloat(getComputedStyle(root).getPropertyValue('--hud-lift')) || 92
+    if (h + 12 > base) root.style.setProperty('--hud-lift', (h + 12) + 'px')
   }
   setH()
   if (window.ResizeObserver) new ResizeObserver(setH).observe(bar)

@@ -1,7 +1,7 @@
 """Checks for the Python launcher (core, self-update, the real host, the window). Standard library unittest.
     python3 -m unittest -v test_launcher            (from server/class-room/launcher)
 The window test needs tkinter and a display (xvfb-run on Linux); it skips otherwise."""
-import hashlib, http.server, io, json, os, shutil, subprocess, sys, tarfile, tempfile, threading, time, unittest, zipfile
+import hashlib, http.server, io, json, os, pathlib, shutil, subprocess, sys, tarfile, tempfile, threading, time, unittest, zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -37,6 +37,10 @@ class Versions(unittest.TestCase):
 
 
 class Logs(unittest.TestCase):
+    def test_redact_keys(self):
+        t = core.redact('library lk_0123456789abcdef0123456789abcdef invite ADLT-7K2M-QX9D-4HJB "key":"lk_x"')
+        self.assertNotIn('0123456789abcdef', t); self.assertNotIn('7K2M', t); self.assertIn('lk_[hidden]', t); self.assertIn('ADLT-[hidden]', t)
+
     def test_redact(self):
         t = core.redact('owner page: http://localhost:8890/owner?k=c3e94dafefb00251d87659083505c400 code SR36 GN58 / SR36GN58 {"token":"abc"} pin=246810 game 2.5.596 world gibberland')
         for secret in ('c3e94daf', 'SR36', 'GN58', 'abc', '246810'): self.assertNotIn(secret, t)
@@ -55,7 +59,7 @@ class Logs(unittest.TestCase):
     def test_settings_survive_junk(self):
         (core.app_dir() / 'launcher.json').write_text('{"auto_update": "yes", "own_node": true, "evil": 1}')
         s = core.load_settings()
-        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False})
+        self.assertEqual(s, {'auto_update': True, 'own_node': True, 'start_on_open': False, 'debug': False, 'follow_release': True, 'show_chat': True, 'tunnel': False})
         core.save_settings({**s, 'debug': True}); self.assertTrue(core.load_settings()['debug'])
 
     def test_diagnostics_are_redacted(self):
@@ -142,18 +146,65 @@ class Code(unittest.TestCase):
         self.g(TMP, 'init', '-q', '--bare', '-b', 'main', str(up)); self.g(TMP, 'clone', '-q', str(up), str(a))
         (a / 'f.txt').write_text('1'); self.g(a, 'add', '-A'); self.g(a, 'commit', '-qm', 'one'); self.g(a, 'push', '-q', 'origin', 'HEAD:main')
         self.g(TMP, 'clone', '-q', str(up), str(b))
-        self.assertEqual(core.code_status(cwd=b)['behind'], 0); self.assertEqual(core.pull(cwd=b), (True, 'code is up to date'))
+        self.assertEqual(core.code_status(cwd=b)['behind'], 0); self.assertEqual(core.pull(cwd=b, follow_release=False), (True, 'code is up to date'))
         for i in (2, 3): (a / 'f.txt').write_text(str(i)); self.g(a, 'commit', '-qam', str(i))
         self.g(a, 'push', '-q', 'origin', 'HEAD:main')
         st = core.code_status(cwd=b); self.assertEqual((st['behind'], st['fetched']), (2, True))
         (b / 'f.txt').write_text('mine')
-        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('local changes (f.txt)', msg)
+        ok, msg = core.pull(cwd=b, follow_release=False); self.assertFalse(ok); self.assertIn('local changes (f.txt)', msg)
         self.g(b, 'checkout', '--', 'f.txt'); (b / 'new-untracked.txt').write_text('x')
-        self.assertEqual(core.pull(cwd=b), (True, 'pulled 2 updates')); self.assertEqual((b / 'f.txt').read_text(), '3')
+        self.assertEqual(core.pull(cwd=b, follow_release=False), (True, 'pulled 2 updates')); self.assertEqual((b / 'f.txt').read_text(), '3')
         self.g(b, 'checkout', '-q', '-b', 'local-only')
         self.assertIn('tracks no remote', core.code_status(cwd=b)['note'])
         self.assertFalse(core.code_status(cwd=TMP)['git'])
 
+    def test_follows_the_release_branch(self):
+        """Diego's case: on part 6's branch, part 7 lands on `bertopia-home`; one Update & start moves him there"""
+        up, a, b = TMP / 'rel.git', TMP / 'rel-a', TMP / 'rel-b'
+        self.g(TMP, 'init', '-q', '--bare', '-b', 'main', str(up)); self.g(TMP, 'clone', '-q', str(up), str(a))
+        (a / 'f.txt').write_text('p6'); self.g(a, 'add', '-A'); self.g(a, 'commit', '-qm', 'p6'); self.g(a, 'push', '-q', 'origin', 'HEAD:main')
+        self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/feat/p6')
+        self.g(TMP, 'clone', '-q', '-b', 'feat/p6', str(up), str(b))
+        (b / 'bertopia-home' ).mkdir(); (b / 'bertopia-home' / 'index.html').write_text('built')    # untracked: a game build
+        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('no bertopia-home branch', msg)        # release branch not there yet
+        (a / 'f.txt').write_text('p7'); self.g(a, 'commit', '-qam', 'p7'); self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/' + core.RELEASE_BRANCH)
+        ok, msg = core.pull(cwd=b)
+        self.assertTrue(ok, msg); self.assertIn('switched from feat/p6 to ' + core.RELEASE_BRANCH, msg)
+        self.assertEqual((b / 'f.txt').read_text(), 'p7'); self.assertTrue((b / 'bertopia-home' / 'index.html').exists())
+        self.assertEqual(self.g(b, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.strip(), core.RELEASE_BRANCH)
+        (a / 'f.txt').write_text('p8'); self.g(a, 'commit', '-qam', 'p8'); self.g(a, 'push', '-q', 'origin', 'HEAD:refs/heads/' + core.RELEASE_BRANCH)
+        self.assertEqual(core.pull(cwd=b), (True, 'pulled 1 update')); self.assertEqual((b / 'f.txt').read_text(), 'p8')
+        self.g(b, 'checkout', '-q', 'feat/p6'); (b / 'f.txt').write_text('mine')
+        ok, msg = core.pull(cwd=b); self.assertFalse(ok); self.assertIn('staying on feat/p6', msg)                 # local edits are never thrown away
+        self.assertEqual((b / 'f.txt').read_text(), 'mine'); self.assertEqual(self.g(b, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.strip(), 'feat/p6')
+
+
+class TunnelBits(unittest.TestCase):
+    def test_tunnel_info_and_cloudflared_fetch(self):
+        d = core.data_dir
+        core.data_dir = lambda: TMP / 'data-t'; (TMP / 'data-t').mkdir(exist_ok=True)
+        try:
+            self.assertIsNone(core.tunnel_info())
+            core.tunnel_file().write_text(json.dumps({'tunnel_id': 'abc', 'hostname': 'adultopia.kulibert.net', 'token': 'eyJ-secret'}))
+            self.assertEqual(core.tunnel_info()['hostname'], 'adultopia.kulibert.net')
+            core.tunnel_file().write_text('{"hostname": "x"}'); self.assertIsNone(core.tunnel_info())      # no token: not set up
+            root = TMP / 'cfd'; root.mkdir(exist_ok=True); blob = b'#!/bin/sh\necho cloudflared 2026.1.0\n'
+            (root / 'cloudflared-linux-amd64').write_bytes(blob)
+            h = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=str(root), **k)
+            srv = http.server.ThreadingHTTPServer(('127.0.0.1', 0), h); threading.Thread(target=srv.serve_forever, daemon=True).start()
+            base = 'http://127.0.0.1:%d' % srv.server_address[1]
+            def listing(digest): (root / 'release.json').write_text(json.dumps({'tag_name': '2026.1.0', 'assets': [{'name': 'cloudflared-linux-amd64', 'size': len(blob), 'digest': 'sha256:' + digest, 'browser_download_url': base + '/cloudflared-linux-amd64'}]}))
+            core.CFD_RELEASE = base + '/release.json'
+            listing('0' * 64)
+            with self.assertRaisesRegex(RuntimeError, 'checksum mismatch'): core.ensure_cloudflared(log=lambda *_: None)
+            self.assertFalse(core.cfd_exe().exists())
+            listing(hashlib.sha256(blob).hexdigest()); lines = []
+            exe = core.ensure_cloudflared(log=lines.append)
+            self.assertTrue(pathlib.Path(exe).exists() and any('checksum OK' in l for l in lines))
+            self.assertEqual(core.ensure_cloudflared(), exe)
+            srv.shutdown()
+        finally:
+            core.data_dir = d
 
 class SelfUpdate(unittest.TestCase):
     def make(self, where, version, broken=False):

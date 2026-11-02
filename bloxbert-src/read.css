@@ -3093,3 +3093,13 @@ html body .daily-mark-star { font-size: 20px; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   html body .daily-card, html body .daily-card * { transition: none !important; animation: none !important; }
 }
+
+/* Nov 1 hotbar pass: on narrow screens the tray wrapped 5 / 4 / bag (three rows, 220 px tall, under the stick).
+   Two rows of five: slots 1-5, then 6-9 and the bag. */
+@media (max-width:480px){
+  html body #hotbar#hotbar#hotbar .hot-tray{display:grid !important;grid-template-columns:repeat(5,48px) !important;justify-content:center !important;gap:4px !important;padding:6px 6px 10px !important;width:max-content !important}
+  html body #hotbar#hotbar#hotbar .item-strip{display:contents !important}
+  html body #hotbar#hotbar#hotbar .slot.bag-tile{order:0 !important}
+  html body #hotbar#hotbar#hotbar{max-width:calc(100vw - 8px) !important;flex-direction:column !important;align-items:center !important;width:max-content !important;padding:2px !important;left:50% !important;right:auto !important;transform:translateX(-50%) scale(var(--ui-scale,1)) !important;transform-origin:bottom center !important}
+  html body #hotbar .hot-name{max-width:calc(100vw - 16px) !important}
+}

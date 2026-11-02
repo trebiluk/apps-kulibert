@@ -217,6 +217,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull } from './save/server-sync.js'
 import { mountSyncChip, setSyncState } from './save/sync-chip.js'
+import { createAvatars } from './home/avatars.js' // HOME_HOST only (part 7): unused, so dropped, in the student build
 import * as HOME from './home/home.js' // HOME_HOST only: every use is inside `if (__HOME_HOST__)`, so the student build drops it (tools/home-leak-check.mjs)
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
@@ -285,7 +286,8 @@ if (!document.createElement('canvas').getContext('webgl2')) {
 }
 const coarse = matchMedia('(pointer: coarse)').matches
 const qs = new URLSearchParams(location.search)
-const TOUCH_UI = coarse || qs.has('touch')
+const touchPref = (() => { try { const v = localStorage.getItem('bloxbert-touch'); return v === 'on' || v === 'off' ? v : '' } catch (e) { return '' } })()   // Settings > Touch controls (home build sets it)
+const TOUCH_UI = touchPref ? touchPref === 'on' : (coarse || qs.has('touch'))
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const gfx = createQuality()
@@ -1189,7 +1191,7 @@ pinKeysLine()
 
 let walkPresses = 0
 const KEYS_SEEN = 'bert-keys-tip-seen'
-const TOUCH_ONLY = matchMedia('(hover: none) and (pointer: coarse)').matches || qs.has('touch')
+const TOUCH_ONLY = touchPref ? touchPref === 'on' : (matchMedia('(hover: none) and (pointer: coarse)').matches || qs.has('touch'))
 let keysGone = false
 function keysStored() {
   try { return localStorage.getItem(KEYS_SEEN) === '1' } catch (e) { return false }
@@ -2583,6 +2585,37 @@ const edits = createEdits({
   setVoxel,
   invalidate: (box) => noa.world.invalidateVoxelsInAABB(box),
 })
+// Home build (part 7): the host's map is shared. Every local edit through applyEdit (hand, tools, chop, bot) also
+// goes to the host; the host's edits come in through homeRemote() and change only this game's view: no undo entry,
+// no save mark, never sent back.
+if (__HOME_HOST__) {
+  const realApply = edits.applyEdit
+  edits.applyEdit = (ops, meta) => {
+    const send = __HOME_HOST__ && HOME.homeShared() && !(meta && meta.source === 'remote')
+    const before = send ? ops.map(([x, y, z]) => getVoxel(x, y, z)) : null
+    const group = realApply(ops, meta)
+    if (send) ops.forEach(([x, y, z, id], i) => { if (before[i] !== id && getVoxel(x, y, z) === id) { if (__HOME_HOST__) HOME.homeEdit(x, y, z, id, before[i]) } })
+    return group
+  }
+}
+function homeRemote(cells) {
+  voxelQuiet = true
+  try { for (const c of cells) { if (getVoxel(c[0], c[1], c[2]) !== c[3]) setVoxel(c[0], c[1], c[2], c[3]) } } finally { voxelQuiet = false }
+}
+// The host's map replaces this game's world: same generated terrain (same game version) + every cell the host has.
+async function homeShare() {
+  const w = await (__HOME_HOST__ && HOME.homeWorld())
+  if (!w) return
+  saved.clear(); edits.clear(); paintUndo()
+  homeRemote(w.cells)
+  noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
+  if (__HOME_HOST__) HOME.onHomeOps((ops) => homeRemote(ops.map((o) => [o[1], o[2], o[3], o[4]])))
+  if (__HOME_HOST__) HOME.onHomeResync((cells) => { homeRemote(cells); noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] }) })
+  if (__HOME_HOST__) HOME.onHomeRefused((x, y, z, v) => homeRemote([[x, y, z, v]]))
+  if (__HOME_HOST__) HOME.onHomeTeleport((x, y, z) => { noa.entities.setPosition(noa.playerEntity, [x, y + 0.05, z]); if (playerBody) playerBody.velocity[1] = 0 })
+  if (__HOME_HOST__) toast(HOME.homeStrings.en.in.replace('{w}', (homeSession && homeSession.world) || '').replace('{n}', (homeSession && homeSession.name) || ''))
+}
+let homeAvatars = null
 const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
 function edit(x, y, z, v) {
   if (zoneLocked(x, y, z)) return false
@@ -7497,7 +7530,9 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g); namePills(g); if (__HOME_HOST__ && homeSession) HOME.homeSettings(g) },
+  homeModeNote: () => (__HOME_HOST__ && homeSession ? HOME.homeModeNote() : ''),
+  homeWorldNote: () => (__HOME_HOST__ && homeSession ? HOME.homeWorldNote() : ''),
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -9195,6 +9230,7 @@ if (/[?&]debug=1(&|$)/.test(location.search)) {
   }
   window.__bt = {
     placeAt: btPlaceAt,
+    openPanel(id) { openMenu(true); panels.open(id || 'menu') },   // test hook: the menu audit walks every panel
     // blockAt: the block id at that cell (0 = air), or null if x/y/z aren't numbers
     blockAt(x, y, z) {
       if (![x, y, z].every(Number.isFinite)) return null
@@ -9900,6 +9936,7 @@ document.addEventListener('keydown', (e) => {
   if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
   const sheet = $('sheet')
   if (sheet && !sheet.hidden) return
+  if (__HOME_HOST__ && homeSession && HOME.homeOpenChat()) { e.preventDefault(); releaseLook(); return }   // home: T = chat + commands
   if (!(teacherOn() || staffOn())) return
   e.preventDefault()
   releaseLook()
@@ -10606,6 +10643,17 @@ function lookLine(name, value, icon) {
   }
   return row
 }
+// A pill that only says ON/OFF is named "OFF" to a screen reader (ten of them in Settings, Nov 1 audit): give each
+// one its row's label as the name; the state stays in aria-pressed.
+function namePills(g) {
+  for (const row of g.querySelectorAll('.set-line')) {
+    const lab = row.querySelector('.set-lab'); if (!lab) continue
+    for (const b of row.querySelectorAll('button.pill')) {
+      if (!b.getAttribute('aria-label') && !b.getAttribute('aria-labelledby') && !b.getAttribute('role')) b.setAttribute('aria-label', lab.textContent.trim())
+      if (!b.getAttribute('aria-pressed') && !b.getAttribute('role') && (b.textContent === t('switchOn') || b.textContent === t('switchOff'))) b.setAttribute('aria-pressed', String(b.textContent === t('switchOn')))
+    }
+  }
+}
 function lookPill(name, on, flip, look, icon) {
   const row = lookLine(name, null, icon)
   const b = document.createElement('button')
@@ -10733,7 +10781,7 @@ function paintPackLook(g) {
     hint.id = 'tex-auto-hint'
     hint.textContent = t('texSmallHint')
     smallBtn.setAttribute('aria-describedby', 'tex-auto-hint')
-    g.insertBefore(hint, g.firstChild)
+    smallBtn.after(hint)   // under the button it describes (it sat alone at the top of Settings, Nov 1 audit)
   }
 }
 function paintLook(g) {
@@ -12435,6 +12483,12 @@ function paintBossBar() {
 }
 
 noa.on('beforeRender', (dt) => {
+  if (__HOME_HOST__ && homeSession && HOME.homeShared()) {   // part 7: send my spot (~5 Hz, throttled in home.js), draw the others
+    const me = playerPos()
+    if (me && __HOME_HOST__) HOME.homePos(me[0], me[1], me[2], noa.camera.heading, flying)
+    if (!homeAvatars) homeAvatars = createAvatars({ scene: () => noa.rendering.getScene(), addMesh: (m) => noa.rendering.addMeshToScene(m, false), toLocal: (p) => noa.globalToLocal(p, null, []) })
+    homeAvatars.step(__HOME_HOST__ ? HOME.homePlayers() : [], 1000 / 60)
+  }
   if (Math.floor(performance.now() / 250) !== (window._bossPaint || 0)) { window._bossPaint = Math.floor(performance.now() / 250); paintBossBar(); if (__HOME_HOST__) HOME.homeBossTick(mobs && mobs.list ? mobs.list().find((m) => m.kind === 'overseer') || null : null) }
   // 2.5.440: mobs moved to sim tick
   if (window.__shotLook) {
@@ -13233,7 +13287,9 @@ window.__bertopiaRotateCheck = function () {
 let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
 ;(bootLoad = (async () => {
   if (__HOME_HOST__ && HOME.isHomePage()) { try { HOME.registerHomeRules(); HOME.setHomeToast(toast); homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
-  return load()
+  if (__HOME_HOST__ && homeSession) { WORLD = HOME.homeSlot(); HOME.homeTrimHud(); HOME.setHomeGame({ give: (item, n) => !!(session && ITEMS[item] && (session.give(item, n), true)), heal: () => session && session.setEnergy && session.setEnergy(10), clear: () => { if (session && session.bag) { session.bag.slots.fill(null); session.paintHotbar(); dirty = true } }, setMode: (m) => goWorld(m) }) }   // this host world's own slot: your single-player world is never loaded or saved over; no hub link; what the owner's commands may do here
+  await load()
+  if (__HOME_HOST__ && homeSession) await homeShare()
 })()).catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   releaseWalletChip()
@@ -14033,6 +14089,7 @@ function paintLangRow(g) {
   g.append(row, list)
 }
 function paintPvpSettings(g) {
+  if (__HOME_HOST__ && homeSession) return   // home: English only (no language row); PvP and keep inventory are the host's rules (HOME.homeSettings shows them)
   paintLangRow(g)
   const p = readPvpPrefs()
   const mk = (key, def, onLabel, offLabel, icon) => {
@@ -14052,6 +14109,8 @@ function paintPvpSettings(g) {
     lab.textContent = onLabel.split(':')[0].trim()
     btn.textContent = on ? (t('switchOn') || 'ON') : (t('switchOff') || 'OFF')
     btn.setAttribute('aria-label', lab.textContent)
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false')
+    btn.classList.toggle('on', !!on)
     btn.addEventListener('click', () => {
       const cur = readPvpPrefs()
       cur[key] = !on

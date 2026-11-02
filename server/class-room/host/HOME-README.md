@@ -95,6 +95,20 @@ or the 💬 rule in the game. What stays, because it is about spam and safety ra
 - the owner can mute one player or everyone; muted players are told so;
 - messages are passed on to the people in the world and **never written to disk or to the log**.
 
+## Several worlds at once
+Up to 8 worlds can be open on one host: owner page → Worlds → **Open** next to each (the first is the **main** world;
+**Make main** moves it). One session and one code cover them all; new players land in the main world unless they pick
+one on the join card (shown when more than one is open), chat crosses worlds with a `[world]` tag, `/list` groups by
+world, and `/world <name>` switches (the game reloads into that world; your bag and spot are per world). Plugins are
+the server's (kept in the main world's file). **Close** drops that world's players and keeps the rest; the open set
+comes back after a restart.
+
+## Leaderboards
+Per world, per alias, saved in the world's file: blocks placed, blocks broken, minutes played, chat lines, boss fights
+won, teleports. In the game: `/top` (blocks placed), `/top broken|time|chats|boss|warps`, or the **Leaderboard**
+button; your own number is appended. Owner page → Leaderboard: any board of any open world, remove one alias or reset
+the world's boards. Aliases only; the 500 most recently seen aliases are kept.
+
 ## Keep inventory
 **On** in every preset. Two switches on the owner page:
 - **Keep inventory** (Session): the whole world.
@@ -158,6 +172,62 @@ location / {
 ```
 The owner page answers only on this PC, never through the proxy's public address.
 
+## Code builder (plugins)
+Owner only, in the game: open chat (T) and press **⚙ Code builder**. A plugin is a few rules of the form
+**when** something happens → **if** these hold → **do** this. No typing of code; every piece is a block picked from a
+list, and the host refuses anything outside the allowed set.
+- when: join, leave, place, break, chat, a `/command` of your own, or a timer (every 10 s or slower);
+- if: owner, a named player, a block id, a zone (two corners), a count, or `not` any of these;
+- do: say (to all), tell (to that player), announce (also in the host feed), tp / spawn, undo that edit, set a block,
+  kick, mute, deny (the place/break/chat is refused with a calm note).
+Four examples come with the game (Welcome, No digging here, Dinner bell, /hi). Plugins live in the world file
+(`meta.plugins`), so they travel with Download/Import. At most 32 plugins, 32 rules each, 50 actions per event;
+`{player}` in a text is the player's name. The kid tier (for the school build later) allows join/place/break/command/
+timer, block/zone/player/not, say/tell/set only; nothing here runs in the student game.
+
+## Server tools (essentials 2)
+Typed in chat (T) or from the command buttons. Everyone: `/spawn` `/sethome` `/home` `/list` (who is in) `/msg <name> <text>`
+(whisper) `/help`. Owner: `/tp <name>` or `/tp <x> <y> <z>`, `/bring`, `/spawnall`, `/warp` `/setwarp` `/delwarp` `/warps`,
+`/mute` `/unmute` `/muteall` `/unmuteall`, `/announce <text>`, `/kick <name>`, `/ban <name>`, `/unban <name>`,
+`/freeze <name>` / `/unfreeze` (the host refuses their moves and sends them back), `/give <name> <item> [1-64]`,
+`/heal <name>`, `/clear <name>` (bag), `/gm creative|survival <name>` (one player's mode, on top of the ruleset),
+`/day` `/night` `/cycle`. Names match whole or by start ("sacc" → Mr Saccy). Every tool is parsed in
+`host/commands.mjs` (pure) and carried out in `host/home.mjs`, so the class server can take the same shapes later.
+
+## Invite keys (one person, one key)
+Owner page → *Invite keys*: a key like `ADLT-7K2M-QX9D-4HJB` for one person (or N uses), good for 24 h (1 h to 30 days),
+optionally locked to a name. It skips the session password, still needs the 18+ box, and goes in the code field; the
+**Copy link** button gives `https://adultopia.kulibert.net/?invite=…` (the tunnel address when it is on, else this PC)
+which lands on the join card with the key filled in. Keys are shown once and only hashed in memory (gone when the
+host restarts); the feed says *"Lee joined with invite Lee (1/1)"*; revoke any key from the list. Guessing keys spends
+the same 5-a-minute join tries as guessing codes. At most 64 live keys.
+
+## Griefer guard
+On by default: more than 70 breaks in 10 s from a player (faster than the best tool; the Room already caps edits at
+10/s) is a block storm → kicked and their last minute undone; a second storm in the session → banned (name and
+address). Owner and staff are never guarded. Owner page → *Griefer guard* to tune or turn off (saved in `home.json`).
+Everything else stays as it was: per-player rollback (Players → Undo), kick, ban, mute, freeze.
+
+## Owner page from anywhere (Cloudflare Access)
+The owner page answers on the host PC only — unless Cloudflare Access stands in front of `/owner` on the tunnel
+address. Then `https://adultopia.kulibert.net/owner?k=…` works from any device: Cloudflare asks for a code sent to the
+one allowed email, adds a signed JWT to every request, and the host checks that JWT itself (RS256 against the team's
+public keys, the app's AUD, the issuer, expiry, the email) before the PIN is even asked. A LAN visitor with a copied
+header, a junk token, another email or an expired login all get the same 403 as before.
+Setup (once, in Zero Trust → Access → Applications): a self-hosted app for `adultopia.kulibert.net` path `owner`, a
+policy allowing your email, and the app's **AUD tag** (Additional settings). Owner page → *Owner page from anywhere*
+(host PC only to change): team name, AUD, email → saved in `home.json` as `access`. Zero Trust Free covers it.
+
+## Plugin library (cloud) and plugin files
+Your plugins live in each world's file. Linked to the **cloud library** (`server/plugin-library`, a Worker at
+`plugins.kulibert.net`; one library per key `lk_…`, made from the owner page with **New library** or linked with
+**Link** + a key, host PC only; the key stays in `home.json`), every world you open pulls the library's plugins
+(each world keeps its own on/off — "turn on/off per server"), every Save & run or Remove in the Code builder goes up,
+and **Pull / Push** are on the owner page and in the builder. The library is versioned: a push older than the library
+is refused (409) and asks before overwriting. Files: **Save as files** writes `Documents\Bertopia Home\plugins\<id>.json`
+(one per plugin, the id is the file name); edit them in any editor; **Load files** validates and loads them (bad ones
+are listed and skipped) and pushes. The library holds plugins only: no names, no emails; the Worker never logs keys.
+
 ## Limits (all on by default)
 5 join tries a minute per address, then 10 minutes' wait · owner PIN 5 tries, then 10 minutes · 3 connections per
 address · 16 players · the school's own limits on edits and messages · world chat as above · 4 boss notes per 10 s per
@@ -176,10 +246,12 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check` / `home-worlds-check` / `home-stats-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files); several worlds at once (picker data, cross chat, /world, close one, restart); leaderboards (counters, /top, restart, reset);
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag
   with and without the home flag, and the home vs student game compile);
-- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes,
+- `home-play-check`: two browser clients at 1366 and 412 (join, build, see each other, rules note, chat, keep inventory, boss notes, the code builder (open, example, edit, Save & run, the greeting reaches the next player),
   Update card, 44 px targets, focus rings). It runs the full game too when `bertopia-home/` has been built. It needs
   esbuild (`npm ci` in `bloxbert-src`) and Playwright, and says SKIP when they are missing.
