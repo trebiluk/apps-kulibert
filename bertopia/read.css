@@ -3157,6 +3157,7 @@ html body #sheet#sheet[data-panel=inventory] .bag-layout[data-fit="1"] .wells { 
     opacity: 0.7;
   }
   html body #hotbar#hotbar .item-strip:not(:hover)::-webkit-scrollbar { height: 4px; }
+}
 /* 2.5.562: the Arabic and Dari names in the language list draw from Bertopia's own Noto Sans Arabic, so the row is never blank when the page font has no Arabic letters. The name sits next to the check like the other rows; the word itself stays right to left. */
 @font-face {
   font-family: "Bertopia Arabic";
@@ -3180,6 +3181,7 @@ html body #sheet .lang-opt[data-lang="fa-AF"] .lang-name {
   color: inherit;
   opacity: 1;
   unicode-bidi: isolate;
+}
 
 /* ===============================================================================   2.5.560 phone HUD dock.
    --hud-top is measured in main.js refit(): the real bottom edge of the shared bar plus the Bertopia header.
@@ -3387,6 +3389,7 @@ html body header.top #day-clock { min-height: 44px !important; }
   }
   html body #chip-lane > :not(#update-chip) { display: none !important; }
   html body.touch #pick-chip { bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important; right: calc(16px + 120px + 8px) !important; }
+}
 /* 2.5.572: oven belt slot. Inside the panel, icon + words, 16px text, no motion, no glow. */
 html body #sheet[data-panel="station"] .belt-fed {
   display: flex;
@@ -3561,3 +3564,59 @@ html body #holo-word[hidden] { display: none; }
 html body #holo-word[data-kind="far"] { border-style: dashed; color: #C5D0D6; }
 /* place-cue ("Fits") already sits one row under the crosshair, so the word takes the next row while a cue shows */
 html body:has(#place-cue:not([hidden])) #holo-word { top: calc(50% + 66px); }
+
+
+/* BN-21: Bertopia's own switches reuse the Hub's rules. Gentle Mode (data-bt-gentle) is "less motion" for this game only;
+   High Contrast (data-a11y=contrast) is the Hub's high-contrast look. Copies of every data-kp-motion / data-kp-contrast
+   rule, plus the base rules kulibert-prefs.js injects. The chop shake stops for every kind of less motion. */
+html[data-bt-gentle="1"], html[data-bt-gentle="1"] * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-a11y="contrast"] body { background: #000 !important; color: #fff !important; }
+html[data-a11y="contrast"] button, html[data-a11y="contrast"] a, html[data-a11y="contrast"] input { background: #000 !important; color: #ffe14a !important; border-color: #ffe14a !important; }
+html[data-a11y="contrast"] :focus-visible { outline: 3px solid #ffe14a !important; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { #stage canvas.chop-shake { animation: none !important; transform: none !important; } }
+html[data-kp-motion="less"] #stage canvas.chop-shake, html[data-bt-gentle="1"] #stage canvas.chop-shake { animation: none !important; transform: none !important; }
+html[data-a11y="contrast"] button:focus-visible,
+html[data-a11y="contrast"] a:focus-visible { outline:3px solid #0B1220 !important;box-shadow:0 0 0 3px #F8FAFC, inset 0 0 0 3px #0B1220 !important }
+html[data-a11y="contrast"] #door-opt .door-panel { background-image:none;outline:3px solid #E6EEF2 }
+html[data-a11y="contrast"] #door-opt .keycap,
+html[data-a11y="contrast"] #door-pic { outline:2px solid #E6EEF2 }
+html[data-bt-gentle="1"] #door-opt .keycap { transition:none }
+html[data-bt-gentle="1"] #sheet[data-panel="station"] .flame-side.burn .flame { animation:none }
+html[data-a11y="contrast"] #sheet[data-panel="crafting"] .build-tray::after,
+html[data-a11y="contrast"] #sheet[data-panel="station"] .station-crate::after,
+html[data-a11y="contrast"] #sheet[data-panel="bench"] .station-crate::after,
+html[data-a11y="contrast"] #sheet[data-panel="box"] .station-crate::after { content:none }
+html[data-a11y="contrast"] #sheet[data-panel="crafting"] .well,
+html[data-a11y="contrast"] #sheet[data-panel="crafting"] .keycap,
+html[data-a11y="contrast"] #sheet[data-panel="station"] .gtile,
+html[data-a11y="contrast"] #sheet[data-panel="bench"] .gtile,
+html[data-a11y="contrast"] #sheet[data-panel="station"] .arrow-bar,
+html[data-a11y="contrast"] #sheet[data-panel="bench"] .arrow-bar { outline:3px solid #E6EEF2;border-style:solid }
+html[data-kp-contrast="1"] #hotbar,
+html[data-kp-contrast="1"] #sheet[data-panel=inventory] .sheet-bar,
+html[data-kp-contrast="1"] #sheet[data-panel=inventory] #sheet-body,
+html[data-a11y="contrast"] #hotbar,
+html[data-a11y="contrast"] #sheet[data-panel=inventory] .sheet-bar,
+html[data-a11y="contrast"] #sheet[data-panel=inventory] #sheet-body { background-image:none !important;outline:3px solid #E6EEF2 }
+html[data-kp-contrast="1"] #hotbar .slot,
+html[data-kp-contrast="1"] #sheet[data-panel=inventory] .well,
+html[data-kp-contrast="1"] #sheet[data-panel=inventory] .bag-card .keycap,
+html[data-a11y="contrast"] #hotbar .slot,
+html[data-a11y="contrast"] #sheet[data-panel=inventory] .well,
+html[data-a11y="contrast"] #sheet[data-panel=inventory] .bag-card .keycap { outline:2px solid #E6EEF2 !important }
+html[data-bt-gentle="1"] #hotbar .slot.bump,
+html[data-bt-gentle="1"] #held-chip.on { animation:none }
+html[data-bt-gentle="1"] #held-chip.on { opacity:1 }
+html[data-bt-gentle="1"] #sheet[data-panel=woodshop] .wobble { animation:none }
+html[data-bt-gentle="1"] #chip-lane > * { transition: none; }
+html[data-bt-gentle="1"] body #scrim { transition: none !important; }
+html[data-bt-gentle="1"] #sheet[data-panel="station"] .belt-fed,
+html[data-bt-gentle="1"] #sheet[data-panel="station"] .belt-fed * { animation: none !important;
+  transition: none !important; }
+html[data-bt-gentle="1"] body #holo-hand .holo-bob { animation: none; }
+/* BN-21: the shared digital theme's Hub high-contrast rules, mirrored for Bertopia's own High Contrast tile */
+html[data-a11y="contrast"] #sheet[data-panel="menu"] .kd-panel { background-image: none; outline: 3px solid var(--kd-text); }
+html[data-a11y="contrast"] #sheet.kd-panel,
+html[data-a11y="contrast"] #sheet.kd-panel .sheet-bar,
+html[data-a11y="contrast"] #sheet.kd-panel #sheet-body,
+html[data-a11y="contrast"] #hotbar.kd-hotbar { background-image: none; outline: 2px solid var(--kd-text); }

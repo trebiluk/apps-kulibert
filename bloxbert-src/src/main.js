@@ -1,3 +1,4 @@
+import { motionLess } from './fx.js'
 import '@babylonjs/core/Rendering/edgesRenderer' // side effect: enables mesh.enableEdgesRendering() for the place ghost outline
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
@@ -172,7 +173,7 @@ if (!document.createElement('canvas').getContext('webgl2')) {
 const coarse = matchMedia('(pointer: coarse)').matches
 const qs = new URLSearchParams(location.search)
 const TOUCH_UI = coarse || qs.has('touch')
-const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches
+// BN-21: motion is read live (Hub less motion, Gentle Mode or the OS setting), never once at load.
 
 const gfx = createQuality()
 let quality = gfx.quality
@@ -382,11 +383,11 @@ function layoutLane() {
   const goalsBox = box('goals-hud')
   if (goalsBox && lane.getBoundingClientRect().top < goalsBox.bottom - 1) bump(goalsBox)
   // The Suit bar sits in the same band on sideways phones. Start after it when they share rows.
+  // BN-21 r1: measure one row from the lane's top, not its current height. A squeezed lane is hundreds of px tall, so it
+  // always "shared a row" with Suit and got squeezed again (360x640 drew the safe-zone chip one letter wide).
+  const laneTop0 = lane.getBoundingClientRect().top
   const suitBox = box('suit-bar')
-  if (suitBox) {
-    const band = lane.getBoundingClientRect()
-    if (suitBox.top < band.bottom - 1 && suitBox.bottom > band.top + 1 && band.top < suitBox.bottom) bump(suitBox)
-  }
+  if (suitBox && suitBox.top < laneTop0 + 47 && suitBox.bottom > laneTop0 + 1) bump(suitBox)
   const play = box('play-chip')
   if (play) {
     const band = lane.getBoundingClientRect()
@@ -401,6 +402,8 @@ function layoutLane() {
       else if (roomLeft >= 220) right = Math.max(right, Math.round(window.innerWidth - play.left) + gap)
     }
   }
+  // never narrower than one readable chip: fall back under Goals at the left edge
+  if (window.innerWidth - right - left < 160) { left = 76; right = Math.min(right, Math.max(12, window.innerWidth - 76 - 160)) }
   lane.style.left = left + 'px'
   lane.style.right = right + 'px'
   // 2.5.588: reserve the real hotbar height so the quest card and stick never sit on it.
@@ -2458,7 +2461,7 @@ gfxLook.bind({
     return !!(row && row.radius > 1)
   },
   saved: () => saved,
-  reduce: () => REDUCE,
+  reduce: () => motionLess(),
   remesh: (x, y, z, r) => remeshBox(x, y, z, r),
   remeshAllLights: (map) => { for (const s of map.values()) remeshBox(s.x, s.y, s.z, REACH_LIGHT) },
 })
@@ -2855,6 +2858,7 @@ function showChopCount(n) {
   showChopCount.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 900)
 }
 function shakeChop() {
+  if (motionLess()) return // BN-21: the whole view never moves for a light-sensitive kid
   const canvas = document.querySelector('#stage canvas')
   if (!canvas) return
   canvas.classList.remove('chop-shake')
@@ -6652,7 +6656,7 @@ let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
 let loreRef = null // Maker Pages (lore/pages.js); mobs fire before learn exists
-const waterFlow = createWater({ getVoxel: (x, y, z) => getVoxel(x, y, z), setVoxel: (x, y, z, v) => setVoxel(x, y, z, v), WATER, reduce: () => REDUCE, after: () => saveSoon() })
+const waterFlow = createWater({ getVoxel: (x, y, z) => getVoxel(x, y, z), setVoxel: (x, y, z, v) => setVoxel(x, y, z, v), WATER, reduce: () => motionLess(), after: () => saveSoon() })
 let lastPointer = null
 let calmRepaint = false
 calm = createCalm({
@@ -7710,7 +7714,7 @@ panels = mountPanels({
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
   paintSettings: (g) => { paintPackLook(g); paintTextOpts(g); paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
-  paintMyLook: (g) => mountMyLook(g, { O: outfitsLib, store: outfitStore, t, toast, reduced: () => REDUCE || document.documentElement.getAttribute('data-kp-motion') === 'less', onSave: () => buildOutfitRig() }), // 2.5.555
+  paintMyLook: (g) => mountMyLook(g, { O: outfitsLib, store: outfitStore, t, toast, reduced: () => motionLess() || document.documentElement.getAttribute('data-kp-motion') === 'less', onSave: () => buildOutfitRig() }), // 2.5.555
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -8754,7 +8758,7 @@ function rescueToGround(fromVoid) {
   // Debug only (?debug=1): normal loads keep the console quiet.
   if (/[?&]debug=1(&|$)/.test(location.search)) console.info('[bertopia] rescueToGround ' + spot.map((n) => Math.round(n * 100) / 100).join(','))
   if (fromVoid !== false) {
-    const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
+    const fx = $('poof'); if (fx && !motionLess()) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) } // BN-21: no tint at all with less motion
     toast(usedHome ? t('poofBunk') : t('poofTown'))
   }
   if (dirty) save()
@@ -10200,7 +10204,7 @@ function showCrack(p, x, y, early) {
   const shown = Math.max(stage / 4, early ? Math.max(p, 0.08) : 0)
   ring.style.left = (x == null ? innerWidth / 2 : x) + 'px'
   ring.style.top = (y == null ? innerHeight / 2 : y) + 'px'
-  if (REDUCE) ring.style.background = '#14B8A6'
+  if (motionLess()) ring.style.background = '#14B8A6'
   else ring.style.background = 'conic-gradient(#14B8A6 ' + shown + 'turn, transparent 0)'
 }
 function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true; showCrack.stage = 0 }
@@ -10633,7 +10637,7 @@ function feelTick(dt) {
   const portrait = TOUCH_UI && innerHeight > innerWidth
   const fov = ((portrait ? 85 : 55) + (wideView ? 10 : 0)) * Math.PI / 180
   if (cam.fov !== fov) cam.fov = fov
-  if (TOUCH_UI && !tableMode && !REDUCE && now - lastLookAt > 500) {
+  if (TOUCH_UI && !tableMode && !motionLess() && now - lastLookAt > 500) {
     const v = body.velocity
     const spd = Math.hypot(v[0], v[2])
     if (spd > 0.4) {
@@ -10773,7 +10777,7 @@ noa.on('tick', (dt) => {
   const follow = noa.ents.getState(noa.camera.cameraTarget, 'followsEntity')
   if (follow) {
     const base = seated ? 1.05 : 0.9 * noa.ents.getPositionData(noa.playerEntity).height
-    const moving = !tableMode && !seated && !REDUCE && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
+    const moving = !tableMode && !seated && !motionLess() && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
     follow.offset[1] = base + (moving ? Math.sin(performance.now() / 180) * 0.045 : 0)
   }
   fb.e(3)
@@ -12477,7 +12481,7 @@ function syncDropMeshes() {
   }
   const p = noa.entities.getPosition(noa.playerEntity)
   dropSeen.clear()
-  const bob = REDUCE ? 0.2 : 0.2 + Math.sin(performance.now() / 280) * 0.06
+  const bob = motionLess() ? 0.2 : 0.2 + Math.sin(performance.now() / 280) * 0.06
   let shown = 0
   for (const d of drops) {
     const dx = d.x - p[0]
@@ -12493,7 +12497,7 @@ function syncDropMeshes() {
       noa.rendering.addMeshToScene(mesh, false)
       dropMeshes.set(d.id, mesh)
     }
-    if (!REDUCE) mesh.rotation.y = performance.now() / 500
+    if (!motionLess()) mesh.rotation.y = performance.now() / 500
     dropWorld[0] = d.x
     dropWorld[1] = d.y + bob
     dropWorld[2] = d.z
@@ -12824,7 +12828,7 @@ let breakFx = null
 let breakFxAt = 0
 const breakLocal = [0, 0, 0]
 function startBreakFx(x, y, z) {
-  if (REDUCE) return // reduced motion: no settle, no fade; the block simply goes
+  if (motionLess()) return // reduced motion: no settle, no fade; the block simply goes
   if (!breakFx) {
     breakFx = CreateBox('holo-break-fx', { size: 0.96 }, scene)
     const m = new StandardMaterial('holo-break-fx-m', scene)
@@ -12860,7 +12864,7 @@ let settleFx = null
 let settleAt = 0
 let settleCell = null
 function startSettle() {
-  if (REDUCE) return
+  if (motionLess()) return
   const spot = lastPlacedCell
   if (!spot) return
   if (!settleFx) {
@@ -13197,7 +13201,7 @@ noa.on('beforeRender', (dt) => {
   tickBreakFx()
   tickSettleFx()
   poseBerty(dt || 16)
-  if (!REDUCE) {
+  if (!motionLess()) {
     skyTime += (dt || 16) * 0.0004
     skyMat.setFloat('uTime', skyTime)
   }
@@ -14315,7 +14319,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     close() { if (panels) panels.close() },
     arm() { armResume = 0; playLockWanted = false; lockSwallowUntil = 0 },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
-    dig(x, y, z) { return breakAt(x, y, z, true) }, // the same break the hold-to-break loop calls (water-check)
+    dig(x, y, z) { return breakAt(x, y, z, true) },
+    chopHit() { treeCache = null; const tree = scanTree(); if (!tree) return null; pulseChop(tree, true); return { d: tree.d } }, // BN-21 check: one real chop hit // the same break the hold-to-break loop calls (water-check)
     waterBusy() { return waterFlow.busy() },
     chop(x, y, z) {
       const id = getVoxel(x, y, z)

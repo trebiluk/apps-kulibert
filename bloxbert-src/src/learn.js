@@ -354,12 +354,20 @@ export function createLearn(api) {
     api.pay(g.pay, id)
     celebrateStep(g)
   }
+  // BN-21: High Contrast and Gentle Mode change the page, not just the save. Gentle is "less motion" for Bertopia only
+  // (data-bt-gentle), so the Hub's own setting is never changed behind the kid's back.
+  function applyA11y(a) {
+    const el = document.documentElement
+    el.dataset.a11y = a.contrast ? 'contrast' : ''
+    el.setAttribute('data-bt-gentle', a.gentle ? '1' : '0')
+  }
   function a11y(patch) {
     state.a11y = Object.assign({ text: 'M', contrast: false, hold: true, gentle: false, robots: false }, state.a11y || {}, patch || {})
-    document.documentElement.dataset.a11y = state.a11y.contrast ? 'contrast' : ''
-    save()
+    applyA11y(state.a11y)
+    if (patch) save()
     return state.a11y
   }
+  a11y()
   function outbox() { return state.outbox || (state.outbox = []) }
   function send(amount, perk) {
     const row = { id: 'o' + Date.now(), at: Date.now(), amount, unit: 'cogs', perk, status: 'waiting' }
@@ -442,7 +450,18 @@ export function createLearn(api) {
     blab.className = 'glbl'
     blab.textContent = api.t('highContrast')
     b.append(bico, blab)
-    b.addEventListener('click', () => a11y({ contrast: !a11y().contrast }))
+    const stateOf = (tile, lab, on) => {
+      tile.setAttribute('aria-pressed', on ? 'true' : 'false')
+      for (const old of tile.querySelectorAll('.a11y-state')) old.remove()
+      const st = document.createElement('span')
+      st.className = 'a11y-state'
+      const mark = on ? menuIcon('check') : null
+      if (mark) st.append(mark)
+      st.append(document.createTextNode((on ? ' ' : '') + api.t(on ? 'a11yOn' : 'a11yOff')))
+      lab.after(st)
+    }
+    stateOf(b, blab, !!a11y().contrast)
+    b.addEventListener('click', () => { stateOf(b, blab, !!a11y({ contrast: !a11y().contrast }).contrast) })
     const gentle = document.createElement('button')
     gentle.type = 'button'
     gentle.className = 'gtile'
@@ -454,7 +473,8 @@ export function createLearn(api) {
     glab.className = 'glbl'
     glab.textContent = api.t('gentle')
     gentle.append(gico, glab)
-    gentle.addEventListener('click', () => a11y({ gentle: !a11y().gentle }))
+    stateOf(gentle, glab, !!a11y().gentle)
+    gentle.addEventListener('click', () => { stateOf(gentle, glab, !!a11y({ gentle: !a11y().gentle }).gentle) })
     const bright = document.createElement('button')
     bright.type = 'button'
     bright.className = 'gtile'
