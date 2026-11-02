@@ -2,7 +2,7 @@
 (function (root) {
   // Owned by the Hub lane. Any change to shared/i18n/*.json must bump this to the Hub rev that ships it.
   // Apps: do not edit.
-  var I18N_REV = "2026-10-31-bertopia-keys";
+  var I18N_REV = "2026-11-01-hub-whatsnew";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -58,7 +58,7 @@
   "month10": "October",
   "month11": "November",
   "month12": "December",
-  "whatsNewLine": "Kids no longer see version codes.",
+  "whatsNewLine": "Phones show 3 apps in a row, so more apps fit on the screen.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
