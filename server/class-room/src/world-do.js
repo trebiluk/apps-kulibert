@@ -88,4 +88,11 @@ export class World extends DurableObject {
   chunk(cx, cz) { return this.hub.chunk(cx, cz) }
   since(s, n) { return this.hub.since(s, n) }
   worldClock() { return this.hub.clock() }
+  // Master Control rollback: undo every edit of the last N minutes, through the world (numbered, saved, fanned out)
+  async rollback(minutes) {
+    const until = Date.now(), since = until - Math.max(1, Math.min(7 * 24 * 60, Number(minutes) || 5)) * 60 * 1000
+    const r = this.hub.undo({ since, until })
+    await this.save()
+    return { ok: true, cells: Array.isArray(r) ? r.length : 0, minutes: Math.round((until - since) / 60000) }
+  }
 }

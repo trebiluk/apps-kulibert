@@ -21,6 +21,10 @@ class_name = "Room"
 name = "WORLDS"
 class_name = "World"
 
+[[durable_objects.bindings]]
+name = "CONTROL"
+class_name = "Control"   # Master Control (part 2): switches + live-room registry (ids and counts only)
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Room"]   # SQLite-backed class (the free-plan kind). Rooms store nothing.
@@ -28,6 +32,10 @@ new_sqlite_classes = ["Room"]   # SQLite-backed class (the free-plan kind). Room
 [[migrations]]
 tag = "v2"
 new_sqlite_classes = ["World"]  # shared worlds: the ONLY class that stores block data (chunks + op log)
+
+[[migrations]]
+tag = "v3"
+new_sqlite_classes = ["Control"]   # flags, room ids + counts, login counters; no student data
 
 # OFF on purpose. Failure records (alias + code + time, no IP, no ref, no token) are written
 # with console.log, which is only visible in `wrangler tail` while this is off. Turning on
@@ -44,3 +52,4 @@ enabled = false
 # Secrets (never in this file, never in git):
 #   wrangler secret put ROOM_JOIN_SECRET        (at least 16 characters, random)
 #   wrangler secret put ROOM_JOIN_SECRET_PREV   (optional, only while rotating)
+#   wrangler secret put STAFF_PASS_HASH         (sha256 hex of the staff password; Master Control's login)

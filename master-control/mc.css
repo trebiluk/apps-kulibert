@@ -157,3 +157,15 @@ textarea {
     scroll-behavior: auto;
   }
 }
+
+/* Teacher controls (MC 2): live cards */
+.teacher article.wide { grid-column: 1 / -1; }
+.teacher article button { margin-top: 8px; }
+.rooms table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.rooms th, .rooms td { text-align: left; padding: 6px 6px; border-top: 1px solid var(--kd-line, #2c2c2c); vertical-align: middle; }
+.rooms th { font-weight: 600; opacity: .8; }
+.rooms .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.rooms input { width: 9em; }
+.rooms code { font-size: 13px; }
+#tc-who { margin-left: 8px; }
+@media (max-width: 600px) { .rooms th:nth-child(2), .rooms td:nth-child(2) { display: none; } }

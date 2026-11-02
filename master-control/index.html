@@ -17,43 +17,33 @@
   <div class="tools" id="tools"></div>
   <p class="miss" id="miss" hidden>The board did not load.</p>
   <div class="board" id="board"></div>
-  <section class="teacher" aria-labelledby="teacher-title">
+  <section class="teacher" aria-labelledby="teacher-title" id="teacher">
     <h2 id="teacher-title">Teacher controls</h2>
-    <p class="coming">Coming with class server (class.kulibert.net)</p>
-    <div class="grid">
-      <article aria-disabled="true">
+    <p class="lead" id="tc-state">Class server: checking …</p>
+    <div class="tools"><button type="button" id="tc-unlock">Sign in to the class server</button><button type="button" id="tc-refresh" hidden>Refresh</button><span class="lead" id="tc-who" hidden></span></div>
+    <div class="grid" id="tc-grid">
+      <article data-card="open">
         <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 h14 M12 5 v14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         <div>
           <h3>Multiplayer switch</h3>
-          <p class="coming">Coming with class server (class.kulibert.net)</p>
+          <p class="coming" data-help>Off = kids wait at the door (staff still get in to prepare). On = kids join their class worlds.</p>
+          <button type="button" id="tc-open" aria-pressed="false" disabled>Multiplayer: …</button>
         </div>
       </article>
-      <article aria-disabled="true">
-        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 h3 v14 H8z M13 5 h3 v14 h-3z" fill="currentColor"/></svg>
-        <div>
-          <h3>Freeze</h3>
-          <p class="coming">Coming with class server (class.kulibert.net)</p>
-        </div>
-      </article>
-      <article aria-disabled="true">
-        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7 l10 10 M17 7 l-10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <div>
-          <h3>Kick</h3>
-          <p class="coming">Coming with class server (class.kulibert.net)</p>
-        </div>
-      </article>
-      <article aria-disabled="true">
-        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8 a6 6 0 1 0 2-2 M8 4 v4 h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <div>
-          <h3>Rollback</h3>
-          <p class="coming">Coming with class server (class.kulibert.net)</p>
-        </div>
-      </article>
-      <article aria-disabled="true">
+      <article data-card="chat">
         <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7 h14 v8 H9 l-4 3 z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         <div>
           <h3>Chat moderation</h3>
-          <p class="coming">Coming with class server (class.kulibert.net)</p>
+          <p class="coming" data-help>Turns class chat off for everyone at once (quick chat stays as the game allows).</p>
+          <button type="button" id="tc-chat" aria-pressed="false" disabled>Chat: …</button>
+        </div>
+      </article>
+      <article data-card="rooms" class="wide">
+        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 h3 v14 H8z M13 5 h3 v14 h-3z" fill="currentColor"/></svg>
+        <div>
+          <h3>Rooms: freeze · kick · rollback</h3>
+          <p class="coming" data-help>Live rooms (ids and counts only). Freeze stops building; Kick removes one alias; Rollback undoes the whole world's edits of the last minutes.</p>
+          <div id="tc-rooms" class="rooms"><p class="lead">Sign in to see rooms.</p></div>
         </div>
       </article>
     </div>
@@ -61,5 +51,6 @@
 </main>
 <script src="/shared/kulibert-bar.js?v=mc1" data-app="master-control" data-name="Master Control" data-version="MC 1" defer></script>
 <script src="mc.js?v=mc1" defer></script>
+<script src="mc-class.js?v=mc2" defer></script>
 </body>
 </html>

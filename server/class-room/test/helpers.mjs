@@ -28,6 +28,8 @@ globalThis.Response = class FakeResponse {
     this.webSocket = init.webSocket
     this.headers = new Headers(init.headers)
   }
+  async text() { return String(this.body ?? '') }
+  async json() { return JSON.parse(String(this.body ?? 'null')) }
 }
 
 // opts.open = false leaves the room closed (as a fresh room is) so a test can drive the staff flow.

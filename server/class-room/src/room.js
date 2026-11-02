@@ -74,6 +74,7 @@ export class Room extends DurableObject {
     this.rid = null          // this room's name inside the world
     this.stub = null
     this.inbox = null        // set once the world has linked this room
+    this.roomName = null     // this room's own id (from the Worker), for Master Control's registry
 
     // If this object was evicted and woken while sockets stayed open, rebuild the player
     // list from the sockets' small attachments. Positions are not kept; the next frame
@@ -145,6 +146,7 @@ export class Room extends DurableObject {
     const wid = h('x-bt-world')
     const rid = h('x-bt-rid')
     const ip = /^[0-9a-f]{16}$/.test(h('x-bt-ip')) ? h('x-bt-ip') : 'none'
+    if (!this.roomName && /^[A-Za-z0-9_-]{1,64}$/.test(h('x-bt-room'))) this.roomName = h('x-bt-room')
     if (!isOpaqueId(ref) || !alias || !ROLES.includes(role) || !isOpaqueId(jti) || !isConfigId(cfg)) return refuse(400, 'bad identity')
 
     const now = Date.now()
@@ -205,6 +207,7 @@ export class Room extends DurableObject {
 
     this.send(me, { t: 'hello', you: id, role: roleLetter(role), max: MAX_PLAYERS, tick: TICK_MS, frozen: this.frozen ? 1 : 0, players: others })
     this.broadcast({ t: 'join', i: id, a: alias }, id)
+    this.reportControl()
     this.startTimer()
     if (this.wid && this.players.size === 1) this.relink()
     return upgraded(client)
@@ -294,6 +297,28 @@ export class Room extends DurableObject {
       this.broadcast({ t: 'rs' })
     } else if (r.fresh.length) this.broadcast({ t: 'o', o: r.fresh.map((o) => [o.s, o.x, o.y, o.z, o.i]) })
     return true
+  }
+
+  // Master Control (part 2): the same staff actions by RPC from the Worker, with a verified control ticket behind it.
+  control(f) {
+    if (f.a === 'freeze') { this.frozen = f.on === true; this.broadcast({ t: 'frz', on: this.frozen ? 1 : 0 }); this.reportControl(); return { ok: true, frozen: this.frozen } }
+    if (f.a === 'kick') {
+      const key = String(f.alias || '').trim().toLowerCase()
+      const t = [...this.players.values()].find((q) => q.alias.toLowerCase() === key)
+      if (!t) return { error: 'no-such-player' }
+      this.drop(t.id, CLOSE.KICKED, 'kicked'); return { ok: true }
+    }
+    if (f.a === 'rollback') {
+      if (!this.wid || !this.stub) return { error: 'no-world' }
+      return this.stub.rollback(f.minutes).then((r) => r, () => ({ error: 'world' }))
+    }
+    return { error: 'action' }
+  }
+  // ids, counts and the frozen flag only, to the Control object (never aliases, refs or addresses)
+  reportControl() {
+    if (!this.env.CONTROL || !(this.rid || this.roomName)) return
+    const all = [...this.players.values()], staff = all.filter((p) => isStaff(p.role)).length
+    try { this.ctx.waitUntil(this.env.CONTROL.get(this.env.CONTROL.idFromName('main')).report(this.rid || this.roomName || 'room', { wid: this.wid, kids: all.length - staff, staff, frozen: this.frozen })) } catch (e) {}
   }
 
   staffCommand(p, f) {
@@ -414,6 +439,7 @@ export class Room extends DurableObject {
     const ok = Number.isInteger(code) && code >= 1000 && code <= 4999 && ![1004, 1005, 1006, 1015].includes(code)
     try { p.ws.close(ok ? code : 1000, reason) } catch (e) {}
     this.broadcast({ t: 'leave', i: id }, id)
+    this.reportControl()
     if (this.wid) {
       this.ctx.waitUntil(this.stub.left(p.ref))
       if (this.players.size === 0) { this.inbox = null; this.ctx.waitUntil(this.stub.unlink(this.rid)) }
