@@ -8,6 +8,7 @@
 // adults-only and its own text is English-only (Diego, Nov 1); the game itself keeps all its languages.
 import { setHomeEndpoints } from '../classnet/config.js'
 import { Rules } from '../rules.js'
+import { packFlags, mySuit } from './flags.js'
 import { ITEMS } from '../data/items.js'
 import { RECIPES } from '../data/recipes.js'
 import { EXTRA } from '../strings-extra.js'
@@ -420,7 +421,8 @@ function drainEdits() {
   editTimer = setTimeout(drainEdits, 1000 / EDITS_PER_SEC)
 }
 // the local player's spot; sent at most every 200 ms (or right before an edit, so the host's reach check is fresh)
-export function homePos(x, y, z, r, flying) { lastPos = { x, y, z, r, f: flying ? 1 : 0 }; if (Date.now() - lastPosAt >= POS_MS) sendPos() }
+export function homePos(x, y, z, r, flying) { lastPos = { x, y, z, r, f: packFlags(flying, mySuit()) }; if (Date.now() - lastPosAt >= POS_MS) sendPos() }   // f carries flying + the suit (flags.js)
+export const homeMyPos = () => (lastPos ? [lastPos.x, lastPos.y, lastPos.z] : null)
 function sendPos(force) {
   if (!lastPos || !homeShared()) return
   if (!force && Date.now() - lastPosAt < POS_MS) return

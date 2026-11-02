@@ -244,6 +244,21 @@ try {
       eq(ok.every(Boolean), `@${w}: full game: owner and player both reach a running world`)
       eq(!gerr.length, `@${w}: full game: no page errors${gerr.length ? ': ' + gerr.slice(0, 2).join(' / ') : ''}`)
       await P2.screenshot({ path: path.join(os.tmpdir(), `home-game-${w}.png`) })
+      // avatars (Nov 1): the other player is a Berty figure in their suit, facing their heading, with a name tag
+      { await O2.evaluate((t) => sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token: t, name: 'Diego' })), gt)
+        await O2.goto(G + '/?owner=1&debug=1'); await sleep(8000)
+        await P2.keyboard.down('a'); await sleep(700); await P2.keyboard.up('a'); await sleep(600)   // the player strafes, so the owner sees it move
+        const av = await O2.evaluate(() => window.__btAvatars ? window.__btAvatars.peek() : null)
+        const one = av && av.find((a) => a.name === 'Game Player')
+        eq(!!one && one.parts === 8 && one.suit === 'berty' && Number.isFinite(one.r) && one.tag > 0, `@${w}: avatars: the owner sees "Game Player" as an 8-part Berty figure (suit ${one && one.suit}, tag ${one && one.tag})`)
+        await P2.evaluate(() => localStorage.setItem('bloxbert-look', JSON.stringify({ cv: 3, suit: 'grove' }))); await P2.reload(); await P2.waitForSelector('#hj-go', { timeout: 20000 }).catch(() => {})
+        if (await P2.$('#hj-go')) { await P2.fill('#hj-code', gcode); await P2.fill('#hj-name', 'Game Player'); await P2.check('#hj-adults'); await P2.click('#hj-go') }
+        await sleep(7000); await P2.keyboard.down('d'); await sleep(500); await P2.keyboard.up('d'); await sleep(500)
+        const av2 = await O2.evaluate(() => window.__btAvatars ? window.__btAvatars.peek() : null)
+        const two = av2 && av2.find((a) => a.name === 'Game Player')
+        eq(!!two && two.suit === 'grove', `@${w}: avatars: the player's Clothes choice (Grove) travels in the position flags (${two && two.suit})`)
+        await O2.keyboard.down('s'); await sleep(900); await O2.keyboard.up('s'); await sleep(400)
+        await O2.screenshot({ path: path.join(os.tmpdir(), `home-avatar-${w}.png`) }) }
       // menus at home (Nov 1 pass): Settings has the touch row and no language row, every ON/OFF pill is named, the
       // chat dock steps aside under the sheet, Mode/World are the host's, Accessibility tiles show their state
       await O2.evaluate((t) => sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token: t, name: 'Diego' })), gt)

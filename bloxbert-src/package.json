@@ -8,7 +8,7 @@
     "build": "node build.mjs --out ../blocks",
     "build:test": "node build.mjs --out ../blocks-test",
     "build:dist": "node build.mjs --out dist",
-    "build:home": "node build.mjs --home", "test:home": "node tools/home-leak-check.mjs && node tools/home-build-check.mjs && node tools/home-decay-check.mjs",
+    "build:home": "node build.mjs --home", "test:home": "node tools/home-leak-check.mjs && node tools/home-build-check.mjs && node tools/home-decay-check.mjs && node tools/home-avatar-check.mjs",
     "serve": "node tools/serve.mjs dist 8870",
     "test": "node tools/pack-check.mjs && node tools/decor-check.mjs && node tools/clock-check.mjs && node tools/hands-check.mjs && node tools/pack-save-check.mjs && node tools/polish-check.mjs && node tools/backups-check.mjs && node tools/archive-check.mjs && python3 tools/check-atlas.py && node tools/classnet-all.mjs && node tools/cogs-check.mjs && node tools/daily-board-check.mjs && node tools/daily-card-check.mjs", "check:atlas": "python3 tools/check-atlas.py"
   },
