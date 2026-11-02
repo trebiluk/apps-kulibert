@@ -171,6 +171,15 @@ Four examples come with the game (Welcome, No digging here, Dinner bell, /hi). P
 `{player}` in a text is the player's name. The kid tier (for the school build later) allows join/place/break/command/
 timer, block/zone/player/not, say/tell/set only; nothing here runs in the student game.
 
+## Server tools (essentials 2)
+Typed in chat (T) or from the command buttons. Everyone: `/spawn` `/sethome` `/home` `/list` (who is in) `/msg <name> <text>`
+(whisper) `/help`. Owner: `/tp <name>` or `/tp <x> <y> <z>`, `/bring`, `/spawnall`, `/warp` `/setwarp` `/delwarp` `/warps`,
+`/mute` `/unmute` `/muteall` `/unmuteall`, `/announce <text>`, `/kick <name>`, `/ban <name>`, `/unban <name>`,
+`/freeze <name>` / `/unfreeze` (the host refuses their moves and sends them back), `/give <name> <item> [1-64]`,
+`/heal <name>`, `/clear <name>` (bag), `/gm creative|survival <name>` (one player's mode, on top of the ruleset),
+`/day` `/night` `/cycle`. Names match whole or by start ("sacc" → Mr Saccy). Every tool is parsed in
+`host/commands.mjs` (pure) and carried out in `host/home.mjs`, so the class server can take the same shapes later.
+
 ## Invite keys (one person, one key)
 Owner page → *Invite keys*: a key like `ADLT-7K2M-QX9D-4HJB` for one person (or N uses), good for 24 h (1 h to 30 days),
 optionally locked to a name. It skips the session password, still needs the 18+ box, and goes in the code field; the

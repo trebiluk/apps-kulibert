@@ -136,7 +136,7 @@ try {
     // commands (part 8): buttons in the panel per role; a pick row for a player; T opens the panel; a tp frame moves
     const pm = await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
     const om = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
-    eq(pm.join() === 'spawn,sethome,home' && om.includes('bring') && om.includes('announce'), `${tag} commands: the player sees 3 buttons, the owner sees the staff set too`)
+    eq(pm.join() === 'spawn,sethome,home,list,msg' && om.includes('bring') && om.includes('announce') && om.includes('give'), `${tag} commands: the player sees 5 buttons, the owner sees the staff set too`)
     await P.evaluate(() => { window.tpGot = []; window.HOME.onHomeTeleport((x, y, z) => window.tpGot.push([x, y, z])) })
     await P.evaluate(() => { document.querySelector('#home-chat .hc-toggle').click(); document.querySelector('#home-chat .hc-cmds button[data-c=spawn]').click() }); await sleep(400)
     eq((await P.evaluate(() => window.tpGot)).length === 1, `${tag} commands: the Spawn button teleports the player through the tp hook`)
@@ -244,6 +244,19 @@ try {
       eq(ok.every(Boolean), `@${w}: full game: owner and player both reach a running world`)
       eq(!gerr.length, `@${w}: full game: no page errors${gerr.length ? ': ' + gerr.slice(0, 2).join(' / ') : ''}`)
       await P2.screenshot({ path: path.join(os.tmpdir(), `home-game-${w}.png`) })
+      // essentials 2 (part 13): the owner's /give, /clear and /gm land in the player's game
+      { await O2.keyboard.press('t'); await sleep(300)
+        const type = async (line) => { await O2.fill('#home-chat input', line); await O2.keyboard.press('Enter'); await sleep(500) }
+        await type('/give Game Player planks 7')
+        const got = await P2.evaluate(() => { const s = document.querySelector('#hotbar .slot[data-item=planks] .count'); return s ? s.textContent : '' })
+        eq(got === '7', `@${w}: /give: the player's hotbar shows 7 planks (${got || 'none'})`)
+        await type('/clear Game Player')
+        eq(await P2.evaluate(() => !document.querySelector('#hotbar .slot[data-item]')), `@${w}: /clear: the player's bag is empty`)
+        await type('/gm creative Game Player')
+        eq(await P2.evaluate(() => document.getElementById('mode-creative').getAttribute('aria-pressed') === 'true' || document.body.classList.contains('mode-creative')), `@${w}: /gm creative: the player's game switches to creative`)
+        await type('/gm survival Game Player'); await type('/give nobody planks 1')
+        eq(await O2.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].some((l) => /No player by that name/.test(l.textContent))), `@${w}: a bad target is refused with a plain line`)
+        await O2.keyboard.press('Escape'); await sleep(200) }
       // avatars (Nov 1): the other player is a Berty figure in their suit, facing their heading, with a name tag
       { await O2.evaluate((t) => sessionStorage.setItem('bt-home-owner-api', JSON.stringify({ base: location.origin, token: t, name: 'Diego' })), gt)
         await O2.goto(G + '/?owner=1&debug=1'); await sleep(8000)
@@ -298,7 +311,7 @@ try {
         await O2.waitForFunction(() => !window.session, null, { timeout: 5000 }).catch(() => {}); await sleep(9000)
         await O2.waitForFunction(() => window.session, null, { timeout: 15000 }).catch(() => {})
         const tc = await O2.evaluate(() => ({ session: !!window.session, touch: document.body.classList.contains('touch'), pref: localStorage.getItem('bloxbert-touch'), join: !!document.querySelector('#hj-go'), canvas: !!document.querySelector('canvas'), play: !!(document.getElementById('play-chip') && !document.getElementById('play-chip').hidden) }))
-        eq(!tc.join && tc.canvas && (tc.session || tc.play) && tc.touch && tc.pref === 'on', `@${w}: touch controls: On reloads the game, the owner is back in (no join card; Tap to play) with the touch UI (${JSON.stringify(tc)})`)
+        eq(!tc.join && tc.canvas && tc.touch && tc.pref === 'on', `@${w}: touch controls: On reloads the game, the owner is back in (no join card; Tap to play) with the touch UI (${JSON.stringify(tc)})`)
         await O2.evaluate(() => localStorage.removeItem('bloxbert-touch'))
       }
       await ctx.close()

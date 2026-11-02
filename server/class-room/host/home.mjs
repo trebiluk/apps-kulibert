@@ -19,8 +19,9 @@ import { LIMITS } from '../src/rules.js'
 import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
 import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
+import { fold } from './words.mjs'
 import { makeEvents } from './events.mjs'
-import { makeCommands } from './commands.mjs'
+import { makeCommands, LOCAL_CMDS } from './commands.mjs'
 import { checkPlugin, makeRunner, EXAMPLES, LIMITS as PLUGIN_LIMITS } from '../src/plugins.js'
 import { DatabaseSync } from 'node:sqlite'
 import { HISTORY_MS } from '../src/editlog.js'
@@ -192,7 +193,42 @@ const chatGate = makeChatGate()       // typed chat: one gap per player; nothing
 // Server commands (part 8): buttons send {t:'cmd', c}, typed chat sends '/tp Trebby'; both end in src/essentials.js.
 const SPAWN = { x: 8.5, y: 8, z: 1.5 }   // the game's own spawn (bloxbert-src main.js SPAWN)
 const commands = makeCommands({ spawn: () => SPAWN, players: () => players().map(({ p }) => ({ id: p.id, ref: p.ref, alias: p.alias, staff: p.role !== 'kid', pos: p.pos })) })
-const CMD_WHY = { role: 'Only the owner can do that.', cooldown: 'Wait a few seconds.', 'no-home': 'No home set yet: /sethome where you stand.', 'no-such-player': 'No player by that name.', 'no-such-warp': 'No warp by that name (/warps lists them).', 'warp-name': 'Warp names: letters, digits, - or _ (up to 20).', unknown: 'Unknown command. /help lists them.', who: 'Who? Add a player name.', what: 'Say what? Add the text.', pos: 'Stand somewhere first.', 'not-here': 'You cannot set a home here.' }
+const CMD_WHY = { role: 'Only the owner can do that.', cooldown: 'Wait a few seconds.', 'no-home': 'No home set yet: /sethome where you stand.', 'no-such-player': 'No player by that name.', 'no-such-warp': 'No warp by that name (/warps lists them).', 'warp-name': 'Warp names: letters, digits, - or _ (up to 20).', unknown: 'Unknown command. /help lists them.', who: 'Who? Add a player name.', what: 'Say what? Add the text.', pos: 'Stand somewhere first.', 'not-here': 'You cannot set a home here.',
+  'give-shape': 'Use: /give <player> <item> [count 1-64].', 'give-count': 'Count: 1 to 64.', 'gm-shape': 'Use: /gm creative|survival <player>.', 'too-far': 'Those coordinates are outside the world.', self: 'Not on yourself.', 'chat-off': 'Chat is off.', muted: 'You are muted.', 'not-online': 'That player is not in right now.' }
+// essentials 2 (part 13): per-player state the host keeps for the session
+const frozenAt = new Map()   // ref -> { x, y, z, at } : a frozen player's spot (positions are refused, the client is sent back)
+const modeFor = new Map()    // ref -> 'creative' | 'survival' : a game mode set for one player (/gm), on top of the ruleset's
+const findById = (id) => players().find(({ p: q }) => q.id === id)
+function localCommand(room, ws, p, r) {
+  const tell = (o) => { try { ws.send(JSON.stringify(o)) } catch (e) {} }
+  const no = (why) => tell({ t: 'cmdno', c: r.local, why: CMD_WHY[why] || why })
+  const ok = (msg) => tell({ t: 'cmdok', c: r.local, msg })
+  const send = (t, o) => { try { t.p.ws.send(JSON.stringify(o)) } catch (e) {} }
+  if (r.local === 'warps') return ok(commands.warpList().length ? 'Warps: ' + commands.warpList().join(', ') : 'No warps yet: /setwarp <name> where you stand.')
+  if (r.local === 'setwarp') { const x = commands.setWarp(r.name, p.pos); if (x.error) return no(x.error); broadcastRules(); return ok('Warp "' + r.name + '" set.') }
+  if (r.local === 'delwarp') { const x = commands.delWarp(r.name); if (x.error) return no(x.error); broadcastRules(); return ok('Warp "' + r.name + '" removed.') }
+  if (r.local === 'list') { const names = players().map(({ p: q }) => q.alias + (q.role !== 'kid' ? ' (owner)' : '') + (frozenAt.has(q.ref) ? ' ❄' : '') + (q.muted ? ' 🔇' : '')); return ok('In (' + names.length + '): ' + names.join(', ')) }
+  if (r.local === 'msg') {
+    if (p.muted) return no('muted')
+    if (rules.snapshot().r['chat.typed'] !== true && p.role === 'kid') return no('chat-off')
+    const t = findById(r.id); if (!t) return no('not-online'); if (t.p.id === p.id) return no('self')
+    const c = cleanChat(r.text); if (c.error) return no(c.error)
+    send(t, { t: 'chat', a: '(whisper) ' + p.alias, m: c.m, at: Date.now() }); return tell({ t: 'chat', a: '(to ' + t.p.alias + ')', m: c.m, at: Date.now(), me: true })
+  }
+  if (r.local === 'day' || r.local === 'night' || r.local === 'cycle') { const x = setRule('survival.daynight', r.local); if (x.error) return no(x.error); feed('owner set ' + r.local); return ok(r.local === 'cycle' ? 'Day and night cycle again.' : 'It is ' + r.local + ' now.') }
+  if (r.local === 'tppos') { tell({ t: 'tp', x: r.x + 0.5, y: r.y, z: r.z + 0.5, by: p.alias }); return ok('Off to ' + r.x + ', ' + r.y + ', ' + r.z + '.') }
+  if (r.local === 'unban') { const b = door.bans.find((x) => fold(x.name || '') === fold(r.name)); if (!b) return no('no-such-player'); door.unban(b.ref); feed('owner unbanned ' + b.name); return ok(b.name + ' may join again.') }
+  const t = findById(r.id); if (!t) return no('not-online'); if (t.p.id === p.id && r.local !== 'heal' && r.local !== 'clear' && r.local !== 'give' && r.local !== 'gm') return no('self')
+  if (r.local === 'kick') { kick(t.p.ref); return ok(t.p.alias + ' was kicked.') }
+  if (r.local === 'ban') { ban(t.p.ref); return ok(t.p.alias + ' was banned for this session.') }
+  if (r.local === 'freeze') { if (t.p.role !== 'kid') return no('role'); frozenAt.set(t.p.ref, { ...(t.p.pos || SPAWN), at: Date.now() }); send(t, { t: 'chat', a: '⚙ host', m: 'You are frozen by the owner.', at: Date.now() }); feed('owner froze ' + t.p.alias); return ok(t.p.alias + ' is frozen.') }
+  if (r.local === 'unfreeze') { if (!frozenAt.delete(t.p.ref)) return no('not-online'); send(t, { t: 'chat', a: '⚙ host', m: 'You can move again.', at: Date.now() }); feed('owner unfroze ' + t.p.alias); return ok(t.p.alias + ' can move again.') }
+  if (r.local === 'give') { send(t, { t: 'give', item: r.item, n: r.n, by: p.alias }); feed('owner gave ' + t.p.alias + ' ' + r.n + ' ' + r.item); return ok(r.n + ' ' + r.item + ' → ' + t.p.alias + '.') }
+  if (r.local === 'heal') { send(t, { t: 'heal', by: p.alias }); return ok(t.p.alias + ' healed.') }
+  if (r.local === 'clear') { send(t, { t: 'clear', by: p.alias }); feed('owner cleared the bag of ' + t.p.alias); return ok('Bag of ' + t.p.alias + ' cleared.') }
+  if (r.local === 'gm') { modeFor.set(t.p.ref, r.mode); try { t.p.ws.send(JSON.stringify(rulesFor(t.p.ref))) } catch (e) {} feed('owner set ' + t.p.alias + ' to ' + r.mode); return ok(t.p.alias + ' is in ' + r.mode + ' now.') }
+  return no('unknown')
+}
 function runCommand(room, ws, p, cmd, text) {
   const me = { id: p.id, ref: p.ref, staff: p.role !== 'kid', pos: p.pos }
   const r = commands.run(me, cmd, text)
@@ -214,9 +250,7 @@ function typedCommand(room, ws, p, line) {
   if (r.help) return tell({ t: 'cmdok', c: 'help', msg: 'Commands: ' + r.help })
   if (r.error === 'unknown') { const name = (/^\/(\w+)/.exec(line) || [])[1]; if (name && pluginList.some((pl) => pl.on && pl.rules.some((ru) => ru.when.e === 'command' && ru.when.name === name.toLowerCase()))) { pluginEvent({ e: 'command', name: name.toLowerCase(), player: evPlayer(p), text: line }); return } }
   if (r.error) return tell({ t: 'cmdno', c: 'typed', why: CMD_WHY[r.error] || r.error })
-  if (r.local === 'warps') return tell({ t: 'cmdok', c: 'warps', msg: commands.warpList().length ? 'Warps: ' + commands.warpList().join(', ') : 'No warps yet: /setwarp <name> where you stand.' })
-  if (r.local === 'setwarp') { const x = commands.setWarp(r.name, p.pos); if (x.error) return tell({ t: 'cmdno', c: 'setwarp', why: CMD_WHY[x.error] }); broadcastRules(); return tell({ t: 'cmdok', c: 'setwarp', msg: 'Warp "' + r.name + '" set.' }) }
-  if (r.local === 'delwarp') { const x = commands.delWarp(r.name); if (x.error) return tell({ t: 'cmdno', c: 'delwarp', why: CMD_WHY[x.error] }); broadcastRules(); return tell({ t: 'cmdok', c: 'delwarp', msg: 'Warp "' + r.name + '" removed.' }) }
+  if (r.local) return localCommand(room, ws, p, r)
   runCommand(room, ws, p, r.cmd, r.text)
 }
 const events = makeEvents()           // shared boss fight news
@@ -439,7 +473,8 @@ function rulesFor(ref) {
   const s = rules.snapshot()
   const own = keepFor.has(ref)
   const me = players().find(({ p }) => p.ref === ref), staff = !!(me && me.p.role !== 'kid')
-  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'] }, keep: own ? 'player' : 'world', menu: commands.menuFor(staff), warps: commands.warpList() }
+  const mode = modeFor.get(ref)
+  return { t: 'rules', ...s, r: { ...s.r, 'survival.keep': own ? keepFor.get(ref) : s.r['survival.keep'], ...(mode ? { mode } : {}) }, keep: own ? 'player' : 'world', ...(mode ? { modeFrom: 'player' } : {}), menu: commands.menuFor(staff), warps: commands.warpList() }
 }
 const sendRules = (ws, ref) => { try { ws.send(JSON.stringify(rulesFor(ref))) } catch (e) {} }
 // Everyone hears a rules change as {t:'rules', ...}: the client shows a calm toast and applies it.
@@ -465,6 +500,8 @@ function homeFrame(room, ws, p, text) {
     // Home positions are trusted within the world's bounds (adults the owner let in): creative flying, respawns and
     // teleports would trip the school's speed check, which kicks after 5 strikes. Sequence must still go up.
     if (room.frozen && !staff && p.pos) return false                       // a freeze still snaps back (Room)
+    const fz = frozenAt.get(p.ref)
+    if (fz) { const t = Date.now(); if (t - fz.at >= 1000) { fz.at = t; try { ws.send(JSON.stringify({ t: 'tp', x: fz.x, y: fz.y, z: fz.z, by: '' })) } catch (e) {} } return true }   // /freeze <player>: stays put
     const pos = parsePos(m)
     if (!pos || !Number.isInteger(m.q) || m.q <= p.lastQ || pos.y < LIMITS.yMin || pos.y > LIMITS.yMax) return false   // the Room refuses it
     p.lastQ = m.q; p.pos = pos; p.posAt = Date.now(); p.dirty = true
@@ -478,6 +515,7 @@ function homeFrame(room, ws, p, text) {
   }
   if (m.t === 'q' && p.muted) return true   // quick chat from a muted player: dropped quietly, as at school
   // world chat (home-only): on unless the owner turned it off; plain text, 200 chars, burst 5 then 1/s, no word filter, never stored
+  if (m.t === 'cmd' && LOCAL_CMDS.includes(String(m.c)) && !['setwarp', 'delwarp', 'warps'].includes(m.c)) { const c = String(m.c), staff = p.role !== 'kid'; if (!staff && c !== 'list') { try { ws.send(JSON.stringify({ t: 'cmdno', c, why: CMD_WHY.role })) } catch (e) {} return true } localCommand(room, ws, p, ['list', 'day', 'night', 'cycle'].includes(c) ? { local: c } : { local: c, id: Number(m.id) }); return true }
   if (m.t === 'cmd') { if (m.c === 'setwarp' || m.c === 'delwarp') typedCommand(room, ws, p, '/' + m.c + ' ' + String(m.name || '')); else if (m.c === 'announce') typedCommand(room, ws, p, '/announce ' + String(m.text || '')); else runCommand(room, ws, p, { c: String(m.c), ...(m.id !== undefined ? { id: m.id } : {}), ...(m.i !== undefined ? { i: m.i } : {}), ...(m.on !== undefined ? { on: m.on } : {}) }); return true }
   if (m.t === 'chat' && typeof m.m === 'string' && m.m.trim().startsWith('/')) { typedCommand(room, ws, p, m.m); return true }
   if (m.t === 'chat') {
@@ -501,7 +539,7 @@ function homeFrame(room, ws, p, text) {
 function live() {
   const w = cfg.world ? worlds.get(cfg.world) : null
   const out = { world: cfg.world, session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
-  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref) })
+  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref), frozen: frozenAt.has(p.ref), mode: modeFor.get(p.ref) || null, pos: p.pos ? { x: p.pos.x, y: p.pos.y, z: p.pos.z } : null })
   if (w) {
     const h = w.obj.hub
     const who = new Map(out.players.map((p) => [h.who(p.ref), p.name]))
@@ -686,7 +724,7 @@ server.on('upgrade', async (req, tcp, head) => {
   tcp.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acceptKey(req.headers['sec-websocket-key']) + '\r\nSec-WebSocket-Protocol: ' + PROTOCOL + '\r\n\r\n')
   ws.attach(tcp, head, {
     onText: (t) => { door.noteActivity(); if (!room) return; const p = [...room.players.values()].find((q) => q.ws === ws); if (p && homeFrame(room, ws, p, t)) return; room.webSocketMessage(ws, t).catch(() => {}) },
-    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); { const me = players().find(({ p }) => p.ws === ws); if (me) pluginEvent({ e: 'leave', player: evPlayer(me.p) }) } const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
+    onEnd: (code) => { door.connClose(ip); chatGate.forget(c.ref); allAsked.delete(c.ref); commands.forget(c.ref); frozenAt.delete(c.ref); modeFor.delete(c.ref); feed(c.alias + ' left (' + code + ') · ' + Math.max(0, players().length - 1) + ' in'); { const me = players().find(({ p }) => p.ws === ws); if (me) pluginEvent({ e: 'leave', player: evPlayer(me.p) }) } const ev = events.leave(c.ref); if (room) room.webSocketClose(ws, code).catch(() => {}); if (ev) broadcastAll(ev) },
   })
 })
 

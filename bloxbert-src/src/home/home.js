@@ -45,6 +45,9 @@ export function registerHomeRules() {
 export const RULE_TOAST = { en: 'Rules changed: {r}' }
 let onRules = null
 export function onHomeRules(fn) { onRules = fn }
+// main.js hands in what a server command may do to THIS game (home build only): give(item, n) -> ok, heal(), clear(), setMode(m)
+let game = {}, modeNow = null
+export function setHomeGame(hooks) { game = hooks && typeof hooks === 'object' ? hooks : {} }
 // The owner's in-game editor (rules-editor.js) calls Rules.set(); at home the server is the authority, so when the owner
 // is in, every set is also sent to the host, which validates it, bumps rev and broadcasts. Players never get this hook.
 let ownerApi = null   // { base, token } from the owner page (sessionStorage), present only for the owner's own session
@@ -69,7 +72,9 @@ export function applyHomeRules(f, toast, lang) {
   if (Array.isArray(f.menu)) paintMenu(f.menu, Array.isArray(f.warps) ? f.warps : [])
   try { Rules.load(r) } catch (e) {}
   keep = { on: r['survival.keep'] !== false, from: f.keep === 'player' ? 'player' : 'world' }
-  if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev }
+  if (info) { info.ruleset = f.preset; info.mode = mode; info.locked = !!f.locked; info.rulesRev = f.rev; info.modeFrom = f.modeFrom === 'player' ? 'player' : 'world' }
+  // the game mode is the host's (the ruleset's, or one set for this player with /gm): applied here, once per change
+  if ((mode === 'creative' || mode === 'survival') && mode !== modeNow && game.setMode) { modeNow = mode; try { game.setMode(mode) } catch (e) {} }
   if (onRules) try { onRules({ preset: f.preset, mode, locked: !!f.locked, rev: f.rev, r }) } catch (e) {}
   if (toast && f.rev > 1) toast((RULE_TOAST[lang] || RULE_TOAST[(lang || '').split('-')[0]] || RULE_TOAST.en).replace('{r}', homeRuleName(f.preset)))
 }
@@ -236,7 +241,7 @@ export function homeSettings(g) {
   let pvp = false; try { pvp = Rules.value('combat.pvp') === true } catch (e) {}
   const r = { mode: info && info.mode, pvp, keep: keep.on }
   const hostHead = note(SET.host); hostHead.classList.add('ghead')
-  const vals = note(SET.mode + ': ' + String(r.mode || '—') + ' · ' + SET.pvp + ': ' + (r.pvp ? SET.yes : SET.no) + ' · ' + SET.keep + ': ' + (r.keep ? SET.yes : SET.no) + (keep.from === 'player' ? SET.you : '')); vals.dataset.homeHost = '1'
+  const vals = note(SET.mode + ': ' + String(r.mode || '—') + (info && info.modeFrom === 'player' ? SET.you : '') + ' · ' + SET.pvp + ': ' + (r.pvp ? SET.yes : SET.no) + ' · ' + SET.keep + ': ' + (r.keep ? SET.yes : SET.no) + (keep.from === 'player' ? SET.you : '')); vals.dataset.homeHost = '1'
   g.append(head, row, note(SET.touchHint), hostHead, vals, note(SET.hostHint))
 }
 // the Mode panel: at home the mode is the host's; only the Build Table is a local choice
@@ -342,6 +347,10 @@ function homeFrame(f) {
   if (f.t === 'tp') { if (tpFn) tpFn(f.x, f.y, f.z); if (toastFn && f.by && info && f.by !== info.name) toastFn(f.by + ' moved you'); return }
   if (f.t === 'plugins') { pluginSummary = f.list || []; return }
   if (f.t === 'cmdok') { if (f.msg) sysLine(f.msg); return }
+  // essentials 2 (part 13): the owner's give / heal / clear land on this game through the hooks main.js gave us
+  if (f.t === 'give') { const item = String(f.item || ''), n = Math.max(1, Math.min(64, Number(f.n) | 0)); if (game.give && game.give(item, n)) sysLine((f.by || 'The owner') + ' gave you ' + n + ' ' + item + '.'); else sysLine((f.by || 'The owner') + ' tried to give you "' + item + '", which is not an item here.'); return }
+  if (f.t === 'heal') { if (game.heal) game.heal(); sysLine((f.by || 'The owner') + ' healed you.'); return }
+  if (f.t === 'clear') { if (game.clear) game.clear(); sysLine((f.by || 'The owner') + ' cleared your bag.'); return }
   if (f.t === 'cmdno') { sysLine(f.why || 'That did not work.'); return }
   if (f.t === 'chat') chatLine(f)
   else if (f.t === 'ev') bossNews(f)

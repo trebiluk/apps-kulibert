@@ -17,7 +17,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   const ps = [{ id: 1, ref: 'a', alias: 'Diego', staff: true, pos: { x: 1, y: 64, z: 1 } }, { id: 2, ref: 'b', alias: 'Mr Saccy', staff: false, pos: { x: 5, y: 64, z: 5 } }]
   const c = makeCommands({ spawn: () => ({ x: 8.5, y: 8, z: 1.5 }), players: () => ps, now: () => t })
   const [O, S] = ps
-  eq(menuFor(false).map((m) => m.c).join() === 'spawn,sethome,home' && menuFor(true).length === 13, 'menu: players get spawn/sethome/home; the owner gets the staff set too')
+  eq(menuFor(false).map((m) => m.c).join() === 'spawn,sethome,home,list,msg' && menuFor(true).length === 26, 'menu: players get spawn/sethome/home/list/msg; the owner gets the staff set too')
   eq(c.parse('/tp sacc', true).cmd.id === 2 && c.parse('/TP mr saccy', true).cmd.id === 2 && c.parse('/tp nobody', true).error === 'no-such-player', 'typed: names match whole or by start, any case; unknown names are refused')
   eq(c.parse('/tp Diego', false).error === 'role' && c.parse('/spawnall', false).error === 'role' && c.parse('/home', false).cmd.c === 'home', 'typed: staff commands refused for players; player commands fine')
   eq(c.parse('/nope', true).error === 'unknown' && c.parse('hello', true).error === 'not-a-command' && /\/spawn/.test(c.parse('/help', false).help) && !/\/tp/.test(c.parse('/help', false).help) && /\/tp/.test(c.parse('/help', true).help), 'typed: unknown commands, plain text, and /help per role')
@@ -37,9 +37,10 @@ const post = (p, b, h = {}) => fetch(A + p, { method: 'POST', headers: { 'conten
 const api = (p, b) => post('/owner/' + p, b, { 'x-owner': token })
 const join = (name) => post('/join', { code: CODE, name, adults: true }, { 'x-forwarded-for': '203.0.113.' + ipN++ })
 async function sock(j) {
-  const c = { tps: [], oks: [], nos: [], chat: [], rules: [], hello: null, q: 0 }
+  const c = { tps: [], oks: [], nos: [], chat: [], rules: [], frames: [], hello: null, closed: null, q: 0 }
   c.ws = new WebSocket(j.ws, ['bt-room.v0', j.ticket])
-  c.ws.onmessage = (m) => { const f = JSON.parse(m.data); if (f.t === 'hello') c.hello = f; else if (f.t === 'tp') c.tps.push(f); else if (f.t === 'cmdok') c.oks.push(f); else if (f.t === 'cmdno') c.nos.push(f); else if (f.t === 'chat') c.chat.push(f); else if (f.t === 'rules') c.rules.push(f) }
+  c.ws.onmessage = (m) => { const f = JSON.parse(m.data); c.frames.push(f); if (f.t === 'hello') c.hello = f; else if (f.t === 'tp') c.tps.push(f); else if (f.t === 'cmdok') c.oks.push(f); else if (f.t === 'cmdno') c.nos.push(f); else if (f.t === 'chat') c.chat.push(f); else if (f.t === 'rules') c.rules.push(f) }
+  c.ws.onclose = (e) => { c.closed = { code: e.code, reason: e.reason } }
   await new Promise((r, x) => { c.ws.onopen = r; c.ws.onerror = () => x(new Error('socket refused')) })
   for (let i = 0; i < 100 && !(c.hello && c.rules.length); i++) await sleep(20)
   c.send = (o) => c.ws.send(JSON.stringify({ v: 0, ...o }))
@@ -55,7 +56,7 @@ try {
   await api('world/open', { name: 'cmd-world-0001' })
   CODE = (await api('session/start', { ruleset: 'home-survival' })).code
   const O = await sock(await api('play', { name: 'Diego' })), S = await sock(await join('Mr Saccy'))
-  eq(S.rules[0].menu.map((m) => m.c).join() === 'spawn,sethome,home' && O.rules[0].menu.some((m) => m.c === 'bring'), 'live: the rules frame carries each role\'s command menu')
+  eq(S.rules[0].menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg' && O.rules[0].menu.some((m) => m.c === 'bring'), 'live: the rules frame carries each role\'s command menu')
   O.pos(10.5, 64, 10.5); S.pos(40.5, 64, 40.5); await sleep(150)
   S.send({ t: 'cmd', c: 'spawn' }); await sleep(200)
   eq(S.tps.length === 1 && S.tps[0].x === 8.5 && S.tps[0].y === 8, 'live button: spawn teleports the player (tp frame)')
@@ -82,6 +83,46 @@ try {
   O.send({ t: 'chat', m: '/help' }); await sleep(150)
   eq(O.oks.some((o) => /Commands:.*\/bring/.test(o.msg)), 'live: /help lists the commands for the role')
   eq(/\] owner sent everyone to spawn/.test(log) && /\] owner announced: Dinner in 5/.test(log) && !log.includes(CODE), 'feed: owner commands show in the host window; no secrets')
+  // essentials 2 (part 13)
+  O.send({ t: 'chat', m: '/list' }); S.send({ t: 'chat', m: '/list' }); await sleep(200)
+  eq(O.oks.some((o) => /^In \(2\): .*Diego \(owner\).*Mr Saccy/.test(o.msg)) && S.oks.some((o) => /^In \(2\)/.test(o.msg)), 'live: /list for everyone (count, names, the owner marked)')
+  O.send({ t: 'chat', m: '/unmute saccy' }); await sleep(150); S.chat.length = 0; O.chat.length = 0
+  S.send({ t: 'chat', m: '/msg diego psst' }); await sleep(200)
+  eq(O.chat.some((c) => c.a === '(whisper) Mr Saccy' && c.m === 'psst') && S.chat.some((c) => c.a === '(to Diego)' && c.m === 'psst' && c.me), 'live: /msg whispers to one player and echoes to the sender')
+  S.send({ t: 'chat', m: '/msg saccy me' }); await sleep(150)
+  eq(S.nos.some((n) => /Not on yourself/.test(n.why)), 'live: /msg to yourself is refused')
+  O.send({ t: 'chat', m: '/give saccy planks 12' }); O.send({ t: 'chat', m: '/heal saccy' }); O.send({ t: 'chat', m: '/clear mr saccy' }); await sleep(250)
+  eq(S.frames.some((f) => f.t === 'give' && f.item === 'planks' && f.n === 12 && f.by === 'Diego') && S.frames.some((f) => f.t === 'heal') && S.frames.some((f) => f.t === 'clear') && O.oks.filter((o) => /planks → Mr Saccy|healed|Bag of Mr Saccy cleared/.test(o.msg)).length === 3, 'live: /give /heal /clear reach the player as frames and the owner is told')
+  O.send({ t: 'chat', m: '/give saccy planks 999' }); O.send({ t: 'chat', m: '/give saccy' }); await sleep(150)
+  eq(O.nos.some((n) => /Count: 1 to 64/.test(n.why)) && O.nos.some((n) => /Use: \/give/.test(n.why)), 'live: /give shape and count are checked')
+  O.send({ t: 'chat', m: '/gm creative saccy' }); await sleep(250)
+  eq(S.rules.at(-1).r.mode === 'creative' && S.rules.at(-1).modeFrom === 'player' && O.rules.at(-1).r.mode !== 'creative', 'live: /gm sets one player\'s mode in their own rules frame; the owner\'s stays')
+  O.send({ t: 'chat', m: '/day' }); await sleep(250)
+  eq(S.rules.at(-1).r['survival.daynight'] === 'day' && O.oks.some((o) => /It is day now/.test(o.msg)), 'live: /day sets the daynight rule for the world (/night, /cycle alike)')
+  O.send({ t: 'chat', m: '/tp 10 64 -20' }); await sleep(200)
+  eq(O.tps.at(-1).x === 10.5 && O.tps.at(-1).z === -19.5 && O.oks.some((o) => /Off to 10, 64, -20/.test(o.msg)), 'live: /tp x y z teleports the owner to coordinates')
+  O.send({ t: 'chat', m: '/tp 999999 0 0' }); await sleep(150)
+  eq(O.nos.some((n) => /outside the world/.test(n.why)), 'live: coordinates outside the world are refused')
+  // freeze: the player's positions are refused and the client is sent back to the frozen spot
+  S.pos(40.5, 64, 40.5); await sleep(150); S.tps.length = 0
+  O.send({ t: 'chat', m: '/freeze saccy' }); await sleep(200)
+  S.pos(45.5, 64, 45.5); await sleep(150); S.pos(46.5, 64, 46.5); await sleep(1100); S.pos(47.5, 64, 47.5); await sleep(200)
+  const live = (await api('state', {})).live.players.find((p) => p.name === 'Mr Saccy')
+  eq(S.chat.some((c) => /frozen by the owner/.test(c.m)) && S.tps.length >= 1 && S.tps.every((t) => t.x === 40.5) && S.tps.length <= 3, `live: /freeze keeps the player put (sent back ${S.tps.length} time(s), at most once a second)`)
+  O.send({ t: 'chat', m: '/unfreeze saccy' }); await sleep(150); S.pos(45.5, 64, 45.5); await sleep(250)
+  eq(S.chat.some((c) => /move again/.test(c.m)) && (await api('state', {})).live.players.find((p) => p.name === 'Mr Saccy').pos.x === 45.5, 'live: /unfreeze lets positions through again')
+  O.send({ t: 'chat', m: '/freeze diego' }); await sleep(150)
+  eq(O.nos.some((n) => /Not on yourself/.test(n.why)), 'live: the owner cannot freeze themself')
+  O.send({ t: 'cmd', c: 'heal', id: S.hello.you }); O.send({ t: 'cmd', c: 'list' }); S.send({ t: 'cmd', c: 'kick', id: O.hello.you }); await sleep(250)
+  eq(S.frames.filter((f) => f.t === 'heal').length === 2 && O.oks.filter((o) => /^In \(2\)/.test(o.msg)).length === 2 && S.nos.some((n) => /Only the owner/.test(n.why)) && O.closed === null, 'live buttons: heal/list by button; a player pressing an owner button is refused')
+  eq(O.rules.at(-1).menu.some((m) => m.c === 'kick') && O.rules.at(-1).menu.some((m) => m.c === 'give' && m.arg === 'text') && S.rules.at(-1).menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg', 'live: the menus carry the new buttons (owner: kick/ban/freeze/give/heal/clear/gm/day/night; players: list, whisper)')
+  O.send({ t: 'chat', m: '/kick saccy' }); await sleep(300)
+  eq(S.closed && S.closed.reason === 'kicked' && O.oks.some((o) => /Mr Saccy was kicked/.test(o.msg)), 'live: /kick by name')
+  const S2 = await sock(await join('Mr Saccy')); await sleep(150)
+  O.send({ t: 'chat', m: '/ban saccy' }); await sleep(300)
+  eq(S2.closed && S2.closed.reason === 'banned' && (await join('Mr Saccy')).error === 'banned', 'live: /ban by name bans for the session')
+  O.send({ t: 'chat', m: '/unban mr saccy' }); await sleep(200)
+  eq(O.oks.some((o) => /may join again/.test(o.msg)) && !(await join('Mr Saccy')).error, 'live: /unban by name lets them back in')
   for (const c of [O, S]) try { c.ws.close() } catch (e) {}
 } catch (e) {
   eq(false, 'live run threw: ' + e.message)

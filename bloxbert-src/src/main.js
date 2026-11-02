@@ -13287,7 +13287,7 @@ window.__bertopiaRotateCheck = function () {
 let homeSession = null // HOME_HOST: { name, world, ruleset, hello } once in; null in solo play and always at school
 ;(bootLoad = (async () => {
   if (__HOME_HOST__ && HOME.isHomePage()) { try { HOME.registerHomeRules(); HOME.setHomeToast(toast); homeSession = await HOME.homeJoinScreen({ lang: LANG, version: VERSION }) } catch (e) { homeSession = null } }
-  if (__HOME_HOST__ && homeSession) { WORLD = HOME.homeSlot(); HOME.homeTrimHud() }   // this host world's own slot: your single-player world is never loaded or saved over; no hub link
+  if (__HOME_HOST__ && homeSession) { WORLD = HOME.homeSlot(); HOME.homeTrimHud(); HOME.setHomeGame({ give: (item, n) => !!(session && ITEMS[item] && (session.give(item, n), true)), heal: () => session && session.setEnergy && session.setEnergy(10), clear: () => { if (session && session.bag) { session.bag.slots.fill(null); session.paintHotbar(); dirty = true } }, setMode: (m) => goWorld(m) }) }   // this host world's own slot: your single-player world is never loaded or saved over; no hub link; what the owner's commands may do here
   await load()
   if (__HOME_HOST__ && homeSession) await homeShare()
 })()).catch(() => {}).finally(() => {
