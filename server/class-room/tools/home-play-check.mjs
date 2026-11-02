@@ -136,7 +136,7 @@ try {
     // commands (part 8): buttons in the panel per role; a pick row for a player; T opens the panel; a tp frame moves
     const pm = await P.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
     const om = await O.evaluate(() => [...document.querySelectorAll('#home-chat .hc-cmds button')].map((b) => b.dataset.c))
-    eq(pm.join() === 'spawn,sethome,home,list,msg' && om.includes('bring') && om.includes('announce') && om.includes('give'), `${tag} commands: the player sees 5 buttons, the owner sees the staff set too`)
+    eq(pm.join() === 'spawn,sethome,home,list,msg,world' && om.includes('bring') && om.includes('announce') && om.includes('give'), `${tag} commands: the player sees 6 buttons, the owner sees the staff set too`)
     await P.evaluate(() => { window.tpGot = []; window.HOME.onHomeTeleport((x, y, z) => window.tpGot.push([x, y, z])) })
     await P.evaluate(() => { document.querySelector('#home-chat .hc-toggle').click(); document.querySelector('#home-chat .hc-cmds button[data-c=spawn]').click() }); await sleep(400)
     eq((await P.evaluate(() => window.tpGot)).length === 1, `${tag} commands: the Spawn button teleports the player through the tp hook`)
@@ -212,6 +212,21 @@ try {
     await I.goto(H + '/?invite=' + encodeURIComponent(inv.key)); await I.waitForSelector('#hj-go'); await I.fill('#hj-name', 'Link Two'); await I.check('#hj-adults'); await I.click('#hj-go'); await sleep(600)
     eq(/used up/.test(await I.evaluate(() => document.querySelector('#hj-out').textContent)), 'invite link: a second use of a one-use key is told it is used up')
     await ic.close() }
+
+  // several worlds (part 14): the join card shows a picker once two are open; /world switches and the game rejoins there
+  { await api('world/open', { name: 'second-world-0002' }); await sleep(300)
+    const wc = await browser.newContext({ viewport: { width: 412, height: 915 }, extraHTTPHeaders: { 'x-forwarded-for': '203.0.113.78' } }), W = await wc.newPage()
+    await W.goto(H + '/'); await W.waitForSelector('#hj-go'); await sleep(600)
+    const pick = await W.evaluate(() => ({ shown: !document.getElementById('hj-worldrow').hidden, opts: [...document.querySelectorAll('#hj-world option')].map((o) => o.value), text: document.querySelector('#hj-world option').textContent }))
+    eq(pick.shown && pick.opts.length === 2 && /\(main\) · \d+ in/.test(pick.text), `worlds: the join card shows a picker with both worlds (${pick.opts.join(', ')})`)
+    await W.selectOption('#hj-world', 'second-world-0002'); await W.fill('#hj-code', CODE); await W.fill('#hj-name', 'World Wen'); await W.check('#hj-adults'); await W.click('#hj-go')
+    await W.waitForFunction(() => window.session, null, { timeout: 8000 }).catch(() => {})
+    eq(await W.evaluate(() => !!window.session && window.session.world === 'second-world-0002'), 'worlds: picking a world on the join card lands there')
+    await W.evaluate(() => window.HOME.homeOpenChat()); await W.fill('#home-chat input', '/world play-world'); await W.keyboard.press('Enter'); await sleep(300)
+    const saidSwitch = await W.evaluate(() => [...document.querySelectorAll('#home-chat .hc-log li')].some((l) => /Switching to world play-world/.test(l.textContent)))
+    await W.waitForFunction(() => window.session && window.session.world === 'play-world-0001', null, { timeout: 10000 }).catch(() => {})
+    eq(saidSwitch && (await W.evaluate(() => !!window.session && window.session.world === 'play-world-0001')), 'worlds: /world <name> reloads the game straight into that world (the code is carried once)')
+    await wc.close(); await api('world/close', { name: 'second-world-0002' }) }
 
   // Update card: an old game is told to update instead of joining
   const uc = await browser.newContext({ viewport: { width: 412, height: 915 } }), U = await uc.newPage()

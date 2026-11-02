@@ -149,7 +149,7 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
     noteActivity: touch,
 
     // Player join: everything in docs §3 step 3, in that order. ip is the raw address (hashed here, never stored).
-    async join({ code, name, password, adults, ip, playersOnline = 0 }) {
+    async join({ code, name, password, adults, ip, playersOnline = 0, world = null }) {   // world: one of the host's open worlds (the host checks); default = the session's main world
       const tag = ipTag(ip)
       const lim = limited(joinBuckets, tag, JOIN_PER_MIN, JOIN_BACKOFF_MS)
       if (lim) return { error: 'slow-down', wait: lim.wait }
@@ -178,14 +178,15 @@ export function makeDoor({ secret, now = Date.now, rand = randomInt, filter, max
       if (!ref) { ref = 'homeref-' + randomBytes(8).toString('hex'); names.set(key, ref) }
       touch()
       if (inv) { inv.uses++; inv.used.push({ name: n.name, at: now() }) }
-      const ticket = await signToken({ v: 1, ref, world: session.world, alias: n.name, exp: Math.floor(now() / 1000) + TICKET_TTL_SEC, jti: 'hj-' + randomBytes(8).toString('hex'), role: 'kid', cfg: HOME_CFG, iss: ISSUER }, secret)
-      return { ticket, name: n.name, ref, ruleset: session.cfg, world: session.world, ...(inv ? { invite: invId, inviteLabel: inv.label, inviteUse: inv.uses, inviteMax: inv.max } : {}) }
+      const w = world || session.world
+      const ticket = await signToken({ v: 1, ref, world: w, alias: n.name, exp: Math.floor(now() / 1000) + TICKET_TTL_SEC, jti: 'hj-' + randomBytes(8).toString('hex'), role: 'kid', cfg: HOME_CFG, iss: ISSUER }, secret)
+      return { ticket, name: n.name, ref, ruleset: session.cfg, world: w, ...(inv ? { invite: invId, inviteLabel: inv.label, inviteUse: inv.uses, inviteMax: inv.max } : {}) }
     },
     // Owner play ticket (role admin = the Room's staff path: kick, freeze, mute, edit anywhere).
-    async ownerTicket(name = 'Owner') {
+    async ownerTicket(name = 'Owner', world = null) {
       if (!session) return null
       touch()
-      return signToken({ v: 1, ref: 'homeowner-' + createHash('sha256').update(secret).digest('hex').slice(0, 16), world: session.world, alias: name, exp: Math.floor(now() / 1000) + TICKET_TTL_SEC, jti: 'ho-' + randomBytes(8).toString('hex'), role: 'admin', amr: ['passkey'], cfg: HOME_CFG, iss: ISSUER }, secret)
+      return signToken({ v: 1, ref: 'homeowner-' + createHash('sha256').update(secret).digest('hex').slice(0, 16), world: world || session.world, alias: name, exp: Math.floor(now() / 1000) + TICKET_TTL_SEC, jti: 'ho-' + randomBytes(8).toString('hex'), role: 'admin', amr: ['passkey'], cfg: HOME_CFG, iss: ISSUER }, secret)
     },
     // What the socket upgrade asks: is this a home ticket of ours? (school tickets fail here: wrong secret, no iss)
     verify: (token, nowSec) => verifyToken(token, [secret], nowSec, { issuer: ISSUER }),

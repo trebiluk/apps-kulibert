@@ -83,10 +83,12 @@ const KEY_LAST = 'bt-home-last'           // last server address + display name 
 const KEY_AGAIN = 'bt-home-again'         // one-shot rejoin after a deliberate reload (this tab only, removed on read)
 let codeNow = ''                          // the code this player joined with (memory only; written to KEY_AGAIN for a reload)
 // Reload the game and come straight back in: the owner has its token, a player gets the code back once.
-export function homeReload() {
-  try { if (codeNow && !homeOwnerOn()) sessionStorage.setItem(KEY_AGAIN, JSON.stringify({ code: codeNow })) } catch (e) {}
+export function homeReload(world = '') {
+  try { if (codeNow && !homeOwnerOn()) sessionStorage.setItem(KEY_AGAIN, JSON.stringify({ code: codeNow, ...(world ? { world } : {}) })) } catch (e) {}
+  try { if (world && homeOwnerOn()) sessionStorage.setItem(KEY_WORLD, world) } catch (e) {}
   location.reload()
 }
+const KEY_WORLD = 'bt-home-world'          // the owner's picked world for the next /owner/play (part 14)
 let sock = null, hello = null, info = null, q = 0
 
 const S = {
@@ -148,7 +150,8 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
   return new Promise((resolve) => {
     if (owner && owner.ticket) { connect(owner, T, version, resolve); return }
     if (ownerAgain) {
-      fetch(ownerAgain.base + '/owner/play', { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerAgain.token }, body: JSON.stringify({ name: ownerAgain.name || 'Owner' }) })
+      let pickedWorld = ''; try { pickedWorld = sessionStorage.getItem(KEY_WORLD) || ''; sessionStorage.removeItem(KEY_WORLD) } catch (e) {}
+      fetch(ownerAgain.base + '/owner/play', { method: 'POST', headers: { 'content-type': 'application/json', 'x-owner': ownerAgain.token }, body: JSON.stringify({ name: ownerAgain.name || 'Owner', ...(pickedWorld ? { world: pickedWorld } : {}) }) })
         .then((r) => r.json()).catch(() => ({ error: 'network' }))
         .then((j) => { if (j && j.ticket) connect(j, T, version, resolve); else showCard(resolve) })
       return
@@ -162,19 +165,33 @@ export function homeJoinScreen({ lang = 'en', version = '' } = {}) {
       <label for="hj-code">${T.code}</label><input type="text" id="hj-code" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="ABCD EFGH or ADLT-…">
       <label for="hj-name">${T.name}</label><input type="text" id="hj-name" maxlength="20" autocomplete="off" value="${(last.name || '').replace(/"/g, '')}">
       <div id="hj-pwrow" hidden><label for="hj-pw">${T.pw}</label><input type="password" id="hj-pw" autocomplete="off"></div>
+      <div id="hj-worldrow" hidden><label for="hj-world">World</label><select id="hj-world"></select></div>
       <label class="ad"><input type="checkbox" id="hj-adults"><span>${T.adults}</span></label>
       <button id="hj-go">${T.join}</button><button id="hj-solo" class="alt">${T.solo}</button><div class="out" id="hj-out" aria-live="polite"></div></div>`)
     const $ = (id) => root.querySelector('#' + id)
     try { if (sessionStorage.getItem(KEY_ADULTS) === '1') $('hj-adults').checked = true } catch (e) {}
-    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 24); $('hj-adults').checked = true; setTimeout(() => $('hj-go').click(), 50); again = null }
+    let againWorld = ''
+    if (again && again.code && !ownerAgain) { $('hj-code').value = String(again.code).slice(0, 24); $('hj-adults').checked = true; againWorld = again.world || ''; setTimeout(() => $('hj-go').click(), 50); again = null }
     // an invite link (?invite=ADLT-…): the key goes in the code field and out of the address bar; the person adds a name
     let invited = ''; try { invited = new URLSearchParams(location.search).get('invite') || '' } catch (e) {}
     if (/^ADLT/i.test(invited.replace(/[\s-]/g, ''))) { $('hj-code').value = invited.toUpperCase().slice(0, 24); $('hj-addr').value = location.origin; try { history.replaceState(null, '', location.pathname) } catch (e) {} setTimeout(() => $('hj-name').focus(), 50) }
+    // which worlds are open (names and counts only; only while a session is live); more than one -> a picker
+    let worldsSeen = []
+    const askWorlds = async () => {
+      const base = $('hj-addr').value.trim().replace(/\/+$/, ''); if (!/^https?:\/\//.test(base)) return
+      let list = []; try { list = (await (await fetch(base + '/worlds', { signal: AbortSignal.timeout(4000) })).json()).worlds || [] } catch (e) { list = [] }
+      worldsSeen = list.map((w) => String(w.name)); const sel = $('hj-world'); sel.textContent = ''
+      for (const w of list) { const o = document.createElement('option'); o.value = String(w.name); o.textContent = String(w.name) + (w.main ? ' (main)' : '') + ' · ' + Number(w.players) + ' in'; sel.append(o) }
+      const want = againWorld || ''; if (want && worldsSeen.includes(want)) sel.value = want
+      $('hj-worldrow').hidden = list.length < 2
+    }
+    askWorlds(); $('hj-addr').addEventListener('change', askWorlds)
     $('hj-solo').onclick = () => { root.remove(); resolve(null) }
     $('hj-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('hj-go').click() })
     $('hj-go').onclick = async () => {
       const base = $('hj-addr').value.trim().replace(/\/+$/, '')
-      const body = { code: $('hj-code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('hj-name').value, password: $('hj-pw').value || undefined, adults: $('hj-adults').checked }
+      const body = { code: $('hj-code').value.trim().replace(/\s|-/g, '').toUpperCase(), name: $('hj-name').value, password: $('hj-pw').value || undefined, adults: $('hj-adults').checked, ...(!$('hj-worldrow').hidden && $('hj-world').value ? { world: $('hj-world').value } : againWorld ? { world: againWorld } : {}) }
+      againWorld = ''
       if (!/^https?:\/\//.test(base)) { badText($('hj-out'), 'http:// …'); return }
       $('hj-out').textContent = T.asking
       let j
@@ -309,7 +326,7 @@ function setChatOn(on) {
 function chatLine(f) {
   if (!chatOn || !ensureDock()) return
   const log = dock.querySelector('.hc-log'), li = document.createElement('li'), who = document.createElement('b')
-  who.textContent = String(f.a || '') + ': '; li.append(who, document.createTextNode(String(f.m || '')))
+  who.textContent = (f.w && info && f.w !== info.world ? '[' + String(f.w) + '] ' : '') + String(f.a || '') + ': '; li.append(who, document.createTextNode(String(f.m || '')))
   log.append(li); while (log.children.length > CHAT_LINES) log.firstChild.remove()
   log.scrollTop = log.scrollHeight
   if (dock.querySelector('.hc-panel').hidden) { unread = Math.min(99, unread + 1); paintToggle() }
@@ -347,6 +364,7 @@ function homeFrame(f) {
   if (f.t === 'tp') { if (tpFn) tpFn(f.x, f.y, f.z); if (toastFn && f.by && info && f.by !== info.name) toastFn(f.by + ' moved you'); return }
   if (f.t === 'plugins') { pluginSummary = f.list || []; return }
   if (f.t === 'cmdok') { if (f.msg) sysLine(f.msg); return }
+  if (f.t === 'switch' && typeof f.world === 'string') { sysLine('Switching to world ' + f.world + ' …'); if (toastFn) toastFn('Off to ' + f.world); setTimeout(() => homeReload(f.world), 400); return }
   // essentials 2 (part 13): the owner's give / heal / clear land on this game through the hooks main.js gave us
   if (f.t === 'give') { const item = String(f.item || ''), n = Math.max(1, Math.min(64, Number(f.n) | 0)); if (game.give && game.give(item, n)) sysLine((f.by || 'The owner') + ' gave you ' + n + ' ' + item + '.'); else sysLine((f.by || 'The owner') + ' tried to give you "' + item + '", which is not an item here.'); return }
   if (f.t === 'heal') { if (game.heal) game.heal(); sysLine((f.by || 'The owner') + ' healed you.'); return }

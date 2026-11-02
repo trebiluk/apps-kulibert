@@ -95,6 +95,14 @@ or the 💬 rule in the game. What stays, because it is about spam and safety ra
 - the owner can mute one player or everyone; muted players are told so;
 - messages are passed on to the people in the world and **never written to disk or to the log**.
 
+## Several worlds at once
+Up to 8 worlds can be open on one host: owner page → Worlds → **Open** next to each (the first is the **main** world;
+**Make main** moves it). One session and one code cover them all; new players land in the main world unless they pick
+one on the join card (shown when more than one is open), chat crosses worlds with a `[world]` tag, `/list` groups by
+world, and `/world <name>` switches (the game reloads into that world; your bag and spot are per world). Plugins are
+the server's (kept in the main world's file). **Close** drops that world's players and keeps the rest; the open set
+comes back after a restart.
+
 ## Keep inventory
 **On** in every preset. Two switches on the owner page:
 - **Keep inventory** (Session): the whole world.
@@ -232,8 +240,8 @@ player · request bodies 16 KB (world files 256 MB).
 - `home-owner-check`: a real host (first run, session, players, owner tools, restart);
 - `home-rules-check`: presets, live switching, server enforcement;
 - `home-fuzz-check`: junk requests and frames (no 5xx, the host stays up);
-- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check`: the command menu and typed commands; the plugin engine (tiers, limits,
-  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files);
+- `home-cmd-check` / `home-plugin-check` / `home-invite-check` / `home-access-check` / `home-library-check` / `home-worlds-check`: the command menu and typed commands; the plugin engine (tiers, limits,
+  every when/if/do, deny, timers, bad plugins refused) and the owner's plugin API; invite keys and the griefer guard; Cloudflare Access JWTs and the remote owner gate; the cloud plugin library (two hosts, per-server on/off, conflicts, files); several worlds at once (picker data, cross chat, /world, close one, restart);
 - `home-spam-check`: every limit above trips and then recovers; world chat; keep inventory (world and per player);
   boss notes; world files; the TLS proxy reply;
 - in `bloxbert-src`, `npm run test:home`: the leak and build checks and `home-decay-check` (decay rules, the real bag

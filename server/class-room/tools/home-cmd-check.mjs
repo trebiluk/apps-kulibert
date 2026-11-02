@@ -17,7 +17,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   const ps = [{ id: 1, ref: 'a', alias: 'Diego', staff: true, pos: { x: 1, y: 64, z: 1 } }, { id: 2, ref: 'b', alias: 'Mr Saccy', staff: false, pos: { x: 5, y: 64, z: 5 } }]
   const c = makeCommands({ spawn: () => ({ x: 8.5, y: 8, z: 1.5 }), players: () => ps, now: () => t })
   const [O, S] = ps
-  eq(menuFor(false).map((m) => m.c).join() === 'spawn,sethome,home,list,msg' && menuFor(true).length === 26, 'menu: players get spawn/sethome/home/list/msg; the owner gets the staff set too')
+  eq(menuFor(false).map((m) => m.c).join() === 'spawn,sethome,home,list,msg,world' && menuFor(true).length === 27, 'menu: players get spawn/sethome/home/list/msg; the owner gets the staff set too')
   eq(c.parse('/tp sacc', true).cmd.id === 2 && c.parse('/TP mr saccy', true).cmd.id === 2 && c.parse('/tp nobody', true).error === 'no-such-player', 'typed: names match whole or by start, any case; unknown names are refused')
   eq(c.parse('/tp Diego', false).error === 'role' && c.parse('/spawnall', false).error === 'role' && c.parse('/home', false).cmd.c === 'home', 'typed: staff commands refused for players; player commands fine')
   eq(c.parse('/nope', true).error === 'unknown' && c.parse('hello', true).error === 'not-a-command' && /\/spawn/.test(c.parse('/help', false).help) && !/\/tp/.test(c.parse('/help', false).help) && /\/tp/.test(c.parse('/help', true).help), 'typed: unknown commands, plain text, and /help per role')
@@ -56,7 +56,7 @@ try {
   await api('world/open', { name: 'cmd-world-0001' })
   CODE = (await api('session/start', { ruleset: 'home-survival' })).code
   const O = await sock(await api('play', { name: 'Diego' })), S = await sock(await join('Mr Saccy'))
-  eq(S.rules[0].menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg' && O.rules[0].menu.some((m) => m.c === 'bring'), 'live: the rules frame carries each role\'s command menu')
+  eq(S.rules[0].menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg,world' && O.rules[0].menu.some((m) => m.c === 'bring'), 'live: the rules frame carries each role\'s command menu')
   O.pos(10.5, 64, 10.5); S.pos(40.5, 64, 40.5); await sleep(150)
   S.send({ t: 'cmd', c: 'spawn' }); await sleep(200)
   eq(S.tps.length === 1 && S.tps[0].x === 8.5 && S.tps[0].y === 8, 'live button: spawn teleports the player (tp frame)')
@@ -115,7 +115,7 @@ try {
   eq(O.nos.some((n) => /Not on yourself/.test(n.why)), 'live: the owner cannot freeze themself')
   O.send({ t: 'cmd', c: 'heal', id: S.hello.you }); O.send({ t: 'cmd', c: 'list' }); S.send({ t: 'cmd', c: 'kick', id: O.hello.you }); await sleep(250)
   eq(S.frames.filter((f) => f.t === 'heal').length === 2 && O.oks.filter((o) => /^In \(2\)/.test(o.msg)).length === 2 && S.nos.some((n) => /Only the owner/.test(n.why)) && O.closed === null, 'live buttons: heal/list by button; a player pressing an owner button is refused')
-  eq(O.rules.at(-1).menu.some((m) => m.c === 'kick') && O.rules.at(-1).menu.some((m) => m.c === 'give' && m.arg === 'text') && S.rules.at(-1).menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg', 'live: the menus carry the new buttons (owner: kick/ban/freeze/give/heal/clear/gm/day/night; players: list, whisper)')
+  eq(O.rules.at(-1).menu.some((m) => m.c === 'kick') && O.rules.at(-1).menu.some((m) => m.c === 'give' && m.arg === 'text') && S.rules.at(-1).menu.map((m) => m.c).join() === 'spawn,sethome,home,list,msg,world', 'live: the menus carry the new buttons (owner: kick/ban/freeze/give/heal/clear/gm/day/night; players: list, whisper)')
   O.send({ t: 'chat', m: '/kick saccy' }); await sleep(300)
   eq(S.closed && S.closed.reason === 'kicked' && O.oks.some((o) => /Mr Saccy was kicked/.test(o.msg)), 'live: /kick by name')
   const S2 = await sock(await join('Mr Saccy')); await sleep(150)

@@ -97,6 +97,7 @@
 
   <section>
     <h2>Worlds</h2>
+    <p class="dim">Several can be open at once (up to 8): one session and code for all, cross-world chat, players switch with <code>/world &lt;name&gt;</code>. New players land in the <b>main</b> world unless they pick one on the join card.</p>
     <div class="row"><input id="new-world" placeholder="new world: 8+ letters, digits, - _" minlength="8" maxlength="40" style="flex:1"><button id="btn-new" class="go">Create and open</button></div>
     <div class="tbl"><table id="worlds"><thead><tr><th>Name</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="row"><button id="btn-backup">Back up open world</button><button id="btn-close">Close world</button></div>
@@ -161,7 +162,7 @@ $('pin-go').addEventListener('click', async () => {
 
 function render(s) {
   state = s
-  $('st-world').textContent = s.world ? 'world: ' + s.world : 'no world'; $('st-world').className = 'pill ' + (s.world ? 'on' : 'off')
+  const nOpen = (s.live.worlds || []).length; $('st-world').textContent = s.world ? (nOpen > 1 ? nOpen + ' worlds · main ' + s.world : 'world: ' + s.world) : 'no world'; $('st-world').className = 'pill ' + (s.world ? 'on' : 'off')
   $('st-session').textContent = s.live.session ? 'session live · ' + RULES[s.live.session.cfg] : 'no session'; $('st-session').className = 'pill ' + (s.live.session ? 'on' : 'off')
   $('st-online').textContent = s.live.players.length + ' online'
   $('ver').textContent = (s.game ? 'game ' + s.game + ' · ' : '') + 'server ' + s.version + ' · ' + s.data
@@ -185,7 +186,8 @@ function render(s) {
   $('btn-lib-pull').disabled = $('btn-lib-push').disabled = !lb.on; $('btn-lib-off').disabled = !lb.on
   if (s.guard && document.activeElement !== $('guard-breaks') && document.activeElement !== $('guard-window')) { $('guard-on').checked = s.guard.on !== false; $('guard-breaks').value = s.guard.breaks; $('guard-window').value = s.guard.window; $('guard-undo').checked = s.guard.undo !== false }
   $('bans').querySelector('tbody').innerHTML = s.live.bans.map((b) => `<tr><td>${b.name || b.ref}</td><td class="dim">${ago(b.at)}</td><td><button data-unban="${b.ref}">Unban</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
-  $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? ' <span class="ok">(open)</span>' : ''}<br><span class="dim">${kb(w.bytes)} · ${ago(w.changed)}</span></td><td><div class="acts">${w.open ? '' : `<button data-open="${w.name}">Open</button>`}<button data-bk="${w.name}">Back up</button><button data-dl="${w.name}">Download</button></div></td></tr>`).join('') || '<tr><td colspan="2" class="dim">No worlds yet.</td></tr>'
+  const inWorld = (n) => ((s.live.worlds || []).find((w) => w.name === n) || {}).players || 0
+  $('worlds').querySelector('tbody').innerHTML = s.worlds.map((w) => `<tr><td>${w.name}${w.open ? (w.main ? ' <span class="ok">(main)</span>' : ' <span class="ok">(open)</span>') : ''}${w.open ? ' · ' + inWorld(w.name) + ' in' : ''}<br><span class="dim">${kb(w.bytes)} · ${ago(w.changed)}</span></td><td><div class="acts">${w.open ? (w.main ? '' : `<button data-main="${w.name}">Make main</button>`) + `<button data-closew="${w.name}">Close</button>` : `<button data-open="${w.name}">Open</button>`}<button data-bk="${w.name}">Back up</button><button data-dl="${w.name}">Download</button></div></td></tr>`).join('') || '<tr><td colspan="2" class="dim">No worlds yet.</td></tr>'
   $('backups').querySelector('tbody').innerHTML = s.backups.map((b) => `<tr><td>${b}</td><td><button data-rs="${b}">Restore</button></td></tr>`).join('') || '<tr><td class="dim">none</td></tr>'
   $('btn-backup').disabled = $('btn-close').disabled = !s.world
   const rr = s.live.rules; $('chat-on').checked = !!(rr && rr.r['chat.typed']); $('keep-on').checked = !!(rr && rr.r['survival.keep']); $('chat-on').disabled = $('keep-on').disabled = !rr
@@ -253,7 +255,9 @@ document.addEventListener('click', async (e) => {
   else if (b.id === 'btn-rollback') { const m = Number($('rb-min').value) || 5; if (confirm('Undo everyone\'s edits of the last ' + m + ' minutes?')) { const r = await api('rollback', { minutes: m }); toast('Undid ' + r.applied + ' blocks') } }
   else if (b.id === 'btn-new') { const name = $('new-world').value.trim(); if (!name) return; const r = await api('world/open', { name }); if (r.error) toast('World names: 8 to 40 letters, digits, - or _'); else $('new-world').value = '' }
   else if (b.id === 'btn-backup') { const r = await api('world/backup', {}); toast(r.ok ? 'Backed up: ' + r.file : 'Backup failed') }
-  else if (b.id === 'btn-close') { if (confirm('Close the world? The session ends.')) await api('world/close', {}) }
+  else if (b.id === 'btn-close') { if (confirm('Close the main world?' + ((state && state.live.worlds || []).length > 1 ? ' Players in it are dropped; the other worlds stay open.' : ' The session ends.'))) await api('world/close', {}) }
+  else if (d.closew) { if (confirm('Close ' + d.closew + '? Players in it are dropped.')) await api('world/close', { name: d.closew }) }
+  else if (d.main) await api('world/main', { name: d.main })
   else if (b.id === 'btn-stop') { if (confirm('Stop the server? Everyone is disconnected; the world is saved.')) { await api('stop', {}); toast('Stopped. You can close this tab.') } return }
   else return
   refresh()

@@ -16,7 +16,7 @@ import { World } from '../src/world-do.js'
 import { PROTOCOL, parsePos } from '../src/protocol.js'
 import { decodeChunk, cellAt } from '../src/world/chunks.js'
 import { LIMITS } from '../src/rules.js'
-import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS } from './door.mjs'
+import { makeDoor, registerHome, hashPin, checkPin, validPin, RULESETS, DEFAULT_MAX_PLAYERS, HOME_CFG } from './door.mjs'
 import { makeRuleset, PRESETS } from './rules.mjs'
 import { cleanChat, makeChatGate } from './chat.mjs'
 import { fold } from './words.mjs'
@@ -66,6 +66,11 @@ const cfg = Object.assign({
 }, loadCfg() || {})
 if (!cfg.access || typeof cfg.access !== 'object') cfg.access = { team: '', aud: '', email: '' }
 if (!cfg.library || typeof cfg.library !== 'object') cfg.library = { url: '', key: '' }
+// part 14: several worlds open at once. cfg.world = the main one (joins land there unless a world is picked);
+// cfg.worlds = every open world. One session, one code, cross-world chat; a player switches with /world <name>.
+if (!Array.isArray(cfg.worlds)) cfg.worlds = cfg.world ? [cfg.world] : []
+if (cfg.world && !cfg.worlds.includes(cfg.world)) cfg.worlds.push(cfg.world)
+const isOpen = (name) => !!name && cfg.worlds.includes(name)
 if (!cfg.guard || typeof cfg.guard !== 'object') cfg.guard = { on: true, breaks: 70, window: 10, undo: true }
 if (flag('lan')) cfg.listen = '0.0.0.0'
 cfg.port = Number(arg('port', cfg.port))
@@ -89,7 +94,7 @@ function roomOf(name) {
 }
 function worldOf(name) {
   if (!worlds.has(name)) {
-    if (cfg.world !== name) throw new Error('world is closed')
+    if (!isOpen(name)) throw new Error('world is closed')
     const ctx = worldCtx(worldFile(name), () => worlds.get(name).obj.alarm())
     worlds.set(name, { obj: new World(ctx, env), ctx })
   }
@@ -101,27 +106,40 @@ const players = () => [...rooms.values()].flatMap((r) => [...r.players.values()]
 const online = () => players().filter(({ p }) => p.role === 'kid').length
 
 // ---------------------------------------------------------------- worlds (open/close/backup/restore, as #122)
-const listWorlds = () => fs.readdirSync(path.join(DATA, 'worlds')).filter((f) => f.endsWith('.sqlite')).map((f) => { const st = fs.statSync(path.join(DATA, 'worlds', f)); const name = f.replace(/\.sqlite$/, ''); return { name, bytes: st.size, changed: st.mtimeMs, open: cfg.world === name } })
-function closeWorld({ forget = true } = {}) {
-  if (!cfg.world) return
-  const name = cfg.world; cfg.world = null
+const listWorlds = () => fs.readdirSync(path.join(DATA, 'worlds')).filter((f) => f.endsWith('.sqlite')).map((f) => { const st = fs.statSync(path.join(DATA, 'worlds', f)); const name = f.replace(/\.sqlite$/, ''); return { name, bytes: st.size, changed: st.mtimeMs, open: isOpen(name), main: cfg.world === name } })
+// close ONE world: its players are dropped, its rooms forgotten; the others stay open. The main world moves on if needed.
+function closeWorld(name = cfg.world, { forget = true } = {}) {
+  if (!name || !isOpen(name)) return
   const w = worlds.get(name)
   if (w) {
-    for (const r of rooms.values()) { try { w.obj.hub.unlink(r.rid) } catch (e) {} }
+    for (const r of rooms.values()) if (r.wid === name) { try { w.obj.hub.unlink(r.rid) } catch (e) {} }
     if (w.obj.timer) { clearInterval(w.obj.timer); w.obj.timer = null }
     try { w.obj.hub.flush() } catch (e) { console.error('[home] final save failed', e.message) }
     worlds.delete(name)
     try { w.ctx.close() } catch (e) { console.error('[home] close failed', e.message) }
   }
-  for (const { room, p } of players()) room.drop(p.id, 4006, 'world closed')
-  rooms.clear(); pluginList = []; runner.load([])
+  for (const { room, p } of players()) if (room.wid === name) room.drop(p.id, 4006, 'world closed')
+  for (const [rid, r] of rooms) if (r.wid === name) rooms.delete(rid)
+  cfg.worlds = cfg.worlds.filter((n) => n !== name)
+  if (cfg.world === name) { cfg.world = cfg.worlds[0] || null; pluginList = []; runner.load([]); if (cfg.world) loadPlugins() }
+  feed('world closed: ' + name + (cfg.world ? ' · main is ' + cfg.world : ''))
   if (forget) saveCfg()
 }
-function openWorld(name) {
+function closeAllWorlds() { for (const n of [...cfg.worlds]) closeWorld(n, { forget: false }); saveCfg() }
+// open a world next to the ones already open; the first one open (or main: true) is the main world
+function openWorld(name, { main = false } = {}) {
   if (!/^[A-Za-z0-9_-]{8,40}$/.test(name)) return { error: 'name' }
-  closeWorld(); cfg.world = name; saveCfg(); worldOf(name); loadPlugins(); if (libOn()) libPull(true).then((r) => { if (r.error) feed('plugin library: ' + r.error + ' (using the world\'s own copy)') })
-  return { ok: true, name }
+  if (cfg.worlds.length >= MAX_WORLDS && !isOpen(name)) return { error: 'too-many-worlds' }
+  if (!isOpen(name)) cfg.worlds.push(name)
+  worldOf(name)
+  // the hub opens a world to kids only once a staff seat has been in it (school); at home the owner holds a seat in
+  // every open world, so players can land in any of them while the owner is elsewhere (or not in yet)
+  try { const hub = worldOf(name); const seat = 'homeowner-seat-' + name.slice(0, 20); const a = hub.assign({ world: name, ref: seat, grp: null, role: 'admin', bld: 's', cfg: HOME_CFG }); if (!a.err) hub.left(seat) } catch (e) {}
+  if (main || !cfg.world) { cfg.world = name; loadPlugins(); if (libOn()) libPull(true).then((r) => { if (r.error) feed('plugin library: ' + r.error + ' (using the world\'s own copy)') }) }
+  saveCfg(); feed('world open: ' + name + (cfg.world === name ? ' (main)' : '') + ' · ' + cfg.worlds.length + ' open')
+  return { ok: true, name, main: cfg.world, worlds: cfg.worlds.slice() }
 }
+const MAX_WORLDS = 8
 function backupWorld(name) {
   const w = worlds.get(name); if (w) w.obj.hub.flush()
   const src = worldFile(name); if (!fs.existsSync(src)) return { error: 'missing' }
@@ -132,11 +150,12 @@ function backupWorld(name) {
 function restoreWorld(file) {
   const src = path.join(DATA, 'backups', path.basename(file)); if (!fs.existsSync(src)) return { error: 'missing' }
   const name = path.basename(file).replace(/-\d{4}-\d{2}-\d{2}T.*$/, '')
-  const was = cfg.world === name
-  if (was) { endSession(); closeWorld() }
+  const was = isOpen(name)
+  const wasMain = cfg.world === name
+  if (was) closeWorld(name)
   backupWorld(name)
   fs.copyFileSync(src, worldFile(name)); for (const ext of ['-wal', '-shm']) { try { fs.unlinkSync(worldFile(name) + ext) } catch (e) {} }
-  if (was) openWorld(name)
+  if (was) openWorld(name, { main: wasMain })
   return { ok: true, name }
 }
 
@@ -194,7 +213,7 @@ const chatGate = makeChatGate()       // typed chat: one gap per player; nothing
 const SPAWN = { x: 8.5, y: 8, z: 1.5 }   // the game's own spawn (bloxbert-src main.js SPAWN)
 const commands = makeCommands({ spawn: () => SPAWN, players: () => players().map(({ p }) => ({ id: p.id, ref: p.ref, alias: p.alias, staff: p.role !== 'kid', pos: p.pos })) })
 const CMD_WHY = { role: 'Only the owner can do that.', cooldown: 'Wait a few seconds.', 'no-home': 'No home set yet: /sethome where you stand.', 'no-such-player': 'No player by that name.', 'no-such-warp': 'No warp by that name (/warps lists them).', 'warp-name': 'Warp names: letters, digits, - or _ (up to 20).', unknown: 'Unknown command. /help lists them.', who: 'Who? Add a player name.', what: 'Say what? Add the text.', pos: 'Stand somewhere first.', 'not-here': 'You cannot set a home here.',
-  'give-shape': 'Use: /give <player> <item> [count 1-64].', 'give-count': 'Count: 1 to 64.', 'gm-shape': 'Use: /gm creative|survival <player>.', 'too-far': 'Those coordinates are outside the world.', self: 'Not on yourself.', 'chat-off': 'Chat is off.', muted: 'You are muted.', 'not-online': 'That player is not in right now.' }
+  'no-such-world': 'No open world by that name (/world lists them).', 'give-shape': 'Use: /give <player> <item> [count 1-64].', 'give-count': 'Count: 1 to 64.', 'gm-shape': 'Use: /gm creative|survival <player>.', 'too-far': 'Those coordinates are outside the world.', self: 'Not on yourself.', 'chat-off': 'Chat is off.', muted: 'You are muted.', 'not-online': 'That player is not in right now.' }
 // essentials 2 (part 13): per-player state the host keeps for the session
 const frozenAt = new Map()   // ref -> { x, y, z, at } : a frozen player's spot (positions are refused, the client is sent back)
 const modeFor = new Map()    // ref -> 'creative' | 'survival' : a game mode set for one player (/gm), on top of the ruleset's
@@ -207,7 +226,19 @@ function localCommand(room, ws, p, r) {
   if (r.local === 'warps') return ok(commands.warpList().length ? 'Warps: ' + commands.warpList().join(', ') : 'No warps yet: /setwarp <name> where you stand.')
   if (r.local === 'setwarp') { const x = commands.setWarp(r.name, p.pos); if (x.error) return no(x.error); broadcastRules(); return ok('Warp "' + r.name + '" set.') }
   if (r.local === 'delwarp') { const x = commands.delWarp(r.name); if (x.error) return no(x.error); broadcastRules(); return ok('Warp "' + r.name + '" removed.') }
-  if (r.local === 'list') { const names = players().map(({ p: q }) => q.alias + (q.role !== 'kid' ? ' (owner)' : '') + (frozenAt.has(q.ref) ? ' ❄' : '') + (q.muted ? ' 🔇' : '')); return ok('In (' + names.length + '): ' + names.join(', ')) }
+  if (r.local === 'list') {
+    const tag = (q) => q.alias + (q.role !== 'kid' ? ' (owner)' : '') + (frozenAt.has(q.ref) ? ' ❄' : '') + (q.muted ? ' 🔇' : '')
+    if (cfg.worlds.length <= 1) { const names = players().map(({ p: q }) => tag(q)); return ok('In (' + names.length + '): ' + names.join(', ')) }
+    const by = new Map(cfg.worlds.map((w) => [w, []])); for (const { room: rm, p: q } of players()) (by.get(rm.wid) || by.set(rm.wid, []).get(rm.wid)).push(tag(q))
+    return ok('In (' + players().length + '): ' + [...by].map(([w, names]) => w + (w === cfg.world ? '*' : '') + ' [' + names.length + ']' + (names.length ? ' ' + names.join(', ') : '')).join(' · ') + ' — /world <name> to switch')
+  }
+  if (r.local === 'world') {
+    if (!r.name) return ok('Open worlds: ' + cfg.worlds.map((w) => w + (w === cfg.world ? ' (main)' : '')).join(', ') + ' — you are in ' + worldOfPlayer(p))
+    const target = cfg.worlds.find((w) => fold(w) === fold(r.name)) || cfg.worlds.find((w) => fold(w).startsWith(fold(r.name)))
+    if (!target) return no('no-such-world')
+    if (target === worldOfPlayer(p)) return ok('You are already in ' + target + '.')
+    feed(p.alias + ' switches to world ' + target); tell({ t: 'switch', world: target }); return
+  }
   if (r.local === 'msg') {
     if (p.muted) return no('muted')
     if (rules.snapshot().r['chat.typed'] !== true && p.role === 'kid') return no('chat-off')
@@ -258,8 +289,8 @@ const events = makeEvents()           // shared boss fight news
 // world plus the seq it is good up to; live ops after that seq come through the normal fan-out. One per player / 5 s.
 const ALL_BATCH = 4000, ALL_GAP_MS = 5000
 const allAsked = new Map()   // ref -> last time
-function worldCells() {
-  const w = cfg.world && worlds.get(cfg.world); if (!w) return null
+function worldCells(name) {
+  const w = name && worlds.get(name); if (!w) return null
   const h = w.obj.hub
   const head = h.world.head()
   try { h.flush() } catch (e) {}
@@ -275,7 +306,7 @@ function sendAll(ws, p) {
   const t = Date.now(), last = allAsked.get(p.ref) || 0
   if (t - last < ALL_GAP_MS) { try { ws.send(JSON.stringify({ t: 'no', c: 'all-slow' })) } catch (e) {} ; return }
   allAsked.set(p.ref, t)
-  const wc = worldCells(); if (!wc) return
+  const me = players().find(({ p: q }) => q === p); const wc = worldCells(me ? me.room.wid : cfg.world); if (!wc) return
   const n = Math.max(1, Math.ceil(wc.cells.length / ALL_BATCH))
   for (let i = 0; i < n; i++) { try { ws.send(JSON.stringify({ t: 'all', s: wc.head, i, n, c: wc.cells.slice(i * ALL_BATCH, (i + 1) * ALL_BATCH) })) } catch (e) { return } }
 }
@@ -426,11 +457,12 @@ function carryOut(actions, ev) {
     else if (a.a === 'spawn') send({ t: 'tp', x: SPAWN.x, y: SPAWN.y, z: SPAWN.z, by: a.plugin })
     else if (a.a === 'kick' && who && who.p.role === 'kid') { feed('plugin ' + a.plugin + ' kicked ' + who.p.alias); who.room.drop(who.p.id, 4006, 'plugin') }
     else if (a.a === 'mute' && who && who.p.role === 'kid') who.p.muted = !!a.on
-    else if (a.a === 'undo' && who && Number.isFinite(ev.x)) { const w = cfg.world && worlds.get(cfg.world); if (w) { const cur = w.obj.hub.world.cell(ev.x, ev.y, ev.z); if (cur !== undefined && cur !== ev.before) w.obj.hub.world.apply([{ x: ev.x, y: ev.y, z: ev.z, id: ev.before, b: cur }], null) } }
-    else if (a.a === 'set') { const w = cfg.world && worlds.get(cfg.world); if (w) { const cur = w.obj.hub.world.cell(a.x, a.y, a.z); if (cur !== undefined && cur !== a.id) w.obj.hub.world.apply([{ x: a.x, y: a.y, z: a.z, id: a.id, b: cur }], null) } }
+    else if (a.a === 'undo' && who && Number.isFinite(ev.x)) { const w = worlds.get(ev.world || cfg.world); if (w) { const cur = w.obj.hub.world.cell(ev.x, ev.y, ev.z); if (cur !== undefined && cur !== ev.before) w.obj.hub.world.apply([{ x: ev.x, y: ev.y, z: ev.z, id: ev.before, b: cur }], null) } }
+    else if (a.a === 'set') { const w = worlds.get(ev.world || cfg.world); if (w) { const cur = w.obj.hub.world.cell(a.x, a.y, a.z); if (cur !== undefined && cur !== a.id) w.obj.hub.world.apply([{ x: a.x, y: a.y, z: a.z, id: a.id, b: cur }], null) } }
   }
 }
 const evPlayer = (p) => ({ id: p.id, name: p.alias, owner: p.role !== 'kid' })
+const worldOfPlayer = (p) => { const f = players().find(({ p: q }) => q === p); return f ? f.room.wid : cfg.world }
 setInterval(() => { if (pluginList.length) carryOut(runner.tick(), {}) }, 1000).unref()
 let ownerSeated = false              // an owner socket has been accepted this session (mirrors the hub's open flag)
 function startSession({ ruleset, password }) {
@@ -456,8 +488,9 @@ function freeze(on) { feed(on ? 'owner froze building' : 'owner unfroze building
 // Mute: a per-player flag the Room reads once quick chat is wired (part 4; essentials.js is standalone today). Until then it only shows on the owner page.
 function mute(ref, on) { let n = 0, who = ref === '*' ? 'everyone' : ''; for (const { p } of players()) if (ref === '*' || p.ref === ref) { p.muted = !!on; n++; if (ref !== '*') who = p.alias } if (n) feed('owner ' + (on ? 'muted ' : 'unmuted ') + who); return { ok: true, n } }
 // Rollback: undo every edit of the last N minutes (optionally by one player), through the world so it is numbered, saved and fanned out.
-function rollback(minutes, ref) {
-  const w = cfg.world && worlds.get(cfg.world); if (!w) return { error: 'no world' }
+function rollback(minutes, ref, worldName = null) {
+  const target = worldName || (ref && findPlayer(ref) ? findPlayer(ref).room.wid : cfg.world)
+  const w = target && worlds.get(target); if (!w) return { error: 'no world' }
   const hub = w.obj.hub
   const until = Date.now(), since = until - Math.max(1, Math.min(7 * 24 * 60, Number(minutes) || 5)) * 60 * 1000
   const sel = { since, until, ...(ref ? { who: hub.who(ref) } : {}) }
@@ -523,9 +556,9 @@ function homeFrame(room, ws, p, text) {
     if (p.muted) { no('chat-muted'); return true }
     const c = cleanChat(m.m); if (c.error) { no(c.error); return true }
     const slow = chatGate.check(p.ref); if (slow) { no('chat-slow', slow); return true }
-    if (pluginEvent({ e: 'chat', player: evPlayer(p), text: c.m })) { no('plugin'); return true }
-    broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now() })
-    if (SHOW_CHAT) feed(p.alias + ': ' + c.m)
+    if (pluginEvent({ e: 'chat', world: room.wid, player: evPlayer(p), text: c.m })) { no('plugin'); return true }
+    broadcastAll({ t: 'chat', a: p.alias, m: c.m, at: Date.now(), ...(cfg.worlds.length > 1 ? { w: room.wid } : {}) })   // cross-world: every open world hears it, tagged with where it came from
+    if (SHOW_CHAT) feed((cfg.worlds.length > 1 ? '[' + room.wid + '] ' : '') + p.alias + ': ' + c.m)
     return true
   }
   // shared events (home-only): a boss fight started, moved on or ended somewhere in the world
@@ -538,8 +571,8 @@ function homeFrame(room, ws, p, text) {
 }
 function live() {
   const w = cfg.world ? worlds.get(cfg.world) : null
-  const out = { world: cfg.world, session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
-  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref), frozen: frozenAt.has(p.ref), mode: modeFor.get(p.ref) || null, pos: p.pos ? { x: p.pos.x, y: p.pos.y, z: p.pos.z } : null })
+  const out = { world: cfg.world, worlds: cfg.worlds.map((n) => ({ name: n, main: n === cfg.world, players: players().filter(({ room }) => room.wid === n).length })), session: door.info(), ruleset: cfg.ruleset, players: [], head: w ? w.obj.hub.world.head() : 0, recent: [], bans: door.bans, frozen: [...rooms.values()].some((r) => r.frozen) }
+  for (const { room, p } of players()) out.players.push({ ref: p.ref, name: p.alias, role: p.role === 'kid' ? 'player' : 'owner', room: room.rid, world: room.wid, muted: !!p.muted, keep: keepFor.has(p.ref) ? keepFor.get(p.ref) : rules.get('survival.keep') !== false, keepOwn: keepFor.has(p.ref), frozen: frozenAt.has(p.ref), mode: modeFor.get(p.ref) || null, pos: p.pos ? { x: p.pos.x, y: p.pos.y, z: p.pos.z } : null })
   if (w) {
     const h = w.obj.hub
     const who = new Map(out.players.map((p) => [h.who(p.ref), p.name]))
@@ -605,14 +638,17 @@ async function handle(req, res) {
   if (url.pathname === '/owner') return (isLocal(req) || (await remoteOwnerOk(req))) ? page(res, 'owner.html') : text(res, 403, 'the owner page is for the host PC only')
   if (url.pathname === '/rt/health') return text(res, 200, 'ok')
   if (url.pathname === '/version') return json(res, 200, { version: PKG.version, game: PKG.gameVersion || null })
+  // the open worlds, for the join card's picker: names and counts only, and only while a session is live
+  if (url.pathname === '/worlds') return json(res, 200, { worlds: door.session ? cfg.worlds.map((n) => ({ name: n, main: n === cfg.world, players: players().filter(({ room }) => room.wid === n).length })) : [] })
   if (url.pathname === '/join' && req.method === 'POST') {
     const b = await readBody(req, res); if (!b) return
-    const r = await door.join({ code: b.code, name: b.name, password: b.password, adults: b.adults === true, ip: ipOf(req), playersOnline: online() })
+    const pick = typeof b.world === 'string' && isOpen(b.world) ? b.world : null   // a picked world must be one of the open ones; else the main one
+    const r = await door.join({ code: b.code, name: b.name, password: b.password, adults: b.adults === true, ip: ipOf(req), playersOnline: online(), world: pick })
     // the hub opens a world when a staff seat (here: the owner) is in it; say so instead of handing out a ticket that dies at the door
     if (!r.error && !ownerSeated) return json(res, 403, { error: 'no-owner' })
     if (r.error) return json(res, r.error === 'slow-down' ? 429 : r.error === 'full' ? 503 : 403, { error: r.error, ...(r.wait ? { wait: r.wait } : {}) })
     if (r.invite) inviteJoins.set(r.ref, r)   // the socket open names it in the feed
-    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: wsBase(req) + '/rt/ws', version: PKG.gameVersion || PKG.version })
+    return json(res, 200, { ticket: r.ticket, name: r.name, world: r.world, ruleset: r.ruleset, ws: wsBase(req) + '/rt/ws', version: PKG.gameVersion || PKG.version, worlds: cfg.worlds.slice() })
   }
   // owner API: host PC only. /owner/pin exchanges the PIN (and the URL key) for a short token; the rest need the token.
   if (url.pathname.startsWith('/owner/')) {
@@ -661,9 +697,10 @@ async function handle(req, res) {
       case '/owner/plugins/files/load': { const r = filesLoad(); return json(res, r.error ? 400 : 200, r) }
       case '/owner/plugin/on': return json(res, 200, togglePlugin(String(b.id || ''), !!b.on))
       case '/owner/plugin/drop': return json(res, 200, dropPlugin(String(b.id || '')))
-      case '/owner/play': { const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20)); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws', world: cfg.world, name: String(b.name || 'Owner').slice(0, 20) }) : json(res, 400, { error: 'no session' }) }
-      case '/owner/world/open': return json(res, 200, openWorld(String(b.name || '')))
-      case '/owner/world/close': endSession(); closeWorld(); return json(res, 200, { ok: true })
+      case '/owner/play': { const w = typeof b.world === 'string' && isOpen(b.world) ? b.world : cfg.world; const t = await door.ownerTicket(String(b.name || 'Owner').slice(0, 20), w); return t ? json(res, 200, { ticket: t, ws: 'ws://localhost:' + cfg.port + '/rt/ws', world: w, name: String(b.name || 'Owner').slice(0, 20) }) : json(res, 400, { error: 'no session' }) }
+      case '/owner/world/open': { const r = openWorld(String(b.name || ''), { main: b.main === true }); return json(res, r.error ? 400 : 200, r) }
+      case '/owner/world/main': { const n = String(b.name || ''); if (!isOpen(n)) return json(res, 404, { error: 'not open' }); cfg.world = n; pluginList = []; runner.load([]); loadPlugins(); saveCfg(); feed('main world: ' + n); return json(res, 200, { ok: true, main: n }) }
+      case '/owner/world/close': { const n = b.name ? String(b.name) : cfg.world; if (!isOpen(n)) return json(res, 404, { error: 'not open' }); if (cfg.worlds.length === 1) endSession(); closeWorld(n); return json(res, 200, { ok: true, worlds: cfg.worlds.slice(), main: cfg.world }) }
       case '/owner/world/backup': return json(res, 200, backupWorld(String(b.name || cfg.world || '')))
       case '/owner/world/restore': return json(res, 200, restoreWorld(String(b.file || '')))
       case '/owner/invite': { const r = door.invite({ label: b.label, name: b.name || null, max: b.max, ttlMs: Number(b.hours) ? Number(b.hours) * 3600 * 1000 : undefined }); if (r.error) return json(res, 400, r); feed('owner made invite ' + (r.label || r.id) + (b.label ? ' (' + String(b.label).slice(0, 40) + ')' : '') + ', ' + r.max + ' use' + (r.max === 1 ? '' : 's')); return json(res, 200, { ...r, link: joinLink(r.key) }) }
@@ -679,7 +716,7 @@ async function handle(req, res) {
       case '/owner/freeze': return json(res, 200, freeze(!!b.on))
       case '/owner/mute': return json(res, 200, mute(String(b.ref || '*'), !!b.on))
       case '/owner/keep': { const r = setKeep(String(b.ref || ''), b.on === undefined ? null : b.on); return json(res, r.error ? 400 : 200, r) }
-      case '/owner/rollback': return json(res, 200, rollback(b.minutes, b.ref ? String(b.ref) : null))
+      case '/owner/rollback': return json(res, 200, rollback(b.minutes, b.ref ? String(b.ref) : null, b.world ? String(b.world) : null))
       case '/owner/lan': cfg.listen = b.on ? '0.0.0.0' : '127.0.0.1'; saveCfg(); return json(res, 200, { ok: true, restart: true })
       case '/owner/stop': json(res, 200, { ok: true }); setTimeout(shutdown, 100); return
       default: return json(res, 404, { error: 'no' })
@@ -699,10 +736,10 @@ server.on('upgrade', async (req, tcp, head) => {
   const v = await door.verify(token)
   if (!v.ok) return refuse(401, 'unauthorized')
   const c = v.claims
-  if (!cfg.world || c.world !== cfg.world || !door.session || door.isBanned(c.ref)) return refuse(403, 'closed')
+  if (!cfg.world || !isOpen(c.world) || !door.session || door.isBanned(c.ref)) return refuse(403, 'closed')
   const ip = ipOf(req)
   // the hub seats the player (room choice, open flag, build gate), then the Room checks everything again
-  const a = worldOf(cfg.world).assign({ world: c.world, ref: c.ref, grp: null, role: c.role, bld: 's', cfg: c.cfg })
+  const a = worldOf(c.world).assign({ world: c.world, ref: c.ref, grp: null, role: c.role, bld: 's', cfg: c.cfg })
   if (a.err) return refuse(403, a.err)
   const h = new Headers()
   for (const [k, v2] of Object.entries(req.headers)) if (typeof v2 === 'string' && !k.startsWith('x-bt-')) h.set(k, v2)
@@ -732,7 +769,7 @@ setInterval(() => { for (const [k, exp] of ownerTokens) if (exp <= Date.now()) o
 
 function shutdown() {
   console.log('[home] stopping')
-  try { endSession(); closeWorld({ forget: false }) } catch (e) {}
+  try { endSession(); const keep = cfg.worlds.slice(), main = cfg.world; for (const n of keep) closeWorld(n, { forget: false }); cfg.worlds = keep; cfg.world = main } catch (e) {}   // worlds reopen on the next start
   server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 1500)
 }
 process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown)
@@ -750,7 +787,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(`[home] Bertopia personal host (adults 18+)  owner page: http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`)
     console.log(cfg.listen === '127.0.0.1' ? '[home] this PC only (owner page: "Let other computers join" for the LAN)' : '[home] players on this network join at ' + lanAddrs().map((a) => `http://${a}:${cfg.port}/`).join('  or  '))
     console.log('[home] data: ' + DATA + (GAME ? ' | game: ' + GAME : ' | no game build yet: run `npm run build:home` in bloxbert-src; / shows the plain join page'))
-    if (cfg.world) { const n = cfg.world; cfg.world = null; openWorld(n); console.log('[home] reopened world ' + n + ' (start a session to let people in)') }
+    if (cfg.worlds.length) { const main = cfg.world, list = cfg.worlds.slice(); cfg.worlds = []; cfg.world = null; for (const n of list) { try { openWorld(n, { main: n === main }) } catch (e) { console.error('[home] could not reopen ' + n + ': ' + e.message) } } console.log('[home] reopened ' + cfg.worlds.join(', ') + ' (main ' + cfg.world + '; start a session to let people in)') }
     if (flag('open')) { const u = `http://localhost:${cfg.port}/owner?k=${cfg.ownerKey}`; const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', u]] : process.platform === 'darwin' ? ['open', [u]] : ['xdg-open', [u]]; import('node:child_process').then((cp) => { try { const c = cp.spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }); c.on('error', () => console.log('[home] could not open a browser: open ' + u + ' yourself')); c.unref() } catch (e) {} }) }
   })
 }
